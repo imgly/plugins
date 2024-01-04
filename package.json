@@ -1,0 +1,8 @@
+{
+  "private": true,
+  "name": "imgly-plugins",
+  "version": "0.0.0",
+  "scripts": {
+    "build": ""
+  }
+}
