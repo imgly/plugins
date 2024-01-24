@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>IMGLY Plugins Example</title>
+
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+      }
+
+      html {
+        overscroll-behavior-x: contain;
+      }
+
+      #root {
+        /*NOTE: This double declrataion of `height` is not an error, but explicitly
+          wanted. Mobile browser often have a dynamic UI which changes in some way
+          according to user input (e.g. scrolling the page). Using `100vh` can
+          result in states where the browser UI overlaps with our editors UI which
+          most likely is not a behaviour we want.
+          Using the `dvh` unit solves that problem by taking the browser UI into
+          consideration. Downside to it being that it is fairly new and not all our
+          supported browsers do support this unit. Using a double declrataions like below
+          is basically a fallback to `100vh` if the browser does not support `dvh`, since
+          the not-supporting will make the second `height` declaration invalid and it
+          will not be applied.
+         */
+        height: 100vh;
+        height: 100dvh;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
