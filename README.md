@@ -15,4 +15,4 @@ Plugins enhance the capabilities of [CreativeEditor SDK (CE.SDK)](https://img.ly
 
 For more information about the particular plugins, please visit the according packages in this repository.
 
-- [Background Removal](packages/background-removal/README.md)
+- [Background Removal](packages/background-removal/)
