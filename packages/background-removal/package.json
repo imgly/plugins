@@ -14,7 +14,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/imgly/plugin-background-removal.git"
+    "url": "git+https://github.com/imgly/plugin-background-removal-web.git"
   },
   "license": "SEE LICENSE IN LICENSE.md",
   "author": {
@@ -47,7 +47,8 @@
     "clean": "npx rimraf dist",
     "build": "npm run clean && node scripts/build.mjs && yarn run types:create",
     "watch": "npm run clean && node scripts/watch.mjs",
-    "publish": "npm run build && npm publish --access public",
+    "publish:latest": "npm run build && npm publish --tag latest --access public",
+    "publish:next": "npm run build && npm publish --tag next --access public",
     "check:all": "concurrently -n lint,type,pretty \"yarn check:lint\" \"yarn check:type\" \"yarn check:pretty\"",
     "check:lint": "eslint --max-warnings 0 './src/**/*.{ts,tsx}'",
     "check:pretty": "prettier --list-different './src/**/*.{ts,tsx}'",
@@ -55,7 +56,7 @@
     "types:create": "tsc --emitDeclarationOnly"
   },
   "devDependencies": {
-    "@cesdk/cesdk-js": "1.20.0-rc.0",
+    "@cesdk/cesdk-js": "~1.20.0",
     "@types/ndarray": "^1.0.14",
     "chalk": "^5.3.0",
     "concurrently": "^8.2.2",
