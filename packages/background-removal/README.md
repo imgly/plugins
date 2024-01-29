@@ -19,7 +19,7 @@ canvas menu entry for every block with an image fill.
 
 ```typescript
 import CreativeEditorSDK from '@cesdk/cesdk-js';
-import BackgroundRemovalPlugin from '@imgly/plugin-background-removal';
+import BackgroundRemovalPlugin from '@imgly/plugin-background-removal-web';
 
 const config = {
   license: '<your-license-here>',
@@ -48,7 +48,7 @@ can be used in this plugin.
 [See the documentation](https://github.com/imgly/background-removal-js/tree/main/packages/web#advanced-configuration) for further information.
 
 ```typescript
-import BackgroundRemovalPlugin from '@imgly/plugin-background-removal';
+import BackgroundRemovalPlugin from '@imgly/plugin-background-removal-web';
 
 [...]
 
