@@ -18,7 +18,7 @@ const configs = [
     define: {
       PLUGIN_VERSION: `"${packageJson.version}"`
     },
-    minify: false,
+    minify: true,
     bundle: true,
     sourcemap: true,
     external: ['@imgly/background-removal', '@cesdk/cesdk-js', 'lodash'],
