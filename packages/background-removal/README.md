@@ -9,7 +9,8 @@ This plugin introduces background removal for the CE.SDK editor, leveraging the 
 You can install the plugin via npm or yarn. Use the following commands to install the package:
 
 ```
-yarn install @imgly/plugin-background-removal-web
+yarn add @imgly/plugin-background-removal-web
+npm install @imgly/plugin-background-removal-web
 ```
 
 ## Usage
