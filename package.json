@@ -2,8 +2,13 @@
   "private": true,
   "name": "imgly-plugins",
   "version": "0.0.0",
+  "workspaces": [
+    "packages/*",
+    "examples/*"
+  ],
   "scripts": {
-    "build": ""
+    "build": "turbo run build",
+    "dev": "turbo run dev"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^6.8.0",
@@ -19,6 +24,7 @@
     "prettier": "^2.8.5",
     "prettier-plugin-organize-imports": "^3.2.2",
     "pretty-quick": "^3.1.3",
+    "turbo": "^1.12.2",
     "typescript": "^5.3.3"
   }
 }
