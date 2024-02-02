@@ -4,17 +4,11 @@ Sample vite projects that can be used to test the plugins in the repository.
 
 ## How to add a plugin into this example project
 
-- In the plugin's directory (e.g. `packages/background-removal`)
-  - Go into the plugin package you want to add and test, and call `yarn link`.
-  - Start building and developing this plugin project, e.g. with `yarn watch`
-  - Changes in the plugin will reload the example project
-- In this example project's directory (`examples/web`)
-  - Call `yarn link @imgly/plugin-${myPlugin}` in this example project.
-  - Add import statement and add the plugin in `src/addPlugins` in this project.
+If a new plugin is under `packages/` it will automatically be picked up
+by the yarn workspaces. Calling `yarn dev` in the projects root, will automatically
+call `yarn dev` for the plugin.
 
-> [!NOTE]
-> If you want to unlink a project for any reason you can delete it
-> by deleting the link in `~/.config/yarn/link/`.
+All you have to do is to import and add the plugin in `examples/web/src/addPlugins`.
 
 ## CE.SDK License Key
 
