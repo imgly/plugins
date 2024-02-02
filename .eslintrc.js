@@ -21,7 +21,7 @@ module.exports = {
     '.eslintrc.js',
     '**/dist/**/*',
     'examples',
-    '**/esbuild/**/*'
+    '**/esbuild/**/*',
     '**/scripts/**/*'
   ],
   globals: {
