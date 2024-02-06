@@ -1,4 +1,5 @@
 import type CreativeEditorSDK from '@cesdk/cesdk-js';
+import { imageToSvg } from '@imgly/vectorizer';
 
 import {
   getPluginMetadata,
@@ -10,11 +11,15 @@ import {
 /**
  * Apply the vectorization process to the image.
  */
-function vectorize(uri: string): Promise<Blob> {
+async function vectorize(uri: string): Promise<Blob> {
   console.log('Vectorizing', uri);
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50"><circle cx="25" cy="25" r="20"/></svg>`;
-  const blob = new Blob([svg], { type: 'image/svg+xml' });
-  return Promise.resolve(blob);
+  // const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50"><circle cx="25" cy="25" r="20"/></svg>`;
+  // const blob = new Blob([svg], { type: 'image/svg+xml' });
+  const blob = await fetch(uri).then((res) => res.blob())
+  const svg = await imageToSvg(blob); 
+  console.log("SVG", svg)
+  const outBlob = new Blob([svg], { type: 'image/svg+xml' });
+  return outBlob;
 }
 
 /**
@@ -42,6 +47,7 @@ export async function processVectorization(
 
   try {
     // Clear values in the engine to trigger the loading spinner
+    +9
     blockApi.setString(fillId, 'fill/image/imageFileURI', '');
     blockApi.setSourceSet(fillId, 'fill/image/sourceSet', []);
 
@@ -96,6 +102,7 @@ export async function processVectorization(
       return;
 
     const url = uploadedAssets.meta?.uri;
+    console.log("URL", url)
     if (url == null) {
       throw new Error('Could not upload vectorized image');
     }

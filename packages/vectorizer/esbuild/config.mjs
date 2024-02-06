@@ -21,7 +21,7 @@ const configs = [
     minify: true,
     bundle: true,
     sourcemap: true,
-    external: ['@cesdk/cesdk-js', 'lodash'],
+    external: ['@cesdk/cesdk-js', 'lodash', "node:path", "fs", "url"],
     platform: 'browser',
     format: 'esm',
     outfile: 'dist/index.mjs',
