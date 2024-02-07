@@ -7,11 +7,12 @@ import {
   setPluginMetadata
 } from './utils';
 
+import type { MessageBody } from "./worker.shared"; 
 
 const runInWorker = (uri: string) => new Promise<Blob>((resolve, reject) => {
   const worker = new Worker(new URL('./worker', import.meta.url), { type: 'module' });
   worker.postMessage({data: uri})
-  worker.onmessage = (e: MessageEvent) => {
+  worker.onmessage = (e: MessageEvent<MessageBody>) => {
     const msg = e.data
     if (msg.error) {
       reject (msg.error)
@@ -36,8 +37,9 @@ const runInWorker = (uri: string) => new Promise<Blob>((resolve, reject) => {
     cesdk: CreativeEditorSDK,
     blockId: number
   ) {
+    const uploader = cesdk.unstable_upload.bind(cesdk)
     const engine = cesdk.engine; // the only function that needs the ui is the upload function
-    const blockApi = cesdk.engine.block;
+    const blockApi = engine.block;
     if (!blockApi.hasFill(blockId))
       throw new Error('Block has no fill to vectorize');
 
@@ -74,7 +76,6 @@ const runInWorker = (uri: string) => new Promise<Blob>((resolve, reject) => {
 
     try {
       // Clear values in the engine to trigger the loading spinner
-      +9
       blockApi.setString(fillId, 'fill/image/imageFileURI', '');
       blockApi.setSourceSet(fillId, 'fill/image/sourceSet', []);
       // ensure we show the last image while processsing. Some images don't have the preview set
@@ -95,8 +96,8 @@ const runInWorker = (uri: string) => new Promise<Blob>((resolve, reject) => {
       const vectorized: Blob = await runInWorker(uriToProcess)
       
       if (
-        getPluginMetadata(cesdk.engine, blockId).status !== 'PROCESSING' ||
-        !isMetadataConsistent(cesdk, blockId)
+        getPluginMetadata(engine, blockId).status !== 'PROCESSING' ||
+        !isMetadataConsistent(engine, blockId)
       )
         return;
 
@@ -104,7 +105,7 @@ const runInWorker = (uri: string) => new Promise<Blob>((resolve, reject) => {
       const parts = pathname.split('/');
       const filename = parts[parts.length - 1];
 
-      const uploadedAssets = await cesdk.unstable_upload(
+      const uploadedAssets = await uploader(
         new File([vectorized], filename, { type: vectorized.type }),
         () => {
           // TODO Delegate process to UI component
@@ -115,7 +116,7 @@ const runInWorker = (uri: string) => new Promise<Blob>((resolve, reject) => {
       // do not proceed if the state was reset.
       if (
         getPluginMetadata(engine, blockId).status !== 'PROCESSING' ||
-        !isMetadataConsistent(cesdk, blockId)
+        !isMetadataConsistent(engine, blockId)
       )
         return;
 
@@ -135,9 +136,9 @@ const runInWorker = (uri: string) => new Promise<Blob>((resolve, reject) => {
       });
       blockApi.setString(fillId, 'fill/image/imageFileURI', url);
       // Finally, create an undo step
-      cesdk.engine.editor.addUndoStep();
+      engine.editor.addUndoStep();
     } catch (error) {
-      if (cesdk.engine.block.isValid(blockId)) {
+      if (engine.block.isValid(blockId)) {
         setPluginMetadata(engine, blockId, {
           version: PLUGIN_VERSION,
           initialSourceSet,
@@ -147,7 +148,7 @@ const runInWorker = (uri: string) => new Promise<Blob>((resolve, reject) => {
           status: 'ERROR'
         });
 
-        recoverInitialImageData(cesdk, blockId);
+        recoverInitialImageData(engine, blockId);
       }
       // eslint-disable-next-line no-console
       console.error(error);

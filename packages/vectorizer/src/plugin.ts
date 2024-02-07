@@ -13,7 +13,9 @@ import {
   isMetadataConsistent
 } from './utils';
 
-export interface PluginConfiguration { }
+export interface PluginConfiguration { 
+  // uploader ? 
+}
 
 export default (pluginConfiguration: PluginConfiguration = {}) => {
   return {
@@ -73,7 +75,7 @@ async function handleUpdateEvent(cesdk: CreativeEditorSDK, blockId: number) {
     case 'PROCESSING':
     case 'PROCESSED_TOGGLE_OFF':
     case 'PROCESSED_TOGGLE_ON': {
-      if (!isMetadataConsistent(cesdk, blockId)) {
+      if (!isMetadataConsistent(cesdk.engine, blockId)) {
         clearPluginMetadata(cesdk.engine, blockId);
       }
       break;
@@ -94,9 +96,9 @@ export function enableFeatures(cesdk: CreativeEditorSDK) {
     }
     const [selectedId] = selectedIds;
 
-    if (cesdk.engine.block.hasFill(selectedId)) {
-      const fillId = cesdk.engine.block.getFill(selectedId);
-      const fillType = cesdk.engine.block.getType(fillId);
+    if (engine.block.hasFill(selectedId)) {
+      const fillId = engine.block.getFill(selectedId);
+      const fillType = engine.block.getType(fillId);
 
       if (fillType !== '//ly.img.ubq/fill/image') {
         return false;

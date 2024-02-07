@@ -104,26 +104,26 @@ export function fixDuplicateMetadata(
  * @returns true if the metadata is consistent, false otherwise
  */
 export function isMetadataConsistent(
-  cesdk: CreativeEditorSDK,
+  engine: CreativeEngine,
   blockId: number
 ): boolean {
   // In case the block was removed, we just abort and mark it
   // as reset by returning true
-  if (!cesdk.engine.block.isValid(blockId)) return false;
-  const metadata = getPluginMetadata(cesdk.engine, blockId);
+  if (!engine.block.isValid(blockId)) return false;
+  const metadata = getPluginMetadata(engine, blockId);
   if (metadata.status === 'IDLE' || metadata.status === 'PENDING') return true;
 
-  if (!cesdk.engine.block.hasFill(blockId)) return false;
-  const fillId = cesdk.engine.block.getFill(blockId);
+  if (!engine.block.hasFill(blockId)) return false;
+  const fillId = engine.block.getFill(blockId);
   if (fillId == null) return false;
 
   if (blockId !== metadata.blockId || fillId !== metadata.fillId) return false;
 
-  const sourceSet = cesdk.engine.block.getSourceSet(
+  const sourceSet = engine.block.getSourceSet(
     fillId,
     'fill/image/sourceSet'
   );
-  const imageFileURI = cesdk.engine.block.getString(
+  const imageFileURI = engine.block.getString(
     fillId,
     'fill/image/imageFileURI'
   );
@@ -185,15 +185,15 @@ export function isMetadataConsistent(
  * in the state "PROCESSED_TOGGLE_OFF" or "PROCESSED_TOGGLE_ON". Otherwise do
  * nothing.
  */
-export function toggleProcessedData(cesdk: CreativeEditorSDK, blockId: number) {
-  const blockApi = cesdk.engine.block;
+export function toggleProcessedData(engine: CreativeEngine, blockId: number) {
+  const blockApi = engine.block;
   if (!blockApi.hasFill(blockId)) return; // Nothing to recover (no fill anymore)
   const fillId = blockApi.getFill(blockId);
 
-  const metadata = getPluginMetadata(cesdk.engine, blockId);
+  const metadata = getPluginMetadata(engine, blockId);
 
   if (metadata.status === 'PROCESSED_TOGGLE_OFF') {
-    setPluginMetadata(cesdk.engine, blockId, {
+    setPluginMetadata(engine, blockId, {
       ...metadata,
       status: 'PROCESSED_TOGGLE_ON'
     });
@@ -213,9 +213,9 @@ export function toggleProcessedData(cesdk: CreativeEditorSDK, blockId: number) {
       );
     }
 
-    cesdk.engine.editor.addUndoStep();
+    engine.editor.addUndoStep();
   } else if (metadata.status === 'PROCESSED_TOGGLE_ON') {
-    setPluginMetadata(cesdk.engine, blockId, {
+    setPluginMetadata(engine, blockId, {
       ...metadata,
       status: 'PROCESSED_TOGGLE_OFF'
     });
@@ -230,7 +230,7 @@ export function toggleProcessedData(cesdk: CreativeEditorSDK, blockId: number) {
       'fill/image/sourceSet',
       metadata.initialSourceSet
     );
-    cesdk.engine.editor.addUndoStep();
+    engine.editor.addUndoStep();
   }
 }
 
@@ -239,13 +239,13 @@ export function toggleProcessedData(cesdk: CreativeEditorSDK, blockId: number) {
  * state as before the process was started.
  */
 export function recoverInitialImageData(
-  cesdk: CreativeEditorSDK,
+  engine: CreativeEngine,
   blockId: number
 ) {
-  const blockApi = cesdk.engine.block;
+  const blockApi = engine.block;
   if (!blockApi.hasFill(blockId)) return; // Nothing to recover (no fill anymore)
 
-  const metadata = getPluginMetadata(cesdk.engine, blockId);
+  const metadata = getPluginMetadata(engine, blockId);
 
   if (metadata.status === 'PENDING' || metadata.status === 'IDLE') {
     return;
@@ -254,18 +254,18 @@ export function recoverInitialImageData(
   const initialSourceSet = metadata.initialSourceSet;
   const initialImageFileURI = metadata.initialImageFileURI;
 
-  const fillId = getValidFill(cesdk, blockId, metadata);
+  const fillId = getValidFill(engine, blockId, metadata);
   if (fillId == null) return;
 
   if (initialImageFileURI) {
-    cesdk.engine.block.setString(
+    engine.block.setString(
       fillId,
       'fill/image/imageFileURI',
       initialImageFileURI
     );
   }
   if (initialSourceSet.length > 0) {
-    cesdk.engine.block.setSourceSet(
+    engine.block.setSourceSet(
       fillId,
       'fill/image/sourceSet',
       initialSourceSet
@@ -278,18 +278,18 @@ export function recoverInitialImageData(
  * vectorizing. Returns undefined otherwise.
  */
 function getValidFill(
-  cesdk: CreativeEditorSDK,
+  engine: CreativeEngine,
   blockId: number,
   metadata: PluginStatusProcessing | PluginStatusError | PluginStatusProcessed
 ): number | undefined {
   if (
-    !cesdk.engine.block.isValid(blockId) ||
-    !cesdk.engine.block.hasFill(blockId) ||
+    !engine.block.isValid(blockId) ||
+    !engine.block.hasFill(blockId) ||
     blockId !== metadata.blockId
   ) {
     return undefined;
   }
-  const fillId = cesdk.engine.block.getFill(blockId);
+  const fillId = engine.block.getFill(blockId);
   if (fillId !== metadata.fillId) {
     return undefined;
   }
