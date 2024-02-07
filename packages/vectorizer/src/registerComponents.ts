@@ -9,14 +9,13 @@ import {
   ICON
 } from './constants';
 import {
-  getBGRemovalMetadata as getPluginMetadata,
-  setBGRemovalMetadata as setPluginMetadata,
-  toggleBackgroundRemovalData as toggleProcessedData
+  getPluginMetadata,
+  setPluginMetadata,
+  toggleProcessedData
 } from './utils';
 
 /**
- * Registers the components that can be used to remove the background of
- * a block.
+ * Registers the components that can be used to vectorize a block.
  */
 export function registerComponents(cesdk: CreativeEditorSDK) {
   cesdk.setTranslations(I18N_TRANSLATIONS);
@@ -50,26 +49,16 @@ export function registerComponents(cesdk: CreativeEditorSDK) {
 
       const metadata = getPluginMetadata(cesdk, id);
 
-      const isActive = false //metadata.status === 'PROCESSED_WITHOUT_BG';
+      const isActive = false // metadata.status === 'PROCESSED_TOGGLE_ON';
       const isLoading = metadata.status === 'PROCESSING';
 
       const isPendingOrProcessing = metadata.status === 'PENDING' || metadata.status === 'PROCESSING';
       const isDisabled = hasNoValidFill || isPendingOrProcessing
 
-
       let loadingProgress: number | undefined;
       if (isLoading && metadata.progress) {
-        const { key, current, total } = metadata.progress;
-
-        if (key === 'compute:inference') {
-          loadingProgress = undefined;
-        } else if (key.startsWith('fetch:/models/')) {
-          loadingProgress = (current / total) * 50;
-        } else if (key.startsWith('fetch:/onnxruntime-web/')) {
-          loadingProgress = 50 + (current / total) * 50;
-        } else {
-          loadingProgress = undefined;
-        }
+        const { current, total } = metadata.progress;
+        loadingProgress = (current / total) * 100;
       }
 
       Button(CANVAS_MENU_COMPONENT_BUTTON_ID, {
@@ -86,6 +75,5 @@ export function registerComponents(cesdk: CreativeEditorSDK) {
         }
       });
     }
-
   );
 }

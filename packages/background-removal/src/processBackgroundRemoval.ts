@@ -14,6 +14,25 @@ import {
   isMetadataConsistent,
   setBGRemovalMetadata
 } from './utils';
+import { reject } from 'lodash';
+
+class Scheduler<T> {
+  #queue?: Promise<T> = undefined
+
+  async schedule(task: () => Promise<T>): Promise<T> {
+    if (this.#queue === undefined) {
+      this.#queue = task()
+    } else {
+      this.#queue = this.#queue.then(async () => {
+        return await task()
+      })
+    }
+    return this.#queue
+  }
+}
+
+let scheduler = new Scheduler<any>()
+
 
 /**
  * Triggers the background removal process.
@@ -39,10 +58,35 @@ export async function processBackgroundRemoval(
     'fill/image/imageFileURI'
   );
 
+  const initialPreviewFileURI = blockApi.getString(
+    fillId,
+    'fill/image/previewFileURI'
+  );
+
+
+  const uriToProcess =
+    // Source sets have priority in the engine
+    initialSourceSet.length > 0
+      ? // Choose the highest resolution image in the source set
+      initialSourceSet.sort(
+        (a, b) => b.width * b.height - a.height * a.width
+      )[0].uri
+      : initialImageFileURI;
+
+  if (uriToProcess === undefined || uriToProcess === '')
+    return; // We shall return early if the uri is not defined or invalid
+
+
+
+
   try {
     // Clear values in the engine to trigger the loading spinner
     blockApi.setString(fillId, 'fill/image/imageFileURI', '');
     blockApi.setSourceSet(fillId, 'fill/image/sourceSet', []);
+    // ensure we show the last image while processsing. Some images don't have the preview set
+    if (initialPreviewFileURI === undefined || initialPreviewFileURI === '') {
+      blockApi.setString(fillId, 'fill/image/previewFileURI', uriToProcess);
+    }
 
     const metadata = getBGRemovalMetadata(cesdk, blockId);
     setBGRemovalMetadata(cesdk, blockId, {
@@ -55,17 +99,8 @@ export async function processBackgroundRemoval(
       status: 'PROCESSING'
     });
 
-    const uriToProcess =
-      // Source sets have priority in the engine
-      initialSourceSet.length > 0
-        ? // Choose the highest resolution image in the source set
-          initialSourceSet.sort(
-            (a, b) => b.width * b.height - a.height * a.width
-          )[0].uri
-        : initialImageFileURI;
-
     // Creating the mask from the highest resolution image
-    const mask = await segmentForeground(uriToProcess, configuration);
+    const mask: Blob = await scheduler.schedule(() => segmentForeground(uriToProcess, configuration))
 
     if (initialSourceSet.length > 0) {
       // Source set code path
@@ -127,6 +162,8 @@ export async function processBackgroundRemoval(
         removedBackground: uploadedUrl
       });
       blockApi.setString(fillId, 'fill/image/imageFileURI', uploadedUrl);
+      blockApi.setString(fillId, 'fill/image/previewFileURI', uploadedUrl);
+
     }
     // Finally, create an undo step
     cesdk.engine.editor.addUndoStep();
@@ -144,7 +181,7 @@ export async function processBackgroundRemoval(
       recoverInitialImageData(cesdk, blockId);
     }
     // eslint-disable-next-line no-console
-    console.log(error);
+    console.error(error);
   }
 }
 
