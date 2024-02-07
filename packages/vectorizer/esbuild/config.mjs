@@ -14,17 +14,18 @@ console.log(
 
 const configs = [
   {
-    entryPoints: ['src/index.ts'],
+    entryPoints: ['src/index.ts', "src/worker.ts"],
     define: {
       PLUGIN_VERSION: `"${packageJson.version}"`
     },
     minify: true,
     bundle: true,
     sourcemap: true,
-    external: ['@cesdk/cesdk-js', 'lodash', "node:path", "fs", "url"],
-    platform: 'browser',
+    external: ['@cesdk/cesdk-js'],
+    platform: 'node',
     format: 'esm',
-    outfile: 'dist/index.mjs',
+    outdir: 'dist',
+    outExtension: { '.js': '.mjs' },
     plugins: [
       {
         name: 'reporter',

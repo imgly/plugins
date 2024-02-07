@@ -409,10 +409,8 @@
     onnxruntime-web "~1.17.0"
     zod "~3.21.0"
 
-"@imgly/vectorizer@^0.1.0-rc4":
+"@imgly/vectorizer@../vectorizer/packages/js":
   version "0.1.0-rc4"
-  resolved "https://registry.yarnpkg.com/@imgly/vectorizer/-/vectorizer-0.1.0-rc4.tgz#cd654fdffb834023426f6e07e4dce37b3b4cbcee"
-  integrity sha512-xR4wAZ6TkyEdY6v81SqD063WwR4JWlPAu1scqohmV3pUEJMs/2N5qNz7cTW9jf5NAZeoJO68kbm+Q0fN6riVTA==
   dependencies:
     "@types/lodash" "^4.14.195"
     "@types/node" "^20.3.1"

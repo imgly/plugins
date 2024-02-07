@@ -1,4 +1,4 @@
-import type CreativeEditorSDK from '@cesdk/cesdk-js';
+import CreativeEditorSDK, { CreativeEngine } from '@cesdk/cesdk-js';
 import isEqual from 'lodash/isEqual';
 
 import { PLUGIN_ID } from './constants';
@@ -13,11 +13,11 @@ import {
  * Sets the metadata for the plugin state.
  */
 export function setPluginMetadata(
-  cesdk: CreativeEditorSDK,
+  engine: CreativeEngine,
   id: number,
   metadata: PluginMetadata
 ) {
-  cesdk.engine.block.setMetadata(id, PLUGIN_ID, JSON.stringify(metadata));
+  engine.block.setMetadata(id, PLUGIN_ID, JSON.stringify(metadata));
 }
 
 /**
@@ -25,11 +25,11 @@ export function setPluginMetadata(
  * is set on the given block, it will return an IDLE state.
  */
 export function getPluginMetadata(
-  cesdk: CreativeEditorSDK,
+  engine: CreativeEngine,
   id: number
 ): PluginMetadata {
-  if (cesdk.engine.block.hasMetadata(id, PLUGIN_ID)) {
-    return JSON.parse(cesdk.engine.block.getMetadata(id, PLUGIN_ID));
+  if (engine.block.hasMetadata(id, PLUGIN_ID)) {
+    return JSON.parse(engine.block.getMetadata(id, PLUGIN_ID));
   } else {
     return {
       status: 'IDLE'
@@ -40,9 +40,9 @@ export function getPluginMetadata(
 /**
  * If plugin metadata is set, it will be cleared.
  */
-export function clearPluginMetadata(cesdk: CreativeEditorSDK, id: number) {
-  if (cesdk.engine.block.hasMetadata(id, PLUGIN_ID)) {
-    cesdk.engine.block.removeMetadata(id, PLUGIN_ID);
+export function clearPluginMetadata(engine: CreativeEngine, id: number) {
+  if (engine.block.hasMetadata(id, PLUGIN_ID)) {
+    engine.block.removeMetadata(id, PLUGIN_ID);
   }
 }
 
@@ -51,11 +51,11 @@ export function clearPluginMetadata(cesdk: CreativeEditorSDK, id: number) {
  * In that case the plugin state is still valid, but blockId and fillId have changed.
  */
 export function isDuplicate(
-  cesdk: CreativeEditorSDK,
+  engine: CreativeEngine,
   blockId: number,
   metadata: PluginMetadata
 ): boolean {
-  if (!cesdk.engine.block.isValid(blockId)) return false;
+  if (!engine.block.isValid(blockId)) return false;
   if (
     metadata.status === 'IDLE' ||
     metadata.status === 'PENDING' ||
@@ -63,8 +63,8 @@ export function isDuplicate(
   )
     return false;
 
-  if (!cesdk.engine.block.hasFill(blockId)) return false;
-  const fillId = cesdk.engine.block.getFill(blockId);
+  if (!engine.block.hasFill(blockId)) return false;
+  const fillId = engine.block.getFill(blockId);
 
   // It cannot be a duplicate if the blockId or fillId are the same
   if (metadata.blockId === blockId || metadata.fillId === fillId) return false;
@@ -79,18 +79,18 @@ export function isDuplicate(
  * Please note: Call this method only on duplicates (see isDuplicate).
  */
 export function fixDuplicateMetadata(
-  cesdk: CreativeEditorSDK,
+  engine: CreativeEngine,
   blockId: number
 ) {
-  const fillId = cesdk.engine.block.getFill(blockId);
-  const metadata = getPluginMetadata(cesdk, blockId);
+  const fillId = engine.block.getFill(blockId);
+  const metadata = getPluginMetadata(engine, blockId);
   if (
     metadata.status === 'IDLE' ||
     metadata.status === 'PENDING' ||
     metadata.status === 'ERROR'
   )
     return;
-  setPluginMetadata(cesdk, blockId, {
+  setPluginMetadata(engine, blockId, {
     ...metadata,
     blockId,
     fillId
@@ -110,7 +110,7 @@ export function isMetadataConsistent(
   // In case the block was removed, we just abort and mark it
   // as reset by returning true
   if (!cesdk.engine.block.isValid(blockId)) return false;
-  const metadata = getPluginMetadata(cesdk, blockId);
+  const metadata = getPluginMetadata(cesdk.engine, blockId);
   if (metadata.status === 'IDLE' || metadata.status === 'PENDING') return true;
 
   if (!cesdk.engine.block.hasFill(blockId)) return false;
@@ -190,10 +190,10 @@ export function toggleProcessedData(cesdk: CreativeEditorSDK, blockId: number) {
   if (!blockApi.hasFill(blockId)) return; // Nothing to recover (no fill anymore)
   const fillId = blockApi.getFill(blockId);
 
-  const metadata = getPluginMetadata(cesdk, blockId);
+  const metadata = getPluginMetadata(cesdk.engine, blockId);
 
   if (metadata.status === 'PROCESSED_TOGGLE_OFF') {
-    setPluginMetadata(cesdk, blockId, {
+    setPluginMetadata(cesdk.engine, blockId, {
       ...metadata,
       status: 'PROCESSED_TOGGLE_ON'
     });
@@ -215,7 +215,7 @@ export function toggleProcessedData(cesdk: CreativeEditorSDK, blockId: number) {
 
     cesdk.engine.editor.addUndoStep();
   } else if (metadata.status === 'PROCESSED_TOGGLE_ON') {
-    setPluginMetadata(cesdk, blockId, {
+    setPluginMetadata(cesdk.engine, blockId, {
       ...metadata,
       status: 'PROCESSED_TOGGLE_OFF'
     });
@@ -245,7 +245,7 @@ export function recoverInitialImageData(
   const blockApi = cesdk.engine.block;
   if (!blockApi.hasFill(blockId)) return; // Nothing to recover (no fill anymore)
 
-  const metadata = getPluginMetadata(cesdk, blockId);
+  const metadata = getPluginMetadata(cesdk.engine, blockId);
 
   if (metadata.status === 'PENDING' || metadata.status === 'IDLE') {
     return;
@@ -295,4 +295,22 @@ function getValidFill(
   }
 
   return fillId;
+}
+
+
+
+
+export class Scheduler<T> {
+  #queue?: Promise<T> = undefined
+
+  async schedule(task: () => Promise<T>): Promise<T> {
+    if (this.#queue === undefined) {
+      this.#queue = task()
+    } else {
+      this.#queue = this.#queue.then(async () => {
+        return await task()
+      })
+    }
+    return this.#queue
+  }
 }

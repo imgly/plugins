@@ -1,12 +1,12 @@
 import type CreativeEditorSDK from '@cesdk/cesdk-js';
 
 import {
-  CANVAS_MENU_COMPONENT_BUTTON_ID,
-  CANVAS_MENU_COMPONENT_ID,
-  FEATURE_ID,
-  I18N_ID,
-  I18N_TRANSLATIONS,
-  ICON
+  PLUGIN_CANVAS_MENU_COMPONENT_BUTTON_ID,
+  PLUGIN_CANVAS_MENU_COMPONENT_ID,
+  PLUGIN_FEATURE_ID,
+  PLUGIN_I18N_ID,
+  PLUGIN_I18N_TRANSLATIONS,
+  PLUGIN_ICON
 } from './constants';
 import {
   getPluginMetadata,
@@ -18,17 +18,17 @@ import {
  * Registers the components that can be used to vectorize a block.
  */
 export function registerComponents(cesdk: CreativeEditorSDK) {
-  cesdk.setTranslations(I18N_TRANSLATIONS);
+  cesdk.setTranslations(PLUGIN_I18N_TRANSLATIONS);
   // Always prepend the registered component to the canvas menu order.
   cesdk.ui.unstable_setCanvasMenuOrder([
-    CANVAS_MENU_COMPONENT_ID,
+    PLUGIN_CANVAS_MENU_COMPONENT_ID,
     ...cesdk.ui.unstable_getCanvasMenuOrder()
   ]);
   cesdk.ui.unstable_registerComponent(
-    CANVAS_MENU_COMPONENT_ID,
+    PLUGIN_CANVAS_MENU_COMPONENT_ID,
     ({ builder: { Button }, engine }) => {
       if (
-        !cesdk.feature.unstable_isEnabled(FEATURE_ID, {
+        !cesdk.feature.unstable_isEnabled(PLUGIN_FEATURE_ID, {
           engine
         })
       ) {
@@ -47,7 +47,7 @@ export function registerComponents(cesdk: CreativeEditorSDK) {
 
       const hasNoValidFill = !(sourceSet.length > 0 || fileUri !== '')
 
-      const metadata = getPluginMetadata(cesdk, id);
+      const metadata = getPluginMetadata(cesdk.engine, id);
 
       const isActive = false // metadata.status === 'PROCESSED_TOGGLE_ON';
       const isLoading = metadata.status === 'PROCESSING';
@@ -61,15 +61,15 @@ export function registerComponents(cesdk: CreativeEditorSDK) {
         loadingProgress = (current / total) * 100;
       }
 
-      Button(CANVAS_MENU_COMPONENT_BUTTON_ID, {
-        label: I18N_ID,
-        icon: ICON,
+      Button(PLUGIN_CANVAS_MENU_COMPONENT_BUTTON_ID, {
+        label: PLUGIN_I18N_ID,
+        icon: PLUGIN_ICON,
         isActive,
         isLoading,
         isDisabled,
         loadingProgress,
         onClick: () => {
-          setPluginMetadata(cesdk, id, {
+          setPluginMetadata(cesdk.engine, id, {
             status: 'PENDING'
           });
         }

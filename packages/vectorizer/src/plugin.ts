@@ -1,9 +1,10 @@
-import type CreativeEditorSDK from '@cesdk/cesdk-js';
+import CreativeEditorSDK, { CreativeEngine } from '@cesdk/cesdk-js';
 
-import { FEATURE_ID, PLUGIN_ID } from './constants';
-import { enableFeatures } from './enableFeatures';
-import { processVectorization } from './processVectorization';
-import { registerComponents } from './registerComponents';
+import { PLUGIN_FEATURE_ID, PLUGIN_ID } from './constants';
+
+import { command } from './commands';
+import { registerComponents } from './ui';
+
 import {
   clearPluginMetadata,
   fixDuplicateMetadata,
@@ -12,34 +13,36 @@ import {
   isMetadataConsistent
 } from './utils';
 
-export interface PluginConfiguration {}
+export interface PluginConfiguration { }
 
 export default (pluginConfiguration: PluginConfiguration = {}) => {
   return {
-    initialize() {},
+    initialize(engine: CreativeEngine) {
+      engine.event.subscribe([], async (events) => {
+        events
+          .filter((e) => engine.block.isValid(e.block) && engine.block.hasMetadata(e.block, PLUGIN_ID))
+          .forEach((e) => {
+            const id = e.block;
+            if (e.type === 'Created') {
+              const metadata = getPluginMetadata(engine, id);
+              if (isDuplicate(engine, id, metadata)) {
+                fixDuplicateMetadata(engine, id);
+              }
+            }
+          });
+      });
+    },
 
-    update() {},
+    update() {
+      
+    },
 
     initializeUserInterface({ cesdk }: { cesdk: CreativeEditorSDK }) {
       cesdk.engine.event.subscribe([], async (events) => {
-        events.forEach((e) => {
-          const id = e.block;
-          if (
-            !cesdk.engine.block.isValid(id) ||
-            !cesdk.engine.block.hasMetadata(id, PLUGIN_ID)
-          ) {
-            return;
-          }
-
-          if (e.type === 'Created') {
-            const metadata = getPluginMetadata(cesdk, id);
-            if (isDuplicate(cesdk, id, metadata)) {
-              fixDuplicateMetadata(cesdk, id);
-            }
-          } else if (e.type === 'Updated') {
-            handleUpdateEvent(cesdk, id);
-          }
-        });
+        events
+          .filter((e) => cesdk.engine.block.isValid(e.block) && cesdk.engine.block.hasMetadata(e.block, PLUGIN_ID))
+          .filter((e) => e.type === 'Updated')
+          .forEach((e) => { handleUpdateEvent(cesdk, e.block); });
       });
 
       registerComponents(cesdk);
@@ -53,16 +56,16 @@ export default (pluginConfiguration: PluginConfiguration = {}) => {
  * updated.
  */
 async function handleUpdateEvent(cesdk: CreativeEditorSDK, blockId: number) {
-  const metadata = getPluginMetadata(cesdk, blockId);
+  const metadata = getPluginMetadata(cesdk.engine, blockId);
 
   switch (metadata.status) {
     case 'PENDING': {
       if (
-        cesdk.feature.unstable_isEnabled(FEATURE_ID, {
+        cesdk.feature.unstable_isEnabled(PLUGIN_FEATURE_ID, {
           engine: cesdk.engine
         })
       ) {
-        processVectorization(cesdk, blockId);
+        command(cesdk, blockId);
       }
       break;
     }
@@ -71,7 +74,7 @@ async function handleUpdateEvent(cesdk: CreativeEditorSDK, blockId: number) {
     case 'PROCESSED_TOGGLE_OFF':
     case 'PROCESSED_TOGGLE_ON': {
       if (!isMetadataConsistent(cesdk, blockId)) {
-        clearPluginMetadata(cesdk, blockId);
+        clearPluginMetadata(cesdk.engine, blockId);
       }
       break;
     }
@@ -80,4 +83,28 @@ async function handleUpdateEvent(cesdk: CreativeEditorSDK, blockId: number) {
       // We do not care about other states
     }
   }
+}
+
+
+export function enableFeatures(cesdk: CreativeEditorSDK) {
+  cesdk.feature.unstable_enable(PLUGIN_FEATURE_ID, ({ engine }) => {
+    const selectedIds = engine.block.findAllSelected();
+    if (selectedIds.length !== 1) {
+      return false;
+    }
+    const [selectedId] = selectedIds;
+
+    if (cesdk.engine.block.hasFill(selectedId)) {
+      const fillId = cesdk.engine.block.getFill(selectedId);
+      const fillType = cesdk.engine.block.getType(fillId);
+
+      if (fillType !== '//ly.img.ubq/fill/image') {
+        return false;
+      }
+      return true
+
+    }
+
+    return false;
+  });
 }
