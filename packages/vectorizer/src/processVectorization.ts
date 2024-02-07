@@ -8,17 +8,30 @@ import {
   setPluginMetadata
 } from './utils';
 
+class Scheduler<T> {
+  #queue?: Promise<T> = undefined
+
+  async schedule(task: () => Promise<T>): Promise<T> {
+    if (this.#queue === undefined) {
+      this.#queue = task()
+    } else {
+      this.#queue = this.#queue.then(async () => {
+        return await task()
+      })
+    }
+    return this.#queue
+  }
+}
+
+let scheduler = new Scheduler<any>()
+
+
 /**
  * Apply the vectorization process to the image.
  */
 async function vectorize(uri: string): Promise<Blob> {
-  console.log('Vectorizing', uri);
-  // const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50"><circle cx="25" cy="25" r="20"/></svg>`;
-  // const blob = new Blob([svg], { type: 'image/svg+xml' });
   const blob = await fetch(uri).then((res) => res.blob())
-  const svg = await imageToSvg(blob); 
-  console.log("SVG", svg)
-  const outBlob = new Blob([svg], { type: 'image/svg+xml' });
+  const outBlob = await scheduler.schedule(async () => await imageToSvg(blob));
   return outBlob;
 }
 
@@ -44,13 +57,35 @@ export async function processVectorization(
     fillId,
     'fill/image/imageFileURI'
   );
+  const initialPreviewFileURI = blockApi.getString(
+    fillId,
+    'fill/image/previewFileURI'
+  );
+
+
+  const uriToProcess =
+    // Source sets have priority in the engine
+    initialSourceSet.length > 0
+      ? // Choose the highest resolution image in the source set
+      initialSourceSet.sort(
+        (a, b) => b.width * b.height - a.height * a.width
+      )[0].uri
+      : initialImageFileURI;
+
+  if (uriToProcess === undefined || uriToProcess === '')
+    return; // We shall return early if the uri is not defined or invalid
+
+
 
   try {
     // Clear values in the engine to trigger the loading spinner
     +9
     blockApi.setString(fillId, 'fill/image/imageFileURI', '');
     blockApi.setSourceSet(fillId, 'fill/image/sourceSet', []);
-
+    // ensure we show the last image while processsing. Some images don't have the preview set
+    if (initialPreviewFileURI === undefined || initialPreviewFileURI === '') {
+      blockApi.setString(fillId, 'fill/image/previewFileURI', uriToProcess);
+    }
     const metadata = getPluginMetadata(cesdk, blockId);
     setPluginMetadata(cesdk, blockId, {
       ...metadata,
@@ -61,15 +96,6 @@ export async function processVectorization(
       fillId,
       status: 'PROCESSING'
     });
-
-    const uriToProcess =
-      // Source sets have priority in the engine
-      initialSourceSet.length > 0
-        ? // Choose the highest resolution image in the source set
-          initialSourceSet.sort(
-            (a, b) => b.width * b.height - a.height * a.width
-          )[0].uri
-        : initialImageFileURI;
 
     // Creating the mask from the highest resolution image
     const vectorized = await vectorize(uriToProcess);
@@ -102,7 +128,6 @@ export async function processVectorization(
       return;
 
     const url = uploadedAssets.meta?.uri;
-    console.log("URL", url)
     if (url == null) {
       throw new Error('Could not upload vectorized image');
     }
@@ -133,6 +158,6 @@ export async function processVectorization(
       recoverInitialImageData(cesdk, blockId);
     }
     // eslint-disable-next-line no-console
-    console.log(error);
+    console.error(error);
   }
 }

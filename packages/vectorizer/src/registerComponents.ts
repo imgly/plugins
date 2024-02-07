@@ -3,7 +3,10 @@ import type CreativeEditorSDK from '@cesdk/cesdk-js';
 import {
   CANVAS_MENU_COMPONENT_BUTTON_ID,
   CANVAS_MENU_COMPONENT_ID,
-  FEATURE_ID
+  FEATURE_ID,
+  I18N_ID,
+  I18N_TRANSLATIONS,
+  ICON
 } from './constants';
 import {
   getPluginMetadata,
@@ -15,10 +18,7 @@ import {
  * Registers the components that can be used to vectorize a block.
  */
 export function registerComponents(cesdk: CreativeEditorSDK) {
-  cesdk.setTranslations({
-    en: { 'plugin.vectorizer.vectorize': 'Vectorize' },
-    de: { 'plugin.vectorizer.vectorize': 'Vektorisieren' }
-  });
+  cesdk.setTranslations(I18N_TRANSLATIONS);
   // Always prepend the registered component to the canvas menu order.
   cesdk.ui.unstable_setCanvasMenuOrder([
     CANVAS_MENU_COMPONENT_ID,
@@ -36,13 +36,24 @@ export function registerComponents(cesdk: CreativeEditorSDK) {
       }
 
       const [id] = engine.block.findAllSelected();
+      if (!cesdk.engine.block.hasFill(id)) return;
+
+      const fillId = cesdk.engine.block.getFill(id);
+      const fileUri = engine.block.getString(fillId, 'fill/image/imageFileURI');
+      const sourceSet = engine.block.getSourceSet(
+        fillId,
+        'fill/image/sourceSet'
+      );
+
+      const hasNoValidFill = !(sourceSet.length > 0 || fileUri !== '')
 
       const metadata = getPluginMetadata(cesdk, id);
 
-      const isActive = metadata.status === 'PROCESSED_TOGGLE_ON';
+      const isActive = false // metadata.status === 'PROCESSED_TOGGLE_ON';
       const isLoading = metadata.status === 'PROCESSING';
-      const isDisabled =
-        metadata.status === 'PENDING' || metadata.status === 'PROCESSING';
+
+      const isPendingOrProcessing = metadata.status === 'PENDING' || metadata.status === 'PROCESSING';
+      const isDisabled = hasNoValidFill || isPendingOrProcessing
 
       let loadingProgress: number | undefined;
       if (isLoading && metadata.progress) {
@@ -51,32 +62,16 @@ export function registerComponents(cesdk: CreativeEditorSDK) {
       }
 
       Button(CANVAS_MENU_COMPONENT_BUTTON_ID, {
-        label: 'plugin.vectorizer.vectorize',
-        icon: '@imgly/icons/Vectorize',
+        label: I18N_ID,
+        icon: ICON,
         isActive,
         isLoading,
         isDisabled,
         loadingProgress,
         onClick: () => {
-          switch (metadata.status) {
-            case 'IDLE':
-            case 'ERROR': {
-              setPluginMetadata(cesdk, id, {
-                status: 'PENDING'
-              });
-              break;
-            }
-
-            case 'PROCESSED_TOGGLE_ON':
-            case 'PROCESSED_TOGGLE_OFF': {
-              toggleProcessedData(cesdk, id);
-              break;
-            }
-
-            default: {
-              // We do not care about the other states in the button
-            }
-          }
+          setPluginMetadata(cesdk, id, {
+            status: 'PENDING'
+          });
         }
       });
     }
