@@ -4,20 +4,19 @@ import {
   PLUGIN_CANVAS_MENU_COMPONENT_BUTTON_ID,
   PLUGIN_CANVAS_MENU_COMPONENT_ID,
   PLUGIN_FEATURE_ID,
-  PLUGIN_I18N_ID,
+  PLUGIN_ACTION_VECTORIZE_LABEL,
   PLUGIN_I18N_TRANSLATIONS,
   PLUGIN_ICON
 } from './constants';
 import {
+  executeAction,
   getPluginMetadata,
-  setPluginMetadata,
-  toggleProcessedData
 } from './utils';
 
 /**
  * Registers the components that can be used to vectorize a block.
  */
-export function registerComponents(cesdk: CreativeEditorSDK) {
+export function registerUIComponents(cesdk: CreativeEditorSDK) {
   cesdk.setTranslations(PLUGIN_I18N_TRANSLATIONS);
   // Always prepend the registered component to the canvas menu order.
   cesdk.ui.unstable_setCanvasMenuOrder([
@@ -52,8 +51,8 @@ export function registerComponents(cesdk: CreativeEditorSDK) {
       const isActive = false // metadata.status === 'PROCESSED_TOGGLE_ON';
       const isLoading = metadata.status === 'PROCESSING';
 
-      const isPendingOrProcessing = metadata.status === 'PENDING' || metadata.status === 'PROCESSING';
-      const isDisabled = hasNoValidFill || isPendingOrProcessing
+      // const isPendingOrProcessing = metadata.status === 'PENDING' || metadata.status === 'PROCESSING';
+      const isDisabled = hasNoValidFill || isLoading
 
       let loadingProgress: number | undefined;
       if (isLoading && metadata.progress) {
@@ -62,17 +61,13 @@ export function registerComponents(cesdk: CreativeEditorSDK) {
       }
 
       Button(PLUGIN_CANVAS_MENU_COMPONENT_BUTTON_ID, {
-        label: PLUGIN_I18N_ID,
+        label: PLUGIN_ACTION_VECTORIZE_LABEL,
         icon: PLUGIN_ICON,
         isActive,
         isLoading,
         isDisabled,
         loadingProgress,
-        onClick: () => {
-          setPluginMetadata(cesdk.engine, id, {
-            status: 'PENDING'
-          });
-        }
+        onClick: () => executeAction(PLUGIN_ACTION_VECTORIZE_LABEL, { blockId: id })
       });
     }
   );

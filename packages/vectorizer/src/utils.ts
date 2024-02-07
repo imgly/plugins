@@ -58,7 +58,7 @@ export function isDuplicate(
   if (!engine.block.isValid(blockId)) return false;
   if (
     metadata.status === 'IDLE' ||
-    metadata.status === 'PENDING' ||
+    // metadata.status === 'PENDING' ||
     metadata.status === 'ERROR'
   )
     return false;
@@ -86,7 +86,7 @@ export function fixDuplicateMetadata(
   const metadata = getPluginMetadata(engine, blockId);
   if (
     metadata.status === 'IDLE' ||
-    metadata.status === 'PENDING' ||
+    // metadata.status === 'PENDING' ||
     metadata.status === 'ERROR'
   )
     return;
@@ -111,7 +111,9 @@ export function isMetadataConsistent(
   // as reset by returning true
   if (!engine.block.isValid(blockId)) return false;
   const metadata = getPluginMetadata(engine, blockId);
-  if (metadata.status === 'IDLE' || metadata.status === 'PENDING') return true;
+  if (metadata.status === 'IDLE'
+    //  || metadata.status === 'PENDING'
+  ) return true;
 
   if (!engine.block.hasFill(blockId)) return false;
   const fillId = engine.block.getFill(blockId);
@@ -145,8 +147,7 @@ export function isMetadataConsistent(
     // If we have already processed the image, we need to check if the source set
     // we need to check against both source sets, the removed and the initial
     if (
-      metadata.status === 'PROCESSED_TOGGLE_OFF' ||
-      metadata.status === 'PROCESSED_TOGGLE_ON'
+      metadata.status === 'PROCESSED'
     ) {
       const processedAsset = metadata.processedAsset;
       if (
@@ -161,10 +162,7 @@ export function isMetadataConsistent(
       }
     }
   } else {
-    if (
-      metadata.status === 'PROCESSED_TOGGLE_OFF' ||
-      metadata.status === 'PROCESSED_TOGGLE_ON'
-    ) {
+    if (metadata.status === 'PROCESSED') {
       if (
         imageFileURI !== metadata.initialImageFileURI &&
         imageFileURI !== metadata.processedAsset
@@ -180,59 +178,6 @@ export function isMetadataConsistent(
   return true;
 }
 
-/**
- * Toggle between the vectorized image and the original image if either
- * in the state "PROCESSED_TOGGLE_OFF" or "PROCESSED_TOGGLE_ON". Otherwise do
- * nothing.
- */
-export function toggleProcessedData(engine: CreativeEngine, blockId: number) {
-  const blockApi = engine.block;
-  if (!blockApi.hasFill(blockId)) return; // Nothing to recover (no fill anymore)
-  const fillId = blockApi.getFill(blockId);
-
-  const metadata = getPluginMetadata(engine, blockId);
-
-  if (metadata.status === 'PROCESSED_TOGGLE_OFF') {
-    setPluginMetadata(engine, blockId, {
-      ...metadata,
-      status: 'PROCESSED_TOGGLE_ON'
-    });
-
-    if (typeof metadata.processedAsset === 'string') {
-      blockApi.setString(
-        fillId,
-        'fill/image/imageFileURI',
-        metadata.processedAsset
-      );
-      blockApi.setSourceSet(fillId, 'fill/image/sourceSet', []);
-    } else {
-      blockApi.setSourceSet(
-        fillId,
-        'fill/image/sourceSet',
-        metadata.processedAsset
-      );
-    }
-
-    engine.editor.addUndoStep();
-  } else if (metadata.status === 'PROCESSED_TOGGLE_ON') {
-    setPluginMetadata(engine, blockId, {
-      ...metadata,
-      status: 'PROCESSED_TOGGLE_OFF'
-    });
-
-    blockApi.setString(
-      fillId,
-      'fill/image/imageFileURI',
-      metadata.initialImageFileURI
-    );
-    blockApi.setSourceSet(
-      fillId,
-      'fill/image/sourceSet',
-      metadata.initialSourceSet
-    );
-    engine.editor.addUndoStep();
-  }
-}
 
 /**
  * Recover the initial values to avoid the loading spinner and have the same
@@ -247,7 +192,9 @@ export function recoverInitialImageData(
 
   const metadata = getPluginMetadata(engine, blockId);
 
-  if (metadata.status === 'PENDING' || metadata.status === 'IDLE') {
+  if (
+    // metadata.status === 'PENDING' || 
+    metadata.status === 'IDLE') {
     return;
   }
 
@@ -299,6 +246,7 @@ function getValidFill(
 
 
 
+// These don't belong here
 
 export class Scheduler<T> {
   #queue?: Promise<T> = undefined
@@ -312,5 +260,22 @@ export class Scheduler<T> {
       })
     }
     return this.#queue
+  }
+}
+
+
+
+
+type ActionType = (params: any) => Promise<void>;
+const actions: Map<string, ActionType> = new Map();
+
+export function registerAction(engine: CreativeEngine, label: string, callback: (params: any) => Promise<void>) {
+  actions.set(label, callback);
+}
+
+export async function executeAction(label: string, params: any) {
+  const action = actions.get(label);
+  if (action) {
+    await action(params);
   }
 }

@@ -1,19 +1,20 @@
 import CreativeEditorSDK, { CreativeEngine } from '@cesdk/cesdk-js';
 
-import { PLUGIN_FEATURE_ID, PLUGIN_ID } from './constants';
+import { PLUGIN_FEATURE_ID, PLUGIN_ID, PLUGIN_ACTION_VECTORIZE_LABEL } from './constants';
 
-import { command } from './commands';
-import { registerComponents } from './ui';
+import { registerUIComponents } from './ui';
 
 import {
   clearPluginMetadata,
   fixDuplicateMetadata,
   getPluginMetadata,
   isDuplicate,
-  isMetadataConsistent
+  isMetadataConsistent,
+  registerAction
 } from './utils';
+import { vectorizeAction } from './actions';
 
-export interface PluginConfiguration { 
+export interface PluginConfiguration {
   // uploader ? 
 }
 
@@ -34,11 +35,6 @@ export default (pluginConfiguration: PluginConfiguration = {}) => {
           });
       });
     },
-
-    update() {
-      
-    },
-
     initializeUserInterface({ cesdk }: { cesdk: CreativeEditorSDK }) {
       cesdk.engine.event.subscribe([], async (events) => {
         events
@@ -47,9 +43,23 @@ export default (pluginConfiguration: PluginConfiguration = {}) => {
           .forEach((e) => { handleUpdateEvent(cesdk, e.block); });
       });
 
-      registerComponents(cesdk);
+
+      registerAction(
+        cesdk.engine,
+        PLUGIN_ACTION_VECTORIZE_LABEL,
+        async (params: any) => await vectorizeAction(cesdk, params)
+      );
+
+      registerUIComponents(cesdk);
+
+      // this is unclear to me. Should it be with the ui components?
       enableFeatures(cesdk);
-    }
+    },
+
+    update() {
+
+    },
+
   };
 };
 
@@ -61,25 +71,14 @@ async function handleUpdateEvent(cesdk: CreativeEditorSDK, blockId: number) {
   const metadata = getPluginMetadata(cesdk.engine, blockId);
 
   switch (metadata.status) {
-    case 'PENDING': {
-      if (
-        cesdk.feature.unstable_isEnabled(PLUGIN_FEATURE_ID, {
-          engine: cesdk.engine
-        })
-      ) {
-        command(cesdk, blockId);
-      }
-      break;
-    }
 
     case 'PROCESSING':
-    case 'PROCESSED_TOGGLE_OFF':
-    case 'PROCESSED_TOGGLE_ON': {
-      if (!isMetadataConsistent(cesdk.engine, blockId)) {
-        clearPluginMetadata(cesdk.engine, blockId);
+    case 'PROCESSED':{
+        if (!isMetadataConsistent(cesdk.engine, blockId)) {
+          clearPluginMetadata(cesdk.engine, blockId);
+        }
+        break;
       }
-      break;
-    }
 
     default: {
       // We do not care about other states
@@ -87,7 +86,7 @@ async function handleUpdateEvent(cesdk: CreativeEditorSDK, blockId: number) {
   }
 }
 
-
+// semantics are unclear when reading the function
 export function enableFeatures(cesdk: CreativeEditorSDK) {
   cesdk.feature.unstable_enable(PLUGIN_FEATURE_ID, ({ engine }) => {
     const selectedIds = engine.block.findAllSelected();
@@ -110,3 +109,4 @@ export function enableFeatures(cesdk: CreativeEditorSDK) {
     return false;
   });
 }
+

@@ -1,7 +1,7 @@
 import { type Source } from '@cesdk/cesdk-js';
 
 export type PluginStatusIdle = { status: 'IDLE' };
-export type PluginStatusPending = { status: 'PENDING' };
+// export type PluginStatusPending = { status: 'PENDING' };
 
 export type PluginStatusProcessing = {
   version: string;
@@ -22,7 +22,7 @@ export type PluginStatusProcessing = {
 
 export type PluginStatusProcessed = {
   version: string;
-  status: 'PROCESSED_TOGGLE_ON' | 'PROCESSED_TOGGLE_OFF';
+  status: 'PROCESSED'
 
   initialImageFileURI: string;
   initialSourceSet: Source[];
@@ -47,7 +47,6 @@ export type PluginStatusError = {
 export type PluginMetadata =
   | PluginStatusIdle
   | PluginStatusError
-  | PluginStatusPending
   | PluginStatusProcessing
   | PluginStatusProcessed;
 
