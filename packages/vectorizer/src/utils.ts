@@ -1,13 +1,33 @@
 import CreativeEditorSDK, { CreativeEngine } from '@cesdk/cesdk-js';
 import isEqual from 'lodash/isEqual';
 
-import { PLUGIN_ID } from './constants';
+import { PLUGIN_ID } from './manifest';
 import {
   PluginMetadata,
   PluginStatusError,
   PluginStatusProcessed,
   PluginStatusProcessing
 } from './types';
+
+
+/**
+ * Checks if a block is supported by the given CreativeEngine.
+ * @param engine - The CreativeEngine instance.
+ * @param blockId - The ID of the block to check.
+ * @returns A boolean indicating whether the block is supported or not.
+ */
+export const isBlockSupported = (engine: CreativeEngine, blockId: number) => {
+  if (engine.block.hasFill(blockId)) {
+    const fillId = engine.block.getFill(blockId);
+    const fillType = engine.block.getType(fillId);
+    if (fillType !== '//ly.img.ubq/fill/image') {
+      return false;
+    }
+    return true
+  }
+
+  return false;
+}
 
 /**
  * Sets the metadata for the plugin state.
@@ -270,6 +290,7 @@ type ActionType = (params: any) => Promise<void>;
 const actions: Map<string, ActionType> = new Map();
 
 export function registerAction(engine: CreativeEngine, label: string, callback: (params: any) => Promise<void>) {
+  engine
   actions.set(label, callback);
 }
 
@@ -279,3 +300,5 @@ export async function executeAction(label: string, params: any) {
     await action(params);
   }
 }
+// @ts-ignore
+globalThis.cesdk_actions = actions; // for debugging

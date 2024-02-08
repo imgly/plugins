@@ -7,7 +7,7 @@ import {
   PLUGIN_ACTION_VECTORIZE_LABEL,
   PLUGIN_I18N_TRANSLATIONS,
   PLUGIN_ICON
-} from './constants';
+} from './manifest';
 import {
   executeAction,
   getPluginMetadata,
@@ -26,48 +26,58 @@ export function registerUIComponents(cesdk: CreativeEditorSDK) {
   cesdk.ui.unstable_registerComponent(
     PLUGIN_CANVAS_MENU_COMPONENT_ID,
     ({ builder: { Button }, engine }) => {
-      if (
-        !cesdk.feature.unstable_isEnabled(PLUGIN_FEATURE_ID, {
-          engine
-        })
-      ) {
-        return;
+      
+      // @DanielHauschildt This should better have [blockIds] as a parameter
+      if (!cesdk.feature.unstable_isEnabled(PLUGIN_FEATURE_ID, { engine })) { return; }
+
+      const selected = engine.block.findAllSelected();
+
+      const actions: Array<() => void> = []
+
+      let anyIsLoading = false
+      let anyHasValidFill = false
+      let allCurrentProgress = 0
+      let allTotalProgress = 0
+      for (const id of selected) {
+        if (!cesdk.engine.block.hasFill(id)) return;
+        const fillId = cesdk.engine.block.getFill(id);
+        const fileUri = engine.block.getString(fillId, 'fill/image/imageFileURI');
+        const sourceSet = engine.block.getSourceSet(
+          fillId,
+          'fill/image/sourceSet'
+        );
+
+        const metadata = getPluginMetadata(cesdk.engine, id);
+
+
+        const isLoading = metadata.status === 'PROCESSING';
+        anyIsLoading ||= isLoading;
+        if (isLoading && metadata.progress) {
+          const { current, total } = metadata.progress;
+          allTotalProgress += total
+          allCurrentProgress += current
+        }
+        const hasValidFill = (sourceSet.length > 0 || fileUri !== '')// const isPendingOrProcessing = metadata.status === 'PENDING' || metadata.status === 'PROCESSING';
+        anyHasValidFill ||= hasValidFill;
+        actions.push(() => executeAction(PLUGIN_ACTION_VECTORIZE_LABEL, { blockId: id }))
+        
       }
 
-      const [id] = engine.block.findAllSelected();
-      if (!cesdk.engine.block.hasFill(id)) return;
+      const isDisabled = anyIsLoading || !anyHasValidFill;
 
-      const fillId = cesdk.engine.block.getFill(id);
-      const fileUri = engine.block.getString(fillId, 'fill/image/imageFileURI');
-      const sourceSet = engine.block.getSourceSet(
-        fillId,
-        'fill/image/sourceSet'
-      );
-
-      const hasNoValidFill = !(sourceSet.length > 0 || fileUri !== '')
-
-      const metadata = getPluginMetadata(cesdk.engine, id);
-
-      const isActive = false // metadata.status === 'PROCESSED_TOGGLE_ON';
-      const isLoading = metadata.status === 'PROCESSING';
-
-      // const isPendingOrProcessing = metadata.status === 'PENDING' || metadata.status === 'PROCESSING';
-      const isDisabled = hasNoValidFill || isLoading
-
-      let loadingProgress: number | undefined;
-      if (isLoading && metadata.progress) {
-        const { current, total } = metadata.progress;
-        loadingProgress = (current / total) * 100;
-      }
+      const loadingProgress = 0 // (allCurrentProgress / allTotalProgress) * 100;
+      console.log('actions', actions)
+      console.log('anyIsLoading', anyIsLoading)
+      console.log('isDisabled', isDisabled)
 
       Button(PLUGIN_CANVAS_MENU_COMPONENT_BUTTON_ID, {
         label: PLUGIN_ACTION_VECTORIZE_LABEL,
         icon: PLUGIN_ICON,
-        isActive,
-        isLoading,
+        isActive: false,
+        isLoading: anyIsLoading,
         isDisabled,
         loadingProgress,
-        onClick: () => executeAction(PLUGIN_ACTION_VECTORIZE_LABEL, { blockId: id })
+        onClick: () => actions.map(action => action())
       });
     }
   );

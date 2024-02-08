@@ -1,6 +1,6 @@
 import CreativeEditorSDK, { CreativeEngine } from '@cesdk/cesdk-js';
 
-import { PLUGIN_FEATURE_ID, PLUGIN_ID, PLUGIN_ACTION_VECTORIZE_LABEL } from './constants';
+import { PLUGIN_FEATURE_ID, PLUGIN_ID, PLUGIN_ACTION_VECTORIZE_LABEL } from './manifest';
 
 import { registerUIComponents } from './ui';
 
@@ -8,6 +8,7 @@ import {
   clearPluginMetadata,
   fixDuplicateMetadata,
   getPluginMetadata,
+  isBlockSupported,
   isDuplicate,
   isMetadataConsistent,
   registerAction
@@ -73,12 +74,12 @@ async function handleUpdateEvent(cesdk: CreativeEditorSDK, blockId: number) {
   switch (metadata.status) {
 
     case 'PROCESSING':
-    case 'PROCESSED':{
-        if (!isMetadataConsistent(cesdk.engine, blockId)) {
-          clearPluginMetadata(cesdk.engine, blockId);
-        }
-        break;
+    case 'PROCESSED': {
+      if (!isMetadataConsistent(cesdk.engine, blockId)) {
+        clearPluginMetadata(cesdk.engine, blockId);
       }
+      break;
+    }
 
     default: {
       // We do not care about other states
@@ -90,23 +91,13 @@ async function handleUpdateEvent(cesdk: CreativeEditorSDK, blockId: number) {
 export function enableFeatures(cesdk: CreativeEditorSDK) {
   cesdk.feature.unstable_enable(PLUGIN_FEATURE_ID, ({ engine }) => {
     const selectedIds = engine.block.findAllSelected();
-    if (selectedIds.length !== 1) {
-      return false;
-    }
-    const [selectedId] = selectedIds;
+    if (selectedIds.length === 0) return false;
 
-    if (engine.block.hasFill(selectedId)) {
-      const fillId = engine.block.getFill(selectedId);
-      const fillType = engine.block.getType(fillId);
-
-      if (fillType !== '//ly.img.ubq/fill/image') {
-        return false;
-      }
-      return true
-
-    }
-
-    return false;
+    // multiselection case
+    const allBlocksSupportPlugin = selectedIds
+      .map((id) => isBlockSupported(engine, id))
+      .reduce((val, acc) => val && acc, true);
+    return allBlocksSupportPlugin
   });
 }
 

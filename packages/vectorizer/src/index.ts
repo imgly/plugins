@@ -1,6 +1,6 @@
 import plugin, { type PluginConfiguration } from './plugin';
 
-import { PLUGIN_ID } from './constants';
+import { PLUGIN_ID } from './manifest';
 
 const Plugin = (pluginConfiguration?: PluginConfiguration) => ({
   name: PLUGIN_ID,

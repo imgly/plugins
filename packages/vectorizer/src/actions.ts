@@ -2,12 +2,11 @@ import type CreativeEditorSDK from '@cesdk/cesdk-js';
 
 import {
   getPluginMetadata,
+  isBlockSupported,
   isMetadataConsistent,
   recoverInitialImageData,
   setPluginMetadata
 } from './utils';
-
-import { PLUGIN_FEATURE_ID } from './constants';
 
 import { runInWorker } from './worker.shared';
 /**
@@ -19,18 +18,26 @@ import { runInWorker } from './worker.shared';
  */
 export async function vectorizeAction(
   cesdk: CreativeEditorSDK,
-  params: { blockId: number }
+  params: { blockId: number } 
 ) {
-  const {blockId} = params;
-
-
-  const isFeatureEnabled = cesdk.feature.unstable_isEnabled(PLUGIN_FEATURE_ID, {
-    engine: cesdk.engine
-  })
-  if (!isFeatureEnabled) return;
   const uploader = cesdk.unstable_upload.bind(cesdk)
   const engine = cesdk.engine; // the only function that needs the ui is the upload function
   const blockApi = engine.block;
+
+  let { blockId } = params?? {};
+  if (blockId === undefined) {
+    const selected = engine.block.findAllSelected()
+    if (selected.length !== 1) {
+      return;
+    }
+    blockId = selected[0];
+  }
+  const isValid = engine.block.isValid(blockId)
+  if (!isValid) return
+
+  if (!isBlockSupported(engine, blockId)) return;
+
+
   if (!blockApi.hasFill(blockId))
     throw new Error('Block has no fill to vectorize');
 
@@ -111,7 +118,7 @@ export async function vectorizeAction(
     )
       return;
 
-    const url = uploadedAssets.meta?.uri;
+    const url = uploadedAssets.meta?.uri;;
     if (url == null) {
       throw new Error('Could not upload vectorized image');
     }
@@ -125,9 +132,11 @@ export async function vectorizeAction(
       status: 'PROCESSED',
       processedAsset: url
     });
+
     blockApi.setString(fillId, 'fill/image/imageFileURI', url);
     // Finally, create an undo step
     engine.editor.addUndoStep();
+
   } catch (error) {
     if (engine.block.isValid(blockId)) {
       setPluginMetadata(engine, blockId, {
