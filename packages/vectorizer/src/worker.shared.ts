@@ -3,6 +3,7 @@ export interface MessageBody {
     data?: any;
     error?: Error
 }
+// 
 
 
 export const runInWorker = (uri: string) => new Promise<Blob>((resolve, reject) => {
@@ -14,7 +15,7 @@ export const runInWorker = (uri: string) => new Promise<Blob>((resolve, reject) 
       reject(msg.error)
       return;
     }
-    resolve(new Blob([msg.data]))
+    resolve(msg.data)
     // when done terminate
     worker.terminate()
   }

@@ -26,7 +26,7 @@ export function registerUIComponents(cesdk: CreativeEditorSDK) {
   cesdk.ui.unstable_registerComponent(
     PLUGIN_CANVAS_MENU_COMPONENT_ID,
     ({ builder: { Button }, engine }) => {
-      
+
       // @DanielHauschildt This should better have [blockIds] as a parameter
       if (!cesdk.feature.unstable_isEnabled(PLUGIN_FEATURE_ID, { engine })) { return; }
 
@@ -60,15 +60,13 @@ export function registerUIComponents(cesdk: CreativeEditorSDK) {
         const hasValidFill = (sourceSet.length > 0 || fileUri !== '')// const isPendingOrProcessing = metadata.status === 'PENDING' || metadata.status === 'PROCESSING';
         anyHasValidFill ||= hasValidFill;
         actions.push(() => executeAction(PLUGIN_ACTION_VECTORIZE_LABEL, { blockId: id }))
-        
+
       }
 
       const isDisabled = anyIsLoading || !anyHasValidFill;
 
-      const loadingProgress = 0 // (allCurrentProgress / allTotalProgress) * 100;
-      console.log('actions', actions)
-      console.log('anyIsLoading', anyIsLoading)
-      console.log('isDisabled', isDisabled)
+      const loadingProgress = 0;// (allCurrentProgress / allTotalProgress) * 100;
+      // console.log((allCurrentProgress / allTotalProgress) * 100)
 
       Button(PLUGIN_CANVAS_MENU_COMPONENT_BUTTON_ID, {
         label: PLUGIN_ACTION_VECTORIZE_LABEL,

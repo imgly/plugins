@@ -3,8 +3,8 @@
   "name": "imgly-plugins",
   "version": "0.0.0",
   "workspaces": [
-    "packages/*",
-    "examples/*"
+    "examples/*",
+    "packages/*"
   ],
   "scripts": {
     "build": "turbo run build --force",

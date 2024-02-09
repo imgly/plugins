@@ -29,8 +29,6 @@ export type PluginStatusProcessed = {
 
   blockId: number;
   fillId: number;
-
-  processedAsset: string | Source[];
 };
 
 export type PluginStatusError = {

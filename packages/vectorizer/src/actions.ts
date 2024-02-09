@@ -9,6 +9,7 @@ import {
 } from './utils';
 
 import { runInWorker } from './worker.shared';
+import { createVectorPathBlocks } from './cesdk+utils';
 /**
  * Apply the vectorization process to the image.
  */
@@ -18,13 +19,13 @@ import { runInWorker } from './worker.shared';
  */
 export async function vectorizeAction(
   cesdk: CreativeEditorSDK,
-  params: { blockId: number } 
+  params: { blockId: number }
 ) {
   const uploader = cesdk.unstable_upload.bind(cesdk)
   const engine = cesdk.engine; // the only function that needs the ui is the upload function
   const blockApi = engine.block;
 
-  let { blockId } = params?? {};
+  let { blockId } = params ?? {};
   if (blockId === undefined) {
     const selected = engine.block.findAllSelected()
     if (selected.length !== 1) {
@@ -99,41 +100,79 @@ export async function vectorizeAction(
     )
       return;
 
-    const pathname = new URL(uriToProcess).pathname;
-    const parts = pathname.split('/');
-    const filename = parts[parts.length - 1];
 
-    const uploadedAssets = await uploader(
-      new File([vectorized], filename, { type: vectorized.type }),
-      () => {
-        // TODO Delegate process to UI component
+    if (vectorized.type.length === 0 || vectorized.type === 'image/svg+xml') {
+      const pathname = new URL(uriToProcess).pathname;
+      const parts = pathname.split('/');
+      const filename = parts[parts.length - 1];
+
+      const uploadedAssets = await uploader(
+        new File([vectorized], filename, { type: vectorized.type }),
+        () => {
+          // TODO Delegate process to UI component
+        }
+      );
+
+      // Check for externally changed state while we were uploading and
+      // do not proceed if the state was reset.
+      if (
+        getPluginMetadata(engine, blockId).status !== 'PROCESSING' ||
+        !isMetadataConsistent(engine, blockId)
+      )
+        return;
+
+      const url = uploadedAssets.meta?.uri;;
+      if (url == null) {
+        throw new Error('Could not upload vectorized image');
       }
-    );
 
-    // Check for externally changed state while we were uploading and
-    // do not proceed if the state was reset.
-    if (
-      getPluginMetadata(engine, blockId).status !== 'PROCESSING' ||
-      !isMetadataConsistent(engine, blockId)
-    )
-      return;
+      setPluginMetadata(engine, blockId, {
+        version: PLUGIN_VERSION,
+        initialSourceSet,
+        initialImageFileURI,
+        blockId,
+        fillId,
+        status: 'PROCESSED',
+        // processedAsset: url
+      });
 
-    const url = uploadedAssets.meta?.uri;;
-    if (url == null) {
-      throw new Error('Could not upload vectorized image');
+      blockApi.setString(fillId, 'fill/image/imageFileURI', url);
+    } else if (vectorized.type === 'application/json') {
+      const json = await vectorized.text()
+      const blocks = JSON.parse(json)
+      const groupId = createVectorPathBlocks(engine, blocks)
+      const parentId = engine.block.getParent(blockId)!
+      engine.block.appendChild(parentId, groupId);
+
+
+      const origWidth = engine.block.getFrameWidth(blockId)
+      const origHeight = engine.block.getFrameHeight(blockId)
+      const origRotation = engine.block.getRotation(blockId)
+      const origX = engine.block.getPositionX(blockId)
+      const origY = engine.block.getPositionY(blockId)
+      const groupWidth = engine.block.getFrameWidth(groupId)
+      const groupHeight = engine.block.getFrameHeight(groupId)
+      engine.block.setPositionX(groupId, origX)
+      engine.block.setPositionY(groupId, origY)
+      engine.block.setRotation(groupId, origRotation)
+      engine.block.scale(groupId, origWidth / groupWidth)
+      //remove original block
+      engine.block.destroy(blockId)
+      
+      // must be assigned to a scene to work... why?
+
+
+      blockApi.setString(fillId, 'fill/image/imageFileURI', initialImageFileURI);
+
+      setPluginMetadata(engine, blockId, {
+        version: PLUGIN_VERSION,
+        initialSourceSet,
+        initialImageFileURI,
+        blockId,
+        fillId,
+        status: 'PROCESSED',
+      });
     }
-
-    setPluginMetadata(engine, blockId, {
-      version: PLUGIN_VERSION,
-      initialSourceSet,
-      initialImageFileURI,
-      blockId,
-      fillId,
-      status: 'PROCESSED',
-      processedAsset: url
-    });
-
-    blockApi.setString(fillId, 'fill/image/imageFileURI', url);
     // Finally, create an undo step
     engine.editor.addUndoStep();
 

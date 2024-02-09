@@ -7,6 +7,11 @@ const packageJson = JSON.parse(
   await readFile(new URL('../package.json', import.meta.url))
 );
 
+
+const dependencies = Object.keys(packageJson.dependencies)
+const peerDependencies = Object.keys(packageJson.peerDependencies)
+const externals = [...dependencies, ...peerDependencies]
+
 console.log(
   chalk.yellow('Building version: '),
   chalk.green(packageJson.version)
@@ -21,7 +26,7 @@ const configs = [
     minify: true,
     bundle: true,
     sourcemap: true,
-    external: ['@cesdk/cesdk-js'],
+    external: externals,
     platform: 'node',
     format: 'esm',
     outdir: 'dist',

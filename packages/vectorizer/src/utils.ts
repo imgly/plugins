@@ -169,9 +169,9 @@ export function isMetadataConsistent(
     if (
       metadata.status === 'PROCESSED'
     ) {
-      const processedAsset = metadata.processedAsset;
+      // const processedAsset = metadata.processedAsset;
       if (
-        !isEqual(sourceSet, processedAsset) &&
+        // !isEqual(sourceSet, processedAsset) &&
         !isEqual(sourceSet, initialSourceSet)
       ) {
         return false;
@@ -184,8 +184,8 @@ export function isMetadataConsistent(
   } else {
     if (metadata.status === 'PROCESSED') {
       if (
-        imageFileURI !== metadata.initialImageFileURI &&
-        imageFileURI !== metadata.processedAsset
+        imageFileURI !== metadata.initialImageFileURI 
+        // &&imageFileURI !== metadata.processedAsset
       ) {
         return false;
       }

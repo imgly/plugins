@@ -23,11 +23,11 @@
   },
   "source": "./src/index.ts",
   "module": "./dist/index.mjs",
-  "types": "./dist/index.d.ts",
+  "types": "./types/index.d.ts",
   "exports": {
     ".": {
       "import": "./dist/index.mjs",
-      "types": "./dist/index.d.ts"
+      "types": "./types/index.d.ts"
     }
   },
   "homepage": "https://img.ly/products/creative-sdk",
@@ -36,15 +36,16 @@
     "README.md",
     "CHANGELOG.md",
     "dist/",
+    "types/",
     "bin/"
   ],
   "scripts": {
     "start": "npm run watch",
-    "clean": "npx rimraf dist",
-    "build": "npm run clean && node scripts/build.mjs && yarn run types:create",
-    "dev": "npm run clean && node scripts/watch.mjs",
-    "publish:latest": "npm run build && npm publish --tag latest --access public",
-    "publish:next": "npm run build && npm publish --tag next --access public",
+    "clean": "npx rimraf dist && npx rimraf types",
+    "build": "node scripts/build.mjs && yarn run types:create",
+    "dev": "node scripts/watch.mjs",
+    "publish:latest": "npm run clean && npm run build && npm publish --tag latest --access public",
+    "publish:next": "npm run clean && npm run build && npm publish --tag next --access public",
     "check:all": "concurrently -n lint,type,pretty \"yarn check:lint\" \"yarn check:type\" \"yarn check:pretty\"",
     "check:lint": "eslint --max-warnings 0 './src/**/*.{ts,tsx}'",
     "check:pretty": "prettier --list-different './src/**/*.{ts,tsx}'",
