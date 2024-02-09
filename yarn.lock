@@ -409,10 +409,10 @@
     onnxruntime-web "~1.17.0"
     zod "~3.21.0"
 
-"@imgly/vectorizer@~0.1.0-rc.6":
-  version "0.1.0-rc0"
-  resolved "https://registry.yarnpkg.com/@imgly/vectorizer/-/vectorizer-0.1.0-rc0.tgz#61fe4001a93bf486d654fa0a40e9e2b41778e356"
-  integrity sha512-PpJaATDiqR021xDZjGR3wAJ/dU8mk4/2iLtP9WjzpdqvJ78sKtqThhsTZfe7eZMN1MdM9+0ZcSKqZolstBLGLA==
+"@imgly/vectorizer@~0.1.0-rc6":
+  version "0.1.0-rc6"
+  resolved "https://registry.yarnpkg.com/@imgly/vectorizer/-/vectorizer-0.1.0-rc6.tgz#509bec4e78d2654e4e3413c19e6e462d9bc62c7f"
+  integrity sha512-Q3QbRfB74wHZFB/TojJOJsSOAR8ZkV/mLXD8AztcTrwG1dVOPYfrcsrqbFLnHNz7XSxB8xCvSzdZOtylgXXugg==
   dependencies:
     "@types/lodash" "^4.14.195"
     "@types/node" "^20.3.1"
