@@ -21,8 +21,6 @@ export interface PluginConfiguration {
   // uploader ? 
 }
 
-
-
 export { Manifest };
 
 export default (pluginConfiguration: PluginConfiguration = {}) => {
@@ -30,6 +28,10 @@ export default (pluginConfiguration: PluginConfiguration = {}) => {
     id: PLUGIN_ID,
     version: PLUGIN_VERSION,
     initialize(engine: CreativeEngineWithPolyfills) {
+      
+    },
+    initializeUserInterface({ cesdk }: { cesdk: CreativeEditorSDK }) {
+      const engine = cesdk.engine as CreativeEngineWithPolyfills;
       polyfillEngineWithCommands(engine);
       console.log("checking if engine has polyfill_commands", engine.polyfill_commands? "yes": "no")
       engine.event.subscribe([], async (events) => {
@@ -45,10 +47,7 @@ export default (pluginConfiguration: PluginConfiguration = {}) => {
             }
           });
       });
-    },
-    initializeUserInterface({ cesdk }: { cesdk: CreativeEditorSDK }) {
-      const engine = cesdk.engine as CreativeEngineWithPolyfills;
-      polyfillEngineWithCommands(engine);
+
       console.log("checking if engine has polyfill_commands", engine.polyfill_commands? "yes": "no")
 
       engine.event.subscribe([], async (events) => {
@@ -81,8 +80,6 @@ export default (pluginConfiguration: PluginConfiguration = {}) => {
         cesdk.ui.unstable_registerComponent(componentId, component);
       })
 
-
-
       // Always prepend the registered component to the canvas menu order.
       console.info("Changing canvas menu order")
       cesdk.ui.unstable_setCanvasMenuOrder([
@@ -91,6 +88,8 @@ export default (pluginConfiguration: PluginConfiguration = {}) => {
       ]);
     },
 
+
+    // maybe this should be just engint.event.onUpdate()
     update() {
 
     },

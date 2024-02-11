@@ -160,6 +160,7 @@ const vectorize = async (cesdk: CreativeEditorSDK, params: { blockId: number }) 
       const origX = engine.block.getPositionX(blockId)
       const origY = engine.block.getPositionY(blockId)
       const origSelected = engine.block.isSelected(blockId)
+      
       switch (engine.block.getType(blockId)) {
         case "//ly.img.ubq/page":
           {

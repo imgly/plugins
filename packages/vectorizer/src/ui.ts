@@ -1,7 +1,5 @@
-import { CreativeEngine } from '@cesdk/cesdk-js';
-
 import {
-    PLUGIN_CANVAS_MENU_COMPONENT_BUTTON_ID,
+    PLUGIN_COMPONENT_BUTTON_ID,
     PLUGIN_CANVAS_MENU_COMPONENT_ID,
     PLUGIN_ACTION_VECTORIZE_LABEL,
     PLUGIN_ICON
@@ -18,45 +16,24 @@ const button = (params: any) => {
     const builder = params.builder!
 
     const selected = engine.block.findAllSelected();
-    const isAnyBlockSupported = selected
-        .reduce((val, acc) => val || isBlockSupported(engine, acc), false)
-    if (!isAnyBlockSupported) return;
+    const candidates = selected.filter(id => isBlockSupported(engine, id))
+    if (candidates.length === 0) return;
 
-    const actions: Array<() => void> = []
-
-    let anyIsLoading = false
-
-    let allCurrentProgress = 0
-    let allTotalProgress = 1
-
-
-    for (const id of selected) {
-        if (!engine.block.hasFill(id)) return;
+    let isLoading = candidates.some(id => {
         const metadata = getPluginMetadata(engine, id);
-        const isLoading = metadata.status === 'PROCESSING';
-        anyIsLoading ||= isLoading;
-        if (isLoading && metadata.progress) {
-            const { current, total } = metadata.progress;
-            allTotalProgress += total
-            allCurrentProgress += current
-        }
-
-        actions.push(() => engine.polyfill_commands?.executeCommand(PLUGIN_ACTION_VECTORIZE_LABEL, { blockId: id }))
-    }
-
+        return metadata.status === 'PROCESSING'
+    })
     
-
     const loadingProgress = undefined
-    // console.log((allCurrentProgress / allTotalProgress) * 100)
 
-    builder.Button(PLUGIN_CANVAS_MENU_COMPONENT_BUTTON_ID, {
+    builder.Button(PLUGIN_COMPONENT_BUTTON_ID, {
         label: PLUGIN_ACTION_VECTORIZE_LABEL,
         icon: PLUGIN_ICON,
         isActive: false,
-        isLoading: anyIsLoading,
-        isDisabled: anyIsLoading,
+        isLoading: isLoading,
+        isDisabled: isLoading,
         loadingProgress,
-        onClick: () => actions.map(action => action())
+        onClick: () => candidates.forEach(id => engine.polyfill_commands?.executeCommand(PLUGIN_ACTION_VECTORIZE_LABEL, { blockId: id }))
     });
 }
 

@@ -19,8 +19,8 @@ import {
 export const isBlockSupported = (engine: CreativeEngine, blockId: number) => {
   const blockType = engine.block.getType(blockId);
   if (blockType === "//ly.img.ubq/page") return false;  // There is some bug with the page block
-  return true;
   
+
   if (engine.block.hasFill(blockId)) {
     const fillId = engine.block.getFill(blockId);
     const fillType = engine.block.getType(fillId);
