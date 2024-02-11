@@ -1,82 +1,65 @@
-import type CreativeEditorSDK from '@cesdk/cesdk-js';
+import { CreativeEngine } from '@cesdk/cesdk-js';
 
 import {
-  PLUGIN_CANVAS_MENU_COMPONENT_BUTTON_ID,
-  PLUGIN_CANVAS_MENU_COMPONENT_ID,
-  PLUGIN_FEATURE_ID,
-  PLUGIN_ACTION_VECTORIZE_LABEL,
-  PLUGIN_I18N_TRANSLATIONS,
-  PLUGIN_ICON
-} from './manifest';
+    PLUGIN_CANVAS_MENU_COMPONENT_BUTTON_ID,
+    PLUGIN_CANVAS_MENU_COMPONENT_ID,
+    PLUGIN_ACTION_VECTORIZE_LABEL,
+    PLUGIN_ICON
+} from './utils/constants';
+
 import {
-  executeAction,
-  getPluginMetadata,
-} from './utils';
+    getPluginMetadata,
+    isBlockSupported,
+} from './utils/utils';
+import { CreativeEngineWithPolyfills } from './utils/polyfills';
 
-/**
- * Registers the components that can be used to vectorize a block.
- */
-export function registerUIComponents(cesdk: CreativeEditorSDK) {
-  cesdk.setTranslations(PLUGIN_I18N_TRANSLATIONS);
-  // Always prepend the registered component to the canvas menu order.
-  cesdk.ui.unstable_setCanvasMenuOrder([
-    PLUGIN_CANVAS_MENU_COMPONENT_ID,
-    ...cesdk.ui.unstable_getCanvasMenuOrder()
-  ]);
-  cesdk.ui.unstable_registerComponent(
-    PLUGIN_CANVAS_MENU_COMPONENT_ID,
-    ({ builder: { Button }, engine }) => {
+const button = (params: any) => {
+    const engine = params.engine! as CreativeEngineWithPolyfills
+    const builder = params.builder!
 
-      // @DanielHauschildt This should better have [blockIds] as a parameter
-      if (!cesdk.feature.unstable_isEnabled(PLUGIN_FEATURE_ID, { engine })) { return; }
+    const selected = engine.block.findAllSelected();
+    const isAnyBlockSupported = selected
+        .reduce((val, acc) => val || isBlockSupported(engine, acc), false)
+    if (!isAnyBlockSupported) return;
 
-      const selected = engine.block.findAllSelected();
+    const actions: Array<() => void> = []
 
-      const actions: Array<() => void> = []
+    let anyIsLoading = false
 
-      let anyIsLoading = false
-      let anyHasValidFill = false
-      let allCurrentProgress = 0
-      let allTotalProgress = 0
-      for (const id of selected) {
-        if (!cesdk.engine.block.hasFill(id)) return;
-        const fillId = cesdk.engine.block.getFill(id);
-        const fileUri = engine.block.getString(fillId, 'fill/image/imageFileURI');
-        const sourceSet = engine.block.getSourceSet(
-          fillId,
-          'fill/image/sourceSet'
-        );
-
-        const metadata = getPluginMetadata(cesdk.engine, id);
+    let allCurrentProgress = 0
+    let allTotalProgress = 1
 
 
+    for (const id of selected) {
+        if (!engine.block.hasFill(id)) return;
+        const metadata = getPluginMetadata(engine, id);
         const isLoading = metadata.status === 'PROCESSING';
         anyIsLoading ||= isLoading;
         if (isLoading && metadata.progress) {
-          const { current, total } = metadata.progress;
-          allTotalProgress += total
-          allCurrentProgress += current
+            const { current, total } = metadata.progress;
+            allTotalProgress += total
+            allCurrentProgress += current
         }
-        const hasValidFill = (sourceSet.length > 0 || fileUri !== '')// const isPendingOrProcessing = metadata.status === 'PENDING' || metadata.status === 'PROCESSING';
-        anyHasValidFill ||= hasValidFill;
-        actions.push(() => executeAction(PLUGIN_ACTION_VECTORIZE_LABEL, { blockId: id }))
 
-      }
+        actions.push(() => engine.polyfill_commands?.executeCommand(PLUGIN_ACTION_VECTORIZE_LABEL, { blockId: id }))
+    }
 
-      const isDisabled = anyIsLoading || !anyHasValidFill;
+    
 
-      const loadingProgress = 0;// (allCurrentProgress / allTotalProgress) * 100;
-      // console.log((allCurrentProgress / allTotalProgress) * 100)
+    const loadingProgress = undefined
+    // console.log((allCurrentProgress / allTotalProgress) * 100)
 
-      Button(PLUGIN_CANVAS_MENU_COMPONENT_BUTTON_ID, {
+    builder.Button(PLUGIN_CANVAS_MENU_COMPONENT_BUTTON_ID, {
         label: PLUGIN_ACTION_VECTORIZE_LABEL,
         icon: PLUGIN_ICON,
         isActive: false,
         isLoading: anyIsLoading,
-        isDisabled,
+        isDisabled: anyIsLoading,
         loadingProgress,
         onClick: () => actions.map(action => action())
-      });
-    }
-  );
+    });
 }
+
+export default {
+    [PLUGIN_CANVAS_MENU_COMPONENT_ID]: button
+} // end of export default

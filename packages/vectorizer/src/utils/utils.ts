@@ -1,7 +1,7 @@
 import CreativeEditorSDK, { CreativeEngine } from '@cesdk/cesdk-js';
 import isEqual from 'lodash/isEqual';
 
-import { PLUGIN_ID } from './manifest';
+import { PLUGIN_ID } from './constants';
 import {
   PluginMetadata,
   PluginStatusError,
@@ -17,6 +17,10 @@ import {
  * @returns A boolean indicating whether the block is supported or not.
  */
 export const isBlockSupported = (engine: CreativeEngine, blockId: number) => {
+  const blockType = engine.block.getType(blockId);
+  if (blockType === "//ly.img.ubq/page") return false;  // There is some bug with the page block
+  return true;
+  
   if (engine.block.hasFill(blockId)) {
     const fillId = engine.block.getFill(blockId);
     const fillType = engine.block.getType(fillId);
@@ -284,21 +288,12 @@ export class Scheduler<T> {
 }
 
 
-
-
-type ActionType = (params: any) => Promise<void>;
-const actions: Map<string, ActionType> = new Map();
-
-export function registerAction(engine: CreativeEngine, label: string, callback: (params: any) => Promise<void>) {
-  engine
-  actions.set(label, callback);
+/**
+ * Generates a unique filename.
+ * @returns A string representing the unique filename.
+ */
+export function generateUniqueFilename(): string {
+  const timestamp = Date.now();
+  const randomString = Math.random().toString(36).substring(2, 8);
+  return `${timestamp}_${randomString}`;
 }
-
-export async function executeAction(label: string, params: any) {
-  const action = actions.get(label);
-  if (action) {
-    await action(params);
-  }
-}
-// @ts-ignore
-globalThis.cesdk_actions = actions; // for debugging

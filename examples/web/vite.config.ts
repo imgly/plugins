@@ -8,7 +8,8 @@ import { createLogger } from "./vite/logger";
 export default defineConfig({
   plugins: [react()],
   build: {
-    chunkSizeWarningLimit: 4096
+    chunkSizeWarningLimit: 4096,
+    sourcemap: true
   },
   worker: {
     format: "es" // Default was "iife" but then import.meta.url for importing worker does not worker

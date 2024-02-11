@@ -1,11 +1,16 @@
-import { type PluginConfiguration } from './plugin';
-declare const Plugin: (pluginConfiguration?: PluginConfiguration) => {
-    initialize(engine: import("@cesdk/cesdk-js").CreativeEngine): void;
+import CreativeEditorSDK from '@cesdk/cesdk-js';
+import Manifest from './manifest';
+import { CreativeEngineWithPolyfills } from './utils/polyfills';
+export interface PluginConfiguration {
+}
+export { Manifest };
+declare const _default: (pluginConfiguration?: PluginConfiguration) => {
+    id: string;
+    version: string;
+    initialize(engine: CreativeEngineWithPolyfills): void;
     initializeUserInterface({ cesdk }: {
-        cesdk: import("@cesdk/cesdk-js").default;
+        cesdk: CreativeEditorSDK;
     }): void;
     update(): void;
-    name: string;
-    version: string;
 };
-export default Plugin;
+export default _default;

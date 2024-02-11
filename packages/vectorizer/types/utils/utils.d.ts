@@ -1,5 +1,5 @@
 import { CreativeEngine } from '@cesdk/cesdk-js';
-import { PluginMetadata } from './utils/types';
+import { PluginMetadata } from './types';
 /**
  * Checks if a block is supported by the given CreativeEngine.
  * @param engine - The CreativeEngine instance.
@@ -48,5 +48,3 @@ export declare class Scheduler<T> {
     #private;
     schedule(task: () => Promise<T>): Promise<T>;
 }
-export declare function registerAction(engine: CreativeEngine, label: string, callback: (params: any) => Promise<void>): void;
-export declare function executeAction(label: string, params: any): Promise<void>;

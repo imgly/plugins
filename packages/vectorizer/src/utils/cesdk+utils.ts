@@ -8,8 +8,8 @@ export const createVectorPathBlocks = (engine: CreativeEngine, blocks: any[]) =>
 
         return id
     })
-
-    return engine.block.group(blockIds);
+    
+    return blockIds
 }
 
 

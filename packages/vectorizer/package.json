@@ -42,8 +42,8 @@
   "scripts": {
     "start": "npm run watch",
     "clean": "npx rimraf dist && npx rimraf types",
-    "build": "node scripts/build.mjs && yarn run types:create",
-    "dev": "node scripts/watch.mjs",
+    "build": "yarn run types:create && node scripts/build.mjs",
+    "dev": "yarn run types:create && node scripts/watch.mjs",
     "publish:latest": "npm run clean && npm run build && npm publish --tag latest --access public",
     "publish:next": "npm run clean && npm run build && npm publish --tag next --access public",
     "check:all": "concurrently -n lint,type,pretty \"yarn check:lint\" \"yarn check:type\" \"yarn check:pretty\"",

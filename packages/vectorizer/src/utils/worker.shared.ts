@@ -1,14 +1,15 @@
 export interface MessageBody {
-    method?: string,
+    method: 'health' | 'imageToJson' | 'imageToSvg' 
     data?: any;
     error?: Error
 }
-// 
 
 
-export const runInWorker = (uri: string) => new Promise<Blob>((resolve, reject) => {
+
+export const runInWorker = (blob: Blob) => new Promise<Blob>((resolve, reject) => {
   const worker = new Worker(new URL('./worker', import.meta.url), { type: 'module' });
-  worker.postMessage({ data: uri })
+  const msg: MessageBody = { method: "imageToJson", data: blob }
+  worker.postMessage(msg)
   worker.onmessage = (e: MessageEvent<MessageBody>) => {
     const msg = e.data
     if (msg.error) {

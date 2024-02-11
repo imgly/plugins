@@ -1,26 +1,19 @@
 import type CreativeEditorSDK from '@cesdk/cesdk-js';
 
+import { PLUGIN_ACTION_VECTORIZE_LABEL } from './utils/constants';
+
 import {
   getPluginMetadata,
   isBlockSupported,
   isMetadataConsistent,
   recoverInitialImageData,
   setPluginMetadata
-} from './utils';
+} from './utils/utils';
 
-import { runInWorker } from './worker.shared';
-import { createVectorPathBlocks } from './cesdk+utils';
-/**
- * Apply the vectorization process to the image.
- */
+import { runInWorker } from './utils/worker.shared';
+import { createVectorPathBlocks } from './utils/cesdk+utils';
 
-/**
- * Triggers the vectiorize process.
- */
-export async function vectorizeAction(
-  cesdk: CreativeEditorSDK,
-  params: { blockId: number }
-) {
+const vectorize = async (cesdk: CreativeEditorSDK, params: { blockId: number }) => {
   const uploader = cesdk.unstable_upload.bind(cesdk)
   const engine = cesdk.engine; // the only function that needs the ui is the upload function
   const blockApi = engine.block;
@@ -43,6 +36,7 @@ export async function vectorizeAction(
     throw new Error('Block has no fill to vectorize');
 
   const fillId = blockApi.getFill(blockId);
+
 
   // Get the current image URI and source set as initial values.
   const initialSourceSet = blockApi.getSourceSet(
@@ -75,11 +69,17 @@ export async function vectorizeAction(
 
   try {
     // Clear values in the engine to trigger the loading spinner
+    // @ts-ignore
+    const blob = await engine.block.export(blockId, "image/png");
+
+    // go into busy state
     blockApi.setString(fillId, 'fill/image/imageFileURI', '');
     blockApi.setSourceSet(fillId, 'fill/image/sourceSet', []);
     // ensure we show the last image while processsing. Some images don't have the preview set
     if (initialPreviewFileURI === undefined || initialPreviewFileURI === '') {
       blockApi.setString(fillId, 'fill/image/previewFileURI', uriToProcess);
+
+
     }
     const metadata = getPluginMetadata(engine, blockId);
     setPluginMetadata(engine, blockId, {
@@ -92,13 +92,22 @@ export async function vectorizeAction(
       status: 'PROCESSING'
     });
 
-    const vectorized: Blob = await runInWorker(uriToProcess)
+    const vectorized: Blob = await runInWorker(blob)
 
     if (
       getPluginMetadata(engine, blockId).status !== 'PROCESSING' ||
       !isMetadataConsistent(engine, blockId)
-    )
-      return;
+    )return;
+    if (engine.block.isValid(blockId)) {
+      setPluginMetadata(engine, blockId, {
+        version: PLUGIN_VERSION,
+        initialSourceSet,
+        initialImageFileURI,
+        blockId,
+        fillId,
+        status: 'PROCESSED',
+      });
+    }
 
 
     if (vectorized.type.length === 0 || vectorized.type === 'image/svg+xml') {
@@ -126,6 +135,11 @@ export async function vectorizeAction(
         throw new Error('Could not upload vectorized image');
       }
 
+      // Workaround Processing is done, restore state of the initial block
+      blockApi.setSourceSet(fillId, 'fill/image/sourceSet', initialSourceSet);
+      blockApi.setString(fillId, 'fill/image/imageFileURI', initialImageFileURI);
+      blockApi.setString(fillId, 'fill/image/previewFileURI', initialPreviewFileURI);
+
       setPluginMetadata(engine, blockId, {
         version: PLUGIN_VERSION,
         initialSourceSet,
@@ -133,45 +147,49 @@ export async function vectorizeAction(
         blockId,
         fillId,
         status: 'PROCESSED',
-        // processedAsset: url
       });
 
       blockApi.setString(fillId, 'fill/image/imageFileURI', url);
     } else if (vectorized.type === 'application/json') {
+
       const json = await vectorized.text()
       const blocks = JSON.parse(json)
-      const groupId = createVectorPathBlocks(engine, blocks)
-      const parentId = engine.block.getParent(blockId)!
-      engine.block.appendChild(parentId, groupId);
+      const blockIds = createVectorPathBlocks(engine, blocks)
 
-
-      const origWidth = engine.block.getFrameWidth(blockId)
-      const origHeight = engine.block.getFrameHeight(blockId)
       const origRotation = engine.block.getRotation(blockId)
       const origX = engine.block.getPositionX(blockId)
       const origY = engine.block.getPositionY(blockId)
-      const groupWidth = engine.block.getFrameWidth(groupId)
-      const groupHeight = engine.block.getFrameHeight(groupId)
-      engine.block.setPositionX(groupId, origX)
-      engine.block.setPositionY(groupId, origY)
-      engine.block.setRotation(groupId, origRotation)
-      engine.block.scale(groupId, origWidth / groupWidth)
-      //remove original block
-      engine.block.destroy(blockId)
-      
-      // must be assigned to a scene to work... why?
-
-
-      blockApi.setString(fillId, 'fill/image/imageFileURI', initialImageFileURI);
-
-      setPluginMetadata(engine, blockId, {
-        version: PLUGIN_VERSION,
-        initialSourceSet,
-        initialImageFileURI,
-        blockId,
-        fillId,
-        status: 'PROCESSED',
-      });
+      const origSelected = engine.block.isSelected(blockId)
+      switch (engine.block.getType(blockId)) {
+        case "//ly.img.ubq/page":
+          {
+            const parentId = blockId;
+            const containerId = engine.block.group(blockIds);
+            engine.block.appendChild(parentId, containerId);
+            const scale = engine.block.getFrameWidth(blockId) / engine.block.getFrameWidth(containerId)
+            engine.block.setPositionX(containerId, origX)
+            engine.block.setPositionY(containerId, origY)
+            engine.block.setRotation(containerId, origRotation)
+            engine.block.scale(containerId, scale)
+            engine.block.setFillEnabled(parentId, false)
+            engine.block.setSelected(containerId, origSelected)
+            break;
+          }
+        case "//ly.img.ubq/graphic":
+        default: { // replace the current block with the a new group of the vectors
+          const parentId = engine.block.getParent(blockId)!
+          const containerId = engine.block.group(blockIds);
+          engine.block.appendChild(parentId, containerId);
+          const scale = engine.block.getFrameWidth(blockId) / engine.block.getFrameWidth(containerId)
+          engine.block.setPositionX(containerId, origX)
+          engine.block.setPositionY(containerId, origY)
+          engine.block.setRotation(containerId, origRotation)
+          engine.block.scale(containerId, scale)
+          engine.block.destroy(blockId)
+          engine.block.setSelected(containerId, origSelected)
+          break;
+        }
+      }
     }
     // Finally, create an undo step
     engine.editor.addUndoStep();
@@ -193,3 +211,5 @@ export async function vectorizeAction(
     console.error(error);
   }
 }
+
+export default { [PLUGIN_ACTION_VECTORIZE_LABEL]: vectorize }
