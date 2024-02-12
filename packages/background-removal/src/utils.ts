@@ -7,7 +7,7 @@ import {
   BGRemovalProcessed,
   BGRemovalProcessing
 } from './types';
-import { BG_REMOVAL_ID } from './constants';
+import { PLUGIN_ID } from './constants';
 
 /**
  * Sets the metadata for the background removal state.
@@ -17,7 +17,7 @@ export function setBGRemovalMetadata(
   id: number,
   metadata: BGRemovalMetadata
 ) {
-  cesdk.engine.block.setMetadata(id, BG_REMOVAL_ID, JSON.stringify(metadata));
+  cesdk.engine.block.setMetadata(id, PLUGIN_ID, JSON.stringify(metadata));
 }
 
 /**
@@ -28,8 +28,8 @@ export function getBGRemovalMetadata(
   cesdk: CreativeEditorSDK,
   id: number
 ): BGRemovalMetadata {
-  if (cesdk.engine.block.hasMetadata(id, BG_REMOVAL_ID)) {
-    return JSON.parse(cesdk.engine.block.getMetadata(id, BG_REMOVAL_ID));
+  if (cesdk.engine.block.hasMetadata(id, PLUGIN_ID)) {
+    return JSON.parse(cesdk.engine.block.getMetadata(id, PLUGIN_ID));
   } else {
     return {
       status: 'IDLE'
@@ -41,8 +41,8 @@ export function getBGRemovalMetadata(
  * If BG Removal metadata is set, it will be cleared.
  */
 export function clearBGRemovalMetadata(cesdk: CreativeEditorSDK, id: number) {
-  if (cesdk.engine.block.hasMetadata(id, BG_REMOVAL_ID)) {
-    cesdk.engine.block.removeMetadata(id, BG_REMOVAL_ID);
+  if (cesdk.engine.block.hasMetadata(id, PLUGIN_ID)) {
+    cesdk.engine.block.removeMetadata(id, PLUGIN_ID);
   }
 }
 

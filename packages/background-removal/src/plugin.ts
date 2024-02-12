@@ -7,13 +7,16 @@ import {
   isDuplicate,
   isMetadataConsistent
 } from './utils';
-import { BG_REMOVAL_ID, FEATURE_ID } from './constants';
+import { PLUGIN_ID, FEATURE_ID } from './constants';
 import { registerComponents } from './registerComponents';
 import { enableFeatures } from './enableFeatures';
 import { processBackgroundRemoval } from './processBackgroundRemoval';
 import type { Config as BackgroundRemovalConfiguration } from '@imgly/background-removal';
 
 export interface PluginConfiguration {
+  ui?: {
+
+  },
   backgroundRemoval?: BackgroundRemovalConfiguration;
 }
 
@@ -32,7 +35,7 @@ export default (pluginConfiguration: PluginConfiguration = {}) => {
           const id = e.block;
           if (
             !cesdk.engine.block.isValid(id) ||
-            !cesdk.engine.block.hasMetadata(id, BG_REMOVAL_ID)
+            !cesdk.engine.block.hasMetadata(id, PLUGIN_ID)
           ) {
             return;
           }
