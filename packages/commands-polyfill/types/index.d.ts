@@ -3,11 +3,19 @@ import Manifest from './manifest';
 export interface PluginConfiguration {
 }
 export { Manifest };
-declare const _default: (pluginConfiguration?: PluginConfiguration) => {
-    initialize(engine: CreativeEngine): void;
+declare const _default: () => {
     initializeUserInterface({ cesdk }: {
         cesdk: CreativeEditorSDK;
     }): void;
-    update(): void;
 };
 export default _default;
+export type CreativeEngineWithPolyfills = CreativeEngine & {
+    polyfill_commands?: Commands;
+};
+export type CommandType = (params: any) => Promise<void>;
+export declare class Commands {
+    #private;
+    registerCommand(label: string, callback: (params: any) => Promise<void>): void;
+    executeCommand(label: string, params: any): Promise<void>;
+}
+export declare function polyfillWithCommands(sdk: CreativeEditorSDK): void;

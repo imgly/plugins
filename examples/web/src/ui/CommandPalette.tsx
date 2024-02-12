@@ -4,7 +4,7 @@ import { useState, useEffect, RefObject } from "react";
 import CreativeEditorSDK from "@cesdk/cesdk-js";
 
 // https://github.com/albingroen/react-cmdk
-export const CommandPalette = (params: { cesdkRef: RefObject<CreativeEditorSDK | undefined>, actions: Array<any> }) => {
+export const CommandPalette = (params: { cesdkRef: RefObject<CreativeEditorSDK | undefined>}) => {
     const [page, _setPage] = useState<"root">("root");
     const [search, setSearch] = useState("");
     const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -137,22 +137,22 @@ export const CommandPalette = (params: { cesdkRef: RefObject<CreativeEditorSDK |
                     },
                 ]
             },
-            {
-                heading: "Turn into...",
-                id: "turnInto",
-                items: params.actions.map(action => {
-                    return {
-                        id: action.id,
-                        children: action.id,
-                        showType: false,
-                        onClick: () => {
-                            // @ts-ignore
-                            const act = window.cesdk_actions.get(action.id)
-                            act?.()
-                        }
-                    }
-                })
-            }
+        //     {
+        //         heading: "Turn into...",
+        //         id: "turnInto",
+        //         items: params.actions.map(action => {
+        //             return {
+        //                 id: action.id,
+        //                 children: action.id,
+        //                 showType: false,
+        //                 onClick: () => {
+        //                     // @ts-ignore
+        //                     const act = window.cesdk_actions.get(action.id)
+        //                     act?.()
+        //                 }
+        //             }
+        //         })
+        //     }
         ],
         search
     );

@@ -51,7 +51,7 @@ function App() {
 
   return (
     <>
-      {/* <CommandPalette cesdkRef={cesdk} actions={[...VectorizerManifest?.contributes?.commands]} /> */}
+      <CommandPalette cesdkRef={cesdk} />
       <div
         style={{ width: "100vw", height: "100vh" }}
         ref={(domElement) => {
