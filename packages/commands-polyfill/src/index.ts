@@ -18,18 +18,20 @@ export default () => {
 };
 
 
-
-export type CreativeEngineWithPolyfills = CreativeEngine & { polyfill_commands?: Commands };
+export type WithCommands<T> = T & { engine: CreativeEngine & { polyfill_commands: Commands } };
 
 export type CommandType = (params: any) => Promise<void>;
 
 export class Commands {
   #entries = new Map<string, CommandType>()
-  
+
+  listCommands() {
+    return Array.from(this.#entries.keys());
+  }
   registerCommand(label: string, callback: (params: any) => Promise<void>) {
     this.#entries.set(label, callback);
   }
-  
+
   async executeCommand(label: string, params: any) {
     const command = this.#entries.get(label);
     if (command) {

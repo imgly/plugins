@@ -181,4 +181,10 @@
 ## Debugging
 - [ ] Debugging
   - [ ] CommandPalette
-  - [ ] {Print, Save,, Meta
+  - [ ] {Print, Save,, Meta}
+
+
+
+
+## Other
+- [ ] Reduce colors to 1...n 

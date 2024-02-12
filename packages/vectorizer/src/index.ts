@@ -2,7 +2,6 @@ import CreativeEditorSDK, { CreativeEngine } from '@cesdk/cesdk-js';
 
 import ui from './ui';
 import commands from './commands';
-import i18n from './i18n';
 import Manifest, { PLUGIN_ACTION_VECTORIZE_LABEL, PLUGIN_COMPONENT_BUTTON_ID, PLUGIN_ID } from './manifest';
 
 
@@ -35,7 +34,6 @@ export default (pluginConfiguration: PluginConfiguration = {}) => {
       // onInitUI
     },
     initializeUserInterface({ cesdk }: { cesdk: CreativeEditorSDK }) {
-      console.log(cesdk)
       // This should move into a seperate plugin
       // const engine = polyfillEngineWithCommands(cesdk.engine);
       const engine = cesdk.engine;
@@ -82,7 +80,7 @@ export default (pluginConfiguration: PluginConfiguration = {}) => {
       })
 
       console.info("Registering plugin I18N translations")
-      cesdk.setTranslations(i18n);
+      cesdk.setTranslations(Manifest.contributes.i18n);
 
 
       console.info("Registering plugin UI components")

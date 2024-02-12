@@ -1,16 +1,22 @@
-import { useRef } from "react";
-import CreativeEditorSDK, { Configuration } from "@cesdk/cesdk-js";
-import BackgroundRemovalPlugin from '@imgly/plugin-background-removal-web';
-import VectorizerPlugin, { Manifest as VectorizerManifest } from '@imgly/plugin-vectorizer-web';
+import { useRef, useState } from "react";
 
+import { type WithCommands } from "@imgly/plugin-commands-polyfill";
 import { CommandPalette } from "./CommandPalette"
 import { downloadBlocks } from "../utils/utils";
 
 import addPlugins from "../plugins/addPlugins";
+import CreativeEditorSDKComponent from "./CreativeEditorSDK";
+import CreativeEditorSDK, { Configuration } from "@cesdk/cesdk-js";
+
+declare global {
+  interface Window { cesdk: WithCommands<CreativeEditorSDK> }
+}
 
 
 function App() {
-  const cesdk = useRef<CreativeEditorSDK>();
+  const cesdkRef = useRef<WithCommands<CreativeEditorSDK>>();
+  const [commandItems, setCommandItems] = useState<Array<any>>([])
+
   const config: Configuration = {
     license: import.meta.env.VITE_CESDK_LICENSE_KEY,
     callbacks: {
@@ -18,11 +24,11 @@ function App() {
       onDownload: "download",
       onSave: async (str: string) => {
         // improve
-        return downloadBlocks(cesdk.current!, [new Blob([str])], { mimeType: 'application/imgly' })
+        return downloadBlocks(cesdkRef.current!, [new Blob([str])], { mimeType: 'application/imgly' })
       },
 
       onExport: async (blobs, options) => {
-        return downloadBlocks(cesdk.current!, blobs, { mimeType: options.mimeType, pages: options.pages })
+        return downloadBlocks(cesdkRef.current!, blobs, { mimeType: options.mimeType, pages: options.pages })
 
       },
       onLoad: "upload",
@@ -49,36 +55,51 @@ function App() {
   }
 
 
+
   return (
     <>
-      <CommandPalette cesdkRef={cesdk} />
-      <div
-        style={{ width: "100vw", height: "100vh" }}
-        ref={(domElement) => {
-          if (domElement != null) {
-            CreativeEditorSDK
-              .create(domElement, config)
-              .then(async (instance) => {
-                // @ts-ignore
-                window.cesdk = instance;
-                cesdk.current = instance;
+      <CommandPalette items={commandItems ?? []} />
+      <CreativeEditorSDKComponent config={config} callback={async (cesdk: CreativeEditorSDK) => {
 
-                // Do something with the instance of CreativeEditor SDK, for example:
-                // Populate the asset library with default / demo asset sources.
-                await Promise.all([
-                  instance.addDefaultAssetSources(),
-                  instance.addDemoAssetSources({ sceneMode: "Design" }),
-                  addPlugins(instance)
-                ]);
-                await instance.createDesignScene();
-              });
-          } else if (cesdk.current != null) {
-            cesdk.current.dispose();
-          }
-        }}
-      ></div>
+        cesdk = cesdk as WithCommands<CreativeEditorSDK>;
+        await Promise.all([
+          cesdk.addDefaultAssetSources(),
+          cesdk.addDemoAssetSources({ sceneMode: "Design" }),
+          addPlugins(cesdk)
+        ]);
+        await cesdk.createDesignScene();
+
+        // window.cesdk = cesdk as WithCommands<CreativeEditorSDK>;
+        window.cesdk = cesdkRef.current = cesdk as WithCommands<CreativeEditorSDK>;
+        const commandItems = generateCommandItems(cesdk as WithCommands<CreativeEditorSDK>)
+        setCommandItems(commandItems)
+
+
+      }} />
     </>
   );
 }
 
 export default App;
+
+
+
+
+const generateCommandItems = (cesdk: WithCommands<CreativeEditorSDK>): Array<any> => {
+  return cesdk
+    .engine
+    .polyfill_commands
+    .listCommands()
+    .map((cmdId: string) => {
+
+      const titel = cmdId
+      return {
+        id: cmdId,
+        children: titel,
+        showType: true,
+        onClick: async () => {
+          await cesdk.engine.polyfill_commands.executeCommand(cmdId, {})
+        }
+      }
+    })
+}

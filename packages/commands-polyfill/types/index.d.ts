@@ -9,12 +9,15 @@ declare const _default: () => {
     }): void;
 };
 export default _default;
-export type CreativeEngineWithPolyfills = CreativeEngine & {
-    polyfill_commands?: Commands;
+export type WithCommands<T> = T & {
+    engine: CreativeEngine & {
+        polyfill_commands: Commands;
+    };
 };
 export type CommandType = (params: any) => Promise<void>;
 export declare class Commands {
     #private;
+    listCommands(): string[];
     registerCommand(label: string, callback: (params: any) => Promise<void>): void;
     executeCommand(label: string, params: any): Promise<void>;
 }
