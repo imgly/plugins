@@ -5,18 +5,25 @@ import {
   CANVAS_MENU_COMPONENT_ID,
   FEATURE_ID
 } from './constants';
+import { DefaultLocation, UserInterfaceConfiguration } from './types';
 import { getPluginMetadata, setPluginMetadata } from './utils';
 
 /**
  * Registers the components that can be used to remove the background of
  * a block.
  */
-export function registerComponents(cesdk: CreativeEditorSDK) {
-  // Always prepend the registered component to the canvas menu order.
-  cesdk.ui.unstable_setCanvasMenuOrder([
-    CANVAS_MENU_COMPONENT_ID,
-    ...cesdk.ui.unstable_getCanvasMenuOrder()
-  ]);
+export function registerComponents(
+  cesdk: CreativeEditorSDK,
+  configuration: UserInterfaceConfiguration = {}
+) {
+  if (hasDefaultLocation('canvasMenu', configuration)) {
+    // Always prepend the registered component to the canvas menu order.
+    cesdk.ui.unstable_setCanvasMenuOrder([
+      CANVAS_MENU_COMPONENT_ID,
+      ...cesdk.ui.unstable_getCanvasMenuOrder()
+    ]);
+  }
+
   cesdk.ui.unstable_registerComponent(
     CANVAS_MENU_COMPONENT_ID,
     ({ builder: { Button }, engine }) => {
@@ -70,5 +77,18 @@ export function registerComponents(cesdk: CreativeEditorSDK) {
         }
       });
     }
+  );
+}
+
+function hasDefaultLocation(
+  location: DefaultLocation,
+  configuration: UserInterfaceConfiguration
+) {
+  return (
+    configuration.defaultLocations &&
+    (Array.isArray(configuration.defaultLocations)
+      ? configuration.defaultLocations
+      : [configuration.defaultLocations]
+    ).includes(location)
   );
 }

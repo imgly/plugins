@@ -4,7 +4,9 @@ import BackgroundRemovalPlugin from '@imgly/plugin-background-removal-web';
 
 async function addPlugins(cesdk: CreativeEditorSDK) {
   try {
-    cesdk.unstable_addPlugin(BackgroundRemovalPlugin());
+    cesdk.unstable_addPlugin(
+      BackgroundRemovalPlugin({ ui: { defaultLocations: 'canvasMenu' } })
+    );
   } catch (error) {
     console.error('Could not add all plugins: ', error);
   }

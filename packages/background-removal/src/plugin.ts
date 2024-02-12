@@ -5,6 +5,7 @@ import { FEATURE_ID, PLUGIN_ID } from './constants';
 import { enableFeatures } from './enableFeatures';
 import { processBackgroundRemoval } from './processBackgroundRemoval';
 import { registerComponents } from './registerComponents';
+import { UserInterfaceConfiguration } from './types';
 import {
   clearPluginMetadata,
   fixDuplicateMetadata,
@@ -14,7 +15,7 @@ import {
 } from './utils';
 
 export interface PluginConfiguration {
-  ui?: {};
+  ui?: UserInterfaceConfiguration;
   backgroundRemoval?: BackgroundRemovalConfiguration;
 }
 
@@ -49,7 +50,7 @@ export default (pluginConfiguration: PluginConfiguration = {}) => {
         });
       });
 
-      registerComponents(cesdk);
+      registerComponents(cesdk, pluginConfiguration.ui);
       enableFeatures(cesdk);
     }
   };
