@@ -9,6 +9,7 @@ export type BGRemovalProcessing = {
 
   initialImageFileURI: string;
   initialSourceSet: Source[];
+  initialPreviewFileURI: string;
 
   blockId: number;
   fillId: number;
@@ -26,6 +27,7 @@ export type BGRemovalProcessed = {
 
   initialImageFileURI: string;
   initialSourceSet: Source[];
+  initialPreviewFileURI: string;
 
   blockId: number;
   fillId: number;
@@ -39,6 +41,7 @@ export type BGRemovalError = {
 
   initialImageFileURI: string;
   initialSourceSet: Source[];
+  initialPreviewFileURI: string;
 
   blockId: number;
   fillId: number;

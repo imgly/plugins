@@ -38,6 +38,10 @@ export async function processBackgroundRemoval(
     fillId,
     'fill/image/imageFileURI'
   );
+  const initialPreviewFileURI = blockApi.getString(
+    fillId,
+    'fill/image/previewFileURI'
+  );
 
   try {
     // Clear values in the engine to trigger the loading spinner
@@ -50,6 +54,7 @@ export async function processBackgroundRemoval(
       version: PLUGIN_VERSION,
       initialSourceSet,
       initialImageFileURI,
+      initialPreviewFileURI,
       blockId,
       fillId,
       status: 'PROCESSING'
@@ -94,6 +99,7 @@ export async function processBackgroundRemoval(
         version: PLUGIN_VERSION,
         initialSourceSet,
         initialImageFileURI,
+        initialPreviewFileURI,
         blockId,
         fillId,
         status: 'PROCESSED',
@@ -121,6 +127,7 @@ export async function processBackgroundRemoval(
         version: PLUGIN_VERSION,
         initialSourceSet,
         initialImageFileURI,
+        initialPreviewFileURI,
         blockId,
         fillId,
         status: 'PROCESSED',
@@ -136,6 +143,7 @@ export async function processBackgroundRemoval(
         version: PLUGIN_VERSION,
         initialSourceSet,
         initialImageFileURI,
+        initialPreviewFileURI,
         blockId,
         fillId,
         status: 'ERROR'

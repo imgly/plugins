@@ -194,6 +194,7 @@ export function recoverInitialImageData(
 
   const initialSourceSet = metadata.initialSourceSet;
   const initialImageFileURI = metadata.initialImageFileURI;
+  const initialPreviewFileURI = metadata.initialPreviewFileURI;
 
   const fillId = getValidFill(cesdk, blockId, metadata);
   if (fillId == null) return;
@@ -203,6 +204,13 @@ export function recoverInitialImageData(
       fillId,
       'fill/image/imageFileURI',
       initialImageFileURI
+    );
+  }
+  if (initialPreviewFileURI) {
+    cesdk.engine.block.setString(
+      fillId,
+      'fill/image/previewFileURI',
+      initialPreviewFileURI
     );
   }
   if (initialSourceSet.length > 0) {
