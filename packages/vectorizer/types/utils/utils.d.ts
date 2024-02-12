@@ -1,5 +1,6 @@
 import { CreativeEngine } from '@cesdk/cesdk-js';
 import { PluginMetadata } from './types';
+export declare const areBlocksSupported: (engine: CreativeEngine, blockIds: number[]) => boolean;
 /**
  * Checks if a block is supported by the given CreativeEngine.
  * @param engine - The CreativeEngine instance.
@@ -48,3 +49,8 @@ export declare class Scheduler<T> {
     #private;
     schedule(task: () => Promise<T>): Promise<T>;
 }
+/**
+ * Generates a unique filename.
+ * @returns A string representing the unique filename.
+ */
+export declare function generateUniqueFilename(): string;

@@ -23,11 +23,9 @@ export class Commands {
   }
 
 }
-export function polyfillEngineWithCommands(engine: CreativeEngine) {
-  const polyfilled = engine as CreativeEngineWithPolyfills;
+export function polyfillEngineWithCommands(engine: CreativeEngineWithPolyfills) {
   //polyfill
-  if (!polyfilled.polyfill_commands  ) {
-    polyfilled.polyfill_commands = new Commands(engine);
+  if (!engine.polyfill_commands) {
+    engine.polyfill_commands = new Commands(engine);
   }
-  return polyfilled
 }

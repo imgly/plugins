@@ -9,4 +9,4 @@ export declare class Commands {
     registerCommand(label: string, callback: (params: any) => Promise<void>): void;
     executeCommand(label: string, params: any): Promise<void>;
 }
-export declare function polyfillEngineWithCommands(engine: CreativeEngine): CreativeEngineWithPolyfills;
+export declare function polyfillEngineWithCommands(engine: CreativeEngineWithPolyfills): void;

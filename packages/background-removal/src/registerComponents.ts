@@ -36,6 +36,7 @@ export function registerComponents(cesdk: CreativeEditorSDK) {
         return;
       }
 
+      // Why is that needed. The feature enable should already handle that
       const [id] = engine.block.findAllSelected();
       if (!cesdk.engine.block.hasFill(id)) return;
 

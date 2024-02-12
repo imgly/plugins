@@ -3,8 +3,9 @@
   "name": "imgly-plugins",
   "version": "0.0.0",
   "workspaces": [
-    "examples/*",
-    "packages/*"
+    "examples/web",
+    "packages/background-removal",
+    "packages/vectorizer"
   ],
   "scripts": {
     "build": "turbo run build --force",

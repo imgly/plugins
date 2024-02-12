@@ -14,7 +14,8 @@
     "@imgly/plugin-vectorizer-web": "*",
     "react": "^18.2.0",
     "react-cmdk": "^1.3.9",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "share-api-polyfill": "^1.1.1"
   },
   "devDependencies": {
     "@types/react": "^18.2.43",

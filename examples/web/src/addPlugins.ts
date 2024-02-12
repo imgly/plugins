@@ -1,10 +1,12 @@
 import CreativeEditorSDK from '@cesdk/cesdk-js';
-
+// import PolyfillCommandsPlugin from "@imgly/plugin-polyfill-commands"
 import BackgroundRemovalPlugin from '@imgly/plugin-background-removal-web';
 import VectorizerPlugin from '@imgly/plugin-vectorizer-web';
 
-const plugins = [VectorizerPlugin(), BackgroundRemovalPlugin()]
-
+const plugins = [
+  // PolyfillCommandsPlugin(), 
+  VectorizerPlugin(), 
+  BackgroundRemovalPlugin()]
 
 async function addPlugins(cesdk: CreativeEditorSDK) {
   try {

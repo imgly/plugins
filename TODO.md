@@ -1,5 +1,13 @@
-- ? How can I list all plugins that are active
-- ? How can I deactivate a plugin
-- ? we should pass the PluginContext with seperate `{engine?: ImglyEngine, editor?: ImglyEditor, ui?: ImglyUI`
-
-- `feature.isEnabled` should be feature.isEnabledFor(blockId) -> test for multiple blockIds at once 
+- [ ] How can I list all plugins that are active
+- [ ] How can I deactivate a plugin later completely? `enableFeatures`, but this must be per "command". A plugin might contribute multiple features? 
+- [ ] we should pass the PluginContext with separate `imgly: {engine?: ImglyEngine, editor?: ImglyEditor, ui?: ImglyUI`
+- [ ] We can already establish the name 'imgly"  for the PLUGINS
+- [ ] `unstable_getCanvasMenuOrder` should maybe be called `unstable_getCanvasMenuEntries`
+- [ ] `unstable_setCanvasMenuOrder` should maybe be called `unstable_setCanvasMenuEntries`
+- [ ] `unstable_enableFeatures` what is it used for. the button is not displayed when I check it internally
+- [ ] `unstable_enableFeatures` should get the blocks it should evaluate it for. It's not always the selected ones in every scenario.
+- [ ] `enable_features` could probably better be named `enableFeatureInContext()`
+- [ ] What is the intention of the `builder.Button` first parameter, where is the id used later? 
+- [ ] (Exkurs) How can I change the type of a block to another. E.g. Change a Graphic Block into a Group Block for Vectorizer and the ID should stay the same and all properties that are relevant. "Turn into"
+- [ ] The separation of ui and engine is sometimes too hard to use. I propose not to make it dependent on initUI and init. But more like lifecycles in general and always pass {ui?, engine, editor}
+- [ ] `upload` should maybe be part of the asset sources and/or part of engine

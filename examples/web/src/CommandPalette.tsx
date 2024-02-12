@@ -1,10 +1,10 @@
 import "react-cmdk/dist/cmdk.css";
-import CommandPalette, { filterItems, getItemIndex } from "react-cmdk";
+import CMDK , { filterItems, getItemIndex } from "react-cmdk";
 import { useState, useEffect, RefObject } from "react";
 import CreativeEditorSDK from "@cesdk/cesdk-js";
 
 // https://github.com/albingroen/react-cmdk
-export const ActionsMenu = (params: { cesdkRef: RefObject<CreativeEditorSDK | undefined>, actions: Array<any> }) => {
+export const CommandPalette = (params: { cesdkRef: RefObject<CreativeEditorSDK | undefined>, actions: Array<any> }) => {
     const [page, _setPage] = useState<"root">("root");
     const [search, setSearch] = useState("");
     const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -138,8 +138,8 @@ export const ActionsMenu = (params: { cesdkRef: RefObject<CreativeEditorSDK | un
                 ]
             },
             {
-                heading: "Plugin",
-                id: "plugin",
+                heading: "Turn into...",
+                id: "turnInto",
                 items: params.actions.map(action => {
                     return {
                         id: action.id,
@@ -158,32 +158,32 @@ export const ActionsMenu = (params: { cesdkRef: RefObject<CreativeEditorSDK | un
     );
 
     return (
-        <CommandPalette
+        <CMDK
             onChangeSearch={setSearch}
             onChangeOpen={setIsOpen}
             search={search}
             isOpen={isOpen}
             page={page}
         >
-            <CommandPalette.Page id="root">
+            <CMDK.Page id="root">
                 {filteredItems.length ? (
                     filteredItems.map((list) => (
-                        <CommandPalette.List key={list.id} heading={list.heading}>
+                        <CMDK.List key={list.id} heading={list.heading}>
                             {list.items.map(({ id, ...rest }) => (
-                                <CommandPalette.ListItem
+                                <CMDK.ListItem
                                     key={id}
                                     index={getItemIndex(filteredItems, id)}
                                     {...rest}
                                 />
                             ))}
-                        </CommandPalette.List>
+                        </CMDK.List>
                     ))
                 ) : (
-                    <CommandPalette.FreeSearchAction />
+                    <CMDK.FreeSearchAction />
                 )}
-            </CommandPalette.Page>
+            </CMDK.Page>
 
-        </CommandPalette>
+        </CMDK>
     );
 };
 

@@ -3,4 +3,4 @@ export interface MessageBody {
     data?: any;
     error?: Error;
 }
-export declare const runInWorker: (uri: string) => Promise<Blob>;
+export declare const runInWorker: (blob: Blob) => Promise<Blob>;

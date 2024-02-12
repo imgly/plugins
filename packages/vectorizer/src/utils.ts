@@ -1,15 +1,18 @@
-import CreativeEditorSDK, { CreativeEngine } from '@cesdk/cesdk-js';
+import { CreativeEngine } from '@cesdk/cesdk-js';
 import isEqual from 'lodash/isEqual';
 
-import { PLUGIN_ID } from './constants';
+import { PLUGIN_ID } from './manifest';
 import {
   PluginMetadata,
   PluginStatusError,
   PluginStatusProcessed,
   PluginStatusProcessing
-} from './types';
+} from './utils/types';
 
 
+export const areBlocksSupported = (engine: CreativeEngine, blockIds: number[]) => {
+  return blockIds.some(id => isBlockSupported(engine, id))
+}
 /**
  * Checks if a block is supported by the given CreativeEngine.
  * @param engine - The CreativeEngine instance.
@@ -17,9 +20,9 @@ import {
  * @returns A boolean indicating whether the block is supported or not.
  */
 export const isBlockSupported = (engine: CreativeEngine, blockId: number) => {
+  if (!engine.block.isValid(blockId)) return false;
   const blockType = engine.block.getType(blockId);
   if (blockType === "//ly.img.ubq/page") return false;  // There is some bug with the page block
-  
 
   if (engine.block.hasFill(blockId)) {
     const fillId = engine.block.getFill(blockId);
@@ -80,11 +83,7 @@ export function isDuplicate(
   metadata: PluginMetadata
 ): boolean {
   if (!engine.block.isValid(blockId)) return false;
-  if (
-    metadata.status === 'IDLE' ||
-    // metadata.status === 'PENDING' ||
-    metadata.status === 'ERROR'
-  )
+  if (metadata.status === 'IDLE' || metadata.status === 'ERROR')
     return false;
 
   if (!engine.block.hasFill(blockId)) return false;
@@ -188,7 +187,7 @@ export function isMetadataConsistent(
   } else {
     if (metadata.status === 'PROCESSED') {
       if (
-        imageFileURI !== metadata.initialImageFileURI 
+        imageFileURI !== metadata.initialImageFileURI
         // &&imageFileURI !== metadata.processedAsset
       ) {
         return false;
