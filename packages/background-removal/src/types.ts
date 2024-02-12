@@ -1,9 +1,9 @@
 import { type Source } from '@cesdk/cesdk-js';
 
-export type BGRemovalIdle = { status: 'IDLE' };
-export type BGRemovalPending = { status: 'PENDING' };
+export type PluginStatusIdle = { status: 'IDLE' };
+export type PluginStatusPending = { status: 'PENDING' };
 
-export type BGRemovalProcessing = {
+export type PluginStatusProcessing = {
   version: string;
   status: 'PROCESSING';
 
@@ -21,7 +21,7 @@ export type BGRemovalProcessing = {
   };
 };
 
-export type BGRemovalProcessed = {
+export type PluginStatusProcessed = {
   version: string;
   status: 'PROCESSED';
 
@@ -35,7 +35,7 @@ export type BGRemovalProcessed = {
   removedBackground: string | Source[];
 };
 
-export type BGRemovalError = {
+export type PluginStatusError = {
   version: string;
   status: 'ERROR';
 
@@ -47,9 +47,9 @@ export type BGRemovalError = {
   fillId: number;
 };
 
-export type BGRemovalMetadata =
-  | BGRemovalIdle
-  | BGRemovalError
-  | BGRemovalPending
-  | BGRemovalProcessing
-  | BGRemovalProcessed;
+export type PluginStatusMetadata =
+  | PluginStatusIdle
+  | PluginStatusError
+  | PluginStatusPending
+  | PluginStatusProcessing
+  | PluginStatusProcessed;

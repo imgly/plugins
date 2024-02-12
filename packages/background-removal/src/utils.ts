@@ -3,10 +3,10 @@ import isEqual from 'lodash/isEqual';
 
 import { PLUGIN_ID } from './constants';
 import {
-  BGRemovalError,
-  BGRemovalMetadata,
-  BGRemovalProcessed,
-  BGRemovalProcessing
+  PluginStatusError,
+  PluginStatusMetadata,
+  PluginStatusProcessed,
+  PluginStatusProcessing
 } from './types';
 
 /**
@@ -15,7 +15,7 @@ import {
 export function setPluginMetadata(
   cesdk: CreativeEditorSDK,
   id: number,
-  metadata: BGRemovalMetadata
+  metadata: PluginStatusMetadata
 ) {
   cesdk.engine.block.setMetadata(id, PLUGIN_ID, JSON.stringify(metadata));
 }
@@ -27,7 +27,7 @@ export function setPluginMetadata(
 export function getPluginMetadata(
   cesdk: CreativeEditorSDK,
   id: number
-): BGRemovalMetadata {
+): PluginStatusMetadata {
   if (cesdk.engine.block.hasMetadata(id, PLUGIN_ID)) {
     return JSON.parse(cesdk.engine.block.getMetadata(id, PLUGIN_ID));
   } else {
@@ -54,7 +54,7 @@ export function clearPluginMetadata(cesdk: CreativeEditorSDK, id: number) {
 export function isDuplicate(
   cesdk: CreativeEditorSDK,
   blockId: number,
-  metadata: BGRemovalMetadata
+  metadata: PluginStatusMetadata
 ): boolean {
   if (!cesdk.engine.block.isValid(blockId)) return false;
   if (
@@ -229,7 +229,7 @@ export function recoverInitialImageData(
 function getValidFill(
   cesdk: CreativeEditorSDK,
   blockId: number,
-  metadata: BGRemovalProcessing | BGRemovalError | BGRemovalProcessed
+  metadata: PluginStatusProcessing | PluginStatusError | PluginStatusProcessed
 ): number | undefined {
   if (
     !cesdk.engine.block.isValid(blockId) ||
