@@ -4,8 +4,10 @@
   "version": "0.0.0",
   "workspaces": [
     "examples/web",
+    "packages/commands-polyfill",
     "packages/background-removal",
     "packages/vectorizer"
+    
   ],
   "scripts": {
     "build": "turbo run build --force",

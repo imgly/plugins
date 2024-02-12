@@ -1,5 +1,5 @@
 {
-  "name": "@imgly/plugin-polyfill-commands",
+  "name": "@imgly/plugin-commands-polyfill",
   "version": "0.1.0",
   "description": "Polyfill for Commands plugin for the CE.SDK editor",
   "keywords": [

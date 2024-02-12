@@ -11,7 +11,7 @@
   - [ ] Convert to Vector
   - [ ] Convert to Bitmap
   
-
+- [ ] Vector on Path: Convert any shape and bind to path. How do we keep the original block?
 
 - [ ] Turn into // Rethink Semantics This should change existing blocks without loss of date
   - [ ] Turn into Image:  Turns a block into a graphics block with the image as fill, 

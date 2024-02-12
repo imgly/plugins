@@ -1,4 +1,4 @@
-import { type Source } from '@cesdk/cesdk-js';
+import { type Source, type CreativeEngine } from '@cesdk/cesdk-js';
 
 export type PluginStatusIdle = { status: 'IDLE' };
 // export type PluginStatusPending = { status: 'PENDING' };

@@ -12,6 +12,10 @@
     "dev:types": {
       "cache": false,
       "persistent": true
+    },
+    "check:pretty": {
+      "cache": false,
+      "persistent": true
     }
   }
 }

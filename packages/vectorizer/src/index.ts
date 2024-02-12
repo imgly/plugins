@@ -5,7 +5,8 @@ import commands from './commands';
 import i18n from './i18n';
 import Manifest, { PLUGIN_ACTION_VECTORIZE_LABEL, PLUGIN_COMPONENT_BUTTON_ID, PLUGIN_ID } from './manifest';
 
-import { polyfillEngineWithCommands, CreativeEngineWithPolyfills } from './utils/polyfills';
+
+
 import {
   clearPluginMetadata,
   fixDuplicateMetadata,
@@ -26,7 +27,7 @@ export default (pluginConfiguration: PluginConfiguration = {}) => {
   return {
     id: PLUGIN_ID,
     version: PLUGIN_VERSION,
-    initialize(engine: CreativeEngineWithPolyfills) {
+    initialize(engine: CreativeEngine) {
       // it is unclear for a user which one to call and what happens and if we have to put code in both or just one
       // we should have a clear separation of concerns
       // also maybe better naming
@@ -34,10 +35,13 @@ export default (pluginConfiguration: PluginConfiguration = {}) => {
       // onInitUI
     },
     initializeUserInterface({ cesdk }: { cesdk: CreativeEditorSDK }) {
+      console.log(cesdk)
       // This should move into a seperate plugin
-      const engine = polyfillEngineWithCommands(cesdk.engine);
-      if (!engine.polyfill_commands) {
-        console.error("Polyfill engine.commands not available!")
+      // const engine = polyfillEngineWithCommands(cesdk.engine);
+      const engine = cesdk.engine;
+      // @ts-ignore
+      if (!cesdk.engine.polyfill_commands) {
+        console.error("Polyfill engine.engine.polyfill_commands not available!")
         return;
       }
 
@@ -55,7 +59,8 @@ export default (pluginConfiguration: PluginConfiguration = {}) => {
           });
       });
 
-      console.log("checking if engine has polyfill_commands", engine.polyfill_commands ? "yes" : "no")
+      //@ts-ignore
+      console.log("checking if engine has polyfill_commands", cesdk.engine.polyfill_commands ? "yes" : "no")
 
       engine.event.subscribe([], async (events) => {
         events
@@ -64,13 +69,14 @@ export default (pluginConfiguration: PluginConfiguration = {}) => {
           .forEach(e => handleUpdateEvent(engine, e.block))
       });
 
-      console.info("Registering plugin actions")
-      Object.keys(commands).forEach((action) => {
-        console.info(`Registering action: ${action}`)
+      console.info("Registering plugin command")
+      Object.keys(commands).forEach((command) => {
+        console.info(`Registering action: ${command}`)
         // @ts-ignore
-        const func = commands[action];
-        engine.polyfill_commands?.registerCommand(
-          action,
+        const func = commands[command];
+        // @ts-ignore
+        cesdk.engine.polyfill_commands?.registerCommand(
+          command,
           async (params: any) => await func(cesdk, params)
         );
       })
@@ -78,11 +84,13 @@ export default (pluginConfiguration: PluginConfiguration = {}) => {
       console.info("Registering plugin I18N translations")
       cesdk.setTranslations(i18n);
 
+
       console.info("Registering plugin UI components")
-      Object.keys(ui).forEach((componentId) => {
-        console.info(`Registering component: ${componentId}`)
+      const components = ui(cesdk)
+
+      Object.keys(components).forEach((componentId) => {
         // @ts-ignore
-        const component = ui[componentId]
+        const component = components[componentId]
         cesdk.ui.unstable_registerComponent(componentId, component);
       })
 
@@ -93,11 +101,11 @@ export default (pluginConfiguration: PluginConfiguration = {}) => {
       cesdk.feature.unstable_enable(PLUGIN_COMPONENT_BUTTON_ID, (context: any) => {
         return areBlocksSupported(engine, engine.block.findAllSelected())
       })
-      
+
       cesdk.feature.unstable_enable(PLUGIN_COMPONENT_BUTTON_ID, false);
       cesdk.feature.unstable_enable(PLUGIN_ID, false);
       cesdk.feature.unstable_enable(PLUGIN_ACTION_VECTORIZE_LABEL, false);
-      
+
 
       console.info("Changing canvas menu order")
       const canvasMenuEntries = [
