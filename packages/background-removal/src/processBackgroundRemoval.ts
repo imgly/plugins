@@ -1,8 +1,8 @@
 import type CreativeEditorSDK from '@cesdk/cesdk-js';
 import { type Source } from '@cesdk/cesdk-js';
 import {
-  segmentForeground,
   applySegmentationMask,
+  segmentForeground,
   type Config
 } from '@imgly/background-removal';
 
@@ -10,8 +10,8 @@ import throttle from 'lodash/throttle';
 
 import {
   getBGRemovalMetadata,
-  recoverInitialImageData,
   isMetadataConsistent,
+  recoverInitialImageData,
   setBGRemovalMetadata
 } from './utils';
 
@@ -96,7 +96,7 @@ export async function processBackgroundRemoval(
         initialImageFileURI,
         blockId,
         fillId,
-        status: 'PROCESSED_WITHOUT_BG',
+        status: 'PROCESSED',
         removedBackground: newSourceSet
       });
       blockApi.setSourceSet(fillId, 'fill/image/sourceSet', newSourceSet);
@@ -123,7 +123,7 @@ export async function processBackgroundRemoval(
         initialImageFileURI,
         blockId,
         fillId,
-        status: 'PROCESSED_WITHOUT_BG',
+        status: 'PROCESSED',
         removedBackground: uploadedUrl
       });
       blockApi.setString(fillId, 'fill/image/imageFileURI', uploadedUrl);

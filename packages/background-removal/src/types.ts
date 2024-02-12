@@ -22,7 +22,7 @@ export type BGRemovalProcessing = {
 
 export type BGRemovalProcessed = {
   version: string;
-  status: 'PROCESSED_WITH_BG' | 'PROCESSED_WITHOUT_BG';
+  status: 'PROCESSED';
 
   initialImageFileURI: string;
   initialSourceSet: Source[];

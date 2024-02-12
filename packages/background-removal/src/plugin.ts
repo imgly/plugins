@@ -1,5 +1,10 @@
 import type CreativeEditorSDK from '@cesdk/cesdk-js';
 
+import type { Config as BackgroundRemovalConfiguration } from '@imgly/background-removal';
+import { FEATURE_ID, PLUGIN_ID } from './constants';
+import { enableFeatures } from './enableFeatures';
+import { processBackgroundRemoval } from './processBackgroundRemoval';
+import { registerComponents } from './registerComponents';
 import {
   clearBGRemovalMetadata,
   fixDuplicateMetadata,
@@ -7,16 +12,9 @@ import {
   isDuplicate,
   isMetadataConsistent
 } from './utils';
-import { PLUGIN_ID, FEATURE_ID } from './constants';
-import { registerComponents } from './registerComponents';
-import { enableFeatures } from './enableFeatures';
-import { processBackgroundRemoval } from './processBackgroundRemoval';
-import type { Config as BackgroundRemovalConfiguration } from '@imgly/background-removal';
 
 export interface PluginConfiguration {
-  ui?: {
-
-  },
+  ui?: {};
   backgroundRemoval?: BackgroundRemovalConfiguration;
 }
 
@@ -81,8 +79,7 @@ async function handleUpdateEvent(
     }
 
     case 'PROCESSING':
-    case 'PROCESSED_WITH_BG':
-    case 'PROCESSED_WITHOUT_BG': {
+    case 'PROCESSED': {
       if (!isMetadataConsistent(cesdk, blockId)) {
         clearBGRemovalMetadata(cesdk, blockId);
       }

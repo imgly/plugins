@@ -1,13 +1,13 @@
 import type CreativeEditorSDK from '@cesdk/cesdk-js';
 import isEqual from 'lodash/isEqual';
 
+import { PLUGIN_ID } from './constants';
 import {
   BGRemovalError,
   BGRemovalMetadata,
   BGRemovalProcessed,
   BGRemovalProcessing
 } from './types';
-import { PLUGIN_ID } from './constants';
 
 /**
  * Sets the metadata for the background removal state.
@@ -145,10 +145,7 @@ export function isMetadataConsistent(
     const initialSourceSet = metadata.initialSourceSet;
     // If we have already processed the image, we need to check if the source set
     // we need to check against both source sets, the removed and the initial
-    if (
-      metadata.status === 'PROCESSED_WITH_BG' ||
-      metadata.status === 'PROCESSED_WITHOUT_BG'
-    ) {
+    if (metadata.status === 'PROCESSED') {
       const removedBackground = metadata.removedBackground;
       if (
         !isEqual(sourceSet, removedBackground) &&
@@ -162,10 +159,7 @@ export function isMetadataConsistent(
       }
     }
   } else {
-    if (
-      metadata.status === 'PROCESSED_WITH_BG' ||
-      metadata.status === 'PROCESSED_WITHOUT_BG'
-    ) {
+    if (metadata.status === 'PROCESSED') {
       if (
         imageFileURI !== metadata.initialImageFileURI &&
         imageFileURI !== metadata.removedBackground
@@ -179,62 +173,6 @@ export function isMetadataConsistent(
     }
   }
   return true;
-}
-
-/**
- * Toggle between the background removed image and the original image if either
- * in the state "PROCESSED_WITH_BG" or "PROCESSED_WITHOUT_BG". Otherwise do
- * nothing.
- */
-export function toggleBackgroundRemovalData(
-  cesdk: CreativeEditorSDK,
-  blockId: number
-) {
-  const blockApi = cesdk.engine.block;
-  if (!blockApi.hasFill(blockId)) return; // Nothing to recover (no fill anymore)
-  const fillId = blockApi.getFill(blockId);
-
-  const metadata = getBGRemovalMetadata(cesdk, blockId);
-
-  if (metadata.status === 'PROCESSED_WITH_BG') {
-    setBGRemovalMetadata(cesdk, blockId, {
-      ...metadata,
-      status: 'PROCESSED_WITHOUT_BG'
-    });
-
-    if (typeof metadata.removedBackground === 'string') {
-      blockApi.setString(
-        fillId,
-        'fill/image/imageFileURI',
-        metadata.removedBackground
-      );
-    } else {
-      blockApi.setSourceSet(
-        fillId,
-        'fill/image/sourceSet',
-        metadata.removedBackground
-      );
-    }
-
-    cesdk.engine.editor.addUndoStep();
-  } else if (metadata.status === 'PROCESSED_WITHOUT_BG') {
-    setBGRemovalMetadata(cesdk, blockId, {
-      ...metadata,
-      status: 'PROCESSED_WITH_BG'
-    });
-
-    blockApi.setString(
-      fillId,
-      'fill/image/imageFileURI',
-      metadata.initialImageFileURI
-    );
-    blockApi.setSourceSet(
-      fillId,
-      'fill/image/sourceSet',
-      metadata.initialSourceSet
-    );
-    cesdk.engine.editor.addUndoStep();
-  }
 }
 
 /**
