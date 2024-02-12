@@ -9,21 +9,11 @@ export interface PluginConfiguration {
 
 export { Manifest };
 
-export default (pluginConfiguration: PluginConfiguration = {}) => {
+export default () => {
   return {
-    initialize(engine: CreativeEngine) {
-      
-      
-    },
     initializeUserInterface({ cesdk }: { cesdk: CreativeEditorSDK }) {
       polyfillWithCommands(cesdk);
-    },
-
-    // maybe this should be just engint.event.onUpdate()
-    update() {
-
-    },
-
+    }
   };
 };
 
@@ -35,11 +25,11 @@ export type CommandType = (params: any) => Promise<void>;
 
 export class Commands {
   #entries = new Map<string, CommandType>()
-  constructor(sdk: CreativeEditorSDK) {
-  }
+  
   registerCommand(label: string, callback: (params: any) => Promise<void>) {
     this.#entries.set(label, callback);
   }
+  
   async executeCommand(label: string, params: any) {
     const command = this.#entries.get(label);
     if (command) {
