@@ -69,6 +69,12 @@ export async function processBackgroundRemoval(
           )[0].uri
         : initialImageFileURI;
 
+    // If there is no initial preview file URI, set the current URI.
+    // It will be used as the image displayed while showing the loading spinner.
+    if (!initialPreviewFileURI) {
+      blockApi.setString(fillId, 'fill/image/previewFileURI', uriToProcess);
+    }
+
     // Creating the mask from the highest resolution image
     const mask = await segmentForeground(uriToProcess, configuration);
 
@@ -106,6 +112,8 @@ export async function processBackgroundRemoval(
         removedBackground: newSourceSet
       });
       blockApi.setSourceSet(fillId, 'fill/image/sourceSet', newSourceSet);
+      // TODO: Generate a thumb/preview uri
+      blockApi.setString(fillId, 'fill/image/previewFileURI', '');
     } else {
       // ImageFileURI code path
       // ======================
@@ -134,6 +142,8 @@ export async function processBackgroundRemoval(
         removedBackground: uploadedUrl
       });
       blockApi.setString(fillId, 'fill/image/imageFileURI', uploadedUrl);
+      // TODO: Generate a thumb/preview uri
+      blockApi.setString(fillId, 'fill/image/previewFileURI', '');
     }
     // Finally, create an undo step
     cesdk.engine.editor.addUndoStep();
