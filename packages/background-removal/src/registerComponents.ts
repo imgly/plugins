@@ -5,7 +5,7 @@ import {
   CANVAS_MENU_COMPONENT_ID,
   FEATURE_ID
 } from './constants';
-import { getBGRemovalMetadata, setBGRemovalMetadata } from './utils';
+import { getPluginMetadata, setPluginMetadata } from './utils';
 
 /**
  * Registers the components that can be used to remove the background of
@@ -30,7 +30,7 @@ export function registerComponents(cesdk: CreativeEditorSDK) {
 
       const [id] = engine.block.findAllSelected();
 
-      const metadata = getBGRemovalMetadata(cesdk, id);
+      const metadata = getPluginMetadata(cesdk, id);
 
       const isLoading = metadata.status === 'PROCESSING';
       const isDisabled =
@@ -63,7 +63,7 @@ export function registerComponents(cesdk: CreativeEditorSDK) {
             metadata.status === 'ERROR' ||
             metadata.status === 'PROCESSED'
           ) {
-            setBGRemovalMetadata(cesdk, id, {
+            setPluginMetadata(cesdk, id, {
               status: 'PENDING'
             });
           }

@@ -10,9 +10,9 @@ import {
 } from './types';
 
 /**
- * Sets the metadata for the background removal state.
+ * Sets the metadata for the plugin state.
  */
-export function setBGRemovalMetadata(
+export function setPluginMetadata(
   cesdk: CreativeEditorSDK,
   id: number,
   metadata: BGRemovalMetadata
@@ -21,10 +21,10 @@ export function setBGRemovalMetadata(
 }
 
 /**
- * Returns the current metadata for the background removal state. If no metadata
+ * Returns the current metadata for the plugin state. If no metadata
  * is set on the given block, it will return an IDLE state.
  */
-export function getBGRemovalMetadata(
+export function getPluginMetadata(
   cesdk: CreativeEditorSDK,
   id: number
 ): BGRemovalMetadata {
@@ -38,9 +38,9 @@ export function getBGRemovalMetadata(
 }
 
 /**
- * If BG Removal metadata is set, it will be cleared.
+ * If plugin metadata is set, it will be cleared.
  */
-export function clearBGRemovalMetadata(cesdk: CreativeEditorSDK, id: number) {
+export function clearPluginMetadata(cesdk: CreativeEditorSDK, id: number) {
   if (cesdk.engine.block.hasMetadata(id, PLUGIN_ID)) {
     cesdk.engine.block.removeMetadata(id, PLUGIN_ID);
   }
@@ -84,14 +84,14 @@ export function fixDuplicateMetadata(
   blockId: number
 ) {
   const fillId = cesdk.engine.block.getFill(blockId);
-  const metadata = getBGRemovalMetadata(cesdk, blockId);
+  const metadata = getPluginMetadata(cesdk, blockId);
   if (
     metadata.status === 'IDLE' ||
     metadata.status === 'PENDING' ||
     metadata.status === 'ERROR'
   )
     return;
-  setBGRemovalMetadata(cesdk, blockId, {
+  setPluginMetadata(cesdk, blockId, {
     ...metadata,
     blockId,
     fillId
@@ -111,7 +111,7 @@ export function isMetadataConsistent(
   // In case the block was removed, we just abort and mark it
   // as reset by returning true
   if (!cesdk.engine.block.isValid(blockId)) return false;
-  const metadata = getBGRemovalMetadata(cesdk, blockId);
+  const metadata = getPluginMetadata(cesdk, blockId);
   if (metadata.status === 'IDLE' || metadata.status === 'PENDING') return true;
 
   if (!cesdk.engine.block.hasFill(blockId)) return false;
@@ -186,7 +186,7 @@ export function recoverInitialImageData(
   const blockApi = cesdk.engine.block;
   if (!blockApi.hasFill(blockId)) return; // Nothing to recover (no fill anymore)
 
-  const metadata = getBGRemovalMetadata(cesdk, blockId);
+  const metadata = getPluginMetadata(cesdk, blockId);
 
   if (metadata.status === 'PENDING' || metadata.status === 'IDLE') {
     return;

@@ -6,9 +6,9 @@ import { enableFeatures } from './enableFeatures';
 import { processBackgroundRemoval } from './processBackgroundRemoval';
 import { registerComponents } from './registerComponents';
 import {
-  clearBGRemovalMetadata,
+  clearPluginMetadata,
   fixDuplicateMetadata,
-  getBGRemovalMetadata,
+  getPluginMetadata,
   isDuplicate,
   isMetadataConsistent
 } from './utils';
@@ -39,7 +39,7 @@ export default (pluginConfiguration: PluginConfiguration = {}) => {
           }
 
           if (e.type === 'Created') {
-            const metadata = getBGRemovalMetadata(cesdk, id);
+            const metadata = getPluginMetadata(cesdk, id);
             if (isDuplicate(cesdk, id, metadata)) {
               fixDuplicateMetadata(cesdk, id);
             }
@@ -64,7 +64,7 @@ async function handleUpdateEvent(
   blockId: number,
   configuration: BackgroundRemovalConfiguration
 ) {
-  const metadata = getBGRemovalMetadata(cesdk, blockId);
+  const metadata = getPluginMetadata(cesdk, blockId);
 
   switch (metadata.status) {
     case 'PENDING': {
@@ -81,7 +81,7 @@ async function handleUpdateEvent(
     case 'PROCESSING':
     case 'PROCESSED': {
       if (!isMetadataConsistent(cesdk, blockId)) {
-        clearBGRemovalMetadata(cesdk, blockId);
+        clearPluginMetadata(cesdk, blockId);
       }
       break;
     }

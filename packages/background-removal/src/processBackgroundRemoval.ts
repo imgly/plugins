@@ -9,10 +9,10 @@ import {
 import throttle from 'lodash/throttle';
 
 import {
-  getBGRemovalMetadata,
+  getPluginMetadata,
   isMetadataConsistent,
   recoverInitialImageData,
-  setBGRemovalMetadata
+  setPluginMetadata
 } from './utils';
 
 /**
@@ -48,8 +48,8 @@ export async function processBackgroundRemoval(
     blockApi.setString(fillId, 'fill/image/imageFileURI', '');
     blockApi.setSourceSet(fillId, 'fill/image/sourceSet', []);
 
-    const metadata = getBGRemovalMetadata(cesdk, blockId);
-    setBGRemovalMetadata(cesdk, blockId, {
+    const metadata = getPluginMetadata(cesdk, blockId);
+    setPluginMetadata(cesdk, blockId, {
       ...metadata,
       version: PLUGIN_VERSION,
       initialSourceSet,
@@ -101,7 +101,7 @@ export async function processBackgroundRemoval(
         };
       });
 
-      setBGRemovalMetadata(cesdk, blockId, {
+      setPluginMetadata(cesdk, blockId, {
         version: PLUGIN_VERSION,
         initialSourceSet,
         initialImageFileURI,
@@ -131,7 +131,7 @@ export async function processBackgroundRemoval(
         throw new Error('Could not upload BG removed image');
       }
 
-      setBGRemovalMetadata(cesdk, blockId, {
+      setPluginMetadata(cesdk, blockId, {
         version: PLUGIN_VERSION,
         initialSourceSet,
         initialImageFileURI,
@@ -149,7 +149,7 @@ export async function processBackgroundRemoval(
     cesdk.engine.editor.addUndoStep();
   } catch (error) {
     if (cesdk.engine.block.isValid(blockId)) {
-      setBGRemovalMetadata(cesdk, blockId, {
+      setPluginMetadata(cesdk, blockId, {
         version: PLUGIN_VERSION,
         initialSourceSet,
         initialImageFileURI,
@@ -176,14 +176,14 @@ async function maskSourceSet<T extends { uri: string }>(
   const configuration = {
     ...configurationFromArgs,
     progress: throttle((key, current, total) => {
-      const metadataDuringProgress = getBGRemovalMetadata(cesdk, blockId);
+      const metadataDuringProgress = getPluginMetadata(cesdk, blockId);
       if (
         metadataDuringProgress.status !== 'PROCESSING' ||
         !isMetadataConsistent(cesdk, blockId)
       )
         return;
       configurationFromArgs.progress?.(key, current, total);
-      setBGRemovalMetadata(cesdk, blockId, {
+      setPluginMetadata(cesdk, blockId, {
         ...metadataDuringProgress,
         progress: { key, current, total }
       });
@@ -201,7 +201,7 @@ async function maskSourceSet<T extends { uri: string }>(
   // Check for externally changed state while we were applying the mask and
   // do not proceed if the state was reset.
   if (
-    getBGRemovalMetadata(cesdk, blockId).status !== 'PROCESSING' ||
+    getPluginMetadata(cesdk, blockId).status !== 'PROCESSING' ||
     !isMetadataConsistent(cesdk, blockId)
   )
     return;
@@ -230,7 +230,7 @@ async function maskSourceSet<T extends { uri: string }>(
   // Check for externally changed state while we were uploading and
   // do not proceed if the state was reset.
   if (
-    getBGRemovalMetadata(cesdk, blockId).status !== 'PROCESSING' ||
+    getPluginMetadata(cesdk, blockId).status !== 'PROCESSING' ||
     !isMetadataConsistent(cesdk, blockId)
   )
     return;

@@ -1,6 +1,6 @@
 import type CreativeEditorSDK from '@cesdk/cesdk-js';
 import { FEATURE_ID } from './constants';
-import { getBGRemovalMetadata } from './utils';
+import { getPluginMetadata } from './utils';
 
 /**
  * Defines the feature that determines in which context (on which block)
@@ -33,7 +33,7 @@ export function enableFeatures(cesdk: CreativeEditorSDK) {
       // If we are in a processing state we do not have a imageFileURI or
       // source set set (to show the loading spinner), but the feature is still
       // enabled.
-      const metadata = getBGRemovalMetadata(cesdk, selectedId);
+      const metadata = getPluginMetadata(cesdk, selectedId);
       return metadata.status === 'PROCESSING';
     }
 
