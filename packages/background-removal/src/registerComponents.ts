@@ -3,10 +3,13 @@ import type CreativeEditorSDK from '@cesdk/cesdk-js';
 import {
   CANVAS_MENU_COMPONENT_BUTTON_ID,
   CANVAS_MENU_COMPONENT_ID,
-  FEATURE_ID
+  FEATURE_ID,
+  PLUGIN_ID
 } from './constants';
 import { DefaultLocation, UserInterfaceConfiguration } from './types';
 import { getPluginMetadata, setPluginMetadata } from './utils';
+
+const REMOVE_BACKGROUND_ACTION_I18N_KEY = `plugin.${PLUGIN_ID}.action.removeBackground`;
 
 /**
  * Registers the components that can be used to remove the background of
@@ -23,6 +26,12 @@ export function registerComponents(
       ...cesdk.ui.unstable_getCanvasMenuOrder()
     ]);
   }
+
+  cesdk.setTranslations({
+    en: {
+      [REMOVE_BACKGROUND_ACTION_I18N_KEY]: 'BG Removal'
+    }
+  });
 
   cesdk.ui.unstable_registerComponent(
     CANVAS_MENU_COMPONENT_ID,
@@ -59,7 +68,7 @@ export function registerComponents(
       }
 
       Button(CANVAS_MENU_COMPONENT_BUTTON_ID, {
-        label: 'BG Removal',
+        label: REMOVE_BACKGROUND_ACTION_I18N_KEY,
         icon: '@imgly/icons/BGRemove',
         isLoading,
         isDisabled,
