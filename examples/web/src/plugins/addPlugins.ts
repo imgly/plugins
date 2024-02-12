@@ -6,7 +6,7 @@ import VectorizerPlugin from '@imgly/plugin-vectorizer-web';
 const plugins = [
   PolyfillCommandsPlugin(), 
   VectorizerPlugin(), 
-  // BackgroundRemovalPlugin()
+  BackgroundRemovalPlugin()
 ]
 
 async function addPlugins(cesdk: CreativeEditorSDK) {
