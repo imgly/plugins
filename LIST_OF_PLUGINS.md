@@ -28,8 +28,8 @@
   - [ ] Zoom to 100%
 
 - [ ] Block Lifecylce
-  -  [ ] Duplicate Selected
-  -  [ ] Delete Selected
+  -  [x] Duplicate Selected
+  -  [x] Delete Selected
   
   -  [ ] Copy Selected
   -  [ ] Paste Selected
@@ -180,7 +180,8 @@
 
 ## Debugging
 - [ ] Debugging
-  - [ ] CommandPalette
+  - [x] CommandPalette
+  - [ ] Print Metadata
   - [ ] {Print, Save,, Meta}
 
 
@@ -188,3 +189,4 @@
 
 ## Other
 - [ ] Reduce colors to 1...n 
+- [ ] Subtitel STR colors 

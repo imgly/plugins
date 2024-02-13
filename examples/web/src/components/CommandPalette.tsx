@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 
 
 // https://github.com/albingroen/react-cmdk
-export const CommandPalette = (params: { items: Array<any> }) => {
+export const CommandPalette = (params: { items: Array<any>, isOpen: boolean }) => {
     const [page, _setPage] = useState<"root">("root");
     const [search, setSearch] = useState("");
     const [isOpen, setIsOpen] = useState<boolean>(false);

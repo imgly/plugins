@@ -24,8 +24,7 @@ export { Manifest };
 
 export default (pluginConfiguration: PluginConfiguration = {}) => {
   return {
-    id: PLUGIN_ID,
-    version: PLUGIN_VERSION,
+    manifest: Manifest,
     initialize(engine: CreativeEngine) {
       // it is unclear for a user which one to call and what happens and if we have to put code in both or just one
       // we should have a clear separation of concerns

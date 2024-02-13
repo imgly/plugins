@@ -1,23 +1,23 @@
-export const PLUGIN_ID = '@imgly/plugin-vectorizer-web';
+export const PLUGIN_ID = 'imgly/plugin-vectorizer-web';
 export const PLUGIN_COMPONENT_BUTTON_ID = `component.${PLUGIN_ID}.button`;
 export const PLUGIN_ACTION_VECTORIZE_LABEL = `plugin.${PLUGIN_ID}.vectorize`
 
 
 export default {
     id: PLUGIN_ID,
-    titel: "",
+    publisher: "IMG.LY",
     contributes: {
-        ui: [ 
+        ui: [
             {
-                id: PLUGIN_COMPONENT_BUTTON_ID, // not sure will
+                id: PLUGIN_COMPONENT_BUTTON_ID,
             }
         ],
-        commands: [
-            {
-                id: PLUGIN_ACTION_VECTORIZE_LABEL,
-                titel: "Turn into Vectorpath", // default titel, use i18n ti
+        commands: {
+            // maybe we don't need the manifest after all? 
+            [PLUGIN_ACTION_VECTORIZE_LABEL]: {
+                title: "Turn into Vectorpath", //default when no translation is given
             }
-        ],
+        },
         i18n: {
             en: {
                 [PLUGIN_ACTION_VECTORIZE_LABEL]: 'Turn into Vectorpaths'
