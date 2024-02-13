@@ -1,13 +1,13 @@
 import CreativeEditorSDK from "@cesdk/cesdk-js";
 import { type WithCommands } from "@imgly/plugin-commands-polyfill";
-import { readPropValue } from "../../utils/cesdk";
+import { readPropValue } from "../../../utils/cesdk";
 
 
 export const registerDebugCommands = (cesdk: WithCommands<CreativeEditorSDK>) => {
     const { asset, block, variable, editor, scene} = cesdk.engine
     const commands = cesdk.engine.polyfill_commands
 
-    commands.registerCommand("debug.console.log.metadata", async (params: { blockIds?: number[] }) => {
+    commands.registerCommand("imgly.debug.log.metadata", async (params: { blockIds?: number[] }) => {
         const blockIds = params.blockIds ?? block.findAllSelected()
 
         blockIds.forEach((id: number) => {
@@ -24,7 +24,7 @@ export const registerDebugCommands = (cesdk: WithCommands<CreativeEditorSDK>) =>
         })
     })
 
-    commands.registerCommand("debug.console.clear.metadata", async (params: { blockIds?: number[] }) => {
+    commands.registerCommand("imgly.debug.clear.metadata", async (params: { blockIds?: number[] }) => {
         const blockIds = params.blockIds ?? block.findAllSelected()
         blockIds.forEach((id: number) => {
             block.findAllMetadata(id)
@@ -34,7 +34,7 @@ export const registerDebugCommands = (cesdk: WithCommands<CreativeEditorSDK>) =>
         })
     })
 
-    commands.registerCommand("debug.console.print.block_properties", async (params: { blockIds?: number[] }) => {
+    commands.registerCommand("imgly.debug.log.block_properties", async (params: { blockIds?: number[] }) => {
         const blockIds = params.blockIds ?? block.findAllSelected()
 
         blockIds.forEach((id: number) => {
@@ -54,7 +54,7 @@ export const registerDebugCommands = (cesdk: WithCommands<CreativeEditorSDK>) =>
 
 
 
-    commands.registerCommand("debug.console.print.fill_properties", async (params: { blockIds?: number[] }) => {
+    commands.registerCommand("imgly.debug.log.fill_properties", async (params: { blockIds?: number[] }) => {
         const blockIds = params.blockIds ?? block.findAllSelected()
         blockIds.forEach((bId: number) => {
             const fId = block.getFill(bId)
@@ -81,7 +81,7 @@ export const registerDebugCommands = (cesdk: WithCommands<CreativeEditorSDK>) =>
 
 
 
-    commands.registerCommand("debug.console.print.assets", async (_params: { blockIds?: number[] }) => {
+    commands.registerCommand("imgly.debug.log.assets", async (_params: { blockIds?: number[] }) => {
         // const blockIds = params.blockIds ?? block.findAllSelected()
 
         const entries = asset.findAllSources()
@@ -95,7 +95,7 @@ export const registerDebugCommands = (cesdk: WithCommands<CreativeEditorSDK>) =>
     })
 
 
-    commands.registerCommand("debug.console.print.variables", async (_params: { blockIds?: number[] }) => {
+    commands.registerCommand("imgly.debug.log.variables", async (_params: { blockIds?: number[] }) => {
         const vars = variable.findAll()
         const definition = new Map<string, { type: string, value: any }>()
         vars.forEach((key: string) => {
@@ -108,7 +108,7 @@ export const registerDebugCommands = (cesdk: WithCommands<CreativeEditorSDK>) =>
     })
 
 
-    commands.registerCommand("debug.console.print.settings", async (_params: { blockIds?: number[] }) => {
+    commands.registerCommand("imgly.debug.log.editor.settings", async (_params: { blockIds?: number[] }) => {
         const entries = editor.findAllSettings()
         const definition = new Map<string, { type: string, value: any }>()
         entries.forEach((key: string) => {
@@ -122,7 +122,7 @@ export const registerDebugCommands = (cesdk: WithCommands<CreativeEditorSDK>) =>
 
 
 
-    commands.registerCommand("debug.console.print.scene", async (_params: { blockIds?: number[] }) => {    
+    commands.registerCommand("imgly.debug.log.scene_properties", async (_params: { blockIds?: number[] }) => {    
         console.debug("Settings", {
             designUnit: scene.getDesignUnit(),
             mode: scene.getMode(),

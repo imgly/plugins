@@ -1,5 +1,6 @@
 import { useRef, useState, useEffect } from "react";
-import CreativeEditorSDK, { Configuration } from "@cesdk/cesdk-js";
+import { type Configuration } from "@cesdk/cesdk-js";
+import type CreativeEditorSDK from "@cesdk/cesdk-js";
 import { unflatten } from "../utils/flatten";
 
 type Props = {
@@ -12,23 +13,21 @@ export default function CreativeEditorSDKComponent(props: Props) {
     const [_, setCesdk] = useState<CreativeEditorSDK | undefined>();
 
     useEffect(() => {
-        console.log("Use effect", props.config)
-        console.log("Container", cesdk_container.current)
         if (!cesdk_container.current) return;
-        console.log("Creating CESDK instance")
+        
         let cleanedUp = false;
         let instance: CreativeEditorSDK;
-        CreativeEditorSDK
-            .create(cesdk_container.current, unflatten(props.config))
+        import("@cesdk/cesdk-js")
+            .then((module) => module.default.create(cesdk_container!.current!, unflatten(props.config)))
             .then(async (instance) => {
-                    if (cleanedUp) {
-                        instance.dispose();
-                        return;
-                    }
-                    console.log("Created CESDK instance")
-                    setCesdk(instance);
-                    await props.callback(instance);
+                if (cleanedUp) {
+                    instance.dispose();
+                    return;
                 }
+                console.log("Created CESDK instance")
+                setCesdk(instance);
+                await props.callback(instance);
+            }
             );
 
         return () => {

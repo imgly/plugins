@@ -1,8 +1,8 @@
-import CreativeEditorSDK, { CreativeEngine, MimeType } from "@cesdk/cesdk-js";
+import CreativeEditorSDK, { type MimeType } from "@cesdk/cesdk-js";
 import { type WithCommands } from "@imgly/plugin-commands-polyfill";
-import { downloadBlob } from "../../utils/download";
+import { downloadBlob } from "../../../utils/download";
 
-export const registerExportCommands = (cesdk: WithCommands<CreativeEditorSDK>) => {
+export const registerDownloadCommands = (cesdk: WithCommands<CreativeEditorSDK>) => {
 
     const { block, scene } = cesdk.engine
     const commands = cesdk.engine.polyfill_commands
@@ -11,7 +11,7 @@ export const registerExportCommands = (cesdk: WithCommands<CreativeEditorSDK>) =
 
     types.forEach((mimeType: string) => {
         const [_, extension] = mimeType.split("/")
-        commands.registerCommand(`export.selected.as.${extension}`, async (params: { blockIds: number[] }) => {
+        commands.registerCommand(`imgly.block.download.selected.as.${extension}`, async (params: { blockIds: number[] }) => {
             let blockIds = params.blockIds ?? block.findAllSelected()
             if (blockIds.length === 0) {
                 blockIds = [scene.get()!]
@@ -24,7 +24,7 @@ export const registerExportCommands = (cesdk: WithCommands<CreativeEditorSDK>) =
         })
     })
 
-    commands.registerCommand(`export.selected.as.scene`, async (params: { blockIds: number[] }) => {
+    commands.registerCommand(`imgly.block.download.selected.as.scene`, async (params: { blockIds: number[] }) => {
         let blockIds = params.blockIds ?? block.findAllSelected()
 
         if (blockIds.length === 0) {
@@ -36,7 +36,7 @@ export const registerExportCommands = (cesdk: WithCommands<CreativeEditorSDK>) =
         })
     })
 
-    commands.registerCommand(`export.selected.as.json`, async (params: { blockIds: number[] }) => {
+    commands.registerCommand(`imgly.block.download.selected.as.json`, async (params: { blockIds: number[] }) => {
         let blockIds = params.blockIds ?? block.findAllSelected()
         if (blockIds.length === 0) {
             blockIds = [scene.get()!]

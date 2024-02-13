@@ -105,8 +105,8 @@
 - [ ] Add: Open the libraries and choose 
   - [ ] Add ${List all Asset Libraries}
 
-- [ ] Save As
-  - [ ] Save {Scene, Selected} As {SVG, PNG, JPEG, PDF, Component} to {Clipboard, File, Console, S3, Asset Library}
+- [x] Save As
+  - [x] Save {Scene, Selected} As {SVG, PNG, JPEG, PDF, Component} to {Clipboard, File, Console, S3, Asset Library}
 
 
 - [ ] Share to

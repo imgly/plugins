@@ -11,10 +11,13 @@ import { downloadBlocks } from "./utils/download";
 import PolyfillCommandsPlugin, { WithCommands } from "@imgly/plugin-commands-polyfill"
 import BackgroundRemovalPlugin from '@imgly/plugin-background-removal-web';
 import VectorizerPlugin from '@imgly/plugin-vectorizer-web';
-// IMGLY Commands
-import { registerLifecycleCommands } from "./plugins/imgly-commands/lifecycle";
-import { registerDebugCommands } from "./plugins/imgly-commands/debug";
-import { registerExportCommands } from "./plugins/imgly-commands/export";
+import ImglyCommandsPlugin from "./plugins/imgly-commands";
+
+
+// i18n fake 
+import i18n from "./utils/i18n";
+import translations from "./plugins/imgly-commands/translations/translations";
+i18n.setTranslations(translations)
 
 
 declare global {
@@ -53,7 +56,6 @@ function App() {
       "callbacks.onSave": async (str: string) => downloadBlocks(cesdkRef.current!, [new Blob([str])], { mimeType: 'application/imgly' }),
       "callbacks.onExport": async (blobs: Array<Blob>, options: any) => downloadBlocks(cesdkRef.current!, blobs, { mimeType: options.mimeType, pages: options.pages }),
       "callbacks.onLoad": "upload",
-      
       // devMode: true,
       "theme": "dark",
       "role": 'Creator',
@@ -68,19 +70,32 @@ function App() {
   const initCallback = async (_cesdk: CreativeEditorSDK) => {
     const cesdk = _cesdk as WithCommands<CreativeEditorSDK>;
     window.cesdk = cesdkRef.current = cesdk
+
+    
+    // Init Scene Programatically
+    await cesdk.createDesignScene();
+    cesdk.engine.scene.setDesignUnit("Pixel");  // 
+    
+    // Plugins
+
+    const polyfillCommandsPlugin  = PolyfillCommandsPlugin()
+    const vectorizerPlugin = VectorizerPlugin()
+    const backgroundRemovalPlugin = BackgroundRemovalPlugin()
+    const imglyCommandsPlugin = ImglyCommandsPlugin()
+    // Workaround and we need to find a better way. Probably we need to have i18n be part of the sdk
+    i18n.setTranslations(vectorizerPlugin.contributes.i18n)
+
     // Register Plguins 
     await Promise.all([
       cesdk.addDefaultAssetSources(),
       cesdk.addDemoAssetSources({ sceneMode: "Design" }),
-      cesdk.unstable_addPlugin(PolyfillCommandsPlugin()),
-      cesdk.unstable_addPlugin(VectorizerPlugin()),
-      cesdk.unstable_addPlugin(BackgroundRemovalPlugin()),
+      cesdk.unstable_addPlugin(polyfillCommandsPlugin),
+      cesdk.unstable_addPlugin(imglyCommandsPlugin),
+      cesdk.unstable_addPlugin(vectorizerPlugin),
+      cesdk.unstable_addPlugin(backgroundRemovalPlugin),
     ]);
 
-    // Commands -> Move to plugins
-    registerLifecycleCommands(cesdk)
-    registerDebugCommands(cesdk)
-    registerExportCommands(cesdk)
+    console.log("Commands", cesdk.engine.polyfill_commands.listCommands())
 
     // Ui components
     cesdk.ui.unstable_registerComponent("plugin.imgly.commandpalette", commandPaletteButton);
@@ -92,11 +107,6 @@ function App() {
     const newCanvasMenuItems = ["plugin.imgly.commandpalette", ...canvasMenuItems];
     cesdk.ui.unstable_setCanvasMenuOrder(newCanvasMenuItems)
 
-
-    // Init Scene Programatically
-    
-    await cesdk.createDesignScene();
-    cesdk.engine.scene.setDesignUnit("Pixel");  // 
 
 
     // react components
@@ -152,7 +162,8 @@ const generateCommandItemsfromCESDK = (cesdk: WithCommands<CreativeEditorSDK>): 
     .polyfill_commands
     .listCommands()
     .map((cmdId: string) => {
-      const titel = cmdId // this comes from the metadata
+      const titel = i18n.t(cmdId) // this comes from the metadata
+      console.log(titel)
       return {
         id: cmdId,
         children: titel,

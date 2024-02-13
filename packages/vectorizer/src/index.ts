@@ -17,14 +17,15 @@ import {
 
 
 export interface PluginConfiguration {
-  // uploader ? 
+  logger?: { log: (message: string) => void, debug: (message: string) => void, error: (message: string) => void, trace: (message: string) => void }
 }
 
 export { Manifest };
 
 export default (pluginConfiguration: PluginConfiguration = {}) => {
+  const logger = pluginConfiguration.logger
   return {
-    manifest: Manifest,
+    ...Manifest,
     initialize(engine: CreativeEngine) {
       // it is unclear for a user which one to call and what happens and if we have to put code in both or just one
       // we should have a clear separation of concerns
@@ -38,11 +39,11 @@ export default (pluginConfiguration: PluginConfiguration = {}) => {
       const engine = cesdk.engine;
       // @ts-ignore
       if (!cesdk.engine.polyfill_commands) {
-        console.error("Polyfill engine.engine.polyfill_commands not available!")
+        logger?.error("Polyfill engine.engine.polyfill_commands not available!")
         return;
       }
 
-      console.log("Subscribing to events");
+      logger?.trace("Subscribing to events");
       engine.event.subscribe([], async (events) => {
         events
           .filter(({ block: blockId }) => engine.block.isValid(blockId) && engine.block.hasMetadata(blockId, PLUGIN_ID))
@@ -57,7 +58,7 @@ export default (pluginConfiguration: PluginConfiguration = {}) => {
       });
 
       //@ts-ignore
-      console.log("checking if engine has polyfill_commands", cesdk.engine.polyfill_commands ? "yes" : "no")
+      logger?.trace("checking if engine has polyfill_commands", cesdk.engine.polyfill_commands ? "yes" : "no")
 
       engine.event.subscribe([], async (events) => {
         events
@@ -66,9 +67,9 @@ export default (pluginConfiguration: PluginConfiguration = {}) => {
           .forEach(e => handleUpdateEvent(engine, e.block))
       });
 
-      console.info("Registering plugin command")
+      logger?.trace("Registering plugin command")
       Object.keys(commands).forEach((command) => {
-        console.info(`Registering action: ${command}`)
+        logger?.trace(`Registering action: ${command}`)
         // @ts-ignore
         const func = commands[command];
         // @ts-ignore
@@ -78,11 +79,11 @@ export default (pluginConfiguration: PluginConfiguration = {}) => {
         );
       })
 
-      console.info("Registering plugin I18N translations")
+      logger?.trace("Registering plugin I18N translations")
       cesdk.setTranslations(Manifest.contributes.i18n);
 
 
-      console.info("Registering plugin UI components")
+      logger?.trace("Registering plugin UI components")
       const components = ui(cesdk)
 
       Object.keys(components).forEach((componentId) => {
@@ -94,7 +95,7 @@ export default (pluginConfiguration: PluginConfiguration = {}) => {
       // DEFAULTS
       // define what blocks the component button is enabled for
       // WHERE IS THIS USED? AND HOW DOES IT WORK? It seems the button is shown no matter what.
-      console.info("Enabling plugin component button for supported blocks")
+      logger?.trace("Enabling plugin component button for supported blocks")
       cesdk.feature.unstable_enable(PLUGIN_COMPONENT_BUTTON_ID, (context: any) => {
         return areBlocksSupported(engine, engine.block.findAllSelected())
       })
@@ -104,7 +105,7 @@ export default (pluginConfiguration: PluginConfiguration = {}) => {
       cesdk.feature.unstable_enable(PLUGIN_ACTION_VECTORIZE_LABEL, false);
 
 
-      console.info("Changing canvas menu order")
+      logger?.trace("Changing canvas menu order")
       const canvasMenuEntries = [
         PLUGIN_COMPONENT_BUTTON_ID,
         ...cesdk.ui.unstable_getCanvasMenuOrder()
