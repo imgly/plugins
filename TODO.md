@@ -30,3 +30,19 @@
 - `pages` should have design units
 - `pages` should have their type e.g. video vs static
 - `docuements` are just groups and as such leverage multi-editing
+
+
+- How to work with `scopes` and `features`. Can I define custom scopes? Do we handle scopes in `enabledFeature
+- There seems to be no API like `findAllScopes()` to enumerate scopes
+- Is there an option to add customs scopes. 
+- `isEnableFeature` should be evaluated by the UI and the commands already?
+- I think scopes 
+- `block.ungroup(bId)` should return the Ids of the items in the group
+- block has no `getScope` and `setScope` to define the hierarchies. Here is an issue when dealing with hiearchies. We need to have the same thing available as with global scopes
+  - Editor : Allow, Defer, Deny
+    - Scene: Allow, Defer, Deny
+      - Collection: Allow, Defer, Deny
+        - Element: Allow, (Defer,) Deny
+
+
+- `getEffects` api seems unsimilar to all `findAllScopes` etc. Maybe

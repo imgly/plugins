@@ -1,12 +1,13 @@
 import CreativeEditorSDK, { CreativeEngine } from '@cesdk/cesdk-js';
 import Manifest from './manifest';
+export interface Logger {
+    log: (message: string) => void;
+    debug: (message: string) => void;
+    error: (message: string) => void;
+    trace: (message: string) => void;
+}
 export interface PluginConfiguration {
-    logger?: {
-        log: (message: string) => void;
-        debug: (message: string) => void;
-        error: (message: string) => void;
-        trace: (message: string) => void;
-    };
+    logger?: Logger;
 }
 export { Manifest };
 declare const _default: (pluginConfiguration?: PluginConfiguration) => {

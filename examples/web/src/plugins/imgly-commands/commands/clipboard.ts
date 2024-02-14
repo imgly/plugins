@@ -1,12 +1,12 @@
 import CreativeEditorSDK, { type MimeType } from "@cesdk/cesdk-js";
-import { type WithCommands } from "@imgly/plugin-commands-polyfill";
+import { type CommandsType } from "@imgly/plugin-commands-polyfill";
 
 
 
-export const registerClipboardCommands = (cesdk: WithCommands<CreativeEditorSDK>) => {
+export const registerClipboardCommands = (cesdk: CreativeEditorSDK & CommandsType) => {
 
     const { block, scene } = cesdk.engine
-    const commands = cesdk.engine.polyfill_commands
+    const commands = cesdk.engine.commands!
 
 
     commands.registerCommand(`imgly.block.clipboard.selected.as.png`, async (params: { blockIds: number[] }) => {

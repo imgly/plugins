@@ -8,7 +8,6 @@ type Props = {
 }
 export default function CreativeEditorSDKComponent(props: Props) {
     const cesdk_container = useRef(null);
-    // console.log("Properties", props.config)
 
     const [_, setCesdk] = useState<CreativeEditorSDK | undefined>();
 
@@ -24,7 +23,6 @@ export default function CreativeEditorSDKComponent(props: Props) {
                     instance.dispose();
                     return;
                 }
-                console.log("Created CESDK instance")
                 setCesdk(instance);
                 await props.callback(instance);
             }

@@ -2,12 +2,11 @@ import "react-cmdk/dist/cmdk.css";
 import CMDK, { filterItems, getItemIndex } from "react-cmdk";
 import { useState, useEffect } from "react";
 
-
 // https://github.com/albingroen/react-cmdk
-export const CommandPalette = (params: { items: Array<any>, isOpen: boolean }) => {
+export const CommandPalette = (params: { items: Array<any>, isOpen: boolean, setIsOpen: (val: boolean) => void }) => {
     const [page, _setPage] = useState<"root">("root");
     const [search, setSearch] = useState("");
-    const [isOpen, setIsOpen] = useState<boolean>(false);
+    const { isOpen, setIsOpen } = params
     const { items } = params
 
     // debugger
@@ -22,9 +21,7 @@ export const CommandPalette = (params: { items: Array<any>, isOpen: boolean }) =
                 e.preventDefault();
                 e.stopPropagation();
 
-                setIsOpen((currentValue) => {
-                    return !currentValue;
-                });
+                setIsOpen(!isOpen);
             }
         }
 
@@ -41,7 +38,7 @@ export const CommandPalette = (params: { items: Array<any>, isOpen: boolean }) =
             {
                 heading: undefined,
                 id: "turnInto",
-                items: items?? []
+                items: items ?? []
             }
         ],
         search

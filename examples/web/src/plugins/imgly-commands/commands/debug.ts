@@ -1,11 +1,11 @@
 import CreativeEditorSDK from "@cesdk/cesdk-js";
-import { type WithCommands } from "@imgly/plugin-commands-polyfill";
+import { type CommandsType } from "@imgly/plugin-commands-polyfill";
 import { readPropValue } from "../../../utils/cesdk";
 
 
-export const registerDebugCommands = (cesdk: WithCommands<CreativeEditorSDK>) => {
-    const { asset, block, variable, editor, scene} = cesdk.engine
-    const commands = cesdk.engine.polyfill_commands
+export const registerDebugCommands = (cesdk: CreativeEditorSDK & CommandsType) => {
+    const { asset, block, variable, editor, scene } = cesdk.engine
+    const commands = cesdk.engine.commands!;
 
     commands.registerCommand("imgly.debug.log.metadata", async (params: { blockIds?: number[] }) => {
         const blockIds = params.blockIds ?? block.findAllSelected()
@@ -54,7 +54,7 @@ export const registerDebugCommands = (cesdk: WithCommands<CreativeEditorSDK>) =>
 
 
 
-    commands.registerCommand("imgly.debug.log.fill_properties", async (params: { blockIds?: number[] }) => {
+    commands.registerCommand("imgly.debug.log.fill", async (params: { blockIds?: number[] }) => {
         const blockIds = params.blockIds ?? block.findAllSelected()
         blockIds.forEach((bId: number) => {
             const fId = block.getFill(bId)
@@ -122,7 +122,7 @@ export const registerDebugCommands = (cesdk: WithCommands<CreativeEditorSDK>) =>
 
 
 
-    commands.registerCommand("imgly.debug.log.scene_properties", async (_params: { blockIds?: number[] }) => {    
+    commands.registerCommand("imgly.debug.log.scene", async (_params: { blockIds?: number[] }) => {
         console.debug("Settings", {
             designUnit: scene.getDesignUnit(),
             mode: scene.getMode(),
@@ -130,6 +130,73 @@ export const registerDebugCommands = (cesdk: WithCommands<CreativeEditorSDK>) =>
 
     })
 
+    commands.registerCommand("imgly.debug.log.scopes", async (params: { blockIds?: number[] }) => {
+        // https://img.ly/docs/cesdk/engine/guides/scopes/
+        const scopeNames = [
+            "layer/move",
+            "layer/resize",
+            "layer/rotate",
+            "layer/crop",
+            "layer/clipping",
+            "layer/opacity",
+            "layer/blendMode",
+            "layer/visibility",
+            "appearance/adjustments",
+            "appearance/filter",
+            "appearance/effect",
+            "appearance/blur",
+            "appearance/shadow",
+            "lifecycle/destroy", // delete
+            "lifecycle/duplicate",
+            "editor/add",
+            "editor/select",
+            "fill/change",
+            "stroke/change",
+            "shape/change",
+            "text/edit",
+            // "text/change", // would be replace from library
+            "text/character"
+        ]
+        const definition = new Map<string, { value: 'Allow'| 'Deny' | 'Defer' }>()
+        scopeNames.forEach((scope: string) => {
+            const value = editor.getGlobalScope(scope) 
+            definition.set(scope,{value})
+        })
+        console.debug("GlobalScopes", definition)
+
+        const blockIds = params.blockIds ?? block.findAllSelected()
+        blockIds.forEach((id: number) => {
+            const definition = new Map<string, { value: boolean}>()
+            scopeNames.forEach((scope: string) => {
+                const value = block.isAllowedByScope(id, scope) 
+                definition.set(scope,{value})
+            })
+            console.debug("Scopes for block", id, definition)
+        })
+    })
 
 
+
+
+    commands.registerCommand("imgly.debug.log.effects", async (params: { blockIds?: number[] }) => {
+        const blockIds = params.blockIds ?? block.findAllSelected()
+        blockIds.forEach((id: number) => {
+            block.getEffects(id).forEach((eId: number) => {
+                const props = block.findAllProperties(eId);
+                let propDefinition = new Map<string, { type: string, value: any }>()
+                props.forEach((propKey: string) => {
+                    if (!block.isPropertyReadable(propKey)) return;
+                    const propType = block.getPropertyType(propKey)
+                    const propValue = readPropValue(cesdk, eId, propKey, propType)
+                    propDefinition.set(propKey, { type: propType, value: propValue })
+    
+                })
+    
+                console.debug("Effect for block", id, propDefinition)
+            })
+
+        })
+
+    })
+    
 }

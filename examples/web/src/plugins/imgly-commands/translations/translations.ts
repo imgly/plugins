@@ -17,13 +17,23 @@ const en = {
 
     "imgly.debug.clear.metadata": "Debug: Clear Metadata",
 
-    "imgly.debug.log.metadata": "Debug: Console log Metadata",
-    "imgly.debug.log.block_properties": "Debug: Console log Block Properties",
-    "imgly.debug.log.fill_properties": "Debug: Console log Fill Properties",
-    "imgly.debug.log.scene_properties": "Debug: Console log Scene Properties",
+    "imgly.debug.log.metadata": "Debug: Log Metadata",
+    "imgly.debug.log.block": "Debug: Log Block",
+    "imgly.debug.log.fill": "Debug: Log Fill",
+    "imgly.debug.log.scene": "Debug: Log Scene",
+    "imgly.debug.log.scopes": "Debug: Log Scopes",
     "imgly.debug.log.assets": "Debug: Log Assets",
     "imgly.debug.log.variables": "Debug: Log Variables",
     "imgly.debug.log.editor.settings": "Debug: Log Editor Settings",
+
+    "imgly.block.container.group": "Container: Group",
+    "imgly.block.container.ungroup": "Container: Ungroup",
+    "imgly.block.combine.union": "Combine: Union",
+    "imgly.block.combine.difference": "Combine: Subtract",
+    "imgly.block.combine.intersection": "Combine: Intersect",
+    "imgly.block.combine.xor": "Combine: Exclude",
+    
+
 }
 
 export default {

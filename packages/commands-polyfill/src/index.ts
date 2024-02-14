@@ -11,14 +11,13 @@ export { Manifest };
 
 export default () => {
   return {
+    ...Manifest,
     initializeUserInterface({ cesdk }: { cesdk: CreativeEditorSDK }) {
       polyfillWithCommands(cesdk);
     }
   };
 };
-
-
-export type WithCommands<T> = T & { engine: CreativeEngine & { polyfill_commands: Commands } };
+export type CommandsType =  { engine: CreativeEngine & { commands?: Commands } }
 
 export type CommandType = (params: any) => Promise<void>;
 
@@ -44,8 +43,8 @@ export class Commands {
 }
 export function polyfillWithCommands(sdk: CreativeEditorSDK) {
   // @ts-ignore
-  if (!sdk.engine.polyfill_commands) {
+  if (!sdk.engine.commands) {
     // @ts-ignore
-    sdk.engine.polyfill_commands = new Commands();
+    sdk.engine.commands = new Commands();
   }
 }

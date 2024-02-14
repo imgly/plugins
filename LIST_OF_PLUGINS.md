@@ -189,4 +189,5 @@
 
 ## Other
 - [ ] Reduce colors to 1...n 
-- [ ] Subtitel STR colors 
+- [ ] Subtitle STR colors 
+- [ ] Upload scenes, Upload components

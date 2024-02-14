@@ -7,11 +7,12 @@ declare const _default: () => {
     initializeUserInterface({ cesdk }: {
         cesdk: CreativeEditorSDK;
     }): void;
+    id: string;
 };
 export default _default;
-export type WithCommands<T> = T & {
+export type CommandsType = {
     engine: CreativeEngine & {
-        polyfill_commands: Commands;
+        commands?: Commands;
     };
 };
 export type CommandType = (params: any) => Promise<void>;

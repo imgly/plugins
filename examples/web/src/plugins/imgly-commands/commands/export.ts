@@ -1,12 +1,11 @@
 import CreativeEditorSDK, { type MimeType } from "@cesdk/cesdk-js";
-import { type WithCommands } from "@imgly/plugin-commands-polyfill";
+import { type CommandsType } from "@imgly/plugin-commands-polyfill";
 import { downloadBlob } from "../../../utils/download";
 
-export const registerDownloadCommands = (cesdk: WithCommands<CreativeEditorSDK>) => {
+export const registerDownloadCommands = (cesdk: CreativeEditorSDK & CommandsType) => {
 
     const { block, scene } = cesdk.engine
-    const commands = cesdk.engine.polyfill_commands
-
+    const commands = cesdk.engine.commands!;
     const types = ["image/png", "image/jpeg", "image/webp", "image/x-tga", "application/pdf", "application/octet-stream"]
 
     types.forEach((mimeType: string) => {

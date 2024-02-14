@@ -34,7 +34,7 @@ export default (cesdk: CreativeEditorSDK) => {
             loadingProgress: undefined, // creates infinite spinner
             onClick: () => cesdk
                 // @ts-ignore
-                .engine.polyfill_commands
+                .engine.commands
                 ?.executeCommand(PLUGIN_ACTION_VECTORIZE_LABEL, { blockIds: candidates })
         });
     }

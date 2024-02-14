@@ -15,15 +15,16 @@ export default {
         commands: {
             // maybe we don't need the manifest after all? 
             [PLUGIN_ACTION_VECTORIZE_LABEL]: {
-                title: "Turn into Vectorpath", //default when no translation is given
+                // title: "Convert into Vector", //default when no translation is given
             }
         },
         i18n: {
             en: {
-                [PLUGIN_ACTION_VECTORIZE_LABEL]: 'Turn into Vectorpaths'
+                [PLUGIN_ACTION_VECTORIZE_LABEL]: 'Convert into Vectorpath'
+                
             },
             de: {
-                [PLUGIN_ACTION_VECTORIZE_LABEL]: 'Wandle in Vectorpfade'
+                [PLUGIN_ACTION_VECTORIZE_LABEL]: 'Konvertiere in Vectorpfade'
             }
         }
     }

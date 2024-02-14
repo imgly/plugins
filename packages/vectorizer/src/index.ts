@@ -15,9 +15,10 @@ import {
   areBlocksSupported
 } from './utils';
 
+export interface Logger { log: (message: string) => void, debug: (message: string) => void, error: (message: string) => void, trace: (message: string) => void }
 
 export interface PluginConfiguration {
-  logger?: { log: (message: string) => void, debug: (message: string) => void, error: (message: string) => void, trace: (message: string) => void }
+  logger?: Logger
 }
 
 export { Manifest };
@@ -38,8 +39,8 @@ export default (pluginConfiguration: PluginConfiguration = {}) => {
       // const engine = polyfillEngineWithCommands(cesdk.engine);
       const engine = cesdk.engine;
       // @ts-ignore
-      if (!cesdk.engine.polyfill_commands) {
-        logger?.error("Polyfill engine.engine.polyfill_commands not available!")
+      if (!cesdk.engine.commands) {
+        logger?.error("Polyfill engine.engine.commands not available!")
         return;
       }
 
@@ -58,7 +59,7 @@ export default (pluginConfiguration: PluginConfiguration = {}) => {
       });
 
       //@ts-ignore
-      logger?.trace("checking if engine has polyfill_commands", cesdk.engine.polyfill_commands ? "yes" : "no")
+      logger?.trace("checking if engine has commands", cesdk.engine.commands ? "yes" : "no")
 
       engine.event.subscribe([], async (events) => {
         events
@@ -73,7 +74,7 @@ export default (pluginConfiguration: PluginConfiguration = {}) => {
         // @ts-ignore
         const func = commands[command];
         // @ts-ignore
-        cesdk.engine.polyfill_commands?.registerCommand(
+        cesdk.engine.commands?.registerCommand(
           command,
           async (params: any) => await func(cesdk, params)
         );

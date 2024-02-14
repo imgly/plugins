@@ -1,7 +1,7 @@
 import type CreativeEditorSDK from '@cesdk/cesdk-js';
 import Translations from './translations/translations';
 
-import { type WithCommands } from "@imgly/plugin-commands-polyfill"
+import { type CommandsType } from "@imgly/plugin-commands-polyfill"
 
 
 // IMGLY Commands
@@ -38,7 +38,8 @@ export default () => {
     return {
         ...Manifest,
         initializeUserInterface({ cesdk }: { cesdk: CreativeEditorSDK }) {
-            const _cesdk = cesdk as WithCommands<CreativeEditorSDK>
+            const _cesdk = cesdk as CreativeEditorSDK & CommandsType
+            cesdk.setTranslations(Translations);
             registerLifecycleCommands(_cesdk)
             registerDebugCommands(_cesdk)
             registerDownloadCommands(_cesdk)

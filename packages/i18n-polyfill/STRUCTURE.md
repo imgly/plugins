@@ -1,0 +1,1 @@
+<!-- https://nextjs.org/docs/getting-started/project-structure -->
