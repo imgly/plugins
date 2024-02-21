@@ -54,8 +54,8 @@ export type PluginStatusMetadata =
   | PluginStatusProcessing
   | PluginStatusProcessed;
 
-export type DefaultLocation = 'canvasMenu';
+export type Location = 'canvasMenu';
 
 export interface UserInterfaceConfiguration {
-  defaultLocations?: DefaultLocation | DefaultLocation[];
+  locations?: Location | Location[];
 }

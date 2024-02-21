@@ -6,7 +6,7 @@ import {
   FEATURE_ID,
   PLUGIN_ID
 } from './constants';
-import { DefaultLocation, UserInterfaceConfiguration } from './types';
+import { Location, UserInterfaceConfiguration } from './types';
 import { getPluginMetadata, setPluginMetadata } from './utils';
 
 const REMOVE_BACKGROUND_ACTION_I18N_KEY = `plugin.${PLUGIN_ID}.action.removeBackground`;
@@ -90,14 +90,14 @@ export function registerComponents(
 }
 
 function hasDefaultLocation(
-  location: DefaultLocation,
+  location: Location,
   configuration: UserInterfaceConfiguration
 ) {
   return (
-    configuration.defaultLocations &&
-    (Array.isArray(configuration.defaultLocations)
-      ? configuration.defaultLocations
-      : [configuration.defaultLocations]
+    configuration.locations &&
+    (Array.isArray(configuration.locations)
+      ? configuration.locations
+      : [configuration.locations]
     ).includes(location)
   );
 }
