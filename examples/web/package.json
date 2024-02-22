@@ -4,8 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --clearScreen=false",
-    "build": "tsc && vite build"
+    "build": "tsc && vite build",
+    "clean": "npx rimraf dist",
+    "dev": "vite --clearScreen=false"
   },
   "dependencies": {
     "@imgly/plugin-background-removal-web": "*",
