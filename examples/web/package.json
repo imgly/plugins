@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@imgly/plugin-background-removal-web": "*",
-    "@cesdk/cesdk-js": "^1.20.0",
+    "@cesdk/cesdk-js": "^1.21.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
