@@ -13,6 +13,7 @@ function App() {
           CreativeEditorSDK.create(domElement, {
             license: import.meta.env.VITE_CESDK_LICENSE_KEY,
             callbacks: { onUpload: "local" },
+            ui: { elements: { panels: { settings: true } } },
           }).then(async (instance) => {
             // @ts-ignore
             window.cesdk = instance;
