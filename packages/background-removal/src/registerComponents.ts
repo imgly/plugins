@@ -3,24 +3,36 @@ import type CreativeEditorSDK from '@cesdk/cesdk-js';
 import {
   CANVAS_MENU_COMPONENT_BUTTON_ID,
   CANVAS_MENU_COMPONENT_ID,
-  FEATURE_ID
+  FEATURE_ID,
+  PLUGIN_ID
 } from './constants';
-import {
-  getBGRemovalMetadata,
-  setBGRemovalMetadata,
-  toggleBackgroundRemovalData
-} from './utils';
+import { Location, UserInterfaceConfiguration } from './types';
+import { getPluginMetadata, setPluginMetadata } from './utils';
+
+const REMOVE_BACKGROUND_ACTION_I18N_KEY = `plugin.${PLUGIN_ID}.action.removeBackground`;
 
 /**
  * Registers the components that can be used to remove the background of
  * a block.
  */
-export function registerComponents(cesdk: CreativeEditorSDK) {
-  // Always prepend the registered component to the canvas menu order.
-  cesdk.ui.unstable_setCanvasMenuOrder([
-    CANVAS_MENU_COMPONENT_ID,
-    ...cesdk.ui.unstable_getCanvasMenuOrder()
-  ]);
+export function registerComponents(
+  cesdk: CreativeEditorSDK,
+  configuration: UserInterfaceConfiguration = {}
+) {
+  if (hasDefaultLocation('canvasMenu', configuration)) {
+    // Always prepend the registered component to the canvas menu order.
+    cesdk.ui.unstable_setCanvasMenuOrder([
+      CANVAS_MENU_COMPONENT_ID,
+      ...cesdk.ui.unstable_getCanvasMenuOrder()
+    ]);
+  }
+
+  cesdk.setTranslations({
+    en: {
+      [REMOVE_BACKGROUND_ACTION_I18N_KEY]: 'BG Removal'
+    }
+  });
+
   cesdk.ui.unstable_registerComponent(
     CANVAS_MENU_COMPONENT_ID,
     ({ builder: { Button }, engine }) => {
@@ -34,9 +46,8 @@ export function registerComponents(cesdk: CreativeEditorSDK) {
 
       const [id] = engine.block.findAllSelected();
 
-      const metadata = getBGRemovalMetadata(cesdk, id);
+      const metadata = getPluginMetadata(cesdk, id);
 
-      const isActive = metadata.status === 'PROCESSED_WITHOUT_BG';
       const isLoading = metadata.status === 'PROCESSING';
       const isDisabled =
         metadata.status === 'PENDING' || metadata.status === 'PROCESSING';
@@ -57,34 +68,36 @@ export function registerComponents(cesdk: CreativeEditorSDK) {
       }
 
       Button(CANVAS_MENU_COMPONENT_BUTTON_ID, {
-        label: 'BG Removal',
+        label: REMOVE_BACKGROUND_ACTION_I18N_KEY,
         icon: '@imgly/icons/BGRemove',
-        isActive,
         isLoading,
         isDisabled,
         loadingProgress,
         onClick: () => {
-          switch (metadata.status) {
-            case 'IDLE':
-            case 'ERROR': {
-              setBGRemovalMetadata(cesdk, id, {
-                status: 'PENDING'
-              });
-              break;
-            }
-
-            case 'PROCESSED_WITHOUT_BG':
-            case 'PROCESSED_WITH_BG': {
-              toggleBackgroundRemovalData(cesdk, id);
-              break;
-            }
-
-            default: {
-              // We do not care about the other states in the button
-            }
+          if (
+            metadata.status === 'IDLE' ||
+            metadata.status === 'ERROR' ||
+            metadata.status === 'PROCESSED'
+          ) {
+            setPluginMetadata(cesdk, id, {
+              status: 'PENDING'
+            });
           }
         }
       });
     }
+  );
+}
+
+function hasDefaultLocation(
+  location: Location,
+  configuration: UserInterfaceConfiguration
+) {
+  return (
+    configuration.locations &&
+    (Array.isArray(configuration.locations)
+      ? configuration.locations
+      : [configuration.locations]
+    ).includes(location)
   );
 }

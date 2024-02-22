@@ -1,35 +1,35 @@
 import type CreativeEditorSDK from '@cesdk/cesdk-js';
 import isEqual from 'lodash/isEqual';
 
+import { PLUGIN_ID } from './constants';
 import {
-  BGRemovalError,
-  BGRemovalMetadata,
-  BGRemovalProcessed,
-  BGRemovalProcessing
+  PluginStatusError,
+  PluginStatusMetadata,
+  PluginStatusProcessed,
+  PluginStatusProcessing
 } from './types';
-import { BG_REMOVAL_ID } from './constants';
 
 /**
- * Sets the metadata for the background removal state.
+ * Sets the metadata for the plugin state.
  */
-export function setBGRemovalMetadata(
+export function setPluginMetadata(
   cesdk: CreativeEditorSDK,
   id: number,
-  metadata: BGRemovalMetadata
+  metadata: PluginStatusMetadata
 ) {
-  cesdk.engine.block.setMetadata(id, BG_REMOVAL_ID, JSON.stringify(metadata));
+  cesdk.engine.block.setMetadata(id, PLUGIN_ID, JSON.stringify(metadata));
 }
 
 /**
- * Returns the current metadata for the background removal state. If no metadata
+ * Returns the current metadata for the plugin state. If no metadata
  * is set on the given block, it will return an IDLE state.
  */
-export function getBGRemovalMetadata(
+export function getPluginMetadata(
   cesdk: CreativeEditorSDK,
   id: number
-): BGRemovalMetadata {
-  if (cesdk.engine.block.hasMetadata(id, BG_REMOVAL_ID)) {
-    return JSON.parse(cesdk.engine.block.getMetadata(id, BG_REMOVAL_ID));
+): PluginStatusMetadata {
+  if (cesdk.engine.block.hasMetadata(id, PLUGIN_ID)) {
+    return JSON.parse(cesdk.engine.block.getMetadata(id, PLUGIN_ID));
   } else {
     return {
       status: 'IDLE'
@@ -38,11 +38,11 @@ export function getBGRemovalMetadata(
 }
 
 /**
- * If BG Removal metadata is set, it will be cleared.
+ * If plugin metadata is set, it will be cleared.
  */
-export function clearBGRemovalMetadata(cesdk: CreativeEditorSDK, id: number) {
-  if (cesdk.engine.block.hasMetadata(id, BG_REMOVAL_ID)) {
-    cesdk.engine.block.removeMetadata(id, BG_REMOVAL_ID);
+export function clearPluginMetadata(cesdk: CreativeEditorSDK, id: number) {
+  if (cesdk.engine.block.hasMetadata(id, PLUGIN_ID)) {
+    cesdk.engine.block.removeMetadata(id, PLUGIN_ID);
   }
 }
 
@@ -54,7 +54,7 @@ export function clearBGRemovalMetadata(cesdk: CreativeEditorSDK, id: number) {
 export function isDuplicate(
   cesdk: CreativeEditorSDK,
   blockId: number,
-  metadata: BGRemovalMetadata
+  metadata: PluginStatusMetadata
 ): boolean {
   if (!cesdk.engine.block.isValid(blockId)) return false;
   if (
@@ -84,14 +84,14 @@ export function fixDuplicateMetadata(
   blockId: number
 ) {
   const fillId = cesdk.engine.block.getFill(blockId);
-  const metadata = getBGRemovalMetadata(cesdk, blockId);
+  const metadata = getPluginMetadata(cesdk, blockId);
   if (
     metadata.status === 'IDLE' ||
     metadata.status === 'PENDING' ||
     metadata.status === 'ERROR'
   )
     return;
-  setBGRemovalMetadata(cesdk, blockId, {
+  setPluginMetadata(cesdk, blockId, {
     ...metadata,
     blockId,
     fillId
@@ -111,7 +111,7 @@ export function isMetadataConsistent(
   // In case the block was removed, we just abort and mark it
   // as reset by returning true
   if (!cesdk.engine.block.isValid(blockId)) return false;
-  const metadata = getBGRemovalMetadata(cesdk, blockId);
+  const metadata = getPluginMetadata(cesdk, blockId);
   if (metadata.status === 'IDLE' || metadata.status === 'PENDING') return true;
 
   if (!cesdk.engine.block.hasFill(blockId)) return false;
@@ -145,10 +145,7 @@ export function isMetadataConsistent(
     const initialSourceSet = metadata.initialSourceSet;
     // If we have already processed the image, we need to check if the source set
     // we need to check against both source sets, the removed and the initial
-    if (
-      metadata.status === 'PROCESSED_WITH_BG' ||
-      metadata.status === 'PROCESSED_WITHOUT_BG'
-    ) {
+    if (metadata.status === 'PROCESSED') {
       const removedBackground = metadata.removedBackground;
       if (
         !isEqual(sourceSet, removedBackground) &&
@@ -162,10 +159,7 @@ export function isMetadataConsistent(
       }
     }
   } else {
-    if (
-      metadata.status === 'PROCESSED_WITH_BG' ||
-      metadata.status === 'PROCESSED_WITHOUT_BG'
-    ) {
+    if (metadata.status === 'PROCESSED') {
       if (
         imageFileURI !== metadata.initialImageFileURI &&
         imageFileURI !== metadata.removedBackground
@@ -182,62 +176,6 @@ export function isMetadataConsistent(
 }
 
 /**
- * Toggle between the background removed image and the original image if either
- * in the state "PROCESSED_WITH_BG" or "PROCESSED_WITHOUT_BG". Otherwise do
- * nothing.
- */
-export function toggleBackgroundRemovalData(
-  cesdk: CreativeEditorSDK,
-  blockId: number
-) {
-  const blockApi = cesdk.engine.block;
-  if (!blockApi.hasFill(blockId)) return; // Nothing to recover (no fill anymore)
-  const fillId = blockApi.getFill(blockId);
-
-  const metadata = getBGRemovalMetadata(cesdk, blockId);
-
-  if (metadata.status === 'PROCESSED_WITH_BG') {
-    setBGRemovalMetadata(cesdk, blockId, {
-      ...metadata,
-      status: 'PROCESSED_WITHOUT_BG'
-    });
-
-    if (typeof metadata.removedBackground === 'string') {
-      blockApi.setString(
-        fillId,
-        'fill/image/imageFileURI',
-        metadata.removedBackground
-      );
-    } else {
-      blockApi.setSourceSet(
-        fillId,
-        'fill/image/sourceSet',
-        metadata.removedBackground
-      );
-    }
-
-    cesdk.engine.editor.addUndoStep();
-  } else if (metadata.status === 'PROCESSED_WITHOUT_BG') {
-    setBGRemovalMetadata(cesdk, blockId, {
-      ...metadata,
-      status: 'PROCESSED_WITH_BG'
-    });
-
-    blockApi.setString(
-      fillId,
-      'fill/image/imageFileURI',
-      metadata.initialImageFileURI
-    );
-    blockApi.setSourceSet(
-      fillId,
-      'fill/image/sourceSet',
-      metadata.initialSourceSet
-    );
-    cesdk.engine.editor.addUndoStep();
-  }
-}
-
-/**
  * Recover the initial values to avoid the loading spinner and have the same
  * state as before the background removal was started.
  */
@@ -248,7 +186,7 @@ export function recoverInitialImageData(
   const blockApi = cesdk.engine.block;
   if (!blockApi.hasFill(blockId)) return; // Nothing to recover (no fill anymore)
 
-  const metadata = getBGRemovalMetadata(cesdk, blockId);
+  const metadata = getPluginMetadata(cesdk, blockId);
 
   if (metadata.status === 'PENDING' || metadata.status === 'IDLE') {
     return;
@@ -256,6 +194,7 @@ export function recoverInitialImageData(
 
   const initialSourceSet = metadata.initialSourceSet;
   const initialImageFileURI = metadata.initialImageFileURI;
+  const initialPreviewFileURI = metadata.initialPreviewFileURI;
 
   const fillId = getValidFill(cesdk, blockId, metadata);
   if (fillId == null) return;
@@ -265,6 +204,13 @@ export function recoverInitialImageData(
       fillId,
       'fill/image/imageFileURI',
       initialImageFileURI
+    );
+  }
+  if (initialPreviewFileURI) {
+    cesdk.engine.block.setString(
+      fillId,
+      'fill/image/previewFileURI',
+      initialPreviewFileURI
     );
   }
   if (initialSourceSet.length > 0) {
@@ -283,7 +229,7 @@ export function recoverInitialImageData(
 function getValidFill(
   cesdk: CreativeEditorSDK,
   blockId: number,
-  metadata: BGRemovalProcessing | BGRemovalError | BGRemovalProcessed
+  metadata: PluginStatusProcessing | PluginStatusError | PluginStatusProcessed
 ): number | undefined {
   if (
     !cesdk.engine.block.isValid(blockId) ||

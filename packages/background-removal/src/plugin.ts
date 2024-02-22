@@ -1,19 +1,21 @@
 import type CreativeEditorSDK from '@cesdk/cesdk-js';
 
+import type { Config as BackgroundRemovalConfiguration } from '@imgly/background-removal';
+import { FEATURE_ID, PLUGIN_ID } from './constants';
+import { enableFeatures } from './enableFeatures';
+import { processBackgroundRemoval } from './processBackgroundRemoval';
+import { registerComponents } from './registerComponents';
+import { UserInterfaceConfiguration } from './types';
 import {
-  clearBGRemovalMetadata,
+  clearPluginMetadata,
   fixDuplicateMetadata,
-  getBGRemovalMetadata,
+  getPluginMetadata,
   isDuplicate,
   isMetadataConsistent
 } from './utils';
-import { BG_REMOVAL_ID, FEATURE_ID } from './constants';
-import { registerComponents } from './registerComponents';
-import { enableFeatures } from './enableFeatures';
-import { processBackgroundRemoval } from './processBackgroundRemoval';
-import type { Config as BackgroundRemovalConfiguration } from '@imgly/background-removal';
 
 export interface PluginConfiguration {
+  ui?: UserInterfaceConfiguration;
   backgroundRemoval?: BackgroundRemovalConfiguration;
 }
 
@@ -32,13 +34,13 @@ export default (pluginConfiguration: PluginConfiguration = {}) => {
           const id = e.block;
           if (
             !cesdk.engine.block.isValid(id) ||
-            !cesdk.engine.block.hasMetadata(id, BG_REMOVAL_ID)
+            !cesdk.engine.block.hasMetadata(id, PLUGIN_ID)
           ) {
             return;
           }
 
           if (e.type === 'Created') {
-            const metadata = getBGRemovalMetadata(cesdk, id);
+            const metadata = getPluginMetadata(cesdk, id);
             if (isDuplicate(cesdk, id, metadata)) {
               fixDuplicateMetadata(cesdk, id);
             }
@@ -48,7 +50,7 @@ export default (pluginConfiguration: PluginConfiguration = {}) => {
         });
       });
 
-      registerComponents(cesdk);
+      registerComponents(cesdk, pluginConfiguration.ui);
       enableFeatures(cesdk);
     }
   };
@@ -63,7 +65,7 @@ async function handleUpdateEvent(
   blockId: number,
   configuration: BackgroundRemovalConfiguration
 ) {
-  const metadata = getBGRemovalMetadata(cesdk, blockId);
+  const metadata = getPluginMetadata(cesdk, blockId);
 
   switch (metadata.status) {
     case 'PENDING': {
@@ -78,10 +80,9 @@ async function handleUpdateEvent(
     }
 
     case 'PROCESSING':
-    case 'PROCESSED_WITH_BG':
-    case 'PROCESSED_WITHOUT_BG': {
+    case 'PROCESSED': {
       if (!isMetadataConsistent(cesdk, blockId)) {
-        clearBGRemovalMetadata(cesdk, blockId);
+        clearPluginMetadata(cesdk, blockId);
       }
       break;
     }

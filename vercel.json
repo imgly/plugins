@@ -1,0 +1,20 @@
+{
+  "buildCommand": "yarn build",
+  "installCommand": "yarn install",
+  "outputDirectory": "examples/web/dist",
+  "headers": [
+    {
+      "source": "/",
+      "headers": [
+        {
+          "key": "Cross-Origin-Opener-Policy",
+          "value": "same-origin"
+        },
+        {
+          "key": "Cross-Origin-Embedder-Policy",
+          "value": "require-corp"
+        }
+      ]
+    }
+  ]
+}

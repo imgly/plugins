@@ -1,18 +1,18 @@
 import type CreativeEditorSDK from '@cesdk/cesdk-js';
 import { type Source } from '@cesdk/cesdk-js';
 import {
-  segmentForeground,
   applySegmentationMask,
+  segmentForeground,
   type Config
 } from '@imgly/background-removal';
 
 import throttle from 'lodash/throttle';
 
 import {
-  getBGRemovalMetadata,
-  recoverInitialImageData,
+  getPluginMetadata,
   isMetadataConsistent,
-  setBGRemovalMetadata
+  recoverInitialImageData,
+  setPluginMetadata
 } from './utils';
 
 /**
@@ -38,18 +38,23 @@ export async function processBackgroundRemoval(
     fillId,
     'fill/image/imageFileURI'
   );
+  const initialPreviewFileURI = blockApi.getString(
+    fillId,
+    'fill/image/previewFileURI'
+  );
 
   try {
     // Clear values in the engine to trigger the loading spinner
     blockApi.setString(fillId, 'fill/image/imageFileURI', '');
     blockApi.setSourceSet(fillId, 'fill/image/sourceSet', []);
 
-    const metadata = getBGRemovalMetadata(cesdk, blockId);
-    setBGRemovalMetadata(cesdk, blockId, {
+    const metadata = getPluginMetadata(cesdk, blockId);
+    setPluginMetadata(cesdk, blockId, {
       ...metadata,
       version: PLUGIN_VERSION,
       initialSourceSet,
       initialImageFileURI,
+      initialPreviewFileURI,
       blockId,
       fillId,
       status: 'PROCESSING'
@@ -63,6 +68,12 @@ export async function processBackgroundRemoval(
             (a, b) => b.width * b.height - a.height * a.width
           )[0].uri
         : initialImageFileURI;
+
+    // If there is no initial preview file URI, set the current URI.
+    // It will be used as the image displayed while showing the loading spinner.
+    if (!initialPreviewFileURI) {
+      blockApi.setString(fillId, 'fill/image/previewFileURI', uriToProcess);
+    }
 
     // Creating the mask from the highest resolution image
     const mask = await segmentForeground(uriToProcess, configuration);
@@ -90,16 +101,19 @@ export async function processBackgroundRemoval(
         };
       });
 
-      setBGRemovalMetadata(cesdk, blockId, {
+      setPluginMetadata(cesdk, blockId, {
         version: PLUGIN_VERSION,
         initialSourceSet,
         initialImageFileURI,
+        initialPreviewFileURI,
         blockId,
         fillId,
-        status: 'PROCESSED_WITHOUT_BG',
+        status: 'PROCESSED',
         removedBackground: newSourceSet
       });
       blockApi.setSourceSet(fillId, 'fill/image/sourceSet', newSourceSet);
+      // TODO: Generate a thumb/preview uri
+      blockApi.setString(fillId, 'fill/image/previewFileURI', '');
     } else {
       // ImageFileURI code path
       // ======================
@@ -117,25 +131,29 @@ export async function processBackgroundRemoval(
         throw new Error('Could not upload BG removed image');
       }
 
-      setBGRemovalMetadata(cesdk, blockId, {
+      setPluginMetadata(cesdk, blockId, {
         version: PLUGIN_VERSION,
         initialSourceSet,
         initialImageFileURI,
+        initialPreviewFileURI,
         blockId,
         fillId,
-        status: 'PROCESSED_WITHOUT_BG',
+        status: 'PROCESSED',
         removedBackground: uploadedUrl
       });
       blockApi.setString(fillId, 'fill/image/imageFileURI', uploadedUrl);
+      // TODO: Generate a thumb/preview uri
+      blockApi.setString(fillId, 'fill/image/previewFileURI', '');
     }
     // Finally, create an undo step
     cesdk.engine.editor.addUndoStep();
   } catch (error) {
     if (cesdk.engine.block.isValid(blockId)) {
-      setBGRemovalMetadata(cesdk, blockId, {
+      setPluginMetadata(cesdk, blockId, {
         version: PLUGIN_VERSION,
         initialSourceSet,
         initialImageFileURI,
+        initialPreviewFileURI,
         blockId,
         fillId,
         status: 'ERROR'
@@ -158,14 +176,14 @@ async function maskSourceSet<T extends { uri: string }>(
   const configuration = {
     ...configurationFromArgs,
     progress: throttle((key, current, total) => {
-      const metadataDuringProgress = getBGRemovalMetadata(cesdk, blockId);
+      const metadataDuringProgress = getPluginMetadata(cesdk, blockId);
       if (
         metadataDuringProgress.status !== 'PROCESSING' ||
         !isMetadataConsistent(cesdk, blockId)
       )
         return;
       configurationFromArgs.progress?.(key, current, total);
-      setBGRemovalMetadata(cesdk, blockId, {
+      setPluginMetadata(cesdk, blockId, {
         ...metadataDuringProgress,
         progress: { key, current, total }
       });
@@ -183,7 +201,7 @@ async function maskSourceSet<T extends { uri: string }>(
   // Check for externally changed state while we were applying the mask and
   // do not proceed if the state was reset.
   if (
-    getBGRemovalMetadata(cesdk, blockId).status !== 'PROCESSING' ||
+    getPluginMetadata(cesdk, blockId).status !== 'PROCESSING' ||
     !isMetadataConsistent(cesdk, blockId)
   )
     return;
@@ -212,7 +230,7 @@ async function maskSourceSet<T extends { uri: string }>(
   // Check for externally changed state while we were uploading and
   // do not proceed if the state was reset.
   if (
-    getBGRemovalMetadata(cesdk, blockId).status !== 'PROCESSING' ||
+    getPluginMetadata(cesdk, blockId).status !== 'PROCESSING' ||
     !isMetadataConsistent(cesdk, blockId)
   )
     return;
