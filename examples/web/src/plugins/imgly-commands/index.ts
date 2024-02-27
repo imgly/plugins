@@ -30,7 +30,6 @@ export default (ctx: PluginContext, _config: PluginConfiguration) => {
             //we should give manifest to the context 
             registerTranslation(ctx, { en })
             registerCommands(ctx, commands)
-
         }
     };
 };

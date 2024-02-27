@@ -28,6 +28,7 @@
             "vectorize": {
                 "id": "vectorizer.commands.vectorize",
                 "label": "vectorizer.commands.vectorize",
+                "group": "convert",
                 "args": [
                     {
                         "type": "number",

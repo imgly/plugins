@@ -38,12 +38,24 @@
         "id": "plugin.commands.exportPdfToFile",
         "group": "export"
       },
+      "exportSceneToFile": {
+        "id": "plugin.commands.exportSceneToFile",
+        "group": "export"
+      },
       "exportSceneToClipboard": {
         "id": "plugin.commands.exportSceneToClipboard",
         "group": "export"
       },
-      "exportJSONToClipboard": {
+      "exportJsonToClipboard": {
         "id": "plugin.commands.exportJSONToClipboard",
+        "group": "export"
+      },
+      "exportJsonToFile": {
+        "id": "plugin.commands.exportJSONToFile",
+        "group": "export"
+      },
+      "exportComponentToFile": {
+        "id": "plugin.commands.exportComponentToFile",
         "group": "export"
       },
       "imageFitModeCrop": {
@@ -73,6 +85,17 @@
       "groupLayoutVStack": {
         "id": "plugin.commands.groupLayoutVStack",
         "group": "group"
+      },
+      "groupLayoutMasonry": {
+        "id": "plugin.commands.groupLayoutMasonry",
+        "group": "group"
+      },
+      "groupLayoutCircle": {
+        "id": "plugin.commands.groupLayoutCircle",
+        "group": "group",
+        "when": {
+          "blockType": ["group"]
+        }
       }
     },
     "i18n": {}
