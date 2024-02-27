@@ -1,49 +1,36 @@
-import type CreativeEditorSDK from '@cesdk/cesdk-js';
-import Translations from './translations/translations';
 
-import { type CommandsType } from "@imgly/plugin-commands-polyfill"
-
-
-// IMGLY Commands
-import { registerLifecycleCommands } from "./commands/lifecycle";
-import { registerDebugCommands } from "./commands/debug";
-import { registerDownloadCommands } from "./commands/export";
-import { registerClipboardCommands } from "./commands/clipboard";
+import en from './locale/en.json';
+import { PluginContext } from '@imgly/plugin-api-utils';
 
 
-const Manifest = {
-    id: 'plugin.imgly/plugin-commands-polyfill',
-    publisher: 'img.ly GmbH',
-    contributes: {
-        commands: {
-            "lifecycle.destroy": {
-                title: "Destroy"
-            },
-            "lifecycle.duplicate": {
-                title: "Duplicate"
-            }
-        },
-        i18n: Translations
+import { CommandImports, CommandContributions, PluginManifest } from './PluginManifest';
+
+export interface PluginConfiguration { }
+
+function registerTranslation(ctx: PluginContext, translations: { [key: string]: any } = {}) {
+    ctx.i18n.setTranslations(translations)
+}
+function registerCommands(ctx: PluginContext, imports: CommandImports) {
+    for (const command in imports) {
+        const callback = imports[command as CommandContributions]
+        const desc = PluginManifest.contributes.commands[command as CommandContributions];
+        ctx.commands.registerCommand(
+            desc.id,
+            async (params: any) => await callback(ctx, params),
+            desc
+        );
     }
-};
-
-
-export interface PluginConfiguration {
-    // uploader ? 
 }
 
-export { Manifest };
+import * as commands from './commands'
 
-export default () => {
+export default (ctx: PluginContext, _config: PluginConfiguration) => {
     return {
-        ...Manifest,
-        initializeUserInterface({ cesdk }: { cesdk: CreativeEditorSDK }) {
-            const _cesdk = cesdk as CreativeEditorSDK & CommandsType
-            cesdk.setTranslations(Translations);
-            registerLifecycleCommands(_cesdk)
-            registerDebugCommands(_cesdk)
-            registerDownloadCommands(_cesdk)
-            registerClipboardCommands(_cesdk)
+        async initializeUserInterface() {
+            //we should give manifest to the context 
+            registerTranslation(ctx, { en })
+            registerCommands(ctx, commands)
+
         }
     };
 };

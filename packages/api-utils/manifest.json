@@ -1,0 +1,11 @@
+{
+    "id": "pluginapi-polyfill",
+    "version": "0.0.1",
+    "publisher": "IMG.LY GmbH",
+    "icon": null,
+    "license": "MIT",
+    "categories": [
+        "polyfill"
+    ],
+    "contributes": {}
+}

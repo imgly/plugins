@@ -2,6 +2,8 @@ import "react-cmdk/dist/cmdk.css";
 import CMDK, { filterItems, getItemIndex } from "react-cmdk";
 import { useState, useEffect } from "react";
 
+import { groupBy } from "lodash";
+
 // https://github.com/albingroen/react-cmdk
 export const CommandPalette = (params: { items: Array<any>, isOpen: boolean, setIsOpen: (val: boolean) => void }) => {
     const [page, _setPage] = useState<"root">("root");
@@ -33,17 +35,16 @@ export const CommandPalette = (params: { items: Array<any>, isOpen: boolean, set
     }, []);
 
 
-    const filteredItems = filterItems(
-        [
-            {
-                heading: undefined,
-                id: "turnInto",
-                items: items ?? []
-            }
-        ],
-        search
-    );
 
+    const grouped = groupBy(items,"group")
+    const filteredItems = filterItems(Object.keys(grouped).map((key) => {
+        return {
+            heading: key,
+            id: key,
+            items: grouped[key] ?? []
+        }
+    }), search);
+    
     return (
         <CMDK
             onChangeSearch={setSearch}

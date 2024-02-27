@@ -46,3 +46,16 @@
 
 
 - `getEffects` api seems unsimilar to all `findAllScopes` etc. Maybe
+- `UploadCallbackContext` not found in exports
+
+
+- `MultiSelection` across multiple pages does not work!!! 
+- `Engine disposed` is logged everytime
+
+
+- `Unsubribe` mechanism. We need to know and be able todo cleanup of commands. E.g. removeCommand and than also cleanup all dependencies
+- In VSCode every register function also returns the "unsubscribe" and "free" function. 
+
+
+- `stroke/join` properties are not exposed it seems if you list all properties
+- Default Stroke grey seems not a good choice as default

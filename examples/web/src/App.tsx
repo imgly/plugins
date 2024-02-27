@@ -2,7 +2,8 @@
 
 import { useRef, useState } from "react";
 import CreativeEditorSDKComponent from "./components/CreativeEditorSDK";
-import CreativeEditorSDK_UNMODIFIED, { Configuration } from "@cesdk/cesdk-js";
+import CreativeEditorSDK from "@cesdk/cesdk-js";
+
 
 // React UI Components
 import { CommandPalette } from "./components/CommandPalette"
@@ -10,20 +11,17 @@ import { CommandPalette } from "./components/CommandPalette"
 import { downloadBlocks } from "./utils/download";
 
 // IMGLY Plugins
-import PolyFillI18NPlugin, { type I18NType } from "@imgly/plugin-i18n-polyfill"
-import PolyfillCommandsPlugin, { type CommandsType } from "@imgly/plugin-commands-polyfill"
-type CreativeEditorSDK = CreativeEditorSDK_UNMODIFIED & I18NType & CommandsType
+
 
 // Plugins
-import BackgroundRemovalPlugin from '@imgly/plugin-background-removal-web';
+// import BackgroundRemovalPlugin from '@imgly/plugin-background-removal-web';
 import VectorizerPlugin from '@imgly/plugin-vectorizer-web';
-import ImglyCommandsPlugin from "./plugins/imgly-commands";
-
-
+import CommandsPlugin from "./plugins/imgly-commands";
+import { PluginContext } from "@imgly/plugin-api-utils";
 
 
 declare global {
-  interface Window { cesdk: CreativeEditorSDK }
+  interface Window { imgly: PluginContext }
 }
 
 
@@ -49,14 +47,16 @@ function App() {
       });
   }
 
-  const [config, setConfig] = useState<Object>(
+
+
+  const [config, _setConfig] = useState<Object>(
     {
       "license": import.meta.env.VITE_CESDK_LICENSE_KEY,
-      "callbacks.onUpload": "local",
+      "callbacks.onUpload": 'local',
       "callbacks.onDownload": "download",
       "callbacks.onSave": async (str: string) => downloadBlocks(cesdkRef.current!, [new Blob([str])], { mimeType: 'application/imgly' }),
       "callbacks.onExport": async (blobs: Array<Blob>, options: any) => downloadBlocks(cesdkRef.current!, blobs, { mimeType: options.mimeType, pages: options.pages }),
-      "callbacks.onLoad": "upload",
+      // "callbacks.onLoad": ,
       // devMode: true,
       "theme": "dark",
       "role": 'Creator',
@@ -68,82 +68,56 @@ function App() {
     })
 
 
-  const initCallback = async (_cesdk: CreativeEditorSDK) => {
-    const cesdk = _cesdk as CreativeEditorSDK;
+  const initCallback = async (cesdk: CreativeEditorSDK) => {
+
+    const imgly = new PluginContext(cesdk)
+    // @ts-ignore
     window.cesdk = cesdkRef.current = cesdk
+    window.imgly = imgly
 
 
     // Init Scene Programatically
     await cesdk.createDesignScene();
     cesdk.engine.scene.setDesignUnit("Pixel");  // 
+    
+    
+    const vectorizerPlugin = VectorizerPlugin(imgly, {})
+    const commandsPlugin = CommandsPlugin(imgly, {})
+    // const backgroundRemovalPlugin = BackgroundRemovalPlugin()
+    
+    // const imglyComponentSource = ImglyComponentSource()
 
-    // Plugins
-
-    const polyfillI18NPlugin = PolyFillI18NPlugin()
-    const polyfillCommandsPlugin = PolyfillCommandsPlugin()
-    const vectorizerPlugin = VectorizerPlugin()
-    const backgroundRemovalPlugin = BackgroundRemovalPlugin()
-    const imglyCommandsPlugin = ImglyCommandsPlugin()
+    //
 
 
-    // Register Plguins 
-    await Promise.all([
-      cesdk.addDefaultAssetSources(),
-      cesdk.addDemoAssetSources({ sceneMode: "Design" }),
-      cesdk.unstable_addPlugin(polyfillI18NPlugin),
-      cesdk.unstable_addPlugin(polyfillCommandsPlugin),
-      cesdk.unstable_addPlugin(imglyCommandsPlugin),
-      cesdk.unstable_addPlugin(vectorizerPlugin),
-      cesdk.unstable_addPlugin(backgroundRemovalPlugin),
-    ]);
+      // Register Plguins 
+      await Promise.all([
+        cesdk.addDefaultAssetSources(),
+        cesdk.addDemoAssetSources({ sceneMode: "Design" }),
+        cesdk.unstable_addPlugin(commandsPlugin),
+        // cesdk.unstable_addPlugin(imglyComponentSource),
+        cesdk.unstable_addPlugin(vectorizerPlugin),
+        // cesdk.unstable_addPlugin(backgroundRemovalPlugin),
+      ]);
 
 
 
     // Ui components
-    cesdk.ui.unstable_registerComponent("plugin.imgly.commandpalette", commandPaletteButton);
-    "plugin.imgly.commandpalette2"
-    cesdk.setTranslations({ en: { "plugin.imgly.commandpalette.label": "✨ Run .." } })
+    imgly.ui?.unstable_registerComponent("plugin.imgly.commandpalette", commandPaletteButton);
+    
+    imgly.i18n.setTranslations({ en: { "plugin.imgly.commandpalette.label": "✨ Run .." } })
     // Canvas Menu
-    const canvasMenuItems = cesdk.ui.unstable_getCanvasMenuOrder()
+    const canvasMenuItems = imgly.ui?.unstable_getCanvasMenuOrder() ?? []
     const newCanvasMenuItems = ["plugin.imgly.commandpalette", ...canvasMenuItems];
-    cesdk.ui.unstable_setCanvasMenuOrder(newCanvasMenuItems)
+    imgly.ui?.unstable_setCanvasMenuOrder(newCanvasMenuItems)
 
 
 
-    // react components
+    // Bind our react command paltte to cesdk command palettes are listen on new commands being created 
+    imgly.commands.subscribe("register", (_label: string) => setCommandItems(generateCommandItemsfromCESDK(imgly)))
+    imgly.commands.subscribe("unregister", (_label: string) => setCommandItems(generateCommandItemsfromCESDK(imgly)))
 
-    const commandItems = generateCommandItemsfromCESDK(cesdk)
-    const customItems = [
-      {
-        id: "ui.theme.light",
-        children: "UI: Switch to Light Theme",
-        showType: true,
-        onClick: async () => {
-          setConfig((current: Configuration) => {
-            return {
-              ...current,
-              theme: "light",
-              "ui.hide": true
-            }
-          })
-        }
-      },
-      {
-        id: "ui.theme.dark",
-        children: "UI: Switch to Dark Theme",
-        showType: true,
-        onClick: async () => {
-          setConfig((current) => {
-            return {
-              ...current,
-              theme: "dark"
-            }
-          })
-        }
-      }
-    ]
-    const allCommands = [...commandItems, ...customItems]
-    setCommandItems(allCommands)
+    setCommandItems(generateCommandItemsfromCESDK(imgly))
   }
 
 
@@ -156,20 +130,23 @@ function App() {
   );
 }
 
-const generateCommandItemsfromCESDK = (cesdk: CreativeEditorSDK): Array<any> => {
-  return cesdk
-    .engine
+const generateCommandItemsfromCESDK = (ctx: PluginContext): Array<any> => {
+  const cmds = ctx
     .commands!
     .listCommands()
+
+  return cmds
     .map((cmdId: string) => {
-      const titel = cesdk.i18n!.t(cmdId) // this comes from the metadata
+      const titel = ctx.i18n.translate(cmdId) // this comes from the metadata
+      const desc = ctx.commands.getCommandDescription(cmdId)
       if (titel === undefined) throw new Error(`No translation found for command ${cmdId}`)
       return {
         id: cmdId,
         children: titel,
+        group: desc?.group || "Commands",
         showType: true,
         onClick: async () => {
-          await cesdk.engine.commands!.executeCommand(cmdId, {})
+          await ctx.commands!.executeCommand(cmdId, {})
         }
       }
     })

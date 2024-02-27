@@ -1,0 +1,66 @@
+{
+    "id": "vectorizer", 
+    "version": "1.0.0",
+    "publisher": "IMG.LY GmbH",
+    "icon": "",
+    "license": "",
+    "pricing": "free",
+    "payment": {
+        "oneTime": 0,
+        "subscription": 0,
+        "usage": 0
+    },
+    "engines": {
+        "imgly": ">2.0.0"
+    },
+    "categories": [
+        "image",
+        "vector"
+    ],
+    "contributes": {
+        "ui": {
+            "button": {
+                "id": "vectorizer.ui.button",
+                "label": "vectorizer.ui.button"
+            }
+        },
+        "commands": {
+            "vectorize": {
+                "id": "vectorizer.commands.vectorize",
+                "label": "vectorizer.commands.vectorize",
+                "args": [
+                    {
+                        "type": "number",
+                        "format": "",
+                        "ui": "slider"
+                    }
+                ],
+                "returns": {}
+            }
+        },
+        "i18n": { 
+            "vectorizer.commands.vectorize": "Convert into Vectorpath",
+            "vectorizer.commands.category": "Vectorizer",
+            "vectorizer.config.title": "Vectorizer",
+            "vectorizer.config.enabled": "Enable Vectorizer",
+            "vectorizer.config.enabled.description": "Enable or disable the vectorizer"
+        },
+        "errors": {
+            "validationError": {
+                "id": "vectorizer.errors.validationError",
+                "message": "vectorizer.errors.validationError.message"
+            }
+        },
+        "config": {
+            "type": "object",
+            "title": "vectorizer.config.titel",
+            "settings": {
+                "enabled": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "vectorizer.config.settings.enabled.description"
+                }
+            }
+        }
+    }
+}

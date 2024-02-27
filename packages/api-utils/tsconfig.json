@@ -12,6 +12,6 @@
     "declarationDir": "types/",
     "skipLibCheck": true
   },
-  "include": ["src/**/*", "esbuild/global.d.ts", "manifest.ts"],
+  "include": ["src/**/*", "esbuild/global.d.ts"],
   "exclude": ["node_modules"]
 }

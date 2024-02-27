@@ -10,8 +10,7 @@
   },
   "dependencies": {
     "@cesdk/cesdk-js": "^1.20.0",
-    "@imgly/plugin-i18n-polyfill": "*",
-    "@imgly/plugin-commands-polyfill": "*",
+    "@imgly/plugin-api-utils": "*",
     "@imgly/plugin-background-removal-web": "*",
     "@imgly/plugin-vectorizer-web": "*",
     "lodash": "^4.17.21",

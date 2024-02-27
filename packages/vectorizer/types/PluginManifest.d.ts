@@ -1,10 +1,11 @@
 import Manifest from '../manifest.json';
-import { PluginContext } from "./deps";
-export interface PluginConfiguration {
-}
-export { Manifest };
-declare const _default: (ctx: PluginContext, pluginConfiguration: PluginConfiguration) => {
-    initializeUserInterface(): Promise<void>;
+type ManifestType = typeof Manifest;
+export type I18NKeys = keyof ManifestType["contributes"]["i18n"];
+export type CommandContributions = keyof ManifestType["contributes"]["commands"];
+export type ErrorKeys = keyof ManifestType["contributes"]["errors"];
+export type UIComponentKeys = keyof ManifestType["contributes"]["ui"];
+export type ConfigKeys = keyof ManifestType["contributes"]["config"];
+export declare const PluginManifest: {
     id: string;
     version: string;
     publisher: string;
@@ -65,4 +66,4 @@ declare const _default: (ctx: PluginContext, pluginConfiguration: PluginConfigur
         };
     };
 };
-export default _default;
+export {};

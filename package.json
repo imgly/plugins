@@ -4,8 +4,7 @@
   "version": "0.0.0",
   "workspaces": [
     "examples/web",
-    "packages/i18n-polyfill",
-    "packages/commands-polyfill",
+    "packages/api-utils",
     "packages/background-removal",
     "packages/vectorizer"
     

@@ -1,8 +1,3 @@
-import type CreativeEditorSDK from '@cesdk/cesdk-js';
-
-import { PLUGIN_ACTION_VECTORIZE_LABEL } from './manifest';
-
-
 import {
   getPluginMetadata,
   isBlockSupported,
@@ -10,22 +5,24 @@ import {
   recoverInitialImageData,
   setPluginMetadata
 
-} from './utils';
+} from './utils/common';
 
 import { runInWorker } from './utils/worker.shared';
 import { createVectorPathBlocks } from './utils/cesdk+utils';
+import { PluginContext } from './deps';
 
 
-// FIXME: The vectorize technically does not need image fills, it can vectorize every block by rendering the block and then processing the image
-const vectorize = async (cesdk: CreativeEditorSDK, params: { blockIds?: number[] }) => {
-  const uploader = cesdk.unstable_upload.bind(cesdk)
-  const engine = cesdk.engine; // the only function that needs the ui is the upload function
+
+
+export const vectorize = async (context: PluginContext, params: { blockIds?: number[] }) => {
+  const uploader: any = undefined; //cesdk.unstable_upload.bind(cesdk)
+  const {engine} = context; // the only function that needs the ui is the upload function
   const blockApi = engine.block;
 
-  // this shouldn't be necessay here
+  
   const blockIds = params.blockIds ?? engine.block.findAllSelected();
 
-  blockIds.forEach(async blockId => {
+  blockIds.forEach(async (blockId: number) => {
     // this should happen before already and only be called if the feature is enabled for a certain block
     if (!isBlockSupported(engine, blockId)) return;
 
@@ -48,7 +45,7 @@ const vectorize = async (cesdk: CreativeEditorSDK, params: { blockIds?: number[]
       initialSourceSet.length > 0
         ? // Choose the highest resolution image in the source set
         initialSourceSet.sort(
-          (a, b) => b.width * b.height - a.height * a.width
+          (a: any, b: any) => b.width * b.height - a.height * a.width
         )[0].uri
         : initialImageFileURI;
 
@@ -149,7 +146,7 @@ const vectorize = async (cesdk: CreativeEditorSDK, params: { blockIds?: number[]
         const origSelected = engine.block.isSelected(blockId)
 
         switch (engine.block.getType(blockId)) {
-          case "//ly.img.ubq/page":
+          case "//ly.img.ubq/page": // this has been disabled
             {
               const parentId = blockId;
               const containerId = engine.block.group(blockIds);
@@ -201,5 +198,3 @@ const vectorize = async (cesdk: CreativeEditorSDK, params: { blockIds?: number[]
   })
 }
 
-
-export default { [PLUGIN_ACTION_VECTORIZE_LABEL]: vectorize }

@@ -1,7 +1,4 @@
-import type CreativeEditorSDK from '@cesdk/cesdk-js';
-declare const _default: {
-    "plugin.imgly/plugin-vectorizer-web.vectorize": (cesdk: CreativeEditorSDK, params: {
-        blockIds?: number[] | undefined;
-    }) => Promise<void>;
-};
-export default _default;
+import { PluginContext } from './deps';
+export declare const vectorize: (context: PluginContext, params: {
+    blockIds?: number[];
+}) => Promise<void>;

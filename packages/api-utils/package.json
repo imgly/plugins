@@ -1,12 +1,11 @@
 {
-  "name": "@imgly/plugin-vectorizer-web",
+  "name": "@imgly/plugin-api-utils",
   "version": "0.1.0",
-  "description": "Vectorizer plugin for the CE.SDK editor",
+  "description": "Polyfill for API plugin for the CE.SDK editor",
   "keywords": [
     "CE.SDK",
     "plugin",
-    "svg",
-    "vectorizer"
+    "polyfill"
   ],
   "repository": {
     "type": "git",
@@ -42,7 +41,7 @@
   "scripts": {
     "start": "npm run watch",
     "clean": "npx rimraf dist && npx rimraf types",
-    "build": "yarn run clean && yarn run types:create && node scripts/build.mjs",
+    "build": "yarn run types:create && node scripts/build.mjs",
     "dev": "yarn run types:create && node scripts/watch.mjs",
     "publish:latest": "npm run clean && npm run build && npm publish --tag latest --access public",
     "publish:next": "npm run clean && npm run build && npm publish --tag next --access public",
@@ -63,8 +62,5 @@
     "@cesdk/cesdk-js": "~1.20.0"
   },
   "dependencies": {
-    "@imgly/vectorizer": "~0.1.0-rc6",
-    "@imgly/plugin-api-utils": "*",
-    "lodash": "^4.17.21"
   }
 }
