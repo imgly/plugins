@@ -6,7 +6,6 @@ The unified server side interface provides the following endpoints currently:
 - `GET /` - to get metadata about this particular remote asset source, like e.g its id and capabilities
 - `GET /assets` - to get a list of assets, and query them using `findAssets``
 - `GET /assets/:id` - (optional) to get a single asset by its id, if the remote asset source supports it. Can be used e.g to revalidate assets.
-- `GET /groups` - to get all groups of assets
 
 Currently this interface does not implement Create, Update or Delete operations, but it is planned to do so in the future.
 

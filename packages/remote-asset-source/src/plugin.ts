@@ -62,13 +62,7 @@ export const manifestToSource = (
   let getGroups;
   if (manifest.canGetGroups) {
     getGroups = async () => {
-      const result = await fetch(`${baseUrl}/groups`, {
-        headers: {
-          'content-type': 'application/json'
-        }
-      }).then((response) => response.json());
-
-      return result.data ?? [];
+      throw new Error('Not implemented');
     };
   }
 
