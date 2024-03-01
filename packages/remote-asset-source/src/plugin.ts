@@ -19,26 +19,37 @@ export const RemoteAssetSourcePlugin = (
 
   return {
     async initialize(engine: CreativeEngine) {
+      try {
       manifestPromise = fetchManifest(baseUrl);
       const manifest = await manifestPromise;
       if (!manifest) {
-        throw new Error('Manifest not loaded');
+          throw new Error(
+            `Remote Asset Source Manifest could not be loaded. Make sure it is reachable at: ${baseUrl}`
+          );
       }
       engine.asset.addSource(manifestToSource(manifest, engine, baseUrl));
+      } catch (error) {
+        throw new Error(
+          `Remote Asset Source Manifest could not be loaded. Make sure it is reachable at: ${baseUrl}`
+        );
+      }
     },
 
     update() {},
 
     async initializeUserInterface({ cesdk }: { cesdk: CreativeEditorSDK }) {
+      try {
       const manifest = await manifestPromise;
-      if (!manifest) {
-        throw new Error('Manifest not loaded');
-      }
+        if (!manifest) return;
+
       cesdk.setTranslations({
         en: {
           [`libraries.${manifest.id}.label`]: manifest.name.en
         }
       });
+      } catch (error) {
+        // Error handling is done in the initialize method
+      }
     }
   };
 };
