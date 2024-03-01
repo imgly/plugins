@@ -11,11 +11,15 @@ function registerTranslation(ctx: PluginContext, translations: { [key: string]: 
     ctx.i18n.setTranslations(translations)
 }
 function registerCommands(ctx: PluginContext, imports: CommandImports) {
+    
     for (const command in imports) {
         const callback = imports[command as CommandContributions]
+        
         const desc = PluginManifest.contributes.commands[command as CommandContributions];
+        const id = desc?.id ?? `${PluginManifest.id}.commands.${command as string}`;
+        console.log(id)
         ctx.commands.registerCommand(
-            desc.id,
+            id,
             async (params: any) => await callback(ctx, params),
             desc
         );

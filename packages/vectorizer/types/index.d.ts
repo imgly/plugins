@@ -31,6 +31,7 @@ declare const _default: (ctx: PluginContext, pluginConfiguration: PluginConfigur
             vectorize: {
                 id: string;
                 label: string;
+                group: string;
                 args: {
                     type: string;
                     format: string;

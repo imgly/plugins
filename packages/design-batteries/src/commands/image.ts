@@ -13,12 +13,6 @@ const imageFitWithMode = (ctx: PluginContext, params: { blockIds?: number[], fil
 export const imageFitModeCrop = async (ctx: PluginContext, params: { blockIds?: number[] }) =>
     imageFitWithMode(ctx, { ...params, fillMode: 'Crop' })
 
+export const imageFitModeCover = async (ctx: PluginContext, params: { blockIds?: number[] }) => imageFitWithMode(ctx, { ...params, fillMode: 'Cover' })
 
-export const imageFitModeCover = async (ctx: PluginContext, params: { blockIds?: number[] }) =>
-    imageFitWithMode(ctx, { ...params, fillMode: 'Cover' })
-
-
-export const imageFitModeContain = async (ctx: PluginContext, params: { blockIds?: number[] }) =>
-    imageFitWithMode(ctx, { ...params, fillMode: 'Contain' })
-
-
+export const imageFitModeContain = async (ctx: PluginContext, params: { blockIds?: number[] }) => imageFitWithMode(ctx, { ...params, fillMode: 'Contain' })

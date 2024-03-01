@@ -5,6 +5,7 @@
   "workspaces": [
     "examples/web",
     "packages/api-utils",
+    "packages/design-batteries",
     "packages/background-removal",
     "packages/vectorizer"
     

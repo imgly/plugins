@@ -1,6 +1,6 @@
 import { PluginContext } from "@imgly/plugin-api-utils";
 import { MimeType } from "@cesdk/cesdk-js";
-import { downloadBlob } from "../../../utils/download";
+import { downloadBlob } from "../utils/download";
 
 // const __template = async (ctx: PluginContext, params: { blockIds?: number[] }) => {
 

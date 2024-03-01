@@ -96,6 +96,22 @@
         "when": {
           "blockType": ["group"]
         }
+      },
+      "logCrop": {
+        "id": "plugin.commands.logCrop",
+        "group": "image"
+      },
+      "productSetInstagram": {
+        "id": "plugin.commands.productSetInstagram",
+        "group": "product"
+      },
+      "playground": {
+        "id": "plugin.commands.playground",
+        "group": "playground"
+      },
+      "syncBlocks": {
+        "id": "plugin.commands.syncBlocks",
+        "group": "lifecycle"
       }
     },
     "i18n": {}

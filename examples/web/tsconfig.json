@@ -20,6 +20,6 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src", "../imgly-components-source"],
+  "include": ["src", "../imgly-components-source", "../../packages/design-batteries/src/commands", "../../packages/design-batteries/src/types", "../../packages/design-batteries/src/utils", "../../packages/design-batteries/src/commands.ts", "../../packages/design-batteries/src/index.ts", "../../packages/design-batteries/src/PluginManifest.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

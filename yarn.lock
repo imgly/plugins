@@ -220,10 +220,10 @@
     "@babel/helper-validator-identifier" "^7.22.20"
     to-fast-properties "^2.0.0"
 
-"@cesdk/cesdk-js@^1.20.0":
-  version "1.20.0"
-  resolved "https://registry.npmjs.org/@cesdk/cesdk-js/-/cesdk-js-1.20.0.tgz"
-  integrity sha512-vKDcnv5z5TZe1PcgvZagJ7QXVyijeTnkwPCJJFj/Uxcsef9GvLrzOVIYqPC0gqZuDlfHpADPsGAV+pZaZg8+eg==
+"@cesdk/cesdk-js@^1.21.0":
+  version "1.21.1"
+  resolved "https://registry.yarnpkg.com/@cesdk/cesdk-js/-/cesdk-js-1.21.1.tgz#b3e4d4b584d0623bae584210098244d8d874c838"
+  integrity sha512-TQSDHjszpITGq1jj6985r59eZwJkoUjtxcmGj+scjX+gORfAN7jfzl8xGp8gvMl7/tX7i+Xhym74A0Qrq9g6Tw==
 
 "@colors/colors@1.5.0":
   version "1.5.0"

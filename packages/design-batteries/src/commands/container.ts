@@ -1,4 +1,5 @@
 import { PluginContext } from "@imgly/plugin-api-utils";
+import { toInteger, toSafeInteger } from "lodash";
 
 
 
@@ -91,7 +92,7 @@ export const groupLayoutVStack = async (ctx: PluginContext, params: { blockIds?:
 
 export const groupLayoutMasonry = async (ctx: PluginContext, params: { blockIds?: number[], cols?: number, paddingX?: number, paddingY?: number }) => {
     const { block } = ctx.engine;
-    const {
+    let {
         blockIds = block.findAllSelected(),
         paddingX = 16,
         paddingY = 16,
@@ -99,6 +100,7 @@ export const groupLayoutMasonry = async (ctx: PluginContext, params: { blockIds?
     } = params;
 
 
+    cols = toSafeInteger(prompt("Enter the number of columns", "2"))
     const isGroup = (blockIds.length === 1 && block.getType(blockIds[0]) !== '//ly.img.ubq/group')
     const isMultiSelection = blockIds.length > 1
 
@@ -111,7 +113,7 @@ export const groupLayoutMasonry = async (ctx: PluginContext, params: { blockIds?
     const childWidth = groupWidth / cols - paddingX
 
     console.log(children)
-    let rowHeights = []
+    let rowHeights: Array<number> = []
     for (let i = 0; i < cols; i++) {
         rowHeights.push(0);
     }

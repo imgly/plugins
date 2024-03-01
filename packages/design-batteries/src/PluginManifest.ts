@@ -1,4 +1,4 @@
-import Manifest from './manifest.json';
+import Manifest from '../manifest.json';
 import { CommandCallback } from '@imgly/plugin-api-utils';
 
 

@@ -32,6 +32,7 @@ export declare const PluginManifest: {
             vectorize: {
                 id: string;
                 label: string;
+                group: string;
                 args: {
                     type: string;
                     format: string;

@@ -16,7 +16,7 @@ import { downloadBlocks } from "./utils/download";
 // Plugins
 // import BackgroundRemovalPlugin from '@imgly/plugin-background-removal-web';
 import VectorizerPlugin from '@imgly/plugin-vectorizer-web';
-import CommandsPlugin from "./plugins/imgly-commands";
+import DesignBatteriesPlugin from "@imgly/plugin-design-batteries";
 import { PluginContext } from "@imgly/plugin-api-utils";
 
 
@@ -82,22 +82,15 @@ function App() {
     
     
     const vectorizerPlugin = VectorizerPlugin(imgly, {})
-    const commandsPlugin = CommandsPlugin(imgly, {})
-    // const backgroundRemovalPlugin = BackgroundRemovalPlugin()
+    const commandsPlugin = DesignBatteriesPlugin(imgly, {})
     
-    // const imglyComponentSource = ImglyComponentSource()
-
-    //
-
-
       // Register Plguins 
       await Promise.all([
         cesdk.addDefaultAssetSources(),
         cesdk.addDemoAssetSources({ sceneMode: "Design" }),
         cesdk.unstable_addPlugin(commandsPlugin),
-        // cesdk.unstable_addPlugin(imglyComponentSource),
         cesdk.unstable_addPlugin(vectorizerPlugin),
-        // cesdk.unstable_addPlugin(backgroundRemovalPlugin),
+  
       ]);
 
 
