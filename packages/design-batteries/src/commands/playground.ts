@@ -3,10 +3,7 @@
 
 import { PluginContext } from "@imgly/plugin-api-utils";
 import { readPropValue, writePropValue } from "../utils/cesdk";
-import { createElement } from "react";
-// Idea sync by name... if two have the same name, they sync
-
-
+import { CreativeEngine } from "@cesdk/cesdk-js";
 
 
 const syncProperties = (ctx: PluginContext, propertyKeys: string[], sourceId: number, destIds: number[]) => {
@@ -34,14 +31,14 @@ export const syncBlocks = async (ctx: PluginContext, params: { blockIds?: number
     const properties = [
         "opacity", "blend/mode", "rotation",
         'dropShadow/blurRadius/x', 'dropShadow/blurRadius/y', 'dropShadow/clip', 'dropShadow/color', 'dropShadow/enabled', 'dropShadow/offset/x', 'dropShadow/offset/y']
-        
+
     const unsubscribe = event.subscribe(blockIds, (events) => {
         events.forEach((event) => {
             const bId = event.block;
             switch (event.type) {
                 case 'Created': {
                     // throw new Error("Not implemented")
-                    // break;
+                    break;
                 }
                 case 'Updated': {
                     syncProperties(ctx, properties, bId, blockIds)
@@ -62,16 +59,16 @@ export const syncBlocks = async (ctx: PluginContext, params: { blockIds?: number
 
 }
 
-export const registerAndOpenCustomPanel = async (ctx: PluginContext, params: { blockIds?: number[] }) => {
+export const registerAndOpenCustomPanel = async (ctx: PluginContext, _params: { blockIds?: number[] }) => {
     const { ui } = ctx;
-    ui.unstable_registerCustomPanel('ly.img.foo', (domElement) => {
+    ui?.unstable_registerCustomPanel('ly.img.foo', (domElement) => {
         domElement.appendChild(document.createTextNode('Hello World'));
         return () => {
             console.log('Apps disposer called');
         };
     });
 
-    ui.openPanel("ly.img.foo")
+    ui?.openPanel("ly.img.foo")
 }
 
 
@@ -91,12 +88,12 @@ export const productSetInstagram = async (ctx: PluginContext, params: { blockIds
     const resolution = products.instagram_story.resolution;
     const width = parseValueWithUnit(resolution.width)
     const height = parseValueWithUnit(resolution.height)
-
+    if (!width || !height) return
 
     blockIds.forEach((id: number) => {
         const widthInDu = unitToDesignUnit(width.value, width.unit, ctx)
         const heightInDu = unitToDesignUnit(height.value, height.unit, ctx)
-        console.log(widthInDu, heightInDu)
+        if (!widthInDu || !heightInDu) return
         block.setHeight(id, heightInDu)
         // block.setHeightMode(id, unitToMode(height.unit))
         block.setWidth(id, widthInDu)
@@ -105,18 +102,18 @@ export const productSetInstagram = async (ctx: PluginContext, params: { blockIds
 }
 
 export const playground = async (ctx: PluginContext, params: { blockIds?: number[] }) => {
-    const { block, event, scene } = ctx.engine;
+    const { block, event } = ctx.engine;
     const { blockIds = block.findAllSelected() } = params;
 
     // check distance to parent edges 
-    type Distance = {
-        top: number;
-        left: number;
-        centerX: number;
-        centerY: number;
-        bottom: number;
-        right: number;
-    }
+    // type _Distance = {
+    //     top: number;
+    //     left: number;
+    //     centerX: number;
+    //     centerY: number;
+    //     bottom: number;
+    //     right: number;
+    // }
     type Anchors = {
         top: boolean;
         left: boolean;
@@ -126,7 +123,7 @@ export const playground = async (ctx: PluginContext, params: { blockIds?: number
         right: boolean;
     }
 
-    const calcDistance = (fromId, toId) => {
+    const calcDistance = (fromId: number, toId: number) => {
         const bId = fromId
         const pId = toId
         const bX = block.getGlobalBoundingBoxX(bId)
@@ -154,9 +151,9 @@ export const playground = async (ctx: PluginContext, params: { blockIds?: number
         return { left, top, centerX, centerY, right, bottom }
     }
 
-    const distances = blockIds.map((bId: number): Distance => {
-        return calcDistance(bId, block.getParent(bId));
-    })
+    // const distances = blockIds.map((bId: number): Distance => {
+    //     return calcDistance(bId, block.getParent(bId));
+    // })
 
 
     event.subscribe(blockIds, (events) => {
@@ -164,7 +161,7 @@ export const playground = async (ctx: PluginContext, params: { blockIds?: number
             switch (event.type) {
                 case "Created": break;
                 case "Updated": {
-                    const pId = block.getParent(event.block)
+                    const pId = block.getParent(event.block)!
                     const dist = calcDistance(event.block, pId)
                     const height = block.getGlobalBoundingBoxHeight(pId)
                     const width = block.getGlobalBoundingBoxWidth(pId)
@@ -241,15 +238,15 @@ function parseValueWithUnit(string: string | number): ValueWithUnit | null {
     return null;
 }
 
-function unitToMode(unit: string) {
-    switch (unit) {
-        case "%": return "Percent"
-        case "px":
-        case "mm":
-        case "in":
-        default: return "Absolute"
-    }
-}
+// function unitToMode(unit: string) {
+//     switch (unit) {
+//         case "%": return "Percent"
+//         case "px":
+//         case "mm":
+//         case "in":
+//         default: return "Absolute"
+//     }
+// }
 
 
 function unitToDesignUnit(value: number, unit: string, ctx: PluginContext) {
@@ -265,7 +262,7 @@ function unitToDesignUnit(value: number, unit: string, ctx: PluginContext) {
 
 
 
-const inToDesignUnit = (engine, inch) => {
+const inToDesignUnit = (engine: CreativeEngine, inch: number) => {
     const sceneId = engine.scene.get()!
     const sceneUnit = engine.block.getEnum(sceneId, 'scene/designUnit');
     const dpi = engine.block.getFloat(sceneId, 'scene/dpi')
@@ -279,7 +276,7 @@ const inToDesignUnit = (engine, inch) => {
 };
 
 
-const mmToDesignUnit = (engine, mm) => {
+const mmToDesignUnit = (engine: CreativeEngine, mm: number) => {
     const sceneId = engine.scene.get()!
     const sceneUnit = engine.block.getEnum(sceneId, 'scene/designUnit');
     const dpi = engine.block.getFloat(sceneId, 'scene/dpi')
@@ -293,8 +290,8 @@ const mmToDesignUnit = (engine, mm) => {
 };
 
 
-const pixelToDesignUnit = (engine, pixel) => {
-    const sceneId = engine.scene.get()
+const pixelToDesignUnit = (engine: CreativeEngine, pixel: number) => {
+    const sceneId = engine.scene.get()!
     const sceneUnit = engine.block.getEnum(sceneId, 'scene/designUnit');
     const dpi = engine.block.getFloat(sceneId, 'scene/dpi')
 

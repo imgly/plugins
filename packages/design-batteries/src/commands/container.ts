@@ -1,5 +1,5 @@
 import { PluginContext } from "@imgly/plugin-api-utils";
-import { toInteger, toSafeInteger } from "lodash";
+import { toSafeInteger } from "lodash";
 
 
 
