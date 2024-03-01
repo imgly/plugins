@@ -34,6 +34,7 @@ export const syncBlocks = async (ctx: PluginContext, params: { blockIds?: number
     const properties = [
         "opacity", "blend/mode", "rotation",
         'dropShadow/blurRadius/x', 'dropShadow/blurRadius/y', 'dropShadow/clip', 'dropShadow/color', 'dropShadow/enabled', 'dropShadow/offset/x', 'dropShadow/offset/y']
+        
     const unsubscribe = event.subscribe(blockIds, (events) => {
         events.forEach((event) => {
             const bId = event.block;
@@ -71,8 +72,6 @@ export const registerAndOpenCustomPanel = async (ctx: PluginContext, params: { b
     });
 
     ui.openPanel("ly.img.foo")
-    
-    
 }
 
 

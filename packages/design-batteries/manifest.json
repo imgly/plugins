@@ -1,5 +1,5 @@
 {
-  "id": "plugin",
+  "id": "design-batteries",
   "version": "1.0.0",
   "publisher": "IMG.LY GmbH",
   "icon": null,
@@ -7,110 +7,84 @@
   "contributes": {
     "commands": {
       "blockDelete": {
-        "id": "plugin.commands.blockDelete",
         "group": "lifecycle"
       },
       "blockDuplicate": {
-        "id": "plugin.commands.blockDuplicate",
         "group": "lifecycle"
       },
       "exportPngToClipboard": {
-        "id": "plugin.commands.exportPngToClipboard",
         "group": "export"
       },
       "exportPngToFile": {
-        "id": "plugin.commands.exportPngToFile",
         "group": "export"
       },
       "exportJpegToFile": {
-        "id": "plugin.commands.exportJpegToFile",
         "group": "export"
       },
       "exportWebpToFile": {
-        "id": "plugin.commands.exportWebpToFile",
         "group": "export"
       },
       "exportRgba8ToFile": {
-        "id": "plugin.commands.exportRgba8ToFile",
         "group": "export"
       },
       "exportPdfToFile": {
-        "id": "plugin.commands.exportPdfToFile",
         "group": "export"
       },
       "exportSceneToFile": {
-        "id": "plugin.commands.exportSceneToFile",
         "group": "export"
       },
       "exportSceneToClipboard": {
-        "id": "plugin.commands.exportSceneToClipboard",
         "group": "export"
       },
       "exportJsonToClipboard": {
-        "id": "plugin.commands.exportJSONToClipboard",
         "group": "export"
       },
       "exportJsonToFile": {
-        "id": "plugin.commands.exportJSONToFile",
         "group": "export"
       },
       "exportComponentToFile": {
-        "id": "plugin.commands.exportComponentToFile",
         "group": "export"
       },
       "imageFitModeCrop": {
-        "id": "plugin.commands.imageFitModeCrop",
         "group": "image"
       },
       "imageFitModeContain": {
-        "id": "plugin.commands.imageFitModeContain",
         "group": "image"
       },
       "imageFitModeCover": {
-        "id": "plugin.commands.imageFitModeCover",
         "group": "image"
       },
       "groupBlocks": {
-        "id": "plugin.commands.groupBlock",
         "group": "group"
       },
       "ungroupBlocks": {
-        "id": "plugin.commands.ungroupBlock",
         "group": "group"
       },
       "groupLayoutHStack": {
-        "id": "plugin.commands.groupLayoutHStack",
         "group": "group"
       },
       "groupLayoutVStack": {
-        "id": "plugin.commands.groupLayoutVStack",
         "group": "group"
       },
       "groupLayoutMasonry": {
-        "id": "plugin.commands.groupLayoutMasonry",
         "group": "group"
       },
       "groupLayoutCircle": {
-        "id": "plugin.commands.groupLayoutCircle",
         "group": "group",
         "when": {
           "blockType": ["group"]
         }
       },
       "logCrop": {
-        "id": "plugin.commands.logCrop",
         "group": "image"
       },
       "productSetInstagram": {
-        "id": "plugin.commands.productSetInstagram",
         "group": "product"
       },
       "playground": {
-        "id": "plugin.commands.playground",
         "group": "playground"
       },
       "syncBlocks": {
-        "id": "plugin.commands.syncBlocks",
         "group": "lifecycle"
       }
     },

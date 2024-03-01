@@ -1,6 +1,34 @@
 import CreativeEditorSDK from "@cesdk/cesdk-js";
 
 
+
+export async function loadAsBlob() {
+    return new Promise<Blob>((resolve, reject) => {
+        const upload = document.createElement("input");
+        upload.setAttribute("type", "file");
+        upload.setAttribute("accept", "*")
+        upload.setAttribute("style", "display: none")
+        upload.onchange = (e) => {
+            const file = (e.target as HTMLInputElement).files?.[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const buffer = e.target?.result
+                    if (buffer instanceof ArrayBuffer) {
+                        const blob = new Blob([buffer]);
+                        resolve(blob)
+                    } else {
+                        reject(new Error("Invalid buffer"))
+                    }
+                }
+                reader.readAsArrayBuffer(file);
+            }
+        }
+
+        upload.click()
+    })
+}
+
 export function downloadBlob(blob: Blob, filename: string) {
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");

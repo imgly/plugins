@@ -12,12 +12,16 @@ function registerTranslation(ctx: PluginContext, translations: { [key: string]: 
 }
 function registerCommands(ctx: PluginContext, imports: CommandImports) {
     
+type CommandDescription = {
+    id?: string,
+    group?: string
+}
+
     for (const command in imports) {
         const callback = imports[command as CommandContributions]
         
-        const desc = PluginManifest.contributes.commands[command as CommandContributions];
+        const desc: CommandDescription = PluginManifest.contributes.commands[command as CommandContributions];
         const id = desc?.id ?? `${PluginManifest.id}.commands.${command as string}`;
-        console.log(id)
         ctx.commands.registerCommand(
             id,
             async (params: any) => await callback(ctx, params),
