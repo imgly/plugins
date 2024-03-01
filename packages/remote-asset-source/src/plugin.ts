@@ -57,7 +57,7 @@ export const manifestToSource = (
         }
       }).then((response) => response.json());
 
-      return result.data?.data ?? [];
+      return result.data ?? [];
     };
   }
 
@@ -87,7 +87,7 @@ export const manifestToSource = (
     ): Promise<AssetsQueryResult | undefined> => {
       const searchParams = new URLSearchParams();
       Object.entries(queryData).forEach(([key, value]) => {
-        if (value) {
+        if (value !== undefined) {
           searchParams.append(key, value);
         }
       });
@@ -100,7 +100,7 @@ export const manifestToSource = (
         }
       ).then((response) => response.json());
 
-      return result.data?.data ?? [];
+      return result.data ?? [];
     },
     getGroups,
     credits: manifest.credits,
