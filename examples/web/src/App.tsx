@@ -1,19 +1,37 @@
-import { useRef } from "react";
-import CreativeEditorSDK from "@cesdk/cesdk-js";
+import CreativeEditorSDK from '@cesdk/cesdk-js';
+import { useRef } from 'react';
 
-import addPlugins from "./addPlugins";
+import addPlugins, { prepareAssetEntries } from './addPlugins';
 
 function App() {
   const cesdk = useRef<CreativeEditorSDK>();
   return (
     <div
-      style={{ width: "100vw", height: "100vh" }}
+      style={{ width: '100vw', height: '100vh' }}
       ref={(domElement) => {
         if (domElement != null) {
           CreativeEditorSDK.create(domElement, {
             license: import.meta.env.VITE_CESDK_LICENSE_KEY,
-            callbacks: { onUpload: "local" },
-            ui: { elements: { panels: { settings: true } } },
+            callbacks: { onUpload: 'local' },
+            ui: {
+              elements: {
+                libraries: {
+                  insert: {
+                    entries: (d) => {
+                      if (!cesdk.current) return;
+                      return prepareAssetEntries(d, cesdk.current!.engine);
+                    }
+                  },
+                  replace: {
+                    entries: (d) => {
+                      if (!cesdk.current) return;
+                      return prepareAssetEntries(d, cesdk.current!.engine);
+                    }
+                  }
+                },
+                panels: { settings: true }
+              }
+            }
           }).then(async (instance) => {
             // @ts-ignore
             window.cesdk = instance;
@@ -23,9 +41,9 @@ function App() {
             // Populate the asset library with default / demo asset sources.
             await Promise.all([
               instance.addDefaultAssetSources(),
-              instance.addDemoAssetSources({ sceneMode: "Design" }),
-              addPlugins(instance),
+              instance.addDemoAssetSources({ sceneMode: 'Design' })
             ]);
+            await addPlugins(instance);
             await instance.createDesignScene();
           });
         } else if (cesdk.current != null) {
