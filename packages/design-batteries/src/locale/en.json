@@ -7,17 +7,33 @@
     "design-batteries.commands.exportWebpToFile": "Export WEP to File",
     "design-batteries.commands.exportPdfToFile": "Export PDF to File",
     "design-batteries.commands.exportRgba8ToFile": "Export Raw RGBA8 to File",
-    
     "design-batteries.commands.exportSceneToClipboard": "Export Scene to Clipboard",
     "design-batteries.commands.exportJsonToClipboard": "Export JSON to Clipboard",
     "design-batteries.commands.exportSceneToFile": "Export Scene to File",
     "design-batteries.commands.exportJsonToFile": "Export JSON to File",
-    
     "design-batteries.commands.imageFitModeContain": "Set Image FitMode to Contain",
     "design-batteries.commands.imageFitModeCrop": "Set Image FitMode to Crop",
     "design-batteries.commands.imageFitModeCover": "Set Image FitMode to Cover",
-
-    "design-batteries.commands.exportComponentToFile": "Export Component to File" ,
-    "design-batteries.commands.myNewFunctionForTheEditor": "Super Duper Function"
-
+    "design-batteries.commands.exportComponentToFile": "Export Component to File",
+    "design-batteries.commands.myNewFunctionForTheEditor": "Super Duper Function",
+    "design-batteries.commands.blockBringForward": "blockBringForward",
+    "design-batteries.commands.blockBringToFront": "blockBringToFront",
+    "design-batteries.commands.blockRename": "blockRename",
+    "design-batteries.commands.blockSendBackward": "blockSendBackward",
+    "design-batteries.commands.blockSendToBack": "blockSendToBack",
+    "design-batteries.commands.debugLogBlockCrop": "debugLogBlockCrop",
+    "design-batteries.commands.debugLogBlockMetadata": "debugLogBlockMetadata",
+    "design-batteries.commands.debugLogBlockProperties": "debugLogBlockProperties",
+    "design-batteries.commands.exportComponentLibrary": "exportComponentLibrary",
+    "design-batteries.commands.groupBlocks": "groupBlocks",
+    "design-batteries.commands.i18nDownloadMissingCommandTranslations": "i18nDownloadMissingCommandTranslations",
+    "design-batteries.commands.importComponent": "importComponent",
+    "design-batteries.commands.layoutHorizontally": "layoutHorizontally",
+    "design-batteries.commands.layoutMasonry": "layoutMasonry",
+    "design-batteries.commands.layoutVertically": "layoutVertically",
+    "design-batteries.commands.playground": "playground",
+    "design-batteries.commands.pluginRegisterAndOpenCustomPanel": "pluginRegisterAndOpenCustomPanel",
+    "design-batteries.commands.productSetInstagram": "productSetInstagram",
+    "design-batteries.commands.syncBlocks": "syncBlocks",
+    "design-batteries.commands.ungroupBlocks": "ungroupBlocks"
 }

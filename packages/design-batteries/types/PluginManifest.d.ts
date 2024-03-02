@@ -12,85 +12,76 @@ export declare const PluginManifest: {
     contributes: {
         commands: {
             blockDelete: {
-                group: string;
+                category: string;
             };
             blockDuplicate: {
-                group: string;
+                category: string;
             };
             exportPngToClipboard: {
-                group: string;
+                category: string;
             };
             exportPngToFile: {
-                group: string;
+                category: string;
             };
             exportJpegToFile: {
-                group: string;
+                category: string;
             };
             exportWebpToFile: {
-                group: string;
+                category: string;
             };
             exportRgba8ToFile: {
-                group: string;
+                category: string;
             };
             exportPdfToFile: {
-                group: string;
+                category: string;
             };
             exportSceneToFile: {
-                group: string;
+                category: string;
             };
             exportSceneToClipboard: {
-                group: string;
+                category: string;
             };
             exportJsonToClipboard: {
-                group: string;
+                category: string;
             };
             exportJsonToFile: {
-                group: string;
+                category: string;
             };
             exportComponentToFile: {
-                group: string;
+                category: string;
             };
             imageFitModeCrop: {
-                group: string;
+                category: string;
             };
             imageFitModeContain: {
-                group: string;
+                category: string;
             };
             imageFitModeCover: {
-                group: string;
+                category: string;
             };
             groupBlocks: {
-                group: string;
+                category: string;
             };
             ungroupBlocks: {
-                group: string;
+                category: string;
             };
-            groupLayoutHStack: {
-                group: string;
+            layoutHorizontally: {
+                category: string;
             };
-            groupLayoutVStack: {
-                group: string;
+            layoutVertically: {
+                category: string;
             };
-            groupLayoutMasonry: {
-                group: string;
-            };
-            groupLayoutCircle: {
-                group: string;
-                when: {
-                    blockType: string[];
-                };
-            };
-            logCrop: {
-                group: string;
+            layoutMasonry: {
+                category: string;
             };
             productSetInstagram: {
-                group: string;
+                category: string;
             };
             playground: {
-                group: string;
+                category: string;
             };
             syncBlocks: {
-                group: string;
+                category: string;
             };
         };
         i18n: {};

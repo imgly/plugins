@@ -6,7 +6,8 @@ export type CommandArgs = {
 };
 export type CommandEvents = "register" | "unregister";
 export type CommandDescription = {
-    group?: string;
+    id?: string;
+    category?: string;
     args?: any;
     returns?: any;
 };
@@ -18,5 +19,5 @@ export declare class Commands extends Subscribable<CommandEvents, string> {
     unregisterCommand(label: string): void;
     getCommandCallback(label: string): CommandCallback | undefined;
     getCommandDescription(label: string): CommandDescription | undefined;
-    executeCommand<P = any, R = any>(cmd: string, params: P): Promise<R>;
+    executeCommand<P = any, R = any>(cmd: string, params: P): Promise<R | undefined>;
 }

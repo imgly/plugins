@@ -38,7 +38,7 @@ export default function CreativeEditorSDKComponent(props: Props) {
     return (
         <div
             ref={cesdk_container}
-            style={{ width: '100vw', height: '100vh' }}
+            style={{ width: '100%', height: '100%' }}
         ></div>
     );
 }

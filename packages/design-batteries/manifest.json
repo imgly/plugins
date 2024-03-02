@@ -7,85 +7,76 @@
   "contributes": {
     "commands": {
       "blockDelete": {
-        "group": "lifecycle"
+        "category": "lifecycle"
       },
       "blockDuplicate": {
-        "group": "lifecycle"
+        "category": "lifecycle"
       },
       "exportPngToClipboard": {
-        "group": "export"
+        "category": "export"
       },
       "exportPngToFile": {
-        "group": "export"
+        "category": "export"
       },
       "exportJpegToFile": {
-        "group": "export"
+        "category": "export"
       },
       "exportWebpToFile": {
-        "group": "export"
+        "category": "export"
       },
       "exportRgba8ToFile": {
-        "group": "export"
+        "category": "export"
       },
       "exportPdfToFile": {
-        "group": "export"
+        "category": "export"
       },
       "exportSceneToFile": {
-        "group": "export"
+        "category": "export"
       },
       "exportSceneToClipboard": {
-        "group": "export"
+        "category": "export"
       },
       "exportJsonToClipboard": {
-        "group": "export"
+        "category": "export"
       },
       "exportJsonToFile": {
-        "group": "export"
+        "category": "export"
       },
       "exportComponentToFile": {
-        "group": "export"
+        "category": "export"
       },
       "imageFitModeCrop": {
-        "group": "image"
+        "category": "image"
       },
       "imageFitModeContain": {
-        "group": "image"
+        "category": "image"
       },
       "imageFitModeCover": {
-        "group": "image"
+        "category": "image"
       },
       "groupBlocks": {
-        "group": "group"
+        "category": "category"
       },
       "ungroupBlocks": {
-        "group": "group"
+        "category": "category"
       },
-      "groupLayoutHStack": {
-        "group": "group"
+      "layoutHorizontally": {
+        "category": "layout"
       },
-      "groupLayoutVStack": {
-        "group": "group"
+      "layoutVertically": {
+        "category": "layout"
       },
-      "groupLayoutMasonry": {
-        "group": "group"
-      },
-      "groupLayoutCircle": {
-        "group": "group",
-        "when": {
-          "blockType": ["group"]
-        }
-      },
-      "logCrop": {
-        "group": "image"
+      "layoutMasonry": {
+        "category": "layout"
       },
       "productSetInstagram": {
-        "group": "product"
+        "category": "product"
       },
       "playground": {
-        "group": "playground"
+        "category": "playground"
       },
       "syncBlocks": {
-        "group": "lifecycle"
+        "category": "lifecycle"
       }
     },
     "i18n": {}

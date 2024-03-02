@@ -9,7 +9,10 @@ export declare class I18N<K extends string | symbol> extends Subscribable<"regis
     constructor(ctx: PluginContext);
     setTranslations(translations: Translations): void;
     translate(key: K, fallback?: string | undefined): any;
+    hasTranslation(key: K, language?: string): boolean;
     setLocale(locale: string): void;
+    locale(): string;
+    locales(): readonly string[];
     t: (key: K, fallback?: string | undefined) => any;
 }
 export type I18NType<K extends string | symbol = string> = {

@@ -2,10 +2,12 @@ import "react-cmdk/dist/cmdk.css";
 import CMDK, { filterItems, getItemIndex } from "react-cmdk";
 import { useState, useEffect } from "react";
 
+
 import { groupBy } from "lodash";
 
 // https://github.com/albingroen/react-cmdk
-export const CommandPalette = (params: { items: Array<any>, isOpen: boolean, setIsOpen: (val: boolean) => void }) => {
+type Params = { items: Array<any>, isOpen: boolean, setIsOpen: (val: boolean) => void }
+export const CommandPalette = (params: Params) => {
     const [page, _setPage] = useState<"root">("root");
     const [search, setSearch] = useState("");
     const { isOpen, setIsOpen } = params
@@ -34,9 +36,8 @@ export const CommandPalette = (params: { items: Array<any>, isOpen: boolean, set
         };
     }, []);
 
-
-
-    const grouped = groupBy(items,"group")
+    
+    const grouped = groupBy(items, "group")
     const filteredItems = filterItems(Object.keys(grouped).map((key) => {
         return {
             heading: key,
@@ -44,7 +45,7 @@ export const CommandPalette = (params: { items: Array<any>, isOpen: boolean, set
             items: grouped[key] ?? []
         }
     }), search);
-    
+
     return (
         <CMDK
             onChangeSearch={setSearch}
@@ -73,7 +74,7 @@ export const CommandPalette = (params: { items: Array<any>, isOpen: boolean, set
 
         </CMDK>
     );
-};
+}
 
 /// helper
 

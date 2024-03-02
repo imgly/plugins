@@ -5,10 +5,34 @@ import { PluginContext } from "@imgly/plugin-api-utils";
 import { readPropValue, writePropValue } from "../utils/cesdk";
 import { CreativeEngine } from "@cesdk/cesdk-js";
 
+const propKeys = [
+    'alwaysOnBottom', 
+    'alwaysOnTop',
+    'blend/mode', 'blur/enabled', 'clipped',
+    // 'contentFill/mode', 
+    // 'transformLocked', 
+    // 'crop/rotation', 'crop/scaleRatio', 'crop/scaleX', 'crop/scaleY', 'crop/translationX', 'crop/translationY',
+    // 'position/x', 'position/x/mode', 'position/y', 'position/y/mode', 'rotation',
+    'dropShadow/blurRadius/x', 'dropShadow/blurRadius/y', 'dropShadow/clip', 'dropShadow/color', 'dropShadow/enabled', 'dropShadow/offset/x', 'dropShadow/offset/y',
+    'fill/enabled',
+    'opacity', 
+    'placeholder/enabled', 
+    'playback/duration', 'playback/timeOffset',
+    'stroke/color', 'stroke/cornerGeometry', 'stroke/enabled', 'stroke/position', 'stroke/style', 'stroke/width',
+    'visible']
 
-const syncProperties = (ctx: PluginContext, propertyKeys: string[], sourceId: number, destIds: number[]) => {
+
+const syncBlockProperties = (ctx: PluginContext, sourceId: number, destIds: number[], whiteList?: string[], blackList?: string[]) => {
     const { block } = ctx.engine;
     if (!block.isValid(sourceId)) return
+
+    const propertyKeys = block.findAllProperties(sourceId)
+        .filter((key: string) => block.isPropertyReadable(key))
+        .filter((key: string) => {
+            if (whiteList && !whiteList.includes(key)) return false
+            if (blackList && blackList.includes(key)) return false
+            return true
+        })
 
     propertyKeys.forEach((propertyKey: string) => {
         const sourceValue = readPropValue(block, sourceId, propertyKey)
@@ -24,13 +48,16 @@ const syncProperties = (ctx: PluginContext, propertyKeys: string[], sourceId: nu
 
 
 // name syntax = "label=appearance(other), rotation(other)"
-export const syncBlocks = async (ctx: PluginContext, params: { blockIds?: number[] }) => {
+export const syncBlockAppearance = async (ctx: PluginContext, params: { blockIds?: number[] }) => {
     const { block, event } = ctx.engine;
     let { blockIds = block.findAllSelected() } = params
     console.log("syncBlocks", block.findAllProperties(blockIds[0]))
-    const properties = [
-        "opacity", "blend/mode", "rotation",
-        'dropShadow/blurRadius/x', 'dropShadow/blurRadius/y', 'dropShadow/clip', 'dropShadow/color', 'dropShadow/enabled', 'dropShadow/offset/x', 'dropShadow/offset/y']
+    const propWhiteList = propKeys
+    const propBlackList = []
+    // better would be to add a meta data 
+    // const sync = {
+    //     appearance: true
+    // }
 
     const unsubscribe = event.subscribe(blockIds, (events) => {
         events.forEach((event) => {
@@ -41,7 +68,7 @@ export const syncBlocks = async (ctx: PluginContext, params: { blockIds?: number
                     break;
                 }
                 case 'Updated': {
-                    syncProperties(ctx, properties, bId, blockIds)
+                    syncBlockProperties(ctx, bId, blockIds, propWhiteList, propBlackList)
                     break;
                 }
                 case "Destroyed": {
@@ -59,17 +86,6 @@ export const syncBlocks = async (ctx: PluginContext, params: { blockIds?: number
 
 }
 
-export const registerAndOpenCustomPanel = async (ctx: PluginContext, _params: { blockIds?: number[] }) => {
-    const { ui } = ctx;
-    ui?.unstable_registerCustomPanel('ly.img.foo', (domElement) => {
-        domElement.appendChild(document.createTextNode('Hello World'));
-        return () => {
-            console.log('Apps disposer called');
-        };
-    });
-
-    ui?.openPanel("ly.img.foo")
-}
 
 
 const products = {
@@ -80,6 +96,25 @@ const products = {
         },
     },
 }
+
+export const myNewFunctionForTheEditor = async (ctx: PluginContext, _params: { blockIds?: number[] }) => {
+    const { block, scene } = ctx.engine;
+
+    const pId = scene.getCurrentPage()!
+
+    const bId = block.create("//ly.img.ubq/text")
+    block.setName(bId, "Hello World")
+    block.setTextColor(bId, { r: 1, g: 0, b: 0, a: 1 })
+    block.replaceText(bId, "Hello World")
+
+
+    block.appendChild(pId, bId)
+
+}
+
+
+
+
 
 
 export const productSetInstagram = async (ctx: PluginContext, params: { blockIds?: number[] }) => {

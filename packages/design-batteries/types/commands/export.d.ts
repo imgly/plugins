@@ -1,7 +1,4 @@
 import { PluginContext } from "@imgly/plugin-api-utils";
-export declare const myNewFunctionForTheEditor: (ctx: PluginContext, _params: {
-    blockIds?: number[];
-}) => Promise<void>;
 export declare const exportPngToClipboard: (ctx: PluginContext, params: {
     blockIds?: number[];
 }) => Promise<void>;
@@ -30,14 +27,5 @@ export declare const exportSceneToFile: (ctx: PluginContext, params: {
     blockIds?: number[];
 }) => Promise<void>;
 export declare const exportJsonToFile: (ctx: PluginContext, params: {
-    blockIds?: number[];
-}) => Promise<void>;
-export declare const exportComponentToFile: (ctx: PluginContext, params: {
-    blockIds?: number[];
-}) => Promise<void>;
-export declare const importComponent: (ctx: PluginContext, _params: {
-    blockIds?: number[];
-}) => Promise<void>;
-export declare const exportComponentLibrary: (ctx: PluginContext, _params: {
     blockIds?: number[];
 }) => Promise<void>;

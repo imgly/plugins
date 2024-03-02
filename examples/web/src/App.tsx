@@ -26,7 +26,8 @@ declare global {
 
 
 function App() {
-  const cesdkRef = useRef<CreativeEditorSDK>();
+  // const cesdkRef = useRef<CreativeEditorSDK>();
+  const contextRef = useRef<PluginContext>();
   const [commandItems, setCommandItems] = useState<Array<any>>([])
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState<boolean>(false)
 
@@ -54,8 +55,8 @@ function App() {
       "license": import.meta.env.VITE_CESDK_LICENSE_KEY,
       "callbacks.onUpload": 'local',
       "callbacks.onDownload": "download",
-      "callbacks.onSave": async (str: string) => downloadBlocks(cesdkRef.current!, [new Blob([str])], { mimeType: 'application/imgly' }),
-      "callbacks.onExport": async (blobs: Array<Blob>, options: any) => downloadBlocks(cesdkRef.current!, blobs, { mimeType: options.mimeType, pages: options.pages }),
+      "callbacks.onSave": async (str: string) => downloadBlocks(contextRef.current!.engine.block, [new Blob([str])], { mimeType: 'application/imgly' }),
+      "callbacks.onExport": async (blobs: Array<Blob>, options: any) => downloadBlocks(contextRef.current!.engine.block, blobs, { mimeType: options.mimeType, pages: options.pages }),
       // "callbacks.onLoad": ,
       // devMode: true,
       "theme": "dark",
@@ -71,33 +72,31 @@ function App() {
   const initCallback = async (cesdk: CreativeEditorSDK) => {
 
     const imgly = new PluginContext(cesdk)
-    // @ts-ignore
-    window.cesdk = cesdkRef.current = cesdk
     window.imgly = imgly
 
 
     // Init Scene Programatically
     await cesdk.createDesignScene();
     cesdk.engine.scene.setDesignUnit("Pixel");  // 
-    
-    
+
+
     const vectorizerPlugin = VectorizerPlugin(imgly, {})
     const commandsPlugin = DesignBatteriesPlugin(imgly, {})
-    
-      // Register Plguins 
-      await Promise.all([
-        cesdk.addDefaultAssetSources(),
-        cesdk.addDemoAssetSources({ sceneMode: "Design" }),
-        cesdk.unstable_addPlugin(commandsPlugin),
-        cesdk.unstable_addPlugin(vectorizerPlugin),
-  
-      ]);
+
+    // Register Plguins 
+    await Promise.all([
+      cesdk.addDefaultAssetSources(),
+      cesdk.addDemoAssetSources({ sceneMode: "Design" }),
+      cesdk.unstable_addPlugin(commandsPlugin),
+      cesdk.unstable_addPlugin(vectorizerPlugin),
+
+    ]);
 
 
 
     // Ui components
     imgly.ui?.unstable_registerComponent("plugin.imgly.commandpalette", commandPaletteButton);
-    
+
     imgly.i18n.setTranslations({ en: { "plugin.imgly.commandpalette.label": "✨ Run .." } })
     // Canvas Menu
     const canvasMenuItems = imgly.ui?.unstable_getCanvasMenuOrder() ?? []
@@ -127,7 +126,7 @@ const generateCommandItemsfromCESDK = (ctx: PluginContext): Array<any> => {
   const cmds = ctx
     .commands!
     .listCommands()
-
+  
   return cmds
     .map((cmdId: string) => {
       const titel = ctx.i18n.translate(cmdId) // this comes from the metadata
@@ -136,7 +135,7 @@ const generateCommandItemsfromCESDK = (ctx: PluginContext): Array<any> => {
       return {
         id: cmdId,
         children: titel,
-        group: desc?.group || "Commands",
+        group: desc?.category || "Commands",
         showType: true,
         onClick: async () => {
           await ctx.commands!.executeCommand(cmdId, {})
