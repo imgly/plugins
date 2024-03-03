@@ -1,0 +1,67 @@
+{
+  "name": "@imgly/plugin-documents",
+  "version": "0.1.0",
+  "keywords": [
+    "CE.SDK",
+    "IMG.LY",
+    "plugin"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/imgly/plugins.git"
+  },
+  "license": "SEE LICENSE IN LICENSE.md",
+  "author": {
+    "name": "IMG.LY GmbH",
+    "email": "support@img.ly",
+    "url": "https://img.ly"
+  },
+  "bugs": {
+    "email": "support@img.ly"
+  },
+  "source": "./src/index.ts",
+  "module": "./dist/index.mjs",
+  "types": "./types/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "types": "./types/index.d.ts"
+    }
+  },
+  "homepage": "https://img.ly",
+  "files": [
+    "LICENSE.md",
+    "README.md",
+    "CHANGELOG.md",
+    "dist/",
+    "types/",
+    "bin/"
+  ],
+  "scripts": {
+    "start": "npm run watch",
+    "clean": "npx rimraf dist && npx rimraf types",
+    "build": "yarn run clean && yarn run types:create && node scripts/build.mjs",
+    "dev": "yarn run types:create && node scripts/watch.mjs",
+    "publish:latest": "npm run clean && npm run build && npm publish --tag latest --access public",
+    "publish:next": "npm run clean && npm run build && npm publish --tag next --access public",
+    "check:all": "concurrently -n lint,type,pretty \"yarn check:lint\" \"yarn check:type\" \"yarn check:pretty\"",
+    "check:lint": "eslint --max-warnings 0 './src/**/*.{ts,tsx}'",
+    "check:pretty": "prettier --list-different './src/**/*.{ts,tsx}'",
+    "check:type": "tsc --noEmit",
+    "types:create": "tsc --emitDeclarationOnly"
+  },
+  "devDependencies": {
+    "chalk": "^5.3.0",
+    "concurrently": "^8.2.2",
+    "esbuild": "^0.19.11",
+    "eslint": "^8.51.0",
+    "typescript": "^5.3.3"
+  },
+  "peerDependencies": {
+    "@cesdk/cesdk-js": "~1.21.0"
+  },
+  "dependencies": {
+    "@imgly/plugin-core": "*",
+    "lodash": "^4.17.21"
+  }
+}
