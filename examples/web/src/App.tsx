@@ -106,10 +106,16 @@ function App() {
 
 
     // Bind our react command paltte to cesdk command palettes are listen on new commands being created 
-    imgly.commands.subscribe("register", (_label: string) => setCommandItems(generateCommandItemsfromCESDK(imgly)))
-    imgly.commands.subscribe("unregister", (_label: string) => setCommandItems(generateCommandItemsfromCESDK(imgly)))
+    imgly.engine.event.subscribe([], (events) => {
+      events
+        .forEach(_ => {
+          setCommandItems(generateItems(imgly))
+        })
+    })
+    imgly.commands.subscribe("register", (_label: string) => setCommandItems(generateItems(imgly)))
+    imgly.commands.subscribe("unregister", (_label: string) => setCommandItems(generateItems(imgly)))
 
-    setCommandItems(generateCommandItemsfromCESDK(imgly))
+    setCommandItems(generateItems(imgly))
   }
 
 
@@ -122,11 +128,56 @@ function App() {
   );
 }
 
-const generateCommandItemsfromCESDK = (ctx: PluginContext): Array<any> => {
+const generateItems = (ctx: PluginContext) => {
+  return [...generateBlockHierarchy(ctx), ...generateCommandItems(ctx), ...generateProperyItems(ctx)]
+}
+
+const generateBlockHierarchy = (ctx: PluginContext) => {
+  const blocks = ctx.engine.block.findAll()
+
+  return blocks.map((bId: number) => {
+    const titel = ctx.engine.block.getName(bId) || ctx.engine.block.getUUID(bId).toString()
+    return {
+      id: bId,
+      children: titel,
+      kind: "block",
+      group: "Hierarchy",
+      showType: false,
+      onClick: () => ctx.engine.block.select(bId)
+    }
+  })
+}
+
+const generateProperyItems = (ctx: PluginContext) => {
+  const { block } = ctx.engine
+  const bIds = block.findAllSelected()
+  const bId = bIds[0]
+  if (!bId) return [] // for now
+
+  const props = bIds.flatMap((bId: number) => block.findAllProperties(bId))
+  const uniqueProps = Array.from(new Set(props))
+
+  return uniqueProps.map((p) => {
+    const titel = p
+    const value = 42
+
+    return {
+      id: bId,
+      children: titel,
+      kind: "property",
+      group: "Properties",
+      showType: false,
+      onClick: () => prompt(`Change ${p} to`, value.toString())
+    }
+  })
+}
+
+
+const generateCommandItems = (ctx: PluginContext): Array<any> => {
   const cmds = ctx
     .commands!
     .listCommands()
-  
+
   return cmds
     .map((cmdId: string) => {
       const titel = ctx.i18n.translate(cmdId) // this comes from the metadata
@@ -135,8 +186,9 @@ const generateCommandItemsfromCESDK = (ctx: PluginContext): Array<any> => {
       return {
         id: cmdId,
         children: titel,
+        kind: "command",
         group: desc?.category || "Commands",
-        showType: true,
+        showType: false,
         onClick: async () => {
           await ctx.commands!.executeCommand(cmdId, {})
         }

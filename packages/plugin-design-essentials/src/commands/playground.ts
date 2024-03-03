@@ -2,7 +2,7 @@
 // SYNC BY NAME - two pages, same name
 
 import { PluginContext } from "../../../plugin-core/types";
-import { readPropValue, writePropValue } from "../utils/cesdk";
+import { readBlockProperty, setBlockProperty } from "../utils/cesdk";
 import { CreativeEngine } from "@cesdk/cesdk-js";
 
 const propKeys = [
@@ -35,13 +35,13 @@ const syncBlockProperties = (ctx: PluginContext, sourceId: number, destIds: numb
         })
 
     propertyKeys.forEach((propertyKey: string) => {
-        const sourceValue = readPropValue(block, sourceId, propertyKey)
+        const sourceValue = readBlockProperty(block, sourceId, propertyKey)
         destIds.forEach((receiverBlockId: number) => {
             if (!block.isValid(receiverBlockId)) return
             if (sourceId === receiverBlockId) return;
-            const receiverValue = readPropValue(block, receiverBlockId, propertyKey)
+            const receiverValue = readBlockProperty(block, receiverBlockId, propertyKey)
             if (receiverValue === sourceValue) return;
-            writePropValue(block, receiverBlockId, propertyKey, sourceValue)
+            setBlockProperty(block, receiverBlockId, propertyKey, sourceValue)
         })
     })
 }

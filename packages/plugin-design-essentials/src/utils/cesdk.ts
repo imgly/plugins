@@ -1,7 +1,7 @@
 import { BlockAPI } from "@cesdk/cesdk-js";
 
 
-export const readPropValue = (block: BlockAPI, id: number, propKey: string, propType?: string) => {
+export const readBlockProperty = (block: BlockAPI, id: number, propKey: string, propType?: string) => {
   const blacklist = ["fill/solid/color", "fill/image/sourceSet"]
   if (blacklist.includes(propKey)) return undefined;
   if (!propType) propType = block.getPropertyType(propKey)
@@ -21,7 +21,7 @@ export const readPropValue = (block: BlockAPI, id: number, propKey: string, prop
 };
 
 
-export const writePropValue = (block: BlockAPI, id: number, propKey: string, propValue: any, propType?: string) => {
+export const setBlockProperty = (block: BlockAPI, id: number, propKey: string, propValue: any, propType?: string) => {
   if (!propType) propType = block.getPropertyType(propKey)
   try {
     switch (propType.toLowerCase()) {

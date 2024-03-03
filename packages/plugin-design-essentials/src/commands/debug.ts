@@ -1,5 +1,5 @@
 import { PluginContext } from "@imgly/plugin-core";
-import { readPropValue } from "../utils/cesdk";
+import { readBlockProperty } from "../utils/cesdk";
 
 export const debugLogBlockProperties = async (ctx: PluginContext, params: { blockIds: number[] }) => {
     const { block } = ctx.engine;
@@ -11,7 +11,7 @@ export const debugLogBlockProperties = async (ctx: PluginContext, params: { bloc
         props.forEach((propKey: string) => {
             if (!block.isPropertyReadable(propKey)) return;
             const propType = block.getPropertyType(propKey)
-            const propValue = readPropValue(block, bId, propKey, propType)
+            const propValue = readBlockProperty(block, bId, propKey, propType)
             propDefinition.set(propKey, propValue)
         })
         console.debug("Properties for block", bId, JSON.stringify(Object.fromEntries(propDefinition.entries()), null, 2))
@@ -72,15 +72,12 @@ export const debugLogBlockFill = (ctx: PluginContext, params: { blockIds?: numbe
         props.forEach((propKey: string) => {
 
             if (!block.isPropertyReadable(propKey)) return;
-            const propValue = readPropValue(block, fId, propKey)
+            const propValue = readBlockProperty(block, fId, propKey)
             propDefinition.set(propKey, propValue)
         })
         console.debug("Fill for block", bId, JSON.stringify(Object.fromEntries(propDefinition.entries()), null, 2))
     });
 }
-
-
-
 
 export const debugLogBlockEffects = (ctx: PluginContext, params: { blockIds?: number[] }) => {
     const { block } = ctx.engine;
@@ -96,7 +93,7 @@ export const debugLogBlockEffects = (ctx: PluginContext, params: { blockIds?: nu
             props.forEach((propKey: string) => {
 
                 if (!block.isPropertyReadable(propKey)) return;
-                const propValue = readPropValue(block, eId, propKey)
+                const propValue = readBlockProperty(block, eId, propKey)
                 propDefinition.set(propKey, propValue)
             })
             console.debug(`Effects ${eId} for block`, bId, JSON.stringify(Object.fromEntries(propDefinition.entries()), null, 2))
@@ -129,7 +126,7 @@ export const debugLogBlockBlur = (ctx: PluginContext, params: { blockIds?: numbe
         props.forEach((propKey: string) => {
 
             if (!block.isPropertyReadable(propKey)) return;
-            const propValue = readPropValue(block, eId, propKey)
+            const propValue = readBlockProperty(block, eId, propKey)
             propDefinition.set(propKey, propValue)
 
 
@@ -137,4 +134,25 @@ export const debugLogBlockBlur = (ctx: PluginContext, params: { blockIds?: numbe
         console.debug(`Blur for block`, bId, JSON.stringify(Object.fromEntries(propDefinition.entries()), null, 2))
 
     });
+}
+
+export const debugLogSceneHierarchy = async (ctx: PluginContext, params: { blockIds?: number[] }) => {
+    const { block, scene } = ctx.engine;
+    const { blockIds = block.findAllSelected() } = params;
+    const sId = scene.get()!
+
+    const blockInfo = (bId: number) => {
+        const name = block.getName(bId) || block.getUUID(bId).toString()
+        const type = block.getType(bId)
+        const cIds = block.getChildren(bId)
+        const children =  cIds.map(blockInfo)
+        const hierarchy = {name, type, id: bId, children}
+        return hierarchy
+    }
+
+    const hierarchy = blockInfo(sId);
+    console.debug("Scene Hierarchy", JSON.stringify(hierarchy, null, 2))
+
+
+
 }

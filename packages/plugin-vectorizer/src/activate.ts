@@ -76,15 +76,15 @@ export async function activate(ctx: PluginContext) {
                 });
         });
     }
-    {
-        // THIS DOES not belong here maybe
-        ctx.logger?.trace("Defaulting canvas menu order")
-        const canvasMenuEntries = [
-            PluginManifest.contributes.ui.button.id,
-            ...ctx.ui?.unstable_getCanvasMenuOrder() ?? []
-        ]
-        ctx.ui?.unstable_setCanvasMenuOrder(canvasMenuEntries);
-    }
+    // {
+    //     // THIS DOES not belong here maybe
+    //     ctx.logger?.trace("Defaulting canvas menu order")
+    //     const canvasMenuEntries = [
+    //         PluginManifest.contributes.ui.button.id,
+    //         ...ctx.ui?.unstable_getCanvasMenuOrder() ?? []
+    //     ]
+    //     ctx.ui?.unstable_setCanvasMenuOrder(canvasMenuEntries);
+    // }
 }
 
 // maybe this should be just engine.event.onUpdate()

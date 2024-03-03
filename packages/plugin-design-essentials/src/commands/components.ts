@@ -33,7 +33,6 @@ export const importComponent = async (ctx: PluginContext, _params: { blockIds?: 
     const { engine } = ctx;
     const { scene, block } = engine;
 
-
     const data = await loadAsBlob();
     const str = await data.text();
     const bIds = await ctx.engine.block.loadFromString(str);
@@ -41,8 +40,20 @@ export const importComponent = async (ctx: PluginContext, _params: { blockIds?: 
     const pId = scene.getCurrentPage()!;
     bIds.forEach((bId) => {
         const name = ctx.engine.block.getName(bId) || ctx.engine.block.getUUID(bId);
+        const type = ctx.engine.block.getType(bId);
+        const isGroup = type === "//ly.img.ubq/group";
         console.log("Inserting Block", name);
-        block.appendChild(pId, bId);
+        console.log("Block Type", type);    
+        if (isGroup) { // // ugly workaround for groups after loading. How does duplicate work?
+            const childIds = block.getChildren(bId);
+            block.ungroup(bId)
+            childIds.forEach((childId) => {
+                block.appendChild(pId, childId);
+            })
+            block.group(childIds);
+        } else{
+            block.appendChild(pId, bId);
+        }
     });
 
 

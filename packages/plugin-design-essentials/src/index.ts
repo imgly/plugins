@@ -61,14 +61,13 @@ const registerPanels = async (ctx: PluginContext, panels: any) => {
 }
 
 const loadPanels = async (ctx: PluginContext) => {
-    const panels = await import("./panels/layers")
-    await registerPanels(ctx, panels)
+    // const panels = await import("./panels/layers")
+    // await registerPanels(ctx, panels)
 }
 
 
 
 export const activate = async (ctx: PluginContext) => {
-    
     await loadTranslation(ctx)
     await loadCommands(ctx)
     await loadPanels(ctx)
