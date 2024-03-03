@@ -4,10 +4,10 @@
   "version": "0.0.0",
   "workspaces": [
     "examples/web",
-    "packages/api-utils",
-    "packages/design-batteries",
+    "packages/plugin-core",
+    "packages/plugin-design-essentials",
     "packages/background-removal",
-    "packages/vectorizer"
+    "packages/plugin-vectorizer"
     
   ],
   "scripts": {

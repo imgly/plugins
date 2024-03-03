@@ -17,7 +17,7 @@ export const CommandPalette = (params: Params) => {
     useEffect(() => {
         function handleKeyDown(e: KeyboardEvent) {
             if (
-                (navigator?.platform?.toLowerCase().includes("mac")
+                (navigator?.userAgent?.toLowerCase().includes("mac")
                     ? e.metaKey
                     : e.ctrlKey) &&
                 e.key === "k"

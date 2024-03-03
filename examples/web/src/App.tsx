@@ -15,9 +15,9 @@ import { downloadBlocks } from "./utils/download";
 
 // Plugins
 // import BackgroundRemovalPlugin from '@imgly/plugin-background-removal-web';
-import VectorizerPlugin from '@imgly/plugin-vectorizer-web';
-import DesignBatteriesPlugin from "@imgly/plugin-design-batteries";
-import { PluginContext } from "@imgly/plugin-api-utils";
+import VectorizerPlugin from '@imgly/plugin-vectorizer';
+import DesignBatteriesPlugin from "@imgly/plugin-design-essentials";
+import { PluginContext } from "@imgly/plugin-core";
 
 
 declare global {
