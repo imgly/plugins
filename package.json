@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "workspaces": [
     "packages/*",
-    "examples/*"
+    "examples/web"
   ],
   "scripts": {
     "build": "turbo run build",
