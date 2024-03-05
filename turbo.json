@@ -3,13 +3,17 @@
   "pipeline": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": ["dist/**"]
+      "outputs": ["dist/**", "types/**"]
     },
     "dev": {
       "cache": false,
       "persistent": true
     },
     "dev:types": {
+      "cache": false,
+      "persistent": true
+    },
+    "check:pretty": {
       "cache": false,
       "persistent": true
     }

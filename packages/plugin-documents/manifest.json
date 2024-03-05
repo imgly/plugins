@@ -1,0 +1,13 @@
+{
+  "id": "documents",
+  "version": "0.0.1",
+  "publisher": "IMG.LY GmbH",
+  "icon": null,
+  "categories": [],
+  "contributes": {
+    "commands": {
+     
+    },
+    "i18n": {}
+  }
+}

@@ -1,0 +1,83 @@
+{
+  "id": "design-batteries",
+  "version": "1.0.0",
+  "publisher": "IMG.LY GmbH",
+  "icon": null,
+  "categories": [],
+  "contributes": {
+    "commands": {
+      "blockDelete": {
+        "category": "block"
+      },
+      "blockDuplicate": {
+        "category": "block"
+      },
+      "blockGroup": {
+        "category": "block"
+      },
+      "blockUngroup": {
+        "category": "block"
+      },
+      "exportComponentToFile": {
+        "category": "export"
+      },
+      "exportJsonToClipboard": {
+        "category": "export"
+      },
+      "exportJsonToFile": {
+        "category": "export"
+      },
+      "exportJpegToFile": {
+        "category": "export"
+      },
+      "exportPdfToFile": {
+        "category": "export"
+      },
+      "exportPngToClipboard": {
+        "category": "export"
+      },
+      "exportPngToFile": {
+        "category": "export"
+      },
+      "exportRgba8ToFile": {
+        "category": "export"
+      },
+      "exportSceneToClipboard": {
+        "category": "export"
+      },
+      "exportSceneToFile": {
+        "category": "export"
+      },
+      "exportWebpToFile": {
+        "category": "export"
+      },
+      "imageFitModeContain": {
+        "category": "image"
+      },
+      "imageFitModeCover": {
+        "category": "image"
+      },
+      "imageFitModeCrop": {
+        "category": "image"
+      },
+      "layoutHorizontally": {
+        "category": "layout"
+      },
+      "layoutMasonry": {
+        "category": "layout"
+      },
+      "layoutVertically": {
+        "category": "layout"
+      },
+      "playground": {
+        "category": "playground"
+      },
+      "productSetInstagram": {
+        "category": "product"
+      },
+      "syncBlockAppearance": {
+        "category": "sync"
+      }
+    }
+  }
+}

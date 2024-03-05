@@ -7,6 +7,12 @@ const packageJson = JSON.parse(
   await readFile(new URL('../package.json', import.meta.url))
 );
 
+const dependencies = Object.keys(packageJson.dependencies)
+const peerDependencies = Object.keys(packageJson.peerDependencies)
+
+const externals = [...dependencies, ...peerDependencies]
+
+
 console.log(
   chalk.yellow('Building version: '),
   chalk.green(packageJson.version)
@@ -21,8 +27,8 @@ const configs = [
     minify: true,
     bundle: true,
     sourcemap: true,
-    external: ['@imgly/background-removal', '@cesdk/cesdk-js', 'lodash'],
-    platform: 'browser',
+    external: externals,
+    platform: 'node',
     format: 'esm',
     outfile: 'dist/index.mjs',
     plugins: [
