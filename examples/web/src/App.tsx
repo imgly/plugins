@@ -20,6 +20,7 @@ import { PluginContext } from "@imgly/plugin-core";
 import BackgroundRemovalPlugin from '@imgly/plugin-background-removal-web';
 import VectorizerPlugin from '@imgly/plugin-vectorizer';
 import DesignBatteriesPlugin from "@imgly/plugin-design-essentials";
+import DocumentPlugin from "@imgly/plugin-documents";
 import RemoteAssetSourcePlugin from '@imgly/plugin-remote-asset-source-web';
 
 
@@ -88,13 +89,14 @@ function App() {
     const backgroundRemovalPlugin = BackgroundRemovalPlugin({ ui: { locations: 'canvasMenu' } })
     const vectorizerPlugin = VectorizerPlugin(imgly, {})
     const commandsPlugin = DesignBatteriesPlugin(imgly, {})
-    
+    const documentPlugin = DocumentPlugin(imgly, {})
     // Register Plguins 
     await Promise.all([
       cesdk.addDefaultAssetSources(),
       cesdk.addDemoAssetSources({ sceneMode: "Design" }),
       cesdk.unstable_addPlugin(commandsPlugin),
       cesdk.unstable_addPlugin(vectorizerPlugin),
+      cesdk.unstable_addPlugin(documentPlugin),
       cesdk.unstable_addPlugin(backgroundRemovalPlugin),
       ...addDemoRemoteAssetSourcesPlugins(cesdk) //FIXME
     ]);
