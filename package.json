@@ -4,9 +4,10 @@
   "version": "0.0.0",
   "workspaces": [
     "examples/web",
+    "packages/background-removal",
     "packages/plugin-core",
     "packages/plugin-design-essentials",
-    "packages/background-removal",
+    "packages/plugin-documents",
     "packages/plugin-vectorizer"
     
   ],

@@ -12,9 +12,9 @@ const registerTranslation = (ctx: PluginContext, translations: { [key: string]: 
 }
 
 
-const loadCommands = async (ctx: PluginContext, file: string) => {
-    const commands = await import(file)
-    await registerCommands(ctx, commands)
+const loadCommands = async (ctx: PluginContext, imports: any) => {
+    
+    await registerCommands(ctx, imports)
 }
 
 const registerCommands = (ctx: PluginContext, imports: any) => {
@@ -26,6 +26,7 @@ const registerCommands = (ctx: PluginContext, imports: any) => {
         desc.id ??= `${PluginManifest.id}.commands.${command as string}`;
         const [category, name] = (command as string).split("_")
         desc.category ??= name ? category : "Commands";
+        console.log("registerCommand", command as string)
         ctx.commands.registerCommand(
             desc.id,
             async (params: any) => await callback(ctx, params),
@@ -70,7 +71,7 @@ const loadPanels = async (ctx: PluginContext) => {
 
 export const activate = async (ctx: PluginContext) => {
     await loadTranslation(ctx)
-    await loadCommands(ctx, "./commands")
+    await loadCommands(ctx, await import('./commands'))
     await loadPanels(ctx)
 }
 

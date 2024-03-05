@@ -1,7 +1,6 @@
 {
     "design-batteries.commands.blockBringForward": "Bring Block Forward",
     "design-batteries.commands.blockBringToFront": "Bring Block to Front",
-    "design-batteries.commands.blockCreateGraphic": "Create Graphic Block",
     "design-batteries.commands.blockCreateText": "Create Text Block",
     "design-batteries.commands.blockDelete": "Delete Block",
     "design-batteries.commands.blockDuplicate": "Duplicate Block",
@@ -50,5 +49,6 @@
     "design-batteries.commands.productSetInstagram": "Set Instagram Product",
     "design-batteries.commands.replicateSDXL": "Replicate SDXL",
     "design-batteries.commands.syncBlockAppearance": "Sync Block Appearance",
-    "design-batteries.commands.syncBlocks": "Sync Blocks"
+    "design-batteries.commands.syncBlocks": "Sync Blocks",
+    "design-batteries.commands.shapeSetEllipse": "Set Ellipse Shape"
 }

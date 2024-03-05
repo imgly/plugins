@@ -1,6 +1,7 @@
 import { PluginContext } from "@imgly/plugin-core";
 import { readBlockProperty } from "../utils/cesdk";
 
+
 export const debugLogBlockProperties = async (ctx: PluginContext, params: { blockIds: number[] }) => {
     const { block } = ctx.engine;
     const { blockIds = block.findAllSelected() } = params;
@@ -17,6 +18,8 @@ export const debugLogBlockProperties = async (ctx: PluginContext, params: { bloc
         console.debug("Properties for block", bId, JSON.stringify(Object.fromEntries(propDefinition.entries()), null, 2))
     })
 }
+
+
 
 export const debugLogBlockCrop = (ctx: PluginContext, params: { blockIds?: number[] }) => {
     const { block } = ctx.engine;

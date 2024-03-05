@@ -1,7 +1,7 @@
 import { PluginContext } from "@imgly/plugin-core";
 import { getTransform } from "./getTransform";
 import { setTransform } from "./setTransform";
-import { createDefaultBlockByType } from "../commands/block";
+import { createDefaultBlockByType } from "../utils/createDefaultBlockByType";
 
 export const turnBlockInto = (ctx: PluginContext, toType: string, id: number) => {
     const { block, scene } = ctx.engine;

@@ -62,6 +62,7 @@
   },
   "dependencies": {
     "@imgly/plugin-core": "*",
-    "lodash": "^4.17.21"
+    "lodash": "^4.17.21",
+    "yjs": "^13.6.14"
   }
 }
