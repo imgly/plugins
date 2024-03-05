@@ -6,7 +6,7 @@ import { PluginContext } from "@imgly/plugin-core";
 // https://replicate.com/batouresearch/high-resolution-controlnet-tile/examples#jq5gj2dbjg6j6l3ih7hf3jfuoa
 
 // https://replicate.com/mistralai/mixtral-8x7b-instruct-v0.1
-const REPLICATE_API_TOKEN = "r8_Y7Qt7U8vkF8QBVDJ9RvWTQNuebwVLBp2qvvBT"
+const REPLICATE_API_TOKEN = "MISSING"
 
 
 const REPLICATE_HEADERS = {
