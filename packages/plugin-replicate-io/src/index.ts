@@ -10,7 +10,7 @@ const registerTranslation = (ctx: PluginContext, translations: { [key: string]: 
 
 const registerCommands = (ctx: PluginContext, imports: CommandImports) => {
     for (const command in imports) {
-        const callback = imports[command as CommandContributions]
+        const callback = imports[command as string]
 
         let desc: CommandDescription = PluginManifest.contributes.commands[command as CommandContributions];
         desc ??= {};
@@ -69,6 +69,7 @@ export const activate = async (ctx: PluginContext) => {
     await loadCommands(ctx)
     await loadPanels(ctx)
 }
+
 
 
 export default (ctx: PluginContext, _config: PluginConfiguration) => {

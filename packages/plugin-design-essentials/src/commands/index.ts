@@ -11,8 +11,5 @@ export * from "./playground";
 export * from "./i18n";
 export * from "./panels";
 export * from "./turnInto";
-
-export * from "./replicate.io";
-
 // for convenience I splitted the files into smaller files
 export * from "./shape";

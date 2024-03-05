@@ -17,11 +17,11 @@ import { downloadBlocks } from "./utils/download";
 // import BackgroundRemovalPlugin from '@imgly/plugin-background-removal-web';
 import { PluginContext } from "@imgly/plugin-core";
 
-import BackgroundRemovalPlugin from '../../../packages/plugin-background-removal/dist';
+import BackgroundRemovalPlugin from '@imgly/plugin-background-removal-web';
 import VectorizerPlugin from '@imgly/plugin-vectorizer';
 import DesignBatteriesPlugin from "@imgly/plugin-design-essentials";
 import DocumentPlugin from "@imgly/plugin-documents";
-import RemoteAssetSourcePlugin from '../../../packages/plugin-remote-asset-source/dist';
+import RemoteAssetSourcePlugin from '@imgly/plugin-remote-asset-source-web';
 
 
 
