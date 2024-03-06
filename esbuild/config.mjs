@@ -1,12 +1,15 @@
 import chalk from 'chalk';
 import { readFile } from 'fs/promises';
+import { pathToFileURL } from 'node:url';
+import {glob} from 'glob';
 
-// import packageJson from '../package.json' assert { type: 'json' };
-// Avoid the Experimental Feature warning when using the above.
+const workingUrl = pathToFileURL(process.cwd() + '/')
+
+const pkgUrl = new URL('./package.json', workingUrl)
+
 const packageJson = JSON.parse(
-  await readFile(new URL('../package.json', import.meta.url))
-);
-
+  await readFile(pkgUrl)
+)
 
 const dependencies = Object.keys(packageJson.dependencies)
 const peerDependencies = Object.keys(packageJson.peerDependencies)
@@ -17,17 +20,23 @@ console.log(
   chalk.green(packageJson.version)
 );
 
+const entryPoints = glob.sync(['src/index.[tj]s','src/worker.[tj]s', 'src/lib/*.[tj]s',])
+
+
+
+
 const configs = [
   {
-    entryPoints: ['src/index.ts', "src/worker.ts"],
+    entryPoints: entryPoints,
     define: {
-      PLUGIN_VERSION: `"${packageJson.version}"`
+      PLUGIN_VERSION: `"${packageJson.version}"`,
+      PLUGIN_NAME: `"${packageJson.name}"`
     },
     minify: true,
     bundle: true,
     sourcemap: true,
     external: externals,
-    platform: 'node',
+    platform: 'neutral',
     format: 'esm',
     outdir: 'dist',
     outExtension: { '.js': '.mjs' },
@@ -42,10 +51,9 @@ const configs = [
                 minute: '2-digit',
                 second: '2-digit',
                 hour12: false
-              })}] Build ${
-                result.errors.length
-                  ? chalk.red('failed')
-                  : chalk.green('succeeded')
+              })}] Build ${result.errors.length
+                ? chalk.red('failed')
+                : chalk.green('succeeded')
               }`
             );
           });

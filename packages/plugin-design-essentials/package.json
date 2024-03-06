@@ -42,15 +42,16 @@
   "scripts": {
     "start": "npm run watch",
     "clean": "npx rimraf dist && npx rimraf types",
-    "build": "yarn run clean && yarn run types:create && node scripts/build.mjs",
-    "dev": "yarn run types:create && node scripts/watch.mjs",
+    "build": "yarn run types:build && node ../../scripts/build.mjs",
+    "dev": "concurrently -n tsc, build \"yarn run types:watch\"  \"node ../../scripts/watch.mjs\"",
     "publish:latest": "npm run clean && npm run build && npm publish --tag latest --access public",
     "publish:next": "npm run clean && npm run build && npm publish --tag next --access public",
     "check:all": "concurrently -n lint,type,pretty \"yarn check:lint\" \"yarn check:type\" \"yarn check:pretty\"",
     "check:lint": "eslint --max-warnings 0 './src/**/*.{ts,tsx}'",
     "check:pretty": "prettier --list-different './src/**/*.{ts,tsx}'",
     "check:type": "tsc --noEmit",
-    "types:create": "tsc --emitDeclarationOnly"
+    "types:build": "tsc --emitDeclarationOnly",
+    "types:watch": "tsc --emitDeclarationOnly --watch"
   },
   "devDependencies": {
     "chalk": "^5.3.0",

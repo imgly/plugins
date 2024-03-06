@@ -1,5 +1,3 @@
-"use strict";
-
 import { PluginContext } from "@imgly/plugin-core";
 
 import { isEqual } from 'lodash'
@@ -11,12 +9,10 @@ const documents = new Map<string, Y.Doc>()
 type YJson = Y.Map<any>
 
 class Transform extends Y.Map<any> {
-    constructor() {
-        super()
-    }
     set x(value: number) {
         this.set("x", value)
     }
+
     set y(value: number) {
         this.set("y", value)
     }
@@ -25,6 +21,7 @@ class Transform extends Y.Map<any> {
 
 class DesignDocument {
     doc: Y.Doc;
+
     properties: YJson;
 
     // shape
@@ -62,6 +59,7 @@ class DesignDocument {
     get transform(): Transform | undefined {
         return this.properties.get("transform")
     }
+
     set transform(value: { x?: number, y?: number }) {
         value.x && (this.transform.x = value.x)
         value.y && (this.transform.y = value.y)
@@ -80,10 +78,10 @@ export const documentDemo = async (ctx: PluginContext, params: { blockIds?: numb
 
     }
 
-
+ 
     //    sync https://docs.yjs.dev/api/document-updates
     design.doc.on('update', (update, origin, doc) => {
-        //call get state vector from others
+        // call get state vector from others
         const stateVector2 = Y.encodeStateVector(design2.doc)
         const hash = sha256(stateVector2)
         // encode state as update

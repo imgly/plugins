@@ -12,9 +12,11 @@
       "cache": false,
       "persistent": true
     },
-    "dev:types": {
-      "cache": false,
-      "persistent": true
+    "fix:lint": {
+    },
+    "check:lint": {
+    },
+    "check:pretty": {
     }
   }
 }
