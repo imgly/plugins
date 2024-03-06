@@ -1,6 +1,6 @@
 import { PluginContext } from "@imgly/plugin-core";
-import { setTransform } from "../utils/setTransform";
-import { createDefaultBlockByType } from "../utils/createDefaultBlockByType";
+import { setBlockTransform } from "@imgly/plugin-utils";
+import { createDefaultBlockByType } from "@imgly/plugin-utils";
 
 
 export const blockDelete = async (ctx: PluginContext, params: { blockIds?: number[] }) => {
@@ -109,7 +109,7 @@ export const blockCreateText = async (ctx: PluginContext, _params: { blockIds?: 
     const height = block.getFrameHeight(pId) / 2.0
     const x = width - width / 2.0
     const y = height - height / 2.0
-    setTransform(ctx, bId, { x, y, width, height })
+    setBlockTransform(ctx, bId, { x, y, width, height })
     block.appendChild(pId, bId);
     block.setSelected(bId, true)
 }

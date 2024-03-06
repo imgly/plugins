@@ -1,5 +1,5 @@
 import Manifest from '../manifest.json';
-import { CommandCallback } from '../../plugin-core/types';
+import { CommandCallback } from '@imgly/plugin-core';
 
 
 export type Contributions = typeof Manifest;["contributes"]

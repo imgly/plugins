@@ -13,3 +13,6 @@ export * from "./panels";
 export * from "./turnInto";
 // for convenience I splitted the files into smaller files
 export * from "./shape";
+
+
+export * as default from "./index";

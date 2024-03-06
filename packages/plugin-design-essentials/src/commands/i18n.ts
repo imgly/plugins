@@ -1,5 +1,5 @@
 
-import { downloadBlob } from "../utils/download";
+import { downloadBlob } from "@imgly/plugin-utils";
 import { PluginContext } from "../../../plugin-core/types"; // Add this import statement
 
 export const i18nDownloadMissingCommandTranslations = (ctx: PluginContext) => {

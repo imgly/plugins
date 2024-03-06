@@ -1,6 +1,6 @@
 import { PluginContext } from "@imgly/plugin-core";
 import { getTransform } from "./getTransform";
-import { setTransform } from "./setTransform";
+import { setBlockTransform } from "./setBlockTransform";
 import { createDefaultBlockByType } from "../utils/createDefaultBlockByType";
 
 export const turnBlockInto = (ctx: PluginContext, toType: string, id: number) => {
@@ -17,7 +17,7 @@ export const turnBlockInto = (ctx: PluginContext, toType: string, id: number) =>
         block.hasShape(bId) && block.setShape(bId, sId);
     }
 
-    setTransform(ctx, bId, getTransform(ctx, id));
+    setBlockTransform(ctx, bId, getTransform(ctx, id));
 
     if (toType === "page") {
         console.log("Turning into page");

@@ -85,10 +85,9 @@ function App() {
     await cesdk.createDesignScene();
     cesdk.engine.scene.setDesignUnit("Pixel");  // 
 
-
     const backgroundRemovalPlugin = BackgroundRemovalPlugin({ ui: { locations: 'canvasMenu' } })
     const vectorizerPlugin = VectorizerPlugin(imgly, {})
-    const commandsPlugin = DesignBatteriesPlugin(imgly, {})
+    const commandsPlugin = DesignBatteriesPlugin(imgly)
     const documentPlugin = DocumentPlugin(imgly, {})
     // Register Plguins 
     await Promise.all([

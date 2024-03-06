@@ -1,5 +1,5 @@
 import { PluginContext } from "@imgly/plugin-core";
-import { readBlockProperty } from "../utils/cesdk";
+import { readBlockProperty } from "@imgly/plugin-utils";
 
 
 export const debugLogBlockProperties = async (ctx: PluginContext, params: { blockIds: number[] }) => {

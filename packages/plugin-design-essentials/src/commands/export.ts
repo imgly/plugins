@@ -1,7 +1,7 @@
 import { PluginContext } from "../../../plugin-core/types";
 import { MimeType } from "@cesdk/cesdk-js";
-import { downloadBlob } from "../utils/download";
-import { exportBlockAs } from "../utils/exportBlockAs";
+import { downloadBlob } from "@imgly/plugin-utils";
+import { exportBlockAs } from "@imgly/plugin-utils";
 
 
 

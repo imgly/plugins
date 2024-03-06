@@ -1,17 +1,27 @@
+import commands from "./commands"
+import locale from "./locale"
+import panels from "./panels"
 
-import { PluginContext, CommandDescription } from '@imgly/plugin-core';
-import { CommandImports, CommandContributions, PluginManifest } from './PluginManifest';
+import { PluginContext, CommandDescription, CommandCallback, Commands } from '@imgly/plugin-core';
+import { CommandContributions, PluginManifest } from './PluginManifest';
 
-export interface PluginConfiguration { }
 
-const registerTranslation = (ctx: PluginContext, translations: { [key: string]: any } = {}) => {
-    ctx.i18n.setTranslations(translations)
+// This helps creating the right types 
+declare module '@imgly/plugin-core' {
+    interface Register {
+        commands: typeof commands;
+        locale: typeof locale;
+    }
 }
 
-const registerCommands = (ctx: PluginContext, imports: CommandImports) => {
-    for (const command in imports) {
-        const callback = imports[command as CommandContributions]
 
+const loadTranslation = async (ctx: PluginContext, locale: Record<string, Record<string,string>> ) => {
+    ctx.i18n.setTranslations(locale)
+}
+
+const loadCommands = async (ctx: PluginContext, commands: Record<string, any> ) => {
+    for (const command in commands) {
+        const callback: CommandCallback = commands[command as string]
         let desc: CommandDescription = PluginManifest.contributes.commands[command as CommandContributions];
         desc ??= {};
         desc.id ??= `${PluginManifest.id}.commands.${command as string}`;
@@ -25,57 +35,37 @@ const registerCommands = (ctx: PluginContext, imports: CommandImports) => {
     }
 }
 
-const loadTranslation = async (ctx: PluginContext, locales: readonly string[] = ctx.i18n.locales()) => {
-    const translations = await Promise.all(locales.map(async (locale) => {
-        try {
-            const translations = await import(`./locale/${locale}.json`)
-            return { [locale]: translations.default }
-        } catch (e) {
-            // when loading of the file fails
-            return { [locale]: {} }
-        }
-    }))
-
-    translations.forEach((t) => registerTranslation(ctx, t))
-}
-
-
-const loadCommands = async (ctx: PluginContext) => {
-    const commands = await import("./commands")
-    await registerCommands(ctx, commands)
-}
-
-
-const registerPanels = async (ctx: PluginContext, panels: any) => {
+type PanelCallback = any
+const loadPanels = async (ctx: PluginContext, panels: Record<string, PanelCallback) => {
     for (const panel in panels) {
         const id = `${PluginManifest.id}.panels.${panel}`
-        // ctx.ui?.unstable_registerPanel(panel,  ({ builder: any  })  => {
-        //     return panels[panel](ctx, builder)
-        
+        // ctx.ui?.unstable_registerCustomPanel(panel,  ()  => {
+        //     // return panels[panel](ctx, builder)
         // })
     }
-
 }
 
-const loadPanels = async (ctx: PluginContext) => {
-    // const panels = await import("./panels/layers")
-    // await registerPanels(ctx, panels)
-}
 
 
 
 export const activate = async (ctx: PluginContext) => {
-    await loadTranslation(ctx)
-    await loadCommands(ctx)
-    await loadPanels(ctx)
+    await loadTranslation(ctx, locale)
+    await loadCommands(ctx, commands)
+    await loadPanels(ctx, panels)
 }
 
 
-export default (ctx: PluginContext, _config: PluginConfiguration) => {
-    return {
-        async initializeUserInterface() {
-            await activate(ctx)
-        }
-    };
-};
 
+
+export default (ctx: PluginContext) => {
+
+    return {
+      ...PluginManifest,
+      async initializeUserInterface() {
+      return await activate(ctx)
+      },
+  
+      // maybe this should be just engine.event.onUpdate()
+  
+    };
+  };

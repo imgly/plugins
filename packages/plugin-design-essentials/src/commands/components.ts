@@ -1,9 +1,11 @@
 import { MimeType } from "@cesdk/cesdk-js";
 import { PluginContext } from "../../../plugin-core/types";
-import { downloadBlob, loadAsBlob } from "../utils/download";
+import { downloadBlob } from "@imgly/plugin-utils";
+import { UploadAsBlob } from "@imgly/plugin-utils";
 
-import { inferBlockName } from "../utils/computeBlockName";
-import { exportBlockAs } from "../utils/exportBlockAs";
+import { inferBlockName } from "@imgly/plugin-utils";
+import { exportBlockAs } from "@imgly/plugin-utils";
+
 
 export const exportComponentToFile = async (ctx: PluginContext, params: { blockIds?: number[]; }) => {
     const { block } = ctx.engine;
@@ -33,7 +35,7 @@ export const importComponent = async (ctx: PluginContext, _params: { blockIds?: 
     const { engine } = ctx;
     const { scene, block } = engine;
 
-    const data = await loadAsBlob();
+    const data = await UploadAsBlob();
     const str = await data.text();
     const bIds = await ctx.engine.block.loadFromString(str);
 

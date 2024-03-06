@@ -2,7 +2,8 @@
 // SYNC BY NAME - two pages, same name
 
 import { PluginContext } from "../../../plugin-core/types";
-import { readBlockProperty, setBlockProperty } from "../utils/cesdk";
+import { setBlockProperty } from "@imgly/plugin-utils";
+import { readBlockProperty } from "@imgly/plugin-utils";
 import { CreativeEngine } from "@cesdk/cesdk-js";
 
 const propKeys = [

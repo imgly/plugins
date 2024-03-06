@@ -1,5 +1,5 @@
 import { PluginContext } from "@imgly/plugin-core";
-import { turnBlockInto } from "../utils/turnBlockInto";
+import { turnBlockInto } from "@imgly/plugin-utils";
 
 export const blockTurnIntoGraphic = (ctx: PluginContext, params: { blockIds: number[] }) => {
     const { block } = ctx.engine;

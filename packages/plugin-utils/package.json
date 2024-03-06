@@ -1,12 +1,10 @@
 {
-  "name": "@imgly/plugin-design-essentials",
+  "name": "@imgly/plugin-utils",
   "version": "0.1.0",
-  "description": "Vectorizer plugin for the CE.SDK editor",
+  "description": "Utils for writing Plugins for the CE.SDK editor",
   "keywords": [
     "CE.SDK",
-    "plugin",
-    "svg",
-    "vectorizer"
+    "plugin"
   ],
   "repository": {
     "type": "git",
@@ -65,7 +63,6 @@
   },
   "dependencies": {
     "@imgly/plugin-core": "*",
-    "@imgly/plugin-utils": "*",
     "lodash": "^4.17.21"
   }
 }

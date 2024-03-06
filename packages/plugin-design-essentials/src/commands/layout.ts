@@ -1,6 +1,6 @@
 import { PluginContext } from "../../../plugin-core/types";
 import { toSafeInteger } from "lodash";
-import { computeMultiSelectionBounds } from "../utils/computeMultiSelectionBounds";
+import { computeMultiSelectionBounds } from "@imgly/plugin-utils";
 
 export const layoutHorizontally = async (ctx: PluginContext, params: { blockIds?: number[]; padding?: number; }) => {
     const { block } = ctx.engine;
