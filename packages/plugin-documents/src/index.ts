@@ -1,23 +1,23 @@
 
 
-import { PluginContext, CommandDescription } from '@imgly/plugin-core';
+import { Context, CommandDescription } from '@imgly/plugin-core';
 
 
 import { CommandImports, CommandContributions, PluginManifest } from './PluginManifest';
 
 export interface PluginConfiguration { }
 
-const registerTranslation = (ctx: PluginContext, translations: { [key: string]: any } = {}) => {
-    ctx.i18n.setTranslations(translations)
+const registerTranslation = (ctx: Context, translations: { [key: string]: any } = {}) => {
+    ctx.i18n.registerTranslations(translations)
 }
 
 
-const loadCommands = async (ctx: PluginContext, imports: any) => {
+const loadCommands = async (ctx: Context, imports: any) => {
     
     await registerCommands(ctx, imports)
 }
 
-const registerCommands = (ctx: PluginContext, imports: any) => {
+const registerCommands = (ctx: Context, imports: any) => {
     for (const command in imports) {
         const callback = imports[command as CommandContributions]
 
@@ -35,7 +35,7 @@ const registerCommands = (ctx: PluginContext, imports: any) => {
     }
 }
 
-const loadTranslation = async (ctx: PluginContext, locales: readonly string[] = ctx.i18n.locales()) => {
+const loadTranslation = async (ctx: Context, locales: readonly string[] = ctx.i18n.locales()) => {
     const translations = await Promise.all(locales.map(async (locale) => {
         try {
             const translations = await import(`./locale/${locale}.json`)
@@ -51,7 +51,7 @@ const loadTranslation = async (ctx: PluginContext, locales: readonly string[] = 
 
 
 
-const registerPanels = async (ctx: PluginContext, panels: any) => {
+const registerPanels = async (ctx: Context, panels: any) => {
     for (const panel in panels) {
         const id = `${PluginManifest.id}.panels.${panel}`
         // ctx.ui?.unstable_registerPanel(panel,  ({ builder: any  })  => {
@@ -62,21 +62,21 @@ const registerPanels = async (ctx: PluginContext, panels: any) => {
 
 }
 
-const loadPanels = async (ctx: PluginContext) => {
+const loadPanels = async (ctx: Context) => {
     // const panels = await import("./panels/layers")
     // await registerPanels(ctx, panels)
 }
 
 
 
-export const activate = async (ctx: PluginContext) => {
+export const activate = async (ctx: Context) => {
     await loadTranslation(ctx)
     await loadCommands(ctx, await import('./commands'))
     await loadPanels(ctx)
 }
 
 
-export default (ctx: PluginContext, _config: PluginConfiguration) => {
+export default (ctx: Context, _config: PluginConfiguration) => {
     return {
         async initializeUserInterface() {
             await activate(ctx)

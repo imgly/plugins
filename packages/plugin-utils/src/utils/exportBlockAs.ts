@@ -1,7 +1,7 @@
-import { PluginContext } from "../../../plugin-core/types";
+import { Context } from "@imgly/plugin-core";
 import { type MimeType } from "@cesdk/cesdk-js";
 
-export const exportBlockAs = async (ctx: PluginContext, params: { blockIds?: number[], mimeType?: MimeType | 'application/x-cesdk' | 'application/json', width?: number, height?: number }) => {
+export const exportBlockAs = async (ctx: Context, params: { blockIds?: number[], mimeType?: MimeType | 'application/x-cesdk' | 'application/json', width?: number, height?: number }) => {
     
     const { block } = ctx.engine;
     const {
@@ -10,8 +10,10 @@ export const exportBlockAs = async (ctx: PluginContext, params: { blockIds?: num
         width,
         height
     } = params;
-    blockIds.length === 0 && blockIds.push(ctx.engine.scene.get()!);
-    return await Promise.all(blockIds.map(async (bId: number) => {
+
+    (blockIds.length === 0) && blockIds.push(ctx.engine.scene.get()!);
+
+    return Promise.all(blockIds.map(async (bId: number) => {
         switch (mimeType) {
             case "application/x-cesdk": {
                 const str = await block.saveToString([bId]);
@@ -26,9 +28,8 @@ export const exportBlockAs = async (ctx: PluginContext, params: { blockIds?: num
 
             }
             default:
-                return await block.export(bId, mimeType, { targetHeight: height, targetWidth: width });
+                return block.export(bId, mimeType, { targetHeight: height, targetWidth: width });
         }
-
     }));
 };
 

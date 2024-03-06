@@ -8,32 +8,29 @@ import CreativeEditorSDK from "@cesdk/cesdk-js";
 // React UI Components
 import { CommandPalette } from "./components/CommandPalette"
 // Utils
-import { downloadBlocks } from "./utils/download";
-
-// IMGLY Plugins
-
+import { downloadBlocks } from "@imgly/plugin-utils";
 
 // Plugins
 // import BackgroundRemovalPlugin from '@imgly/plugin-background-removal-web';
-import { PluginContext } from "@imgly/plugin-core";
+import * as IMGLY from "@imgly/plugin-core";
+import * as DesignBatteriesPlugin from "@imgly/plugin-design-essentials";
 
 import BackgroundRemovalPlugin from '@imgly/plugin-background-removal-web';
 import VectorizerPlugin from '@imgly/plugin-vectorizer';
-import DesignBatteriesPlugin from "@imgly/plugin-design-essentials";
+
 import DocumentPlugin from "@imgly/plugin-documents";
 import RemoteAssetSourcePlugin from '@imgly/plugin-remote-asset-source-web';
 
 
 
-
 declare global {
-  interface Window { imgly: PluginContext }
+  interface Window { imgly: IMGLY.Context }
 }
 
 
 function App() {
   // const cesdkRef = useRef<CreativeEditorSDK>();
-  const contextRef = useRef<PluginContext>();
+  const contextRef = useRef<IMGLY.Context>();
   const [commandItems, setCommandItems] = useState<Array<any>>([])
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState<boolean>(false)
 
@@ -77,7 +74,7 @@ function App() {
 
   const initCallback = async (cesdk: CreativeEditorSDK) => {
 
-    const imgly = new PluginContext(cesdk)
+    const imgly = IMGLY.createContext(cesdk) 
     window.imgly = imgly
 
 
@@ -87,13 +84,12 @@ function App() {
 
     const backgroundRemovalPlugin = BackgroundRemovalPlugin({ ui: { locations: 'canvasMenu' } })
     const vectorizerPlugin = VectorizerPlugin(imgly, {})
-    const commandsPlugin = DesignBatteriesPlugin(imgly)
     const documentPlugin = DocumentPlugin(imgly, {})
     // Register Plguins 
     await Promise.all([
       cesdk.addDefaultAssetSources(),
       cesdk.addDemoAssetSources({ sceneMode: "Design" }),
-      cesdk.unstable_addPlugin(commandsPlugin),
+      imgly.plugins.registerPlugin(DesignBatteriesPlugin),
       cesdk.unstable_addPlugin(vectorizerPlugin),
       cesdk.unstable_addPlugin(documentPlugin),
       cesdk.unstable_addPlugin(backgroundRemovalPlugin),
@@ -105,7 +101,7 @@ function App() {
     // Ui components
     imgly.ui?.unstable_registerComponent("plugin.imgly.commandpalette", commandPaletteButton);
 
-    imgly.i18n.setTranslations({ en: { "plugin.imgly.commandpalette.label": "✨ Run .." } })
+    imgly.i18n.registerTranslations({ en: { "plugin.imgly.commandpalette.label": "✨ Run .." } })
     // Canvas Menu
     const canvasMenuItems = imgly.ui?.unstable_getCanvasMenuOrder() ?? []
     const newCanvasMenuItems = ["plugin.imgly.commandpalette", ...canvasMenuItems];
@@ -136,11 +132,11 @@ function App() {
   );
 }
 
-const generateItems = (ctx: PluginContext) => {
+const generateItems = (ctx: IMGLY.Context) => {
   return [...generateBlockHierarchy(ctx), ...generateCommandItems(ctx), ...generateProperyItems(ctx)]
 }
 
-const generateBlockHierarchy = (ctx: PluginContext) => {
+const generateBlockHierarchy = (ctx: IMGLY.Context) => {
   const blocks = ctx.engine.block.findAll()
 
   return blocks.map((bId: number) => {
@@ -156,7 +152,7 @@ const generateBlockHierarchy = (ctx: PluginContext) => {
   })
 }
 
-const generateProperyItems = (ctx: PluginContext) => {
+const generateProperyItems = (ctx: IMGLY.Context) => {
   const { block } = ctx.engine
   const bIds = block.findAllSelected()
   const bId = bIds[0]
@@ -181,7 +177,7 @@ const generateProperyItems = (ctx: PluginContext) => {
 }
 
 
-const generateCommandItems = (ctx: PluginContext): Array<any> => {
+const generateCommandItems = (ctx: IMGLY.Context): Array<any> => {
   const cmds = ctx
     .commands!
     .listCommands()

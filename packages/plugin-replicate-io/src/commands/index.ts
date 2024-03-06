@@ -1,4 +1,4 @@
-import { PluginContext } from "@imgly/plugin-core";
+import { Context } from "@imgly/plugin-core";
 
 // TODOS
 // https://replicate.com/stability-ai/stable-diffusion-img2img?prediction=63trbdrbookprhnq3eoap6iwz4
@@ -14,7 +14,7 @@ const REPLICATE_HEADERS = {
     "Authorization": `Token ${REPLICATE_API_TOKEN}`
 }
 
-const proxyForCors = (url: string) => 'https://corsproxy.io/?' + encodeURIComponent(url);
+const proxyForCors = (url: string) => `https://corsproxy.io/?${  encodeURIComponent(url)}`;
 
 const MODELS = {
     "face2sticker": {
@@ -67,7 +67,7 @@ const MODELS = {
     }
 }
 
-export const replicateSDXL = async (ctx: PluginContext, params: { blockIds?: number[]; }) => {
+export const replicateSDXL = async (ctx: Context, params: { blockIds?: number[]; }) => {
     const { block } = ctx.engine;
     let {
         blockIds = block.findAllSelected()
@@ -86,7 +86,7 @@ export const replicateSDXL = async (ctx: PluginContext, params: { blockIds?: num
     const fIds = iIds.map((id: number) => [id, block.getFill(id)])
     fIds.forEach(async ([bId, fId]) => {
         // fake busy
-        //enssure we have preview
+        // enssure we have preview
         const imageFillUri = block.getString(fId, 'fill/image/imageFileURI');
         const name = block.getName(bId)
         block.setString(fId, 'fill/image/previewFileURI', block.getString(fId, 'fill/image/previewFileURI') ?? block.getString(fId, 'fill/image/imageFileURI'));
@@ -132,7 +132,7 @@ const callReplicateIo = async (version: string, input: any) => {
 
 
     const json = await res.json()
-    return await waitForReplicate(json)
+    return waitForReplicate(json)
 }
 
 const waitForReplicate = async (json: any): Promise<string[]> => {

@@ -1,6 +1,7 @@
 import { I18NKeys } from "./PluginManifest";
-import { type PluginContext as IPluginContext, CommandCallback } from '@imgly/plugin-core';
-type PluginContext = IPluginContext<I18NKeys>;
+import { type BaseContext as IPluginContext, CommandCallback } from '@imgly/plugin-core';
+
+type Context = IPluginContext<I18NKeys>;
 
 export { CreativeEngine } from '@cesdk/cesdk-js';
-export { type PluginContext, type CommandCallback }
+export { type Context, type CommandCallback }

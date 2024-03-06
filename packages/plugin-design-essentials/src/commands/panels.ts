@@ -1,4 +1,4 @@
-import { PluginContext } from '@imgly/plugin-core'
+import { Context } from '@imgly/plugin-core'
 
 const panelIds = [
     '//ly.img.panel/settings',
@@ -32,30 +32,30 @@ const panelIds = [
     '//ly.img.panel/inspector/colorLibrary',
   ];
 
-export const panelSettingsOpen = async (ctx: PluginContext) => {
+export const panelSettingsOpen = async (ctx: Context) => {
     const { ui } = ctx;
     ui?.openPanel("//ly.img.panel/settings")
 }
 
-export const panelSettingsClose = async (ctx: PluginContext) => {
+export const panelSettingsClose = async (ctx: Context) => {
     const { ui } = ctx;
     ui?.closePanel("//ly.img.panel/settings")
 }
 
 
 
-// export const panelInspectorOpen = async (ctx: PluginContext) => {
+// export const panelInspectorOpen = async (ctx: Context) => {
 //     const { ui } = ctx;
 //     ui?.openPanel("//ly.img.panel/inspector")
 // }
 
-// export const panelInspectorClose = async (ctx: PluginContext) => {
+// export const panelInspectorClose = async (ctx: Context) => {
 //     const { ui } = ctx;
 //     ui?.closePanel("//ly.img.panel/inspector")
 // }
 
 
-// export const panelAssetLibraryOpen = async (ctx: PluginContext) => {
+// export const panelAssetLibraryOpen = async (ctx: Context) => {
 //     const { ui } = ctx;
 //     ui?.openPanel("//ly.img.panel/asset-library")
 // }

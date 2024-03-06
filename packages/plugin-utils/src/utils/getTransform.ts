@@ -1,6 +1,6 @@
-import { PluginContext } from "@imgly/plugin-core";
+import { Context } from "@imgly/plugin-core";
 
-export const getTransform = (ctx: PluginContext, bId: number) => {
+export const getTransform = (ctx: Context, bId: number) => {
     const { block } = ctx.engine;
     return {
         x: block.getPositionX(bId),

@@ -1,6 +1,6 @@
-import { PluginContext } from './PluginContext';
+import { Context } from './Context';
 import { Subscribable } from './Subscribable';
-export type CommandCallback = (ctx: PluginContext, params: any) => Promise<any> | any;
+export type CommandCallback = (ctx: Context, params: any) => Promise<any> | any;
 export type CommandArgs = {
     blockIds?: number[];
 };
@@ -11,13 +11,13 @@ export type CommandDescription = {
     args?: any;
     returns?: any;
 };
-export declare class Commands extends Subscribable<CommandEvents, string> {
+export declare class Commands<K extends string = string> extends Subscribable<CommandEvents, string> {
     #private;
-    constructor(ctx: PluginContext);
-    listCommands(): string[];
-    registerCommand(label: string, callback: CommandCallback, description: CommandDescription): () => void;
-    unregisterCommand(label: string): void;
-    getCommandCallback(label: string): CommandCallback | undefined;
-    getCommandDescription(label: string): CommandDescription | undefined;
-    executeCommand<P = any, R = any>(cmd: string, params: P): Promise<R | undefined>;
+    constructor(ctx: Context);
+    listCommands(): K[];
+    registerCommand(label: K, callback: CommandCallback, description: CommandDescription): Promise<() => void>;
+    unregisterCommand(label: K): void;
+    getCommandCallback(label: K): CommandCallback | undefined;
+    getCommandDescription(label: K): CommandDescription | undefined;
+    executeCommand<P = any, R = any>(cmd: K, params: P): Promise<R | undefined>;
 }

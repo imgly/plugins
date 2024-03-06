@@ -1,2 +1,2 @@
-import { PluginContext } from './deps';
-export declare function activate(ctx: PluginContext): Promise<void>;
+import { Context } from './deps';
+export declare function activate(ctx: Context): Promise<void>;

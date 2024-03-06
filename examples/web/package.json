@@ -12,6 +12,7 @@
     "@imgly/plugin-background-removal-web": "*",
     "@imgly/plugin-remote-asset-source-web": "*",
     "@imgly/plugin-vectorizer": "*",
+    "@imgly/plugin-utils": "*",
     "@imgly/plugin-design-essentials": "*",
     "@imgly/plugin-documents": "*",
     "@cesdk/cesdk-js": "^1.21.0",

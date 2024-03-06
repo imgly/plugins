@@ -1,8 +1,8 @@
-import { PluginContext } from "../../../plugin-core/types";
+import { Context } from "@imgly/plugin-core";
 import { toSafeInteger } from "lodash";
 import { computeMultiSelectionBounds } from "@imgly/plugin-utils";
 
-export const layoutHorizontally = async (ctx: PluginContext, params: { blockIds?: number[]; padding?: number; }) => {
+export const layoutHorizontally = async (ctx: Context, params: { blockIds?: number[]; padding?: number; }) => {
     const { block } = ctx.engine;
     const {
         blockIds = block.findAllSelected(), padding = 0
@@ -20,7 +20,7 @@ export const layoutHorizontally = async (ctx: PluginContext, params: { blockIds?
 
 
     let curXPos = block.getPositionX(children[0]);
-    let curYPos = block.getPositionY(children[0]);
+    const curYPos = block.getPositionY(children[0]);
     children.forEach((childId: number) => {
         block.setPositionY(childId, curYPos);
         block.setPositionX(childId, curXPos);
@@ -30,7 +30,7 @@ export const layoutHorizontally = async (ctx: PluginContext, params: { blockIds?
     });
 };
 
-export const layoutVertically = async (ctx: PluginContext, params: { blockIds?: number[]; padding?: number; }) => {
+export const layoutVertically = async (ctx: Context, params: { blockIds?: number[]; padding?: number; }) => {
     const { block } = ctx.engine;
     const {
         blockIds = block.findAllSelected(), padding = 0
@@ -45,7 +45,7 @@ export const layoutVertically = async (ctx: PluginContext, params: { blockIds?: 
     const children = isGroup ? block.getChildren(blockIds[0]) : blockIds;
     if (children.length === 0) return;
 
-    let curXPos = block.getPositionX(children[0]);
+    const curXPos = block.getPositionX(children[0]);
     let curYPos = block.getPositionY(children[0]);
     children.forEach((childId: number) => {
         block.setPositionX(childId, curXPos);
@@ -57,7 +57,7 @@ export const layoutVertically = async (ctx: PluginContext, params: { blockIds?: 
 };
 
 
-export const layoutMasonry = async (ctx: PluginContext, params: { blockIds?: number[]; cols?: number; paddingX?: number; paddingY?: number; }) => {
+export const layoutMasonry = async (ctx: Context, params: { blockIds?: number[]; cols?: number; paddingX?: number; paddingY?: number; }) => {
     const { block } = ctx.engine;
     let {
         blockIds = block.findAllSelected(), paddingX = 16, paddingY = 16, cols = 2
@@ -77,13 +77,13 @@ export const layoutMasonry = async (ctx: PluginContext, params: { blockIds?: num
     const childWidth = groupWidth / cols - paddingX;
 
     console.log(children);
-    let rowHeights: Array<number> = [];
+    const rowHeights: Array<number> = [];
     for (let i = 0; i < cols; i++) {
         rowHeights.push(0);
     }
 
-    let curXPos = block.getPositionX(children[0]);
-    let curYPos = block.getPositionY(children[0]);
+    const curXPos = block.getPositionX(children[0]);
+    const curYPos = block.getPositionY(children[0]);
     children.forEach((childId: number) => {
         const w = block.getFrameWidth(childId);
         const h = block.getFrameHeight(childId);

@@ -1,7 +1,7 @@
-// import { PluginContext } from '@imgly/plugin-core';
+// import { Context } from '@imgly/plugin-core';
 
 
-// export const layerList = async (ctx: PluginContext, builder: any, params: any) => {
+// export const layerList = async (ctx: Context, builder: any, params: any) => {
 //     const { block } = ctx.engine;
 //     const { Button, Section, Separator } = builder;
 //     const blockIds = block.findAllSelected();

@@ -1,4 +1,5 @@
 import Manifest from '../manifest.json';
+
 type ManifestType = typeof Manifest;
 
 // TODO: Extend this with the builtin commands from other packages 

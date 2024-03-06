@@ -1,9 +1,9 @@
 import Manifest from '../manifest.json';
-import { PluginContext } from "./deps";
+import { Context } from "./deps";
 export interface PluginConfiguration {
 }
 export { Manifest };
-declare const _default: (ctx: PluginContext, pluginConfiguration: PluginConfiguration) => {
+declare const _default: (ctx: Context, pluginConfiguration: PluginConfiguration) => {
     initializeUserInterface(): Promise<void>;
     id: string;
     version: string;

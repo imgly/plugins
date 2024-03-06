@@ -1,6 +1,6 @@
-import { PluginContext } from "../../../plugin-core/types";
+import { Context } from "@imgly/plugin-core"
 
-export const pluginRegisterCustomPanel = async (ctx: PluginContext, _params: { blockIds?: number[] }) => {
+export const pluginRegisterCustomPanel = async (ctx: Context, _params: { blockIds?: number[] }) => {
     const { ui } = ctx;
     ui?.unstable_registerCustomPanel('ly.img.foo', (domElement) => {
         domElement.appendChild(document.createTextNode('Hello World'));
@@ -14,14 +14,14 @@ export const pluginRegisterCustomPanel = async (ctx: PluginContext, _params: { b
 
 
 
-export const pluginOpenCustomPanel = async (ctx: PluginContext, _params: { blockIds?: number[] }) => {
+export const pluginOpenCustomPanel = async (ctx: Context, _params: { blockIds?: number[] }) => {
     const { ui } = ctx;
     ui?.openPanel('ly.img.foo');
 }
 
 
 
-export const command = async (ctx: PluginContext, params: { blockIds?: number[] }) => {
+export const command = async (ctx: Context, params: { blockIds?: number[] }) => {
 
 
 }

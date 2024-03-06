@@ -1,29 +1,30 @@
-import { PluginContext } from './PluginContext';
+import { Context } from './Context';
 import { Subscribable } from './Subscribable';
 
 
 import { merge } from 'lodash';
-import { flatten } from '../utils/flatten';
 
-type Translation<K extends string | symbol | number> = Record<K, string>
-type Translations<K extends string | symbol | number = string> = { [locale: string]: Translation<K>; }
+export type Translation<K extends string | symbol | number> = Record<K, string>
+export type Translations<K extends string | symbol | number = string> = { [locale: string]: Translation<K>; }
 
 export class I18N<K extends string | symbol> extends Subscribable<"register", Translations> {
-  #translations: any = {};
+  #translations: Translations<K> = {};
+
   #locale: string = navigator.language ?? "en";
-  #ctx: PluginContext
+
+  #ctx: Context
 
 
-  constructor(ctx: PluginContext) {
+  constructor(ctx: Context) {
     super()
     this.#ctx = ctx
   }
 
-  setTranslations(translations: Translations) {
-    this.#translations = merge(this.#translations, flatten(translations));
-    this.notify("register", translations)
+  async registerTranslations(translations: Translations<K>) {
+    this.#translations = merge(this.#translations, translations);
+    await this.notify("register", translations)
   }
-
+  
   translate(key: K, fallback: string | undefined = undefined) {
     const translation = this.findTranslation(key, this.#locale)
     if (!translation) {
@@ -33,21 +34,22 @@ export class I18N<K extends string | symbol> extends Subscribable<"register", Tr
   }
 
   findTranslation(key: K, language?: string) {
-    const [lang, region] = this.#locale.split('-');
-    const langLookup = lang.concat('.', key as string);
-    const langAndRegionLookup = lang.concat('.', key as string);
-    return this.#translations[langAndRegionLookup] || this.#translations[langLookup]
+    const locale = language ?? this.#locale;
+    const [lang, region] = locale.split('-');
+    return this.#translations[locale][key] ?? this.#translations[lang][key] ?? undefined
+
   }
 
-  hasTranslation(key: K, language?: string): boolean {
+  hasTranslation(key: string, language?: string): boolean {
     const locale = language ?? this.#locale;
     const lookup = locale.concat('.', key as string);
-    return !!this.findTranslation(key, language)
+    return !!this.findTranslation(key as K, language)
   }
 
   setLocale(locale: string) {
     this.#locale = locale;
   }
+
   locale() {
     return this.#locale;
   }
@@ -55,6 +57,7 @@ export class I18N<K extends string | symbol> extends Subscribable<"register", Tr
   locales() {
     return navigator.languages
   }
+
   t = this.translate.bind(this)
 }
 

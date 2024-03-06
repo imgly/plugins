@@ -1,9 +1,9 @@
-import { PluginContext } from "@imgly/plugin-core";
+import { Context } from "@imgly/plugin-core";
 import { getTransform } from "./getTransform";
 import { setBlockTransform } from "./setBlockTransform";
-import { createDefaultBlockByType } from "../utils/createDefaultBlockByType";
+import { createDefaultBlockByType } from "./createDefaultBlockByType";
 
-export const turnBlockInto = (ctx: PluginContext, toType: string, id: number) => {
+export const turnBlockInto = (ctx: Context, toType: string, id: number) => {
     const { block, scene } = ctx.engine;
 
     const bId = createDefaultBlockByType(ctx, toType);

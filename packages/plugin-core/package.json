@@ -50,7 +50,7 @@
     "check:pretty": "prettier --list-different './src/**/*.{ts,tsx}'",
     "check:type": "tsc --noEmit",
     "types:build": "tsc --emitDeclarationOnly",
-    "types:watch": "tsc --emitDeclarationOnly --watch"
+    "types:watch": "tsc --emitDeclarationOnly --watch --preserveWatchOutput"
   },
   "devDependencies": {
     "chalk": "^5.3.0",

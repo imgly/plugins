@@ -1,7 +1,7 @@
-import { PluginContext } from "@imgly/plugin-core";
+import { Context } from "@imgly/plugin-core";
 
 // UTILS 
-export const createDefaultBlockByType = (ctx: PluginContext, type: string) => {
+export const createDefaultBlockByType = (ctx: Context, type: string) => {
     const { block } = ctx.engine;
     switch (type) {
 

@@ -1,9 +1,8 @@
-import { PluginContext } from "@imgly/plugin-core";
-import { setBlockTransform } from "@imgly/plugin-utils";
-import { createDefaultBlockByType } from "@imgly/plugin-utils";
+import { Context } from "@imgly/plugin-core";
+import { setBlockTransform , createDefaultBlockByType } from "@imgly/plugin-utils";
 
 
-export const blockDelete = async (ctx: PluginContext, params: { blockIds?: number[] }) => {
+export const blockDelete = async (ctx: Context, params: { blockIds?: number[] }) => {
     const { block } = ctx.engine;
     const { blockIds = block.findAllSelected() } = params;
     blockIds.forEach((id: number) => {
@@ -11,7 +10,7 @@ export const blockDelete = async (ctx: PluginContext, params: { blockIds?: numbe
     });
 }
 
-export const blockDuplicate = async (ctx: PluginContext, params: { blockIds?: number[] }) => {
+export const blockDuplicate = async (ctx: Context, params: { blockIds?: number[] }) => {
     const { block } = ctx.engine;
     const { blockIds = block.findAllSelected() } = params;
     blockIds.forEach((id: number) => {
@@ -28,7 +27,7 @@ export const blockDuplicate = async (ctx: PluginContext, params: { blockIds?: nu
 }
 
 
-export const blockRename = async (ctx: PluginContext, params: { blockIds?: number[] }) => {
+export const blockRename = async (ctx: Context, params: { blockIds?: number[] }) => {
     const { block } = ctx.engine;
     const { blockIds = block.findAllSelected() } = params;
     blockIds.forEach((id: number) => {
@@ -40,7 +39,7 @@ export const blockRename = async (ctx: PluginContext, params: { blockIds?: numbe
         }
     });
 }
-export const blockBringForward = async (ctx: PluginContext, params: { blockIds?: number[] }) => {
+export const blockBringForward = async (ctx: Context, params: { blockIds?: number[] }) => {
     const { block } = ctx.engine;
     const { blockIds = block.findAllSelected() } = params;
     blockIds.forEach((id: number) => {
@@ -48,7 +47,7 @@ export const blockBringForward = async (ctx: PluginContext, params: { blockIds?:
     });
 }
 
-export const blockSendBackward = async (ctx: PluginContext, params: { blockIds?: number[] }) => {
+export const blockSendBackward = async (ctx: Context, params: { blockIds?: number[] }) => {
     const { block } = ctx.engine;
     const { blockIds = block.findAllSelected() } = params;
     blockIds.forEach((id: number) => {
@@ -56,7 +55,7 @@ export const blockSendBackward = async (ctx: PluginContext, params: { blockIds?:
     });
 }
 
-export const blockBringToFront = async (ctx: PluginContext, params: { blockIds?: number[] }) => {
+export const blockBringToFront = async (ctx: Context, params: { blockIds?: number[] }) => {
     const { block } = ctx.engine;
     const { blockIds = block.findAllSelected() } = params;
     blockIds.forEach((id: number) => {
@@ -64,7 +63,7 @@ export const blockBringToFront = async (ctx: PluginContext, params: { blockIds?:
     });
 }
 
-export const blockSendToBack = async (ctx: PluginContext, params: { blockIds?: number[] }) => {
+export const blockSendToBack = async (ctx: Context, params: { blockIds?: number[] }) => {
     const { block } = ctx.engine;
     const { blockIds = block.findAllSelected() } = params;
     blockIds.forEach((id: number) => {
@@ -73,7 +72,7 @@ export const blockSendToBack = async (ctx: PluginContext, params: { blockIds?: n
 }
 
 
-export const blockCreateGraphic = async (ctx: PluginContext, _params: { blockIds?: number[] }) => {
+export const blockCreateGraphic = async (ctx: Context, _params: { blockIds?: number[] }) => {
 
     const { block, scene } = ctx.engine;
     // const { blockIds = block.findAllSelected() } = params;
@@ -97,7 +96,7 @@ export const blockCreateGraphic = async (ctx: PluginContext, _params: { blockIds
 }
 
 
-export const blockCreateText = async (ctx: PluginContext, _params: { blockIds?: number[] }) => {
+export const blockCreateText = async (ctx: Context, _params: { blockIds?: number[] }) => {
     const { block, scene } = ctx.engine;
     // const { blockIds = block.findAllSelected() } = params;
 

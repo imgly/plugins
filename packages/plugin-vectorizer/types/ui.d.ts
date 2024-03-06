@@ -1,2 +1,2 @@
-import { PluginContext } from './deps';
-export declare const button: (ctx: PluginContext, params: any) => void;
+import { Context } from './deps';
+export declare const button: (ctx: Context, params: any) => void;

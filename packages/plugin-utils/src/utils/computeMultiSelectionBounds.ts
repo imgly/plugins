@@ -1,6 +1,6 @@
-import { PluginContext } from "../../../plugin-core/types";
+import { Context } from "@imgly/plugin-core";
 
-export const computeMultiSelectionBounds = (ctx: PluginContext, blockIds: number[]) => {
+export const computeMultiSelectionBounds = (ctx: Context, blockIds: number[]) => {
 
     const { block } = ctx.engine;
     const bounds = blockIds.map((id: number) => {

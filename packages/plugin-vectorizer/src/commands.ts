@@ -9,10 +9,10 @@ import {
 
 import { runInWorker } from './utils/worker.shared';
 import { createVectorPathBlocks } from './utils/cesdk+utils';
-import { PluginContext } from './deps';
+import { Context } from './deps';
 
-export const vectorize = async (context: PluginContext, params: { blockIds?: number[] }) => {
-  const uploader: any = undefined; //cesdk.unstable_upload.bind(cesdk)
+export const vectorize = async (context: Context, params: { blockIds?: number[] }) => {
+  const uploader: any = undefined; // cesdk.unstable_upload.bind(cesdk)
   const {engine} = context; // the only function that needs the ui is the upload function
   const blockApi = engine.block;
 

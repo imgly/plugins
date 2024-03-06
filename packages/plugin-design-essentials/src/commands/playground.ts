@@ -1,9 +1,8 @@
 // EXPORT AS LIBRARY
 // SYNC BY NAME - two pages, same name
 
-import { PluginContext } from "../../../plugin-core/types";
-import { setBlockProperty } from "@imgly/plugin-utils";
-import { readBlockProperty } from "@imgly/plugin-utils";
+import { Context } from "@imgly/plugin-core";
+import { setBlockProperty , readBlockProperty } from "@imgly/plugin-utils";
 import { CreativeEngine } from "@cesdk/cesdk-js";
 
 const propKeys = [
@@ -23,7 +22,7 @@ const propKeys = [
     'visible']
 
 
-const syncBlockProperties = (ctx: PluginContext, sourceId: number, destIds: number[], whiteList?: string[], blackList?: string[]) => {
+const syncBlockProperties = (ctx: Context, sourceId: number, destIds: number[], whiteList?: string[], blackList?: string[]) => {
     const { block } = ctx.engine;
     if (!block.isValid(sourceId)) return
 
@@ -50,9 +49,9 @@ const syncBlockProperties = (ctx: PluginContext, sourceId: number, destIds: numb
 
 
 // name syntax = "label=appearance(other), rotation(other)"
-export const syncBlockAppearance = async (ctx: PluginContext, params: { blockIds?: number[] }) => {
+export const syncBlockAppearance = async (ctx: Context, params: { blockIds?: number[] }) => {
     const { block, event } = ctx.engine;
-    let { blockIds = block.findAllSelected() } = params
+    const { blockIds = block.findAllSelected() } = params
     console.log("syncBlocks", block.findAllProperties(blockIds[0]))
     const propWhiteList: string[] = propKeys
     const propBlackList: string[] = []
@@ -99,7 +98,7 @@ const products = {
     },
 }
 
-export const myNewFunctionForTheEditor = async (ctx: PluginContext, _params: { blockIds?: number[] }) => {
+export const myNewFunctionForTheEditor = async (ctx: Context, _params: { blockIds?: number[] }) => {
     const { block, scene } = ctx.engine;
 
     const pId = scene.getCurrentPage()!
@@ -119,7 +118,7 @@ export const myNewFunctionForTheEditor = async (ctx: PluginContext, _params: { b
 
 
 
-export const productSetInstagram = async (ctx: PluginContext, params: { blockIds?: number[] }) => {
+export const productSetInstagram = async (ctx: Context, params: { blockIds?: number[] }) => {
     const { block } = ctx.engine;
     const { blockIds = block.findAllSelected() } = params;
     const resolution = products.instagram_story.resolution;
@@ -138,7 +137,7 @@ export const productSetInstagram = async (ctx: PluginContext, params: { blockIds
     })
 }
 
-export const playground = async (ctx: PluginContext, params: { blockIds?: number[] }) => {
+export const playground = async (ctx: Context, params: { blockIds?: number[] }) => {
     const { block, event } = ctx.engine;
     const { blockIds = block.findAllSelected() } = params;
 
@@ -286,7 +285,7 @@ function parseValueWithUnit(string: string | number): ValueWithUnit | null {
 // }
 
 
-function unitToDesignUnit(value: number, unit: string, ctx: PluginContext) {
+function unitToDesignUnit(value: number, unit: string, ctx: Context) {
     switch (unit) {
         case "%": return value
         case "px": return pixelToDesignUnit(ctx.engine, value)

@@ -1,4 +1,4 @@
-import { PluginContext } from './deps';
+import { Context } from './deps';
 
 import { PluginManifest } from './PluginManifest';
 
@@ -8,7 +8,7 @@ import {
 } from './utils/common';
 
 
-export const button = (ctx: PluginContext, params: any) => {
+export const button = (ctx: Context, params: any) => {
     const builder = params.builder
 
     const selected = ctx.engine.block.findAllSelected();
@@ -21,7 +21,7 @@ export const button = (ctx: PluginContext, params: any) => {
         label: ctx.i18n.translate("vectorizer.commands.vectorize"),
         icon: '@imgly/icons/Vectorize',
         isActive: false,
-        isLoading: isLoading,
+        isLoading,
         isDisabled: isLoading,
         loadingProgress: undefined, // creates infinite spinner
         onClick: () => ctx.commands.executeCommand(PluginManifest.contributes.commands.vectorize.id, { blockIds: candidates })

@@ -1,13 +1,10 @@
 import { MimeType } from "@cesdk/cesdk-js";
-import { PluginContext } from "../../../plugin-core/types";
-import { downloadBlob } from "@imgly/plugin-utils";
-import { UploadAsBlob } from "@imgly/plugin-utils";
-
-import { inferBlockName } from "@imgly/plugin-utils";
-import { exportBlockAs } from "@imgly/plugin-utils";
+import { Context } from "@imgly/plugin-core";
+import { downloadBlob , UploadAsBlob , inferBlockName , exportBlockAs } from "@imgly/plugin-utils";
 
 
-export const exportComponentToFile = async (ctx: PluginContext, params: { blockIds?: number[]; }) => {
+
+export const exportComponentToFile = async (ctx: Context, params: { blockIds?: number[]; }) => {
     const { block } = ctx.engine;
     const { blockIds = block.findAllSelected() } = params;
 
@@ -31,7 +28,7 @@ export const exportComponentToFile = async (ctx: PluginContext, params: { blockI
     });
 };
 
-export const importComponent = async (ctx: PluginContext, _params: { blockIds?: number[]; }) => {
+export const importComponent = async (ctx: Context, _params: { blockIds?: number[]; }) => {
     const { engine } = ctx;
     const { scene, block } = engine;
 
@@ -63,7 +60,7 @@ export const importComponent = async (ctx: PluginContext, _params: { blockIds?: 
 
 
 };
-export const exportComponentLibrary = async (ctx: PluginContext, _params: { blockIds?: number[]; }) => {
+export const exportComponentLibrary = async (ctx: Context, _params: { blockIds?: number[]; }) => {
     const { block } = ctx.engine;
     const libs = block.findByType("//ly.img.ubq/page");
 

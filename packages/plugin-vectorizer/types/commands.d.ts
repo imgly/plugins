@@ -1,4 +1,4 @@
-import { PluginContext } from './deps';
-export declare const vectorize: (context: PluginContext, params: {
+import { Context } from './deps';
+export declare const vectorize: (context: Context, params: {
     blockIds?: number[];
 }) => Promise<void>;

@@ -1,4 +1,4 @@
-import { PluginContext } from "@imgly/plugin-core";
+import { Context } from "@imgly/plugin-core";
 
 import { isEqual } from 'lodash'
 
@@ -66,7 +66,7 @@ class DesignDocument {
     }
 }
 
-export const documentDemo = async (ctx: PluginContext, params: { blockIds?: number[] }) => {
+export const documentDemo = async (ctx: Context, params: { blockIds?: number[] }) => {
     const design = new DesignDocument()
     const design2 = new DesignDocument()
 

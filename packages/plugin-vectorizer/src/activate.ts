@@ -6,15 +6,15 @@ import {
     isDuplicate,
 } from './utils/common';
 
-import { PluginContext, CommandCallback } from './deps';
+import { Context, CommandCallback } from './deps';
 import { update as handleUpdateEvent } from './handler';
 
 
-export async function activate(ctx: PluginContext) {
+export async function activate(ctx: Context) {
     // const { engine, logger, i18n, ui, commands } = ctx
     
 
-    //@ts-ignore
+    // @ts-ignore
     ctx.logger?.trace("checking if engine has commands", cesdk.engine.commands ? "yes" : "no")
 
     {
@@ -33,7 +33,7 @@ export async function activate(ctx: PluginContext) {
     }
 
     {
-        type UIComponentDefs = Record<UIComponentKeys, (ctx: PluginContext, params: any) => any>
+        type UIComponentDefs = Record<UIComponentKeys, (ctx: Context, params: any) => any>
         const uiComponents: UIComponentDefs = await import('./ui')
 
         for (const key in uiComponents) {
@@ -49,7 +49,7 @@ export async function activate(ctx: PluginContext) {
     {
         // FIXME: This should probablly be done automagically
         ctx.logger?.trace("Registering I18N translations")
-        ctx.i18n.setTranslations({ en: PluginManifest.contributes.i18n })
+        ctx.i18n.registerTranslations({ en: PluginManifest.contributes.i18n })
     }
 
 

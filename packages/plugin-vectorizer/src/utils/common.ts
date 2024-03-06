@@ -280,7 +280,7 @@ export class Scheduler<T> {
       this.#queue = task()
     } else {
       this.#queue = this.#queue.then(async () => {
-        return await task()
+        return task()
       })
     }
     return this.#queue

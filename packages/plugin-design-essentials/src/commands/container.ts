@@ -1,7 +1,7 @@
-import { PluginContext } from "../../../plugin-core/types";
+import { Context } from "@imgly/plugin-core";
 
 
-export const blockGroup = async (ctx: PluginContext, params: { blockIds?: number[] }) => {
+export const blockGroup = async (ctx: Context, params: { blockIds?: number[] }) => {
     const { block } = ctx.engine;
     const {
         blockIds = block.findAllSelected(),
@@ -14,7 +14,7 @@ export const blockGroup = async (ctx: PluginContext, params: { blockIds?: number
 }
 
 
-export const blockUngroup = async (ctx: PluginContext, params: { blockIds?: number[] }) => {
+export const blockUngroup = async (ctx: Context, params: { blockIds?: number[] }) => {
 
     const { block } = ctx.engine;
     const {

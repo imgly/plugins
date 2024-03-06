@@ -1,10 +1,10 @@
 
 import { downloadBlob } from "@imgly/plugin-utils";
-import { PluginContext } from "../../../plugin-core/types"; // Add this import statement
+import { Context } from "@imgly/plugin-core"; // Add this import statement
 
-export const i18nDownloadMissingCommandTranslations = (ctx: PluginContext) => {
+export const i18nDownloadMissingCommandTranslations = (ctx: Context) => {
     const { i18n, commands } = ctx;
-
+ 
     const missingCommandTranslations: [string, string][] = commands
         .listCommands()
         .map((cmd: string): [string, string] | null => {

@@ -1,8 +1,8 @@
 
 export class Subscribable<E, D> {
-    #subscribers: Array<{ filter: E[], callback: (event: D) => void }> = []
+    #subscribers: Array<{ filter: E[], callback: (event: D) => void | Promise<void> }> = []
     
-    subscribe(toEvent: E, callback: (label: D) => void): () => void {
+    subscribe(toEvent: E, callback: (label: D) => void | Promise<void>): () => void {
         const entry = { filter: [toEvent], callback }
         this.#subscribers.push(entry);
         return () => {
@@ -13,10 +13,10 @@ export class Subscribable<E, D> {
         }
     }
 
-    notify(event: E, data: D) {
-        this.#subscribers.forEach(({ filter, callback }) => {
+    async notify(event: E, data: D) {
+        this.#subscribers.forEach(async ({ filter, callback }) => {
             if (filter.includes(event)) {
-                callback(data);
+                await callback(data);
             }
         })
     }

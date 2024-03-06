@@ -1,8 +1,8 @@
-import { PluginContext } from "@imgly/plugin-core";
+import { Context } from "@imgly/plugin-core";
 import { readBlockProperty } from "@imgly/plugin-utils";
 
 
-export const debugLogBlockProperties = async (ctx: PluginContext, params: { blockIds: number[] }) => {
+export const debugLogBlockProperties = async (ctx: Context, params: { blockIds: number[] }) => {
     const { block } = ctx.engine;
     const { blockIds = block.findAllSelected() } = params;
 
@@ -21,7 +21,7 @@ export const debugLogBlockProperties = async (ctx: PluginContext, params: { bloc
 
 
 
-export const debugLogBlockCrop = (ctx: PluginContext, params: { blockIds?: number[] }) => {
+export const debugLogBlockCrop = (ctx: Context, params: { blockIds?: number[] }) => {
     const { block } = ctx.engine;
     const { blockIds = block.findAllSelected() } = params;
 
@@ -39,7 +39,7 @@ export const debugLogBlockCrop = (ctx: PluginContext, params: { blockIds?: numbe
 
 }
 
-export const debugLogBlockMetadata = async (ctx: PluginContext, params: { blockIds?: number[] }) => {
+export const debugLogBlockMetadata = async (ctx: Context, params: { blockIds?: number[] }) => {
     const { block } = ctx.engine;
     const { blockIds = block.findAllSelected() } = params;
 
@@ -61,7 +61,7 @@ export const debugLogBlockMetadata = async (ctx: PluginContext, params: { blockI
 
 }
 
-export const debugLogBlockFill = (ctx: PluginContext, params: { blockIds?: number[] }) => {
+export const debugLogBlockFill = (ctx: Context, params: { blockIds?: number[] }) => {
     const { block } = ctx.engine;
     const { blockIds = block.findAllSelected() } = params;
 
@@ -82,7 +82,7 @@ export const debugLogBlockFill = (ctx: PluginContext, params: { blockIds?: numbe
     });
 }
 
-export const debugLogBlockEffects = (ctx: PluginContext, params: { blockIds?: number[] }) => {
+export const debugLogBlockEffects = (ctx: Context, params: { blockIds?: number[] }) => {
     const { block } = ctx.engine;
     const { blockIds = block.findAllSelected() } = params;
 
@@ -108,7 +108,7 @@ export const debugLogBlockEffects = (ctx: PluginContext, params: { blockIds?: nu
 
 
 
-export const debugLogBlockBlur = (ctx: PluginContext, params: { blockIds?: number[] }) => {
+export const debugLogBlockBlur = (ctx: Context, params: { blockIds?: number[] }) => {
     const { block } = ctx.engine;
     const { blockIds = block.findAllSelected() } = params;
 
@@ -139,7 +139,7 @@ export const debugLogBlockBlur = (ctx: PluginContext, params: { blockIds?: numbe
     });
 }
 
-export const debugLogSceneHierarchy = async (ctx: PluginContext, params: { blockIds?: number[] }) => {
+export const debugLogSceneHierarchy = async (ctx: Context, params: { blockIds?: number[] }) => {
     const { block, scene } = ctx.engine;
     const { blockIds = block.findAllSelected() } = params;
     const sId = scene.get()!
