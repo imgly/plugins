@@ -1,7 +1,7 @@
 import { useRef, useState, useEffect } from "react";
 import { type Configuration } from "@cesdk/cesdk-js";
 import type CreativeEditorSDK from "@cesdk/cesdk-js";
-import { unflatten } from "../utils/flatten";
+import { unflatten } from "@imgly/plugin-utils";
 
 type Props = {
     config: Configuration, callback: (cesdk: CreativeEditorSDK) => Promise<void>

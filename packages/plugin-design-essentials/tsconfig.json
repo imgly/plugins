@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "strict": false,
+    "strict": true,
     "target": "es2017",
     "module": "es2020",
     "lib": ["es2018", "dom"],
@@ -9,9 +9,9 @@
     "isolatedModules": true,
     "esModuleInterop": true,
     "declaration": true,
-    "declarationDir": "types/",
+    "declarationDir": "gen/types/",
     "skipLibCheck": true
   },
-  "include": ["src/**/*", "esbuild/global.d.ts"],
+  "include": ["src/**/*"],
   "exclude": ["node_modules"]
 }

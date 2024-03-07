@@ -9,7 +9,7 @@
     "isolatedModules": true,
     "esModuleInterop": true,
     "declaration": true,
-    "declarationDir": "types/",
+    "declarationDir": "gen/types/",
     "skipLibCheck": true
   },
   "include": ["src/**/*", "esbuild/global.d.ts", "manifest.ts"],

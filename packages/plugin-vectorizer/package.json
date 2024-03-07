@@ -23,11 +23,11 @@
   },
   "source": "./src/index.ts",
   "module": "./dist/index.mjs",
-  "types": "./types/index.d.ts",
+  "types": "./gen/types/index.d.ts",
   "exports": {
     ".": {
       "import": "./dist/index.mjs",
-      "types": "./types/index.d.ts"
+      "types": "./gen/types/index.d.ts"
     }
   },
   "homepage": "https://img.ly",
@@ -41,7 +41,7 @@
   ],
   "scripts": {
     "start": "npm run watch",
-    "clean": "npx rimraf dist && npx rimraf types",
+    "clean": "npx rimraf dist && npx rimraf gen",
     "build": "yarn run types:build && node ../../scripts/build.mjs",
     "dev": "concurrently -n tsc, build \"yarn run types:watch\"  \"node ../../scripts/watch.mjs\"",
     "publish:latest": "npm run clean && npm run build && npm publish --tag latest --access public",

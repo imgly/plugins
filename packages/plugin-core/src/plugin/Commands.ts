@@ -55,10 +55,15 @@ export class Commands<K extends string = string> extends Subscribable<CommandEve
 
     const command = this.#entries.get(cmd);
     if (command) {
-      this.#ctx.ui?.showNotification({ message: `Running command: ${cmd}`, type: "info" })
-      return await command(this.#ctx, params);
+      this.#ctx.ui?.showNotification({ message: `${this.#ctx.i18n.t(cmd)}`, type: "info" })
+      try {
+        return await command(this.#ctx, params);
+      } catch (_e) {
+        const e = _e as Error
+        this.#ctx.ui?.showNotification({ message: `${this.#ctx.i18n.t(cmd)} failed with ${e.message}`, type: "error" })
+      }
     } else {
-      this.#ctx.ui?.showNotification({ message: `Command not found: ${cmd}`, type: "warning" })
+      this.#ctx.ui?.showNotification({ message: `${this.#ctx.i18n.t(cmd)} not found!`, type: "warning" })
     }
   }
 }

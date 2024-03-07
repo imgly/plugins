@@ -7,3 +7,4 @@ examples/*/dist
 yarn-error.log
 
 .turbo
+**/gen/

@@ -144,12 +144,18 @@ export const debugLogSceneHierarchy = async (ctx: Context, params: { blockIds?: 
     const { blockIds = block.findAllSelected() } = params;
     const sId = scene.get()!
 
+    type Hierarchy = {
+        name:string, 
+        type: string
+        id: number,
+        children: Hierarchy[]
+    }
     const blockInfo = (bId: number) => {
         const name = block.getName(bId) || block.getUUID(bId).toString()
         const type = block.getType(bId)
         const cIds = block.getChildren(bId)
         const children =  cIds.map(blockInfo)
-        const hierarchy = {name, type, id: bId, children}
+        const hierarchy:Hierarchy = {name, type, id: bId, children}
         return hierarchy
     }
 

@@ -5,10 +5,10 @@ import { Context } from "@imgly/plugin-core"; // Add this import statement
 export const i18nDownloadMissingCommandTranslations = (ctx: Context) => {
     const { i18n, commands } = ctx;
  
-    const missingCommandTranslations: [string, string][] = commands
+    const missingCommandTranslations: [string?, string?][] = commands
         .listCommands()
-        .map((cmd: string): [string, string] | null => {
-            return i18n.hasTranslation(cmd) ? null : [cmd, cmd.split(".").pop()];
+        .map((cmd: string): [string?, string?] | undefined => {
+            return i18n.hasTranslation(cmd) ? undefined : [cmd, cmd.split(".").pop()];
         })
         .filter(Boolean) as [string, string][];
 

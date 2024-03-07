@@ -11,6 +11,7 @@ export * from "./utils/setBlockProperty"
 export * from "./utils/setBlockTransform"
 export * from "./utils/turnBlockInto"
 export * from "./utils/UploadAsBlob"
-
-
+export * from "./utils/flatten"
+export * from "./utils/unflatten"
+export * from "./utils/stringUtils"
 export * as default from "."

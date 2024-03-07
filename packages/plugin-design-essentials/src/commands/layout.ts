@@ -2,6 +2,24 @@ import { Context } from "@imgly/plugin-core";
 import { toSafeInteger } from "lodash";
 import { computeMultiSelectionBounds } from "@imgly/plugin-utils";
 
+export const layoutPagesFree =  async (ctx: Context, params: { blockIds?: number[]; padding?: number; }) => {
+    const { block, scene } = ctx.engine;
+    const bIds = block.findByType("//ly.img.ubq/page");
+    const pIds = bIds.map(bId => block.getParent(bId))
+    const pIdSet = new Set(pIds)
+    if (pIdSet.size !== 1) return; 
+    const pId = pIds[0]!;
+    
+    const pType = block.getType(pId);
+    if (pType !== "//ly.img.ubq/stack" ) return;
+    const sId = scene.get()!
+
+    bIds.forEach((bId) => {
+        block.appendChild(sId, bId);
+    })
+    block.destroy(sId)
+}
+
 export const layoutHorizontally = async (ctx: Context, params: { blockIds?: number[]; padding?: number; }) => {
     const { block } = ctx.engine;
     const {

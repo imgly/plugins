@@ -11,18 +11,15 @@ export const createDefaultBlockByType = (ctx: Context, type: string) => {
             const fId = block.createFill("//ly.img.ubq/fill/image");
             block.setShape(bId, sId);
             block.setFill(bId, fId);
-            block.setName(bId, type.toUpperCase());
             return bId;
         }
         case "page": {
             const bId = block.create("page");
-            block.setName(bId, type.toUpperCase());
             return bId;
         }
         case "text": {
             const bId = block.create("graphic");
             block.replaceText(bId, "Hello World");
-            block.setName(bId, type.toUpperCase());
             return bId;
         }
         default: throw new Error("Invalid type");
