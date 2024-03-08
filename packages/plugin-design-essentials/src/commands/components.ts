@@ -1,10 +1,11 @@
 import { MimeType } from "@cesdk/cesdk-js";
 import { Context } from "@imgly/plugin-core";
-import { downloadBlob , UploadAsBlob , inferBlockName , exportBlockAs } from "@imgly/plugin-utils";
+import * as errors from "../errors";
+import { downloadBlob, UploadAsBlob, BlobType, inferBlockName, exportBlockAs, setBlockTransform } from "@imgly/plugin-utils";
 
 
 
-export const exportComponentToFile = async (ctx: Context, params: { blockIds?: number[]; }) => {
+export const componentSelectionExport = async (ctx: Context, params: { blockIds?: number[]; }) => {
     const { block } = ctx.engine;
     const { blockIds = block.findAllSelected() } = params;
 
@@ -15,7 +16,7 @@ export const exportComponentToFile = async (ctx: Context, params: { blockIds?: n
         return {
             thumbnail: thumbnail[0],
             cesdk: cesdk[0],
-            
+
             // zip: zip[0],
         };
     }));
@@ -28,39 +29,8 @@ export const exportComponentToFile = async (ctx: Context, params: { blockIds?: n
     });
 };
 
-export const importComponent = async (ctx: Context, _params: { blockIds?: number[]; }) => {
-    const { engine } = ctx;
-    const { scene, block } = engine;
 
-    const data = await UploadAsBlob();
-    const str = await data.text();
-    const bIds = await ctx.engine.block.loadFromString(str);
-
-    const pId = scene.getCurrentPage()!;
-    bIds.forEach((bId) => {
-        const name = ctx.engine.block.getName(bId) || ctx.engine.block.getUUID(bId);
-        const type = ctx.engine.block.getType(bId);
-        const isGroup = type === "//ly.img.ubq/group";
-        console.log("Inserting Block", name);
-        console.log("Block Type", type);    
-        if (isGroup) { // // ugly workaround for groups after loading. How does duplicate work?
-            const childIds = block.getChildren(bId);
-            block.ungroup(bId)
-            childIds.forEach((childId) => {
-                block.appendChild(pId, childId);
-            })
-            block.group(childIds);
-        } else{
-            block.appendChild(pId, bId);
-        }
-    });
-
-
-
-
-
-};
-export const exportComponentLibrary = async (ctx: Context, _params: { blockIds?: number[]; }) => {
+export const componentLibraryExport = async (ctx: Context, _params: { blockIds?: number[]; }) => {
     const { block } = ctx.engine;
     const libs = block.findByType("//ly.img.ubq/page");
 

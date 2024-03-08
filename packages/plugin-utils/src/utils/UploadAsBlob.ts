@@ -10,9 +10,10 @@ export async function UploadAsBlob(filter: string = "*") {
             if (file) {
                 const reader = new FileReader();
                 reader.onload = (e) => {
+
                     const buffer = e.target?.result;
                     if (buffer instanceof ArrayBuffer) {
-                        const blob = new Blob([buffer]);
+                        const blob = new Blob([buffer], { type: determineMimeTypeFromFile(file) });
                         upload.remove();
                         resolve(blob);
                     } else {
@@ -26,4 +27,35 @@ export async function UploadAsBlob(filter: string = "*") {
 
         upload.click();
     });
+}
+
+
+
+export enum BlobType {
+    SVG = "image/svg+xml",
+    PNG = "image/png",
+    JPG = "image/jpeg",
+    JPEG = "image/jpeg",
+    GIF = "image/gif",
+    WEBP = "image/webp",
+    TIFF = "image/tiff",
+    BMP = "image/bmp",
+    ICO = "image/x-icon",
+    JSON = "application/json",
+    CSV = "text/csv",
+    TXT = "text/plain",
+    IDML = "application/vnd.adobe.indesign-idml-package",
+    PDF = "application/pdf",
+    IMGLY = "application/vnd.imgly.component",
+    CESDK = "application/vnd.cesdk.component",
+    BINARY = "application/octet-stream",
+}
+
+
+const determineMimeTypeFromFile = (file: File) => {
+
+    if (file.type) return file.type;
+    const ext = file.name.split(".").pop();
+    return BlobType[ext.toUpperCase()] || BlobType.BINARY;
+
 }

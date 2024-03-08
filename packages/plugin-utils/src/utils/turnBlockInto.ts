@@ -25,7 +25,7 @@ export const turnBlockInto = (ctx: Context, toType: string, id: number) => {
         const cIds = block.getChildren(pId);
         const sId = cIds.find((cId) => block.getType(cId) === "//ly.img.ubq/stack")
         const hasStack = sId !== -1
-        console.log("Has stack", hasStack);
+
         pId = hasStack ? sId : pId;
         block.appendChild(pId, bId);
     } else {

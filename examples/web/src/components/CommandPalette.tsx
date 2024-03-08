@@ -1,5 +1,5 @@
 import "react-cmdk/dist/cmdk.css";
-import CMDK, { filterItems, getItemIndex } from "react-cmdk";
+import CMDK, { getItemIndex } from "react-cmdk";
 import { useState, useEffect } from "react";
 
 import Fuse from 'fuse.js';
@@ -42,7 +42,7 @@ export const CommandPalette = (params: Params) => {
     }
 
 
-    const {command, args} = parseSearchQuery(search)
+    const {command} = parseSearchQuery(search)
 
     const fuseOptions = {
         keys: [

@@ -58,7 +58,6 @@ export class I18N<K extends string | symbol> extends Subscribable<"register", Tr
     return navigator.languages
   }
 
-  t = this.translate.bind(this)
 }
 
 

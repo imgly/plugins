@@ -1,6 +1,6 @@
 import * as IMGLY from "@imgly/plugin-core";
 
-const generateItems = (ctx: IMGLY.Context) => {
+export const generateItems = (ctx: IMGLY.Context) => {
   return [...generateBlockHierarchy(ctx), ...generateCommandItems(ctx), ...generateProperyItems(ctx)];
 };
 const generateBlockHierarchy = (ctx: IMGLY.Context) => {
@@ -68,25 +68,3 @@ const generateCommandItems = (ctx: IMGLY.Context): Array<any> => {
       };
     });
 };
-export function registerCommandPalette(imgly: IMGLY.BaseContext<string, string>, commandPaletteButton: (params: { builder: any; }) => void, setCommandItems) {
-  imgly.ui?.unstable_registerComponent("plugin.imgly.commandpalette", commandPaletteButton);
-
-  imgly.i18n.registerTranslations({ en: { "plugin.imgly.commandpalette.label": "✨ Run .." } });
-  // Canvas Menu
-  const canvasMenuItems = imgly.ui?.unstable_getCanvasMenuOrder() ?? [];
-  const newCanvasMenuItems = ["plugin.imgly.commandpalette", ...canvasMenuItems];
-  imgly.ui?.unstable_setCanvasMenuOrder(newCanvasMenuItems);
-
-  // Bind our react command paltte to cesdk command palettes are listen on new commands being created 
-  imgly.engine.event.subscribe([], (events) => {
-    events
-      .forEach(_ => {
-        setCommandItems(generateItems(imgly));
-      });
-  });
-
-
-  imgly.commands.subscribe("register", (_label: string) => setCommandItems(generateItems(imgly)));
-  imgly.commands.subscribe("unregister", (_label: string) => setCommandItems(generateItems(imgly)));
-  setCommandItems(generateItems(imgly));
-}

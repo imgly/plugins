@@ -1,7 +1,7 @@
 import chalk from 'chalk';
 import { readFile } from 'fs/promises';
 import { pathToFileURL } from 'node:url';
-import {glob} from 'glob';
+import { glob } from 'glob';
 
 const workingUrl = pathToFileURL(process.cwd() + '/')
 
@@ -20,7 +20,7 @@ console.log(
   chalk.green(packageJson.version)
 );
 
-const entryPoints = glob.sync(['src/index.[tj]s','src/worker.[tj]s', 'src/lib/*.[tj]s',])
+const entryPoints = glob.sync(['src/index.[tj]s', 'src/worker.[tj]s', 'src/lib/*.[tj]s',])
 
 
 

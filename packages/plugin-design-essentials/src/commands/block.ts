@@ -1,6 +1,4 @@
 import { Context } from "@imgly/plugin-core";
-import { setBlockTransform , createDefaultBlockByType } from "@imgly/plugin-utils";
-
 
 export const blockDelete = async (ctx: Context, params: { blockIds?: number[] }) => {
     const { block } = ctx.engine;
@@ -25,7 +23,6 @@ export const blockDuplicate = async (ctx: Context, params: { blockIds?: number[]
 
     });
 }
-
 
 export const blockRename = async (ctx: Context, params: { blockIds?: number[] }) => {
     const { block } = ctx.engine;
@@ -70,49 +67,4 @@ export const blockSendToBack = async (ctx: Context, params: { blockIds?: number[
         block.sendToBack(id);
     })
 }
-
-
-export const blockCreateGraphic = async (ctx: Context, _params: { blockIds?: number[] }) => {
-
-    const { block, scene } = ctx.engine;
-    // const { blockIds = block.findAllSelected() } = params;
-    const setTransform = (blockId: number, transform: any) => {
-        const { x, y, width, height } = transform
-        x && block.setPositionX(bId, x)
-        y && block.setPositionY(bId, y)
-        width && block.setWidth(bId, width)
-        height && block.setHeight(bId, height)
-    }
-    const pId = scene.getCurrentPage() ?? scene.get()!
-
-    const bId = createDefaultBlockByType(ctx, "graphic")
-    const width = block.getFrameWidth(pId) / 2.0
-    const height = block.getFrameHeight(pId) / 2.0
-    const x = width - width / 2.0
-    const y = height - height / 2.0
-    setTransform(bId, { x, y, width, height })
-    block.appendChild(pId, bId);
-    block.setSelected(bId, true)
-}
-
-
-export const blockCreateText = async (ctx: Context, _params: { blockIds?: number[] }) => {
-    const { block, scene } = ctx.engine;
-    // const { blockIds = block.findAllSelected() } = params;
-
-    const pId = scene.getCurrentPage() ?? scene.get()!
-
-    const bId = createDefaultBlockByType(ctx, "text")
-
-    const width = block.getFrameWidth(pId) / 2.0
-    const height = block.getFrameHeight(pId) / 2.0
-    const x = width - width / 2.0
-    const y = height - height / 2.0
-    setBlockTransform(ctx, bId, { x, y, width, height })
-    block.appendChild(pId, bId);
-    block.setSelected(bId, true)
-}
-
-
-
 

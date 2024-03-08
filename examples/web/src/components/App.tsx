@@ -18,7 +18,7 @@ import BackgroundRemovalPlugin from '@imgly/plugin-background-removal-web';
 import VectorizerPlugin from '@imgly/plugin-vectorizer';
 
 import DocumentPlugin from "@imgly/plugin-documents";
-import { registerCommandPalette } from "../utils/registerCommandPalette";
+import { generateItems } from "../utils/registerCommandPalette";
 import { addDemoRemoteAssetSourcesPlugins } from "../utils/addDemoRemoteAssetSourcesPlugins";
 
 
@@ -99,7 +99,26 @@ function App() {
 
 
     // Ui components
-    registerCommandPalette(imgly, commandPaletteButton, setCommandItems);
+    imgly.ui?.unstable_registerComponent("plugin.imgly.commandpalette", commandPaletteButton);
+
+    imgly.i18n.registerTranslations({ en: { "plugin.imgly.commandpalette.label": "✨ Run .." } });
+    // Canvas Menu
+    const canvasMenuItems = imgly.ui?.unstable_getCanvasMenuOrder() ?? [];
+    const newCanvasMenuItems = ["plugin.imgly.commandpalette", ...canvasMenuItems];
+    imgly.ui?.unstable_setCanvasMenuOrder(newCanvasMenuItems);
+  
+    // Bind our react command paltte to cesdk command palettes are listen on new commands being created 
+    imgly.engine.event.subscribe([], (events) => {
+      events
+        .forEach(_ => {
+          setCommandItems(generateItems(imgly));
+        });
+    });
+  
+  
+    imgly.commands.subscribe("register", (_label: string) => setCommandItems(generateItems(imgly)));
+    imgly.commands.subscribe("unregister", (_label: string) => setCommandItems(generateItems(imgly)));
+    setCommandItems(generateItems(imgly));
   }
 
 
