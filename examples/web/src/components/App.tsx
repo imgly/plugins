@@ -23,6 +23,16 @@ import { addDemoRemoteAssetSourcesPlugins } from "../utils/addDemoRemoteAssetSou
 
 
 
+if (import.meta.hot) {
+  // import.meta.hot.accept()
+  if (!import.meta.hot.data) {
+    console.error("Notfound: import.meta.hot.data")
+  } else {
+    console.info("import.meta.hot.data", import.meta.hot.data)
+  }
+}
+
+
 declare global {
   interface Window { imgly: IMGLY.Context }
 }
@@ -33,7 +43,6 @@ function App() {
   const contextRef = useRef<IMGLY.Context>();
   const [commandItems, setCommandItems] = useState<Array<any>>([])
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState<boolean>(false)
-
 
   const commandPaletteButton = (params: { builder: any }) => {
     params
@@ -50,8 +59,6 @@ function App() {
         }
       });
   }
-
-
 
   const [config, _setConfig] = useState<Object>(
     {
@@ -74,27 +81,22 @@ function App() {
 
   const initCallback = async (cesdk: CreativeEditorSDK) => {
 
-    const imgly = IMGLY.createContext(cesdk) 
+    const imgly = IMGLY.createContext(cesdk)
     window.imgly = imgly
 
 
-    // Init Scene Programatically
-    await cesdk.createDesignScene();
-    cesdk.engine.scene.setDesignUnit("Pixel");  // 
 
-    const backgroundRemovalPlugin = BackgroundRemovalPlugin({ ui: { locations: 'canvasMenu' } })
-    const vectorizerPlugin = VectorizerPlugin(imgly, {})
-    const documentPlugin = DocumentPlugin(imgly, {})
     // Register Plguins 
     await Promise.all([
       cesdk.addDefaultAssetSources(),
       cesdk.addDemoAssetSources({ sceneMode: "Design" }),
       imgly.plugins.registerPlugin(DesignBatteriesPlugin),
-      cesdk.unstable_addPlugin(vectorizerPlugin),
-      cesdk.unstable_addPlugin(documentPlugin),
-      cesdk.unstable_addPlugin(backgroundRemovalPlugin),
+      cesdk.unstable_addPlugin(VectorizerPlugin(imgly, {})),
+      cesdk.unstable_addPlugin(DocumentPlugin(imgly, {})),
+      cesdk.unstable_addPlugin(BackgroundRemovalPlugin({ ui: { locations: 'canvasMenu' } })),
       ...addDemoRemoteAssetSourcesPlugins(cesdk) //FIXME
     ]);
+
 
 
 
@@ -106,7 +108,7 @@ function App() {
     const canvasMenuItems = imgly.ui?.unstable_getCanvasMenuOrder() ?? [];
     const newCanvasMenuItems = ["plugin.imgly.commandpalette", ...canvasMenuItems];
     imgly.ui?.unstable_setCanvasMenuOrder(newCanvasMenuItems);
-  
+
     // Bind our react command paltte to cesdk command palettes are listen on new commands being created 
     imgly.engine.event.subscribe([], (events) => {
       events
@@ -114,11 +116,20 @@ function App() {
           setCommandItems(generateItems(imgly));
         });
     });
-  
-  
+
+
     imgly.commands.subscribe("register", (_label: string) => setCommandItems(generateItems(imgly)));
     imgly.commands.subscribe("unregister", (_label: string) => setCommandItems(generateItems(imgly)));
     setCommandItems(generateItems(imgly));
+
+    // Init Scene Programatically
+    await cesdk.createDesignScene();
+    cesdk.engine.scene.setDesignUnit("Pixel");  // 
+    
+
+    // save and restore scene backup after and before loading the editor
+    await backupOrRestoreCurrentSceneOnReload(cesdk, 2500);
+
   }
 
 
@@ -126,9 +137,26 @@ function App() {
     <>
       <CommandPalette items={commandItems} isOpen={isCommandPaletteOpen} setIsOpen={(val) => setIsCommandPaletteOpen(val)} />
       <CreativeEditorSDKComponent config={config} callback={initCallback} />
-
     </>
   );
 }
-
 export default App;
+
+
+async function backupOrRestoreCurrentSceneOnReload(cesdk: CreativeEditorSDK, idleTime = 2500) {
+  const scene = localStorage.getItem("cesdk.scene");
+  if (scene) {
+    try {
+      await cesdk.loadFromString(scene);
+    } catch (e) {
+      localStorage.removeItem("cesdk.scene"); // just in case we remove the old scene
+      if (e instanceof Error)
+        console.error("Scene loading from cache failed with: ", e.message);
+    }
+  }
+
+  setInterval(async () => {
+    localStorage.setItem("cesdk.scene", await cesdk.save());
+  }, idleTime);
+}
+

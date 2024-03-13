@@ -1,5 +1,6 @@
 import { Context } from "@imgly/plugin-core";
 
+
 export const blockDelete = async (ctx: Context, params: { blockIds?: number[] }) => {
     const { block } = ctx.engine;
     const { blockIds = block.findAllSelected() } = params;

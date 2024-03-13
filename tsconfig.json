@@ -12,6 +12,5 @@
     "declarationDir": "dist/",
     "skipLibCheck": true
   },
-  "include": ["src/**/*", "esbuild/global.d.ts"],
   "exclude": ["node_modules"]
 }

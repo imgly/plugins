@@ -10,7 +10,9 @@ import Fuse from 'fuse.js';
 
 import { groupBy } from "lodash";
 
-
+/**
+ * 1. Use the pages structure 
+ */
 
 
 
@@ -24,25 +26,17 @@ export const CommandPalette = (params: Params) => {
     const { isOpen, setIsOpen } = params
     const { items } = params
 
-    const parseSearchQuery = (search: string) => {
-        const argString: Array<string> = search.split(" ")
-        const args: JSON[] = []
-        const cmd: string[] = []
-
-        argString?.forEach((arg) => {
-            try {
-                args.push(JSON.parse(arg))
-            } catch (e) {
-                cmd.push(arg)
-            }
-        }) 
-        // console.log(cmd, args)
-        const command  = cmd.join(" ")
-        return { command, args }
+    const parseSearchQuery = (search: string): { command: string, args: string[] } => {
+        const [command, ...args]: Array<string> = search.split("=")
+        return { command: command.trim(), args: args.map(a => a.trim()) }
     }
 
 
-    const {command} = parseSearchQuery(search)
+    const { command, args } = parseSearchQuery(search)
+    if (command.length > 0) {
+        console.log(`Running ${command}(${args.join(", ")})`)
+    }
+    // (command.length > 0) && 
 
     const fuseOptions = {
         keys: [
