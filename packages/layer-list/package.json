@@ -54,7 +54,8 @@
     "check:lint": "eslint --max-warnings 0 './src/**/*.{ts,tsx}'",
     "check:pretty": "prettier --list-different './src/**/*.{ts,tsx}'",
     "check:type": "tsc --noEmit",
-    "types:create": "tsc --emitDeclarationOnly"
+    "types:create": "tsc --emitDeclarationOnly",
+    "tailwind:build": "npx tailwindcss -i ./src/qr-extension/tw.css -o ./src/qr-extension/tw-compiled.css"
   },
   "devDependencies": {
     "@types/ndarray": "^1.0.14",

@@ -1,7 +1,7 @@
-import CreativeEditorSDK from '@cesdk/cesdk-js';
+import CreativeEditorSDK, { AssetResult } from '@cesdk/cesdk-js';
 import { useRef } from 'react';
 
-import addPlugins, { prepareAssetEntries } from './addPlugins';
+import addPlugins, { Apps, prepareAssetEntries } from './addPlugins';
 
 function App() {
   const cesdk = useRef<CreativeEditorSDK>();
@@ -21,7 +21,19 @@ function App() {
                   insert: {
                     entries: (d) => {
                       if (!cesdk.current) return;
-                      return prepareAssetEntries(d, cesdk.current!.engine);
+                      return [
+                        ...prepareAssetEntries(d, cesdk.current!.engine),
+                        {
+                          id: 'ly.img.apps',
+                          sourceIds: ['ly.img.apps'],
+                          cardLabel: (assetResult: AssetResult) =>
+                            assetResult.label,
+                          cardLabelPosition: () => 'bottom',
+                          gridItemHeight: 'square',
+                          icon: ({ theme }) =>
+                            `https://staticimgly.com/imgly%2Fcesdk-icons%2F0.0.1%2Foutput%2Fapps-${theme}.svg`
+                        }
+                      ];
                     }
                   },
                   replace: {
@@ -31,7 +43,28 @@ function App() {
                     }
                   }
                 },
-                panels: { settings: true }
+                panels: { settings: true },
+                dock: {
+                  groups: [
+                    {
+                      id: 'ly.img.apps',
+                      entryIds: ['ly.img.apps']
+                    },
+                    {
+                      id: 'ly.img.template',
+                      entryIds: ['ly.img.template']
+                    },
+                    {
+                      id: 'ly.img.defaultGroup',
+                      showOverview: true
+                    }
+                  ]
+                }
+              }
+            },
+            i18n: {
+              en: {
+                'libraries.ly.img.apps.label': 'Apps'
               }
             }
           }).then(async (instance) => {
@@ -45,12 +78,26 @@ function App() {
               instance.addDefaultAssetSources(),
               instance.addDemoAssetSources({ sceneMode: 'Design' })
             ]);
+            const engine = instance.engine;
+            engine.asset.addLocalSource(
+              'ly.img.apps',
+              undefined,
+              async (asset: AssetResult) => {
+                const appHandler = Apps.find(
+                  (app) => app.asset.id === asset.id
+                );
+                if (!appHandler) {
+                  console.error('No app handler found for asset:', asset.id);
+                  return;
+                }
+                // @ts-ignore
+                appHandler.handler(instance);
+                return undefined;
+              }
+            );
+
             await addPlugins(instance);
-            // after 10 seconds, open panel:
-            setTimeout(() => {
-              console.log('Opening panel');
-              instance.ui.openPanel('ly.img.qr-code');
-            }, 500);
+
             await instance.createDesignScene();
           });
         } else if (cesdk.current != null) {

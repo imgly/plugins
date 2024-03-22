@@ -14,8 +14,8 @@ import EyeClosedIcon from './icons/eye_closed.svg?react';
 // @ts-ignore
 import EyeOpenIcon from './icons/eye_open.svg?react';
 // @ts-ignore
-// @ts-ignore
 import clsx from 'clsx';
+// @ts-ignore
 import PlaceholderConnectedIcon from './icons/placeholder_connected.svg?react';
 import { selectBlocks } from './selectBlocks';
 import { canSelect, canToggleVisibility } from './utils';
@@ -77,7 +77,6 @@ export function BlockComponent({
         'flex justify-between items-center text-primary-foreground py-2 hover:bg-primary-hover pr-4 cursor-move':
           true,
         'bg-primary-selected hover:bg-primary-selected': isSelected
-        // if type == page and not first, add border top
       })}
       style={{
         ...style,

@@ -3,42 +3,14 @@ import CreativeEditorSDK from '@cesdk/cesdk-js';
 import tw from 'inline:./tw-compiled.css';
 import { createElement } from 'react';
 import { createRoot } from 'react-dom/client';
+import { Meta } from '..';
+import { PANEL_COMPONENT_ID } from '../constants';
 import { QRCodePanel } from './Panels/LayerList/LayerListPanel';
 
 function initializeUserInterface({ cesdk }: { cesdk: CreativeEditorSDK }) {
   const engine = cesdk.engine;
 
-  // if there is a ly.img.apps asset, add layer list asset:
-  if (
-    engine.asset.findAllSources().some((source) => source === 'ly.img.apps')
-  ) {
-    // add layer list asset
-    engine.asset.addAssetToSource(
-      'ly.img.apps',
-
-      {
-        id: '//ly.img.cesdk.stickers.doodle/camera',
-        groups: ['//ly.img.cesdk.stickers.doodle/category/doodle'],
-        label: {
-          en: 'Layers',
-          de: 'Kamera'
-        },
-        tags: {},
-        meta: {
-          uri: '{{base_url}}/ly.img.sticker/images/doodle/doodle_camera.svg',
-          thumbUri:
-            '{{base_url}}/ly.img.sticker/thumbnails/doodle/doodle_camera.png',
-          filename: 'doodle_camera.svg',
-          kind: 'sticker',
-          fillType: '//ly.img.ubq/fill/image',
-          width: 2048,
-          height: 1339
-        }
-      }
-    );
-  }
-
-  cesdk.ui.unstable_registerCustomPanel('ly.img.qr-code', (domElement) => {
+  cesdk.ui.unstable_registerCustomPanel(PANEL_COMPONENT_ID, (domElement) => {
     const mode = engine.scene.getMode();
     if (mode !== 'Design') {
       // eslint-disable-next-line no-console
@@ -58,6 +30,12 @@ function initializeUserInterface({ cesdk }: { cesdk: CreativeEditorSDK }) {
     domElement.appendChild(style);
 
     return () => {};
+  });
+
+  cesdk.setTranslations({
+    en: {
+      [`panel.${Meta.PANEL_COMPONENT_ID}`]: 'Layers'
+    }
   });
 }
 
