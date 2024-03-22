@@ -1,6 +1,7 @@
 node_modules
 packages/*/dist
 examples/*/dist
+examples/*/public/assets
 .env.local
 .nvmrc
 

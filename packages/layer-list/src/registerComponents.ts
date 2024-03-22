@@ -57,7 +57,7 @@ export function registerComponents(cesdk: CreativeEditorSDK) {
       }
 
       Button(CANVAS_MENU_COMPONENT_BUTTON_ID, {
-        label: 'BG Removal',
+        label: 'BG Removal2',
         icon: '@imgly/icons/BGRemove',
         isActive,
         isLoading,

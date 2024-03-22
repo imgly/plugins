@@ -5,6 +5,7 @@ import addPlugins, { prepareAssetEntries } from './addPlugins';
 
 function App() {
   const cesdk = useRef<CreativeEditorSDK>();
+  console.log('import.meta.env.VITE_CESDK_LICENSE_KEY');
   return (
     <div
       style={{ width: '100vw', height: '100vh' }}
@@ -13,6 +14,7 @@ function App() {
           CreativeEditorSDK.create(domElement, {
             license: import.meta.env.VITE_CESDK_LICENSE_KEY,
             callbacks: { onUpload: 'local' },
+            baseURL: '/assets', // or 'https://cdn.mydomain.com/assets',
             ui: {
               elements: {
                 libraries: {
@@ -44,6 +46,11 @@ function App() {
               instance.addDemoAssetSources({ sceneMode: 'Design' })
             ]);
             await addPlugins(instance);
+            // after 10 seconds, open panel:
+            setTimeout(() => {
+              console.log('Opening panel');
+              instance.ui.openPanel('ly.img.qr-code');
+            }, 500);
             await instance.createDesignScene();
           });
         } else if (cesdk.current != null) {
