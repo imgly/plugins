@@ -20,7 +20,7 @@ import PlaceholderConnectedIcon from './icons/placeholder_connected.svg?react';
 import { selectBlocks } from './selectBlocks';
 import { canSelect, canToggleVisibility } from './utils';
 
-const ENABLE_VISIBILITY_TOGGLE = false;
+const ENABLE_VISIBILITY_TOGGLE = true;
 
 interface BlockComponentProps {
   block: number;
@@ -74,7 +74,7 @@ export function BlockComponent({
   return (
     <div
       className={clsx({
-        'flex justify-between items-center text-primary-foreground py-2 hover:bg-primary-hover pr-4 cursor-move':
+        'flex justify-between items-center text-primary-foreground hover:bg-primary-hover pr-4 cursor-move h-8':
           true,
         'bg-primary-selected hover:bg-primary-selected': isSelected
       })}
@@ -86,60 +86,56 @@ export function BlockComponent({
       {...attributes}
       {...listeners}
     >
-      <div className={clsx('flex gap-2')}>
-        {childrenCount > 0 && (
-          <button
-            type="button"
-            onClick={onExpand}
-            className={clsx(
-              'flex items-center justify-center rounded-full bg-primary-contrast-1'
-            )}
-          >
-            {isExpanded ? <ChevronDownIcon /> : <ChevronRightIcon />}
-          </button>
-        )}
-        {childrenCount === 0 && <div style={{ width: '24px' }} />}
-
+      {childrenCount > 0 && (
         <button
           type="button"
-          onClick={(e) => {
-            // if cmd or ctrl is pressed, add to selection
-            if (e.metaKey || e.ctrlKey) {
-              engine.block.setSelected(block, !isSelected);
-              engine.editor.addUndoStep();
-              return;
-            }
-
-            // if shift is pressed, select all blocks in between
-            selectBlocks(engine, block, e.shiftKey);
-          }}
-          disabled={!selectable}
-          className={clsx({
-            'text-primary-foreground flex gap-2 items-center': true,
-            'font-bold': level === 0
-          })}
+          onClick={onExpand}
+          className={clsx(
+            'flex items-center justify-center rounded-full bg-primary-contrast-1'
+          )}
         >
-          <BlockIcon block={block} engine={engine} />
-          {name}
+          {isExpanded ? <ChevronDownIcon /> : <ChevronRightIcon />}
         </button>
-      </div>
-      <div className={clsx('flex items-center gap-2')}>
-        {engine.block.isPlaceholderEnabled(block) && (
-          <PlaceholderConnectedIcon />
-        )}
-        {ENABLE_VISIBILITY_TOGGLE && (
-          <button
-            type="button"
-            onClick={() => {
-              engine.block.setVisible(block, !engine.block.isVisible(block));
-              engine.editor.addUndoStep();
-            }}
-            disabled={!canToggleVisibility(block, engine)}
-          >
-            {isVisible ? <EyeOpenIcon /> : <EyeClosedIcon />}
-          </button>
-        )}
-      </div>
+      )}
+      {childrenCount === 0 && <div style={{ width: '24px' }} />}
+
+      <button
+        type="button"
+        onClick={(e) => {
+          // if cmd or ctrl is pressed, add to selection
+          if (e.metaKey || e.ctrlKey) {
+            engine.block.setSelected(block, !isSelected);
+            engine.editor.addUndoStep();
+            return;
+          }
+
+          // if shift is pressed, select all blocks in between
+          selectBlocks(engine, block, e.shiftKey);
+        }}
+        disabled={!selectable}
+        className={clsx({
+          'text-primary-foreground flex gap-2 items-center flex-1 self-stretch':
+            true,
+          'font-bold': level === 0
+        })}
+      >
+        <BlockIcon block={block} engine={engine} />
+        {name}
+      </button>
+
+      {engine.block.isPlaceholderEnabled(block) && <PlaceholderConnectedIcon />}
+      {ENABLE_VISIBILITY_TOGGLE && (
+        <button
+          type="button"
+          onClick={() => {
+            engine.block.setVisible(block, !engine.block.isVisible(block));
+            engine.editor.addUndoStep();
+          }}
+          disabled={!canToggleVisibility(block, engine)}
+        >
+          {isVisible ? <EyeOpenIcon /> : <EyeClosedIcon />}
+        </button>
+      )}
     </div>
   );
 }
