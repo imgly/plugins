@@ -1,7 +1,6 @@
 import chalk from 'chalk';
 import inlineImportPlugin from 'esbuild-plugin-inline-import';
 import svgr from 'esbuild-plugin-svgr';
-import { tailwindPlugin } from 'esbuild-plugin-tailwindcss';
 import { readFile } from 'fs/promises';
 
 // import packageJson from '../package.json' assert { type: 'json' };
@@ -49,9 +48,6 @@ const configs = [
           });
         }
       },
-      tailwindPlugin({
-        // options
-      }),
       svgr()
     ]
   }

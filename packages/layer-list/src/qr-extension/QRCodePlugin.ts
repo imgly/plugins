@@ -1,5 +1,6 @@
 import CreativeEditorSDK from '@cesdk/cesdk-js';
 // @ts-ignore
+// eslint-disable-next-line import/extensions
 import tw from 'inline:./tw-compiled.css';
 import { createElement } from 'react';
 import { createRoot } from 'react-dom/client';

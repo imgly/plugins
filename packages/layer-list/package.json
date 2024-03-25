@@ -63,7 +63,6 @@
     "esbuild": "^0.19.11",
     "esbuild-plugin-inline-import": "^1.0.4",
     "esbuild-plugin-svgr": "^2.1.0",
-    "esbuild-plugin-tailwindcss": "^1.2.0",
     "eslint": "^8.51.0",
     "typescript": "^5.3.3"
   },
