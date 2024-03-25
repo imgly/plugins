@@ -40,4 +40,4 @@ function initializeUserInterface({ cesdk }: { cesdk: CreativeEditorSDK }) {
   });
 }
 
-export const QRCodeExtension = { initializeUserInterface };
+export const LayerListPlugin = { initializeUserInterface };

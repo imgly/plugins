@@ -1,11 +1,11 @@
 import CreativeEditorSDK from '@cesdk/cesdk-js';
 import * as PLUGIN_META from './constants';
-import { QRCodeExtension } from './qr-extension/QRCodePlugin';
+import { LayerListPlugin } from './layer-list-plugin/LayerListPlugin';
 
 const Plugin = () => ({
   name: PLUGIN_META.LAYER_LIST_ID,
   version: PLUGIN_VERSION,
-  ...QRCodeExtension
+  ...LayerListPlugin
 });
 
 export const Meta = PLUGIN_META;
