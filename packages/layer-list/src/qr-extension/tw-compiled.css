@@ -556,10 +556,6 @@ video {
   display: flex;
 }
 
-.h-4 {
-  height: 1rem;
-}
-
 .h-8 {
   height: 2rem;
 }
