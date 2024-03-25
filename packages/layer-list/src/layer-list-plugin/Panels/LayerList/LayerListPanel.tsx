@@ -7,7 +7,7 @@ import { BlockTreeComponent } from './BlockTreeComponent';
 import { getBlockTree } from './getBlockTree';
 import { IBlockTree } from './utils';
 
-export function QRCodePanel({ cesdk }: { cesdk: CreativeEditorSDK }) {
+export function LayerListPanel({ cesdk }: { cesdk: CreativeEditorSDK }) {
   const engine = cesdk.engine;
   const [blockTree, setBlockTree] = useState<IBlockTree | null>(null);
 
