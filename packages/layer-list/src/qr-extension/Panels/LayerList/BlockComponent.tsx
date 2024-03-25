@@ -20,7 +20,7 @@ import PlaceholderConnectedIcon from './icons/placeholder_connected.svg?react';
 import { selectBlocks } from './selectBlocks';
 import { canSelect, canToggleVisibility } from './utils';
 
-const ENABLE_VISIBILITY_TOGGLE = true;
+const ENABLE_VISIBILITY_TOGGLE = false;
 
 interface BlockComponentProps {
   block: number;
