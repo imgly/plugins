@@ -58,7 +58,6 @@
     "tailwind:build": "npx tailwindcss -i ./src/qr-extension/tw.css -o ./src/qr-extension/tw-compiled.css"
   },
   "devDependencies": {
-    "@types/ndarray": "^1.0.14",
     "chalk": "^5.3.0",
     "concurrently": "^8.2.2",
     "esbuild": "^0.19.11",
@@ -66,7 +65,6 @@
     "esbuild-plugin-svgr": "^2.1.0",
     "esbuild-plugin-tailwindcss": "^1.2.0",
     "eslint": "^8.51.0",
-    "tw-to-css": "^0.0.12",
     "typescript": "^5.3.3"
   },
   "peerDependencies": {
@@ -77,7 +75,6 @@
     "@dnd-kit/sortable": "^8.0.0",
     "@dnd-kit/utilities": "^3.2.2",
     "clsx": "^2.1.0",
-    "lodash": "^4.17.21",
-    "tw-to-css": "0.0.12"
+    "lodash": "^4.17.21"
   }
 }
