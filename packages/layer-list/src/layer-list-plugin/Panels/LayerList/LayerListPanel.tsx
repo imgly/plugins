@@ -22,16 +22,13 @@ export function LayerListPanel({ cesdk }: { cesdk: CreativeEditorSDK }) {
         return newTree;
       });
     };
-    const unsubscribe = engine.event.subscribe([], () => {
-      update();
-    });
-    const unsubscribe2 = engine.editor.onHistoryUpdated(() => {
+    // Subscribe to history updates to update the block tree when the history changes
+    const unsubscribe = engine.editor.onHistoryUpdated(() => {
       update();
     });
     update();
     return () => {
       unsubscribe();
-      unsubscribe2();
     };
   }, [engine]);
 
