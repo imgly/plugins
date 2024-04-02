@@ -22,6 +22,7 @@ import LayerListPlugin from '@imgly/plugin-layer-list-web';
 
 const config = {
   license: '<your-license-here>',
+  assets: "/assets"
 };
 
 const cesdk = await CreativeEditorSDK.create(container, config);
@@ -32,6 +33,14 @@ await cesdk.unstable_addPlugin(LayerListPlugin());
 await cesdk.createDesignScene();
 await cesdk.ui.openPanel("@imgly/plugin-layer-list-web.panel"),
 ```
+
+### Potential Issues
+
+#### SecurityError: Failed to read the 'cssRules' property from 'CSSStyleSheet': Cannot access rules
+
+If this happens, please serve the assets from the same domain as the editor. Find out more on how to serve the CE.SDK assets here: https://img.ly/docs/cesdk/ui/guides/assets-served-from-your-own-servers/.
+
+<!-- happens when  -->
 
 ### Contributing
 
