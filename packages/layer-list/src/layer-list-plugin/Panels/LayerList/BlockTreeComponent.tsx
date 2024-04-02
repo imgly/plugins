@@ -101,6 +101,7 @@ export function BlockTreeComponent({
               movedBlockId,
               droppedAfterBlockIndex
             );
+            engine.editor.addUndoStep();
           }}
         >
           <SortableContext items={tree.children.map((child) => child.id)}>
