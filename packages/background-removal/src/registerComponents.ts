@@ -29,7 +29,7 @@ export function registerComponents(
 
   cesdk.setTranslations({
     en: {
-      [REMOVE_BACKGROUND_ACTION_I18N_KEY]: 'BG Removal2'
+      [REMOVE_BACKGROUND_ACTION_I18N_KEY]: 'BG Removal'
     }
   });
 

@@ -27,6 +27,7 @@ export function BlockTreeComponent({
   const isExpanded = blockExpansion.get(tree.id) !== false;
   const isExcluded = EXCLUDE_BLOCKS.includes(tree.type);
 
+  // This allows for handling clicks onto layers. Dragging is only activated after a certain distance is reached.
   const pointerSensor = useSensor(PointerSensor, {
     activationConstraint: {
       distance: 0.01
@@ -82,9 +83,6 @@ export function BlockTreeComponent({
       {isExpanded && (
         <DndContext
           sensors={sensors}
-          onDragStart={(e) => {
-            console.log(`Draggable item ${e.active.id} was picked up`);
-          }}
           onDragEnd={(e) => {
             const droppedAfterBlockId = e.over?.id as number;
             const movedBlockId = e.active.id as number;
@@ -93,7 +91,6 @@ export function BlockTreeComponent({
             }
             const parent = engine.block.getParent(droppedAfterBlockId);
             if (!parent) {
-              console.error('Parent block not found');
               return;
             }
             const droppedAfterBlockIndex = engine.block

@@ -4,8 +4,7 @@ import _ from 'lodash';
 import { useEffect, useState } from 'react';
 import { BlockExpansionProvider } from './BlockExpansionProvider';
 import { BlockTreeComponent } from './BlockTreeComponent';
-import { getBlockTree } from './getBlockTree';
-import { IBlockTree } from './utils';
+import { IBlockTree, getBlockTree } from './utils';
 
 export function LayerListPanel({ cesdk }: { cesdk: CreativeEditorSDK }) {
   const engine = cesdk.engine;

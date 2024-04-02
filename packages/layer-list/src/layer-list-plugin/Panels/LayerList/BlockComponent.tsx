@@ -1,24 +1,20 @@
 import { CreativeEngine, ObjectTypeLonghand } from '@cesdk/cesdk-js';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import clsx from 'clsx';
 import { useEffect, useState } from 'react';
 import { BlockIcon } from './BlockIcon/BlockIcon';
-// @ts-ignore
-import { getBlockName } from './getBlockName';
-// @ts-ignore
 import ChevronDownIcon from './icons/chevron_down.svg?react';
-// @ts-ignore
 import ChevronRightIcon from './icons/chevron_right.svg?react';
-// @ts-ignore
 import EyeClosedIcon from './icons/eye_closed.svg?react';
-// @ts-ignore
 import EyeOpenIcon from './icons/eye_open.svg?react';
-// @ts-ignore
-import clsx from 'clsx';
-// @ts-ignore
 import PlaceholderConnectedIcon from './icons/placeholder_connected.svg?react';
-import { selectBlocks } from './selectBlocks';
-import { canSelect, canToggleVisibility } from './utils';
+import {
+  canSelect,
+  canToggleVisibility,
+  getBlockName,
+  selectBlocks
+} from './utils';
 
 const ENABLE_VISIBILITY_TOGGLE = false;
 

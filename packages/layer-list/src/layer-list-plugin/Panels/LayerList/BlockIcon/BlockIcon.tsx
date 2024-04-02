@@ -1,16 +1,10 @@
 import { CreativeEngine } from '@cesdk/cesdk-js';
-// @ts-ignore
-import ImageIcon from './icons/image.svg?react';
-// @ts-ignore
-import ShapeIcon from './icons/shape.svg?react';
-// @ts-ignore
-import StickerIcon from './icons/sticker.svg?react';
-// @ts-ignore
-import TextIcon from './icons/text.svg?react';
-// @ts-ignore
-import GroupIcon from './icons/group.svg?react';
-// @ts-ignore
 import FrameIcon from './icons/frame.svg?react';
+import GroupIcon from './icons/group.svg?react';
+import ImageIcon from './icons/image.svg?react';
+import ShapeIcon from './icons/shape.svg?react';
+import StickerIcon from './icons/sticker.svg?react';
+import TextIcon from './icons/text.svg?react';
 
 // Renders the block icon based on it's type
 export function BlockIcon({

@@ -14,7 +14,10 @@ function App() {
           CreativeEditorSDK.create(domElement, {
             license: import.meta.env.VITE_CESDK_LICENSE_KEY,
             callbacks: { onUpload: 'local' },
-            baseURL: '/assets', // or 'https://cdn.mydomain.com/assets',
+            // We need to load assets from the same domain to enable custom dom panels (like e.g created in the layer list panel).
+            // Otherwise, the panel only shows an error message.
+            // This might be a bug.
+            baseURL: '/assets',
             ui: {
               elements: {
                 libraries: {
