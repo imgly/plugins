@@ -51,7 +51,7 @@
     "check:pretty": "prettier --list-different './src/**/*.{ts,tsx}'",
     "check:type": "tsc --noEmit",
     "types:create": "tsc --emitDeclarationOnly",
-    "tailwind:build": "npx tailwindcss -i ./src/qr-extension/tw.css -o ./src/qr-extension/tw-compiled.css"
+    "tailwind:build": "npx tailwindcss -i ./src/layer-list-plugin/tw.css -o ./src/layer-list-plugin/tw-compiled.css"
   },
   "devDependencies": {
     "chalk": "^5.3.0",
