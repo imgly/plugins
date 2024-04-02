@@ -1,4 +1,4 @@
-import type CreativeEditorSDK from '@cesdk/cesdk-js';
+import CreativeEditorSDK from '@cesdk/cesdk-js';
 
 import BackgroundRemovalPlugin from '@imgly/plugin-background-removal-web';
 import LayerListPlugin, {

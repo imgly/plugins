@@ -5,7 +5,6 @@ import addPlugins, { Apps, prepareAssetEntries } from './addPlugins';
 
 function App() {
   const cesdk = useRef<CreativeEditorSDK>();
-  console.log('import.meta.env.VITE_CESDK_LICENSE_KEY');
   return (
     <div
       style={{ width: '100vw', height: '100vh' }}
@@ -23,7 +22,8 @@ function App() {
                 libraries: {
                   insert: {
                     entries: (d) => {
-                      if (!cesdk.current) return;
+                      if (!cesdk.current) return [];
+
                       return [
                         ...prepareAssetEntries(d, cesdk.current!.engine),
                         {
@@ -33,15 +33,16 @@ function App() {
                             assetResult.label,
                           cardLabelPosition: () => 'bottom',
                           gridItemHeight: 'square',
-                          icon: ({ theme }) =>
-                            `https://staticimgly.com/imgly%2Fcesdk-icons%2F0.0.1%2Foutput%2Fapps-${theme}.svg`
+                          icon: ({ theme }: { theme: 'light' | 'dark' }) =>
+                            `https://staticimgly.com/imgly/cesdk-icons/0.0.1/output/apps-${theme}.svg`
                         }
                       ];
                     }
                   },
                   replace: {
                     entries: (d) => {
-                      if (!cesdk.current) return;
+                      if (!cesdk.current) return [];
+
                       return prepareAssetEntries(d, cesdk.current!.engine);
                     }
                   }
@@ -93,8 +94,7 @@ function App() {
                   console.error('No app handler found for asset:', asset.id);
                   return;
                 }
-                // @ts-ignore
-                appHandler.handler(instance);
+                appHandler.handler(instance as any);
                 return undefined;
               }
             );
