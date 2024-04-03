@@ -2,6 +2,7 @@ node_modules
 packages/*/dist
 examples/*/dist
 .env.local
+.nvmrc
 
 .DS_Store
 yarn-error.log
