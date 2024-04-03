@@ -1,4 +1,5 @@
 import { CreativeEngine } from '@cesdk/cesdk-js';
+import CutoutIcon from './icons/cutout.svg?react';
 import FrameIcon from './icons/frame.svg?react';
 import GroupIcon from './icons/group.svg?react';
 import ImageIcon from './icons/image.svg?react';
@@ -28,8 +29,14 @@ export function BlockIcon({
       return <GroupIcon />;
     case 'page':
       return <FrameIcon />;
-
     default:
-      return null;
   }
+
+  switch (engine.block.getType(block)) {
+    case '//ly.img.ubq/cutout':
+      return <CutoutIcon />;
+    default:
+  }
+
+  return null;
 }
