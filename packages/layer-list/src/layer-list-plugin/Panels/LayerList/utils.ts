@@ -27,6 +27,10 @@ export function canToggleVisibility(id: number, engine: CreativeEngine) {
   return true;
 }
 
+function capitalizeFirstLetter(string: string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
 export function getBlockName(engine: CreativeEngine, block: number) {
   if (engine.block.getName(block)) {
     return engine.block.getName(block);
@@ -39,7 +43,11 @@ export function getBlockName(engine: CreativeEngine, block: number) {
     const index = children.indexOf(block);
     return `Page ${index + 1}`;
   }
-  return `[${engine.block.getKind(block)}]`;
+  const typeDescription = capitalizeFirstLetter(
+    engine.block.getKind(block) ||
+      engine.block.getType(block).replace('//ly.img.ubq/', '')
+  );
+  return `[${typeDescription}]`;
 }
 
 export function getBlockTree(engine: CreativeEngine, block: number) {
