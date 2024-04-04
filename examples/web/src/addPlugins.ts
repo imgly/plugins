@@ -1,6 +1,7 @@
 import type CreativeEditorSDK from '@cesdk/cesdk-js';
-
+import { CreativeEngine } from '@cesdk/cesdk-js';
 import BackgroundRemovalPlugin from '@imgly/plugin-background-removal-web';
+import CutoutLibraryPlugin from '@imgly/plugin-cutout-library-web';
 import RemoteAssetSourcePlugin from '@imgly/plugin-remote-asset-source-web';
 
 const ENABLE_DEMO_ASSET_SOURCES = false;
@@ -9,6 +10,11 @@ async function addPlugins(cesdk: CreativeEditorSDK): Promise<void> {
   console.log('Adding plugins', RemoteAssetSourcePlugin);
   try {
     await Promise.all([
+      cesdk.unstable_addPlugin(
+        CutoutLibraryPlugin({
+          addCanvasMenuButton: true
+        })
+      ),
       cesdk.unstable_addPlugin(
         BackgroundRemovalPlugin({ ui: { locations: 'canvasMenu' } })
       ),
@@ -45,7 +51,10 @@ function addDemoRemoteAssetSourcesPlugins(
 // If the source starts with 'ly.img.audio', 'ly.img.image', or 'ly.img.video', it will be added to the respective panel.
 // Should be used as a callback for the `entries` property of the `libraries.insert`/`libraries.replace` element in the UI configuration.
 
-export const prepareAssetEntries = (defaultEntries: any, engine: any) => {
+export const prepareAssetEntries = (
+  defaultEntries: any,
+  engine: CreativeEngine
+) => {
   if (!engine) return defaultEntries;
 
   const assetSourceIds = engine.asset.findAllSources() ?? [];
