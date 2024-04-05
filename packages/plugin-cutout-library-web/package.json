@@ -1,6 +1,6 @@
 {
   "name": "@imgly/plugin-cutout-library-web",
-  "version": "0.0.2",
+  "version": "0.0.3-rc.1",
   "description": "Cutout Library plugin for the CE.SDK editor",
   "keywords": [
     "CE.SDK",
