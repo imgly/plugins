@@ -1,12 +1,23 @@
 import type CreativeEditorSDK from '@cesdk/cesdk-js';
-import { CreativeEngine, type EditorPlugin } from '@cesdk/cesdk-js';
+import {
+  CreativeEngine,
+  UserInterfaceElements,
+  type EditorPlugin
+} from '@cesdk/cesdk-js';
 import {
   DEFAULT_PLUGIN_CONFIGURATION,
   PluginConfiguration,
   getPluginConfiguration
 } from '.';
 import { registerComponents } from './components';
-import { ASSET_SOURCE_ID, ENTRY_ID } from './constants';
+import {
+  ASSET_SOURCE_ID,
+  ENTRY_ID,
+  I18N,
+  NOTIFICATION_CUTOUT_BLOCK_SELECTED_ID,
+  NOTIFICATION_DIFFERENT_PAGES_ID,
+  NOTIFICATION_SELECT_CUTOUT_BLOCK_ID
+} from './constants';
 import loadAssetSourceFromContentJSON from './loadAssetSourceFromContentJSON';
 
 export function CutoutPlugin({
@@ -17,18 +28,14 @@ export function CutoutPlugin({
     initializeUserInterface: ({ cesdk }) => {
       addCutoutAssetSource(cesdk, { assetBaseUri });
       if (addCanvasMenuButton) registerComponents(cesdk);
-      cesdk.setTranslations({
-        en: {
-          [`libraries.${ENTRY_ID}.label`]: 'Cutouts'
-        }
-      });
+      cesdk.setTranslations(I18N);
     }
   };
 }
 
 export function GetCutoutLibraryInsertEntry(
   config: Partial<PluginConfiguration> = DEFAULT_PLUGIN_CONFIGURATION
-) {
+): UserInterfaceElements.AssetLibraryEntry {
   const { assetBaseUri } = getPluginConfiguration(config);
   return {
     id: ENTRY_ID,
@@ -78,7 +85,7 @@ export function generateCutoutFromSelection(cesdk: CreativeEditorSDK) {
 
   if (selectedBlockIds.length === 0) {
     cesdk.ui.showNotification({
-      message: 'Please Select',
+      message: NOTIFICATION_SELECT_CUTOUT_BLOCK_ID,
       type: 'error'
     });
     return undefined;
@@ -90,7 +97,7 @@ export function generateCutoutFromSelection(cesdk: CreativeEditorSDK) {
   });
   if (hasCutoutsSelected) {
     cesdk.ui.showNotification({
-      message: 'Cutout blocks cannot be cutout from selection',
+      message: NOTIFICATION_CUTOUT_BLOCK_SELECTED_ID,
       type: 'error'
     });
     return undefined;
@@ -103,8 +110,7 @@ export function generateCutoutFromSelection(cesdk: CreativeEditorSDK) {
   // throw error if blocks are from different pages
   if (uniqueParentPageBlockIds.length > 1) {
     cesdk.ui.showNotification({
-      message:
-        'Selected Blocks are from different pages. Please select blocks from the same page.',
+      message: NOTIFICATION_DIFFERENT_PAGES_ID,
       type: 'error'
     });
     return undefined;

@@ -2,6 +2,7 @@ import CreativeEditorSDK, { ObjectTypeLonghand } from '@cesdk/cesdk-js';
 import { DEFAULT_ASSET_BASE_URI } from '.';
 import {
   CANVAS_MENU_COMPONENT_BUTTON_ID,
+  CANVAS_MENU_COMPONENT_BUTTON_LABEL,
   CANVAS_MENU_COMPONENT_ID
 } from './constants';
 import { generateCutoutFromSelection } from './plugin';
@@ -11,14 +12,6 @@ export function registerComponents(cesdk: CreativeEditorSDK) {
     CANVAS_MENU_COMPONENT_ID,
     ...cesdk.ui.unstable_getCanvasMenuOrder()
   ]);
-  // }
-  const CANVAS_MENU_COMPONENT_BUTTON_I18N_ID = `${CANVAS_MENU_COMPONENT_BUTTON_ID}.label`;
-
-  cesdk.setTranslations({
-    en: {
-      [CANVAS_MENU_COMPONENT_BUTTON_I18N_ID]: 'Cutout'
-    }
-  });
 
   cesdk.ui.unstable_registerComponent(
     CANVAS_MENU_COMPONENT_ID,
@@ -37,7 +30,7 @@ export function registerComponents(cesdk: CreativeEditorSDK) {
         return null;
       }
       Button(CANVAS_MENU_COMPONENT_BUTTON_ID, {
-        label: CANVAS_MENU_COMPONENT_BUTTON_I18N_ID,
+        label: CANVAS_MENU_COMPONENT_BUTTON_LABEL,
         icon: ({ theme }) => `${DEFAULT_ASSET_BASE_URI}/dock-${theme}.svg`,
         onClick: () => {
           generateCutoutFromSelection(cesdk);
