@@ -23,8 +23,9 @@ export function registerComponents(cesdk: CreativeEditorSDK) {
   cesdk.ui.unstable_registerComponent(
     CANVAS_MENU_COMPONENT_ID,
     ({ builder: { Button }, engine }) => {
-      // only show canvas menu button for type=graphic, type=text
+      // only show canvas menu button for type=graphic, type=text, type=group
       const allowedTypes: ObjectTypeLonghand[] = [
+        '//ly.img.ubq/group',
         '//ly.img.ubq/graphic',
         '//ly.img.ubq/text'
       ] as const;
@@ -37,7 +38,7 @@ export function registerComponents(cesdk: CreativeEditorSDK) {
       }
       Button(CANVAS_MENU_COMPONENT_BUTTON_ID, {
         label: CANVAS_MENU_COMPONENT_BUTTON_I18N_ID,
-        icon: `${DEFAULT_ASSET_BASE_URI}/dock-light.svg`,
+        icon: ({ theme }) => `${DEFAULT_ASSET_BASE_URI}/dock-${theme}.svg`,
         onClick: () => {
           generateCutoutFromSelection(cesdk);
         }

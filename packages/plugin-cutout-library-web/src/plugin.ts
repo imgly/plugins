@@ -1,5 +1,5 @@
 import type CreativeEditorSDK from '@cesdk/cesdk-js';
-import { type EditorPlugin } from '@cesdk/cesdk-js';
+import { CreativeEngine, type EditorPlugin } from '@cesdk/cesdk-js';
 import {
   DEFAULT_PLUGIN_CONFIGURATION,
   PluginConfiguration,
@@ -74,48 +74,65 @@ async function addCutoutAssetSource(
 }
 
 export function generateCutoutFromSelection(cesdk: CreativeEditorSDK) {
-  const pageId = cesdk.engine.scene.getCurrentPage();
-  if (pageId == null) {
+  const selectedBlockIds = cesdk.engine.block.findAllSelected();
+
+  if (selectedBlockIds.length === 0) {
     cesdk.ui.showNotification({
-      message: 'No page block available to add the cutout from selection',
+      message: 'Please Select',
       type: 'error'
     });
     return undefined;
   }
-  const pageChildren = cesdk.engine.block.getChildren(pageId);
-
-  const selectedBlockIds = cesdk.engine.block
-    .findAllSelected()
-    .filter((selectedBlockId) => {
-      return pageChildren.includes(selectedBlockId);
+  const hasCutoutsSelected = selectedBlockIds.some((selectedBlockId) => {
+    return (
+      cesdk.engine.block.getType(selectedBlockId) === '//ly.img.ubq/cutout'
+    );
+  });
+  if (hasCutoutsSelected) {
+    cesdk.ui.showNotification({
+      message: 'Cutout blocks cannot be cutout from selection',
+      type: 'error'
     });
+    return undefined;
+  }
 
-  if (selectedBlockIds.length > 0) {
-    const hasCutoutsSelected = selectedBlockIds.some((selectedBlockId) => {
-      return (
-        cesdk.engine.block.getType(selectedBlockId) === '//ly.img.ubq/cutout'
-      );
+  const parentPageBlockIds = selectedBlockIds.map((block) =>
+    getParentPageId(cesdk.engine, block)
+  );
+  const uniqueParentPageBlockIds = Array.from(new Set(parentPageBlockIds));
+  // throw error if blocks are from different pages
+  if (uniqueParentPageBlockIds.length > 1) {
+    cesdk.ui.showNotification({
+      message:
+        'Selected Blocks are from different pages. Please select blocks from the same page.',
+      type: 'error'
     });
-    if (hasCutoutsSelected) {
-      cesdk.ui.showNotification({
-        message: 'Cutout blocks cannot be cutout from selection',
-        type: 'error'
-      });
-      return undefined;
+    return undefined;
+  }
+  const pageId = uniqueParentPageBlockIds[0];
+
+  const blockId = cesdk.engine.block.createCutoutFromBlocks(selectedBlockIds);
+  cesdk.engine.block.appendChild(pageId, blockId);
+  cesdk.engine.block.setAlwaysOnTop(blockId, true);
+  cesdk.engine.block.select(blockId);
+  cesdk.engine.editor.addUndoStep();
+  return blockId;
+}
+
+function getParentPageId(engine: CreativeEngine, block: number) {
+  // traverse up the block tree to find the page
+  let currentBlock = block;
+  while (
+    currentBlock &&
+    engine.block.getType(currentBlock) !== '//ly.img.ubq/page'
+  ) {
+    const parentBlock = engine.block.getParent(currentBlock);
+    if (!parentBlock || parentBlock === currentBlock) {
+      return currentBlock;
     }
-    const blockId = cesdk.engine.block.createCutoutFromBlocks(selectedBlockIds);
-    cesdk.engine.block.appendChild(pageId, blockId);
-    cesdk.engine.block.setAlwaysOnTop(blockId, true);
-    cesdk.engine.block.select(blockId);
-    cesdk.engine.editor.addUndoStep();
-    return blockId;
-  } else {
-    cesdk.ui.showNotification({
-      message: 'No selected blocks available to cutout from selection',
-      type: 'error'
-    });
-    return undefined;
+    currentBlock = parentBlock;
   }
+  return currentBlock;
 }
 
 export default CutoutPlugin;
