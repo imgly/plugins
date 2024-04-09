@@ -70,6 +70,7 @@
   },
   "dependencies": {
     "@imgly/background-removal": "^1.4.4",
+    "@imgly/plugin-utils": "*",
     "lodash": "^4.17.21"
   }
 }
