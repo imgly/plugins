@@ -35,6 +35,10 @@ export function BlockIcon({
   switch (engine.block.getType(block)) {
     case '//ly.img.ubq/cutout':
       return <CutoutIcon />;
+    case '//ly.img.ubq/graphic':
+      return <ImageIcon />;
+    case '//ly.img.ubq/text':
+      return <TextIcon />;
     default:
   }
 
