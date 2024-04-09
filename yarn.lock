@@ -411,6 +411,13 @@
     onnxruntime-web "~1.17.0"
     zod "~3.21.0"
 
+"@imgly/plugin-cutout-library-web@*":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@imgly/plugin-cutout-library-web/-/plugin-cutout-library-web-0.0.2.tgz#339acd7d7cbec1f1aae31f4fad198b23b0b57f38"
+  integrity sha512-7HOXianmgnbpptMFkrnsH+rc6czvS5a2BtMVeVc0QzgcZ9zE4ZJkqiHSGFs3FvhpuzUh8gNJVHk08y9I5sTMJw==
+  dependencies:
+    lodash "^4.17.21"
+
 "@jridgewell/gen-mapping@^0.3.0", "@jridgewell/gen-mapping@^0.3.2":
   version "0.3.3"
   resolved "https://registry.yarnpkg.com/@jridgewell/gen-mapping/-/gen-mapping-0.3.3.tgz#7e02e6eb5df901aaedb08514203b096614024098"
