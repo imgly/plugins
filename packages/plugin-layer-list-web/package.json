@@ -1,6 +1,6 @@
 {
   "name": "@imgly/plugin-layer-list-web",
-  "version": "0.0.3-rc.3",
+  "version": "0.0.3-rc.4",
   "description": "Layer List Panel plugin for the CE.SDK editor",
   "keywords": [
     "CE.SDK",
