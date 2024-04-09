@@ -20,7 +20,7 @@
       "label": { "en": "Cutout rectangle", "de": "Rechteck ausschneiden" },
       "meta": {
         "thumbUri": "{{base_url}}/cutout-rectangle/thumbnail.png",
-        "vectorPath2": "M0 0 H50 V50 H0 Z",
+        "vectorPath": "M0 0 H50 V50 H0 Z",
         "blockType": "//ly.img.ubq/cutout"
       }
     },
@@ -29,7 +29,7 @@
       "label": { "en": "Cutout circle", "de": "Kreis ausschneiden" },
       "meta": {
         "thumbUri": "{{base_url}}/cutout-circle/thumbnail.png",
-        "vectorPath2": "M 0,25 a 25,25 0 1,1 50,0 a 25,25 0 1,1 -50,0 Z",
+        "vectorPath": "M 0,25 a 25,25 0 1,1 50,0 a 25,25 0 1,1 -50,0 Z",
         "blockType": "//ly.img.ubq/cutout"
       }
     }

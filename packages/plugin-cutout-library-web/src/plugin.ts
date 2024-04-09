@@ -44,7 +44,8 @@ export function GetCutoutLibraryInsertEntry(
     gridColumns: 2,
     gridItemHeight: 'square' as const,
     cardLabel: (asset: any) => asset.label,
-    cardLabelPosition: () => 'below' as const
+    cardLabelPosition: () => 'below' as const,
+    cardBackgroundPreferences: [{ path: 'meta.thumbUri', type: 'image' }]
   };
 }
 
@@ -68,12 +69,6 @@ async function addCutoutAssetSource(
       if (asset.id === 'cutout-selection') {
         return generateCutoutFromSelection(cesdk);
       }
-      if (!asset.meta || !asset.meta.vectorPath2) {
-        return;
-      }
-      // Workaround to enable proper thumbnails for predefined cutouts
-      // @ts-ignore
-      asset.meta.vectorPath = asset.meta.vectorPath2;
       const blockId = await cesdk.engine.asset.defaultApplyAsset(asset);
       return blockId;
     }
