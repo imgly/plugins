@@ -4,14 +4,14 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "build": "tsc && vite build --force",
+    "build": "tsc && vite build ",
     "clean": "npx rimraf dist",
     "dev": "vite --clearScreen=false --force"
   },
   "dependencies": {
     "@imgly/plugin-background-removal-web": "*",
     "@imgly/plugin-remote-asset-source-web": "*",
-    "@cesdk/cesdk-js": "^1.21.0",
+    "@cesdk/cesdk-js": "^1.22.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
