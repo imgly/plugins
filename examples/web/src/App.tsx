@@ -15,7 +15,6 @@ function App() {
             callbacks: { onUpload: 'local', onLoad: 'upload' },
             // We need to load assets from the same domain to enable custom dom panels (like e.g created in the layer list panel).
             // Otherwise, the panel only shows an error message.
-            // This might be a bug.
             baseURL: '/assets',
             ui: {
               elements: {
