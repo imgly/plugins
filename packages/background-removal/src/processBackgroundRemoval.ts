@@ -6,14 +6,9 @@ import {
   type Config
 } from '@imgly/background-removal';
 
-import throttle from 'lodash/throttle';
+import { ImageProcessingMetadata } from '@imgly/plugin-utils';
 
-import {
-  getPluginMetadata,
-  isMetadataConsistent,
-  recoverInitialImageData,
-  setPluginMetadata
-} from './utils';
+import throttle from 'lodash/throttle';
 
 /**
  * Triggers the background removal process.
@@ -21,7 +16,8 @@ import {
 export async function processBackgroundRemoval(
   cesdk: CreativeEditorSDK,
   blockId: number,
-  configuration: Config
+  configuration: Config,
+  metadata: ImageProcessingMetadata
 ) {
   const blockApi = cesdk.engine.block;
   if (!blockApi.hasFill(blockId))
@@ -48,9 +44,8 @@ export async function processBackgroundRemoval(
     blockApi.setString(fillId, 'fill/image/imageFileURI', '');
     blockApi.setSourceSet(fillId, 'fill/image/sourceSet', []);
 
-    const metadata = getPluginMetadata(cesdk, blockId);
-    setPluginMetadata(cesdk, blockId, {
-      ...metadata,
+    metadata.set(blockId, {
+      ...metadata.get(blockId),
       version: PLUGIN_VERSION,
       initialSourceSet,
       initialImageFileURI,
@@ -86,7 +81,8 @@ export async function processBackgroundRemoval(
         blockId,
         initialSourceSet,
         mask,
-        configuration
+        configuration,
+        metadata
       );
       if (uploaded == null) return;
 
@@ -101,7 +97,7 @@ export async function processBackgroundRemoval(
         };
       });
 
-      setPluginMetadata(cesdk, blockId, {
+      metadata.set(blockId, {
         version: PLUGIN_VERSION,
         initialSourceSet,
         initialImageFileURI,
@@ -122,7 +118,8 @@ export async function processBackgroundRemoval(
         blockId,
         [{ uri: uriToProcess }],
         mask,
-        configuration
+        configuration,
+        metadata
       );
       if (uploaded == null) return;
 
@@ -131,7 +128,7 @@ export async function processBackgroundRemoval(
         throw new Error('Could not upload BG removed image');
       }
 
-      setPluginMetadata(cesdk, blockId, {
+      metadata.set(blockId, {
         version: PLUGIN_VERSION,
         initialSourceSet,
         initialImageFileURI,
@@ -149,7 +146,7 @@ export async function processBackgroundRemoval(
     cesdk.engine.editor.addUndoStep();
   } catch (error) {
     if (cesdk.engine.block.isValid(blockId)) {
-      setPluginMetadata(cesdk, blockId, {
+      metadata.set(blockId, {
         version: PLUGIN_VERSION,
         initialSourceSet,
         initialImageFileURI,
@@ -159,7 +156,7 @@ export async function processBackgroundRemoval(
         status: 'ERROR'
       });
 
-      recoverInitialImageData(cesdk, blockId);
+      metadata.recoverInitialImageData(blockId);
     }
     // eslint-disable-next-line no-console
     console.log(error);
@@ -171,20 +168,21 @@ async function maskSourceSet<T extends { uri: string }>(
   blockId: number,
   urisOrSources: T[],
   mask: Blob,
-  configurationFromArgs: Config
+  configurationFromArgs: Config,
+  metadata: ImageProcessingMetadata
 ): Promise<string[] | undefined> {
   const configuration = {
     ...configurationFromArgs,
     progress: throttle((key, current, total) => {
-      const metadataDuringProgress = getPluginMetadata(cesdk, blockId);
+      const currentMetadataInProgress = metadata.get(blockId);
       if (
-        metadataDuringProgress.status !== 'PROCESSING' ||
-        !isMetadataConsistent(cesdk, blockId)
+        currentMetadataInProgress.status !== 'PROCESSING' ||
+        !metadata.isConsistent(blockId)
       )
         return;
       configurationFromArgs.progress?.(key, current, total);
-      setPluginMetadata(cesdk, blockId, {
-        ...metadataDuringProgress,
+      metadata.set(blockId, {
+        ...currentMetadataInProgress,
         progress: { key, current, total }
       });
     }, 100)
@@ -201,8 +199,8 @@ async function maskSourceSet<T extends { uri: string }>(
   // Check for externally changed state while we were applying the mask and
   // do not proceed if the state was reset.
   if (
-    getPluginMetadata(cesdk, blockId).status !== 'PROCESSING' ||
-    !isMetadataConsistent(cesdk, blockId)
+    metadata.get(blockId).status !== 'PROCESSING' ||
+    !metadata.isConsistent(blockId)
   )
     return;
 
@@ -230,8 +228,8 @@ async function maskSourceSet<T extends { uri: string }>(
   // Check for externally changed state while we were uploading and
   // do not proceed if the state was reset.
   if (
-    getPluginMetadata(cesdk, blockId).status !== 'PROCESSING' ||
-    !isMetadataConsistent(cesdk, blockId)
+    metadata.get(blockId).status !== 'PROCESSING' ||
+    !metadata.isConsistent(blockId)
   )
     return;
 

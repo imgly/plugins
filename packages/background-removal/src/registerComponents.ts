@@ -1,5 +1,7 @@
 import type CreativeEditorSDK from '@cesdk/cesdk-js';
 
+import { ImageProcessingMetadata } from '@imgly/plugin-utils';
+
 import {
   CANVAS_MENU_COMPONENT_BUTTON_ID,
   CANVAS_MENU_COMPONENT_ID,
@@ -7,7 +9,6 @@ import {
   PLUGIN_ID
 } from './constants';
 import { Location, UserInterfaceConfiguration } from './types';
-import { getPluginMetadata, setPluginMetadata } from './utils';
 
 const REMOVE_BACKGROUND_ACTION_I18N_KEY = `plugin.${PLUGIN_ID}.action.removeBackground`;
 
@@ -17,6 +18,7 @@ const REMOVE_BACKGROUND_ACTION_I18N_KEY = `plugin.${PLUGIN_ID}.action.removeBack
  */
 export function registerComponents(
   cesdk: CreativeEditorSDK,
+  metadata: ImageProcessingMetadata,
   configuration: UserInterfaceConfiguration = {}
 ) {
   if (hasDefaultLocation('canvasMenu', configuration)) {
@@ -46,15 +48,16 @@ export function registerComponents(
 
       const [id] = engine.block.findAllSelected();
 
-      const metadata = getPluginMetadata(cesdk, id);
+      const currentMetadata = metadata.get(id);
 
-      const isLoading = metadata.status === 'PROCESSING';
+      const isLoading = currentMetadata.status === 'PROCESSING';
       const isDisabled =
-        metadata.status === 'PENDING' || metadata.status === 'PROCESSING';
+        currentMetadata.status === 'PENDING' ||
+        currentMetadata.status === 'PROCESSING';
 
       let loadingProgress: number | undefined;
-      if (isLoading && metadata.progress) {
-        const { key, current, total } = metadata.progress;
+      if (isLoading && currentMetadata.progress) {
+        const { key, current, total } = currentMetadata.progress;
 
         if (key === 'compute:inference') {
           loadingProgress = undefined;
@@ -75,11 +78,11 @@ export function registerComponents(
         loadingProgress,
         onClick: () => {
           if (
-            metadata.status === 'IDLE' ||
-            metadata.status === 'ERROR' ||
-            metadata.status === 'PROCESSED'
+            currentMetadata.status === 'IDLE' ||
+            currentMetadata.status === 'ERROR' ||
+            currentMetadata.status === 'PROCESSED'
           ) {
-            setPluginMetadata(cesdk, id, {
+            metadata.set(id, {
               status: 'PENDING'
             });
           }
