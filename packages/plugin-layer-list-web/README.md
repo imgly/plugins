@@ -40,8 +40,6 @@ await cesdk.ui.openPanel("@imgly/plugin-layer-list-web.panel"),
 
 If this happens, please serve the assets from the same domain as the editor. Find out more on how to serve the CE.SDK assets here: https://img.ly/docs/cesdk/ui/guides/assets-served-from-your-own-servers/.
 
-<!-- happens when  -->
-
 ### Contributing
 
 This repository is actively maintained by img.ly. We are always open to feedback and suggestions. If you find a bug, please report it by opening an issue or getting in contact with support@img.ly
