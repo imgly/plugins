@@ -11,7 +11,10 @@ class Metadata<V> {
   }
 
   hasData(blockId: number): boolean {
-    return this.cesdk.engine.block.hasMetadata(blockId, this.key)
+    return (
+      this.cesdk.engine.block.isValid(blockId) &&
+      this.cesdk.engine.block.hasMetadata(blockId, this.key)
+    );
   }
 
   get(blockId: number): V | undefined {
