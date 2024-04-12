@@ -60,6 +60,14 @@ class ImageProcessingMetadata extends Metadata<PluginStatusMetadata> {
       blockId,
       fillId
     });
+
+    // If it is currently processing the best we can do is to just recover
+    // the initial image data, since no processing will update this block and
+    // it will be stuck in the processing state.
+    if (metadata.status === 'PROCESSING') {
+      this.recoverInitialImageData(blockId);
+      this.clear(blockId);
+    }
   }
 
   /**
