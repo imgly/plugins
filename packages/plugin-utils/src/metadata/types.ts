@@ -32,7 +32,7 @@ export type PluginStatusProcessed = {
   blockId: number;
   fillId: number;
 
-  removedBackground: string | Source[];
+  processed: string | Source[];
 };
 
 export type PluginStatusError = {
