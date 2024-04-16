@@ -1,12 +1,12 @@
 import type CreativeEditorSDK from '@cesdk/cesdk-js';
 import { type Source } from '@cesdk/cesdk-js';
-import ImageProcessingMetadata from '../metadata/ImageProcessingMetadata';
+import type FillProcessingMetadata from '../metadata/FillProcessingMetadata';
 import { Optional } from '../types/Optional';
 
 export default async function processFill<T>(
   cesdk: CreativeEditorSDK,
   blockId: number,
-  metadata: ImageProcessingMetadata,
+  metadata: FillProcessingMetadata,
   process: (
     sources: Optional<Source, 'width' | 'height'>[],
     preprocessedData: T
@@ -16,7 +16,7 @@ export default async function processFill<T>(
 ) {
   const blockApi = cesdk.engine.block;
   if (!blockApi.hasFill(blockId))
-    throw new Error('Block has no fill to remove the background from');
+    throw new Error('Block has no fill to process');
 
   const fillId = blockApi.getFill(blockId);
 

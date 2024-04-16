@@ -15,7 +15,7 @@ class ImageProcessingMetadata extends Metadata<PluginStatusMetadata> {
 
   /**
    * Detect if the block has been duplicated with processed or processing
-   * background removal. In that case the background removal state is still
+   * fill processing. In that case the processing state is still
    * valid, but blockId and fillId have changed.
    */
   isDuplicate(blockId: number): boolean {
@@ -117,9 +117,8 @@ class ImageProcessingMetadata extends Metadata<PluginStatusMetadata> {
       // If we have already processed the image, we need to check if the source set
       // we need to check against both source sets, the removed and the initial
       if (metadata.status === 'PROCESSED') {
-        const removedBackground = metadata.processed;
         if (
-          !isEqual(sourceSet, removedBackground) &&
+          !isEqual(sourceSet, metadata.processed) &&
           !isEqual(sourceSet, initialSourceSet)
         ) {
           return false;
@@ -148,7 +147,7 @@ class ImageProcessingMetadata extends Metadata<PluginStatusMetadata> {
 
   /**
    * Recover the initial values to avoid the loading spinner and have the same
-   * state as before the background removal was started.
+   * state as before the fill processing was started.
    */
   recoverInitialImageData(blockId: number) {
     const blockApi = this.cesdk.engine.block;
@@ -192,7 +191,7 @@ class ImageProcessingMetadata extends Metadata<PluginStatusMetadata> {
 
   /**
    * Returns the fill id of the block if it has a valid fill that was used for
-   * background removal. Returns undefined otherwise.
+   * fill processing. Returns undefined otherwise.
    */
   private getValidFill(
     blockId: number,

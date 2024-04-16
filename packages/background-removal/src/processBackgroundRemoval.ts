@@ -5,7 +5,7 @@ import {
   type Config
 } from '@imgly/background-removal';
 
-import { ImageProcessingMetadata, processFill } from '@imgly/plugin-utils';
+import { processFill, type FillProcessingMetadata } from '@imgly/plugin-utils';
 
 import throttle from 'lodash/throttle';
 
@@ -16,7 +16,7 @@ export async function processBackgroundRemoval(
   cesdk: CreativeEditorSDK,
   blockId: number,
   configuration: Config,
-  metadata: ImageProcessingMetadata
+  metadata: FillProcessingMetadata
 ) {
   processFill<Blob>(
     cesdk,
@@ -32,6 +32,7 @@ export async function processBackgroundRemoval(
             !metadata.isConsistent(blockId)
           )
             return;
+
           configuration.progress?.(key, current, total);
           metadata.set(blockId, {
             ...currentMetadataInProgress,
@@ -53,6 +54,8 @@ export async function processBackgroundRemoval(
       );
       return masked;
     },
+
+    // Preprocessing the image by creating a segmentation mask
     async (uriToProcess): Promise<Blob> => {
       const mask = await segmentForeground(uriToProcess, configuration);
       return mask;
