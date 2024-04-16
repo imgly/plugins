@@ -1,6 +1,4 @@
-import plugin, { type PluginConfiguration } from './plugin';
-
-import { PLUGIN_ID } from './constants';
+import plugin, { PLUGIN_ID, type PluginConfiguration } from './plugin';
 
 const Plugin = (pluginConfiguration?: PluginConfiguration) => ({
   name: PLUGIN_ID,
