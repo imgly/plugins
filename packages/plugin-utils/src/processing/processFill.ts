@@ -8,7 +8,7 @@ export default async function processFill<T>(
   blockId: number,
   metadata: FillProcessingMetadata,
   process: (
-    sources: Optional<Source, 'width' | 'height'>[],
+    sourceSet: Optional<Source, 'width' | 'height'>[],
     preprocessedData: T
   ) => Promise<Blob[]>,
   preprocess: (uri: string) => Promise<T> = () =>
