@@ -53,6 +53,8 @@ export default function registerFillProcessingComponents(
 
       const [id] = engine.block.findAllSelected();
 
+      if (!cesdk.engine.block.isAllowedByScope(id, 'fill/change')) return;
+
       const currentMetadata = metadata.get(id);
 
       const isLoading = currentMetadata.status === 'PROCESSING';

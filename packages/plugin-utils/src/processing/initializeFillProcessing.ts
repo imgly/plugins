@@ -39,7 +39,8 @@ export default function handleFillProcessing(
             if (
               cesdk.feature.unstable_isEnabled(featureId, {
                 engine: cesdk.engine
-              })
+              }) &&
+              cesdk.engine.block.isAllowedByScope(id, 'fill/change')
             ) {
               process(id, metadata);
             }
