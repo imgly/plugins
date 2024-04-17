@@ -81,7 +81,12 @@ function enableFeatures(
     }
     const [selectedId] = selectedIds;
 
+    if (!cesdk.engine.block.isVisible(selectedId)) return false;
+
     if (cesdk.engine.block.hasFill(selectedId)) {
+      const kind = cesdk.engine.block.getKind(selectedId);
+      if (kind === 'sticker') return false;
+
       const fillId = cesdk.engine.block.getFill(selectedId);
       const fillType = cesdk.engine.block.getType(fillId);
 
