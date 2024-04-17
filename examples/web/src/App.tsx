@@ -12,6 +12,7 @@ function App() {
         if (domElement != null) {
           CreativeEditorSDK.create(domElement, {
             license: import.meta.env.VITE_CESDK_LICENSE_KEY,
+            userId: 'plugins-vercel',
             callbacks: { onUpload: 'local' },
             ui: {
               elements: {
