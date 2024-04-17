@@ -1,57 +1,26 @@
 import type CreativeEditorSDK from '@cesdk/cesdk-js';
+
 import { FillProcessingMetadata } from '..';
-
-const createIds = (pluginId: string): Ids => ({
-  featureId: `${pluginId}.fillProcessing.feature`,
-  canvasMenuComponentId: `${pluginId}.fillProcessing.canvasMenu`,
-
-  translationsKeys: {
-    canvasMenuLabel: `plugin.${pluginId}.fillProcessing.canvasMenu.button.label`
-  }
-});
-
-export type Location = 'canvasMenu';
-
-export interface Ids {
-  featureId: string;
-  canvasMenuComponentId: string;
-
-  translationsKeys: {
-    canvasMenuLabel: string;
-  };
-}
+import { getFeatureId } from './constants';
 
 export default function handleFillProcessing(
   cesdk: CreativeEditorSDK,
   {
     pluginId,
-    icon,
-    featureId: featureIdFromArgs,
-    locations,
     process
   }: {
     pluginId: string;
-    featureId?: string;
     icon?: string;
-    locations?: Location | Location[];
     process: (blockId: number, metadata: FillProcessingMetadata) => void;
   }
-): Ids {
-  const ids = createIds(pluginId);
-  if (featureIdFromArgs != null) {
-    ids.featureId = featureIdFromArgs;
-  }
+): {
+  featureId: string;
+} {
+  const featureId = getFeatureId(pluginId);
+
   const metadata = new FillProcessingMetadata(cesdk, pluginId);
 
-  enableFeatures(cesdk, metadata, ids.featureId);
-  registerComponents(cesdk, metadata, ids, { icon });
-
-  if (locations?.includes('canvasMenu')) {
-    cesdk.ui.unstable_setCanvasMenuOrder([
-      ids.canvasMenuComponentId,
-      ...cesdk.ui.unstable_getCanvasMenuOrder()
-    ]);
-  }
+  enableFeatures(cesdk, metadata, featureId);
 
   cesdk.engine.event.subscribe([], async (events) => {
     events.forEach((e) => {
@@ -68,7 +37,7 @@ export default function handleFillProcessing(
         switch (metadata.get(id).status) {
           case 'PENDING': {
             if (
-              cesdk.feature.unstable_isEnabled(ids.featureId, {
+              cesdk.feature.unstable_isEnabled(featureId, {
                 engine: cesdk.engine
               })
             ) {
@@ -93,7 +62,7 @@ export default function handleFillProcessing(
     });
   });
 
-  return ids;
+  return { featureId };
 }
 
 /**
@@ -136,65 +105,4 @@ function enableFeatures(
 
     return false;
   });
-}
-
-/**
- * Registers the components that can be used to process the fill of
- * a block.
- */
-export function registerComponents(
-  cesdk: CreativeEditorSDK,
-  metadata: FillProcessingMetadata,
-  ids: Ids,
-  options: {
-    icon?: string;
-  }
-) {
-  cesdk.ui.unstable_registerComponent(
-    ids.canvasMenuComponentId,
-    ({ builder: { Button }, engine }) => {
-      if (
-        !cesdk.feature.unstable_isEnabled(ids.featureId, {
-          engine
-        })
-      ) {
-        return;
-      }
-
-      const [id] = engine.block.findAllSelected();
-
-      const currentMetadata = metadata.get(id);
-
-      const isLoading = currentMetadata.status === 'PROCESSING';
-      const isDisabled =
-        currentMetadata.status === 'PENDING' ||
-        currentMetadata.status === 'PROCESSING';
-
-      let loadingProgress: number | undefined;
-      if (isLoading && currentMetadata.progress) {
-        const { current, total } = currentMetadata.progress;
-        loadingProgress = (current / total) * 100;
-      }
-
-      const buttonId = `${ids.canvasMenuComponentId}.button`;
-      Button(buttonId, {
-        label: ids.translationsKeys.canvasMenuLabel,
-        icon: options.icon,
-        isLoading,
-        isDisabled,
-        loadingProgress,
-        onClick: () => {
-          if (
-            currentMetadata.status === 'IDLE' ||
-            currentMetadata.status === 'ERROR' ||
-            currentMetadata.status === 'PROCESSED'
-          ) {
-            metadata.set(id, {
-              status: 'PENDING'
-            });
-          }
-        }
-      });
-    }
-  );
 }

@@ -1,7 +1,10 @@
 import type CreativeEditorSDK from '@cesdk/cesdk-js';
 
 import type { Config as BackgroundRemovalConfiguration } from '@imgly/background-removal';
-import { initializeFillProcessing } from '@imgly/plugin-utils';
+import {
+  initializeFillProcessing,
+  registerFillProcessingComponents
+} from '@imgly/plugin-utils';
 
 import { processBackgroundRemoval } from './processBackgroundRemoval';
 import { UserInterfaceConfiguration } from './types';
@@ -23,10 +26,8 @@ export default (pluginConfiguration: PluginConfiguration = {}) => {
     update() {},
 
     initializeUserInterface({ cesdk }: { cesdk: CreativeEditorSDK }) {
-      const { translationsKeys } = initializeFillProcessing(cesdk, {
+      initializeFillProcessing(cesdk, {
         pluginId: PLUGIN_ID,
-        icon: '@imgly/icons/BGRemove',
-        locations: pluginConfiguration.ui?.locations,
         process: (blockId, metadata) => {
           processBackgroundRemoval(
             cesdk,
@@ -35,6 +36,12 @@ export default (pluginConfiguration: PluginConfiguration = {}) => {
             metadata
           );
         }
+      });
+
+      const { translationsKeys } = registerFillProcessingComponents(cesdk, {
+        pluginId: PLUGIN_ID,
+        icon: '@imgly/icons/BGRemove',
+        locations: pluginConfiguration.ui?.locations
       });
 
       cesdk.setTranslations({
