@@ -544,6 +544,15 @@ video {
   --tw-backdrop-sepia:  ;
 }
 
+.m-1 {
+  margin: 0.25rem;
+}
+
+.my-1 {
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
+}
+
 .block {
   display: block;
 }
@@ -606,6 +615,10 @@ video {
 
 .bg-primary-selected {
   background-color: var(--ubq-interactive-selected);
+}
+
+.p-1 {
+  padding: 0.25rem;
 }
 
 .pr-4 {

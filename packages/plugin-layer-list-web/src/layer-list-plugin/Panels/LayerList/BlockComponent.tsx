@@ -38,6 +38,8 @@ export function BlockComponent({
   onExpand
 }: BlockComponentProps) {
   const [isVisible, setIsVisible] = useState(engine.block.isVisible(block));
+  const [isEditingName, setIsEditingName] = useState(false);
+  const [newName, setNewName] = useState<string>(getBlockName(engine, block));
   const [isSelected, setIsSelected] = useState(
     engine.block.isSelected(block) || false
   );
@@ -95,29 +97,69 @@ export function BlockComponent({
       )}
       {childrenCount === 0 && <div style={{ width: '24px' }} />}
 
-      <button
-        type="button"
-        onClick={(e) => {
-          // if cmd or ctrl is pressed, add to selection
-          if (e.metaKey || e.ctrlKey) {
-            engine.block.setSelected(block, !isSelected);
-            engine.editor.addUndoStep();
-            return;
-          }
+      {!isEditingName && (
+        <button
+          type="button"
+          onDoubleClick={() => {
+            setIsEditingName(true);
+            setNewName(engine.block.getName(block));
+          }}
+          onClick={(e) => {
+            // if cmd or ctrl is pressed, add to selection
+            if (e.metaKey || e.ctrlKey) {
+              engine.block.setSelected(block, !isSelected);
+              engine.editor.addUndoStep();
+              return;
+            }
 
-          // if shift is pressed, select all blocks in between
-          selectBlocks(engine, block, e.shiftKey);
-        }}
-        disabled={!selectable}
-        className={clsx({
-          'text-primary-foreground flex gap-2 items-center flex-1 self-stretch':
-            true,
-          'font-bold': level === 0
-        })}
-      >
-        <BlockIcon block={block} engine={engine} />
-        {name}
-      </button>
+            // if shift is pressed, select all blocks in between
+            selectBlocks(engine, block, e.shiftKey);
+          }}
+          disabled={!selectable}
+          className={clsx({
+            'text-primary-foreground flex gap-2 items-center flex-1 self-stretch':
+              true,
+            'font-bold': level === 0
+          })}
+        >
+          <BlockIcon block={block} engine={engine} />
+          {name}
+        </button>
+      )}
+      {isEditingName && (
+        <div
+          className={clsx({
+            'flex items-center flex-1 self-stretch': true,
+            'bg-primary-selected': isSelected
+          })}
+        >
+          <BlockIcon block={block} engine={engine} />
+          <input
+            type="text"
+            value={newName}
+            // eslint-disable-next-line jsx-a11y/no-autofocus
+            autoFocus
+            onChange={(e) => setNewName(e.target.value)}
+            onBlur={() => {
+              setIsEditingName(false);
+              engine.block.setName(block, newName);
+              engine.editor.addUndoStep();
+            }}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                setIsEditingName(false);
+                engine.block.setName(block, newName);
+                engine.editor.addUndoStep();
+              }
+            }}
+            className={clsx({
+              'text-primary-foreground flex gap-2 items-center flex-1 self-stretch my-1 m-1 p-1':
+                true,
+              'font-bold': level === 0
+            })}
+          />
+        </div>
+      )}
 
       {engine.block.isPlaceholderEnabled(block) && <PlaceholderConnectedIcon />}
       {ENABLE_VISIBILITY_TOGGLE && (
