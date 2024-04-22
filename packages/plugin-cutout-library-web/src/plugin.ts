@@ -33,7 +33,7 @@ export function CutoutPlugin({
   };
 }
 
-export function GetCutoutLibraryInsertEntry(
+export function getCutoutLibraryInsertEntry(
   config: Partial<PluginConfiguration> = DEFAULT_PLUGIN_CONFIGURATION
 ): UserInterfaceElements.AssetLibraryEntry {
   const { assetBaseUri } = getPluginConfiguration(config);
