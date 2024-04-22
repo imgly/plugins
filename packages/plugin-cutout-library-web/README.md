@@ -32,7 +32,7 @@ await cesdk.addDefaultAssetSources(),
   await cesdk.addDemoAssetSources({ sceneMode: 'Design' }),
   await cesdk.unstable_addPlugin(
     CutoutLibraryPlugin({
-      addCanvasMenuButton: true
+      ui: { locations: ['canvasMenu'] }
     })
   );
 

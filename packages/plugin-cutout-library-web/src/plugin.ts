@@ -12,6 +12,7 @@ import {
 import { registerComponents } from './components';
 import {
   ASSET_SOURCE_ID,
+  CANVAS_MENU_COMPONENT_ID,
   ENTRY_ID,
   I18N,
   NOTIFICATION_CUTOUT_BLOCK_SELECTED_ID,
@@ -20,14 +21,26 @@ import {
 } from './constants';
 import loadAssetSourceFromContentJSON from './loadAssetSourceFromContentJSON';
 
+export type UILocations = 'canvasMenu';
+
+export interface UserInterfaceConfiguration {
+  locations?: UILocations[];
+}
+
 export function CutoutPlugin({
   assetBaseUri,
-  addCanvasMenuButton
+  ui
 }: PluginConfiguration): EditorPlugin {
   return {
     initializeUserInterface: ({ cesdk }) => {
       addCutoutAssetSource(cesdk, { assetBaseUri });
-      if (addCanvasMenuButton) registerComponents(cesdk);
+      registerComponents(cesdk);
+      if (ui?.locations.includes('canvasMenu')) {
+        cesdk.ui.unstable_setCanvasMenuOrder([
+          CANVAS_MENU_COMPONENT_ID,
+          ...cesdk.ui.unstable_getCanvasMenuOrder()
+        ]);
+      }
       cesdk.setTranslations(I18N);
     }
   };

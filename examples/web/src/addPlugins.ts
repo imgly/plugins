@@ -12,7 +12,7 @@ async function addPlugins(cesdk: CreativeEditorSDK): Promise<void> {
     await Promise.all([
       cesdk.unstable_addPlugin(
         CutoutLibraryPlugin({
-          addCanvasMenuButton: true
+          ui: { locations: ['canvasMenu'] }
         })
       ),
       cesdk.unstable_addPlugin(

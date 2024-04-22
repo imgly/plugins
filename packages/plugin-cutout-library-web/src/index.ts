@@ -1,4 +1,5 @@
 import plugin, {
+  UILocations,
   generateCutoutFromSelection,
   getCutoutLibraryInsertEntry
 } from './plugin';
@@ -9,13 +10,14 @@ export const DEFAULT_ASSET_BASE_URI = `https://staticimgly.com/${PLUGIN_NAME.rep
 )}/${PLUGIN_VERSION}/dist/assets`;
 
 export const DEFAULT_PLUGIN_CONFIGURATION = {
-  assetBaseUri: DEFAULT_ASSET_BASE_URI,
-  addCanvasMenuButton: true
+  assetBaseUri: DEFAULT_ASSET_BASE_URI
 };
 
 export interface PluginConfiguration {
   assetBaseUri: string;
-  addCanvasMenuButton: boolean;
+  ui?: {
+    locations: UILocations[];
+  };
 }
 
 export function getPluginConfiguration(

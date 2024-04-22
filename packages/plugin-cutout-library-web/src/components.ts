@@ -8,11 +8,6 @@ import {
 import { generateCutoutFromSelection } from './plugin';
 
 export function registerComponents(cesdk: CreativeEditorSDK) {
-  cesdk.ui.unstable_setCanvasMenuOrder([
-    CANVAS_MENU_COMPONENT_ID,
-    ...cesdk.ui.unstable_getCanvasMenuOrder()
-  ]);
-
   cesdk.ui.unstable_registerComponent(
     CANVAS_MENU_COMPONENT_ID,
     ({ builder: { Button }, engine }) => {
