@@ -121,12 +121,10 @@ export default async function processFill<T>(
       // TODO: Generate a thumb/preview uri
       blockApi.setString(fillId, 'fill/image/previewFileURI', '');
     } else {
+      const sourceSet = [{ uri: uriToProcess }];
       // ImageFileURI code path
       // ======================
-      const processedData = await process(
-        [{ uri: uriToProcess }],
-        preprocessedData
-      );
+      const processedData = await process(sourceSet, preprocessedData);
 
       // Check for externally changed state while we were applying the mask and
       // do not proceed if the state was reset.
@@ -138,7 +136,7 @@ export default async function processFill<T>(
 
       const uploaded = await upload(
         cesdk,
-        processedData.map((blob, index) => [blob, initialSourceSet[index]])
+        processedData.map((blob, index) => [blob, sourceSet[index]])
       );
 
       // Check for externally changed state while we were uploading and
