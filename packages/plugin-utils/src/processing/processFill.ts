@@ -184,6 +184,19 @@ export default async function processFill<T>(
 
       metadata.recoverInitialImageData(blockId);
     }
+
+    if (
+      error != null &&
+      typeof error === 'object' &&
+      'message' in error &&
+      typeof error.message === 'string'
+    ) {
+      cesdk.ui.showNotification({
+        type: 'error',
+        message: error.message
+      });
+    }
+
     // eslint-disable-next-line no-console
     console.log(error);
   }
