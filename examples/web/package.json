@@ -11,6 +11,7 @@
   "dependencies": {
     "@imgly/plugin-background-removal-web": "*",
     "@imgly/plugin-remote-asset-source-web": "*",
+    "@imgly/plugin-cutout-library-web": "*",
     "@cesdk/cesdk-js": "^1.21.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"

@@ -1,6 +1,6 @@
 import CreativeEditorSDK from '@cesdk/cesdk-js';
+import { getCutoutLibraryInsertEntry } from '@imgly/plugin-cutout-library-web';
 import { useRef } from 'react';
-
 import addPlugins, { prepareAssetEntries } from './addPlugins';
 
 function App() {
@@ -18,14 +18,19 @@ function App() {
               elements: {
                 libraries: {
                   insert: {
-                    entries: (d) => {
-                      if (!cesdk.current) return;
-                      return prepareAssetEntries(d, cesdk.current!.engine);
+                    entries: (defaultEntries) => {
+                      if (!cesdk.current?.engine.asset) return [];
+
+                      prepareAssetEntries(
+                        defaultEntries,
+                        cesdk.current!.engine
+                      );
+                      return [...defaultEntries, getCutoutLibraryInsertEntry()];
                     }
                   },
                   replace: {
                     entries: (d) => {
-                      if (!cesdk.current) return;
+                      if (!cesdk.current) return [];
                       return prepareAssetEntries(d, cesdk.current!.engine);
                     }
                   }

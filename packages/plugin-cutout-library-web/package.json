@@ -1,0 +1,69 @@
+{
+  "name": "@imgly/plugin-cutout-library-web",
+  "version": "0.1.0",
+  "description": "Cutout Library plugin for the CE.SDK editor",
+  "keywords": [
+    "CE.SDK",
+    "plugin",
+    "cutout"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/imgly/plugin-cutout-library-web.git"
+  },
+  "license": "SEE LICENSE IN LICENSE.md",
+  "author": {
+    "name": "IMG.LY GmbH",
+    "email": "support@img.ly",
+    "url": "https://img.ly"
+  },
+  "bugs": {
+    "email": "support@img.ly"
+  },
+  "source": "./src/index.ts",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "homepage": "https://img.ly/products/creative-sdk",
+  "files": [
+    "LICENSE.md",
+    "README.md",
+    "CHANGELOG.md",
+    "dist/",
+    "bin/"
+  ],
+  "scripts": {
+    "start": "npm run watch",
+    "clean": "npx rimraf dist",
+    "build": "npm run clean && node scripts/build.mjs && cp -r assets dist/",
+    "dev": "node scripts/watch.mjs",
+    "dev:types": "tsc --emitDeclarationOnly --watch --preserveWatchOutput",
+    "publish:latest": "npm run build && npm publish --tag latest --access public",
+    "publish:next": "npm run build && npm publish --tag next --access public",
+    "check:all": "concurrently -n lint,type,pretty \"yarn check:lint\" \"yarn check:type\" \"yarn check:pretty\"",
+    "check:lint": "eslint --max-warnings 0 './src/**/*.{ts,tsx}'",
+    "check:pretty": "prettier --list-different './src/**/*.{ts,tsx}'",
+    "check:type": "tsc --noEmit",
+    "types:create": "tsc --emitDeclarationOnly"
+  },
+  "devDependencies": {
+    "@cesdk/cesdk-js": "~1.21.0",
+    "@types/ndarray": "^1.0.14",
+    "chalk": "^5.3.0",
+    "concurrently": "^8.2.2",
+    "esbuild": "^0.19.11",
+    "eslint": "^8.51.0",
+    "typescript": "^5.3.3"
+  },
+  "peerDependencies": {
+    "@cesdk/cesdk-js": "~1.21.0"
+  },
+  "dependencies": {
+    "lodash": "^4.17.21"
+  }
+}
