@@ -9,3 +9,8 @@ export { default as initializeFillProcessing } from './processing/initializeFill
 export { default as registerFillProcessingComponents } from './processing/registerFillProcessingComponents';
 
 export { type Optional } from './types/Optional';
+
+export {
+  type Location,
+  type UserInterfaceConfiguration
+} from './types/UserInterfaceConfiguration';

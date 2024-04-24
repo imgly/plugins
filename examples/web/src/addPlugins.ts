@@ -3,6 +3,7 @@ import { CreativeEngine } from '@cesdk/cesdk-js';
 import BackgroundRemovalPlugin from '@imgly/plugin-background-removal-web';
 import CutoutLibraryPlugin from '@imgly/plugin-cutout-library-web';
 import RemoteAssetSourcePlugin from '@imgly/plugin-remote-asset-source-web';
+import VectorizerPlugin from '@imgly/plugin-vectorizer-web';
 
 const ENABLE_DEMO_ASSET_SOURCES = false;
 
@@ -17,6 +18,9 @@ async function addPlugins(cesdk: CreativeEditorSDK): Promise<void> {
       ),
       cesdk.unstable_addPlugin(
         BackgroundRemovalPlugin({ ui: { locations: 'canvasMenu' } })
+      ),
+      cesdk.unstable_addPlugin(
+        VectorizerPlugin({ ui: { locations: 'canvasMenu' } })
       ),
       ...addDemoRemoteAssetSourcesPlugins(cesdk)
     ]);
