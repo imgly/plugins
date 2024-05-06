@@ -65,7 +65,7 @@
     "@cesdk/cesdk-js": "~1.21.0"
   },
   "dependencies": {
-    "@imgly/vectorizer": "0.1.0-rc7",
+    "@imgly/vectorizer": "0.1.0-rc9",
     "@imgly/plugin-utils": "*",
     "lodash": "^4.17.21"
   }
