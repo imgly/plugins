@@ -28,13 +28,13 @@ const config = {
 };
 
 const cesdk = await CreativeEditorSDK.create(container, config);
-await cesdk.addDefaultAssetSources(),
-  await cesdk.addDemoAssetSources({ sceneMode: 'Design' }),
-  await cesdk.unstable_addPlugin(
-    CutoutLibraryPlugin({
-      ui: { locations: ['canvasMenu'] }
-    })
-  );
+await cesdk.addDefaultAssetSources();
+await cesdk.addDemoAssetSources({ sceneMode: 'Design' });
+await cesdk.unstable_addPlugin(
+  CutoutLibraryPlugin({
+    ui: { locations: ['canvasMenu'] }
+  })
+);
 
 await cesdk.createDesignScene();
 ```
