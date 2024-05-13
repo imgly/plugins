@@ -22,12 +22,16 @@ interface IMGLYBackgroundRemovalProviderClientSide {
 interface CustomBackgroundRemovalProvider {
   type: 'custom';
 
+  /**
+   * Process the source set and return the processed blobs in the same order
+   * as the input source set.
+   *
+   * @param sourceSet - The source set to process. It is sorted so that the highest resolution image uri is first
+   * @returns The processed blobs in the same order as the input source set
+   */
   process: (
-    sourceSet: Optional<Source, 'width' | 'height'>[],
-    preprocessedData: Blob | undefined
+    sourceSet: Optional<Source, 'width' | 'height'>[]
   ) => Promise<Blob[]>;
-
-  preprocess?: (uri: string) => Promise<Blob>;
 }
 
 export type BackgroundRemovalProvider =
@@ -47,60 +51,50 @@ export async function processBackgroundRemoval(
     case '@imgly/background-removal': {
       const configuration = provider.configuration ?? {};
 
-      processFill<Blob>(
-        cesdk,
-        blockId,
-        metadata,
-        async (sources, mask) => {
-          const bgRemovalConfiguration = {
-            ...configuration,
-            progress: throttle((key, current, total) => {
-              const currentMetadataInProgress = metadata.get(blockId);
-              if (
-                currentMetadataInProgress.status !== 'PROCESSING' ||
-                !metadata.isConsistent(blockId)
-              )
-                return;
-
-              configuration.progress?.(key, current, total);
-              metadata.set(blockId, {
-                ...currentMetadataInProgress,
-                progress: { key, current, total }
-              });
-            }, 100)
-          };
-
-          const masked = await Promise.all(
-            sources.map(async (source): Promise<Blob> => {
-              // Applying the mask to the original image
-              const blob = await applySegmentationMask(
-                source.uri,
-                mask,
-                bgRemovalConfiguration
-              );
-              return blob;
-            })
-          );
-          return masked;
-        },
-
+      processFill(cesdk, blockId, metadata, async (sources) => {
+        // Source set is already sorted by resolution
+        const highestResolutionUri = sources[0].uri;
         // Preprocessing the image by creating a segmentation mask
-        async (uriToProcess): Promise<Blob> => {
-          const mask = await segmentForeground(uriToProcess, configuration);
-          return mask;
-        }
-      );
+        const mask = await segmentForeground(
+          highestResolutionUri,
+          configuration
+        );
+        const bgRemovalConfiguration = {
+          ...configuration,
+          progress: throttle((key, current, total) => {
+            const currentMetadataInProgress = metadata.get(blockId);
+            if (
+              currentMetadataInProgress.status !== 'PROCESSING' ||
+              !metadata.isConsistent(blockId)
+            )
+              return;
+
+            configuration.progress?.(key, current, total);
+            metadata.set(blockId, {
+              ...currentMetadataInProgress,
+              progress: { key, current, total }
+            });
+          }, 100)
+        };
+
+        const masked = await Promise.all(
+          sources.map(async (source): Promise<Blob> => {
+            // Applying the mask to the original image
+            const blob = await applySegmentationMask(
+              source.uri,
+              mask,
+              bgRemovalConfiguration
+            );
+            return blob;
+          })
+        );
+        return masked;
+      });
       break;
     }
 
     case 'custom': {
-      processFill<Blob>(
-        cesdk,
-        blockId,
-        metadata,
-        provider.process,
-        provider.preprocess
-      );
+      processFill(cesdk, blockId, metadata, provider.process);
       break;
     }
 

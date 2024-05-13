@@ -3,16 +3,13 @@ import { type Source } from '@cesdk/cesdk-js';
 import type FillProcessingMetadata from '../metadata/FillProcessingMetadata';
 import { Optional } from '../types/Optional';
 
-export default async function processFill<T>(
+export default async function processFill(
   cesdk: CreativeEditorSDK,
   blockId: number,
   metadata: FillProcessingMetadata,
   process: (
-    sourceSet: Optional<Source, 'width' | 'height'>[],
-    preprocessedData: T
-  ) => Promise<Blob[]>,
-  preprocess: (uri: string) => Promise<T> = () =>
-    Promise.resolve(undefined as T)
+    sourceSet: Optional<Source, 'width' | 'height'>[]
+  ) => Promise<Blob[]>
 ) {
   const blockApi = cesdk.engine.block;
   if (!blockApi.hasFill(blockId))
@@ -50,13 +47,17 @@ export default async function processFill<T>(
       status: 'PROCESSING'
     });
 
+    // Sort the source set by resolution so that the highest resolution image
+    // is first.
+    const sortedSourceSet = initialSourceSet.sort(
+      (a, b) => b.width * b.height - a.height * a.width
+    );
+
     const uriToProcess =
       // Source sets have priority in the engine
       initialSourceSet.length > 0
         ? // Choose the highest resolution image in the source set
-          initialSourceSet.sort(
-            (a, b) => b.width * b.height - a.height * a.width
-          )[0].uri
+          sortedSourceSet[0].uri
         : initialImageFileURI;
 
     // If there is no initial preview file URI, set the current URI.
@@ -65,14 +66,10 @@ export default async function processFill<T>(
       blockApi.setString(fillId, 'fill/image/previewFileURI', uriToProcess);
     }
 
-    const preprocessedData = await preprocess(uriToProcess);
-    // Creating the mask from the highest resolution image
-    // const mask = await segmentForeground(uriToProcess, configuration);
-
     if (initialSourceSet.length > 0) {
       // Source set code path
       // ====================
-      const processedData = await process(initialSourceSet, preprocessedData);
+      const processedData = await process(initialSourceSet);
       // Check for externally changed state while we were applying the mask and
       // do not proceed if the state was reset.
       if (
@@ -123,10 +120,7 @@ export default async function processFill<T>(
     } else {
       // ImageFileURI code path
       // ======================
-      const processedData = await process(
-        [{ uri: uriToProcess }],
-        preprocessedData
-      );
+      const processedData = await process([{ uri: uriToProcess }]);
 
       // Check for externally changed state while we were applying the mask and
       // do not proceed if the state was reset.

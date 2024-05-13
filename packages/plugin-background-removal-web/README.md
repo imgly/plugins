@@ -84,20 +84,14 @@ It is possible to declare a different provider for the background removal proces
 BackgroundRemovalPlugin({
     provider: {
         type: 'custom',
-        // This is an optional function that can do some pre-processing, e.g. creating
-        // a mask that is applied on all images from the source set in the process function.
-        // The returned blob is passed as the second argument in `process`
-        preprocess: async (uriToProcess: string) => {
-            const mask = await segmentForeground(uriToProcess);
-            return mask;
-        },
         process: (
+            // Source set for the current block sorted by the resolution.
+            // URI with the highest URI is first
             sourceSet: {
                 uri: string;
                 width?: number;
                 height?: number;
             }[],
-            preprocessedData?: Blob
         ): Blob[] => {
             const masked = await Promise.all(
                 sourceSet.map((source) => {
@@ -105,6 +99,7 @@ BackgroundRemovalPlugin({
                 })
             );
 
+            // Returns an array of blobs in the same order as the source set
             return masked;
         }
     }
