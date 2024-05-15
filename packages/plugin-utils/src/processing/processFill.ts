@@ -118,9 +118,10 @@ export default async function processFill(
       // TODO: Generate a thumb/preview uri
       blockApi.setString(fillId, 'fill/image/previewFileURI', '');
     } else {
+      const sourceSet = [{ uri: uriToProcess }];
       // ImageFileURI code path
       // ======================
-      const processedData = await process([{ uri: uriToProcess }]);
+      const processedData = await process(sourceSet);
 
       // Check for externally changed state while we were applying the mask and
       // do not proceed if the state was reset.
@@ -132,7 +133,7 @@ export default async function processFill(
 
       const uploaded = await upload(
         cesdk,
-        processedData.map((blob, index) => [blob, initialSourceSet[index]])
+        processedData.map((blob, index) => [blob, sourceSet[index]])
       );
 
       // Check for externally changed state while we were uploading and
@@ -180,6 +181,19 @@ export default async function processFill(
 
       metadata.recoverInitialImageData(blockId);
     }
+
+    if (
+      error != null &&
+      typeof error === 'object' &&
+      'message' in error &&
+      typeof error.message === 'string'
+    ) {
+      cesdk.ui.showNotification({
+        type: 'error',
+        message: error.message
+      });
+    }
+
     // eslint-disable-next-line no-console
     console.log(error);
   }
