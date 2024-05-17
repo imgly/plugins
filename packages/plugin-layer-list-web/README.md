@@ -1,6 +1,6 @@
 # IMG.LY CE.SDK Plugin Layer List
 
-This plugin adds registers a custom panel that displays a list of all layers in the current design scene.
+This plugin registers a custom panel that displays a list of all layers in the current design scene.
 
 ## Installation
 
