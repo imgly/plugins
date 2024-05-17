@@ -26,7 +26,7 @@ async function addPlugins(cesdk: CreativeEditorSDK): Promise<void> {
     // Add all exported apps to the 'ly.img.apps' asset source
     const engine = cesdk.engine;
     if (
-      engine.asset.findAllSources().some((source) => source === 'ly.img.apps')
+      engine.asset.findAllSources().includes('ly.img.apps')
     ) {
       const appAssets = Apps.map((a) => a.asset);
       appAssets.forEach((appAsset) => {
