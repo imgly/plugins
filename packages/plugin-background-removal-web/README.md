@@ -2,7 +2,7 @@
 
 ![Hero image showing the configuration abilities of the Background Removal plugin](https://img.ly/static/plugins/background-removal/gh-repo-header.jpg)
 
-This plugin introduces background removal for the CE.SDK editor, leveraging the power of the [background-removal-js library](https://github.com/imgly/background-removal-js). It integrates seamlessly with CE.SDK, providing users with an efficient tool to remove backgrounds from images directly in the browser with ease and no additional costs or privacy concerns.
+This plugin introduces background removal for the CE.SDK editor, leveraging the power of the [background-removal-js library](https://github.com/imgly/background-removal-js). It integrates seamlessly with CE.SDK, provides users with an efficient tool to remove backgrounds from images directly in the browser with ease and no additional costs or privacy concerns.
 
 ## Installation
 
@@ -59,7 +59,7 @@ await cesdk.unstable_addPlugin(BackgroundRemovalPlugin({
     type: '@imgly/background-removal',
     configuration: {
         publicPath: '...',
-        // All other configuration option that are passed to the bg removal
+        // All other configuration options that are passed to the bg removal
         // library. See https://github.com/imgly/background-removal-js/tree/main/packages/web#advanced-configuration
     }
   }
@@ -84,7 +84,17 @@ It is possible to declare a different provider for the background removal proces
 BackgroundRemovalPlugin({
     provider: {
         type: 'custom',
-        process: (
+        // If the image has only one image file URI defined, this method will
+        // be called. It must return a single new image file URI with the
+        // removed background.
+        processImageFileURI: async (imageFileURI: string) => {
+            const blob = await removeBackground(imageFileURI);
+            const upload = await uploadBlob(blob);
+            return upload;
+        },
+        // Some images have a source set defined which provides multiple images
+        // in different sizes.
+        processSourceSet: async (
             // Source set for the current block sorted by the resolution.
             // URI with the highest URI is first
             sourceSet: {
@@ -93,15 +103,55 @@ BackgroundRemovalPlugin({
                 height?: number;
             }[],
         ): Blob[] => {
-            const masked = await Promise.all(
-                sourceSet.map((source) => {
+            // You should call the remove background method on every URI in the
+            // source set. Depending on your service or your algorithm, you
+            // have the following options:
+            // - Return a source set with a single image (will contradict the use-case of source sets and degrades the user experience)
+            // - Create a segmented mask and apply it to every image (not always available)
+            // - Create a new source set by resizing the resulting blob.
+
+            // In this example we will do the last case.
+            // First image has the highest resolution and might be the best
+            // candidate to remove the background.
+            const highestResolution = sourceSet[0];
+            const highestResolutionBlob = await removeBackground(highestResolution.uri);
+            const highestResolutionURI = await uploadBlob(highestResolutionBlob);
+
+            const remainingSources = await Promise.all(
+                sourceSet.slice(1).map((source) => {
                     // ...
+                    const upload = uploadBlob(/* ... */)
+                    return { ...source, uri: upload };
                 })
             );
 
-            // Returns an array of blobs in the same order as the source set
-            return masked;
+            return [{ ...highestResolution, uri: highestResolutionURI }, remainingSources];
         }
     }
 });
+```
+
+Depending on your use case or service you might end up with a blob that you want to upload by the
+configured upload handler of the editor. This might look like the following function:
+
+```typescript
+async function uploadBlob(
+  blob: Blob,
+  initialUri: string,
+  cesdk: CreativeEditorSDK
+) {
+  const pathname = new URL(initialUri).pathname;
+  const parts = pathname.split('/');
+  const filename = parts[parts.length - 1];
+
+  const uploadedAssets = await cesdk.unstable_upload(
+    new File([blob], filename, { type: blob.type })
+  );
+
+  const url = uploadedAssets.meta?.uri;
+  if (url == null) {
+    throw new Error('Could not upload processed fill');
+  }
+  return url;
+}
 ```
