@@ -23,7 +23,8 @@ export async function processBackgroundRemoval(
     blockId,
     metadata,
     async (sources, mask) => {
-      const bgRemovalConfiguration = {
+      const bgRemovalConfiguration: Config = {
+        device: 'gpu',
         ...configuration,
         progress: throttle((key, current, total) => {
           const currentMetadataInProgress = metadata.get(blockId);
