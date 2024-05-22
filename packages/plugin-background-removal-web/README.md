@@ -102,7 +102,7 @@ BackgroundRemovalPlugin({
                 width?: number;
                 height?: number;
             }[],
-        ): Blob[] => {
+        ) => {
             // You should call the remove background method on every URI in the
             // source set. Depending on your service or your algorithm, you
             // have the following options:
