@@ -25,6 +25,7 @@ export async function processBackgroundRemoval(
     async (sources, mask) => {
       const bgRemovalConfiguration: Config = {
         device: 'gpu',
+        debug: true,
         ...configuration,
         progress: throttle((key, current, total) => {
           const currentMetadataInProgress = metadata.get(blockId);
