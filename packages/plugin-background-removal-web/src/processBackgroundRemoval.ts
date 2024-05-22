@@ -53,7 +53,8 @@ export async function processBackgroundRemoval(
   switch (provider.type) {
     case '@imgly/background-removal': {
       const configuration = provider.configuration ?? {};
-      const bgRemovalConfiguration = {
+      const bgRemovalConfiguration: Config = {
+        device: 'gpu',
         ...configuration,
         progress: throttle((key, current, total) => {
           const currentMetadataInProgress = metadata.get(blockId);
