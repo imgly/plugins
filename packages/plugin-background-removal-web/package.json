@@ -1,6 +1,6 @@
 {
   "name": "@imgly/plugin-background-removal-web",
-  "version": "0.1.1",
+  "version": "0.3.0-rc.0",
   "description": "Background Removal plugin for the CE.SDK editor",
   "keywords": [
     "CE.SDK",

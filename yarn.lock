@@ -398,7 +398,7 @@
   resolved "https://registry.yarnpkg.com/@humanwhocodes/object-schema/-/object-schema-2.0.2.tgz#d9fae00a2d5cb40f92cfe64b47ad749fbc38f917"
   integrity sha512-6EwiSjwWYP7pTckG6I5eyFANjPhmPjUX9JRLUSfNPC7FX7zK9gyZAfUEaECL6ALTpGX5AjnBq3C9XmVWPitNpw==
 
-"@imgly/background-removal@^1.5.1":
+"@imgly/background-removal@^1.4.4", "@imgly/background-removal@^1.5.1":
   version "1.5.1"
   resolved "https://registry.yarnpkg.com/@imgly/background-removal/-/background-removal-1.5.1.tgz#09c26e739983cc7859fd0cdad9b3c43dc64ac193"
   integrity sha512-I8lfO++zKhEuhKeFH+fOm6gSbVnvAx4W0+tIx6apAB5xJOvBN5HLaeq1l35D3Rp9oIESLR2iarOXmOT2+M9K0g==
@@ -410,6 +410,14 @@
     ndarray "~1.0.0"
     onnxruntime-web "~1.17.0"
     zod "^3.23.8"
+
+"@imgly/plugin-background-removal-web@*":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@imgly/plugin-background-removal-web/-/plugin-background-removal-web-0.2.0.tgz#965e2e56db73b3f17d287e1ed2e6c7fa712e86fe"
+  integrity sha512-fqY4PflN0wI7otkAff/mITvi86bUT9TI1oaAEm8bkhDQIZMB9zOPLWRdq+t2zr9D0OFJnfsG1Pwyr2EHKJf1aA==
+  dependencies:
+    "@imgly/background-removal" "^1.4.4"
+    lodash "^4.17.21"
 
 "@jridgewell/gen-mapping@^0.3.0", "@jridgewell/gen-mapping@^0.3.2":
   version "0.3.3"
