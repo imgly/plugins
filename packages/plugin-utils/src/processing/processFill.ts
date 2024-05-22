@@ -1,18 +1,13 @@
 import type CreativeEditorSDK from '@cesdk/cesdk-js';
 import { type Source } from '@cesdk/cesdk-js';
 import type FillProcessingMetadata from '../metadata/FillProcessingMetadata';
-import { Optional } from '../types/Optional';
 
-export default async function processFill<T>(
+export default async function processFill(
   cesdk: CreativeEditorSDK,
   blockId: number,
   metadata: FillProcessingMetadata,
-  process: (
-    sourceSet: Optional<Source, 'width' | 'height'>[],
-    preprocessedData: T
-  ) => Promise<Blob[]>,
-  preprocess: (uri: string) => Promise<T> = () =>
-    Promise.resolve(undefined as T)
+  processSourceSet: (sourceSet: Source[]) => Promise<Source[]>,
+  processImageFileURI: (imageFileURI: string) => Promise<string>
 ) {
   const blockApi = cesdk.engine.block;
   if (!blockApi.hasFill(blockId))
@@ -50,13 +45,17 @@ export default async function processFill<T>(
       status: 'PROCESSING'
     });
 
+    // Sort the source set by resolution so that the highest resolution image
+    // is first.
+    const sortedSourceSet = initialSourceSet.sort(
+      (a, b) => b.width * b.height - a.height * a.width
+    );
+
     const uriToProcess =
       // Source sets have priority in the engine
       initialSourceSet.length > 0
         ? // Choose the highest resolution image in the source set
-          initialSourceSet.sort(
-            (a, b) => b.width * b.height - a.height * a.width
-          )[0].uri
+          sortedSourceSet[0].uri
         : initialImageFileURI;
 
     // If there is no initial preview file URI, set the current URI.
@@ -65,14 +64,10 @@ export default async function processFill<T>(
       blockApi.setString(fillId, 'fill/image/previewFileURI', uriToProcess);
     }
 
-    const preprocessedData = await preprocess(uriToProcess);
-    // Creating the mask from the highest resolution image
-    // const mask = await segmentForeground(uriToProcess, configuration);
-
     if (initialSourceSet.length > 0) {
       // Source set code path
       // ====================
-      const processedData = await process(initialSourceSet, preprocessedData);
+      const newSourceSet = await processSourceSet(initialSourceSet);
       // Check for externally changed state while we were applying the mask and
       // do not proceed if the state was reset.
       if (
@@ -80,11 +75,6 @@ export default async function processFill<T>(
         !metadata.isConsistent(blockId)
       )
         return;
-
-      const uploaded = await upload(
-        cesdk,
-        processedData.map((blob, index) => [blob, initialSourceSet[index]])
-      );
 
       // Check for externally changed state while we were uploading and
       // do not proceed if the state was reset.
@@ -94,18 +84,11 @@ export default async function processFill<T>(
       )
         return;
 
-      if (uploaded == null) return;
+      if (newSourceSet == null) return;
 
-      if (uploaded.every((url) => url == null)) {
-        throw new Error('Could not upload any fill processed data');
+      if (newSourceSet.every((url) => url == null)) {
+        throw new Error('Empty source set after processing fill');
       }
-
-      const newSourceSet = initialSourceSet.map((source, index) => {
-        return {
-          ...source,
-          uri: uploaded[index]
-        };
-      });
 
       metadata.set(blockId, {
         version: PLUGIN_VERSION,
@@ -121,10 +104,9 @@ export default async function processFill<T>(
       // TODO: Generate a thumb/preview uri
       blockApi.setString(fillId, 'fill/image/previewFileURI', '');
     } else {
-      const sourceSet = [{ uri: uriToProcess }];
       // ImageFileURI code path
       // ======================
-      const processedData = await process(sourceSet, preprocessedData);
+      const newFileURI = await processImageFileURI(uriToProcess);
 
       // Check for externally changed state while we were applying the mask and
       // do not proceed if the state was reset.
@@ -134,11 +116,6 @@ export default async function processFill<T>(
       )
         return;
 
-      const uploaded = await upload(
-        cesdk,
-        processedData.map((blob, index) => [blob, sourceSet[index]])
-      );
-
       // Check for externally changed state while we were uploading and
       // do not proceed if the state was reset.
       if (
@@ -147,10 +124,7 @@ export default async function processFill<T>(
       )
         return;
 
-      if (uploaded == null) return;
-
-      const uploadedUrl = uploaded[0];
-      if (uploadedUrl == null) {
+      if (newFileURI == null) {
         throw new Error('Could not upload fill processed data');
       }
 
@@ -162,9 +136,9 @@ export default async function processFill<T>(
         blockId,
         fillId,
         status: 'PROCESSED',
-        processed: uploadedUrl
+        processed: newFileURI
       });
-      blockApi.setString(fillId, 'fill/image/imageFileURI', uploadedUrl);
+      blockApi.setString(fillId, 'fill/image/imageFileURI', newFileURI);
       // TODO: Generate a thumb/preview uri
       blockApi.setString(fillId, 'fill/image/previewFileURI', '');
     }
@@ -200,31 +174,4 @@ export default async function processFill<T>(
     // eslint-disable-next-line no-console
     console.log(error);
   }
-}
-
-async function upload<T extends { uri: string }>(
-  cesdk: CreativeEditorSDK,
-  data: [Blob, T][]
-): Promise<string[]> {
-  const uploaded = await Promise.all(
-    data.map(async ([blob, source]): Promise<string> => {
-      const pathname = new URL(source.uri).pathname;
-      const parts = pathname.split('/');
-      const filename = parts[parts.length - 1];
-
-      const uploadedAssets = await cesdk.unstable_upload(
-        new File([blob], filename, { type: blob.type }),
-        () => {
-          // TODO Delegate process to UI component
-        }
-      );
-
-      const url = uploadedAssets.meta?.uri;
-      if (url == null) {
-        throw new Error('Could not upload processed fill');
-      }
-      return url;
-    })
-  );
-  return uploaded;
 }
