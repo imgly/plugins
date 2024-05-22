@@ -99,8 +99,8 @@ BackgroundRemovalPlugin({
             // URI with the highest URI is first
             sourceSet: {
                 uri: string;
-                width?: number;
-                height?: number;
+                width: number;
+                height: number;
             }[],
         ) => {
             // You should call the remove background method on every URI in the
