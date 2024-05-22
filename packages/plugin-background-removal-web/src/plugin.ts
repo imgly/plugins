@@ -1,25 +1,24 @@
 import type CreativeEditorSDK from '@cesdk/cesdk-js';
 
-import type { Config as BackgroundRemovalConfiguration } from '@imgly/background-removal';
 import {
   initializeFillProcessing,
   registerFillProcessingComponents
 } from '@imgly/plugin-utils';
 
-import { processBackgroundRemoval } from './processBackgroundRemoval';
+import {
+  processBackgroundRemoval,
+  type BackgroundRemovalProvider
+} from './processBackgroundRemoval';
 import { UserInterfaceConfiguration } from './types';
 
 export const PLUGIN_ID = '@imgly/plugin-background-removal-web';
 
 export interface PluginConfiguration {
   ui?: UserInterfaceConfiguration;
-  backgroundRemoval?: BackgroundRemovalConfiguration;
+  provider?: BackgroundRemovalProvider;
 }
 
 export default (pluginConfiguration: PluginConfiguration = {}) => {
-  const backgroundRemovalConfiguration: BackgroundRemovalConfiguration =
-    pluginConfiguration?.backgroundRemoval ?? {};
-
   return {
     initialize() {},
 
@@ -32,8 +31,10 @@ export default (pluginConfiguration: PluginConfiguration = {}) => {
           processBackgroundRemoval(
             cesdk,
             blockId,
-            backgroundRemovalConfiguration,
-            metadata
+            metadata,
+            pluginConfiguration.provider ?? {
+              type: '@imgly/background-removal'
+            }
           );
         }
       });
