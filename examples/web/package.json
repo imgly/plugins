@@ -9,7 +9,7 @@
     "dev": "vite --clearScreen=false --force"
   },
   "dependencies": {
-    "@imgly/plugin-background-removal-web": "*",
+    "@imgly/plugin-background-removal-web": "0.3.0-rc.1",
     "@imgly/plugin-remote-asset-source-web": "*",
     "@imgly/plugin-cutout-library-web": "*",
     "@cesdk/cesdk-js": "^1.21.0",
