@@ -9,7 +9,7 @@ import {
 
 import { processFill, type FillProcessingMetadata } from '@imgly/plugin-utils';
 
-import throttle from 'lodash/throttle';
+import { throttle } from 'lodash-es';
 
 interface IMGLYBackgroundRemovalProviderClientSide {
   type: '@imgly/background-removal';
