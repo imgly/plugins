@@ -8,6 +8,9 @@
     "clean": {
       "cache": false
     },
+    "check:all": {
+      "cache": false
+    },
     "dev": {
       "cache": false,
       "persistent": true
