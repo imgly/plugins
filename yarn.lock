@@ -411,6 +411,26 @@
     onnxruntime-web "~1.17.0"
     zod "^3.23.8"
 
+"@imgly/plugin-background-removal-web@file:packages/plugin-background-removal-web":
+  version "0.3.0-rc.2"
+  dependencies:
+    "@imgly/background-removal" "1.5.1"
+
+"@imgly/plugin-cutout-library-web@file:packages/plugin-cutout-library-web":
+  version "0.1.0"
+  dependencies:
+    lodash "^4.17.21"
+
+"@imgly/plugin-remote-asset-source-web@file:packages/plugin-remote-asset-source-web":
+  version "0.1.1"
+  dependencies:
+    lodash "^4.17.21"
+
+"@imgly/plugin-utils@file:packages/plugin-utils":
+  version "0.0.0"
+  dependencies:
+    lodash-es "^4.17.21"
+
 "@jridgewell/gen-mapping@^0.3.0", "@jridgewell/gen-mapping@^0.3.2":
   version "0.3.3"
   resolved "https://registry.yarnpkg.com/@jridgewell/gen-mapping/-/gen-mapping-0.3.3.tgz#7e02e6eb5df901aaedb08514203b096614024098"
