@@ -51,7 +51,7 @@
     "types:create": "tsc --emitDeclarationOnly"
   },
   "devDependencies": {
-    "@cesdk/cesdk-js": "~1.21.0",
+    "@cesdk/cesdk-js": "^1.21.0",
     "@imgly/plugin-utils": "file:../plugin-utils",
     "@types/ndarray": "^1.0.14",
     "chalk": "^5.3.0",
@@ -62,7 +62,7 @@
     "lodash-es": "^4.17.21"
   },
   "peerDependencies": {
-    "@cesdk/cesdk-js": "~1.21.0"
+    "@cesdk/cesdk-js": "^1.21.0"
   },
   "dependencies": {
     "@imgly/background-removal": "1.5.1"
