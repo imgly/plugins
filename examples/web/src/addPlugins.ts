@@ -7,7 +7,7 @@ import RemoteAssetSourcePlugin from '@imgly/plugin-remote-asset-source-web';
 const ENABLE_DEMO_ASSET_SOURCES = false;
 
 async function addPlugins(cesdk: CreativeEditorSDK): Promise<void> {
-  console.log('Adding plugins', RemoteAssetSourcePlugin);
+  console.log('Adding plugins...');
   try {
     await Promise.all([
       cesdk.unstable_addPlugin(

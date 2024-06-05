@@ -42,8 +42,10 @@
   "scripts": {
     "start": "npm run watch",
     "clean": "npx rimraf dist",
+    "purge": "npx rimraf node_modules",
     "build": "npm run clean && node scripts/build.mjs",
     "dev": "npm run clean && node scripts/watch.mjs",
+    "dev:wait": "npx wait-on ./dist/index.mjs ./dist/index.d.ts --timeout 30000",
     "dev:types": "tsc --emitDeclarationOnly --watch --preserveWatchOutput",
     "publish:latest": "npm run build && npm publish --tag latest --access public",
     "publish:next": "npm run build && npm publish --tag next --access public",

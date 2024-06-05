@@ -9,6 +9,7 @@
   "scripts": {
     "build": "turbo run build",
     "clean": "turbo run clean",
+    "purge": "npx rimraf node_modules && turbo run purge",
     "dev": "turbo run dev",
     "check:all": "turbo run check:all"
   },

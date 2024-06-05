@@ -39,8 +39,10 @@
   "scripts": {
     "start": "npm run watch",
     "clean": "npx rimraf dist",
+    "purge": "npx rimraf node_modules",
     "build": "npm run clean && node scripts/build.mjs",
     "dev": "node scripts/watch.mjs",
+    "dev:wait": "npx wait-on ./dist/index.mjs ./dist/index.d.ts --timeout 30000",
     "dev:types": "tsc --emitDeclarationOnly --watch --preserveWatchOutput",
     "publish:latest": "npm run build && npm publish --tag latest --access public",
     "publish:next": "npm run build && npm publish --tag next --access public",
@@ -52,19 +54,19 @@
   },
   "devDependencies": {
     "@cesdk/cesdk-js": "^1.21.0",
-    "@imgly/plugin-utils": "file:../plugin-utils",
     "@types/ndarray": "^1.0.14",
     "chalk": "^5.3.0",
     "concurrently": "^8.2.2",
     "esbuild": "^0.19.11",
     "eslint": "^8.51.0",
     "typescript": "^5.3.3",
-    "lodash-es": "^4.17.21"
+    "lodash-es": "^4.17.21",
+    "@imgly/plugin-utils": "*"
   },
   "peerDependencies": {
     "@cesdk/cesdk-js": "^1.21.0"
   },
   "dependencies": {
-    "@imgly/background-removal": "1.5.1"
+    "@imgly/background-removal": "1.5.2"
   }
 }

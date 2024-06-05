@@ -8,12 +8,19 @@
     "clean": {
       "cache": false
     },
+    "purge": {
+      "cache": false
+    },
     "check:all": {
       "cache": false
     },
     "dev": {
       "cache": false,
-      "persistent": true
+      "persistent": true,
+      "dependsOn": ["^dev:wait"]
+    },
+    "dev:wait": {
+      "cache": false
     },
     "dev:types": {
       "cache": false,
