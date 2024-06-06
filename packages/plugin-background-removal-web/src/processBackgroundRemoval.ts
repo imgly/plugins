@@ -84,7 +84,7 @@ export async function processBackgroundRemoval(
           // Preprocessing the image by creating a segmentation mask
           const mask = await segmentForeground(
             highestResolutionUri,
-            configuration
+            bgRemovalConfiguration
           );
 
           const result = await Promise.all(
