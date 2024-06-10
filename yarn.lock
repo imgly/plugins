@@ -398,10 +398,10 @@
   resolved "https://registry.yarnpkg.com/@humanwhocodes/object-schema/-/object-schema-2.0.2.tgz#d9fae00a2d5cb40f92cfe64b47ad749fbc38f917"
   integrity sha512-6EwiSjwWYP7pTckG6I5eyFANjPhmPjUX9JRLUSfNPC7FX7zK9gyZAfUEaECL6ALTpGX5AjnBq3C9XmVWPitNpw==
 
-"@imgly/background-removal@1.5.2":
-  version "1.5.2"
-  resolved "https://registry.yarnpkg.com/@imgly/background-removal/-/background-removal-1.5.2.tgz#3ede581972b8c1877e29b4eb5ce6fa22158eaa14"
-  integrity sha512-pybRK4J83U1eXXX4B7qXnfngdN4j/+vEgppL5tOZrQltf5Wow503ZL/CQ5+cvT3TQMzkOkhVmtiNXU8K7vGgeg==
+"@imgly/background-removal@^1.5.3":
+  version "1.5.3"
+  resolved "https://registry.yarnpkg.com/@imgly/background-removal/-/background-removal-1.5.3.tgz#5fb39eb97e0f26fefd6a270b18f771c1c905593d"
+  integrity sha512-Q5DI5EtOvTvsWueimB0XUlkDObdcQsN2hTEsQUnJXym7x7oH8dn1qrOZ6UklJSIHK7hkiqKtaDONvvk0lKVWmA==
   dependencies:
     "@types/lodash-es" "^4.17.12"
     "@types/ndarray" "~1.0.14"

@@ -67,6 +67,6 @@
     "@cesdk/cesdk-js": "^1.21.0"
   },
   "dependencies": {
-    "@imgly/background-removal": "1.5.2"
+    "@imgly/background-removal": "^1.5.3"
   }
 }
