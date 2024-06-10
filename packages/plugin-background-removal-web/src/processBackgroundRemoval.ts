@@ -9,7 +9,7 @@ import {
 
 import { processFill, type FillProcessingMetadata } from '@imgly/plugin-utils';
 
-import throttle from 'lodash/throttle';
+import { throttle } from 'lodash-es';
 
 interface IMGLYBackgroundRemovalProviderClientSide {
   type: '@imgly/background-removal';
@@ -84,7 +84,7 @@ export async function processBackgroundRemoval(
           // Preprocessing the image by creating a segmentation mask
           const mask = await segmentForeground(
             highestResolutionUri,
-            configuration
+            bgRemovalConfiguration
           );
 
           const result = await Promise.all(

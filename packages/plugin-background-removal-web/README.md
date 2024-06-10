@@ -43,6 +43,20 @@ await cesdk.createDesignScene();
 
 ## Configuration
 
+### Adding Canvas Menu Component
+
+After adding the plugin to CE.SDK, it will register a component that can be
+used inside the canvas menu. It is not added by default but can be included
+using the following configuration:
+
+```typescript
+// Either pass a location via the configuration object, ...
+BackgroundRemovalPlugin({
+  ui: { locations: 'canvasMenu' }
+})
+```
+
+### Configuration of `@imgly/background-removal`
 By default, this plugin uses the `@imgly/background-removal-js` library to remove
 a background from the image fill. All configuration options from this underlying
 library can be used in this plugin.

@@ -40,8 +40,10 @@
   "scripts": {
     "start": "npm run watch",
     "clean": "npx rimraf dist",
+    "purge": "npx rimraf node_modules",
     "build": "npm run clean && node scripts/build.mjs && cp -r assets dist/",
     "dev": "node scripts/watch.mjs",
+    "dev:wait": "npx wait-on ./dist/index.mjs ./dist/index.d.ts --timeout 30000",
     "dev:types": "tsc --emitDeclarationOnly --watch --preserveWatchOutput",
     "publish:latest": "npm run build && npm publish --tag latest --access public",
     "publish:next": "npm run build && npm publish --tag next --access public",
@@ -52,7 +54,7 @@
     "types:create": "tsc --emitDeclarationOnly"
   },
   "devDependencies": {
-    "@cesdk/cesdk-js": "~1.21.0",
+    "@cesdk/cesdk-js": "^1.21.0",
     "@types/ndarray": "^1.0.14",
     "chalk": "^5.3.0",
     "concurrently": "^8.2.2",
@@ -61,7 +63,7 @@
     "typescript": "^5.3.3"
   },
   "peerDependencies": {
-    "@cesdk/cesdk-js": "~1.21.0"
+    "@cesdk/cesdk-js": "^1.21.0"
   },
   "dependencies": {
     "lodash": "^4.17.21"
