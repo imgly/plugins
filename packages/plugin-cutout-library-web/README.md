@@ -16,15 +16,31 @@ npm install @imgly/plugin-cutout-library-web
 
 ## Usage
 
-Adding the plugin to CE.SDK will automatically add a background removal
-canvas menu entry for every block with an image fill.
+When adding the plugin to the CE.SDK, you can also add an action button to the canvas menu. Further, we provide a utility method for getting a insert entry for the cutout library that adds the cutout library to the dock.
 
 ```typescript
 import CreativeEditorSDK from '@cesdk/cesdk-js';
-import BackgroundRemovalPlugin from '@imgly/plugin-background-removal-web';
+import CutoutLibraryPlugin, {
+  getCutoutLibraryInsertEntry
+} from '@imgly/plugin-cutout-library-web';
 
 const config = {
-  license: '<your-license-here>'
+  license: '<your-license-here>',
+  ui: {
+    elements: {
+      libraries: {
+        insert: {
+          entries: (defaultEntries) => {
+            return [
+              ...defaultEntries,
+              // Add the cutout library insert entry
+              getCutoutLibraryInsertEntry()
+            ];
+          }
+        }
+      }
+    }
+  },
 };
 
 const cesdk = await CreativeEditorSDK.create(container, config);
