@@ -59,14 +59,14 @@
     "concurrently": "^8.2.2",
     "esbuild": "^0.19.11",
     "eslint": "^8.51.0",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "lodash-es": "^4.17.21",
+    "@imgly/plugin-utils": "*"
   },
   "peerDependencies": {
     "@cesdk/cesdk-js": "~1.21.0"
   },
   "dependencies": {
-    "@imgly/vectorizer": "0.1.0-rc9",
-    "@imgly/plugin-utils": "*",
-    "lodash": "^4.17.21"
+    "@imgly/vectorizer": "0.1.0-rc9"
   }
 }
