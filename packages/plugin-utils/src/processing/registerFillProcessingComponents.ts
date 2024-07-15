@@ -60,7 +60,8 @@ export default function registerFillProcessingComponents(
       const isLoading = currentMetadata.status === 'PROCESSING';
       const isDisabled =
         currentMetadata.status === 'PENDING' ||
-        currentMetadata.status === 'PROCESSING';
+        currentMetadata.status === 'PROCESSING' ||
+        engine.block.getState(id)?.type === 'Pending';
 
       let loadingProgress: number | undefined;
       if (isLoading && currentMetadata.progress) {
