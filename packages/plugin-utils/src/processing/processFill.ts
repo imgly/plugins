@@ -30,9 +30,7 @@ export default async function processFill(
   );
 
   try {
-    // Clear values in the engine to trigger the loading spinner
-    blockApi.setString(fillId, 'fill/image/imageFileURI', '');
-    blockApi.setSourceSet(fillId, 'fill/image/sourceSet', []);
+    cesdk.engine.block.setState(fillId, { type: 'Pending', progress: 0 });
 
     metadata.set(blockId, {
       ...metadata.get(blockId),
@@ -173,5 +171,7 @@ export default async function processFill(
 
     // eslint-disable-next-line no-console
     console.log(error);
+  } finally {
+    cesdk.engine.block.setState(fillId, { type: 'Ready' });
   }
 }

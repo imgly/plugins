@@ -53,7 +53,6 @@
     "types:create": "tsc --emitDeclarationOnly"
   },
   "devDependencies": {
-    "@cesdk/cesdk-js": "^1.21.0",
     "@types/ndarray": "^1.0.14",
     "chalk": "^5.3.0",
     "concurrently": "^8.2.2",
@@ -64,7 +63,7 @@
     "@imgly/plugin-utils": "*"
   },
   "peerDependencies": {
-    "@cesdk/cesdk-js": "^1.21.0"
+    "@cesdk/cesdk-js": "^1.26.0"
   },
   "dependencies": {
     "@imgly/background-removal": "^1.5.3"
