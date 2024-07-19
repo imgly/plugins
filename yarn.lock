@@ -232,11 +232,6 @@
   resolved "https://registry.yarnpkg.com/@cesdk/cesdk-js/-/cesdk-js-1.30.0.tgz#2c99516b3756f5d76ce2b15466ed7c3cb2399a9c"
   integrity sha512-I7D/DoyOQlCB2186B0zZeX1Poov/MftaIq+6ddlFFXPWpKItRhfSEGR6WnPMZolsyOrMxGdAaiPCMqN8FFvVTg==
 
-"@cesdk/cesdk-js@~1.21.0":
-  version "1.21.1"
-  resolved "https://registry.yarnpkg.com/@cesdk/cesdk-js/-/cesdk-js-1.21.1.tgz#b3e4d4b584d0623bae584210098244d8d874c838"
-  integrity sha512-TQSDHjszpITGq1jj6985r59eZwJkoUjtxcmGj+scjX+gORfAN7jfzl8xGp8gvMl7/tX7i+Xhym74A0Qrq9g6Tw==
-
 "@esbuild/aix-ppc64@0.19.12":
   version "0.19.12"
   resolved "https://registry.yarnpkg.com/@esbuild/aix-ppc64/-/aix-ppc64-0.19.12.tgz#d1bc06aedb6936b3b6d313bf809a5a40387d2b7f"
