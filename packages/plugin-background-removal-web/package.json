@@ -63,7 +63,7 @@
     "@imgly/plugin-utils": "*"
   },
   "peerDependencies": {
-    "@cesdk/cesdk-js": "^1.26.0"
+    "@cesdk/cesdk-js": "^1.31.0"
   },
   "dependencies": {
     "@imgly/background-removal": "^1.5.3"
