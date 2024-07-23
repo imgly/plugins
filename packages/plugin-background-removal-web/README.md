@@ -98,14 +98,6 @@ It is possible to declare a different provider for the background removal proces
 BackgroundRemovalPlugin({
     provider: {
         type: 'custom',
-        // If the image has only one image file URI defined, this method will
-        // be called. It must return a single new image file URI with the
-        // removed background.
-        processImageFileURI: async (imageFileURI: string) => {
-            const blob = await removeBackground(imageFileURI);
-            const upload = await uploadBlob(blob);
-            return upload;
-        },
         // Some images have a source set defined which provides multiple images
         // in different sizes.
         processSourceSet: async (

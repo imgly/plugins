@@ -95,51 +95,20 @@ class ImageProcessingMetadata extends Metadata<PluginStatusMetadata> {
       fillId,
       'fill/image/sourceSet'
     );
-    const imageFileURI = this.cesdk.engine.block.getString(
-      fillId,
-      'fill/image/imageFileURI'
-    );
 
-    if (
-      sourceSet.length === 0 &&
-      !imageFileURI &&
-      metadata.status === 'PROCESSING'
-    ) {
-      // While we process it is OK to have no image file URI and no source set
-      // (which we cleared to show the spinning loader)
-      return true;
-    }
-
-    // Source sets have precedence over imageFileURI so if we have a source set,
-    // we only need to check if it has changed to something else.
-    if (sourceSet?.length > 0) {
-      const initialSourceSet = metadata.initialSourceSet;
-      // If we have already processed the image, we need to check if the source set
-      // we need to check against both source sets, the removed and the initial
-      if (metadata.status === 'PROCESSED') {
-        if (
-          !isEqual(sourceSet, metadata.processed) &&
-          !isEqual(sourceSet, initialSourceSet)
-        ) {
-          return false;
-        }
-      } else {
-        if (!isEqual(sourceSet, initialSourceSet)) {
-          return false;
-        }
+    const initialSourceSet = metadata.initialSourceSet;
+    // If we have already processed the image, we need to check if the source set
+    // we need to check against both source sets, the removed and the initial
+    if (metadata.status === 'PROCESSED') {
+      if (
+        !isEqual(sourceSet, metadata.processed) &&
+        !isEqual(sourceSet, initialSourceSet)
+      ) {
+        return false;
       }
     } else {
-      if (metadata.status === 'PROCESSED') {
-        if (
-          imageFileURI !== metadata.initialImageFileURI &&
-          imageFileURI !== metadata.processed
-        ) {
-          return false;
-        }
-      } else {
-        if (imageFileURI !== metadata.initialImageFileURI) {
-          return false;
-        }
+      if (!isEqual(sourceSet, initialSourceSet)) {
+        return false;
       }
     }
     return true;
@@ -160,19 +129,11 @@ class ImageProcessingMetadata extends Metadata<PluginStatusMetadata> {
     }
 
     const initialSourceSet = metadata.initialSourceSet;
-    const initialImageFileURI = metadata.initialImageFileURI;
     const initialPreviewFileURI = metadata.initialPreviewFileURI;
 
     const fillId = this.getValidFill(blockId, metadata);
     if (fillId == null) return;
 
-    if (initialImageFileURI) {
-      this.cesdk.engine.block.setString(
-        fillId,
-        'fill/image/imageFileURI',
-        initialImageFileURI
-      );
-    }
     if (initialPreviewFileURI) {
       this.cesdk.engine.block.setString(
         fillId,

@@ -2,7 +2,6 @@ import type CreativeEditorSDK from '@cesdk/cesdk-js';
 import type { Source } from '@cesdk/cesdk-js';
 import {
   applySegmentationMask,
-  removeBackground,
   segmentForeground,
   type Config
 } from '@imgly/background-removal';
@@ -18,15 +17,6 @@ interface IMGLYBackgroundRemovalProviderClientSide {
 
 interface CustomBackgroundRemovalProvider {
   type: 'custom';
-
-  /**
-   * Process the image file URI and return the processed image file URI with
-   * the background removed.
-   *
-   * @param imageFileURI - The URI of the image file to process
-   * @returns The processed image file URI
-   */
-  processImageFileURI: (imageFileURI: string) => Promise<string>;
 
   /**
    * Process the source set and return a new source set as the input source set.
@@ -104,28 +94,13 @@ export async function processBackgroundRemoval(
           );
 
           return result;
-        },
-        // Process the image file URI
-        async (imageFileURI) => {
-          const result = await removeBackground(
-            imageFileURI,
-            bgRemovalConfiguration
-          );
-          const uri = await uploadBlob(result, imageFileURI, cesdk);
-          return uri;
         }
       );
       break;
     }
 
     case 'custom': {
-      processFill(
-        cesdk,
-        blockId,
-        metadata,
-        provider.processSourceSet,
-        provider.processImageFileURI
-      );
+      processFill(cesdk, blockId, metadata, provider.processSourceSet);
       break;
     }
 

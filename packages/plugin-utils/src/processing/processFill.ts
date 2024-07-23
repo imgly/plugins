@@ -6,8 +6,7 @@ export default async function processFill(
   cesdk: CreativeEditorSDK,
   blockId: number,
   metadata: FillProcessingMetadata,
-  processSourceSet: (sourceSet: Source[]) => Promise<Source[]>,
-  processImageFileURI: (imageFileURI: string) => Promise<string>
+  processSourceSet: (sourceSet: Source[]) => Promise<Source[]>
 ) {
   const blockApi = cesdk.engine.block;
   if (!blockApi.hasFill(blockId))
@@ -19,10 +18,6 @@ export default async function processFill(
   const initialSourceSet = blockApi.getSourceSet(
     fillId,
     'fill/image/sourceSet'
-  );
-  const initialImageFileURI = blockApi.getString(
-    fillId,
-    'fill/image/imageFileURI'
   );
   const initialPreviewFileURI = blockApi.getString(
     fillId,
@@ -36,7 +31,6 @@ export default async function processFill(
       ...metadata.get(blockId),
       version: PLUGIN_VERSION,
       initialSourceSet,
-      initialImageFileURI,
       initialPreviewFileURI,
       blockId,
       fillId,
@@ -49,12 +43,7 @@ export default async function processFill(
       (a, b) => b.width * b.height - a.height * a.width
     );
 
-    const uriToProcess =
-      // Source sets have priority in the engine
-      initialSourceSet.length > 0
-        ? // Choose the highest resolution image in the source set
-          sortedSourceSet[0].uri
-        : initialImageFileURI;
+    const uriToProcess = sortedSourceSet[0].uri;
 
     // If there is no initial preview file URI, set the current URI.
     // It will be used as the image displayed while showing the loading spinner.
@@ -62,84 +51,43 @@ export default async function processFill(
       blockApi.setString(fillId, 'fill/image/previewFileURI', uriToProcess);
     }
 
-    if (initialSourceSet.length > 0) {
-      // Source set code path
-      // ====================
-      const newSourceSet = await processSourceSet(initialSourceSet);
-      // Check for externally changed state while we were applying the mask and
-      // do not proceed if the state was reset.
-      if (
-        metadata.get(blockId).status !== 'PROCESSING' ||
-        !metadata.isConsistent(blockId)
-      )
-        return;
+    const newSourceSet = await processSourceSet(initialSourceSet);
+    // Check for externally changed state while we were applying the mask and
+    // do not proceed if the state was reset.
+    if (
+      metadata.get(blockId).status !== 'PROCESSING' ||
+      !metadata.isConsistent(blockId)
+    )
+      return;
 
-      // Check for externally changed state while we were uploading and
-      // do not proceed if the state was reset.
-      if (
-        metadata.get(blockId).status !== 'PROCESSING' ||
-        !metadata.isConsistent(blockId)
-      )
-        return;
+    // Check for externally changed state while we were uploading and
+    // do not proceed if the state was reset.
+    if (
+      metadata.get(blockId).status !== 'PROCESSING' ||
+      !metadata.isConsistent(blockId)
+    )
+      return;
 
-      if (newSourceSet == null) return;
+    if (newSourceSet == null) return;
 
-      if (newSourceSet.every((url) => url == null)) {
-        throw new Error('Empty source set after processing fill');
-      }
-
-      metadata.set(blockId, {
-        version: PLUGIN_VERSION,
-        initialSourceSet,
-        initialImageFileURI,
-        initialPreviewFileURI,
-        blockId,
-        fillId,
-        status: 'PROCESSED',
-        processed: newSourceSet
-      });
-      blockApi.setSourceSet(fillId, 'fill/image/sourceSet', newSourceSet);
-      // TODO: Generate a thumb/preview uri
-      blockApi.setString(fillId, 'fill/image/previewFileURI', '');
-    } else {
-      // ImageFileURI code path
-      // ======================
-      const newFileURI = await processImageFileURI(uriToProcess);
-
-      // Check for externally changed state while we were applying the mask and
-      // do not proceed if the state was reset.
-      if (
-        metadata.get(blockId).status !== 'PROCESSING' ||
-        !metadata.isConsistent(blockId)
-      )
-        return;
-
-      // Check for externally changed state while we were uploading and
-      // do not proceed if the state was reset.
-      if (
-        metadata.get(blockId).status !== 'PROCESSING' ||
-        !metadata.isConsistent(blockId)
-      )
-        return;
-
-      if (newFileURI == null) {
-        throw new Error('Could not upload fill processed data');
-      }
-
-      metadata.set(blockId, {
-        version: PLUGIN_VERSION,
-        initialSourceSet,
-        initialImageFileURI,
-        initialPreviewFileURI,
-        blockId,
-        fillId,
-        status: 'PROCESSED',
-        processed: newFileURI
-      });
-      blockApi.setString(fillId, 'fill/image/imageFileURI', newFileURI);
-      // TODO: Generate a thumb/preview uri
-      blockApi.setString(fillId, 'fill/image/previewFileURI', '');
+    if (newSourceSet.every((url) => url == null)) {
+      throw new Error('Empty source set after processing fill');
     }
+
+    metadata.set(blockId, {
+      version: PLUGIN_VERSION,
+      initialSourceSet,
+      initialPreviewFileURI,
+      blockId,
+      fillId,
+      status: 'PROCESSED',
+      processed: newSourceSet
+    });
+
+    blockApi.setSourceSet(fillId, 'fill/image/sourceSet', newSourceSet);
+    // TODO: Generate a thumb/preview uri
+    blockApi.setString(fillId, 'fill/image/previewFileURI', '');
+
     // Finally, create an undo step
     cesdk.engine.editor.addUndoStep();
   } catch (error) {
@@ -147,7 +95,6 @@ export default async function processFill(
       metadata.set(blockId, {
         version: PLUGIN_VERSION,
         initialSourceSet,
-        initialImageFileURI,
         initialPreviewFileURI,
         blockId,
         fillId,

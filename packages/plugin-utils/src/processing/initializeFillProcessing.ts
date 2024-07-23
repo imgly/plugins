@@ -96,17 +96,13 @@ function enableFeatures(
         return false;
       }
 
-      const fileUri = engine.block.getString(fillId, 'fill/image/imageFileURI');
       const sourceSet = engine.block.getSourceSet(
         fillId,
         'fill/image/sourceSet'
       );
 
-      if (sourceSet.length > 0 || fileUri !== '') return true;
+      if (sourceSet.length > 0) return true;
 
-      // If we are in a processing state we do not have a imageFileURI or
-      // source set set (to show the loading spinner), but the feature is still
-      // enabled.
       return metadata.get(selectedId).status === 'PROCESSING';
     }
 

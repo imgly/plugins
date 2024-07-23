@@ -7,7 +7,6 @@ export type PluginStatusProcessing = {
   version: string;
   status: 'PROCESSING';
 
-  initialImageFileURI: string;
   initialSourceSet: Source[];
   initialPreviewFileURI: string;
 
@@ -25,7 +24,6 @@ export type PluginStatusProcessed = {
   version: string;
   status: 'PROCESSED';
 
-  initialImageFileURI: string;
   initialSourceSet: Source[];
   initialPreviewFileURI: string;
 
@@ -39,7 +37,6 @@ export type PluginStatusError = {
   version: string;
   status: 'ERROR';
 
-  initialImageFileURI: string;
   initialSourceSet: Source[];
   initialPreviewFileURI: string;
 
