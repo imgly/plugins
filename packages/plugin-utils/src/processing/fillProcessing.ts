@@ -120,7 +120,9 @@ async function fillProcessing<T>(
     // eslint-disable-next-line no-console
     console.log(error);
   } finally {
-    cesdk.engine.block.setState(fillId, { type: 'Ready' });
+    if (cesdk.engine.block.isValid(fillId)) {
+      cesdk.engine.block.setState(fillId, { type: 'Ready' });
+    }
   }
 }
 
