@@ -116,27 +116,13 @@ class ImageProcessingMetadata extends Metadata<PluginStatusMetadata> {
       const initialSourceSet = metadata.initialSourceSet;
       // If we have already processed the image, we need to check if the source set
       // we need to check against both source sets, the removed and the initial
-      if (metadata.status === 'PROCESSED') {
-        if (
-          !isEqual(sourceSet, metadata.processed) &&
-          !isEqual(sourceSet, initialSourceSet)
-        ) {
-          return false;
-        }
-      } else {
+      if (metadata.status !== 'PROCESSED') {
         if (!isEqual(sourceSet, initialSourceSet)) {
           return false;
         }
       }
     } else {
-      if (metadata.status === 'PROCESSED') {
-        if (
-          imageFileURI !== metadata.initialImageFileURI &&
-          imageFileURI !== metadata.processed
-        ) {
-          return false;
-        }
-      } else {
+      if (metadata.status !== 'PROCESSED') {
         if (imageFileURI !== metadata.initialImageFileURI) {
           return false;
         }

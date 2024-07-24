@@ -95,8 +95,7 @@ export default async function processFill(
         initialPreviewFileURI,
         blockId,
         fillId,
-        status: 'PROCESSED',
-        processed: newSourceSet
+        status: 'PROCESSED'
       });
       blockApi.setSourceSet(fillId, 'fill/image/sourceSet', newSourceSet);
       // TODO: Generate a thumb/preview uri
@@ -133,8 +132,7 @@ export default async function processFill(
         initialPreviewFileURI,
         blockId,
         fillId,
-        status: 'PROCESSED',
-        processed: newFileURI
+        status: 'PROCESSED'
       });
       blockApi.setString(fillId, 'fill/image/imageFileURI', newFileURI);
       // TODO: Generate a thumb/preview uri
