@@ -1,15 +1,14 @@
 import type CreativeEditorSDK from '@cesdk/cesdk-js';
 import type { Source } from '@cesdk/cesdk-js';
-import {
-  applySegmentationMask,
-  removeBackground,
-  segmentForeground,
-  type Config
-} from '@imgly/background-removal';
+import { type Config } from '@imgly/background-removal';
 
-import { processFill, type FillProcessingMetadata } from '@imgly/plugin-utils';
+import { type FillProcessingMetadata } from '@imgly/plugin-utils';
 
 import { throttle } from 'lodash-es';
+import {
+  fillProcessingFromImageFileURI,
+  fillProcessingFromSourceSet
+} from './fillProcessingBackgroundRemoval';
 
 interface IMGLYBackgroundRemovalProviderClientSide {
   type: '@imgly/background-removal';
@@ -50,6 +49,18 @@ export async function processBackgroundRemoval(
   metadata: FillProcessingMetadata,
   provider: BackgroundRemovalProvider
 ) {
+  const blockApi = cesdk.engine.block;
+  if (!blockApi.hasFill(blockId))
+    throw new Error('Block does not support fill');
+
+  const fillId = blockApi.getFill(blockId);
+
+  const sourceSet = blockApi.getSourceSet(fillId, 'fill/image/sourceSet');
+  const imageFileURI = blockApi.getString(fillId, 'fill/image/imageFileURI');
+
+  if (sourceSet.length === 0 && imageFileURI === '')
+    throw new Error('No source or image file URI found');
+
   switch (provider.type) {
     case '@imgly/background-removal': {
       const configuration = provider.configuration ?? {};
@@ -72,60 +83,49 @@ export async function processBackgroundRemoval(
         }, 100)
       };
 
-      processFill(
-        cesdk,
-        blockId,
-        metadata,
-        // Process the source set
-        async (sourceSet) => {
-          // Source set is already sorted by resolution
-          const highestResolutionUri = sourceSet[0].uri;
+      if (sourceSet.length > 0) {
+        fillProcessingFromSourceSet(
+          blockId,
+          cesdk,
+          metadata,
+          bgRemovalConfiguration
+        );
+      } else {
+        fillProcessingFromImageFileURI(
+          blockId,
+          cesdk,
+          metadata,
+          bgRemovalConfiguration
+        );
+      }
 
-          // Preprocessing the image by creating a segmentation mask
-          const mask = await segmentForeground(
-            highestResolutionUri,
-            bgRemovalConfiguration
-          );
-
-          const result = await Promise.all(
-            sourceSet.map(async (source): Promise<Source> => {
-              // Applying the mask to the original image
-              const blob = await applySegmentationMask(
-                source.uri,
-                mask,
-                bgRemovalConfiguration
-              );
-              const uploaded = await uploadBlob(blob, source.uri, cesdk);
-              return {
-                ...source,
-                uri: uploaded
-              };
-            })
-          );
-
-          return result;
-        },
-        // Process the image file URI
-        async (imageFileURI) => {
-          const result = await removeBackground(
-            imageFileURI,
-            bgRemovalConfiguration
-          );
-          const uri = await uploadBlob(result, imageFileURI, cesdk);
-          return uri;
-        }
-      );
       break;
     }
 
     case 'custom': {
-      processFill(
-        cesdk,
-        blockId,
-        metadata,
-        provider.processSourceSet,
-        provider.processImageFileURI
-      );
+      if (sourceSet.length > 0) {
+        fillProcessingFromSourceSet(
+          blockId,
+          cesdk,
+          metadata,
+          undefined,
+          (metadataState) => {
+            return provider.processSourceSet(metadataState.initialSourceSet);
+          }
+        );
+      } else {
+        fillProcessingFromImageFileURI(
+          blockId,
+          cesdk,
+          metadata,
+          undefined,
+          (metadataState) => {
+            return provider.processImageFileURI(
+              metadataState.initialImageFileURI
+            );
+          }
+        );
+      }
       break;
     }
 
@@ -133,27 +133,4 @@ export async function processBackgroundRemoval(
       throw new Error('Unknown background removal provider');
     }
   }
-}
-
-async function uploadBlob(
-  blob: Blob,
-  initialUri: string,
-  cesdk: CreativeEditorSDK
-) {
-  const pathname = new URL(initialUri).pathname;
-  const parts = pathname.split('/');
-  const filename = parts[parts.length - 1];
-
-  const uploadedAssets = await cesdk.unstable_upload(
-    new File([blob], filename, { type: blob.type }),
-    () => {
-      // TODO Delegate process to UI component
-    }
-  );
-
-  const url = uploadedAssets.meta?.uri;
-  if (url == null) {
-    throw new Error('Could not upload processed fill');
-  }
-  return url;
 }
