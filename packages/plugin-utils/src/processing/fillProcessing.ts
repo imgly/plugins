@@ -74,9 +74,7 @@ async function fillProcessing<T>(
 
     if (processedData == null) return;
 
-    processor.commitProcessing(processedData);
-
-    metadata.set(blockId, {
+    const metadataStateProcessed: PluginStatusProcessed = {
       version: PLUGIN_VERSION,
       initialSourceSet,
       initialImageFileURI,
@@ -84,7 +82,11 @@ async function fillProcessing<T>(
       blockId,
       fillId,
       status: 'PROCESSED'
-    });
+    };
+
+    processor.commitProcessing(processedData, metadataStateProcessed);
+
+    metadata.set(blockId, metadataStateProcessed);
 
     // Finally, create an undo step
     cesdk.engine.editor.addUndoStep();
