@@ -8,7 +8,10 @@ import {
 interface FillProcessor<T> {
   processFill(metadataState: PluginStatusProcessing): Promise<T>;
 
-  commitProcessing(data: T, metadataState: PluginStatusProcessed): void;
+  commitProcessing(
+    data: T,
+    metadataState: PluginStatusProcessed
+  ): number | void;
 }
 
 async function fillProcessing<T>(
@@ -84,9 +87,15 @@ async function fillProcessing<T>(
       status: 'PROCESSED'
     };
 
-    processor.commitProcessing(processedData, metadataStateProcessed);
+    const blockIdOrVoid = processor.commitProcessing(
+      processedData,
+      metadataStateProcessed
+    );
 
-    metadata.set(blockId, metadataStateProcessed);
+    // If a new block was created, we do not update the metadata.
+    if (blockIdOrVoid == null || blockIdOrVoid === blockId) {
+      metadata.set(blockId, metadataStateProcessed);
+    }
 
     // Finally, create an undo step
     cesdk.engine.editor.addUndoStep();
@@ -111,9 +120,13 @@ async function fillProcessing<T>(
       'message' in error &&
       typeof error.message === 'string'
     ) {
+      const message =
+        error.message === 'signal timed out'
+          ? 'Processing canceled due to timeout'
+          : error.message;
       cesdk.ui.showNotification({
         type: 'error',
-        message: error.message
+        message
       });
     }
 
