@@ -4,8 +4,6 @@ export { default as FillProcessingMetadata } from './metadata/FillProcessingMeta
 
 export { default as fillProcessing } from './processing/fillProcessing';
 
-export { default as processFill } from './processing/processFill';
-
 export { default as initializeFillProcessing } from './processing/initializeFillProcessing';
 
 export { default as registerFillProcessingComponents } from './processing/registerFillProcessingComponents';
