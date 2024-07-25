@@ -1,8 +1,14 @@
 import type CreativeEditorSDK from '@cesdk/cesdk-js';
-import type { Source } from '@cesdk/cesdk-js';
 import * as vectorizer from '@imgly/vectorizer';
 
-import { processFill, type FillProcessingMetadata } from '@imgly/plugin-utils';
+import {
+  fillProcessing,
+  type FillProcessingMetadata
+} from '@imgly/plugin-utils';
+import addAsVectorGroup from './addAsVectorGroup';
+import { VectorPath } from './types';
+
+const THRESHOLD = 500;
 
 /**
  * Triggers the vectorizer process.
@@ -12,39 +18,49 @@ export async function processVectorization(
   blockId: number,
   metadata: FillProcessingMetadata
 ) {
-  processFill(
-    cesdk,
-    blockId,
-    metadata,
-    async (sourceSet) => {
-      // Source set is already sorted by resolution
-      const highestResolutionUri = sourceSet[0].uri;
-      const blob = await fetchImageBlob(highestResolutionUri);
+  fillProcessing(blockId, cesdk, metadata, {
+    async processFill(metadataState) {
+      const sourceSet = metadataState.initialSourceSet;
+      const imageFileURI = metadataState.initialImageFileURI;
 
-      const vectorized = await vectorizer.imageToSvg(blob);
-      const result = await Promise.all(
-        sourceSet.map(async (source): Promise<Source> => {
-          const uploaded = await uploadBlob(vectorized, source.uri, cesdk);
-          return {
-            ...source,
-            uri: uploaded
-          };
-        })
-      );
+      const input = sourceSet.length > 0 ? sourceSet[0].uri : imageFileURI;
 
-      return result;
+      const config = {
+        signal: AbortSignal.timeout(30000),
+        options: { drop_transparent: false }
+      };
+
+      const inputBlob = await fetchImageBlob(input);
+
+      const converter = new vectorizer.SvgConverter(config);
+      await converter.convert(inputBlob);
+
+      const blocks = JSON.parse(converter.to_json());
+      if (blocks.length < THRESHOLD) {
+        converter.dispose();
+        return blocks as VectorPath[];
+      } else {
+        const svg = converter.to_svg();
+        const blob = new Blob([svg], { type: 'image/svg+xml' });
+        const uploaded = await uploadBlob(blob, imageFileURI, cesdk);
+
+        converter.dispose();
+        return uploaded;
+      }
     },
-    async (imageFileUri) => {
-      const blob = await fetchImageBlob(imageFileUri);
-      const vectorized = await vectorizer.imageToSvg(blob);
-      const uploaded = await uploadBlob(vectorized, imageFileUri, cesdk);
-      return uploaded;
-    }
-  );
-}
 
-async function fetchImageBlob(uri: string): Promise<Blob> {
-  return fetch(uri).then((response) => response.blob());
+    commitProcessing(data, metadataState) {
+      if (typeof data === 'string') {
+        const fillId = metadataState.fillId;
+        cesdk.engine.block.setString(fillId, 'fill/image/imageFileURI', data);
+        cesdk.engine.block.setSourceSet(fillId, 'fill/image/sourceSet', []);
+        // TODO: Generate a thumb/preview uri
+        cesdk.engine.block.setString(fillId, 'fill/image/previewFileURI', '');
+      } else {
+        return addAsVectorGroup(blockId, data, cesdk);
+      }
+    }
+  });
 }
 
 async function uploadBlob(
@@ -68,4 +84,8 @@ async function uploadBlob(
     throw new Error('Could not upload processed fill');
   }
   return url;
+}
+
+async function fetchImageBlob(uri: string): Promise<Blob> {
+  return fetch(uri).then((response) => response.blob());
 }
