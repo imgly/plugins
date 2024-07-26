@@ -1,6 +1,6 @@
 {
   "name": "@imgly/plugin-vectorizer-web",
-  "version": "0.1.0-rc.0",
+  "version": "0.1.0-rc.3",
   "description": "Vectorizer plugin for the CE.SDK editor",
   "keywords": [
     "CE.SDK",
@@ -66,6 +66,6 @@
     "@cesdk/cesdk-js": "~1.21.0"
   },
   "dependencies": {
-    "@imgly/vectorizer": "0.1.0-rc9"
+    "@imgly/vectorizer": "0.1.0-rc14"
   }
 }

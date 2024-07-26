@@ -411,14 +411,12 @@
     onnxruntime-web "~1.18.0"
     zod "^3.23.8"
 
-"@imgly/vectorizer@0.1.0-rc9":
-  version "0.1.0-rc9"
-  resolved "https://registry.yarnpkg.com/@imgly/vectorizer/-/vectorizer-0.1.0-rc9.tgz#b19c5bda8baea1a2a6696f9ab2ad5af8c7b2b9f4"
-  integrity sha512-qsQlCqWYS3xfCZ+dgpfGJvrZioLaJuW+zMuXMbItDjS3zcfbTX2+91FZBJStION+og+ofu44SeoqzgjEiZnlaQ==
+"@imgly/vectorizer@0.1.0-rc14":
+  version "0.1.0-rc14"
+  resolved "https://registry.yarnpkg.com/@imgly/vectorizer/-/vectorizer-0.1.0-rc14.tgz#029d68a07ab0ecb1568ab8b4248ac1674f5e1bf8"
+  integrity sha512-DsDbz0iqTs0eGT/IR9z9+Z4MTclwwrdAkhm7aNmn+M5gC17IC17ZHz7yvRWQy9hRmL2K0Gx7S9JaqhPGgqI4Zg==
   dependencies:
-    "@types/lodash" "^4.14.195"
-    "@types/node" "^20.3.1"
-    lodash "^4.17.21"
+    lodash-es "^4.17.21"
     tslog "^4.9.2"
     zod "^3.21.4"
 
@@ -653,11 +651,6 @@
   resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.17.4.tgz#0303b64958ee070059e3a7184048a55159fe20b7"
   integrity sha512-wYCP26ZLxaT3R39kiN2+HcJ4kTd3U1waI/cY7ivWYqFP6pW3ZNpvi6Wd6PHZx7T/t8z0vlkXMg3QYLa7DZ/IJQ==
 
-"@types/lodash@^4.14.195":
-  version "4.17.0"
-  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.17.0.tgz#d774355e41f372d5350a4d0714abb48194a489c3"
-  integrity sha512-t7dhREVv6dbNj0q17X12j7yDG4bD/DHYX7o5/DbDxobP0HnGPgpRz2Ej77aL7TZT3DSw13fqUTj8J4mMnqa7WA==
-
 "@types/ndarray@^1.0.14", "@types/ndarray@~1.0.14":
   version "1.0.14"
   resolved "https://registry.yarnpkg.com/@types/ndarray/-/ndarray-1.0.14.tgz#96b28c09a3587a76de380243f87bb7a2d63b4b23"
@@ -667,13 +660,6 @@
   version "20.12.12"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-20.12.12.tgz#7cbecdf902085cec634fdb362172dfe12b8f2050"
   integrity sha512-eWLDGF/FOSPtAvEqeRAQ4C8LSA7M1I7i0ky1I8U7kD1J5ITyW3AsRhQrKVoWf5pFKZ2kILsEGJhsI9r93PYnOw==
-  dependencies:
-    undici-types "~5.26.4"
-
-"@types/node@^20.3.1":
-  version "20.12.7"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-20.12.7.tgz#04080362fa3dd6c5822061aa3124f5c152cff384"
-  integrity sha512-wq0cICSkRLVaf3UGLMGItu/PtdY7oaXaI/RVU+xliKVOtRna3PRY57ZDfztpDL0n11vfymMUnXv8QwYCO7L1wg==
   dependencies:
     undici-types "~5.26.4"
 
