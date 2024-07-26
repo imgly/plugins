@@ -9,6 +9,7 @@ import addAsVectorGroup from './addAsVectorGroup';
 import { VectorPath } from './types';
 
 const THRESHOLD = 500;
+const TIMEOUT = 30000;
 
 /**
  * Triggers the vectorizer process.
@@ -16,7 +17,10 @@ const THRESHOLD = 500;
 export async function processVectorization(
   cesdk: CreativeEditorSDK,
   blockId: number,
-  metadata: FillProcessingMetadata
+  metadata: FillProcessingMetadata,
+  vectorizerConfiguration?: vectorizer.Config,
+  customThreshold?: number,
+  customTimeout?: number
 ) {
   fillProcessing(blockId, cesdk, metadata, {
     async processFill(metadataState) {
@@ -26,8 +30,12 @@ export async function processVectorization(
       const input = sourceSet.length > 0 ? sourceSet[0].uri : imageFileURI;
 
       const config = {
-        signal: AbortSignal.timeout(30000),
-        options: { drop_transparent: false }
+        signal: AbortSignal.timeout(customTimeout ?? TIMEOUT),
+        ...vectorizerConfiguration,
+        options: {
+          drop_transparent: false,
+          ...(vectorizerConfiguration?.options ?? {})
+        }
       };
 
       const inputBlob = await fetchImageBlob(input);
@@ -36,7 +44,7 @@ export async function processVectorization(
       await converter.convert(inputBlob);
 
       const blocks = JSON.parse(converter.to_json());
-      if (blocks.length < THRESHOLD) {
+      if (blocks.length < (customThreshold ?? THRESHOLD)) {
         converter.dispose();
         return blocks as VectorPath[];
       } else {

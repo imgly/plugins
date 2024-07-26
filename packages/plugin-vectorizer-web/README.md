@@ -43,3 +43,44 @@ await cesdk.addDefaultAssetSources(),
 
 await cesdk.createDesignScene();
 ```
+
+## Configuration
+
+### Adding Canvas Menu Component
+
+After adding the plugin to CE.SDK, it will register a component that can be
+used inside the canvas menu. It is not added by default but can be included
+using the following configuration:
+
+```typescript
+// Either pass a location via the configuration object, ...
+VectorizerPlugin({
+  ui: { locations: 'canvasMenu' }
+})
+```
+
+### Further Configuration Options
+
+#### Timeout
+
+The duration of the vectorization process depends on the complexity of the input image. For highly detailed images, it can take a considerable amount of time. A timeout is configured to abort the process after 30 seconds by default, but this can be customized using the `timeout` option.
+
+```typescript
+VectorizerPlugin({
+  // Reduce the timeout to 5s
+  timeout: 5000
+})
+```
+
+#### Threshold for Group Creation
+
+For simple vectorized images, using groups makes a lot of sense. Single paths can be selected, allowing the user to change the color, for instance. However, once the number of paths exceeds a certain threshold, the user experience deteriorates significantly as it becomes difficult to select individual paths.
+
+Based on the use case you can adapt this threshold (default is 500).
+
+```typescript
+VectorizerPlugin({
+  // Reducing the maximal number of groups to 200
+  groupingThreshold: 200
+})
+```
