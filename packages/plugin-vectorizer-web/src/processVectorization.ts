@@ -42,7 +42,7 @@ export async function processVectorization(
       } else {
         const svg = converter.to_svg();
         const blob = new Blob([svg], { type: 'image/svg+xml' });
-        const uploaded = await uploadBlob(blob, imageFileURI, cesdk);
+        const uploaded = await uploadBlob(blob, input, cesdk);
 
         converter.dispose();
         return uploaded;
