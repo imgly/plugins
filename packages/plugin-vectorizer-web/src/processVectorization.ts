@@ -56,7 +56,15 @@ export async function processVectorization(
         }
       };
 
-      const inputBlob = await fetchImageBlob(input);
+      let inputBlob;
+      if (input.startsWith('buffer:')) {
+        const mimeType = await cesdk.engine.editor.getMimeType(input);
+        const length = cesdk.engine.editor.getBufferLength(input);
+        const data = cesdk.engine.editor.getBufferData(input, 0, length);
+        inputBlob = new Blob([data], { type: mimeType });
+      } else {
+        inputBlob = await fetchImageBlob(input);
+      }
 
       const converter = new vectorizer.SvgConverter(config);
       await converter.convert(inputBlob);
