@@ -1,6 +1,6 @@
 {
   "name": "@imgly/plugin-remote-asset-source-web",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Remote asset source plugin for the CE.SDK editor",
   "keywords": [
     "CE.SDK",
