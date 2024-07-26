@@ -14,4 +14,3 @@ export interface VectorPath {
     color: number[];
   };
 }
-
