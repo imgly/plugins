@@ -18,10 +18,10 @@
     "build": "npm run clean && node scripts/build.mjs",
     "dev": "node scripts/watch.mjs",
     "dev:wait": "npx wait-on ./dist/index.mjs ./dist/index.d.ts --timeout 30000",
-    "check:all": "concurrently -n lint,type,pretty \"yarn check:lint\" \"yarn check:type\" \"yarn check:pretty\"",
+    "check:all": "concurrently -n lint,type,pretty \"yarn check:lint\" \"yarn check:types\" \"yarn check:pretty\"",
     "check:lint": "eslint --max-warnings 0 './src/**/*.{ts,tsx}'",
     "check:pretty": "prettier --list-different './src/**/*.{ts,tsx}'",
-    "check:type": "tsc --noEmit",
+    "check:types": "tsc --noEmit",
     "types:create": "tsc --emitDeclarationOnly"
   },
   "devDependencies": {
@@ -33,7 +33,7 @@
     "typescript": "^5.3.3"
   },
   "peerDependencies": {
-    "@cesdk/cesdk-js": "^1.26.0"
+    "@cesdk/cesdk-js": "^1.32.0-rc.1"
   },
   "dependencies": {
     "lodash-es": "^4.17.21"

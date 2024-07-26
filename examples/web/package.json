@@ -7,7 +7,8 @@
     "build": "tsc && vite build --force",
     "clean": "npx rimraf dist",
     "purge": "npx rimraf node_modules",
-    "dev": "vite --clearScreen=false --force"
+    "dev": "vite --clearScreen=false --force",
+    "check:types": "tsc --noEmit"
   },
   "dependencies": {
     "@imgly/plugin-background-removal-web": "*",

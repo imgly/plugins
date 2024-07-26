@@ -1,7 +1,6 @@
 import CreativeEditorSDK from '@cesdk/cesdk-js';
-import { getCutoutLibraryInsertEntry } from '@imgly/plugin-cutout-library-web';
 import { useRef } from 'react';
-import addPlugins, { prepareAssetEntries } from './addPlugins';
+import addPlugins from './addPlugins';
 
 function App() {
   const cesdk = useRef<CreativeEditorSDK>();
@@ -13,31 +12,7 @@ function App() {
           CreativeEditorSDK.create(domElement, {
             license: import.meta.env.VITE_CESDK_LICENSE_KEY,
             userId: 'plugins-vercel',
-            callbacks: { onUpload: 'local' },
-            ui: {
-              elements: {
-                libraries: {
-                  insert: {
-                    entries: (defaultEntries) => {
-                      if (!cesdk.current?.engine.asset) return [];
-
-                      prepareAssetEntries(
-                        defaultEntries,
-                        cesdk.current!.engine
-                      );
-                      return [...defaultEntries, getCutoutLibraryInsertEntry()];
-                    }
-                  },
-                  replace: {
-                    entries: (d) => {
-                      if (!cesdk.current) return [];
-                      return prepareAssetEntries(d, cesdk.current!.engine);
-                    }
-                  }
-                },
-                panels: { settings: true }
-              }
-            }
+            callbacks: { onUpload: 'local' }
           }).then(async (instance) => {
             // @ts-ignore
             window.cesdk = instance;
