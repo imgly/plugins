@@ -1,5 +1,6 @@
 import type CreativeEditorSDK from '@cesdk/cesdk-js';
 import * as vectorizer from '@imgly/vectorizer';
+import { throttle } from 'lodash-es';
 
 import {
   fillProcessing,
@@ -29,9 +30,26 @@ export async function processVectorization(
 
       const input = sourceSet.length > 0 ? sourceSet[0].uri : imageFileURI;
 
-      const config = {
+      const config: vectorizer.Config = {
         signal: AbortSignal.timeout(customTimeout ?? TIMEOUT),
         ...vectorizerConfiguration,
+        callbacks: {
+          ...(vectorizerConfiguration?.callbacks ?? {}),
+          progress: throttle((key, current, total) => {
+            const currentMetadataInProgress = metadata.get(blockId);
+            if (
+              currentMetadataInProgress.status !== 'PROCESSING' ||
+              !metadata.isConsistent(blockId)
+            )
+              return;
+
+            vectorizerConfiguration?.callbacks?.progress?.(key, current, total);
+            metadata.set(blockId, {
+              ...currentMetadataInProgress,
+              progress: { key, current, total }
+            });
+          }, 100)
+        },
         options: {
           drop_transparent: false,
           ...(vectorizerConfiguration?.options ?? {})
