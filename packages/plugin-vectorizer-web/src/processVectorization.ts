@@ -1,15 +1,17 @@
 import type CreativeEditorSDK from '@cesdk/cesdk-js';
-import * as vectorizer from '@imgly/vectorizer';
-import { throttle } from 'lodash-es';
-
 import {
   fillProcessing,
   type FillProcessingMetadata
 } from '@imgly/plugin-utils';
+import * as vectorizer from '@imgly/vectorizer';
+import { throttle } from 'lodash-es';
 import addAsVectorGroup from './addAsVectorGroup';
 import { VectorPath } from './types';
 
-const THRESHOLD = 500;
+// Threshold for the number of paths in the vectorized image before it is considered too complex.
+// Since the CE.SDK does not work well with a large number of grouped paths, we use a very low threshold.
+// Some really simple images might still be grouped, but this is a trade-off to avoid performance issues and useability problems.
+const THRESHOLD = 5;
 const TIMEOUT = 30000;
 
 /**
