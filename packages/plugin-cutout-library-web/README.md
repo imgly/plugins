@@ -26,18 +26,20 @@ const cesdk = await CreativeEditorSDK.create(container, config);
 await cesdk.addDefaultAssetSources();
 await cesdk.addDemoAssetSources({ sceneMode: 'Design' });
 await cesdk.addPlugin(
-    CutoutLibraryPlugin({
-        ui: { locations: ['canvasMenu'] }
-    })
+  CutoutLibraryPlugin({
+    ui: { locations: ['canvasMenu'] }
+  })
 );
-
+const cutoutAssetEntry = cesdk.ui.getAssetLibraryEntry('ly.img.cutout.entry');
 cesdk.ui.setDockOrder([
-    ...cesdk.ui.getDockOrder(),
-    {
-        id: 'cutout',
-        label: 'Cutout',
-        entries: ['ly.img.cutout.entry']
-    }
+  ...cesdk.ui.getDockOrder(),
+  {
+    id: 'ly.img.assetLibrary.dock',
+    label: 'Cutout',
+    key: 'ly.img.assetLibrary.dock',
+    icon: cutoutAssetEntry?.icon,
+    entries: ['ly.img.cutout.entry']
+  }
 ]);
 
 await cesdk.createDesignScene();
