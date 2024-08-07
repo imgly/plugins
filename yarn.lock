@@ -227,10 +227,10 @@
     "@babel/helper-validator-identifier" "^7.22.20"
     to-fast-properties "^2.0.0"
 
-"@cesdk/cesdk-js@^1.32.0-rc.1":
-  version "1.32.0-rc.1"
-  resolved "https://registry.yarnpkg.com/@cesdk/cesdk-js/-/cesdk-js-1.32.0-rc.1.tgz#2d2f36a9dac4148cccaf6a47ea53a1e685d666b8"
-  integrity sha512-b4B6glZFC/p8qiH4aD0nP7Yra6X67ey2fmK1JcGUGDJoqV8fLeGmvvXEewu/yvVL3AVZdaK9nwqdIByVZXJisg==
+"@cesdk/cesdk-js@^1.32.0":
+  version "1.32.0"
+  resolved "https://registry.yarnpkg.com/@cesdk/cesdk-js/-/cesdk-js-1.32.0.tgz#7b6dc2db19762137ac71d2fdc6b77e0cbe0697d0"
+  integrity sha512-4yJ9iGLcefx8fZAfw/fHW+cWZHMkm+D2CTPslgvXZ98VQeAfmvhVNtM6GMFP60foXbBWS3RD9mSw562sjkDHvg==
 
 "@esbuild/aix-ppc64@0.19.12":
   version "0.19.12"

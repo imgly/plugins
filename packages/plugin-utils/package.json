@@ -33,7 +33,7 @@
     "typescript": "^5.3.3"
   },
   "peerDependencies": {
-    "@cesdk/cesdk-js": "^1.32.0-rc.1"
+    "@cesdk/cesdk-js": "^1.32.0"
   },
   "dependencies": {
     "lodash-es": "^4.17.21"
