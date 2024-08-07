@@ -25,6 +25,20 @@ function App() {
               instance.addDemoAssetSources({ sceneMode: 'Design' })
             ]);
             await addPlugins(instance);
+            const cutoutAssetEntry = instance.ui.getAssetLibraryEntry(
+              'ly.img.cutout.entry'
+            );
+            instance.ui.setDockOrder([
+              ...instance.ui.getDockOrder(),
+              {
+                id: 'ly.img.assetLibrary.dock',
+                label: 'Cutout',
+                key: 'ly.img.assetLibrary.dock',
+                icon: cutoutAssetEntry?.icon,
+                entries: ['ly.img.cutout.entry']
+              }
+            ]);
+
             await instance.createDesignScene();
           });
         } else if (cesdk.current != null) {
