@@ -37,7 +37,7 @@ export default function handleFillProcessing(
         switch (metadata.get(id).status) {
           case 'PENDING': {
             if (
-              cesdk.feature.unstable_isEnabled(featureId, {
+              cesdk.feature.isEnabled(featureId, {
                 engine: cesdk.engine
               }) &&
               cesdk.engine.block.isAllowedByScope(id, 'fill/change') &&
@@ -76,7 +76,7 @@ function enableFeatures(
   metadata: FillProcessingMetadata,
   featureId: string
 ) {
-  cesdk.feature.unstable_enable(featureId, ({ engine }) => {
+  cesdk.feature.enable(featureId, ({ engine }) => {
     const selectedIds = engine.block.findAllSelected();
     if (selectedIds.length !== 1) {
       return false;

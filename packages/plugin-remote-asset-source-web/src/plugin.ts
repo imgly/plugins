@@ -1,9 +1,11 @@
-import CreativeEditorSDK, {
+import {
+  AssetAPI,
   AssetQueryData,
   AssetSource,
   AssetsQueryResult,
+  BlockAPI,
   CompleteAssetResult,
-  CreativeEngine
+  type EditorPlugin
 } from '@cesdk/cesdk-js';
 import {
   AssetSourceManifest,
@@ -13,12 +15,12 @@ import { ensureAssetDuration, ensureMetadataKeys } from './util';
 
 export const RemoteAssetSourcePlugin = (
   pluginConfiguration: RemoteAssetSourcePluginConfiguration
-) => {
+): Omit<EditorPlugin, 'name' | 'version'> => {
   const { baseUrl } = pluginConfiguration;
   let manifestPromise: Promise<AssetSourceManifest> | null = null;
 
   return {
-    async initialize(engine: CreativeEngine) {
+    async initialize({ engine, cesdk }) {
       try {
         manifestPromise = fetchManifest(baseUrl);
         const manifest = await manifestPromise;
@@ -28,27 +30,18 @@ export const RemoteAssetSourcePlugin = (
           );
         }
         engine.asset.addSource(manifestToSource(manifest, engine, baseUrl));
+
+        if (cesdk) {
+          cesdk.setTranslations({
+            en: {
+              [`libraries.${manifest.id}.label`]: manifest.name.en
+            }
+          });
+        }
       } catch (error) {
         throw new Error(
           `Remote Asset Source Manifest could not be loaded. Make sure it is reachable at: ${baseUrl}`
         );
-      }
-    },
-
-    update() {},
-
-    async initializeUserInterface({ cesdk }: { cesdk: CreativeEditorSDK }) {
-      try {
-        const manifest = await manifestPromise;
-        if (!manifest) return;
-
-        cesdk.setTranslations({
-          en: {
-            [`libraries.${manifest.id}.label`]: manifest.name.en
-          }
-        });
-      } catch (error) {
-        // Error handling is done in the initialize method
       }
     }
   };
@@ -56,7 +49,10 @@ export const RemoteAssetSourcePlugin = (
 
 export const manifestToSource = (
   manifest: AssetSourceManifest,
-  engine: CreativeEngine,
+  engine: {
+    asset: AssetAPI;
+    block: BlockAPI;
+  },
   baseUrl: string
 ): AssetSource => {
   let getGroups;

@@ -34,17 +34,17 @@ export default function registerFillProcessingComponents(
   const featureId = getFeatureId(pluginId);
 
   if (locations?.includes('canvasMenu')) {
-    cesdk.ui.unstable_setCanvasMenuOrder([
+    cesdk.ui.setCanvasMenuOrder([
       canvasMenuComponentId,
-      ...cesdk.ui.unstable_getCanvasMenuOrder()
+      ...cesdk.ui.getCanvasMenuOrder()
     ]);
   }
 
-  cesdk.ui.unstable_registerComponent(
+  cesdk.ui.registerComponent(
     canvasMenuComponentId,
     ({ builder: { Button }, engine }) => {
       if (
-        !cesdk.feature.unstable_isEnabled(featureId, {
+        !cesdk.feature.isEnabled(featureId, {
           engine
         })
       ) {

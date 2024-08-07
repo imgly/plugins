@@ -1,10 +1,9 @@
-import type CreativeEditorSDK from '@cesdk/cesdk-js';
-
 import {
   initializeFillProcessing,
   registerFillProcessingComponents
 } from '@imgly/plugin-utils';
 
+import { EditorPlugin } from '@cesdk/cesdk-js';
 import {
   processBackgroundRemoval,
   type BackgroundRemovalProvider
@@ -18,13 +17,13 @@ export interface PluginConfiguration {
   provider?: BackgroundRemovalProvider;
 }
 
-export default (pluginConfiguration: PluginConfiguration = {}) => {
+export default (
+  pluginConfiguration: PluginConfiguration = {}
+): Omit<EditorPlugin, 'name' | 'version'> => {
   return {
-    initialize() {},
+    initialize({ cesdk }) {
+      if (cesdk == null) return;
 
-    update() {},
-
-    initializeUserInterface({ cesdk }: { cesdk: CreativeEditorSDK }) {
       initializeFillProcessing(cesdk, {
         pluginId: PLUGIN_ID,
         process: (blockId, metadata) => {

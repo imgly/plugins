@@ -1,4 +1,3 @@
-import type CreativeEditorSDK from '@cesdk/cesdk-js';
 import { type Config } from '@imgly/vectorizer';
 
 import {
@@ -7,6 +6,7 @@ import {
   type UserInterfaceConfiguration
 } from '@imgly/plugin-utils';
 
+import { EditorPlugin } from '@cesdk/cesdk-js';
 import { processVectorization } from './processVectorization';
 
 export const PLUGIN_ID = '@imgly/plugin-vectorizer-web';
@@ -30,13 +30,13 @@ export interface PluginConfiguration {
   timeout?: number;
 }
 
-export default (pluginConfiguration: PluginConfiguration = {}) => {
+export default (
+  pluginConfiguration: PluginConfiguration = {}
+): Omit<EditorPlugin, 'name' | 'version'> => {
   return {
-    initialize() {},
+    initialize({ cesdk }) {
+      if (cesdk == null) return;
 
-    update() {},
-
-    initializeUserInterface({ cesdk }: { cesdk: CreativeEditorSDK }) {
       initializeFillProcessing(cesdk, {
         pluginId: PLUGIN_ID,
         process: (blockId, metadata) => {

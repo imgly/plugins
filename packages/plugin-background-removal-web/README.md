@@ -36,7 +36,7 @@ const config = {
 const cesdk = await CreativeEditorSDK.create(container, config);
 await cesdk.addDefaultAssetSources(),
     await cesdk.addDemoAssetSources({ sceneMode: 'Design' }),
-    await cesdk.unstable_addPlugin(BackgroundRemovalPlugin());
+    await cesdk.addPlugin(BackgroundRemovalPlugin());
 
 await cesdk.createDesignScene();
 ```
@@ -68,7 +68,7 @@ import BackgroundRemovalPlugin from '@imgly/plugin-background-removal-web';
 
 [...]
 
-await cesdk.unstable_addPlugin(BackgroundRemovalPlugin({
+await cesdk.addPlugin(BackgroundRemovalPlugin({
   provider: {
     type: '@imgly/background-removal',
     configuration: {

@@ -8,7 +8,7 @@ import {
 import { generateCutoutFromSelection } from './plugin';
 
 export function registerComponents(cesdk: CreativeEditorSDK) {
-  cesdk.ui.unstable_registerComponent(
+  cesdk.ui.registerComponent(
     CANVAS_MENU_COMPONENT_ID,
     ({ builder: { Button }, engine }) => {
       // only show canvas menu button for type=graphic, type=text, type=group

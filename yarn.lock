@@ -227,10 +227,10 @@
     "@babel/helper-validator-identifier" "^7.22.20"
     to-fast-properties "^2.0.0"
 
-"@cesdk/cesdk-js@^1.26.0":
-  version "1.30.0"
-  resolved "https://registry.yarnpkg.com/@cesdk/cesdk-js/-/cesdk-js-1.30.0.tgz#2c99516b3756f5d76ce2b15466ed7c3cb2399a9c"
-  integrity sha512-I7D/DoyOQlCB2186B0zZeX1Poov/MftaIq+6ddlFFXPWpKItRhfSEGR6WnPMZolsyOrMxGdAaiPCMqN8FFvVTg==
+"@cesdk/cesdk-js@^1.32.0":
+  version "1.32.0"
+  resolved "https://registry.yarnpkg.com/@cesdk/cesdk-js/-/cesdk-js-1.32.0.tgz#7b6dc2db19762137ac71d2fdc6b77e0cbe0697d0"
+  integrity sha512-4yJ9iGLcefx8fZAfw/fHW+cWZHMkm+D2CTPslgvXZ98VQeAfmvhVNtM6GMFP60foXbBWS3RD9mSw562sjkDHvg==
 
 "@esbuild/aix-ppc64@0.19.12":
   version "0.19.12"
@@ -411,10 +411,10 @@
     onnxruntime-web "~1.18.0"
     zod "^3.23.8"
 
-"@imgly/vectorizer@0.1.0-rc14":
-  version "0.1.0-rc14"
-  resolved "https://registry.yarnpkg.com/@imgly/vectorizer/-/vectorizer-0.1.0-rc14.tgz#029d68a07ab0ecb1568ab8b4248ac1674f5e1bf8"
-  integrity sha512-DsDbz0iqTs0eGT/IR9z9+Z4MTclwwrdAkhm7aNmn+M5gC17IC17ZHz7yvRWQy9hRmL2K0Gx7S9JaqhPGgqI4Zg==
+"@imgly/vectorizer@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@imgly/vectorizer/-/vectorizer-1.0.0.tgz#f8641d7fbd4c817a659d37e43a029ebfd83188ff"
+  integrity sha512-cXVmZYZgIIX8KOMDBd/xko8Wg158LmWkcjIAjTlKh2Rf9MPsVpuUTCdbPteX3Ut2bMMzmP7CO7cixlkKIizR5Q==
   dependencies:
     lodash-es "^4.17.21"
     tslog "^4.9.2"

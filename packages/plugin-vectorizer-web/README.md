@@ -36,7 +36,7 @@ const config = {
 const cesdk = await CreativeEditorSDK.create(container, config);
 await cesdk.addDefaultAssetSources(),
   await cesdk.addDemoAssetSources({ sceneMode: 'Design' }),
-  await cesdk.unstable_addPlugin(VectorizerPlugin({
+  await cesdk.addPlugin(VectorizerPlugin({
     // This will automatically prepend a button to the canvas menu
     ui: { locations: 'canvasMenu' }
   }));
