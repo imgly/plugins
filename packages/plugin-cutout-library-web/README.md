@@ -20,37 +20,27 @@ When adding the plugin to the CE.SDK, you can also add an action button to the c
 
 ```typescript
 import CreativeEditorSDK from '@cesdk/cesdk-js';
-import CutoutLibraryPlugin, {
-  getCutoutLibraryInsertEntry
-} from '@imgly/plugin-cutout-library-web';
-
-const config = {
-  license: '<your-license-here>',
-  ui: {
-    elements: {
-      libraries: {
-        insert: {
-          entries: (defaultEntries) => {
-            return [
-              ...defaultEntries,
-              // Add the cutout library insert entry
-              getCutoutLibraryInsertEntry()
-            ];
-          }
-        }
-      }
-    }
-  },
-};
+import CutoutLibraryPlugin from '@imgly/plugin-cutout-library-web';
 
 const cesdk = await CreativeEditorSDK.create(container, config);
 await cesdk.addDefaultAssetSources();
 await cesdk.addDemoAssetSources({ sceneMode: 'Design' });
-await cesdk.unstable_addPlugin(
+await cesdk.addPlugin(
   CutoutLibraryPlugin({
     ui: { locations: ['canvasMenu'] }
   })
 );
+const cutoutAssetEntry = cesdk.ui.getAssetLibraryEntry('ly.img.cutout.entry');
+cesdk.ui.setDockOrder([
+  ...cesdk.ui.getDockOrder(),
+  {
+    id: 'ly.img.assetLibrary.dock',
+    label: 'Cutout',
+    key: 'ly.img.assetLibrary.dock',
+    icon: cutoutAssetEntry?.icon,
+    entries: ['ly.img.cutout.entry']
+  }
+]);
 
 await cesdk.createDesignScene();
 ```

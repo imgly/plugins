@@ -22,7 +22,7 @@
     "dev:wait": {
       "cache": false
     },
-    "dev:types": {
+    "check:types": {
       "cache": false,
       "persistent": true
     }

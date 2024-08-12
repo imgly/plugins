@@ -1,5 +1,6 @@
 import {
   AssetResult,
+  BlockAPI,
   CompleteAssetResult,
   CreativeEngine
 } from '@cesdk/cesdk-js';
@@ -11,7 +12,9 @@ const METADATA_KEYS = {
 
 // This will be handled by the engine in the future
 export function ensureMetadataKeys(
-  engine: CreativeEngine,
+  engine: {
+    block: BlockAPI;
+  },
   block: number,
   asset: AssetResult,
   sourceId: string
@@ -54,7 +57,9 @@ export const getExternalIdFromBlock = (
 // Some asset sources (Giphy) do not provide the duration of the asset.
 // This function ensures that the duration is set correctly on the asset.
 export async function ensureAssetDuration(
-  engine: CreativeEngine,
+  engine: {
+    block: BlockAPI;
+  },
   asset: CompleteAssetResult,
   block: number
 ) {

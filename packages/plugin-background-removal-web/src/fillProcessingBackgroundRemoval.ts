@@ -33,15 +33,14 @@ export async function fillProcessingFromSourceSet(
 
         if (inputSource == null) throw new Error('No source found');
 
-        const mask = await segmentForeground(
-          inputSource.uri,
-          bgRemovalConfiguration
-        );
+        const input = await convertBufferURI(inputSource.uri, cesdk);
+        const mask = await segmentForeground(input, bgRemovalConfiguration);
+
         const result = await Promise.all(
           sourceSet.map(async (source): Promise<Source> => {
             // Applying the mask to the original image
             const blob = await applySegmentationMask(
-              source.uri,
+              await convertBufferURI(source.uri, cesdk),
               mask,
               bgRemovalConfiguration
             );
@@ -94,10 +93,12 @@ export async function fillProcessingFromImageFileURI(
       // Default implementation from IMG.LY background removal library
       (async (metadataState) => {
         const imageFileURI = metadataState.initialImageFileURI;
-        const blob = await removeBackground(
-          imageFileURI,
+
+        const blob: Blob = await removeBackground(
+          await convertBufferURI(imageFileURI, cesdk),
           bgRemovalConfiguration
         );
+
         const uploaded = await uploadBlob(blob, imageFileURI, cesdk);
         return uploaded;
       }),
@@ -116,4 +117,18 @@ export async function fillProcessingFromImageFileURI(
       cesdk.engine.block.setString(fillId, 'fill/image/previewFileURI', '');
     }
   });
+}
+
+async function convertBufferURI(
+  uri: string,
+  cesdk: CreativeEditorSDK
+): Promise<Blob | string> {
+  if (uri.startsWith('buffer:')) {
+    const mimeType = await cesdk.engine.editor.getMimeType(uri);
+    const length = cesdk.engine.editor.getBufferLength(uri);
+    const data = cesdk.engine.editor.getBufferData(uri, 0, length);
+    return new Blob([data], { type: mimeType });
+  } else {
+    return uri;
+  }
 }

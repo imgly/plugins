@@ -1,9 +1,5 @@
 import type CreativeEditorSDK from '@cesdk/cesdk-js';
-import {
-  CreativeEngine,
-  UserInterfaceElements,
-  type EditorPlugin
-} from '@cesdk/cesdk-js';
+import { CreativeEngine, type EditorPlugin } from '@cesdk/cesdk-js';
 import {
   DEFAULT_PLUGIN_CONFIGURATION,
   PluginConfiguration,
@@ -30,15 +26,19 @@ export interface UserInterfaceConfiguration {
 export function CutoutPlugin({
   assetBaseUri,
   ui
-}: PluginConfiguration): EditorPlugin {
+}: PluginConfiguration): Omit<EditorPlugin, 'name' | 'version'> {
   return {
-    initializeUserInterface: ({ cesdk }) => {
+    initialize: ({ cesdk }) => {
+      if (cesdk == null) return;
+
       addCutoutAssetSource(cesdk, { assetBaseUri });
+      addCutoutAssetLibraryEntry(cesdk, { assetBaseUri });
+
       registerComponents(cesdk);
       if (ui?.locations.includes('canvasMenu')) {
-        cesdk.ui.unstable_setCanvasMenuOrder([
+        cesdk.ui.setCanvasMenuOrder([
           CANVAS_MENU_COMPONENT_ID,
-          ...cesdk.ui.unstable_getCanvasMenuOrder()
+          ...cesdk.ui.getCanvasMenuOrder()
         ]);
       }
       cesdk.setTranslations(I18N);
@@ -46,11 +46,12 @@ export function CutoutPlugin({
   };
 }
 
-export function getCutoutLibraryInsertEntry(
+function addCutoutAssetLibraryEntry(
+  cesdk: CreativeEditorSDK,
   config: Partial<PluginConfiguration> = DEFAULT_PLUGIN_CONFIGURATION
-): UserInterfaceElements.AssetLibraryEntry {
+) {
   const { assetBaseUri } = getPluginConfiguration(config);
-  return {
+  cesdk.ui.addAssetLibraryEntry({
     id: ENTRY_ID,
     sourceIds: [ASSET_SOURCE_ID],
     icon: ({ theme }: { theme: string }) => `${assetBaseUri}/dock-${theme}.svg`,
@@ -59,7 +60,7 @@ export function getCutoutLibraryInsertEntry(
     cardLabel: (asset: any) => asset.label,
     cardLabelPosition: () => 'below' as const,
     cardBackgroundPreferences: [{ path: 'meta.thumbUri', type: 'image' }]
-  };
+  });
 }
 
 async function addCutoutAssetSource(

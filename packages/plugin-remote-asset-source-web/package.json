@@ -1,6 +1,6 @@
 {
   "name": "@imgly/plugin-remote-asset-source-web",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Remote asset source plugin for the CE.SDK editor",
   "keywords": [
     "CE.SDK",
@@ -49,10 +49,10 @@
     "dev:types": "tsc --emitDeclarationOnly --watch --preserveWatchOutput",
     "publish:latest": "npm run build && npm publish --tag latest --access public",
     "publish:next": "npm run build && npm publish --tag next --access public",
-    "check:all": "concurrently -n lint,type,pretty \"yarn check:lint\" \"yarn check:type\" \"yarn check:pretty\"",
+    "check:all": "concurrently -n lint,type,pretty \"yarn check:lint\" \"yarn check:types\" \"yarn check:pretty\"",
     "check:lint": "eslint --max-warnings 0 './src/**/*.{ts,tsx}'",
     "check:pretty": "prettier --list-different './src/**/*.{ts,tsx}'",
-    "check:type": "tsc --noEmit",
+    "check:types": "tsc --noEmit",
     "types:create": "tsc --emitDeclarationOnly"
   },
   "devDependencies": {
@@ -64,7 +64,7 @@
     "typescript": "^5.3.3"
   },
   "peerDependencies": {
-    "@cesdk/cesdk-js": "^1.21.0"
+    "@cesdk/cesdk-js": "^1.32.0"
   },
   "dependencies": {
     "lodash": "^4.17.21"

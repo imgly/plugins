@@ -41,7 +41,7 @@ const config = {
 const cesdk = await CreativeEditorSDK.create(container, config);
 await cesdk.addDefaultAssetSources();
 await cesdk.addDemoAssetSources({ sceneMode: 'Design' });
-await cesdk.unstable_addPlugin(
+await cesdk.addPlugin(
   RemoteAssetSourcePlugin({
     baseUrl: 'https://your-remote-asset-source-server.com'
   })
@@ -66,7 +66,7 @@ import RemoteAssetSourcePlugin from '@imgly/plugin-remote-asset-source-web';
 
 [...]
 
-await cesdk.unstable_addPlugin(RemoteAssetSourcePlugin({
+await cesdk.addPlugin(RemoteAssetSourcePlugin({
   baseUrl: '...',
 }))
 

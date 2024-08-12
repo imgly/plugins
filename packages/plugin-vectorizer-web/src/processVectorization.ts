@@ -1,14 +1,17 @@
 import type CreativeEditorSDK from '@cesdk/cesdk-js';
-import * as vectorizer from '@imgly/vectorizer';
-
 import {
   fillProcessing,
   type FillProcessingMetadata
 } from '@imgly/plugin-utils';
+import * as vectorizer from '@imgly/vectorizer';
+import { throttle } from 'lodash-es';
 import addAsVectorGroup from './addAsVectorGroup';
 import { VectorPath } from './types';
 
-const THRESHOLD = 500;
+// Threshold for the number of paths in the vectorized image before it is considered too complex.
+// Since the CE.SDK does not work well with a large number of grouped paths, we use a very low threshold.
+// Some really simple images might still be grouped, but this is a trade-off to avoid performance issues and useability problems.
+const THRESHOLD = 5;
 const TIMEOUT = 30000;
 
 /**
@@ -29,16 +32,41 @@ export async function processVectorization(
 
       const input = sourceSet.length > 0 ? sourceSet[0].uri : imageFileURI;
 
-      const config = {
+      const config: vectorizer.Config = {
         signal: AbortSignal.timeout(customTimeout ?? TIMEOUT),
         ...vectorizerConfiguration,
+        callbacks: {
+          ...(vectorizerConfiguration?.callbacks ?? {}),
+          progress: throttle((key, current, total) => {
+            const currentMetadataInProgress = metadata.get(blockId);
+            if (
+              currentMetadataInProgress.status !== 'PROCESSING' ||
+              !metadata.isConsistent(blockId)
+            )
+              return;
+
+            vectorizerConfiguration?.callbacks?.progress?.(key, current, total);
+            metadata.set(blockId, {
+              ...currentMetadataInProgress,
+              progress: { key, current, total }
+            });
+          }, 100)
+        },
         options: {
           drop_transparent: false,
           ...(vectorizerConfiguration?.options ?? {})
         }
       };
 
-      const inputBlob = await fetchImageBlob(input);
+      let inputBlob;
+      if (input.startsWith('buffer:')) {
+        const mimeType = await cesdk.engine.editor.getMimeType(input);
+        const length = cesdk.engine.editor.getBufferLength(input);
+        const data = cesdk.engine.editor.getBufferData(input, 0, length);
+        inputBlob = new Blob([data], { type: mimeType });
+      } else {
+        inputBlob = await fetchImageBlob(input);
+      }
 
       const converter = new vectorizer.SvgConverter(config);
       await converter.convert(inputBlob);

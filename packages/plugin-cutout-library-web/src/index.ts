@@ -1,8 +1,4 @@
-import plugin, {
-  UILocations,
-  generateCutoutFromSelection,
-  getCutoutLibraryInsertEntry
-} from './plugin';
+import plugin, { UILocations, generateCutoutFromSelection } from './plugin';
 
 export const DEFAULT_ASSET_BASE_URI = `https://staticimgly.com/${PLUGIN_NAME.replace(
   '@',
@@ -36,4 +32,4 @@ const Plugin = (
 
 export default Plugin;
 
-export { generateCutoutFromSelection, getCutoutLibraryInsertEntry };
+export { generateCutoutFromSelection };

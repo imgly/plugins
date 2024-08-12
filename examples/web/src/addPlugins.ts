@@ -11,17 +11,15 @@ async function addPlugins(cesdk: CreativeEditorSDK): Promise<void> {
   console.log('Adding plugins...');
   try {
     await Promise.all([
-      cesdk.unstable_addPlugin(
+      cesdk.addPlugin(
         CutoutLibraryPlugin({
           ui: { locations: ['canvasMenu'] }
         })
       ),
-      cesdk.unstable_addPlugin(
+      cesdk.addPlugin(
         BackgroundRemovalPlugin({ ui: { locations: 'canvasMenu' } })
       ),
-      cesdk.unstable_addPlugin(
-        VectorizerPlugin({ ui: { locations: 'canvasMenu' } })
-      ),
+      cesdk.addPlugin(VectorizerPlugin({ ui: { locations: 'canvasMenu' } })),
       ...addDemoRemoteAssetSourcesPlugins(cesdk)
     ]);
   } catch (error) {
@@ -43,7 +41,7 @@ function addDemoRemoteAssetSourcesPlugins(
     '/api/assets/v1/video-pexels',
     '/api/assets/v1/video-giphy'
   ].map(async (baseUrl) => {
-    await cesdk.unstable_addPlugin(
+    cesdk.addPlugin(
       RemoteAssetSourcePlugin({
         baseUrl: ASSET_SOURCE_HOST + baseUrl
       })

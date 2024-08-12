@@ -1,6 +1,6 @@
 {
   "name": "@imgly/plugin-background-removal-web",
-  "version": "0.3.0",
+  "version": "1.0.0",
   "description": "Background Removal plugin for the CE.SDK editor",
   "keywords": [
     "CE.SDK",
@@ -46,10 +46,10 @@
     "dev:types": "tsc --emitDeclarationOnly --watch --preserveWatchOutput",
     "publish:latest": "npm run build && npm publish --tag latest --access public",
     "publish:next": "npm run build && npm publish --tag next --access public",
-    "check:all": "concurrently -n lint,type,pretty \"yarn check:lint\" \"yarn check:type\" \"yarn check:pretty\"",
+    "check:all": "concurrently -n lint,type,pretty \"yarn check:lint\" \"yarn check:types\" \"yarn check:pretty\"",
     "check:lint": "eslint --max-warnings 0 './src/**/*.{ts,tsx}'",
     "check:pretty": "prettier --list-different './src/**/*.{ts,tsx}'",
-    "check:type": "tsc --noEmit",
+    "check:types": "tsc --noEmit",
     "types:create": "tsc --emitDeclarationOnly"
   },
   "devDependencies": {
@@ -63,7 +63,7 @@
     "@imgly/plugin-utils": "*"
   },
   "peerDependencies": {
-    "@cesdk/cesdk-js": "^1.26.0"
+    "@cesdk/cesdk-js": "^1.32.0"
   },
   "dependencies": {
     "@imgly/background-removal": "^1.5.3"
