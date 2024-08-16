@@ -1,0 +1,8 @@
+{
+    "build-and-test": [
+        "plugin-background-removal-web",
+        "plugin-cutout-library-web",
+        "plugin-remote-asset-source-web",
+        "plugin-utils"
+    ]
+}
