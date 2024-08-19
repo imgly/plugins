@@ -69,6 +69,9 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: yarn
+      - name: Install workspace dependencies
+        shell: bash
+        run: yarn install
       - name: Install dependencies
         working-directory: ${{ env.IMGLY_PACKAGE_DIR }}
         shell: bash
