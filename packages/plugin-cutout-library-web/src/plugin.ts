@@ -81,7 +81,8 @@ async function addCutoutAssetSource(
     `${assetBaseUri}/${ASSET_SOURCE_ID}/assets`,
     async (asset) => {
       if (asset.id === 'cutout-selection') {
-        return generateCutoutFromSelection(cesdk);
+        const block = await generateCutoutFromSelection(cesdk);
+        return block;
       }
       const blockId = await cesdk.engine.asset.defaultApplyAsset(asset);
       return blockId;
@@ -89,7 +90,7 @@ async function addCutoutAssetSource(
   );
 }
 
-export function generateCutoutFromSelection(cesdk: CreativeEditorSDK) {
+export async function generateCutoutFromSelection(cesdk: CreativeEditorSDK) {
   const selectedBlockIds = cesdk.engine.block.findAllSelected();
 
   if (selectedBlockIds.length === 0) {
@@ -126,7 +127,21 @@ export function generateCutoutFromSelection(cesdk: CreativeEditorSDK) {
   }
   const pageId = uniqueParentPageBlockIds[0];
 
-  const blockId = cesdk.engine.block.createCutoutFromBlocks(selectedBlockIds);
+  let simplifyDistanceThreshold = 4; // Default value
+
+  const mimeTypes = await getSelectedMimeTypes(cesdk.engine, selectedBlockIds);
+  // if mime types contain any png, set simplifyDistanceThreshold to 0.
+  // This ensures that the cutout is created using the exact shape of the selected blocks.
+  const transparencyMimeTypes = ['image/png', 'image/gif', 'image/webp'];
+  if (mimeTypes.some((mimeType) => transparencyMimeTypes.includes(mimeType))) {
+    simplifyDistanceThreshold = 0;
+  }
+
+  const blockId = cesdk.engine.block.createCutoutFromBlocks(
+    selectedBlockIds,
+    undefined,
+    simplifyDistanceThreshold
+  );
   cesdk.engine.block.appendChild(pageId, blockId);
   cesdk.engine.block.setAlwaysOnTop(blockId, true);
   cesdk.engine.block.select(blockId);
@@ -148,6 +163,40 @@ function getParentPageId(engine: CreativeEngine, block: number) {
     currentBlock = parentBlock;
   }
   return currentBlock;
+}
+
+async function getSelectedMimeTypes(
+  engine: CreativeEngine,
+  blockIds: number[]
+) {
+  const mimeTypes = await Promise.all(
+    blockIds.map((blockId) => {
+      if (engine.block.getType(blockId) !== '//ly.img.ubq/graphic') {
+        return null;
+      }
+      const fillBlockId = engine.block.getFill(blockId);
+      if (!fillBlockId) {
+        return null;
+      }
+      const sourceSet = engine.block.getSourceSet(
+        fillBlockId,
+        'fill/image/sourceSet'
+      );
+      const imageFileUri = engine.block.getString(
+        fillBlockId,
+        'fill/image/imageFileURI'
+      );
+      if (!sourceSet && !imageFileUri) {
+        return null;
+      }
+      const uri = sourceSet[0]?.uri ?? imageFileUri;
+      if (!uri) {
+        return null;
+      }
+      return engine.editor.getMimeType(uri);
+    })
+  );
+  return mimeTypes.filter((mimeType) => mimeType !== null) as string[];
 }
 
 export default CutoutPlugin;
