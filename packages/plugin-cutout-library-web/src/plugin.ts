@@ -175,7 +175,11 @@ async function getSelectedMimeTypes(
         return null;
       }
       const fillBlockId = engine.block.getFill(blockId);
-      if (!fillBlockId) {
+      const isImageFill =
+        fillBlockId != null &&
+        engine.block.isValid(blockId) &&
+        engine.block.getType(blockId) === '//ly.img.ubq/fill/image';
+      if (!isImageFill) {
         return null;
       }
       const sourceSet = engine.block.getSourceSet(
