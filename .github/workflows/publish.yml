@@ -1,12 +1,27 @@
-name: Build & Test
+name: Publish
 on:
-  push:
-    branches: [main]
+  workflow_dispatch:
+    inputs:
+      package:
+        description: Package
+        required: true
+        type: choice
+        options:
+         - plugin-background-removal-web
+         - plugin-cutout-library-web
+         - plugin-remote-asset-source-web
+      version:
+        description: Version number
+        required: true
+        type: string
   pull_request:
+    types: [closed]
     branches: [main]
 
 permissions:
-  contents: read
+  contents: write
+  packages: write
+  pull-requests: write
   checks: write
   statuses: write
 
