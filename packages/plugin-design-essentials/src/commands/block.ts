@@ -25,6 +25,8 @@ export const blockDuplicate = async (ctx: Context, params: { blockIds?: number[]
     });
 }
 
+
+
 export const blockRename = async (ctx: Context, params: { blockIds?: number[] }) => {
     const { block } = ctx.engine;
     const { blockIds = block.findAllSelected() } = params;
@@ -37,6 +39,8 @@ export const blockRename = async (ctx: Context, params: { blockIds?: number[] })
         }
     });
 }
+
+
 export const blockBringForward = async (ctx: Context, params: { blockIds?: number[] }) => {
     const { block } = ctx.engine;
     const { blockIds = block.findAllSelected() } = params;

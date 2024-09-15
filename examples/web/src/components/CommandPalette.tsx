@@ -51,7 +51,6 @@ export const CommandPalette = (params: Params) => {
     const fuseResults = fuse.search(command)
     const results = fuseResults.length === 0 ? items : fuseResults.map(f => f.item);
 
-
     const grouped = groupBy(results, "group")
 
     const filteredItems = Object.keys(grouped).map((key) => {

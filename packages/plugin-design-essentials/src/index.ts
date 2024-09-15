@@ -10,8 +10,6 @@ import {
 } from '@imgly/plugin-core';
 import { PluginManifest as manifest } from './PluginManifest';
 
-
-
 export { manifest };
 
 export const activate = async (ctx: Context) => {

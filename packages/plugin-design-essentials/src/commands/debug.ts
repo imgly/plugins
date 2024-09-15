@@ -19,8 +19,6 @@ export const debugLogBlockProperties = async (ctx: Context, params: { blockIds: 
     })
 }
 
-
-
 export const debugLogBlockCrop = (ctx: Context, params: { blockIds?: number[] }) => {
     const { block } = ctx.engine;
     const { blockIds = block.findAllSelected() } = params;

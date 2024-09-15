@@ -51,6 +51,12 @@
         "design-batteries.commands.replicateSDXL": "Replicate SDXL",
         "design-batteries.commands.syncBlockAppearance": "Sync Block Appearance",
         "design-batteries.commands.syncBlocks": "Sync Blocks",
-        "design-batteries.commands.shapeSetEllipse": "Set Ellipse Shape"
+        "design-batteries.commands.shapeSetEllipse": "Set Ellipse Shape",
+        "design-batteries.commands.blockCreateImage": "Create Image Block",
+        "design-batteries.commands.blockCreatePage": "Create Page Block",
+        "design-batteries.commands.componentLibraryExport": "Export Component Library",
+        "design-batteries.commands.componentSelectionExport": "Export (Selected) Components",
+        "design-batteries.commands.helpNameAllUnnamedBlocksToType": "Help to autoname unnamed blocks",
+        "design-batteries.commands.importAnything": "Import..."
     }
 }

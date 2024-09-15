@@ -36,7 +36,7 @@ export class I18N<K extends string | symbol> extends Subscribable<"register", Tr
   findTranslation(key: K, language?: string) {
     const locale = language ?? this.#locale;
     const [lang, region] = locale.split('-');
-    return this.#translations[locale][key] ?? this.#translations[lang][key] ?? undefined
+    return this.#translations[locale]?.[key] ?? this.#translations[lang]?.[key] ?? undefined
 
   }
 

@@ -1,5 +1,5 @@
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 import CreativeEditorSDKComponent from "./CreativeEditorSDK";
 import CreativeEditorSDK from "@cesdk/cesdk-js";
 
@@ -7,30 +7,29 @@ import CreativeEditorSDK from "@cesdk/cesdk-js";
 // React UI Components
 import { CommandPalette } from "./CommandPalette"
 // Utils
-import { downloadBlocks } from "@imgly/plugin-utils";
+// import { downloadBlocks } from "@imgly/plugin-utils";
 
 // Plugins
-// import BackgroundRemovalPlugin from '@imgly/plugin-background-removal-web';
 import * as IMGLY from "@imgly/plugin-core";
 import * as DesignBatteriesPlugin from "@imgly/plugin-design-essentials";
 
 import BackgroundRemovalPlugin from '@imgly/plugin-background-removal-web';
 import VectorizerPlugin from '@imgly/plugin-vectorizer';
 
-import DocumentPlugin from "@imgly/plugin-documents";
+// import DocumentPlugin from "@imgly/plugin-documents";
 import { generateItems } from "../utils/registerCommandPalette";
 import { addDemoRemoteAssetSourcesPlugins } from "../utils/addDemoRemoteAssetSourcesPlugins";
 
 
 
-if (import.meta.hot) {
-  // import.meta.hot.accept()
-  if (!import.meta.hot.data) {
-    console.error("Notfound: import.meta.hot.data")
-  } else {
-    console.info("import.meta.hot.data", import.meta.hot.data)
-  }
-}
+// if (import.meta.hot) {
+//   // import.meta.hot.accept()
+//   if (!import.meta.hot.data) {
+//     console.error("Notfound: import.meta.hot.data")
+//   } else {
+//     console.info("import.meta.hot.data", import.meta.hot.data)
+//   }
+// }
 
 
 declare global {
@@ -40,7 +39,7 @@ declare global {
 
 function App() {
   // const cesdkRef = useRef<CreativeEditorSDK>();
-  const contextRef = useRef<IMGLY.Context>();
+  // const contextRef = useRef<IMGLY.Context>();
   const [commandItems, setCommandItems] = useState<Array<any>>([])
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState<boolean>(false)
 
@@ -60,13 +59,15 @@ function App() {
       });
   }
 
+  
+
   const [config, _setConfig] = useState<Object>(
     {
       "license": import.meta.env.VITE_CESDK_LICENSE_KEY,
-      "callbacks.onUpload": 'local',
-      "callbacks.onDownload": "download",
-      "callbacks.onSave": async (str: string) => downloadBlocks(contextRef.current!.engine.block, [new Blob([str])], { mimeType: 'application/imgly' }),
-      "callbacks.onExport": async (blobs: Array<Blob>, options: any) => downloadBlocks(contextRef.current!.engine.block, blobs, { mimeType: options.mimeType, pages: options.pages }),
+      // "callbacks.onUpload": 'local',
+      // "callbacks.onDownload": "download",
+      // "callbacks.onSave": async (str: string) => downloadBlocks(contextRef.current!.engine.block, [new Blob([str])], { mimeType: 'application/imgly' }),
+      // "callbacks.onExport": async (blobs: Array<Blob>, options: any) => downloadBlocks(contextRef.current!.engine.block, blobs, { mimeType: options.mimeType, pages: options.pages }),
       // "callbacks.onLoad": ,
       // devMode: true,
       "theme": "dark",
@@ -92,7 +93,7 @@ function App() {
       cesdk.addDemoAssetSources({ sceneMode: "Design" }),
       imgly.plugins.registerPlugin(DesignBatteriesPlugin),
       cesdk.unstable_addPlugin(VectorizerPlugin(imgly, {})),
-      cesdk.unstable_addPlugin(DocumentPlugin(imgly, {})),
+      // cesdk.unstable_addPlugin(DocumentPlugin(imgly, {})),
       cesdk.unstable_addPlugin(BackgroundRemovalPlugin({ ui: { locations: 'canvasMenu' } })),
       ...addDemoRemoteAssetSourcesPlugins(cesdk) //FIXME
     ]);
@@ -128,7 +129,7 @@ function App() {
     
 
     // save and restore scene backup after and before loading the editor
-    await backupOrRestoreCurrentSceneOnReload(cesdk, 2500);
+    // await backupOrRestoreCurrentSceneOnReload(cesdk, 2500);
 
   }
 
@@ -143,20 +144,20 @@ function App() {
 export default App;
 
 
-async function backupOrRestoreCurrentSceneOnReload(cesdk: CreativeEditorSDK, idleTime = 2500) {
-  const scene = localStorage.getItem("cesdk.scene");
-  if (scene) {
-    try {
-      await cesdk.loadFromString(scene);
-    } catch (e) {
-      localStorage.removeItem("cesdk.scene"); // just in case we remove the old scene
-      if (e instanceof Error)
-        console.error("Scene loading from cache failed with: ", e.message);
-    }
-  }
+// async function backupOrRestoreCurrentSceneOnReload(cesdk: CreativeEditorSDK, idleTime = 2500) {
+//   const scene = localStorage.getItem("cesdk.scene");
+//   if (scene) {
+//     try {
+//       await cesdk.loadFromString(scene);
+//     } catch (e) {
+//       localStorage.removeItem("cesdk.scene"); // just in case we remove the old scene
+//       if (e instanceof Error)
+//         console.error("Scene loading from cache failed with: ", e.message);
+//     }
+//   }
 
-  setInterval(async () => {
-    localStorage.setItem("cesdk.scene", await cesdk.save());
-  }, idleTime);
-}
+//   setInterval(async () => {
+//     localStorage.setItem("cesdk.scene", await cesdk.save());
+//   }, idleTime);
+// }
 

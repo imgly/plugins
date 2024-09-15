@@ -19,9 +19,3 @@ export const pluginOpenCustomPanel = async (ctx: Context, _params: { blockIds?: 
     ui?.openPanel('ly.img.foo');
 }
 
-
-
-export const command = async (ctx: Context, params: { blockIds?: number[] }) => {
-
-
-}

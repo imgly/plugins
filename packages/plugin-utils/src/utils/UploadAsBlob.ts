@@ -45,6 +45,7 @@ export enum BlobType {
     CSV = "text/csv",
     TXT = "text/plain",
     IDML = "application/vnd.adobe.indesign-idml-package",
+    AI  = "application/vnd.adobe.illustrator",
     PDF = "application/pdf",
     IMGLY = "application/vnd.imgly.component",
     CESDK = "application/vnd.cesdk.component",

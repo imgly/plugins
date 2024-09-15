@@ -1,9 +1,8 @@
+
 import { MimeType } from "@cesdk/cesdk-js";
 import { Context } from "@imgly/plugin-core";
 import * as errors from "../errors";
 import { downloadBlob, UploadAsBlob, BlobType, inferBlockName, exportBlockAs, setBlockTransform } from "@imgly/plugin-utils";
-
-
 
 export const componentSelectionExport = async (ctx: Context, params: { blockIds?: number[]; }) => {
     const { block } = ctx.engine;
