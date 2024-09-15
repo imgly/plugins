@@ -1,24 +1,27 @@
 import type CreativeEditorSDK from '@cesdk/cesdk-js';
 import type { Source } from '@cesdk/cesdk-js';
 
-import * as bg_remover from '@imgly/background-removal';
+import {
+  BGREMOVE_RESOLUTION_THRESHOLD,
+  PLUGIN_ID,
+  VECTORIZER_TIMEOUT
+} from './constants';
 
-import * as vectorizer from '@imgly/vectorizer';
 
 import { fillProcessing, FillProcessingMetadata } from '@imgly/plugin-utils';
 
-import { throttle } from 'lodash-es';
+import { throttle, uniqueId } from 'lodash-es';
 
 import { convertBufferURI, findOptimalSource, uploadBlob } from './utils';
+
+// providers
+import * as vectorizer from '@imgly/vectorizer';
+import * as bg_remover from '@imgly/background-removal';
 
 export type ProviderConfig = {
   bg_remover?: bg_remover.Config;
   vectorizer?: vectorizer.Config;
 };
-
-// const VECTORIZER_THRESHOLD = 5;
-const VECTORIZER_TIMEOUT = 30000;
-const BGREMOVE_SIZE_THRESHOLD = 1024;
 
 /**
  * Triggers the background removal process.
@@ -29,7 +32,6 @@ export async function processFill(
   metadata: FillProcessingMetadata,
   config?: ProviderConfig
 ) {
-  
   const configuration = config ?? {};
 
   const blockApi = cesdk.engine.block;
@@ -64,7 +66,7 @@ export async function processFill(
       )
         return;
 
-        configuration.bg_remover?.progress?.(key, current, total);
+      configuration.bg_remover?.progress?.(key, current, total);
       metadata.set(blockId, {
         ...currentMetadataInProgress,
         progress: { key, current, total }
@@ -75,8 +77,16 @@ export async function processFill(
   configuration.vectorizer = {
     signal: AbortSignal.timeout(VECTORIZER_TIMEOUT),
     ...configuration.vectorizer,
+    options: {
+      drop_transparent: false,
+      ...(configuration.vectorizer?.options ?? {}),
+      hierarchical: 'stacked', // FIXME should be cutout but out renderer does not account for smoothing
+      // filter_speckle: 1,
+      color_precision: 0,
+    },
     callbacks: {
       ...(configuration.vectorizer?.callbacks ?? {}),
+
       progress: throttle((key, current, total) => {
         const currentMetadataInProgress = metadata.get(blockId);
         if (
@@ -85,16 +95,12 @@ export async function processFill(
         )
           return;
 
-          configuration.vectorizer?.callbacks?.progress?.(key, current, total);
+        configuration.vectorizer?.callbacks?.progress?.(key, current, total);
         metadata.set(blockId, {
           ...currentMetadataInProgress,
           progress: { key, current, total }
         });
       }, 100)
-    },
-    options: {
-      drop_transparent: false,
-      ...(configuration.vectorizer?.options ?? {})
     }
   };
 
@@ -110,7 +116,10 @@ export async function fillProcessingFromSourceSet(
   return fillProcessing<Source[]>(blockId, cesdk, metadata, {
     async processFill(metadataState) {
       const sourceSet = metadataState.initialSourceSet;
-      const inputSource = findOptimalSource(sourceSet, BGREMOVE_SIZE_THRESHOLD);
+      const inputSource = findOptimalSource(
+        sourceSet,
+        BGREMOVE_RESOLUTION_THRESHOLD
+      );
 
       if (inputSource == null) throw new Error('No source found');
 
@@ -127,12 +136,9 @@ export async function fillProcessingFromSourceSet(
       const svg = svg_converter.to_svg();
       const blob = new Blob([svg], { type: 'image/svg+xml' });
 
-      const pathname = new URL(inputSource.uri).pathname;
-      const parts = pathname.split('/');
-      const filename = parts[parts.length - 1];
+      const filename = uniqueId(PLUGIN_ID);
       const uploaded = await uploadBlob(blob, filename, cesdk);
       svg_converter.dispose();
-
       const source: Source = {
         uri: uploaded,
         width: 0,
@@ -141,11 +147,20 @@ export async function fillProcessingFromSourceSet(
       return [source];
     },
 
+    
     commitProcessing(sources: Source[], metadataState) {
-      const fillId = metadataState.fillId;
+      const fId = metadataState.fillId;
+      const bId = metadataState.blockId
       // cesdk.engine.block.setString(fillId, 'fill/image/imageFileURI', "");
-      cesdk.engine.block.setSourceSet(fillId, 'fill/image/sourceSet', sources);
-      cesdk.engine.block.setString(fillId, 'fill/image/previewFileURI', '');
+      cesdk.engine.block.setSourceSet(fId, 'fill/image/sourceSet', sources);
+      cesdk.engine.block.setString(fId, 'fill/image/previewFileURI', '');
+
+      // FIXME It would be better to just directly create an outlone via boolean operations from the vector fill
+      cesdk.engine.block.createCutoutFromBlocks([bId]);
+
+      // Set a cutout's properties
+      cesdk.engine.block.setFloat(bId, 'cutout/offset', 2.0);
+      // engine.block.setEnum(bId, 'cutout/offset', 'Dashed');
     }
   });
 }

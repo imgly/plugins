@@ -8,13 +8,14 @@
     "Sticker",
     "client-side",
     "data-privacy",
+    "vectorization",
     "image-segmentation",
     "image-matting",
     "onnx"
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/imgly/plugin-background-removal-web.git"
+    "url": "git+https://github.com/imgly/plugins.git"
   },
   "license": "SEE LICENSE IN LICENSE.md",
   "author": {

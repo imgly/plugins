@@ -8,10 +8,7 @@ import { processFill, ProviderConfig } from './process';
 
 import { UserInterfaceConfiguration } from './types';
 
-const PLUGIN_ID = '@imgly/plugin-stickerizer-web';
-const PLUGIN_LABEL = 'Stickerize';
-const PLUGIN_ICON = '@imgly/icons/BGRemove';
-// export const PLUGIN_VERSION = ""; // This is commented out because the version is not defined in this file
+import { PLUGIN_ID, PLUGIN_LABEL, PLUGIN_ICON } from './constants';
 
 export default (pluginConfiguration?: PluginConfiguration) => ({
   name: PLUGIN_ID,
