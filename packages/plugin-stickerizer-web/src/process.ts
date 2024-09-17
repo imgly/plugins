@@ -113,7 +113,7 @@ export async function fillProcessingFromSourceSet(
   metadata: FillProcessingMetadata,
   config?: ProviderConfig
 ) {
-  return fillProcessing<Source[]>(blockId, cesdk, metadata, {
+  return fillProcessing<void>(blockId, cesdk, metadata, {
     async processFill(metadataState) {
       const sourceSet = metadataState.initialSourceSet;
       const inputSource = findOptimalSource(
@@ -122,6 +122,10 @@ export async function fillProcessingFromSourceSet(
       );
 
       if (inputSource == null) throw new Error('No source found');
+
+      // console.log("Exporting block")
+      // await cesdk.engine.block.export(bId)
+      // console.log("Creating cutout")
 
       const input = await convertBufferURI(inputSource.uri, cesdk);
 
@@ -144,23 +148,44 @@ export async function fillProcessingFromSourceSet(
         width: 0,
         height: 0
       };
-      return [source];
+      const sources = [source]
+      const fId = metadataState.fillId;
+      // const bId = metadataState.blockId
+      // cesdk.engine.block.setString(fillId, 'fill/image/imageFileURI', "");
+      cesdk.engine.block.setSourceSet(fId, 'fill/image/sourceSet', sources);
+      cesdk.engine.block.setString(fId, 'fill/image/previewFileURI', uploaded);
+
+      // Hack to ensure everything is updates
+      console.log("Exporting block")
+      await cesdk.engine.block.export(blockId)
+      console.log("Creating cutout")
+      // FIXME It would be better to just directly create an outlone via boolean operations from the vector fill
+      // cesdk.engine.block.createCutoutFromBlocks([bId]);
+
+      // Set a cutout's properties
+      // cesdk.engine.block.setFloat(bId, 'cutout/offset', 2.0);
+      // engine.block.setEnum(bId, 'cutout/offset', 'Dashed');
+      
+      
     },
 
     
-    commitProcessing(sources: Source[], metadataState) {
-      const fId = metadataState.fillId;
-      const bId = metadataState.blockId
-      // cesdk.engine.block.setString(fillId, 'fill/image/imageFileURI', "");
-      cesdk.engine.block.setSourceSet(fId, 'fill/image/sourceSet', sources);
-      cesdk.engine.block.setString(fId, 'fill/image/previewFileURI', '');
+    commitProcessing(sources: void, metadataState) {
+      console.log("Commit")
+      // const fId = metadataState.fillId;
+      // const bId = metadataState.blockId
+      // // cesdk.engine.block.setString(fillId, 'fill/image/imageFileURI', "");
+      // cesdk.engine.block.setSourceSet(fId, 'fill/image/sourceSet', sources);
+      // cesdk.engine.block.setString(fId, 'fill/image/previewFileURI', '');
 
-      // FIXME It would be better to just directly create an outlone via boolean operations from the vector fill
-      cesdk.engine.block.createCutoutFromBlocks([bId]);
+      // // Hack to ensure everything is updates
+      // await cesdk.engine.block.export(bId)
+      // // FIXME It would be better to just directly create an outlone via boolean operations from the vector fill
+      // cesdk.engine.block.createCutoutFromBlocks([bId]);
 
-      // Set a cutout's properties
-      cesdk.engine.block.setFloat(bId, 'cutout/offset', 2.0);
-      // engine.block.setEnum(bId, 'cutout/offset', 'Dashed');
+      // // Set a cutout's properties
+      // cesdk.engine.block.setFloat(bId, 'cutout/offset', 2.0);
+      // // engine.block.setEnum(bId, 'cutout/offset', 'Dashed');
     }
   });
 }
