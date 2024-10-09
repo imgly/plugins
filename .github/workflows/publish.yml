@@ -1,0 +1,141 @@
+name: Publish
+on:
+  workflow_dispatch:
+    inputs:
+      package:
+        description: Package
+        required: true
+        type: choice
+        options:
+         - plugin-background-removal-web
+         - plugin-cutout-library-web
+         - plugin-remote-asset-source-web
+      version:
+        description: Version number
+        required: true
+        type: string
+  pull_request:
+    types: [closed]
+    branches: [main]
+
+permissions:
+  contents: write
+  packages: write
+  pull-requests: write
+  checks: write
+  statuses: write
+
+jobs:
+  configure:
+    name: Configure the build
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Create the commit status check
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          STATUS_REPO: ${{ github.repository }}
+          STATUS_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
+          STATUS_STATE: pending
+          STATUS_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -x
+          gh api \
+            --method POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "/repos/${STATUS_REPO}/statuses/${STATUS_SHA}" \
+            -f "state=${STATUS_STATE}" \
+            -f "target_url=${STATUS_URL}" \
+            -f "description=PR Check Workflow" \
+            -f "context=IMG.LY"
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          sparse-checkout: |
+            .github
+      - name: Construct build matrix
+        id: construct_matrix
+        shell: bash
+        run: |
+          set -x
+          jq --compact-output --raw-output '."build-and-test" | tostring | "matrix_packages=" + .' .github/ci.json | tee -a "$GITHUB_OUTPUT"
+    outputs:
+      matrix_packages: ${{ steps.construct_matrix.outputs.matrix_packages }}
+
+  test:
+    name: Test ${{ matrix.package }} for Node ${{ matrix.node-version }}
+    needs: [configure]
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [20.x, 21.x]
+        package: ${{ fromJson(needs.configure.outputs.matrix_packages) }}
+    env:
+      IMGLY_PACKAGE_DIR: ${{ matrix.package == '.' && github.workspace || format('{0}/packages/{1}', github.workspace, matrix.package) }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          lfs: true
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: yarn
+      - name: Install dependencies
+        working-directory: ${{ env.IMGLY_PACKAGE_DIR }}
+        shell: bash
+        run: yarn install
+      - name: Run checks
+        working-directory: ${{ env.IMGLY_PACKAGE_DIR }}
+        shell: bash
+        run: yarn run check:all
+      - name: Build
+        working-directory: ${{ env.IMGLY_PACKAGE_DIR }}
+        shell: bash
+        run: yarn run build
+      - name: Test
+        working-directory: ${{ env.IMGLY_PACKAGE_DIR }}
+        shell: bash
+        run: yarn run test
+      - name: Package
+        if: success() || failure()
+        working-directory: ${{ env.IMGLY_PACKAGE_DIR }}
+        shell: bash
+        run: yarn pack
+      - name: Upload
+        if: success() || failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.package }}-ci-node${{ matrix.node-version }}.tgz.zip
+          path: '${{ env.IMGLY_PACKAGE_DIR }}/*.tgz'
+          if-no-files-found: ignore
+          overwrite: true
+
+  summary:
+    name: Summary test status
+    needs: [test]
+    if: success() || failure()
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Update the commit status check
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          STATUS_REPO: ${{ github.repository }}
+          STATUS_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
+          STATUS_STATE: ${{ needs.test.result == 'success' && 'success' || 'failure' }}
+          STATUS_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -x
+          gh api \
+            --method POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "/repos/${STATUS_REPO}/statuses/${STATUS_SHA}" \
+            -f "state=${STATUS_STATE}" \
+            -f "target_url=${STATUS_URL}" \
+            -f "description=PR Check Workflow" \
+            -f "context=IMG.LY"
