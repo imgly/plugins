@@ -9,3 +9,4 @@ examples/*/dist
 yarn-error.log
 
 .turbo
+_ci_*
