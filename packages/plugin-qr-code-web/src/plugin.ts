@@ -61,7 +61,7 @@ export default (
       ].forEach((key) => {
         cesdk.feature.enable(key, ({ isPreviousEnable, engine }) => {
           const hasQRKind = engine.block.findAllSelected().every((block) => {
-            return engine.block.getKind(block) === 'qr';
+            return engine.block.getKind(block) === 'qr-fill';
           });
           if (hasQRKind) return false;
           return isPreviousEnable();
@@ -85,7 +85,7 @@ export default (
           if (selectedBlocks.length !== 1) return;
           const selectedBlock = selectedBlocks[0];
           const kind = engine.block.getKind(selectedBlock);
-          if (kind !== 'qr') return;
+          if (kind !== 'qr-fill' && kind !== 'qr-shape') return;
 
           builder.Button('ly.img.update-qr.dock', {
             label: 'Edit',
@@ -127,18 +127,12 @@ export default (
                 inputLabelPosition: 'top',
                 ...color
               });
-              builder.Checkbox('ly.img.generate-qr.asShape', {
-                inputLabel: 'As Shape?',
-                ...asShape
-              });
 
               builder.Button('ly.img.generate-qr.generate', {
                 label: 'Generate QR Code',
                 isDisabled: url.value === '',
                 color: 'accent',
                 onClick: async () => {
-                  // TODO: Generate QR code
-
                   const code = qrcodegen.QrCode.encodeText(
                     url.value,
                     qrcodegen.QrCode.Ecc.HIGH
@@ -153,7 +147,7 @@ export default (
                         vectorPath:path ,
                         height: code.size,
                         width: code.size,
-                        kind: 'shape',
+                        kind: 'qr-shape',
                         shapeType: '//ly.img.ubq/shape/vector_path',
                       },
                       payload: {}
@@ -169,7 +163,7 @@ export default (
                     block = await engine.asset.defaultApplyAsset({
                       id: 'qr-code',
                       meta: {
-                        kind: 'qr',
+                        kind: 'qr-fill',
                         fillType: '//ly.img.ubq/fill/image',
                         width: code.size,
                         height: code.size
@@ -198,6 +192,11 @@ export default (
                     cesdk.ui.closePanel(GENERATE_QR_PANEL_ID);
                   }
                 }
+              });
+
+              builder.Checkbox('ly.img.generate-qr.asShape', {
+                inputLabel: 'As Shape?',
+                ...asShape
               });
             }
           });
@@ -230,7 +229,7 @@ export default (
 
           const selectedBlock = selectedBlocks[0];
           const kind = engine.block.getKind(selectedBlock);
-          if (kind !== 'qr') {
+          if (kind !== 'qr-fill' && kind !== 'qr-shape') {
             // TODO: Show message that only QR codes can be updated
             return;
           }
