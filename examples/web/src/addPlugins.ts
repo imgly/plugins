@@ -4,6 +4,7 @@ import BackgroundRemovalPlugin from '@imgly/plugin-background-removal-web';
 import CutoutLibraryPlugin from '@imgly/plugin-cutout-library-web';
 import RemoteAssetSourcePlugin from '@imgly/plugin-remote-asset-source-web';
 import VectorizerPlugin from '@imgly/plugin-vectorizer-web';
+import StickerizerPlugin from '@imgly/plugin-stickerizer-web';
 
 const ENABLE_DEMO_ASSET_SOURCES = false;
 
@@ -20,6 +21,7 @@ async function addPlugins(cesdk: CreativeEditorSDK): Promise<void> {
         BackgroundRemovalPlugin({ ui: { locations: 'canvasMenu' } })
       ),
       cesdk.addPlugin(VectorizerPlugin({ ui: { locations: 'canvasMenu' } })),
+      cesdk.addPlugin(StickerizerPlugin({ ui: { locations: 'canvasMenu' } })),
       ...addDemoRemoteAssetSourcesPlugins(cesdk)
     ]);
   } catch (error) {
