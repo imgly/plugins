@@ -2,6 +2,7 @@ import type CreativeEditorSDK from '@cesdk/cesdk-js';
 import { CreativeEngine } from '@cesdk/cesdk-js';
 import BackgroundRemovalPlugin from '@imgly/plugin-background-removal-web';
 import CutoutLibraryPlugin from '@imgly/plugin-cutout-library-web';
+import QrCodePlugin from '@imgly/plugin-qr-code-web';
 import RemoteAssetSourcePlugin from '@imgly/plugin-remote-asset-source-web';
 import VectorizerPlugin from '@imgly/plugin-vectorizer-web';
 
@@ -20,6 +21,9 @@ async function addPlugins(cesdk: CreativeEditorSDK): Promise<void> {
         BackgroundRemovalPlugin({ ui: { locations: 'canvasMenu' } })
       ),
       cesdk.addPlugin(VectorizerPlugin({ ui: { locations: 'canvasMenu' } })),
+
+      cesdk.addPlugin(QrCodePlugin()),
+
       ...addDemoRemoteAssetSourcesPlugins(cesdk)
     ]);
   } catch (error) {
