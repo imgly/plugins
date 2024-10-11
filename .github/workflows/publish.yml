@@ -61,7 +61,9 @@ jobs:
           git commit -m "Release: ${CI_PACKAGE_NAME} ${CI_VERSION_NUMBER}"
           git tag "${CI_TAG_NAME}"
       - name: Install dependencies
-        run: pnpm recursive install --filter "$CI_PNPM_FILTER" --frozen-lockfile
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm recursive install --filter "$CI_PNPM_FILTER" --frozen-lockfile
       - name: Build
         shell: bash
         run: pnpm recursive run --filter "$CI_PNPM_FILTER" build

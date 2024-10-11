@@ -63,7 +63,9 @@ jobs:
           node-version: ${{ env.CI_NODE_VERSION }}
           cache: 'pnpm'
       - name: Install dependencies
-        run: pnpm recursive install --filter "$CI_PNPM_FILTER" --frozen-lockfile
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm recursive install --filter "$CI_PNPM_FILTER" --frozen-lockfile
       - name: Build
         shell: bash
         run: pnpm recursive run --filter "$CI_PNPM_FILTER" build
