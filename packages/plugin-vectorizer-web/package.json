@@ -41,7 +41,7 @@
   ],
   "scripts": {
     "start": "npm run watch",
-    "clean": "npx rimraf dist",
+    "clean": "pnpm exec rimraf dist",
     "build": "npm run clean && node scripts/build.mjs",
     "dev": "node scripts/watch.mjs",
     "dev:types": "tsc --emitDeclarationOnly --watch --preserveWatchOutput",
