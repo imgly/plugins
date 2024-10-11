@@ -77,6 +77,9 @@ importers:
       '@imgly/plugin-remote-asset-source-web':
         specifier: workspace:*
         version: link:../../packages/plugin-remote-asset-source-web
+      '@imgly/plugin-vectorizer-web':
+        specifier: workspace:*
+        version: link:../../packages/plugin-vectorizer-web
       react:
         specifier: ^18.3.1
         version: 18.3.1
@@ -185,6 +188,9 @@ importers:
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
+      zod:
+        specifier: ^3.23.8
+        version: 3.23.8
     devDependencies:
       '@types/ndarray':
         specifier: ^1.0.14
