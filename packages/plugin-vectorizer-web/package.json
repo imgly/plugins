@@ -41,27 +41,27 @@
   ],
   "scripts": {
     "start": "npm run watch",
-    "clean": "npx rimraf dist",
+    "clean": "pnpm exec rimraf dist",
     "build": "npm run clean && node scripts/build.mjs",
     "dev": "node scripts/watch.mjs",
     "dev:types": "tsc --emitDeclarationOnly --watch --preserveWatchOutput",
     "publish:latest": "npm run build && npm publish --tag latest --access public",
     "publish:next": "npm run build && npm publish --tag next --access public",
-    "check:all": "concurrently -n lint,type,pretty \"yarn check:lint\" \"yarn check:types\" \"yarn check:pretty\"",
+    "check:all": "concurrently -n lint,type,pretty \"pnpm run check:lint\" \"pnpm run check:types\" \"pnpm run check:pretty\"",
     "check:lint": "eslint --max-warnings 0 './src/**/*.{ts,tsx}'",
     "check:pretty": "prettier --list-different './src/**/*.{ts,tsx}'",
     "check:types": "tsc --noEmit",
     "types:create": "tsc --emitDeclarationOnly"
   },
   "devDependencies": {
-    "@imgly/plugin-utils": "*",
+    "@imgly/plugin-utils": "workspace:*",
     "@types/lodash-es": "^4.17.12",
     "chalk": "^5.3.0",
     "concurrently": "^8.2.2",
-    "esbuild": "^0.19.11",
-    "eslint": "^8.51.0",
+    "esbuild": "^0.19.12",
+    "eslint": "^8.57.1",
     "lodash-es": "^4.17.21",
-    "typescript": "^5.3.3"
+    "typescript": "^5.6.3"
   },
   "peerDependencies": {
     "@cesdk/cesdk-js": "^1.32.0"
