@@ -1,25 +1,35 @@
-import { type Color, type RGBAColor } from '@cesdk/engine';
+import type CreativeEngine from '@cesdk/engine';
+import { type Color } from '@cesdk/engine';
 
-import { EditorPlugin } from '@cesdk/cesdk-js';
+import CreativeEditorSDK, { EditorPlugin } from '@cesdk/cesdk-js';
 
-import qrcodegen from './lib/qrcodegen';
+import { Metadata, hexToRgba, rgbaToHex } from '@imgly/plugin-utils';
+
+import { generateQr } from './qr';
 
 export const PLUGIN_ID = '@imgly/plugin-qr-code-web';
 
-const GENERATE_QR_PANEL_ID = 'ly.img.generate-qr.panel';
-const UPDATE_QR_PANEL_ID = 'ly.img.update-qr.panel';
+const GENERATE_QR_PANEL_ID = '//ly.img.panel/generate-qr';
+const UPDATE_QR_PANEL_ID = '//ly.img.panel/update-qr';
 
-const METADATA_KEY = 'ly.img.qr';
+interface QrMetadata {
+  url: string;
+  color: string;
+}
 
 export interface PluginConfiguration {
+  createdBlockType?: 'fill' | 'shape';
+  addCheckboxForCreatedBlockType?: boolean;
 }
 
 export default (
-  pluginConfiguration: PluginConfiguration = {}
+  configuration: PluginConfiguration = {}
 ): Omit<EditorPlugin, 'name' | 'version'> => {
+  const { createdBlockType = 'shape', addCheckboxForCreatedBlockType = true } =
+    configuration || {};
+
   return {
     initialize({ cesdk }) {
-      console.log('Initializing QR code plugin...');
       if (cesdk == null) return;
 
       cesdk.ui.addIconSet(
@@ -43,12 +53,12 @@ export default (
 
       cesdk.setTranslations({
         en: {
-          'panel.ly.img.generate-qr.panel': 'Generate QR Code',
-          'panel.ly.img.update-qr.panel': 'Update QR Code'
+          [`panel.${GENERATE_QR_PANEL_ID}`]: 'Generate QR Code',
+          [`panel.${UPDATE_QR_PANEL_ID}`]: 'Update QR Code'
         },
         de: {
-          'panel.ly.img.generate-qr.panel': 'QR-Code generieren',
-          'panel.ly.img.update-qr.panel': 'QR Code editieren'
+          [`panel.${GENERATE_QR_PANEL_ID}`]: 'QR-Code generieren',
+          [`panel.${UPDATE_QR_PANEL_ID}`]: 'QR Code editieren'
         }
       });
 
@@ -69,11 +79,17 @@ export default (
       });
 
       cesdk.ui.registerComponent('ly.img.generate-qr.dock', ({ builder }) => {
+        const isOpen = cesdk.ui.isPanelOpen(GENERATE_QR_PANEL_ID)
         builder.Button('ly.img.generate-qr.dock', {
           label: 'QR Code',
           icon: '@imgly/plugin/qr',
+          isSelected: isOpen,
           onClick: () => {
-            cesdk.ui.openPanel(GENERATE_QR_PANEL_ID);
+            if (isOpen) {
+              cesdk.ui.closePanel(GENERATE_QR_PANEL_ID);
+            } else {
+              cesdk.ui.openPanel(GENERATE_QR_PANEL_ID);
+            }
           }
         });
       });
@@ -105,9 +121,14 @@ export default (
       cesdk.ui.registerPanel(
         GENERATE_QR_PANEL_ID,
         ({ builder, engine, state }) => {
+          const metadata = new Metadata<QrMetadata>(engine, PLUGIN_ID);
+
           const url = state<string>('url', '');
           const color = state<Color>('color', { r: 0, g: 0, b: 0, a: 1 });
-          const asShape = state<boolean>('asShape', false);
+          const asShape = state<boolean>(
+            'asShape',
+            createdBlockType === 'shape'
+          );
 
           builder.Section('ly.img.generate-qr.section', {
             children: () => {
@@ -133,71 +154,26 @@ export default (
                 isDisabled: url.value === '',
                 color: 'accent',
                 onClick: async () => {
-                  const code = qrcodegen.QrCode.encodeText(
+                  const block = await createQRBlock(
+                    cesdk,
+                    engine,
                     url.value,
-                    qrcodegen.QrCode.Ecc.HIGH
+                    color.value,
+                    metadata,
+                    asShape.value
                   );
-
-                  let block: number | undefined;
-                  if (asShape.value) {
-                    const path = toSvgPath(code);
-                    block = await engine.asset.defaultApplyAsset({
-                      id: 'qr-code',
-                      meta: {
-                        vectorPath:path ,
-                        height: code.size,
-                        width: code.size,
-                        kind: 'qr-shape',
-                        shapeType: '//ly.img.ubq/shape/vector_path',
-                      },
-                      payload: {}
-                    });
-                  } else {
-                    const svg = toSvgString(
-                      code,
-                      rgbaToHex(color.value as RGBAColor)
-                    );
-
-                    const svgDataURI = `data:text/plain;base64,${btoa(svg)}`;
-
-                    block = await engine.asset.defaultApplyAsset({
-                      id: 'qr-code',
-                      meta: {
-                        kind: 'qr-fill',
-                        fillType: '//ly.img.ubq/fill/image',
-                        width: code.size,
-                        height: code.size
-                      },
-                      payload: {
-                        sourceSet: [
-                          {
-                            uri: svgDataURI,
-                            width: code.size,
-                            height: code.size
-                          }
-                        ]
-                      }
-                    });
-                  }
-
-                  if (block == null) {
-                    // TODO: Show error notification
-                  } else {
-                    engine.block.setMetadata(
-                      block,
-                      METADATA_KEY,
-                      JSON.stringify({ url: url.value, color: color.value })
-                    );
-
+                  if (block != null) {
                     cesdk.ui.closePanel(GENERATE_QR_PANEL_ID);
                   }
                 }
               });
 
-              builder.Checkbox('ly.img.generate-qr.asShape', {
-                inputLabel: 'As Shape?',
-                ...asShape
-              });
+              if (addCheckboxForCreatedBlockType) {
+                builder.Checkbox('ly.img.generate-qr.asShape', {
+                  inputLabel: 'As Shape?',
+                  ...asShape
+                });
+              }
             }
           });
         }
@@ -218,105 +194,193 @@ export default (
         }
       });
 
-      cesdk.ui.registerPanel(
-        UPDATE_QR_PANEL_ID,
-        ({ builder, engine, state }) => {
-          const selectedBlocks = engine.block.findAllSelected();
-          if (selectedBlocks.length !== 1) {
-            // TODO: Show message that only one block can be selected
-            return;
-          }
+      cesdk.ui.registerPanel(UPDATE_QR_PANEL_ID, ({ builder, engine }) => {
+        const metadata = new Metadata<QrMetadata>(engine, PLUGIN_ID);
 
-          const selectedBlock = selectedBlocks[0];
-          const kind = engine.block.getKind(selectedBlock);
-          if (kind !== 'qr-fill' && kind !== 'qr-shape') {
-            // TODO: Show message that only QR codes can be updated
-            return;
-          }
+        const selectedBlocks = engine.block.findAllSelected();
+        if (selectedBlocks.length !== 1) {
+          builder.Text('ly.img.update-qr.only-one-block', {
+            content: 'Please select only one block to update the QR code.'
+          });
+          return;
+        }
 
-          if (!engine.block.hasMetadata(selectedBlock, METADATA_KEY)) {
-            // TODO: Show message that the selected block has no metadata
-            return;
-          }
+        const selectedBlock = selectedBlocks[0];
+        const kind = engine.block.getKind(selectedBlock);
+        if (kind !== 'qr-fill' && kind !== 'qr-shape') {
+          builder.Text('ly.img.update-qr.only-qr-blocks', {
+            content: 'Only QR code blocks can be updated.'
+          });
+          return;
+        }
 
-          const metadata = JSON.parse(
-            engine.block.getMetadata(selectedBlock, METADATA_KEY)
-          );
+        if (!metadata.hasData(selectedBlock)) {
+          builder.Text('ly.img.update-qr.no-metadata', {
+            content: 'Invalid QR code block selected. Missing metadata.'
+          });
+          return;
+        }
 
-          builder.Section('ly.img.update-qr.section', {
-            children: () => {
-              builder.Text('ly.img.update-qr.text', {
-                content: `Update the URL and we’ll create a new QR code for you to add to your design.
+        const { url, color } = metadata.get(selectedBlock) as QrMetadata;
+
+        builder.Section('ly.img.update-qr.section', {
+          children: () => {
+            builder.Text('ly.img.update-qr.text', {
+              content: `Update the URL and we’ll create a new QR code for you to add to your design.
               People can scan the QR code to reach the URL.`
-              });
+            });
 
-              builder.TextInput('ly.img.update-qr.url', {
-                inputLabel: 'URL',
-                inputLabelPosition: 'top',
-                value: metadata.url,
-                setValue: (value) => {
-                  engine.block.setMetadata(
-                    selectedBlock,
-                    METADATA_KEY,
-                    JSON.stringify({ url: value, color: metadata.color })
-                  );
-                }
-              });
+            builder.TextInput('ly.img.update-qr.url', {
+              inputLabel: 'URL',
+              inputLabelPosition: 'top',
+              value: url,
+              setValue: (value) => {
+                updateQR(cesdk, engine, selectedBlock, value, color);
+                metadata.set(selectedBlock, {
+                  url: value,
+                  color
+                });
+              }
+            });
+
+            if (kind === 'qr-fill') {
               builder.ColorInput('ly.img.generate-qr.foregroundColor', {
                 label: 'Foreground Color',
                 inputLabel: 'Color',
                 inputLabelPosition: 'top',
-                value: metadata.color,
+                value: hexToRgba(color),
                 setValue: (value) => {
-                  engine.block.setMetadata(
-                    selectedBlock,
-                    METADATA_KEY,
-                    JSON.stringify({ url: metadata.url, color: value })
-                  );
+                  const colorAsHex = hexify(engine, value);
+                  updateQR(cesdk, engine, selectedBlock, url, colorAsHex);
+
+                  metadata.set(selectedBlock, {
+                    url,
+                    color: colorAsHex
+                  });
                 }
               });
             }
-          });
-        }
-      );
+          }
+        });
+      });
     }
   };
 };
 
-// Returns a string of SVG code for an image depicting the given QR Code, with the given number
-// of border modules. The string always uses Unix newlines (\n), regardless of the platform.
-function toSvgString(qr: qrcodegen.QrCode, darkColor: string): string {
-  return `<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 ${qr.size} ${
-    qr.size
-  }" stroke="none">
-	<path d="${toSvgPath(qr)}" fill="${darkColor}"/>
-</svg>
-`;
-}
+function hexify(engine: CreativeEngine, color: Color | string) {
+  const isColorString = typeof color === 'string';
 
-function toSvgPath(qr: qrcodegen.QrCode) {
-  const parts: Array<string> = [];
-  for (let y = 0; y < qr.size; y++) {
-    for (let x = 0; x < qr.size; x++) {
-      if (qr.getModule(x, y)) parts.push(`M${x},${y}h1v1h-1z`);
-    }
+  let colorAsHex;
+  if (isColorString) {
+    colorAsHex = color;
+  } else {
+    const colorAsRgba = engine.editor.convertColorToColorSpace(color, 'sRGB');
+    colorAsHex = rgbaToHex(colorAsRgba);
   }
 
-  return parts.join(' ');
+  return colorAsHex;
 }
 
-export const rgbaToHex = (rgba: RGBAColor, includeAlpha = false): string => {
-  const { r, g, b, a } = rgba;
-  const rByte = Math.round(255 * r);
-  const gByte = Math.round(255 * g);
-  const bByte = Math.round(255 * b);
-  const aByte = Math.round(255 * a);
-  const byteToHex = (byte: number) => {
-    return byte.toString(16).padStart(2, '0');
-  };
-  return `#${byteToHex(rByte)}${byteToHex(gByte)}${byteToHex(bByte)}${
-    includeAlpha ? byteToHex(aByte) : ''
-  }`;
-};
+async function createQRBlock(
+  cesdk: CreativeEditorSDK,
+  engine: CreativeEngine,
+  url: string,
+  color: Color,
+  metadata: Metadata<QrMetadata>,
+  asShape: boolean
+): Promise<number | undefined> {
+  const colorAsRgba = engine.editor.convertColorToColorSpace(color, 'sRGB');
+  const colorAsHex = rgbaToHex(colorAsRgba);
+  const { path, svg, size } = generateQr(url, colorAsHex);
+
+  let block: number | undefined;
+  if (asShape) {
+    block = await engine.asset.defaultApplyAsset({
+      id: 'qr-code',
+      meta: {
+        vectorPath: path,
+        height: size,
+        width: size,
+        kind: 'qr-shape',
+        shapeType: '//ly.img.ubq/shape/vector_path'
+      },
+      payload: {}
+    });
+  } else {
+    const svgDataURI = `data:text/plain;base64,${btoa(svg)}`;
+
+    block = await engine.asset.defaultApplyAsset({
+      id: 'qr-code',
+      meta: {
+        kind: 'qr-fill',
+        fillType: '//ly.img.ubq/fill/image',
+        width: size,
+        height: size
+      },
+      payload: {
+        sourceSet: [
+          {
+            uri: svgDataURI,
+            width: size,
+            height: size
+          }
+        ]
+      }
+    });
+  }
+
+  if (block == null) {
+    cesdk.ui.showNotification({
+      type: 'error',
+      message: 'Failed to create QR code block.'
+    });
+  } else {
+    metadata.set(block, { url, color: colorAsHex });
+  }
+  return block;
+}
+
+function updateQR(
+  cesdk: CreativeEditorSDK,
+  engine: CreativeEngine,
+  block: number,
+  url: string,
+  color: string
+) {
+  const { path, svg, size } = generateQr(url, color);
+  const kind = engine.block.getKind(block);
+
+  if (kind === 'qr-shape') {
+    if (!engine.block.supportsShape(block)) {
+      cesdk.ui.showNotification({
+        type: 'error',
+        message: 'Invalid state with no shape found.'
+      });
+      return;
+    }
+
+    const shape = engine.block.getShape(block);
+    engine.block.setString(shape, 'shape/vector_path/path', path);
+    engine.block.setFloat(shape, 'shape/vector_path/height', size);
+    engine.block.setFloat(shape, 'shape/vector_path/width', size);
+  } else if (kind === 'qr-fill') {
+    if (!engine.block.supportsFill(block)) {
+      cesdk.ui.showNotification({
+        type: 'error',
+        message: 'Invalid state with no fill found.'
+      });
+      return;
+    }
+    const fill = engine.block.getFill(block);
+
+    const svgDataURI = `data:text/plain;base64,${btoa(svg)}`;
+
+    engine.block.setSourceSet(fill, 'fill/image/sourceSet', [
+      {
+        uri: svgDataURI,
+        width: size,
+        height: size
+      }
+    ]);
+  }
+}
