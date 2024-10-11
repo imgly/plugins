@@ -306,6 +306,35 @@ async function createQRBlock(
       },
       payload: {}
     });
+
+    if (block != null) {
+      // Set the fill color
+      if (engine.block.supportsFill(block)) {
+        const fill = engine.block.getFill(block);
+        const fillType = engine.block.getType(fill);
+        if (fillType === '//ly.img.ubq/fill/color') {
+          engine.block.setColor(fill, 'fill/color/value', colorAsRgba);
+        }
+      }
+
+      // Simplify the shape by intersecting with a rect shape
+      const parent = engine.block.getParent(block);
+      if (parent != null) {
+        const rect = engine.block.create('graphic');
+        engine.block.setShape(
+          rect,
+          engine.block.createShape('//ly.img.ubq/shape/rect')
+        );
+        engine.block.appendChild(parent, rect);
+        engine.block.setPositionX(rect, engine.block.getPositionX(block));
+        engine.block.setPositionY(rect, engine.block.getPositionY(block));
+        engine.block.setWidth(rect, engine.block.getWidth(block));
+        engine.block.setHeight(rect, engine.block.getHeight(block));
+
+        block = engine.block.combine([block, rect], 'Intersection');
+        engine.block.setSelected(block, true);
+      }
+    }
   } else {
     const svgDataURI = `data:text/plain;base64,${btoa(svg)}`;
 
