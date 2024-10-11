@@ -27,6 +27,7 @@
   },
   "devDependencies": {
     "@types/ndarray": "^1.0.14",
+    "@types/lodash-es": "^4.17.12",
     "chalk": "^5.3.0",
     "concurrently": "^8.2.2",
     "esbuild": "^0.19.11",
