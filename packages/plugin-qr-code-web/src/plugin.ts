@@ -25,7 +25,7 @@ export interface PluginConfiguration {
 export default (
   configuration: PluginConfiguration = {}
 ): Omit<EditorPlugin, 'name' | 'version'> => {
-  const { createdBlockType = 'shape', addCheckboxForCreatedBlockType = true } =
+  const { createdBlockType = 'shape', addCheckboxForCreatedBlockType = false } =
     configuration || {};
 
   return {
