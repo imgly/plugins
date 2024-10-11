@@ -13,7 +13,7 @@ const dtsPlugin = {
       dtsStdio = undefined;
       dtsResolved = false;
       log('Generating types...');
-      exec('yarn types:create', (error, stdio) => {
+      exec('pnpm run types:create', (error, stdio) => {
         if (error) {
           dtsError = error;
           dtsStdio = stdio;

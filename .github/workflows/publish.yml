@@ -1,0 +1,94 @@
+name: Create release
+on:
+  workflow_dispatch:
+    inputs:
+      package:
+        description: Package
+        required: true
+        type: choice
+        options:
+         - plugin-background-removal-web
+         - plugin-cutout-library-web
+         - plugin-remote-asset-source-web
+         - plugin-vectorizer-web
+      version:
+        description: Version number (e.g. 1.0.0)
+        required: true
+        type: string
+      npm_tag:
+        description: Custom NPM tag to update instead of latest
+        required: true
+        type: string
+        default: latest
+
+permissions: write-all
+
+jobs:
+  release:
+    name: Publish ${{ inputs.package }} ${{ inputs.version }}
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-24.04
+    env:
+      CI_NODE_VERSION: '20.x'
+      CI_IS_PR: false
+      CI_PNPM_FILTER: ${{ inputs.package }}
+      CI_PNPM_BUILD_FILTER: ${{ format('{0}...', inputs.package) }}
+      CI_PACKAGE_NAME: ${{ (inputs.package == '.') && github.event.repository.name || inputs.package }}
+      CI_PACKAGE_DIRECTORY: ${{ (inputs.package == '.') && '.' || format('./packages/{0}', inputs.package) }}
+      CI_VERSION_NUMBER: ${{ inputs.version }}
+      CI_TAG_NAME: ${{ (inputs.package == '.') && format('release/{0}', inputs.version) || format('release/{0}/{1}', inputs.package, inputs.version) }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          lfs: true
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+      - name: Use Node.js ${{ env.CI_NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.CI_NODE_VERSION }}
+          cache: 'pnpm'
+      - name: Bump version
+        shell: bash
+        working-directory: ${{ env.CI_PACKAGE_DIRECTORY }}
+        run: |
+          set -x
+          git config --global user.name "Intergalactic Igor"
+          git config --global user.email "malte.baumann+bot@img.ly"
+          pnpm version "${CI_VERSION_NUMBER}"
+          git add -A
+          git commit -m "Release: ${CI_PACKAGE_NAME} ${CI_VERSION_NUMBER}"
+          git tag "${CI_TAG_NAME}"
+      - name: Install dependencies
+        run: pnpm recursive install --filter "$CI_PNPM_FILTER" --frozen-lockfile
+      - name: Build
+        shell: bash
+        run: pnpm recursive run --filter "$CI_PNPM_FILTER" build
+      - name: Package
+        if: success() || failure()
+        shell: bash
+        run: |
+          mkdir -p _ci_packs
+          pnpm recursive --filter "$CI_PNPM_FILTER" exec pnpm pack "--pack-destination=$PWD/_ci_packs"
+      - name: Upload package artifacts
+        if: success() || failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ github.event.repository.name }}-npm-packages-node${{ env.CI_NODE_VERSION }}.zip
+          path: '_ci_packs/*.tgz'
+          if-no-files-found: ignore
+          overwrite: true
+      - name: Push git tag
+        shell: bash
+        run: |
+          git push origin "${CI_TAG_NAME}"
+      - name: NPM publish
+        shell: bash
+        env:
+          NPM_TOKEN: ${{ secrets.IMGLY_NPM_AUTOMATION_TOKEN }}
+          CI_NPM_TAG: ${{ inputs.npm_tag }}
+        working-directory: ${{ env.CI_PACKAGE_DIRECTORY }}
+        run: |
+          npm config set "//registry.npmjs.org/:_authToken" "${NPM_TOKEN}"
+          pnpm publish --no-git-checks --tag "$CI_NPM_TAG"
