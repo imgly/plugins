@@ -79,7 +79,7 @@ export default (
       });
 
       cesdk.ui.registerComponent('ly.img.generate-qr.dock', ({ builder }) => {
-        const isOpen = cesdk.ui.isPanelOpen(GENERATE_QR_PANEL_ID)
+        const isOpen = cesdk.ui.isPanelOpen(GENERATE_QR_PANEL_ID);
         builder.Button('ly.img.generate-qr.dock', {
           label: 'QR Code',
           icon: '@imgly/plugin/qr',
