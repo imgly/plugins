@@ -4,31 +4,56 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "build": "tsc && vite build --force",
-    "clean": "npx rimraf dist",
-    "purge": "npx rimraf node_modules",
+    "build": "pnpm _syncPnpm && tsc && vite build",
+    "clean": "pnpm exec rimraf dist",
+    "purge": "pnpm exec rimraf node_modules",
     "dev": "vite --clearScreen=false --force",
-    "check:types": "tsc --noEmit"
+    "check:types": "tsc --noEmit",
+    "_syncPnpm": "pnpm sync-dependencies-meta-injected"
   },
   "dependencies": {
-    "@cesdk/cesdk-js": "1.41.0",
-    "@imgly/plugin-background-removal-web": "*",
-    "@imgly/plugin-cutout-library-web": "*",
-    "@imgly/plugin-remote-asset-source-web": "*",
+    "@cesdk/cesdk-js": "^1.45.0",
+    "@cesdk/engine": "^1.45.0",
+    "@imgly/plugin-background-removal-web": "workspace:*",
+    "@imgly/plugin-cutout-library-web": "workspace:*",
+    "@imgly/plugin-qr-code-web": "workspace:*",
+    "@imgly/plugin-remote-asset-source-web": "workspace:*",
+    "@imgly/plugin-vectorizer-web": "workspace:*",
     "onnxruntime-web": "1.21.0-dev.20250114-228dd16893",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "dependenciesMeta": {
+    "@imgly/plugin-background-removal-web": {
+      "injected": true
+    },
+    "@imgly/plugin-cutout-library-web": {
+      "injected": true
+    },
+    "@imgly/plugin-remote-asset-source-web": {
+      "injected": true
+    },
+    "@imgly/plugin-utils": {
+      "injected": true
+    },
+    "@imgly/plugin-vectorizer-web": {
+      "injected": true
+    },
+    "@imgly/plugin-qr-code-web": {
+      "injected": true
+    }
   },
   "devDependencies": {
-    "@types/react": "^18.2.43",
-    "@types/react-dom": "^18.2.17",
-    "@typescript-eslint/eslint-plugin": "^6.14.0",
-    "@typescript-eslint/parser": "^6.14.0",
-    "@vitejs/plugin-react": "^4.2.1",
-    "eslint": "^8.55.0",
-    "eslint-plugin-react-hooks": "^4.6.0",
-    "eslint-plugin-react-refresh": "^0.4.5",
-    "typescript": "^5.2.2",
-    "vite": "^5.0.8"
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "eslint": "^8.57.1",
+    "eslint-plugin-react-hooks": "^4.6.2",
+    "eslint-plugin-react-refresh": "^0.4.19",
+    "pnpm-sync-dependencies-meta-injected": "^0.0.14",
+    "typescript": "^5.7.3",
+    "vite": "^5.4.14"
   }
 }
