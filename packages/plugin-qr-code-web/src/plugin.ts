@@ -12,6 +12,9 @@ export const PLUGIN_ID = '@imgly/plugin-qr-code-web';
 const GENERATE_QR_PANEL_ID = '//ly.img.panel/generate-qr';
 const UPDATE_QR_PANEL_ID = '//ly.img.panel/update-qr';
 
+const KIND_QR_FILL = 'qr-code/fill';
+const KIND_QR_SHAPE = 'qr-code/shape';
+
 interface QrMetadata {
   url: string;
   color: string;
@@ -54,11 +57,13 @@ export default (
       cesdk.setTranslations({
         en: {
           [`panel.${GENERATE_QR_PANEL_ID}`]: 'Generate QR Code',
-          [`panel.${UPDATE_QR_PANEL_ID}`]: 'Update QR Code'
-        },
-        de: {
-          [`panel.${GENERATE_QR_PANEL_ID}`]: 'QR-Code generieren',
-          [`panel.${UPDATE_QR_PANEL_ID}`]: 'QR Code editieren'
+          [`panel.${GENERATE_QR_PANEL_ID}.description`]:
+            "Add a URL, and we'll create a QR code for you to include in your design. People can scan the QR code to visit the URL.",
+          [`panel.${UPDATE_QR_PANEL_ID}`]: 'Update QR Code',
+          [`panel.${UPDATE_QR_PANEL_ID}.description`]:
+            "Update the URL, and we'll refresh the QR code. People can scan the updated QR code to visit the new URL.",
+
+          [`panel.${UPDATE_QR_PANEL_ID}.asShape`]: 'As Shape?'
         }
       });
 
@@ -71,7 +76,7 @@ export default (
       ].forEach((key) => {
         cesdk.feature.enable(key, ({ isPreviousEnable, engine }) => {
           const hasQRKind = engine.block.findAllSelected().every((block) => {
-            return engine.block.getKind(block) === 'qr-fill';
+            return engine.block.getKind(block) === KIND_QR_FILL;
           });
           if (hasQRKind) return false;
           return isPreviousEnable();
@@ -95,16 +100,30 @@ export default (
       });
 
       cesdk.ui.registerComponent(
-        'ly.img.update-qr.dock',
+        'ly.img.update-qr.canvasMenu',
         ({ builder, engine }) => {
           const selectedBlocks = engine.block.findAllSelected();
           if (selectedBlocks.length !== 1) return;
           const selectedBlock = selectedBlocks[0];
+
+          const canEdit = engine.block.isAllowedByScope(
+            selectedBlock,
+            'fill/change'
+          );
+
+          if (!canEdit) return;
+
+          const metadata = new Metadata<QrMetadata>(engine, PLUGIN_ID);
           const kind = engine.block.getKind(selectedBlock);
-          if (kind !== 'qr-fill' && kind !== 'qr-shape') return;
+          if (
+            !metadata.hasData(selectedBlock) &&
+            kind !== KIND_QR_FILL &&
+            kind !== KIND_QR_SHAPE
+          )
+            return;
 
           builder.Button('ly.img.update-qr.dock', {
-            label: 'Edit',
+            label: 'common.edit',
             icon: '@imgly/plugin/qr',
             onClick: () => {
               cesdk.ui.openPanel(UPDATE_QR_PANEL_ID);
@@ -114,7 +133,7 @@ export default (
       );
 
       cesdk.ui.setCanvasMenuOrder([
-        'ly.img.update-qr.dock',
+        'ly.img.update-qr.canvasMenu',
         ...cesdk.ui.getCanvasMenuOrder()
       ]);
 
@@ -133,8 +152,7 @@ export default (
           builder.Section('ly.img.generate-qr.section', {
             children: () => {
               builder.Text('ly.img.generate-qr.text', {
-                content: `Add a URL and we’ll create a QR code for you to add to your design.
-              People can scan the QR code to reach the URL.`
+                content: `panel.${GENERATE_QR_PANEL_ID}.description`
               });
 
               builder.TextInput('ly.img.generate-qr.url', {
@@ -170,7 +188,7 @@ export default (
 
               if (addCheckboxForCreatedBlockType) {
                 builder.Checkbox('ly.img.generate-qr.asShape', {
-                  inputLabel: 'As Shape?',
+                  inputLabel: `panel.${UPDATE_QR_PANEL_ID}.asShape`,
                   ...asShape
                 });
               }
@@ -188,7 +206,7 @@ export default (
         }
         const selectedBlock = selectedBlocks[0];
         const kind = cesdk.engine.block.getKind(selectedBlock);
-        if (kind !== 'qr') {
+        if (kind !== KIND_QR_FILL && kind !== KIND_QR_SHAPE) {
           if (cesdk.ui.isPanelOpen(UPDATE_QR_PANEL_ID))
             cesdk.ui.closePanel(UPDATE_QR_PANEL_ID);
         }
@@ -207,7 +225,7 @@ export default (
 
         const selectedBlock = selectedBlocks[0];
         const kind = engine.block.getKind(selectedBlock);
-        if (kind !== 'qr-fill' && kind !== 'qr-shape') {
+        if (kind !== KIND_QR_FILL && kind !== KIND_QR_SHAPE) {
           builder.Text('ly.img.update-qr.only-qr-blocks', {
             content: 'Only QR code blocks can be updated.'
           });
@@ -226,8 +244,7 @@ export default (
         builder.Section('ly.img.update-qr.section', {
           children: () => {
             builder.Text('ly.img.update-qr.text', {
-              content: `Update the URL and we’ll create a new QR code for you to add to your design.
-              People can scan the QR code to reach the URL.`
+              content: `panel.${UPDATE_QR_PANEL_ID}.description`
             });
 
             builder.TextInput('ly.img.update-qr.url', {
@@ -235,28 +252,28 @@ export default (
               inputLabelPosition: 'top',
               value: url,
               setValue: (value) => {
-                updateQR(cesdk, engine, selectedBlock, value, color);
                 metadata.set(selectedBlock, {
                   url: value,
                   color
                 });
+
+                updateQR(cesdk, engine, selectedBlock, value, color);
               }
             });
 
-            if (kind === 'qr-fill') {
+            if (kind === KIND_QR_FILL) {
               builder.ColorInput('ly.img.generate-qr.foregroundColor', {
-                label: 'Foreground Color',
-                inputLabel: 'Color',
+                inputLabel: 'common.color',
                 inputLabelPosition: 'top',
                 value: hexToRgba(color),
                 setValue: (value) => {
                   const colorAsHex = hexify(engine, value);
-                  updateQR(cesdk, engine, selectedBlock, url, colorAsHex);
-
                   metadata.set(selectedBlock, {
                     url,
                     color: colorAsHex
                   });
+
+                  updateQR(cesdk, engine, selectedBlock, url, colorAsHex);
                 }
               });
             }
@@ -301,7 +318,6 @@ async function createQRBlock(
         vectorPath: path,
         height: size,
         width: size,
-        kind: 'qr-shape',
         shapeType: '//ly.img.ubq/shape/vector_path'
       },
       payload: {}
@@ -317,23 +333,7 @@ async function createQRBlock(
         }
       }
 
-      // Simplify the shape by intersecting with a rect shape
-      const parent = engine.block.getParent(block);
-      if (parent != null) {
-        const rect = engine.block.create('graphic');
-        engine.block.setShape(
-          rect,
-          engine.block.createShape('//ly.img.ubq/shape/rect')
-        );
-        engine.block.appendChild(parent, rect);
-        engine.block.setPositionX(rect, engine.block.getPositionX(block));
-        engine.block.setPositionY(rect, engine.block.getPositionY(block));
-        engine.block.setWidth(rect, engine.block.getWidth(block));
-        engine.block.setHeight(rect, engine.block.getHeight(block));
-
-        block = engine.block.combine([block, rect], 'Intersection');
-        engine.block.setSelected(block, true);
-      }
+      simplifyShape(engine, block);
     }
   } else {
     const svgDataURI = `data:text/plain;base64,${btoa(svg)}`;
@@ -341,7 +341,7 @@ async function createQRBlock(
     block = await engine.asset.defaultApplyAsset({
       id: 'qr-code',
       meta: {
-        kind: 'qr-fill',
+        kind: KIND_QR_FILL,
         fillType: '//ly.img.ubq/fill/image',
         width: size,
         height: size
@@ -379,7 +379,7 @@ function updateQR(
   const { path, svg, size } = generateQr(url, color);
   const kind = engine.block.getKind(block);
 
-  if (kind === 'qr-shape') {
+  if (kind === KIND_QR_SHAPE) {
     if (!engine.block.supportsShape(block)) {
       cesdk.ui.showNotification({
         type: 'error',
@@ -392,7 +392,8 @@ function updateQR(
     engine.block.setString(shape, 'shape/vector_path/path', path);
     engine.block.setFloat(shape, 'shape/vector_path/height', size);
     engine.block.setFloat(shape, 'shape/vector_path/width', size);
-  } else if (kind === 'qr-fill') {
+    simplifyShape(engine, block);
+  } else if (kind === KIND_QR_FILL) {
     if (!engine.block.supportsFill(block)) {
       cesdk.ui.showNotification({
         type: 'error',
@@ -412,4 +413,29 @@ function updateQR(
       }
     ]);
   }
+}
+
+function simplifyShape(engine: CreativeEngine, block: number): number {
+  // Simplify the shape by intersecting with a rect shape
+  const duplicate = engine.block.duplicate(block);
+  const parent = engine.block.getParent(block);
+  if (parent != null) {
+    const rect = engine.block.create('graphic');
+    engine.block.setShape(
+      rect,
+      engine.block.createShape('//ly.img.ubq/shape/rect')
+    );
+    engine.block.appendChild(parent, rect);
+    engine.block.setPositionX(rect, engine.block.getPositionX(block));
+    engine.block.setPositionY(rect, engine.block.getPositionY(block));
+    engine.block.setWidth(rect, engine.block.getWidth(block));
+    engine.block.setHeight(rect, engine.block.getHeight(block));
+
+    const newBlock = engine.block.combine([duplicate, rect], 'Intersection');
+    engine.block.setShape(block, engine.block.getShape(newBlock));
+    engine.block.setKind(block, KIND_QR_SHAPE);
+    engine.block.destroy(newBlock);
+  }
+
+  return block;
 }
