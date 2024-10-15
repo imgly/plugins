@@ -17,7 +17,7 @@ export default ({ isDevelopment }) => {
 
   return baseConfig({
     isDevelopment,
-    external: ['@imgly/background-removal', '@cesdk/cesdk-js'],
+    external: ['@cesdk/cesdk-js'],
     pluginVersion: packageJson.version
   });
 };
