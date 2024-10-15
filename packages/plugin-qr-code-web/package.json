@@ -30,7 +30,13 @@
     }
   },
   "homepage": "https://img.ly/products/creative-sdk",
-  "files": ["LICENSE.md", "README.md", "CHANGELOG.md", "dist/", "bin/"],
+  "files": [
+    "LICENSE.md",
+    "README.md",
+    "CHANGELOG.md",
+    "dist/",
+    "bin/"
+  ],
   "scripts": {
     "start": "npm run watch",
     "clean": "npx rimraf dist",
@@ -58,8 +64,7 @@
     "@imgly/plugin-utils": "*"
   },
   "peerDependencies": {
-    "@cesdk/cesdk-js": "1.37.0-rc.1"
+    "@cesdk/cesdk-js": "1.37.0"
   },
-  "dependencies": {
-  }
+  "dependencies": {}
 }
