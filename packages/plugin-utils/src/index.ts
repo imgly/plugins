@@ -14,3 +14,5 @@ export {
   type Location,
   type UserInterfaceConfiguration
 } from './types/UserInterfaceConfiguration';
+
+export { hexToRgba, isValidHexColor, rgbaToHex } from './utils/colors';

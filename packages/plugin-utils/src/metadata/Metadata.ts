@@ -1,40 +1,36 @@
-import type CreativeEditorSDK from '@cesdk/cesdk-js';
+import { type CreativeEngine } from '@cesdk/cesdk-js';
 
 class Metadata<V> {
-  cesdk: CreativeEditorSDK;
+  engine: CreativeEngine;
 
   key: string;
 
-  constructor(cesdk: CreativeEditorSDK, key: string) {
-    this.cesdk = cesdk;
+  constructor(engine: CreativeEngine, key: string) {
+    this.engine = engine;
     this.key = key;
   }
 
   hasData(blockId: number): boolean {
     return (
-      this.cesdk.engine.block.isValid(blockId) &&
-      this.cesdk.engine.block.hasMetadata(blockId, this.key)
+      this.engine.block.isValid(blockId) &&
+      this.engine.block.hasMetadata(blockId, this.key)
     );
   }
 
   get(blockId: number): V | undefined {
     if (this.hasData(blockId)) {
-      return JSON.parse(this.cesdk.engine.block.getMetadata(blockId, this.key));
+      return JSON.parse(this.engine.block.getMetadata(blockId, this.key));
     }
     return undefined;
   }
 
   set(blockId: number, value: V) {
-    this.cesdk.engine.block.setMetadata(
-      blockId,
-      this.key,
-      JSON.stringify(value)
-    );
+    this.engine.block.setMetadata(blockId, this.key, JSON.stringify(value));
   }
 
   clear(blockId: number) {
-    if (this.cesdk.engine.block.hasMetadata(blockId, this.key)) {
-      this.cesdk.engine.block.removeMetadata(blockId, this.key);
+    if (this.engine.block.hasMetadata(blockId, this.key)) {
+      this.engine.block.removeMetadata(blockId, this.key);
     }
   }
 }

@@ -27,7 +27,7 @@ export default function registerFillProcessingComponents(
   };
 } {
   const { pluginId, locations } = options;
-  const metadata = new FillProcessingMetadata(cesdk, pluginId);
+  const metadata = new FillProcessingMetadata(cesdk.engine, pluginId);
 
   const canvasMenuComponentId = getCanvasMenuComponentId(pluginId);
   const canvasMenuLabel = getI18nCanvasMenuLabel(pluginId);

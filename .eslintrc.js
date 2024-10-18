@@ -22,7 +22,8 @@ module.exports = {
     '**/dist/**/*',
     'examples',
     '**/esbuild/**/*',
-    '**/scripts/**/*'
+    '**/scripts/**/*',
+    '**/lib/**/*',
   ],
   globals: {
     globalThis: 'readonly'
