@@ -141,24 +141,30 @@ export default (
             createdBlockType === 'shape'
           );
 
-          builder.Section('ly.img.generate-qr.section', {
+          builder.Section('ly.img.generate-qr.text.section', {
             children: () => {
               builder.Text('ly.img.generate-qr.text', {
                 content: `panel.${GENERATE_QR_PANEL_ID}.description`
               });
+            }
+          });
 
+          builder.Section('ly.img.generate-qr.inputs.section', {
+            children: () => {
               builder.TextInput('ly.img.generate-qr.url', {
                 inputLabel: 'URL',
-                inputLabelPosition: 'top',
                 ...url
               });
               builder.ColorInput('ly.img.generate-qr.foregroundColor', {
                 label: 'Foreground Color',
                 inputLabel: 'Color',
-                inputLabelPosition: 'top',
                 ...color
               });
+            }
+          });
 
+          builder.Section('ly.img.generate-qr.button.section', {
+            children: () => {
               builder.Button('ly.img.generate-qr.generate', {
                 label: 'Generate QR Code',
                 isDisabled: url.value === '',
@@ -238,7 +244,7 @@ export default (
 
             builder.TextInput('ly.img.update-qr.url', {
               inputLabel: 'URL',
-              inputLabelPosition: 'top',
+              // inputLabelPosition: 'top',
               value: url,
               setValue: (value) => {
                 metadata.set(selectedBlock, {
