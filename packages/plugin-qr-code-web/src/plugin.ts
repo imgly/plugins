@@ -58,10 +58,10 @@ export default (
         en: {
           [`panel.${GENERATE_QR_PANEL_ID}`]: 'Generate QR Code',
           [`panel.${GENERATE_QR_PANEL_ID}.description`]:
-            "Add a URL, and we'll create a QR code for you to include in your design. People can scan the QR code to visit the URL.",
+            'Enter a URL to automatically generate a QR code for you to embed it in your design.',
           [`panel.${UPDATE_QR_PANEL_ID}`]: 'Update QR Code',
           [`panel.${UPDATE_QR_PANEL_ID}.description`]:
-            "Update the URL, and we'll refresh the QR code. People can scan the updated QR code to visit the new URL.",
+            'Update the URL to automatically refresh the QR code within your design.',
 
           [`panel.${UPDATE_QR_PANEL_ID}.asShape`]: 'As Shape?'
         }
