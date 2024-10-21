@@ -217,8 +217,12 @@ export default (
 
         const selectedBlocks = engine.block.findAllSelected();
         if (selectedBlocks.length !== 1) {
-          builder.Text('ly.img.update-qr.only-one-block', {
-            content: 'Please select only one block to update the QR code.'
+          builder.Section('ly.img.update-qr.only-one-block.section', {
+            children: () => {
+              builder.Text('ly.img.update-qr.only-one-block', {
+                content: 'Please select only one block to update the QR code.'
+              });
+            }
           });
           return;
         }
@@ -226,15 +230,23 @@ export default (
         const selectedBlock = selectedBlocks[0];
         const kind = engine.block.getKind(selectedBlock);
         if (kind !== KIND_QR_FILL && kind !== KIND_QR_SHAPE) {
-          builder.Text('ly.img.update-qr.only-qr-blocks', {
-            content: 'Only QR code blocks can be updated.'
+          builder.Section('ly.img.update-qr.only-qr-blocks.section', {
+            children: () => {
+              builder.Text('ly.img.update-qr.only-qr-blocks', {
+                content: 'Only QR code blocks can be updated.'
+              });
+            }
           });
           return;
         }
 
         if (!metadata.hasData(selectedBlock)) {
-          builder.Text('ly.img.update-qr.no-metadata', {
-            content: 'Invalid QR code block selected. Missing metadata.'
+          builder.Section('ly.img.update-qr.no-metadata.section', {
+            children: () => {
+              builder.Text('ly.img.update-qr.no-metadata', {
+                content: 'Invalid QR code block selected. Missing metadata.'
+              });
+            }
           });
           return;
         }
