@@ -12,12 +12,10 @@ export const PLUGIN_ID = '@imgly/plugin-qr-code-web';
 const GENERATE_QR_PANEL_ID = '//ly.img.panel/generate-qr';
 const UPDATE_QR_PANEL_ID = '//ly.img.panel/update-qr';
 
-const KIND_QR_FILL = 'qr-code/fill';
-const KIND_QR_SHAPE = 'qr-code/shape';
-
 interface QrMetadata {
   url: string;
   color: string;
+  type: 'fill' | 'shape';
 }
 
 export interface PluginConfiguration {
@@ -34,6 +32,8 @@ export default (
   return {
     initialize({ cesdk }) {
       if (cesdk == null) return;
+
+      const metadata = new Metadata<QrMetadata>(cesdk.engine, PLUGIN_ID);
 
       cesdk.ui.addIconSet(
         '@imgly/plugin/qr',
@@ -75,10 +75,11 @@ export default (
         'ly.img.shape.options'
       ].forEach((key) => {
         cesdk.feature.enable(key, ({ isPreviousEnable, engine }) => {
-          const hasQRKind = engine.block.findAllSelected().every((block) => {
-            return engine.block.getKind(block) === KIND_QR_FILL;
+          const hasQRFill = engine.block.findAllSelected().every((block) => {
+            if (!metadata.hasData(block)) return false;
+            return metadata.get(block)?.type === 'fill';
           });
-          if (hasQRKind) return false;
+          if (hasQRFill) return false;
           return isPreviousEnable();
         });
       });
@@ -113,14 +114,7 @@ export default (
 
           if (!canEdit) return;
 
-          const metadata = new Metadata<QrMetadata>(engine, PLUGIN_ID);
-          const kind = engine.block.getKind(selectedBlock);
-          if (
-            !metadata.hasData(selectedBlock) &&
-            kind !== KIND_QR_FILL &&
-            kind !== KIND_QR_SHAPE
-          )
-            return;
+          if (!metadata.hasData(selectedBlock)) return;
 
           builder.Button('ly.img.update-qr.dock', {
             label: 'common.edit',
@@ -140,8 +134,6 @@ export default (
       cesdk.ui.registerPanel(
         GENERATE_QR_PANEL_ID,
         ({ builder, engine, state }) => {
-          const metadata = new Metadata<QrMetadata>(engine, PLUGIN_ID);
-
           const url = state<string>('url', '');
           const color = state<Color>('color', { r: 0, g: 0, b: 0, a: 1 });
           const asShape = state<boolean>(
@@ -205,16 +197,13 @@ export default (
           return;
         }
         const selectedBlock = selectedBlocks[0];
-        const kind = cesdk.engine.block.getKind(selectedBlock);
-        if (kind !== KIND_QR_FILL && kind !== KIND_QR_SHAPE) {
+        if (!metadata.hasData(selectedBlock)) {
           if (cesdk.ui.isPanelOpen(UPDATE_QR_PANEL_ID))
             cesdk.ui.closePanel(UPDATE_QR_PANEL_ID);
         }
       });
 
       cesdk.ui.registerPanel(UPDATE_QR_PANEL_ID, ({ builder, engine }) => {
-        const metadata = new Metadata<QrMetadata>(engine, PLUGIN_ID);
-
         const selectedBlocks = engine.block.findAllSelected();
         if (selectedBlocks.length !== 1) {
           builder.Section('ly.img.update-qr.only-one-block.section', {
@@ -228,18 +217,6 @@ export default (
         }
 
         const selectedBlock = selectedBlocks[0];
-        const kind = engine.block.getKind(selectedBlock);
-        if (kind !== KIND_QR_FILL && kind !== KIND_QR_SHAPE) {
-          builder.Section('ly.img.update-qr.only-qr-blocks.section', {
-            children: () => {
-              builder.Text('ly.img.update-qr.only-qr-blocks', {
-                content: 'Only QR code blocks can be updated.'
-              });
-            }
-          });
-          return;
-        }
-
         if (!metadata.hasData(selectedBlock)) {
           builder.Section('ly.img.update-qr.no-metadata.section', {
             children: () => {
@@ -251,7 +228,7 @@ export default (
           return;
         }
 
-        const { url, color } = metadata.get(selectedBlock) as QrMetadata;
+        const { url, color, type } = metadata.get(selectedBlock) as QrMetadata;
 
         builder.Section('ly.img.update-qr.section', {
           children: () => {
@@ -266,14 +243,15 @@ export default (
               setValue: (value) => {
                 metadata.set(selectedBlock, {
                   url: value,
-                  color
+                  color,
+                  type
                 });
 
-                updateQR(cesdk, engine, selectedBlock, value, color);
+                updateQR(cesdk, engine, selectedBlock, value, color, type);
               }
             });
 
-            if (kind === KIND_QR_FILL) {
+            if (type === 'fill') {
               builder.ColorInput('ly.img.generate-qr.foregroundColor', {
                 inputLabel: 'common.color',
                 inputLabelPosition: 'top',
@@ -282,10 +260,11 @@ export default (
                   const colorAsHex = hexify(engine, value);
                   metadata.set(selectedBlock, {
                     url,
-                    color: colorAsHex
+                    color: colorAsHex,
+                    type
                   });
 
-                  updateQR(cesdk, engine, selectedBlock, url, colorAsHex);
+                  updateQR(cesdk, engine, selectedBlock, url, colorAsHex, type);
                 }
               });
             }
@@ -327,6 +306,7 @@ async function createQRBlock(
     block = await engine.asset.defaultApplyAsset({
       id: 'qr-code',
       meta: {
+        kind: 'shape',
         vectorPath: path,
         height: size,
         width: size,
@@ -353,7 +333,6 @@ async function createQRBlock(
     block = await engine.asset.defaultApplyAsset({
       id: 'qr-code',
       meta: {
-        kind: KIND_QR_FILL,
         fillType: '//ly.img.ubq/fill/image',
         width: size,
         height: size
@@ -376,7 +355,11 @@ async function createQRBlock(
       message: 'Failed to create QR code block.'
     });
   } else {
-    metadata.set(block, { url, color: colorAsHex });
+    metadata.set(block, {
+      url,
+      color: colorAsHex,
+      type: asShape ? 'shape' : 'fill'
+    });
   }
   return block;
 }
@@ -386,12 +369,12 @@ function updateQR(
   engine: CreativeEngine,
   block: number,
   url: string,
-  color: string
+  color: string,
+  type: 'fill' | 'shape'
 ) {
   const { path, svg, size } = generateQr(url, color);
-  const kind = engine.block.getKind(block);
 
-  if (kind === KIND_QR_SHAPE) {
+  if (type === 'shape') {
     if (!engine.block.supportsShape(block)) {
       cesdk.ui.showNotification({
         type: 'error',
@@ -405,7 +388,7 @@ function updateQR(
     engine.block.setFloat(shape, 'shape/vector_path/height', size);
     engine.block.setFloat(shape, 'shape/vector_path/width', size);
     simplifyShape(engine, block);
-  } else if (kind === KIND_QR_FILL) {
+  } else if (type === 'fill') {
     if (!engine.block.supportsFill(block)) {
       cesdk.ui.showNotification({
         type: 'error',
@@ -445,7 +428,6 @@ function simplifyShape(engine: CreativeEngine, block: number): number {
 
     const newBlock = engine.block.combine([duplicate, rect], 'Intersection');
     engine.block.setShape(block, engine.block.getShape(newBlock));
-    engine.block.setKind(block, KIND_QR_SHAPE);
     engine.block.destroy(newBlock);
   }
 
