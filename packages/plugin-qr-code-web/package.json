@@ -1,6 +1,6 @@
 {
   "name": "@imgly/plugin-qr-code-web",
-  "version": "0.1.0-rc.1",
+  "version": "0.1.0",
   "description": "QR code generation plugin for the CE.SDK editor",
   "keywords": [
     "CE.SDK",
