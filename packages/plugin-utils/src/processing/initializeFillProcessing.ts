@@ -18,7 +18,7 @@ export default function handleFillProcessing(
 } {
   const featureId = getFeatureId(pluginId);
 
-  const metadata = new FillProcessingMetadata(cesdk, pluginId);
+  const metadata = new FillProcessingMetadata(cesdk.engine, pluginId);
 
   enableFeatures(cesdk, metadata, featureId);
 

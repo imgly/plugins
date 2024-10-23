@@ -28,6 +28,7 @@ function App() {
             const cutoutAssetEntry = instance.ui.getAssetLibraryEntry(
               'ly.img.cutout.entry'
             );
+
             instance.ui.setDockOrder([
               ...instance.ui.getDockOrder(),
               {
@@ -36,7 +37,9 @@ function App() {
                 key: 'ly.img.assetLibrary.dock',
                 icon: cutoutAssetEntry?.icon,
                 entries: ['ly.img.cutout.entry']
-              }
+              },
+              'ly.img.spacer',
+              'ly.img.generate-qr.dock'
             ]);
 
             await instance.createDesignScene();

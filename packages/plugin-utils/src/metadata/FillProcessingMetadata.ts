@@ -19,7 +19,7 @@ class ImageProcessingMetadata extends Metadata<PluginStatusMetadata> {
    * valid, but blockId and fillId have changed.
    */
   isDuplicate(blockId: number): boolean {
-    if (!this.cesdk.engine.block.isValid(blockId)) return false;
+    if (!this.engine.block.isValid(blockId)) return false;
 
     const metadata = this.get(blockId);
 
@@ -30,8 +30,8 @@ class ImageProcessingMetadata extends Metadata<PluginStatusMetadata> {
     )
       return false;
 
-    if (!this.cesdk.engine.block.hasFill(blockId)) return false;
-    const fillId = this.cesdk.engine.block.getFill(blockId);
+    if (!this.engine.block.hasFill(blockId)) return false;
+    const fillId = this.engine.block.getFill(blockId);
 
     // It cannot be a duplicate if the blockId or fillId are the same
     if (metadata.blockId === blockId || metadata.fillId === fillId)
@@ -47,7 +47,7 @@ class ImageProcessingMetadata extends Metadata<PluginStatusMetadata> {
    * Please note: Call this method only on duplicates (see isDuplicate).
    */
   fixDuplicate(blockId: number) {
-    const fillId = this.cesdk.engine.block.getFill(blockId);
+    const fillId = this.engine.block.getFill(blockId);
     const metadata = this.get(blockId);
     if (
       metadata.status === 'IDLE' ||
@@ -79,23 +79,23 @@ class ImageProcessingMetadata extends Metadata<PluginStatusMetadata> {
   isConsistent(blockId: number): boolean {
     // In case the block was removed, we just abort and mark it
     // as reset by returning true
-    if (!this.cesdk.engine.block.isValid(blockId)) return false;
+    if (!this.engine.block.isValid(blockId)) return false;
     const metadata = this.get(blockId);
     if (metadata.status === 'IDLE' || metadata.status === 'PENDING')
       return true;
 
-    if (!this.cesdk.engine.block.hasFill(blockId)) return false;
-    const fillId = this.cesdk.engine.block.getFill(blockId);
+    if (!this.engine.block.hasFill(blockId)) return false;
+    const fillId = this.engine.block.getFill(blockId);
     if (fillId == null) return false;
 
     if (blockId !== metadata.blockId || fillId !== metadata.fillId)
       return false;
 
-    const sourceSet = this.cesdk.engine.block.getSourceSet(
+    const sourceSet = this.engine.block.getSourceSet(
       fillId,
       'fill/image/sourceSet'
     );
-    const imageFileURI = this.cesdk.engine.block.getString(
+    const imageFileURI = this.engine.block.getString(
       fillId,
       'fill/image/imageFileURI'
     );
@@ -136,7 +136,7 @@ class ImageProcessingMetadata extends Metadata<PluginStatusMetadata> {
    * state as before the fill processing was started.
    */
   recoverInitialImageData(blockId: number) {
-    const blockApi = this.cesdk.engine.block;
+    const blockApi = this.engine.block;
     if (!blockApi.hasFill(blockId)) return; // Nothing to recover (no fill anymore)
 
     const metadata = this.get(blockId);
@@ -153,21 +153,21 @@ class ImageProcessingMetadata extends Metadata<PluginStatusMetadata> {
     if (fillId == null) return;
 
     if (initialImageFileURI) {
-      this.cesdk.engine.block.setString(
+      this.engine.block.setString(
         fillId,
         'fill/image/imageFileURI',
         initialImageFileURI
       );
     }
     if (initialPreviewFileURI) {
-      this.cesdk.engine.block.setString(
+      this.engine.block.setString(
         fillId,
         'fill/image/previewFileURI',
         initialPreviewFileURI
       );
     }
     if (initialSourceSet.length > 0) {
-      this.cesdk.engine.block.setSourceSet(
+      this.engine.block.setSourceSet(
         fillId,
         'fill/image/sourceSet',
         initialSourceSet
@@ -184,13 +184,13 @@ class ImageProcessingMetadata extends Metadata<PluginStatusMetadata> {
     metadata: PluginStatusProcessing | PluginStatusError | PluginStatusProcessed
   ): number | undefined {
     if (
-      !this.cesdk.engine.block.isValid(blockId) ||
-      !this.cesdk.engine.block.hasFill(blockId) ||
+      !this.engine.block.isValid(blockId) ||
+      !this.engine.block.hasFill(blockId) ||
       blockId !== metadata.blockId
     ) {
       return undefined;
     }
-    const fillId = this.cesdk.engine.block.getFill(blockId);
+    const fillId = this.engine.block.getFill(blockId);
     if (fillId !== metadata.fillId) {
       return undefined;
     }
