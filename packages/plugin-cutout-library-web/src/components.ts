@@ -1,13 +1,23 @@
 import CreativeEditorSDK, { ObjectTypeLonghand } from '@cesdk/cesdk-js';
-import { DEFAULT_ASSET_BASE_URI } from '.';
+import {
+  CreateCutoutFromBlocks,
+  DEFAULT_ASSET_BASE_URI,
+  generateCutoutFromSelection
+} from '.';
 import {
   CANVAS_MENU_COMPONENT_BUTTON_ID,
   CANVAS_MENU_COMPONENT_BUTTON_LABEL,
   CANVAS_MENU_COMPONENT_ID
 } from './constants';
-import { generateCutoutFromSelection } from './plugin';
 
-export function registerComponents(cesdk: CreativeEditorSDK) {
+export function registerComponents(
+  cesdk: CreativeEditorSDK,
+  {
+    createCutoutFromBlocks
+  }: {
+    createCutoutFromBlocks: CreateCutoutFromBlocks;
+  }
+) {
   cesdk.ui.registerComponent(
     CANVAS_MENU_COMPONENT_ID,
     ({ builder: { Button }, engine }) => {
@@ -28,7 +38,7 @@ export function registerComponents(cesdk: CreativeEditorSDK) {
         label: CANVAS_MENU_COMPONENT_BUTTON_LABEL,
         icon: ({ theme }) => `${DEFAULT_ASSET_BASE_URI}/dock-${theme}.svg`,
         onClick: () => {
-          generateCutoutFromSelection(cesdk);
+          generateCutoutFromSelection(cesdk, createCutoutFromBlocks);
         }
       });
     }
