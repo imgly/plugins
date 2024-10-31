@@ -106,10 +106,13 @@ async function uploadBlob(
 ) {
   const pathname = new URL(initialUri).pathname;
   const parts = pathname.split('/');
-  const filename = parts[parts.length - 1];
+  const extension = mimeTypeToExtension(blob.type);
+  const filename =
+    parts[parts.length - 1]?.split('.')?.[0] ?? 'vectorized-image';
+  const filenameWithExtension = `${filename}.${extension}`;
 
   const uploadedAssets = await cesdk.unstable_upload(
-    new File([blob], filename, { type: blob.type }),
+    new File([blob], filenameWithExtension, { type: blob.type }),
     () => {
       // TODO Delegate process to UI component
     }
@@ -120,6 +123,19 @@ async function uploadBlob(
     throw new Error('Could not upload processed fill');
   }
   return url;
+}
+
+function mimeTypeToExtension(mimeType: string): string {
+  switch (mimeType) {
+    case 'image/jpeg':
+      return 'jpg';
+    case 'image/png':
+      return 'png';
+    case 'image/svg+xml':
+      return 'svg';
+    default:
+      return 'jpg';
+  }
 }
 
 async function fetchImageBlob(uri: string): Promise<Blob> {
