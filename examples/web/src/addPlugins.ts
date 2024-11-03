@@ -5,6 +5,7 @@ import CutoutLibraryPlugin from '@imgly/plugin-cutout-library-web';
 import QrCodePlugin from '@imgly/plugin-qr-code-web';
 import RemoteAssetSourcePlugin from '@imgly/plugin-remote-asset-source-web';
 import VectorizerPlugin from '@imgly/plugin-vectorizer-web';
+import FalAiPlugin from '@imgly/plugin-fal-ai-web';
 
 const ENABLE_DEMO_ASSET_SOURCES = false;
 
@@ -23,6 +24,8 @@ async function addPlugins(cesdk: CreativeEditorSDK): Promise<void> {
       cesdk.addPlugin(VectorizerPlugin({ ui: { locations: 'canvasMenu' } })),
 
       cesdk.addPlugin(QrCodePlugin()),
+
+      cesdk.addPlugin(FalAiPlugin()),
 
       ...addDemoRemoteAssetSourcesPlugins(cesdk)
     ]);
