@@ -54,17 +54,19 @@
     "types:create": "tsc --emitDeclarationOnly"
   },
   "devDependencies": {
+    "@imgly/plugin-utils": "*",
     "@types/ndarray": "^1.0.14",
     "chalk": "^5.3.0",
     "concurrently": "^8.2.2",
     "esbuild": "^0.19.11",
     "eslint": "^8.51.0",
-    "typescript": "^5.3.3",
     "lodash-es": "^4.17.21",
-    "@imgly/plugin-utils": "*"
+    "typescript": "^5.3.3"
   },
   "peerDependencies": {
     "@cesdk/cesdk-js": "1.38.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "@fal-ai/client": "^1.0.4"
+  }
 }

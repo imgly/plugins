@@ -1,5 +1,6 @@
 import CreativeEditorSDK, { EditorPlugin } from '@cesdk/cesdk-js';
 import type CreativeEngine from '@cesdk/engine';
+import { fal } from '@fal-ai/client';
 
 import { Metadata } from '@imgly/plugin-utils';
 
@@ -20,9 +21,23 @@ async function createFalAiBlock(
   prompt: string,
   metadata: Metadata<FalAiMetadata>
 ): Promise<number | undefined> {
-  const width = 512;
-  const height = 512;
+  const width = 1024;
+  const height = 1024;
 
+  const result: any = await fal.subscribe('fal-ai/recraft-v3', {
+    input: {
+      prompt,
+      image_size: 'square'
+    },
+    logs: true,
+    onQueueUpdate: (update) => {
+      if (update.status === 'IN_PROGRESS') {
+        update.logs.map((log) => log.message).forEach(console.log);
+      }
+    }
+  });
+
+  const url = result.data.images[0].url;
   const block = await engine.asset.defaultApplyAsset({
     id: 'fal.ai',
     meta: {
@@ -33,7 +48,7 @@ async function createFalAiBlock(
     payload: {
       sourceSet: [
         {
-          uri: `https://placehold.co/${width}x${height}`,
+          uri: url,
           width,
           height
         }
@@ -60,6 +75,10 @@ export default (
   return {
     initialize({ cesdk }) {
       if (cesdk == null) return;
+
+      fal.config({
+        proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
+      });
 
       cesdk.setTranslations({
         en: {
@@ -159,15 +178,11 @@ export default (
               builder.Button('ly.img.generate-fal-ai.generate', {
                 label: 'Generate',
                 isDisabled: prompt.value === '',
+                isLoading: generating.value,
                 color: 'accent',
                 onClick: async () => {
                   generating.setValue(true);
-                  await createFalAiBlock(
-                    cesdk,
-                    engine,
-                    prompt.value,
-                    metadata
-                  );
+                  await createFalAiBlock(cesdk, engine, prompt.value, metadata);
                   generating.setValue(false);
                   cesdk.ui.closePanel(GENERATE_PANEL_ID);
                 }
