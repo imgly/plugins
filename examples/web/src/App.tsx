@@ -39,7 +39,7 @@ function App() {
                 entries: ['ly.img.cutout.entry']
               },
               'ly.img.spacer',
-              'ly.img.generate-fal-ai.dock',
+              'ly.img.fal-ai.dock',
               'ly.img.generate-qr.dock'
             ]);
 
