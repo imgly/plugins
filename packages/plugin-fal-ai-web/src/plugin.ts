@@ -6,8 +6,54 @@ import { Metadata } from '@imgly/plugin-utils';
 
 export const PLUGIN_ID = '@imgly/plugin-fal-ai-web';
 
-const GENERATE_PANEL_ID = '//ly.img.panel/generate-fal.ai';
-const UPDATE_PANEL_ID = '//ly.img.panel/update-fal.ai';
+const FAL_AI_PANEL_ID = '//ly.img.panel/fal.ai';
+
+const IMAGE_SIZES: { id: string; label: string | string[] }[] = [
+  { id: 'square_hd', label: 'Square HD' },
+  { id: 'square', label: 'Square' },
+  { id: 'portrait_4_3', label: 'Portrait 4:3' },
+  { id: 'portrait_16_9', label: 'Portrait 16:9' },
+  { id: 'landscape_4_3', label: 'Landscape 4:3' },
+  { id: 'landscape_16_9', label: 'Landscape 16:9' },
+  { id: 'custom', label: 'Custom' }
+];
+
+const ImageSizeEnumToSize: Record<string, { width: number; height: number }> = {
+  square_hd: { width: 1024, height: 1024 },
+  square: { width: 512, height: 512 },
+  portrait_4_3: { width: 768, height: 1024 },
+  portrait_16_9: { width: 720, height: 1280 },
+  landscape_4_3: { width: 1024, height: 768 },
+  landscape_16_9: { width: 1280, height: 720 }
+};
+
+// prettier-ignore
+const STYLES: { id: string; label: string | string[] }[] = [
+  { id: 'any', label: 'Any' },
+  { id: 'realistic_image', label: 'Realistic Image' },
+  { id: 'digital_illustration', label: 'Digital Illustration' },
+  { id: 'vector_illustration', label: 'Vector Illustration' },
+  { id: 'realistic_image/b_and_w', label: 'Realistic Image: Black & White' },
+  { id: 'realistic_image/hard_flash', label: 'Realistic Image: Hard Flash' },
+  { id: 'realistic_image/hdr', label: 'Realistic Image: HDR' },
+  { id: 'realistic_image/natural_light', label: 'Realistic Image: Natural Light' },
+  { id: 'realistic_image/studio_portrait', label: 'Realistic Image: Studio Portrait' },
+  { id: 'realistic_image/enterprise', label: 'Realistic Image: Enterprise' },
+  { id: 'realistic_image/motion_blur', label: 'Realistic Image: Motion Blur' },
+  { id: 'digital_illustration/pixel_art', label: 'Digital Illustration: Pixel Art' },
+  { id: 'digital_illustration/hand_drawn', label: 'Digital Illustration: Hand Drawn' },
+  { id: 'digital_illustration/grain', label: 'Digital Illustration: Grain' },
+  { id: 'digital_illustration/infantile_sketch', label: 'Digital Illustration: Infantile Sketch' },
+  { id: 'digital_illustration/2d_art_poster', label: 'Digital Illustration: 2D Art Poster' },
+  { id: 'digital_illustration/handmade_3d', label: 'Digital Illustration: Handmade 3D' },
+  { id: 'digital_illustration/hand_drawn_outline', label: 'Digital Illustration: Hand Drawn Outline' },
+  { id: 'digital_illustration/engraving_color', label: 'Digital Illustration: Engraving Color' },
+  { id: 'digital_illustration/2d_art_poster_2', label: 'Digital Illustration: 2D Art Poster 2' },
+  { id: 'vector_illustration/engraving', label: 'Vector Illustration: Engraving' },
+  { id: 'vector_illustration/line_art', label: 'Vector Illustration: Line Art' },
+  { id: 'vector_illustration/line_circuit', label: 'Vector Illustration: Line Circuit' },
+  { id: 'vector_illustration/linocut', label: 'Vector Illustration: Linocut' },
+];
 
 interface FalAiMetadata {
   prompt: string;
@@ -32,7 +78,7 @@ async function createFalAiBlock(
     logs: true,
     onQueueUpdate: (update) => {
       if (update.status === 'IN_PROGRESS') {
-        update.logs.map((log) => log.message).forEach(console.log);
+        console.log('In progress...', update);
       }
     }
   });
@@ -82,8 +128,7 @@ export default (
 
       cesdk.setTranslations({
         en: {
-          [`panel.${GENERATE_PANEL_ID}`]: 'Generate fal.ai',
-          [`panel.${UPDATE_PANEL_ID}`]: 'Update fal.ai'
+          [`panel.${FAL_AI_PANEL_ID}`]: 'fal.ai'
         }
       });
 
@@ -105,144 +150,88 @@ export default (
       `
       );
 
-      cesdk.ui.registerComponent(
-        'ly.img.generate-fal-ai.dock',
-        ({ builder }) => {
-          const isOpen = cesdk.ui.isPanelOpen(GENERATE_PANEL_ID);
-          builder.Button('ly.img.generate-fal-ai.dock', {
-            label: 'fal.ai',
-            icon: '@imgly/plugin/fal-ai',
-            isSelected: isOpen,
-            onClick: () => {
-              if (isOpen) {
-                cesdk.ui.closePanel(GENERATE_PANEL_ID);
-              } else {
-                cesdk.ui.openPanel(GENERATE_PANEL_ID);
-              }
+      cesdk.ui.registerComponent('ly.img.fal-ai.dock', ({ builder }) => {
+        const isOpen = cesdk.ui.isPanelOpen(FAL_AI_PANEL_ID);
+        builder.Button('ly.img.fal-ai.dock', {
+          label: 'fal.ai',
+          icon: '@imgly/plugin/fal-ai',
+          isSelected: isOpen,
+          onClick: () => {
+            if (isOpen) {
+              cesdk.ui.closePanel(FAL_AI_PANEL_ID);
+            } else {
+              cesdk.ui.openPanel(FAL_AI_PANEL_ID);
             }
-          });
-        }
-      );
-
-      cesdk.ui.registerComponent(
-        'ly.img.update-fal-ai.canvasMenu',
-        ({ builder, engine }) => {
-          const selectedBlocks = engine.block.findAllSelected();
-          if (selectedBlocks.length !== 1) return;
-          const selectedBlock = selectedBlocks[0];
-
-          const canEdit = engine.block.isAllowedByScope(
-            selectedBlock,
-            'fill/change'
-          );
-
-          if (!canEdit) return;
-
-          if (!metadata.hasData(selectedBlock)) return;
-
-          builder.Button('ly.img.update-fal-ai.dock', {
-            label: 'common.edit',
-            icon: '@imgly/plugin/fal-ai',
-            onClick: () => {
-              cesdk.ui.openPanel(UPDATE_PANEL_ID);
-            }
-          });
-        }
-      );
-
-      cesdk.ui.setCanvasMenuOrder([
-        'ly.img.update-fal-ai.canvasMenu',
-        ...cesdk.ui.getCanvasMenuOrder()
-      ]);
-
-      cesdk.ui.registerPanel(
-        GENERATE_PANEL_ID,
-        ({ builder, engine, state }) => {
-          const prompt = state<string>('prompt', '');
-          const generating = state<boolean>('generating', false);
-
-          builder.Section('ly.img.generate-fal-ai.inputs.section', {
-            children: () => {
-              builder.TextArea('ly.img.generate-fal-ai.prompt', {
-                inputLabel: 'Prompt',
-                ...prompt
-              });
-            }
-          });
-
-          builder.Section('ly.img.generate-fal-ai.button.section', {
-            children: () => {
-              builder.Button('ly.img.generate-fal-ai.generate', {
-                label: 'Generate',
-                isDisabled: prompt.value === '',
-                isLoading: generating.value,
-                color: 'accent',
-                onClick: async () => {
-                  generating.setValue(true);
-                  await createFalAiBlock(cesdk, engine, prompt.value, metadata);
-                  generating.setValue(false);
-                  cesdk.ui.closePanel(GENERATE_PANEL_ID);
-                }
-              });
-            }
-          });
-        }
-      );
-
-      /**
-       * Close the panel if the selected block is not a fal-ai block.
-       */
-      cesdk.engine.block.onSelectionChanged(() => {
-        const selectedBlocks = cesdk.engine.block.findAllSelected();
-        if (selectedBlocks.length !== 1) {
-          if (cesdk.ui.isPanelOpen(UPDATE_PANEL_ID))
-            cesdk.ui.closePanel(UPDATE_PANEL_ID);
-          return;
-        }
-        const selectedBlock = selectedBlocks[0];
-        if (!metadata.hasData(selectedBlock)) {
-          if (cesdk.ui.isPanelOpen(UPDATE_PANEL_ID))
-            cesdk.ui.closePanel(UPDATE_PANEL_ID);
-        }
+          }
+        });
       });
 
-      cesdk.ui.registerPanel(UPDATE_PANEL_ID, ({ builder, engine, state }) => {
-        const selectedBlocks = engine.block.findAllSelected();
-        if (selectedBlocks.length !== 1) {
-          builder.Section('ly.img.update-fal-ai.only-one-block.section', {
-            children: () => {
-              builder.Text('ly.img.update-fal-ai.only-one-block', {
-                content:
-                  'Please select only one block to update generative assets.'
-              });
-            }
-          });
-          return;
-        }
+      cesdk.ui.registerPanel(FAL_AI_PANEL_ID, ({ builder, engine, state }) => {
+        const prompt = state<string>('prompt', '');
+        const image_size = state('image_size', IMAGE_SIZES[0]);
+        const customWidth = state<number>('width', 1024);
+        const customHeight = state<number>('height', 1024);
+        const style = state('style', STYLES[0]);
 
-        const selectedBlock = selectedBlocks[0];
-        if (!metadata.hasData(selectedBlock)) {
-          builder.Section('ly.img.update-fal-ai.no-metadata.section', {
-            children: () => {
-              builder.Text('ly.img.update-fal-ai.no-metadata', {
-                content: 'Invalid fal.ai block selected. Missing metadata.'
-              });
-            }
-          });
-          return;
-        }
+        const generating = state<boolean>('generating', false);
 
-        const { prompt: promptFromMetadata } = metadata.get(
-          selectedBlock
-        ) as FalAiMetadata;
-
-        const prompt = state<string>('prompt', promptFromMetadata);
-
-        builder.Section('ly.img.update-fal-ai.section', {
+        builder.Section('ly.img.fal-ai.inputs.section', {
           children: () => {
-            builder.TextArea('ly.img.update-fal-ai.prompt', {
+            builder.TextArea('ly.img.fal-ai.prompt', {
               inputLabel: 'Prompt',
               ...prompt
+            });
+          }
+        });
+
+        builder.Section('ly.img.fal-ai.parameter.section', {
+          children: () => {
+            builder.Select('ly.img.fal-ai.style', {
+              inputLabel: 'Style',
+              inputLabelPosition: 'top',
+              ...style,
+              values: Array.from(STYLES)
+            });
+
+            builder.Select('ly.img.fal-ai.image_size', {
+              ...image_size,
+              values: Array.from(IMAGE_SIZES)
+            });
+
+            if (image_size.value.id === 'custom') {
+              builder.NumberInput('ly.img.fal-ai.width', {
+                inputLabel: 'Width',
+                ...customWidth
+              });
+
+              builder.NumberInput('ly.img.fal-ai.height', {
+                inputLabel: 'Height',
+                ...customHeight
+              });
+            }
+          }
+        });
+
+        builder.Section('ly.img.fal-ai.button.section', {
+          children: () => {
+            builder.Button('ly.img.fal-ai.generate', {
+              label: 'Generate',
+              isDisabled: prompt.value === '',
+              isLoading: generating.value,
+              color: 'accent',
+              onClick: async () => {
+                generating.setValue(true);
+                await generate(
+                  engine,
+                  prompt.value,
+                  style.value.id,
+                  image_size.value.id,
+                  customWidth.value,
+                  customHeight.value
+                );
+
+                generating.setValue(false);
+              }
             });
           }
         });
@@ -250,3 +239,92 @@ export default (
     }
   };
 };
+
+async function generate(
+  engine: CreativeEngine,
+  prompt: string,
+  style: string,
+  imageSize: string,
+  width: number,
+  height: number
+): Promise<number | undefined> {
+  const currentWidth =
+    imageSize === 'custom' ? width : ImageSizeEnumToSize[imageSize]?.width;
+  const currentHeight =
+    imageSize === 'custom' ? height : ImageSizeEnumToSize[imageSize]?.height;
+
+  const block = await createBlock(engine, {
+    width: currentWidth,
+    height: currentHeight
+  });
+
+  // TODO: Show error message if block is undefined
+  if (block == null) return;
+
+  const fillId = engine.block.getFill(block);
+  engine.block.setState(fillId, {
+    type: 'Pending',
+    progress: 0
+  });
+
+  const result: any = await fal.subscribe('fal-ai/recraft-v3', {
+    input: {
+      prompt,
+      style,
+      image_size:
+        imageSize === 'custom'
+          ? { width: currentWidth, height: currentHeight }
+          : imageSize
+    },
+    logs: true
+  });
+
+  const url = result.data.images[0].url;
+
+  if (engine.block.isValid(fillId)) {
+    engine.block.setState(fillId, { type: 'Ready' });
+    engine.block.addImageFileURIToSourceSet(
+      fillId,
+      'fill/image/sourceSet',
+      url
+    );
+  }
+
+  // TODO set metadata
+
+  return block;
+}
+
+async function createBlock(
+  engine: CreativeEngine,
+  parameter: {
+    url?: string;
+    width: number;
+    height: number;
+  }
+): Promise<number | undefined> {
+  const { url, width, height } = parameter;
+
+  const block = await engine.asset.defaultApplyAsset({
+    id: 'fal.ai',
+    meta: {
+      fillType: '//ly.img.ubq/fill/image',
+      width,
+      height
+    },
+    payload: {
+      sourceSet:
+        url != null
+          ? [
+              {
+                uri: url,
+                width,
+                height
+              }
+            ]
+          : []
+    }
+  });
+
+  return block;
+}
