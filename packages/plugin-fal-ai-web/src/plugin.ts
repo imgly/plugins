@@ -1,5 +1,6 @@
 import CreativeEditorSDK, { EditorPlugin } from '@cesdk/cesdk-js';
 import type CreativeEngine from '@cesdk/engine';
+import { type RGBAColor } from '@cesdk/engine';
 import { fal } from '@fal-ai/client';
 
 import { Metadata } from '@imgly/plugin-utils';
@@ -172,6 +173,10 @@ export default (
         const customWidth = state<number>('width', 1024);
         const customHeight = state<number>('height', 1024);
         const style = state('style', STYLES[0]);
+        const preferrableColors = state<{ r: number; g: number; b: number }[]>(
+          'preferrableColors',
+          []
+        );
 
         const generating = state<boolean>('generating', false);
 
@@ -212,6 +217,45 @@ export default (
           }
         });
 
+        builder.Section('ly.img.fal-ai.colors.section', {
+          title: 'Preferrable Colors',
+          children: () => {
+            preferrableColors.value.forEach((color, index) => {
+              builder.ColorInput(`ly.img.fal-ai.color.${index}`, {
+                value: { ...color, a: 1 },
+                setValue: (value) => {
+                  let rgb: { r: number; g: number; b: number } | null = null;
+
+                  if (isRGBAColor(value)) {
+                    rgb = {
+                      r: value.r,
+                      g: value.g,
+                      b: value.b
+                    };
+                  }
+
+                  if (rgb == null) return;
+
+                  preferrableColors.setValue([
+                    ...preferrableColors.value.slice(0, index),
+                    { r: rgb.r, g: rgb.g, b: rgb.b },
+                    ...preferrableColors.value.slice(index + 1)
+                  ]);
+                }
+              });
+            });
+            builder.Button('ly.img.fal-ai.addColor', {
+              label: 'Add Color',
+              onClick: () => {
+                preferrableColors.setValue([
+                  ...preferrableColors.value,
+                  { r: 0, g: 0, b: 0 }
+                ]);
+              }
+            });
+          }
+        });
+
         builder.Section('ly.img.fal-ai.button.section', {
           children: () => {
             builder.Button('ly.img.fal-ai.generate', {
@@ -227,7 +271,8 @@ export default (
                   style.value.id,
                   image_size.value.id,
                   customWidth.value,
-                  customHeight.value
+                  customHeight.value,
+                  preferrableColors.value
                 );
 
                 generating.setValue(false);
@@ -246,7 +291,8 @@ async function generate(
   style: string,
   imageSize: string,
   width: number,
-  height: number
+  height: number,
+  preferrableColors: { r: number; g: number; b: number }[]
 ): Promise<number | undefined> {
   const currentWidth =
     imageSize === 'custom' ? width : ImageSizeEnumToSize[imageSize]?.width;
@@ -267,15 +313,25 @@ async function generate(
     progress: 0
   });
 
-  const result: any = await fal.subscribe('fal-ai/recraft-v3', {
-    input: {
+  const input = {
+
       prompt,
       style,
       image_size:
         imageSize === 'custom'
           ? { width: currentWidth, height: currentHeight }
-          : imageSize
-    },
+          : imageSize,
+      colors: preferrableColors.map((color) => {
+        return {
+          r: Math.round(color.r * 255),
+          g: Math.round(color.g * 255),
+          b: Math.round(color.b * 255)
+        };
+      })
+  };
+
+  const result: any = await fal.subscribe('fal-ai/recraft-v3', {
+    input,
     logs: true
   });
 
@@ -327,4 +383,13 @@ async function createBlock(
   });
 
   return block;
+}
+
+function isRGBAColor(color: Color): color is RGBAColor {
+  return (
+    'r' in color &&
+    'a' in color &&
+    color.r !== undefined &&
+    color.a !== undefined
+  );
 }
