@@ -1,13 +1,14 @@
-import CreativeEditorSDK, { EditorPlugin } from '@cesdk/cesdk-js';
+import { EditorPlugin } from '@cesdk/cesdk-js';
 import type CreativeEngine from '@cesdk/engine';
-import { type RGBAColor } from '@cesdk/engine';
+import { type Color, type RGBAColor } from '@cesdk/engine';
 import { fal } from '@fal-ai/client';
 
-import { Metadata } from '@imgly/plugin-utils';
+// import { Metadata } from '@imgly/plugin-utils';
 
 export const PLUGIN_ID = '@imgly/plugin-fal-ai-web';
 
 const FAL_AI_PANEL_ID = '//ly.img.panel/fal.ai';
+const ASSET_SOURCE_ID = 'fal.ai';
 
 const IMAGE_SIZES: { id: string; label: string | string[] }[] = [
   { id: 'square_hd', label: 'Square HD' },
@@ -62,60 +63,6 @@ interface FalAiMetadata {
 
 export interface PluginConfiguration {}
 
-async function createFalAiBlock(
-  cesdk: CreativeEditorSDK,
-  engine: CreativeEngine,
-  prompt: string,
-  metadata: Metadata<FalAiMetadata>
-): Promise<number | undefined> {
-  const width = 1024;
-  const height = 1024;
-
-  const result: any = await fal.subscribe('fal-ai/recraft-v3', {
-    input: {
-      prompt,
-      image_size: 'square'
-    },
-    logs: true,
-    onQueueUpdate: (update) => {
-      if (update.status === 'IN_PROGRESS') {
-        console.log('In progress...', update);
-      }
-    }
-  });
-
-  const url = result.data.images[0].url;
-  const block = await engine.asset.defaultApplyAsset({
-    id: 'fal.ai',
-    meta: {
-      fillType: '//ly.img.ubq/fill/image',
-      width,
-      height
-    },
-    payload: {
-      sourceSet: [
-        {
-          uri: url,
-          width,
-          height
-        }
-      ]
-    }
-  });
-
-  if (block == null) {
-    cesdk.ui.showNotification({
-      type: 'error',
-      message: 'Failed to create fal.ai block.'
-    });
-  } else {
-    metadata.set(block, {
-      prompt
-    });
-  }
-  return block;
-}
-
 export default (
   _configuration: PluginConfiguration = {}
 ): Omit<EditorPlugin, 'name' | 'version'> => {
@@ -124,7 +71,18 @@ export default (
       if (cesdk == null) return;
 
       fal.config({
+        // @ts-ignore
         proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
+      });
+
+      const assetSourceIds = cesdk.engine.asset.findAllSources();
+      if (!assetSourceIds.includes(ASSET_SOURCE_ID)) {
+        cesdk.engine.asset.addLocalSource(ASSET_SOURCE_ID);
+      }
+
+      cesdk.ui.addAssetLibraryEntry({
+        id: 'ly.img.fal-ai.entry',
+        sourceIds: [ASSET_SOURCE_ID]
       });
 
       cesdk.setTranslations({
@@ -133,7 +91,7 @@ export default (
         }
       });
 
-      const metadata = new Metadata<FalAiMetadata>(cesdk.engine, PLUGIN_ID);
+      // const metadata = new Metadata<FalAiMetadata>(cesdk.engine, PLUGIN_ID);
 
       cesdk.ui.addIconSet(
         '@imgly/plugin/fal-ai',
@@ -280,6 +238,19 @@ export default (
             });
           }
         });
+
+        builder.Section('ly.img.fal-ai.generated.section', {
+          children: () => {
+            builder.Library('ly.img.fal-ai.generated', {
+              entries: [
+                {
+                  id: 'ly.img.fal-ai.entry',
+                  sourceIds: [ASSET_SOURCE_ID]
+                }
+              ]
+            });
+          }
+        });
       });
     }
   };
@@ -314,20 +285,19 @@ async function generate(
   });
 
   const input = {
-
-      prompt,
-      style,
-      image_size:
-        imageSize === 'custom'
-          ? { width: currentWidth, height: currentHeight }
-          : imageSize,
-      colors: preferrableColors.map((color) => {
-        return {
-          r: Math.round(color.r * 255),
-          g: Math.round(color.g * 255),
-          b: Math.round(color.b * 255)
-        };
-      })
+    prompt,
+    style,
+    image_size:
+      imageSize === 'custom'
+        ? { width: currentWidth, height: currentHeight }
+        : imageSize,
+    colors: preferrableColors.map((color) => {
+      return {
+        r: Math.round(color.r * 255),
+        g: Math.round(color.g * 255),
+        b: Math.round(color.b * 255)
+      };
+    })
   };
 
   const result: any = await fal.subscribe('fal-ai/recraft-v3', {
@@ -345,6 +315,24 @@ async function generate(
       url
     );
   }
+
+  engine.asset.addAssetToSource(ASSET_SOURCE_ID, {
+    id: 'ly.img.cesdk.images.samples/placeholder',
+    groups: [],
+    label: {
+      en: prompt
+    },
+    tags: {
+      en: ['fal.ai']
+    },
+    meta: {
+      uri: url,
+      thumbUri: url,
+      fillType: '//ly.img.ubq/fill/image',
+      width: currentWidth,
+      height: currentHeight
+    }
+  });
 
   // TODO set metadata
 

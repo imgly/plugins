@@ -38,6 +38,13 @@ function App() {
                 icon: cutoutAssetEntry?.icon,
                 entries: ['ly.img.cutout.entry']
               },
+              {
+                id: 'ly.img.assetLibrary.dock',
+                label: 'Generated',
+                key: 'ly.img.assetLibrary.dock',
+                icon: '@imgly/plugin/fal-ai',
+                entries: ['ly.img.fal-ai.entry']
+              },
               'ly.img.spacer',
               'ly.img.fal-ai.dock',
               'ly.img.generate-qr.dock'
