@@ -63,7 +63,7 @@
     "@imgly/plugin-utils": "*"
   },
   "peerDependencies": {
-    "@cesdk/cesdk-js": "^1.39.0"
+    "@cesdk/cesdk-js": "^1.32.0"
   },
   "dependencies": {
     "@imgly/vectorizer": "1.0.0"
