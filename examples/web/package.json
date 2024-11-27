@@ -14,7 +14,7 @@
     "@imgly/plugin-background-removal-web": "*",
     "@imgly/plugin-cutout-library-web": "*",
     "@imgly/plugin-remote-asset-source-web": "*",
-    "@cesdk/cesdk-js": "1.38.0",
+    "@cesdk/cesdk-js": "1.39.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
