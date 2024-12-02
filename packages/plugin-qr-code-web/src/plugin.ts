@@ -80,7 +80,7 @@ export default (
             'Invalid state with no fill found.',
           [`panel.${UPDATE_QR_PANEL_ID}.url`]: 'URL',
           [`panel.${UPDATE_QR_PANEL_ID}.foregroundColor`]: 'Foreground Color',
-          [`common.edit`]: 'Edit'
+          [`ly.img.generate-qr.canvasMenu.edit`]: 'Edit'
         }
       });
 
@@ -134,7 +134,7 @@ export default (
           if (!metadata.hasData(selectedBlock)) return;
 
           builder.Button('ly.img.update-qr.dock', {
-            label: 'common.edit',
+            label: 'ly.img.generate-qr.canvasMenu.edit',
             icon: '@imgly/plugin/qr',
             onClick: () => {
               cesdk.ui.openPanel(UPDATE_QR_PANEL_ID);
