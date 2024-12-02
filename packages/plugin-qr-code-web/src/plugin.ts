@@ -56,14 +56,31 @@ export default (
 
       cesdk.setTranslations({
         en: {
+          [`ly.img.generate-qr.dock.label`]: 'QR Code',
           [`panel.${GENERATE_QR_PANEL_ID}`]: 'Generate QR Code',
           [`panel.${GENERATE_QR_PANEL_ID}.description`]:
             'Enter a URL to automatically generate a QR code for you to embed it in your design.',
+          [`panel.${GENERATE_QR_PANEL_ID}.submit`]: 'Generate QR Code',
+          [`panel.${GENERATE_QR_PANEL_ID}.url`]: 'URL',
+          [`panel.${GENERATE_QR_PANEL_ID}.foregroundColor`]: 'Foreground Color',
+          [`panel.${GENERATE_QR_PANEL_ID}.error`]:
+            'Failed to create QR code block.',
+
           [`panel.${UPDATE_QR_PANEL_ID}`]: 'Update QR Code',
           [`panel.${UPDATE_QR_PANEL_ID}.description`]:
             'Update the URL to automatically refresh the QR code within your design.',
-
-          [`panel.${UPDATE_QR_PANEL_ID}.asShape`]: 'As Shape?'
+          [`panel.${UPDATE_QR_PANEL_ID}.asShape`]: 'As Shape?',
+          [`panel.${UPDATE_QR_PANEL_ID}.onlyOneBlock`]:
+            'Please select only one block to update the QR code.',
+          [`panel.${UPDATE_QR_PANEL_ID}.noMetadata`]:
+            'Invalid QR code block selected. Missing metadata.',
+          [`panel.${UPDATE_QR_PANEL_ID}.invalidStateShape`]:
+            'Invalid state with no shape found.',
+          [`panel.${UPDATE_QR_PANEL_ID}.invalidStateFill`]:
+            'Invalid state with no fill found.',
+          [`panel.${UPDATE_QR_PANEL_ID}.url`]: 'URL',
+          [`panel.${UPDATE_QR_PANEL_ID}.foregroundColor`]: 'Foreground Color',
+          [`common.edit`]: 'Edit'
         }
       });
 
@@ -87,7 +104,7 @@ export default (
       cesdk.ui.registerComponent('ly.img.generate-qr.dock', ({ builder }) => {
         const isOpen = cesdk.ui.isPanelOpen(GENERATE_QR_PANEL_ID);
         builder.Button('ly.img.generate-qr.dock', {
-          label: 'QR Code',
+          label: 'ly.img.generate-qr.dock.label',
           icon: '@imgly/plugin/qr',
           isSelected: isOpen,
           onClick: () => {
@@ -152,12 +169,12 @@ export default (
           builder.Section('ly.img.generate-qr.inputs.section', {
             children: () => {
               builder.TextInput('ly.img.generate-qr.url', {
-                inputLabel: 'URL',
+                inputLabel: `panel.${GENERATE_QR_PANEL_ID}.url`,
                 ...url
               });
               builder.ColorInput('ly.img.generate-qr.foregroundColor', {
-                label: 'Foreground Color',
-                inputLabel: 'Color',
+                label: `panel.${GENERATE_QR_PANEL_ID}.foregroundColor`,
+                inputLabel: `panel.${GENERATE_QR_PANEL_ID}.foregroundColor`,
                 ...color
               });
             }
@@ -166,7 +183,7 @@ export default (
           builder.Section('ly.img.generate-qr.button.section', {
             children: () => {
               builder.Button('ly.img.generate-qr.generate', {
-                label: 'Generate QR Code',
+                label: `panel.${GENERATE_QR_PANEL_ID}.submit`,
                 isDisabled: url.value === '',
                 color: 'accent',
                 onClick: async () => {
@@ -215,7 +232,7 @@ export default (
           builder.Section('ly.img.update-qr.only-one-block.section', {
             children: () => {
               builder.Text('ly.img.update-qr.only-one-block', {
-                content: 'Please select only one block to update the QR code.'
+                content: `panel.${UPDATE_QR_PANEL_ID}.onlyOneBlock`
               });
             }
           });
@@ -227,7 +244,7 @@ export default (
           builder.Section('ly.img.update-qr.no-metadata.section', {
             children: () => {
               builder.Text('ly.img.update-qr.no-metadata', {
-                content: 'Invalid QR code block selected. Missing metadata.'
+                content: `panel.${UPDATE_QR_PANEL_ID}.noMetadata`
               });
             }
           });
@@ -243,8 +260,7 @@ export default (
             });
 
             builder.TextInput('ly.img.update-qr.url', {
-              inputLabel: 'URL',
-              // inputLabelPosition: 'top',
+              inputLabel: `panel.${UPDATE_QR_PANEL_ID}.url`,
               value: url,
               setValue: (value) => {
                 metadata.set(selectedBlock, {
@@ -258,8 +274,8 @@ export default (
             });
 
             if (type === 'fill') {
-              builder.ColorInput('ly.img.generate-qr.foregroundColor', {
-                inputLabel: 'common.color',
+              builder.ColorInput('ly.img.update-qr.foregroundColor', {
+                inputLabel: `panel.${UPDATE_QR_PANEL_ID}.foregroundColor`,
                 inputLabelPosition: 'top',
                 value: hexToRgba(color),
                 setValue: (value) => {
@@ -358,7 +374,7 @@ async function createQRBlock(
   if (block == null) {
     cesdk.ui.showNotification({
       type: 'error',
-      message: 'Failed to create QR code block.'
+      message: `panel.${GENERATE_QR_PANEL_ID}.error`
     });
   } else {
     metadata.set(block, {
@@ -384,7 +400,7 @@ function updateQR(
     if (!engine.block.supportsShape(block)) {
       cesdk.ui.showNotification({
         type: 'error',
-        message: 'Invalid state with no shape found.'
+        message: `panel.${UPDATE_QR_PANEL_ID}.invalidStateShape`
       });
       return;
     }
@@ -398,7 +414,7 @@ function updateQR(
     if (!engine.block.supportsFill(block)) {
       cesdk.ui.showNotification({
         type: 'error',
-        message: 'Invalid state with no fill found.'
+        message: `panel.${UPDATE_QR_PANEL_ID}.invalidStateFill`
       });
       return;
     }
