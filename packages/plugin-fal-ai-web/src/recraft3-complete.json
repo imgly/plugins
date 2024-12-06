@@ -1,0 +1,210 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Recraft V3",
+    "version": "1.0.0",
+    "description": "Generating images using Recraft V3",
+    "x-imgly": {
+      "id": "fal-ai/recraft-v3"
+    }
+  },
+  "paths": {
+    "/fal-ai/recraft-v3": {
+      "post": {
+        "summary": "Generate images",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "prompt": {
+                    "type": "string",
+                    "description": "Text prompt to generate the image",
+                    "x-imgly": {
+                      "component": {
+                        "type": "TextArea",
+                        "inputLabel": "Prompt"
+                      }
+                    }
+                  },
+                  "image_size": {
+                    "oneOf": [
+                      {
+                        "type": "string",
+                        "enum": [
+                          "square_hd",
+                          "square",
+                          "portrait_4_3",
+                          "portrait_16_9",
+                          "landscape_4_3",
+                          "landscape_16_9"
+                        ],
+                        "x-enum-labels": {
+                          "square_hd": "Square HD",
+                          "square": "Square",
+                          "portrait_4_3": "Portrait 4:3",
+                          "portrait_16_9": "Portrait 16:9",
+                          "landscape_4_3": "Landscape 4:3",
+                          "landscape_16_9": "Landscape 16:9"
+                        },
+                        "description": "Size of the generated image"
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "width": {
+                            "type": "integer",
+                            "default": 512,
+                            "x-imgly": {
+                              "component": {
+                                "type": "NumberInput",
+                                "inputLabel": "Width"
+                              }
+                            }
+                          },
+                          "height": {
+                            "type": "integer",
+                            "default": 512,
+                            "x-imgly": {
+                              "component": {
+                                "type": "NumberInput",
+                                "inputLabel": "Height"
+                              }
+                            }
+                          }
+                        },
+                        "required": ["width", "height"],
+                        "x-label": "Custom",
+                        "description": "Custom image size with width and height"
+                      }
+                    ],
+                    "x-imgly": {
+                      "component": {
+                        "type": "Select",
+                        "inputLabel": "Image Size"
+                      }
+                    }
+                  },
+                  "style": {
+                    "type": "string",
+                    "enum": [
+                      "any",
+                      "realistic_image",
+                      "digital_illustration",
+                      "vector_illustration",
+                      "realistic_image/b_and_w",
+                      "realistic_image/hard_flash",
+                      "realistic_image/hdr",
+                      "realistic_image/natural_light",
+                      "realistic_image/studio_portrait",
+                      "realistic_image/enterprise",
+                      "realistic_image/motion_blur",
+                      "digital_illustration/pixel_art",
+                      "digital_illustration/hand_drawn",
+                      "digital_illustration/grain",
+                      "digital_illustration/infantile_sketch",
+                      "digital_illustration/2d_art_poster",
+                      "digital_illustration/handmade_3d",
+                      "digital_illustration/hand_drawn_outline",
+                      "digital_illustration/engraving_color",
+                      "digital_illustration/2d_art_poster_2",
+                      "vector_illustration/engraving",
+                      "vector_illustration/line_art",
+                      "vector_illustration/line_circuit",
+                      "vector_illustration/linocut"
+                    ],
+                    "description": "Style of the generated image",
+                    "default": "realistic_image",
+                    "x-enum-labels": {
+                      "any": "Any",
+                      "realistic_image": "Realistic Image",
+                      "digital_illustration": "Digital Illustration",
+                      "vector_illustration": "Vector Illustration",
+                      "realistic_image/b_and_w": "Realistic Image: Black & White",
+                      "realistic_image/hard_flash": "Realistic Image: Hard Flash",
+                      "realistic_image/hdr": "Realistic Image: HDR",
+                      "realistic_image/natural_light": "Realistic Image: Natural Light",
+                      "realistic_image/studio_portrait": "Realistic Image: Studio Portrait",
+                      "realistic_image/enterprise": "Realistic Image: Enterprise",
+                      "realistic_image/motion_blur": "Realistic Image: Motion Blur",
+                      "digital_illustration/pixel_art": "Digital Illustration: Pixel Art",
+                      "digital_illustration/hand_drawn": "Digital Illustration: Hand Drawn",
+                      "digital_illustration/grain": "Digital Illustration: Grain",
+                      "digital_illustration/infantile_sketch": "Digital Illustration: Infantile Sketch",
+                      "digital_illustration/2d_art_poster": "Digital Illustration: 2D Art Poster",
+                      "digital_illustration/handmade_3d": "Digital Illustration: Handmade 3D",
+                      "digital_illustration/hand_drawn_outline": "Digital Illustration: Hand Drawn Outline",
+                      "digital_illustration/engraving_color": "Digital Illustration: Engraving Color",
+                      "digital_illustration/2d_art_poster_2": "Digital Illustration: 2D Art Poster 2",
+                      "vector_illustration/engraving": "Vector Illustration: Engraving",
+                      "vector_illustration/line_art": "Vector Illustration: Line Art",
+                      "vector_illustration/line_circuit": "Vector Illustration: Line Circuit",
+                      "vector_illustration/linocut": "Vector Illustration: Linocut"
+                    },
+                    "x-imgly": {
+                      "component": {
+                        "type": "Select",
+                        "inputLabel": "Style"
+                      }
+                    }
+                  }
+                },
+                "required": ["prompt"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Image generation successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "images": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/ResultData"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ResultData": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "URL to download the generated image"
+          },
+          "content_type": {
+            "type": "string",
+            "nullable": true,
+            "description": "Mime type of the file"
+          },
+          "file_name": {
+            "type": "string",
+            "nullable": true,
+            "description": "File name of the image"
+          }
+        }
+      }
+    }
+  }
+}
