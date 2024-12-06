@@ -2,10 +2,10 @@ import type CreativeEditorSDK from '@cesdk/cesdk-js';
 import { CreativeEngine } from '@cesdk/cesdk-js';
 import BackgroundRemovalPlugin from '@imgly/plugin-background-removal-web';
 import CutoutLibraryPlugin from '@imgly/plugin-cutout-library-web';
+import FalAiPlugin from '@imgly/plugin-fal-ai-web';
 import QrCodePlugin from '@imgly/plugin-qr-code-web';
 import RemoteAssetSourcePlugin from '@imgly/plugin-remote-asset-source-web';
 import VectorizerPlugin from '@imgly/plugin-vectorizer-web';
-import FalAiPlugin from '@imgly/plugin-fal-ai-web';
 
 const ENABLE_DEMO_ASSET_SOURCES = false;
 
@@ -25,7 +25,12 @@ async function addPlugins(cesdk: CreativeEditorSDK): Promise<void> {
 
       cesdk.addPlugin(QrCodePlugin()),
 
-      cesdk.addPlugin(FalAiPlugin()),
+      cesdk.addPlugin(
+        FalAiPlugin({
+          // @ts-ignore
+          // proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
+        })
+      ),
 
       ...addDemoRemoteAssetSourcesPlugins(cesdk)
     ]);
