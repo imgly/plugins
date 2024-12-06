@@ -39,8 +39,33 @@ function App() {
                 entries: ['ly.img.cutout.entry']
               },
               'ly.img.spacer',
+              {
+                id: 'ly.img.assetLibrary.dock',
+                label: 'Generated Images',
+                key: 'ly.img.assetLibrary.dock',
+                icon: '@imgly/plugin/fal-ai',
+                entries: ['ly.img.fal-ai.entry']
+              },
+              'ly.img.separator',
+              'ly.img.fal-ai/recraft-v3.dock',
+              'ly.img.fal-ai/recraft-v3/vector.dock',
+              'ly.img.fal-ai/recraft-v3/raster.dock',
               'ly.img.generate-qr.dock'
             ]);
+
+            const imageEntry = instance.ui.getAssetLibraryEntry('ly.img.image');
+            console.log(imageEntry);
+            if (imageEntry != null) {
+              instance.ui.updateAssetLibraryEntry('ly.img.image', {
+                ...imageEntry,
+                sourceIds: [
+                  ...imageEntry.sourceIds,
+                  'fal-ai/recraft-v3',
+                  'fal-ai/recraft-v3/vector',
+                  'fal-ai/recraft-v3/raster'
+                ]
+              });
+            }
 
             await instance.createDesignScene();
           });
