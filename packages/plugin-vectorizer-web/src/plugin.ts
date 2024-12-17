@@ -6,7 +6,7 @@ import {
   type UserInterfaceConfiguration
 } from '@imgly/plugin-utils';
 
-import { EditorPlugin } from '@cesdk/cesdk-js';
+import CreativeEditorSDK, { EditorPlugin } from '@cesdk/cesdk-js';
 import { processVectorization } from './processVectorization';
 
 export const PLUGIN_ID = '@imgly/plugin-vectorizer-web';
@@ -37,6 +37,8 @@ export default (
     initialize({ cesdk }) {
       if (cesdk == null) return;
 
+      addIconSet(cesdk);
+
       initializeFillProcessing(cesdk, {
         pluginId: PLUGIN_ID,
         process: (blockId, metadata) => {
@@ -65,3 +67,25 @@ export default (
     }
   };
 };
+
+function addIconSet(cesdk: CreativeEditorSDK) {
+  cesdk.ui.addIconSet(
+    '@imgly/plugin/vectorizer',
+    `
+        <svg>
+          <symbol
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            id="@imgly/icons/Vectorize"
+          >
+          <rect x="11" y="2" width="2" height="20" fill="currentColor"/>
+          <path d="M13.6776 5.26764L19.9611 12L13.6776 18.7324L15.3224 20.2676L23.0389 12L15.3224 3.73242L13.6776 5.26764Z" fill="currentColor"/>
+          <path d="M4 10.5H1V13.5H4V16.5H7V19.5H10V16.5H7V13.5H4V10.5Z" fill="currentColor"/>
+          <path d="M4 10.5V7.50003H7V10.5H4Z" fill="currentColor"/>
+          <path d="M7 7.50003V4.50003H10V7.50003H7Z" fill="currentColor"/>
+          </symbol>
+        </svg>
+      `
+  );
+}
