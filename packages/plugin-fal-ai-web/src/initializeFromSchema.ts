@@ -325,7 +325,7 @@ function registerPanels(
         builder.Library('ly.img.fal-ai.generated', {
           entries: [
             {
-              id: ASSET_LIBRARY_ENTRY_ID,
+              id: `${ASSET_LIBRARY_ENTRY_ID}-1`,
               sourceIds: [id],
               gridColumns: 2,
               gridItemHeight: 'auto',
