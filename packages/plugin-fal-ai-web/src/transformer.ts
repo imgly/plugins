@@ -343,7 +343,12 @@ class Transformer {
     result.components.unshift(selectComponent);
     result.requestValues[propertyName] = () => {
       // Get the value from the selected oneOf value
-      return this.getState<OneOfSelectValue>(propertyName, defaulSelectValue).value?.value() ?? '';
+      return (
+        this.getState<OneOfSelectValue>(
+          propertyName,
+          defaulSelectValue
+        ).value?.value() ?? ''
+      );
     };
 
     return result;

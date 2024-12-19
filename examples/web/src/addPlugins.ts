@@ -1,7 +1,6 @@
 import type CreativeEditorSDK from '@cesdk/cesdk-js';
 import { CreativeEngine } from '@cesdk/cesdk-js';
 import BackgroundRemovalPlugin from '@imgly/plugin-background-removal-web';
-import CutoutLibraryPlugin from '@imgly/plugin-cutout-library-web';
 import FalAiPlugin from '@imgly/plugin-fal-ai-web';
 import QrCodePlugin from '@imgly/plugin-qr-code-web';
 import RemoteAssetSourcePlugin from '@imgly/plugin-remote-asset-source-web';
