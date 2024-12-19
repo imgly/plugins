@@ -14,11 +14,6 @@ async function addPlugins(cesdk: CreativeEditorSDK): Promise<void> {
   try {
     await Promise.all([
       cesdk.addPlugin(
-        CutoutLibraryPlugin({
-          ui: { locations: ['canvasMenu'] }
-        })
-      ),
-      cesdk.addPlugin(
         BackgroundRemovalPlugin({ ui: { locations: 'canvasMenu' } })
       ),
       cesdk.addPlugin(VectorizerPlugin({ ui: { locations: 'canvasMenu' } })),

@@ -25,36 +25,93 @@ function App() {
               instance.addDemoAssetSources({ sceneMode: 'Design' })
             ]);
             await addPlugins(instance);
-            const cutoutAssetEntry = instance.ui.getAssetLibraryEntry(
-              'ly.img.cutout.entry'
-            );
 
             instance.ui.setDockOrder([
-              ...instance.ui.getDockOrder(),
+              {
+                id: 'ly.img.fal-ai/recraft-v3.dock'
+              },
+              {
+                id: 'ly.img.fal-ai/recraft-v3/vector.dock'
+              },
+              {
+                id: 'ly.img.fal-ai/recraft-v3/raster.dock'
+              },
+              {
+                id: 'ly.img.separator'
+              },
               {
                 id: 'ly.img.assetLibrary.dock',
-                label: 'Cutout',
-                key: 'ly.img.assetLibrary.dock',
-                icon: cutoutAssetEntry?.icon,
-                entries: ['ly.img.cutout.entry']
+                key: 'ly.img.elements',
+                icon: '@imgly/Library',
+                label: 'component.library.elements',
+                entries: [
+                  'ly.img.upload',
+                  'ly.img.video',
+                  'ly.img.audio',
+                  'ly.img.image',
+                  'ly.img.text',
+                  'ly.img.vectorpath',
+                  'ly.img.sticker'
+                ]
               },
-              'ly.img.spacer',
               {
                 id: 'ly.img.assetLibrary.dock',
-                label: 'Generated Images',
-                key: 'ly.img.assetLibrary.dock',
-                icon: '@imgly/plugin/fal-ai',
-                entries: ['ly.img.fal-ai.entry']
+                key: 'ly.img.upload',
+                icon: '@imgly/Upload',
+                label: 'libraries.ly.img.upload.label',
+                entries: ['ly.img.upload']
               },
-              'ly.img.separator',
-              'ly.img.fal-ai/recraft-v3.dock',
-              'ly.img.fal-ai/recraft-v3/vector.dock',
-              'ly.img.fal-ai/recraft-v3/raster.dock',
-              'ly.img.generate-qr.dock'
+              {
+                id: 'ly.img.assetLibrary.dock',
+                key: 'ly.img.video',
+                icon: '@imgly/Video',
+                label: 'libraries.ly.img.video.label',
+                entries: ['ly.img.video']
+              },
+              {
+                id: 'ly.img.assetLibrary.dock',
+                key: 'ly.img.audio',
+                icon: '@imgly/Audio',
+                label: 'libraries.ly.img.audio.label',
+                entries: ['ly.img.audio']
+              },
+              {
+                id: 'ly.img.assetLibrary.dock',
+                key: 'ly.img.image',
+                icon: '@imgly/Image',
+                label: 'libraries.ly.img.image.label',
+                entries: ['ly.img.image']
+              },
+              {
+                id: 'ly.img.assetLibrary.dock',
+                key: 'ly.img.text',
+                icon: '@imgly/Text',
+                label: 'libraries.ly.img.text.label',
+                entries: ['ly.img.text']
+              },
+              {
+                id: 'ly.img.assetLibrary.dock',
+                key: 'ly.img.vectorpath',
+                icon: '@imgly/Shapes',
+                label: 'libraries.ly.img.vectorpath.label',
+                entries: ['ly.img.vectorpath']
+              },
+              {
+                id: 'ly.img.assetLibrary.dock',
+                key: 'ly.img.sticker',
+                icon: '@imgly/Sticker',
+                label: 'libraries.ly.img.sticker.label',
+                entries: ['ly.img.sticker']
+              },
+              {
+                id: 'ly.img.separator'
+              },
+              {
+                id: 'ly.img.generate-qr.dock'
+              }
             ]);
 
             const imageEntry = instance.ui.getAssetLibraryEntry('ly.img.image');
-            console.log(imageEntry);
             if (imageEntry != null) {
               instance.ui.updateAssetLibraryEntry('ly.img.image', {
                 ...imageEntry,
