@@ -7,7 +7,7 @@ import previewUri from './previewUri';
 import Transformer from './transformer';
 
 // Set to true to prevent the AI generation from running
-const DRY_RUN = true;
+const DRY_RUN = false;
 
 const DEFAULT_ID = 'fal-ai';
 
