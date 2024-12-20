@@ -48,7 +48,8 @@ export default (
 
       cesdk.setTranslations({
         en: {
-          [translationsKeys.canvasMenuLabel]: 'BG Removal'
+          [translationsKeys.canvasMenuLabel]: 'BG Removal',
+          [translationsKeys.dockLabel]: 'BG Removal'
         }
       });
     }

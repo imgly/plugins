@@ -39,6 +39,8 @@ function App() {
                 entries: ['ly.img.cutout.entry']
               },
               'ly.img.spacer',
+              '@imgly/plugin-vectorizer-web.dock',
+              '@imgly/plugin-background-removal-web.dock',
               'ly.img.generate-qr.dock'
             ]);
 
