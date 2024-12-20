@@ -61,7 +61,11 @@ export default (
 
       cesdk.setTranslations({
         en: {
-          [translationsKeys.canvasMenuLabel]: 'Vectorizer'
+          [translationsKeys.inspectorBarLabel]: 'Vectorizer',
+          [translationsKeys.navigationBarLabel]: 'Vectorizer',
+          [translationsKeys.canvasBarLabel]: 'Vectorizer',
+          [translationsKeys.canvasMenuLabel]: 'Vectorizer',
+          [translationsKeys.dockLabel]: 'Vectorizer'
         }
       });
     }
