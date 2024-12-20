@@ -213,7 +213,7 @@ export default function registerFillProcessingComponents(
   buttonComponents.forEach(({ componentIds, label, variant }) => {
     const componentId = componentIds[0];
     cesdk.ui.registerComponent(
-      componentId,
+      componentIds,
       ({ builder: { Button }, engine }) => {
         if (
           !cesdk.feature.isEnabled(featureId, {
