@@ -94,7 +94,7 @@ export default function registerFillProcessingComponents(
   if (locations?.includes('canvasBarBottom')) {
     cesdk.ui.setCanvasBarOrder(
       [canvasBarComponentId, ...cesdk.ui.getCanvasBarOrder('bottom')],
-      'top'
+      'bottom'
     );
   }
 
