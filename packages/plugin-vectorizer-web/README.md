@@ -35,11 +35,14 @@ const config = {
 
 const cesdk = await CreativeEditorSDK.create(container, config);
 await cesdk.addDefaultAssetSources(),
-  await cesdk.addDemoAssetSources({ sceneMode: 'Design' }),
-  await cesdk.addPlugin(VectorizerPlugin({
-    // This will automatically prepend a button to the canvas menu
-    ui: { locations: 'canvasMenu' }
-  }));
+await cesdk.addDemoAssetSources({ sceneMode: 'Design' }),
+await cesdk.addPlugin(VectorizerPlugin());
+
+// Add the canvas menu component for background removal
+cesdk.ui.setCanvasMenuOrder([
+  '@imgly/plugin-vectorizer-web.canvasMenu',
+  ...cesdk.ui.getCanvasMenuOrder()
+]);
 
 await cesdk.createDesignScene();
 ```
@@ -48,15 +51,39 @@ await cesdk.createDesignScene();
 
 ### Adding Canvas Menu Component
 
-After adding the plugin to CE.SDK, it will register a component that can be
-used inside the canvas menu. It is not added by default but can be included
+After adding the plugin to CE.SDK, it will register several components that can be
+used inside the editor. They are not added by default but can be included
 using the following configuration:
 
 ```typescript
-// Either pass a location via the configuration object, ...
+// Potential locations are:
+// 'dock', 'canvasMenu', 'canvasBarTop', 'canvasBarBottom',
+// 'inspectorBar', 'navigationBar'
 VectorizerPlugin({
   ui: { locations: 'canvasMenu' }
 })
+```
+
+However, if you want to add the components manually, e.g. to be more flexible about the concrete position, you can use the following code snippet:
+
+```typescript
+// Adding to the dock
+cesdk.ui.setDockOrder([
+  ...cesdk.ui.getDockOrder(),
+  '@imgly/plugin-vectorizer-web.dock',
+]);
+
+// Adding to the inspector bar
+cesdk.ui.setInspectorBarOrder([
+  '@imgly/plugin-vectorizer-web.inspectorBar',
+  ...cesdk.ui.getInspectorBarOrder()
+]);
+
+// Adding to the canvas menu
+cesdk.ui.setCanvasMenuOrder([
+  '@imgly/plugin-vectorizer-web.canvasMenu',
+  ...cesdk.ui.getCanvasMenuOrder()
+]);
 ```
 
 ### Further Configuration Options
