@@ -48,6 +48,9 @@ export default (
 
       cesdk.setTranslations({
         en: {
+          [translationsKeys.inspectorBarLabel]: 'BG Removal',
+          [translationsKeys.navigationBarLabel]: 'BG Removal',
+          [translationsKeys.canvasBarLabel]: 'BG Removal',
           [translationsKeys.canvasMenuLabel]: 'BG Removal',
           [translationsKeys.dockLabel]: 'BG Removal'
         }

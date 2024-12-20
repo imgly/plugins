@@ -29,6 +29,13 @@ function App() {
               'ly.img.cutout.entry'
             );
 
+            instance.ui.setInspectorBarOrder([
+              '@imgly/plugin-vectorizer-web.inspectorBar',
+              '@imgly/plugin-background-removal-web.inspectorBar',
+              'ly.img.separator',
+              ...instance.ui.getInspectorBarOrder()
+            ]);
+
             instance.ui.setDockOrder([
               ...instance.ui.getDockOrder(),
               {
