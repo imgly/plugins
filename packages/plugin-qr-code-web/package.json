@@ -64,7 +64,7 @@
     "@imgly/plugin-utils": "*"
   },
   "peerDependencies": {
-    "@cesdk/cesdk-js": "1.37.0"
+    "@cesdk/cesdk-js": "^1.37.0"
   },
   "dependencies": {}
 }
