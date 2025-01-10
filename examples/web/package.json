@@ -15,6 +15,7 @@
     "@imgly/plugin-background-removal-web": "workspace:*",
     "@imgly/plugin-cutout-library-web": "workspace:*",
     "@imgly/plugin-remote-asset-source-web": "workspace:*",
+    "@imgly/plugin-qr-code-web": "workspace:*",
     "@imgly/plugin-vectorizer-web": "workspace:*",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
