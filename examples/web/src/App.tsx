@@ -12,7 +12,27 @@ function App() {
           CreativeEditorSDK.create(domElement, {
             license: import.meta.env.VITE_CESDK_LICENSE_KEY,
             userId: 'plugins-vercel',
-            callbacks: { onUpload: 'local' }
+            featureFlags: {
+              archiveSceneEnabled: true
+            },
+
+            callbacks: {
+              onUpload: 'local',
+              onLoadArchive: 'uploadArchive',
+              onExport: 'download',
+              onDownload: 'download'
+            },
+            ui: {
+              elements: {
+                navigation: {
+                  action: {
+                    download: true,
+                    load: true,
+                    export: true
+                  }
+                }
+              }
+            }
           }).then(async (instance) => {
             // @ts-ignore
             window.cesdk = instance;
