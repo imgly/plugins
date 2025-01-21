@@ -37,6 +37,8 @@ function App() {
             ]);
 
             instance.ui.setDockOrder([
+              'fal-ai/recraft-v3.dock',
+              'ly.img.separator',
               ...instance.ui.getDockOrder(),
               {
                 id: 'ly.img.assetLibrary.dock',
