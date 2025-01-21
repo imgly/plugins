@@ -173,7 +173,7 @@ async function generateWithDry(
   const prompt: string = input.prompt;
   const placeholderURL = `https://placehold.co/${imageSize.width}x${
     imageSize.height
-  }?text=${prompt.replace(' ', '+').replace('\n', '+')}`;
+  }/000000/FFF?text=${prompt.replace(' ', '+').replace('\n', '+')}`;
   return placeholderURL;
 }
 
