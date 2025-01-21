@@ -98,7 +98,9 @@ function addHistory(cesdk: CreativeEditorSDK, assetSourceIds: string[]) {
   }
   cesdk.ui.addAssetLibraryEntry({
     id: HISTORY_ASSET_SOURCE_ID,
-    sourceIds: [HISTORY_ASSET_SOURCE_ID]
+    sourceIds: [HISTORY_ASSET_SOURCE_ID],
+    gridItemHeight: 'square',
+    gridBackgroundType: 'cover',
   });
 }
 
