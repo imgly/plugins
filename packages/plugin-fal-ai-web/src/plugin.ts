@@ -1,6 +1,8 @@
 import { EditorPlugin } from '@cesdk/cesdk-js';
+import { fal } from '@fal-ai/client';
 import addAssets from './addAssets';
 import { PANEL_ID, PLUGIN_ICON_SET } from './constants';
+import generate from './generate';
 import iconSprite from './iconSprite';
 import registerComponents from './registerComponents';
 import registerPanels from './registerPanels';
@@ -15,9 +17,14 @@ export default (
     initialize({ cesdk }) {
       if (cesdk == null) return;
 
+      fal.config({
+        // @ts-ignore
+        proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
+      });
+
       addAssets(cesdk);
       registerComponents(cesdk, config);
-      registerPanels(cesdk, config);
+      registerPanels(cesdk, config, (input) => generate(cesdk, config, input));
 
       cesdk.ui.addIconSet(PLUGIN_ICON_SET, iconSprite);
 

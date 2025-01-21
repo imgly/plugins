@@ -9,6 +9,7 @@ import {
 import { IMAGE_SIZE_VALUES, getImageSizeIcon } from './imageSize';
 import { STYLES_IMAGE, STYLES_VECTOR } from './styles';
 import { PluginConfiguration } from './types';
+import { type Input } from './generate';
 
 type GenerationType = 'image' | 'vector';
 
@@ -17,7 +18,11 @@ const DEFAULT_PROMPT = 'A blue alien with black hair in a tiny ufo';
 /**
  * Register the main panel for the image generation plugin.
  */
-function registerPanels(cesdk: CreativeEditorSDK, config: PluginConfiguration) {
+function registerPanels(
+  cesdk: CreativeEditorSDK,
+  config: PluginConfiguration,
+  onGenerate: (input: Input) => Promise<void>
+) {
   cesdk.ui.registerPanel(PANEL_ID, ({ builder, state }) => {
     const promptState = state('prompt', config.defaultPrompt ?? DEFAULT_PROMPT);
     const typeState = state<GenerationType>('type', 'image');
@@ -147,9 +152,30 @@ function registerPanels(cesdk: CreativeEditorSDK, config: PluginConfiguration) {
     });
     builder.Section(`${PREFIX}.generate.section`, {
       children: () => {
+        const generating = state('generating', false);
+
         builder.Button(`${PREFIX}.generate`, {
           label: `panel.${PANEL_ID}.generate`,
-          color: 'accent'
+          isLoading: generating.value,
+          color: 'accent',
+          onClick: async () => {
+            try {
+              generating.setValue(true);
+              await onGenerate({
+                prompt: promptState.value,
+                style: styleState.value.id,
+                image_size:
+                  imageSizeState.value.id === 'custom'
+                    ? {
+                        width: customWidthState.value,
+                        height: customHeightState.value
+                      }
+                    : imageSizeState.value.id
+              });
+            } finally {
+              generating.setValue(false);
+            }
+          }
         });
       }
     });

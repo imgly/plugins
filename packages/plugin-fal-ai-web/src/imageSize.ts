@@ -1,3 +1,5 @@
+type ImageSize = 'square_hd' | 'square' | 'portrait_4_3' | 'portrait_16_9' | 'landscape_4_3' | 'landscape_16_9' | 'custom';
+
 // prettier-ignore
 export const IMAGE_SIZE_VALUES: { id: string; label: string | string[] }[] = [
   { id: 'square_hd',      label: 'Square HD' },
@@ -26,10 +28,10 @@ export function getImageSizeIcon(id: string): string {
 const ImageSizeEnumToSize: Record<string, { width: number; height: number }> = {
   square_hd: { width: 1024, height: 1024 },
   square: { width: 512, height: 512 },
-  portrait_4_3: { width: 768, height: 1024 },
-  portrait_16_9: { width: 720, height: 1280 },
-  landscape_4_3: { width: 1024, height: 768 },
-  landscape_16_9: { width: 1280, height: 720 }
+  portrait_4_3: { width: 1024, height: 1365 },
+  portrait_16_9: { width: 1024, height: 1820 },
+  landscape_4_3: { width: 1365, height: 1024 },
+  landscape_16_9: { width: 1820, height: 1024 }
 };
 
 export function getImageDimensions(id: string): {
