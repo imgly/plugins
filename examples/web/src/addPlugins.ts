@@ -22,7 +22,7 @@ async function addPlugins(cesdk: CreativeEditorSDK): Promise<void> {
       cesdk.addPlugin(
         FalAiPlugin({
           debug: true,
-          dryRun: true,
+          dryRun: false,
           // @ts-ignore
           proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
         })
