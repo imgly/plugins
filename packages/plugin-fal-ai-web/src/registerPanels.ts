@@ -180,8 +180,7 @@ function registerPanels(
       }
     });
     builder.Library(`${PREFIX}.history.library`, {
-      entries: [HISTORY_ASSET_SOURCE_ID],
-      onSelect: () => Promise.resolve()
+      entries: [HISTORY_ASSET_SOURCE_ID]
     });
   });
 }
