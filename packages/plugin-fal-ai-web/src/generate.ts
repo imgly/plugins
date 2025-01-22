@@ -44,6 +44,8 @@ async function generate(
       meta: {
         previewUri,
         fillType: '//ly.img.ubq/fill/image',
+        kind: 'image',
+
         width: imageSize.width,
         height: imageSize.height
       }
@@ -80,6 +82,7 @@ async function generate(
       'fill/image/sourceSet',
       url
     );
+    cesdk.engine.block.setContentFillMode(block, 'Cover');
 
     const sourceSet = cesdk.engine.block.getSourceSet(
       fill,
@@ -91,6 +94,8 @@ async function generate(
       uri: url,
       thumbUri: url,
       fillType: '//ly.img.ubq/fill/image',
+      kind: 'image',
+
       width: source.width,
       height: source.height
     };
