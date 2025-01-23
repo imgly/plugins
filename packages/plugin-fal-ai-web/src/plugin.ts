@@ -26,7 +26,7 @@ export default (
 
       fal.config({
         // @ts-ignore
-        proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
+        proxyUrl: config.proxyUrl
       });
 
       const imageStyleAssetSource = new StyleAssetSource(
