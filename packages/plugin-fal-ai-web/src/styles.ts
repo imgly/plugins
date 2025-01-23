@@ -22,6 +22,8 @@ export const STYLES_IMAGE: { id: string; label: string }[] = [
   { id: 'digital_illustration/2d_art_poster_2', label: '2D Art Poster 2' },
 ];
 
+export const STYLE_IMAGE_DEFAULT = STYLES_IMAGE[0];
+
 // prettier-ignore
 export const STYLES_VECTOR: { id: string; label: string }[] = [
   { id: 'vector_illustration',            label: 'Vector Illustration' },
@@ -30,6 +32,8 @@ export const STYLES_VECTOR: { id: string; label: string }[] = [
   { id: 'vector_illustration/line_circuit', label: 'Line Circuit' },
   { id: 'vector_illustration/linocut',    label: 'Linocut' },
 ];
+
+export const STYLE_VECTOR_DEFAULT = STYLES_VECTOR[0];
 
 // prettier-ignore
 const STYLE_THUMBNAILS: Record<string, string> = {

@@ -1,11 +1,18 @@
 import { EditorPlugin } from '@cesdk/cesdk-js';
 import { fal } from '@fal-ai/client';
-import addAssets from './addAssets';
-import { PANEL_ID, PLUGIN_ICON_SET } from './constants';
+import StyleAssetSource from './StyleAssetSource';
+import {
+  HISTORY_ASSET_SOURCE_ID,
+  PANEL_ID,
+  PLUGIN_ICON_SET,
+  STYLE_IMAGE_ASSET_SOURCE_ID,
+  STYLE_VECTOR_ASSET_SOURCE_ID
+} from './constants';
 import generate from './generate';
 import iconSprite from './iconSprite';
 import registerComponents from './registerComponents';
 import registerPanels from './registerPanels';
+import { STYLES_IMAGE, STYLES_VECTOR } from './styles';
 import { PluginConfiguration } from './types';
 
 export { PLUGIN_ID } from './constants';
@@ -22,9 +29,52 @@ export default (
         proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
       });
 
-      addAssets(cesdk);
+      const imageStyleAssetSource = new StyleAssetSource(
+        STYLE_IMAGE_ASSET_SOURCE_ID,
+        STYLES_IMAGE
+      );
+      const vectorStyleAssetSource = new StyleAssetSource(
+        STYLE_VECTOR_ASSET_SOURCE_ID,
+        STYLES_VECTOR
+      );
+
+      cesdk.engine.asset.addSource(imageStyleAssetSource);
+      cesdk.engine.asset.addSource(vectorStyleAssetSource);
+      cesdk.engine.asset.addLocalSource(HISTORY_ASSET_SOURCE_ID);
+
+      cesdk.ui.addAssetLibraryEntry({
+        id: STYLE_IMAGE_ASSET_SOURCE_ID,
+        sourceIds: [STYLE_IMAGE_ASSET_SOURCE_ID],
+        gridItemHeight: 'square',
+        gridBackgroundType: 'cover',
+        cardLabel: ({ label }) => label,
+        cardLabelPosition: () => 'below'
+      });
+
+      cesdk.ui.addAssetLibraryEntry({
+        id: STYLE_VECTOR_ASSET_SOURCE_ID,
+        sourceIds: [STYLE_VECTOR_ASSET_SOURCE_ID],
+        gridItemHeight: 'square',
+        gridBackgroundType: 'cover',
+        cardLabel: ({ label }) => label,
+        cardLabelPosition: () => 'below'
+      });
+
+      cesdk.ui.addAssetLibraryEntry({
+        id: HISTORY_ASSET_SOURCE_ID,
+        sourceIds: [HISTORY_ASSET_SOURCE_ID],
+        gridItemHeight: 'square',
+        gridBackgroundType: 'cover'
+      });
+
       registerComponents(cesdk, config);
-      registerPanels(cesdk, config, (input) => generate(cesdk, config, input));
+      registerPanels(cesdk, config, {
+        onGenerate: (input) => generate(cesdk, config, input),
+        styleAssetSource: {
+          image: imageStyleAssetSource,
+          vector: vectorStyleAssetSource
+        }
+      });
 
       cesdk.ui.addIconSet(PLUGIN_ICON_SET, iconSprite);
 

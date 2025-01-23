@@ -1,4 +1,5 @@
 import type CreativeEditorSDK from '@cesdk/cesdk-js';
+import StyleAssetSource from './StyleAssetSource';
 import {
   HISTORY_ASSET_SOURCE_ID,
   PANEL_ID,
@@ -6,10 +7,10 @@ import {
   STYLE_IMAGE_ASSET_SOURCE_ID,
   STYLE_VECTOR_ASSET_SOURCE_ID
 } from './constants';
-import { IMAGE_SIZE_VALUES, getImageSizeIcon } from './imageSize';
-import { STYLES_IMAGE, STYLES_VECTOR } from './styles';
-import { PluginConfiguration } from './types';
 import { type Input } from './generate';
+import { IMAGE_SIZE_VALUES, getImageSizeIcon } from './imageSize';
+import { STYLE_IMAGE_DEFAULT, STYLE_VECTOR_DEFAULT } from './styles';
+import { PluginConfiguration } from './types';
 
 type GenerationType = 'image' | 'vector';
 
@@ -21,19 +22,31 @@ const DEFAULT_PROMPT = 'A blue alien with black hair in a tiny ufo';
 function registerPanels(
   cesdk: CreativeEditorSDK,
   config: PluginConfiguration,
-  onGenerate: (input: Input) => Promise<void>
+  options: {
+    onGenerate: (input: Input) => Promise<void>;
+
+    styleAssetSource: {
+      image: StyleAssetSource;
+      vector: StyleAssetSource;
+    };
+  }
 ) {
+  const { onGenerate, styleAssetSource } = options;
+
+  styleAssetSource.image.setActive(STYLE_IMAGE_DEFAULT.id);
+  styleAssetSource.vector.setActive(STYLE_VECTOR_DEFAULT.id);
+
   cesdk.ui.registerPanel(PANEL_ID, ({ builder, state }) => {
     const promptState = state('prompt', config.defaultPrompt ?? DEFAULT_PROMPT);
     const typeState = state<GenerationType>('type', 'image');
 
     const styleImageState = state<{ id: string; label: string }>(
       'style/image',
-      STYLES_IMAGE[0]
+      STYLE_IMAGE_DEFAULT
     );
     const styleVectorState = state<{ id: string; label: string }>(
       'style/vector',
-      STYLES_VECTOR[0]
+      STYLE_VECTOR_DEFAULT
     );
     const imageSizeState = state('image_size', IMAGE_SIZE_VALUES[0]);
     const customWidthState = state<number>('width', 1024);
@@ -63,6 +76,7 @@ function registerPanels(
               id: asset.id,
               label: asset.label ?? asset.id
             });
+            styleAssetSource.image.setActive(asset.id);
           }
 
           showStyleLibraryState.setValue(undefined);
@@ -75,6 +89,7 @@ function registerPanels(
     if (showStyleLibraryState.value === 'vector') {
       builder.Library(`${PREFIX}.library.style.vector`, {
         entries: [STYLE_VECTOR_ASSET_SOURCE_ID],
+
         onSelect: (asset) => {
           if (asset.id !== 'back') {
             styleVectorState.setValue({
@@ -83,6 +98,7 @@ function registerPanels(
             });
           }
           showStyleLibraryState.setValue(undefined);
+          styleAssetSource.vector.setActive(asset.id);
           return Promise.resolve();
         }
       });
