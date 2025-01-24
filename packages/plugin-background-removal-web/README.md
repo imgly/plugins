@@ -6,11 +6,12 @@ This plugin introduces background removal for the CE.SDK editor, leveraging the 
 
 ## Installation
 
-You can install the plugin via npm or yarn. Use the following commands to install the package:
+You can install the plugin via npm or yarn.We are using the `onnxruntime-web` package as a peer dependency.
+Use the following commands to install the package:
 
 ```
-yarn add @imgly/plugin-background-removal-web
-npm install @imgly/plugin-background-removal-web
+yarn add @imgly/plugin-background-removal-web onnxruntime-web@1.21.0-dev.20250114-228dd16893
+npm install @imgly/plugin-background-removal-web onnxruntime-web@1.21.0-dev.20250114-228dd16893
 ```
 
 ## Usage
@@ -23,20 +24,20 @@ import CreativeEditorSDK from '@cesdk/cesdk-js';
 import BackgroundRemovalPlugin from '@imgly/plugin-background-removal-web';
 
 const config = {
-    license: '<your-license-here>',
-    callbacks: {
-        // Please note that the background removal plugin depends on an correctly
-        // configured upload. 'local' will work for local testing, but in
-        // production you will need something stable. Please take a look at:
-        // https://img.ly/docs/cesdk/ui/guides/upload-images/
-        onUpload: 'local'
-    }
+  license: '<your-license-here>',
+  callbacks: {
+    // Please note that the background removal plugin depends on an correctly
+    // configured upload. 'local' will work for local testing, but in
+    // production you will need something stable. Please take a look at:
+    // https://img.ly/docs/cesdk/ui/guides/upload-images/
+    onUpload: 'local'
+  }
 };
 
 const cesdk = await CreativeEditorSDK.create(container, config);
 await cesdk.addDefaultAssetSources(),
-await cesdk.addDemoAssetSources({ sceneMode: 'Design' }),
-await cesdk.addPlugin(BackgroundRemovalPlugin());
+  await cesdk.addDemoAssetSources({ sceneMode: 'Design' }),
+  await cesdk.addPlugin(BackgroundRemovalPlugin());
 
 // Add the canvas menu component for background removal
 cesdk.ui.setCanvasMenuOrder([
@@ -61,7 +62,7 @@ using the following configuration:
 // 'inspectorBar', 'navigationBar'
 BackgroundRemovalPlugin({
   ui: { locations: 'canvasMenu' }
-})
+});
 ```
 
 However, if you want to add the components manually, e.g. to be more flexible about the concrete position, you can use the following code snippet:
@@ -70,7 +71,7 @@ However, if you want to add the components manually, e.g. to be more flexible ab
 // Adding to the dock
 cesdk.ui.setDockOrder([
   ...cesdk.ui.getDockOrder(),
-  '@imgly/plugin-background-removal-web.dock',
+  '@imgly/plugin-background-removal-web.dock'
 ]);
 
 // Adding to the inspector bar
@@ -87,6 +88,7 @@ cesdk.ui.setCanvasMenuOrder([
 ```
 
 ### Configuration of `@imgly/background-removal`
+
 By default, this plugin uses the `@imgly/background-removal-js` library to remove
 a background from the image fill. All configuration options from this underlying
 library can be used in this plugin.
@@ -126,52 +128,57 @@ It is possible to declare a different provider for the background removal proces
 
 ```typescript
 BackgroundRemovalPlugin({
-    provider: {
-        type: 'custom',
-        // If the image has only one image file URI defined, this method will
-        // be called. It must return a single new image file URI with the
-        // removed background.
-        processImageFileURI: async (imageFileURI: string) => {
-            const blob = await removeBackground(imageFileURI);
-            const upload = await uploadBlob(blob);
-            return upload;
-        },
-        // Some images have a source set defined which provides multiple images
-        // in different sizes.
-        processSourceSet: async (
-            // Source set for the current block sorted by the resolution.
-            // URI with the highest URI is first
-            sourceSet: {
-                uri: string;
-                width: number;
-                height: number;
-            }[],
-        ) => {
-            // You should call the remove background method on every URI in the
-            // source set. Depending on your service or your algorithm, you
-            // have the following options:
-            // - Return a source set with a single image (will contradict the use-case of source sets and degrades the user experience)
-            // - Create a segmented mask and apply it to every image (not always available)
-            // - Create a new source set by resizing the resulting blob.
+  provider: {
+    type: 'custom',
+    // If the image has only one image file URI defined, this method will
+    // be called. It must return a single new image file URI with the
+    // removed background.
+    processImageFileURI: async (imageFileURI: string) => {
+      const blob = await removeBackground(imageFileURI);
+      const upload = await uploadBlob(blob);
+      return upload;
+    },
+    // Some images have a source set defined which provides multiple images
+    // in different sizes.
+    processSourceSet: async (
+      // Source set for the current block sorted by the resolution.
+      // URI with the highest URI is first
+      sourceSet: {
+        uri: string;
+        width: number;
+        height: number;
+      }[]
+    ) => {
+      // You should call the remove background method on every URI in the
+      // source set. Depending on your service or your algorithm, you
+      // have the following options:
+      // - Return a source set with a single image (will contradict the use-case of source sets and degrades the user experience)
+      // - Create a segmented mask and apply it to every image (not always available)
+      // - Create a new source set by resizing the resulting blob.
 
-            // In this example we will do the last case.
-            // First image has the highest resolution and might be the best
-            // candidate to remove the background.
-            const highestResolution = sourceSet[0];
-            const highestResolutionBlob = await removeBackground(highestResolution.uri);
-            const highestResolutionURI = await uploadBlob(highestResolutionBlob);
+      // In this example we will do the last case.
+      // First image has the highest resolution and might be the best
+      // candidate to remove the background.
+      const highestResolution = sourceSet[0];
+      const highestResolutionBlob = await removeBackground(
+        highestResolution.uri
+      );
+      const highestResolutionURI = await uploadBlob(highestResolutionBlob);
 
-            const remainingSources = await Promise.all(
-                sourceSet.slice(1).map((source) => {
-                    // ...
-                    const upload = uploadBlob(/* ... */)
-                    return { ...source, uri: upload };
-                })
-            );
+      const remainingSources = await Promise.all(
+        sourceSet.slice(1).map((source) => {
+          // ...
+          const upload = uploadBlob(/* ... */);
+          return { ...source, uri: upload };
+        })
+      );
 
-            return [{ ...highestResolution, uri: highestResolutionURI }, remainingSources];
-        }
+      return [
+        { ...highestResolution, uri: highestResolutionURI },
+        remainingSources
+      ];
     }
+  }
 });
 ```
 
