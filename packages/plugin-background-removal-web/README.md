@@ -6,7 +6,7 @@ This plugin introduces background removal for the CE.SDK editor, leveraging the 
 
 ## Installation
 
-You can install the plugin via npm or yarn.We are using the `onnxruntime-web` package as a peer dependency.
+You can install the plugin via npm or yarn. We are using the `onnxruntime-web` package as a peer dependency.
 Use the following commands to install the package:
 
 ```
@@ -35,9 +35,9 @@ const config = {
 };
 
 const cesdk = await CreativeEditorSDK.create(container, config);
-await cesdk.addDefaultAssetSources(),
-  await cesdk.addDemoAssetSources({ sceneMode: 'Design' }),
-  await cesdk.addPlugin(BackgroundRemovalPlugin());
+await cesdk.addDefaultAssetSources();
+await cesdk.addDemoAssetSources({ sceneMode: 'Design' });
+await cesdk.addPlugin(BackgroundRemovalPlugin());
 
 // Add the canvas menu component for background removal
 cesdk.ui.setCanvasMenuOrder([
