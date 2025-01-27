@@ -43,15 +43,21 @@ export default (
       const { translationsKeys } = registerFillProcessingComponents(cesdk, {
         pluginId: PLUGIN_ID,
         icon: '@imgly/icons/BGRemove',
+        // @ts-ignore
         locations: pluginConfiguration.ui?.locations
       });
 
       cesdk.setTranslations({
         en: {
+          // @ts-ignore
           [translationsKeys.inspectorBarLabel]: 'BG Removal',
+          // @ts-ignore
           [translationsKeys.navigationBarLabel]: 'BG Removal',
+          // @ts-ignore
           [translationsKeys.canvasBarLabel]: 'BG Removal',
+          // @ts-ignore
           [translationsKeys.canvasMenuLabel]: 'BG Removal',
+          // @ts-ignore
           [translationsKeys.dockLabel]: 'BG Removal'
         }
       });

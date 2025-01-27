@@ -1,6 +1,6 @@
 {
   "name": "@imgly/plugin-background-removal-web",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Background Removal plugin for the CE.SDK editor",
   "keywords": [
     "CE.SDK",
@@ -70,9 +70,10 @@
     "typescript": "^5.3.3"
   },
   "peerDependencies": {
-    "@cesdk/cesdk-js": "^1.32.0"
+    "@cesdk/cesdk-js": "^1.32.0",
+    "onnxruntime-web": "1.21.0-dev.20250114-228dd16893"
   },
   "dependencies": {
-    "@imgly/background-removal": "^1.5.7"
+    "@imgly/background-removal": "1.5.8"
   }
 }
