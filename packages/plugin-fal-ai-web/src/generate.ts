@@ -129,10 +129,14 @@ async function generate(
     if ('body' in e && 'detail' in e.body) {
       message = e.body.detail;
     }
-    cesdk.ui.showNotification({
-      type: 'error',
-      message
-    });
+    if (config.onError != null) {
+      config.onError(e);
+    } else {
+      cesdk.ui.showNotification({
+        type: 'error',
+        message
+      });
+    }
     if (block != null && cesdk.engine.block.isValid(block)) {
       cesdk.engine.block.setState(block, {
         type: 'Error',

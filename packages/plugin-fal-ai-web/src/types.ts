@@ -3,6 +3,7 @@ export interface PluginConfiguration {
   defaultPrompt?: string;
   debug?: boolean;
   dryRun?: boolean;
+  onError?: (error: any) => void;
 }
 
 export type SelectValue = {
