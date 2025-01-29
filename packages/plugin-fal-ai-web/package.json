@@ -1,6 +1,6 @@
 {
   "name": "@imgly/plugin-fal-ai-web",
-  "version": "0.1.0",
+  "version": "0.1.0-rc.1",
   "description": "fal.ai plugin for the CE.SDK editor",
   "keywords": [
     "CE.SDK",
@@ -65,7 +65,7 @@
     "typescript": "^5.3.3"
   },
   "peerDependencies": {
-    "@cesdk/cesdk-js": "1.43.0-rc.3"
+    "@cesdk/cesdk-js": "1.43.0"
   },
   "dependencies": {
     "@fal-ai/client": "^1.0.4"
