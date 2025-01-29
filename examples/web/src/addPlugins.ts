@@ -22,9 +22,19 @@ async function addPlugins(cesdk: CreativeEditorSDK): Promise<void> {
       cesdk.addPlugin(
         FalAiPlugin({
           debug: true,
-          dryRun: false,
+          dryRun: true,
           // @ts-ignore
-          proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
+          proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL,
+          onError: () => {
+            cesdk.ui.showDialog({
+              size: 'large',
+              type: 'warning',
+              content: {
+                title: "Generation Limit Reached",
+                message: "You have reached the generation limit for this model. Please try again later or contact sales@img.ly for more access."
+              }
+            });
+          }
         })
       ),
 
