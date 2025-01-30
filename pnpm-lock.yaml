@@ -70,7 +70,7 @@ importers:
         version: 1.42.0(react@18.3.1)
       '@imgly/plugin-background-removal-web':
         specifier: workspace:*
-        version: link:../../packages/plugin-background-removal-web
+        version: file:packages/plugin-background-removal-web(@cesdk/cesdk-js@1.42.0(react@18.3.1))(onnxruntime-web@1.21.0-dev.20250114-228dd16893)
       '@imgly/plugin-cutout-library-web':
         specifier: workspace:*
         version: link:../../packages/plugin-cutout-library-web
@@ -79,16 +79,30 @@ importers:
         version: link:../../packages/plugin-qr-code-web
       '@imgly/plugin-remote-asset-source-web':
         specifier: workspace:*
-        version: link:../../packages/plugin-remote-asset-source-web
+        version: file:packages/plugin-remote-asset-source-web(@cesdk/cesdk-js@1.42.0(react@18.3.1))
       '@imgly/plugin-vectorizer-web':
         specifier: workspace:*
-        version: link:../../packages/plugin-vectorizer-web
+        version: file:packages/plugin-vectorizer-web(@cesdk/cesdk-js@1.42.0(react@18.3.1))
+      onnxruntime-web:
+        specifier: 1.21.0-dev.20250114-228dd16893
+        version: 1.21.0-dev.20250114-228dd16893
       react:
         specifier: ^18.3.1
         version: 18.3.1
       react-dom:
         specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
+    dependenciesMeta:
+      '@imgly/plugin-background-removal-web':
+        injected: true
+      '@imgly/plugin-cutout-library-web':
+        injected: true
+      '@imgly/plugin-qr-code-web':
+        injected: true
+      '@imgly/plugin-remote-asset-source-web':
+        injected: true
+      '@imgly/plugin-vectorizer-web':
+        injected: true
     devDependencies:
       '@types/react':
         specifier: ^18.3.11
@@ -127,8 +141,11 @@ importers:
         specifier: ^1.32.0
         version: 1.36.1(react@18.3.1)
       '@imgly/background-removal':
-        specifier: ^1.5.7
-        version: 1.5.7
+        specifier: 1.5.8
+        version: 1.5.8(onnxruntime-web@1.21.0-dev.20250114-228dd16893)
+      onnxruntime-web:
+        specifier: 1.21.0-dev.20250114-228dd16893
+        version: 1.21.0-dev.20250114-228dd16893
     devDependencies:
       '@imgly/plugin-utils':
         specifier: workspace:*
@@ -187,14 +204,19 @@ importers:
         version: 5.6.3
 
   packages/plugin-qr-code-web:
-    dependencies:
+    dependenciesMeta:
+      '@imgly/plugin-utils':
+        injected: true
+    devDependencies:
       '@cesdk/cesdk-js':
         specifier: ^1.37.0
         version: 1.42.0(react@18.3.1)
-    devDependencies:
+      '@cesdk/engine':
+        specifier: ^1.37.0
+        version: 1.42.0(react@18.3.1)
       '@imgly/plugin-utils':
         specifier: workspace:*
-        version: link:../plugin-utils
+        version: file:packages/plugin-utils(@cesdk/cesdk-js@1.42.0(react@18.3.1))
       '@types/ndarray':
         specifier: ^1.0.14
         version: 1.0.14
@@ -745,9 +767,32 @@ packages:
     resolution: {integrity: sha512-93zYdMES/c1D69yZiKDBj0V24vqNzB/koF26KPaagAfd3P/4gUlh3Dys5ogAK+Exi9QyzlD8x/08Zt7wIKcDcA==}
     deprecated: Use @eslint/object-schema instead
 
-  '@imgly/background-removal@1.5.7':
-    resolution: {integrity: sha512-Y9H98xtSI2Nmg7CUnO+oQWbzQDdL0w4jAyk32x+ZPSEb4yGX/pNeg/6fPQRP4C5ULWgQFg1uT98eDkGr9haLqQ==}
+  '@imgly/background-removal@1.5.8':
+    resolution: {integrity: sha512-a30whecOeGGH5Xbg2m4QdVX2nq9HvAcMWyBqGi74DH/ag9MRlpsNvI3uYxC1IP0+Hr/XIQwg1iJITXEezguxLw==}
+    peerDependencies:
+      onnxruntime-web: 1.21.0-dev.20250114-228dd16893
     bundledDependencies: []
+
+  '@imgly/plugin-background-removal-web@file:packages/plugin-background-removal-web':
+    resolution: {directory: packages/plugin-background-removal-web, type: directory}
+    peerDependencies:
+      '@cesdk/cesdk-js': ^1.32.0
+      onnxruntime-web: 1.21.0-dev.20250114-228dd16893
+
+  '@imgly/plugin-remote-asset-source-web@file:packages/plugin-remote-asset-source-web':
+    resolution: {directory: packages/plugin-remote-asset-source-web, type: directory}
+    peerDependencies:
+      '@cesdk/cesdk-js': ^1.32.0
+
+  '@imgly/plugin-utils@file:packages/plugin-utils':
+    resolution: {directory: packages/plugin-utils, type: directory}
+    peerDependencies:
+      '@cesdk/cesdk-js': ^1.32.0
+
+  '@imgly/plugin-vectorizer-web@file:packages/plugin-vectorizer-web':
+    resolution: {directory: packages/plugin-vectorizer-web, type: directory}
+    peerDependencies:
+      '@cesdk/cesdk-js': ^1.32.0
 
   '@imgly/vectorizer@1.0.0':
     resolution: {integrity: sha512-cXVmZYZgIIX8KOMDBd/xko8Wg158LmWkcjIAjTlKh2Rf9MPsVpuUTCdbPteX3Ut2bMMzmP7CO7cixlkKIizR5Q==}
@@ -2001,11 +2046,11 @@ packages:
     resolution: {integrity: sha512-kbpaSSGJTWdAY5KPVeMOKXSrPtr8C8C7wodJbcsd51jRnmD+GZu8Y0VoU6Dm5Z4vWr0Ig/1NKuWRKf7j5aaYSg==}
     engines: {node: '>=6'}
 
-  onnxruntime-common@1.20.1:
-    resolution: {integrity: sha512-YiU0s0IzYYC+gWvqD1HzLc46Du1sXpSiwzKb63PACIJr6LfL27VsXSXQvt68EzD3V0D5Bc0vyJTjmMxp0ylQiw==}
+  onnxruntime-common@1.21.0-dev.20241212-1f88284f96:
+    resolution: {integrity: sha512-zD6mQJfgeezbNKV2fiN/ZqB+LKdixJ7sKc5vu6PdqMU+bZk581g5XqrhoYNwe/RDJdFGQSMKK9+gUg4Mep+jKw==}
 
-  onnxruntime-web@1.20.1:
-    resolution: {integrity: sha512-TePF6XVpLL1rWVMIl5Y9ACBQcyCNFThZON/jgElNd9Txb73CIEGlklhYR3UEr1cp5r0rbGI6nDwwrs79g7WjoA==}
+  onnxruntime-web@1.21.0-dev.20250114-228dd16893:
+    resolution: {integrity: sha512-fUnedxS63NYwNkQJlvdD55jVcOtyM+Qzw1SGt9Pj3jZVaIwR4mltx/5C0yvwdue44BTSV7M5Q0qnhL6/30ewqA==}
 
   optionator@0.9.4:
     resolution: {integrity: sha512-6IpQ7mKUxRcZNLIObR0hz7lxsapSSIYNZJwXPGeF0mTVqGKFIXj1DQcMoT22S3ROcLyY/rz0PWaWZ9ayWmad9g==}
@@ -2902,12 +2947,34 @@ snapshots:
 
   '@humanwhocodes/object-schema@2.0.3': {}
 
-  '@imgly/background-removal@1.5.7':
+  '@imgly/background-removal@1.5.8(onnxruntime-web@1.21.0-dev.20250114-228dd16893)':
     dependencies:
       lodash-es: 4.17.21
       ndarray: 1.0.19
-      onnxruntime-web: 1.20.1
+      onnxruntime-web: 1.21.0-dev.20250114-228dd16893
       zod: 3.24.1
+
+  '@imgly/plugin-background-removal-web@file:packages/plugin-background-removal-web(@cesdk/cesdk-js@1.42.0(react@18.3.1))(onnxruntime-web@1.21.0-dev.20250114-228dd16893)':
+    dependencies:
+      '@cesdk/cesdk-js': 1.42.0(react@18.3.1)
+      '@imgly/background-removal': 1.5.8(onnxruntime-web@1.21.0-dev.20250114-228dd16893)
+      onnxruntime-web: 1.21.0-dev.20250114-228dd16893
+
+  '@imgly/plugin-remote-asset-source-web@file:packages/plugin-remote-asset-source-web(@cesdk/cesdk-js@1.42.0(react@18.3.1))':
+    dependencies:
+      '@cesdk/cesdk-js': 1.42.0(react@18.3.1)
+      lodash: 4.17.21
+      zod: 3.24.1
+
+  '@imgly/plugin-utils@file:packages/plugin-utils(@cesdk/cesdk-js@1.42.0(react@18.3.1))':
+    dependencies:
+      '@cesdk/cesdk-js': 1.42.0(react@18.3.1)
+      lodash-es: 4.17.21
+
+  '@imgly/plugin-vectorizer-web@file:packages/plugin-vectorizer-web(@cesdk/cesdk-js@1.42.0(react@18.3.1))':
+    dependencies:
+      '@cesdk/cesdk-js': 1.42.0(react@18.3.1)
+      '@imgly/vectorizer': 1.0.0
 
   '@imgly/vectorizer@1.0.0':
     dependencies:
@@ -4453,14 +4520,14 @@ snapshots:
     dependencies:
       mimic-fn: 2.1.0
 
-  onnxruntime-common@1.20.1: {}
+  onnxruntime-common@1.21.0-dev.20241212-1f88284f96: {}
 
-  onnxruntime-web@1.20.1:
+  onnxruntime-web@1.21.0-dev.20250114-228dd16893:
     dependencies:
       flatbuffers: 1.12.0
       guid-typescript: 1.0.9
       long: 5.2.4
-      onnxruntime-common: 1.20.1
+      onnxruntime-common: 1.21.0-dev.20241212-1f88284f96
       platform: 1.3.6
       protobufjs: 7.4.0
 
