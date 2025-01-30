@@ -22,17 +22,18 @@ const dtsPlugin = {
       });
     });
     build.onEnd(async () => {
-      return new Promise((resolve) => {
+      return new Promise((resolve, reject) => {
         const interval = setInterval(() => {
           if (dtsResolved) {
             clearInterval(interval);
             if (dtsError) {
               log(chalk.red('Type Error'));
               console.log(dtsStdio);
+              reject(new Error('Type Error'));
             } else {
               log(`Type Generation ${chalk.green('succeeded')}`);
+              resolve();
             }
-            resolve();
           }
         }, 200);
       });
