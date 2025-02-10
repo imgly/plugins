@@ -30,6 +30,7 @@ function App() {
             );
 
             instance.ui.setInspectorBarOrder([
+              '@imgly/plugin-image-enhancement-web.inspectorBar',
               '@imgly/plugin-vectorizer-web.inspectorBar',
               '@imgly/plugin-background-removal-web.inspectorBar',
               'ly.img.separator',
@@ -37,7 +38,7 @@ function App() {
             ]);
 
             instance.ui.setDockOrder([
-              ...instance.ui.getDockOrder(),
+              ...instance.ui.getDockOrder().filter(({key}) => key === 'ly.img.elements'),
               {
                 id: 'ly.img.assetLibrary.dock',
                 label: 'Cutout',
@@ -46,6 +47,7 @@ function App() {
                 entries: ['ly.img.cutout.entry']
               },
               'ly.img.spacer',
+              '@imgly/plugin-image-enhancement-web.dock',
               '@imgly/plugin-vectorizer-web.dock',
               '@imgly/plugin-background-removal-web.dock',
               'ly.img.generate-qr.dock'

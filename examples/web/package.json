@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@cesdk/cesdk-js": "1.41.0",
+    "@imgly/plugin-image-enhancement-web": "*",
     "@imgly/plugin-background-removal-web": "*",
     "@imgly/plugin-cutout-library-web": "*",
     "@imgly/plugin-remote-asset-source-web": "*",
