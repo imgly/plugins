@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "target": "es2017",
+    "module": "es2020",
+    "lib": ["es2018", "dom"],
+    "moduleResolution": "node",
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "declaration": true,
+    "declarationDir": "dist/",
+    "skipLibCheck": true
+  },
+  "include": ["src/**/*", "esbuild/global.d.ts"],
+  "exclude": ["node_modules"]
+}
