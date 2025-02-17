@@ -3,8 +3,10 @@ packages/*/dist
 examples/*/dist
 .env.local
 .nvmrc
+*.tgz
 
 .DS_Store
 yarn-error.log
 
 .turbo
+_ci_*
