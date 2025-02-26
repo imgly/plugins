@@ -4,9 +4,10 @@ This plugin introduces QR codes to the CE.SDK editor. It integrates seamlessly w
 
 ## Installation
 
-You can install the plugin via npm or yarn. Use the following commands to install the package:
+You can install the plugin via npm or a compatible package manager. Use the following commands to install the package:
 
 ```
+pnpm add @imgly/plugin-qr-code-web
 yarn add @imgly/plugin-qr-code-web
 npm install @imgly/plugin-qr-code-web
 ```

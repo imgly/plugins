@@ -6,10 +6,11 @@ This plugin introduces background removal for the CE.SDK editor, leveraging the 
 
 ## Installation
 
-You can install the plugin via npm or yarn. We are using the `onnxruntime-web` package as a peer dependency.
+You can install the plugin via npm or a compatible package manager. We are using the `onnxruntime-web` package as a peer dependency.
 Use the following commands to install the package:
 
 ```
+pnpm add @imgly/plugin-background-removal-web onnxruntime-web@1.21.0-dev.20250114-228dd16893
 yarn add @imgly/plugin-background-removal-web onnxruntime-web@1.21.0-dev.20250114-228dd16893
 npm install @imgly/plugin-background-removal-web onnxruntime-web@1.21.0-dev.20250114-228dd16893
 ```
