@@ -14,5 +14,6 @@ For more information about the particular plugins, please visit the according pa
 
 - [Background Removal](packages/plugin-background-removal-web/)
 - [Cutouts](packages/plugin-cutout-library-web/)
+- [QR Codes](packages/plugin-qr-code-web/)
 - [Remote Asset Source](packages/plugin-remote-asset-source-web/)
 - [Vectorizer](packages/plugin-vectorizer-web/)
