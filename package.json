@@ -6,7 +6,7 @@
     "build": "pnpm recursive run build",
     "clean": "pnpm recursive run clean",
     "purge": "pnpm exec rimraf node_modules && pnpm recursive run purge",
-    "dev": "pnpm recursive run dev",
+    "dev": "pnpm recursive run build && pnpm run --recursive --parallel dev",
     "check:all": "pnpm recursive run check:all",
     "check:types": "pnpm recursive run check:types"
   },
