@@ -1,4 +1,11 @@
-type ImageSize = 'square_hd' | 'square' | 'portrait_4_3' | 'portrait_16_9' | 'landscape_4_3' | 'landscape_16_9' | 'custom';
+export type ImageSize =
+  | 'square_hd'
+  | 'square'
+  | 'portrait_4_3'
+  | 'portrait_16_9'
+  | 'landscape_4_3'
+  | 'landscape_16_9'
+  | 'custom';
 
 // prettier-ignore
 export const IMAGE_SIZE_VALUES: { id: string; label: string | string[] }[] = [

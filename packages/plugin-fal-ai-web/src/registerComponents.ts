@@ -1,11 +1,7 @@
 import type CreativeEditorSDK from '@cesdk/cesdk-js';
 import { DOCK_COMPONENT_ID, PANEL_ID } from './constants';
-import { PluginConfiguration } from './types';
 
-function registerComponents(
-  cesdk: CreativeEditorSDK,
-  _config: PluginConfiguration
-): void {
+function registerComponents(cesdk: CreativeEditorSDK): void {
   cesdk.ui.registerComponent(DOCK_COMPONENT_ID, ({ builder }) => {
     const isPanelOpen = cesdk.ui.isPanelOpen(PANEL_ID);
 

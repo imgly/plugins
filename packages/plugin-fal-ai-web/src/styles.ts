@@ -1,4 +1,3 @@
-
 // prettier-ignore
 export const STYLES_IMAGE: { id: string; label: string }[] = [
   // { id: 'any', label: 'Any' },

@@ -67,7 +67,7 @@ export default (
         gridBackgroundType: 'cover'
       });
 
-      registerComponents(cesdk, config);
+      registerComponents(cesdk);
       registerPanels(cesdk, config, {
         onGenerate: (input) => generate(cesdk, config, input),
         styleAssetSource: {

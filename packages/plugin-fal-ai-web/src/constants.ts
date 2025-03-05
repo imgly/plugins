@@ -13,4 +13,3 @@ export const HISTORY_ASSET_SOURCE_ID = `${PREFIX}/history`;
 export const STYLE_IMAGE_ASSET_SOURCE_ID = `${PREFIX}/styles/image`;
 
 export const STYLE_VECTOR_ASSET_SOURCE_ID = `${PREFIX}/styles/vector`;
-
