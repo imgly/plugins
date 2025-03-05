@@ -132,6 +132,7 @@ function registerPanels(
         builder.Button(`${PREFIX}.style`, {
           inputLabel: `panel.${PANEL_ID}.style`,
           icon: '@imgly/Appearance',
+          trailingIcon: '@imgly/ChevronRight',
           label: styleState.value.label,
           labelAlignment: 'left',
           onClick: () => {
