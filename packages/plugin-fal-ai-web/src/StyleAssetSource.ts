@@ -1,7 +1,7 @@
 import { type AssetSource } from '@cesdk/cesdk-js';
 import { getStyleThumbnail } from './styles';
 
-const BACK_ASSET = {
+export const BACK_ASSET = {
   id: 'back',
   label: 'Back',
   meta: {
@@ -31,7 +31,10 @@ class StyleAssetSource implements AssetSource {
       };
     });
     return Promise.resolve({
-      assets: [BACK_ASSET, ...assets],
+      assets: [
+        // BACK_ASSET,
+        ...assets
+      ],
       total: assets.length,
       nextPage: undefined,
       currentPage: 0
@@ -41,7 +44,6 @@ class StyleAssetSource implements AssetSource {
   setActive(id: string) {
     this.activeId = id;
   }
-
 }
 
 export default StyleAssetSource;

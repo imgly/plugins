@@ -11,8 +11,14 @@ import { type Input } from './generate';
 import { IMAGE_SIZE_VALUES, getImageSizeIcon } from './imageSize';
 import { STYLE_IMAGE_DEFAULT, STYLE_VECTOR_DEFAULT } from './styles';
 import { PluginConfiguration } from './types';
+import { type AssetResult } from '@cesdk/cesdk-js';
 
 type GenerationType = 'image' | 'vector';
+
+type StyleSelectionPayload = {
+  onSelect: (asset: AssetResult) => Promise<void>;
+  generationType: GenerationType;
+};
 
 const DEFAULT_PROMPT = 'A blue alien with black hair in a tiny ufo';
 
@@ -36,6 +42,25 @@ function registerPanels(
   styleAssetSource.image.setActive(STYLE_IMAGE_DEFAULT.id);
   styleAssetSource.vector.setActive(STYLE_VECTOR_DEFAULT.id);
 
+  cesdk.ui.registerPanel<StyleSelectionPayload>(
+    `${PANEL_ID}.styleSelection`,
+    ({ builder, payload }) => {
+      if (payload == null) return null;
+
+      const entries =
+        payload.generationType === 'image'
+          ? [STYLE_IMAGE_ASSET_SOURCE_ID]
+          : [STYLE_VECTOR_ASSET_SOURCE_ID];
+
+      builder.Library(`${PREFIX}.library.style`, {
+        entries,
+        onSelect: async (asset) => {
+          payload.onSelect(asset);
+        }
+      });
+    }
+  );
+
   cesdk.ui.registerPanel(PANEL_ID, ({ builder, state }) => {
     const promptState = state('prompt', config.defaultPrompt ?? DEFAULT_PROMPT);
     const typeState = state<GenerationType>('type', 'image');
@@ -54,56 +79,6 @@ function registerPanels(
 
     const styleState =
       typeState.value === 'image' ? styleImageState : styleVectorState;
-
-    // We show the style library inline with this state. We do this
-    // inline because right now there is not an easy way to exchange
-    // information between panels, so the regular pattern we have in
-    // the editor "open new asset library panel" -> "select asset"
-    // does not work here.
-    // Not optimal, but can be replaced once we have a way to share
-    // states between panels, e.g. global state.
-    const showStyleLibraryState = state<undefined | 'image' | 'vector'>(
-      'selectStyleActive',
-      undefined
-    );
-
-    if (showStyleLibraryState.value === 'image') {
-      builder.Library(`${PREFIX}.library.style.image`, {
-        entries: [STYLE_IMAGE_ASSET_SOURCE_ID],
-        onSelect: (asset) => {
-          if (asset.id !== 'back') {
-            styleImageState.setValue({
-              id: asset.id,
-              label: asset.label ?? asset.id
-            });
-            styleAssetSource.image.setActive(asset.id);
-          }
-
-          showStyleLibraryState.setValue(undefined);
-          return Promise.resolve();
-        }
-      });
-      return;
-    }
-
-    if (showStyleLibraryState.value === 'vector') {
-      builder.Library(`${PREFIX}.library.style.vector`, {
-        entries: [STYLE_VECTOR_ASSET_SOURCE_ID],
-
-        onSelect: (asset) => {
-          if (asset.id !== 'back') {
-            styleVectorState.setValue({
-              id: asset.id,
-              label: asset.label ?? asset.id
-            });
-          }
-          showStyleLibraryState.setValue(undefined);
-          styleAssetSource.vector.setActive(asset.id);
-          return Promise.resolve();
-        }
-      });
-      return;
-    }
 
     builder.Section(`${PREFIX}.input.section`, {
       children: () => {
@@ -136,7 +111,33 @@ function registerPanels(
           label: styleState.value.label,
           labelAlignment: 'left',
           onClick: () => {
-            showStyleLibraryState.setValue(typeState.value);
+            const payload: StyleSelectionPayload = {
+              generationType: typeState.value,
+              onSelect: async (asset) => {
+                if (asset.id === 'back') {
+                  return;
+                }
+
+                const newValue = {
+                  id: asset.id,
+                  label: asset.label ?? asset.id
+                };
+
+                if (typeState.value === 'image') {
+                  styleAssetSource.image.setActive(asset.id);
+                  styleImageState.setValue(newValue);
+                } else if (typeState.value === 'vector') {
+                  styleAssetSource.vector.setActive(asset.id);
+                  styleVectorState.setValue(newValue);
+                }
+
+                cesdk.ui.closePanel(`${PANEL_ID}.style`);
+              }
+            };
+
+            cesdk.ui.openPanel(`${PANEL_ID}.style`, {
+              payload
+            });
           }
         });
 
