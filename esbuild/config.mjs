@@ -1,7 +1,10 @@
 import dtsPlugin from './plugin-dts.mjs';
 import reporterPlugin from './plugin-reporter.mjs';
 
+/** @import { BuildOptions } from 'esbuild' */
+
 export default ({ isDevelopment, pluginVersion, pluginName, external }) => {
+  /** @type { BuildOptions } */
   const config = {
     entryPoints: ['src/index.ts'],
     define: {

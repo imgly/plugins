@@ -8,11 +8,12 @@ Plugins enhance the capabilities of [CreativeEditor SDK (CE.SDK)](https://img.ly
 - Customization: Tailor the functionality of CE.SDK to meet specific needs.
 - Compatibility: Designed to work seamlessly with the latest version of CE.SDK.
 
-> [!WARNING]  
-> The plugin APIs are still in development and thus marked as unstable in CE.SDK. While it is perfectly safe to use the plugins for the specified CE.SDK versions, the APIs might change in the future. Please be aware, if you write your own plugin based on the code in this repository.
-
 # Currently Available Plugins
 
 For more information about the particular plugins, please visit the according packages in this repository.
 
 - [Background Removal](packages/plugin-background-removal-web/)
+- [Cutouts](packages/plugin-cutout-library-web/)
+- [QR Codes](packages/plugin-qr-code-web/)
+- [Remote Asset Source](packages/plugin-remote-asset-source-web/)
+- [Vectorizer](packages/plugin-vectorizer-web/)

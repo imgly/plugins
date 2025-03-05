@@ -44,30 +44,38 @@
   ],
   "scripts": {
     "start": "npm run watch",
-    "clean": "npx rimraf dist",
-    "purge": "npx rimraf node_modules",
-    "build": "npm run clean && node scripts/build.mjs",
-    "dev": "node scripts/watch.mjs",
-    "dev:wait": "npx wait-on ./dist/index.mjs ./dist/index.d.ts --timeout 30000",
+    "clean": "pnpm exec rimraf dist",
+    "purge": "pnpm exec rimraf node_modules",
+    "build": "pnpm run clean && pnpm _syncPnpm && pnpm exec node scripts/build.mjs",
+    "test": "echo No tests",
+    "dev": "pnpm exec concurrently 'node scripts/watch.mjs' 'pnpm _syncPnpm --watch' --names 'build,sync deps'",
+    "dev:wait": "pnpm exec wait-on ./dist/index.mjs ./dist/index.d.ts --timeout 30000",
     "dev:types": "tsc --emitDeclarationOnly --watch --preserveWatchOutput",
-    "publish:latest": "npm run build && npm publish --tag latest --access public",
-    "publish:next": "npm run build && npm publish --tag next --access public",
-    "check:all": "concurrently -n lint,type,pretty \"yarn check:lint\" \"yarn check:types\" \"yarn check:pretty\"",
+    "publish:latest": "pnpm run build && npm publish --tag latest --access public",
+    "publish:next": "pnpm run build && npm publish --tag next --access public",
+    "check:all": "concurrently -n lint,type,pretty \"pnpm run check:lint\" \"pnpm run check:types\" \"pnpm run check:pretty\"",
     "check:lint": "eslint --max-warnings 0 './src/**/*.{ts,tsx}'",
     "check:pretty": "prettier --list-different './src/**/*.{ts,tsx}'",
     "check:types": "tsc --noEmit",
-    "types:create": "tsc --emitDeclarationOnly"
+    "types:create": "tsc --emitDeclarationOnly",
+    "_syncPnpm": "pnpm sync-dependencies-meta-injected"
   },
   "devDependencies": {
-    "@imgly/plugin-utils": "*",
+    "@cesdk/cesdk-js": "~1.32.0",
+    "@imgly/plugin-utils": "workspace:*",
     "@types/lodash-es": "^4.17.12",
     "@types/ndarray": "^1.0.14",
-    "chalk": "^5.3.0",
+    "chalk": "^5.4.1",
     "concurrently": "^8.2.2",
-    "esbuild": "^0.19.11",
-    "eslint": "^8.51.0",
+    "esbuild": "^0.19.12",
+    "eslint": "^8.57.1",
     "lodash-es": "^4.17.21",
-    "typescript": "^5.3.3"
+    "typescript": "^5.7.3"
+  },
+  "dependenciesMeta": {
+    "@imgly/plugin-utils": {
+      "injected": true
+    }
   },
   "peerDependencies": {
     "@cesdk/cesdk-js": "^1.32.0",
