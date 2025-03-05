@@ -7,9 +7,10 @@ It also adds a custom canvas menu entry when a graphic or text block is selected
 
 ## Installation
 
-You can install the plugin via npm or yarn. Use the following commands to install the package:
+You can install the plugin via npm or a compatible package manager. Use the following commands to install the package:
 
 ```
+pnpm add @imgly/plugin-cutout-library-web
 yarn add @imgly/plugin-cutout-library-web
 npm install @imgly/plugin-cutout-library-web
 ```

@@ -5,8 +5,8 @@ Sample vite projects that can be used to test the plugins in the repository.
 ## How to add a plugin into this example project
 
 If a new plugin is under `packages/` it will automatically be picked up
-by the yarn workspaces. Calling `yarn dev` in the projects root, will automatically
-call `yarn dev` for the plugin.
+by the pnpm workspaces. Calling `pnpm dev` in the projects root, will automatically
+call `pnpm dev` for the plugin.
 
 All you have to do is to import and add the plugin in `examples/web/src/addPlugins`.
 

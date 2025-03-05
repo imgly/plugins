@@ -19,9 +19,10 @@ Contact us for access to our alpha version of the server side interface, which i
 
 ## Installation
 
-You can install the plugin via npm or yarn. Use the following commands to install the package:
+You can install the plugin via npm or a compatible package manager. Use the following commands to install the package:
 
 ```
+pnpm add @imgly/plugin-remote-asset-source-web
 yarn add @imgly/plugin-remote-asset-source-web
 npm install @imgly/plugin-remote-asset-source-web
 ```

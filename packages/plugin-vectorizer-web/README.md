@@ -4,9 +4,10 @@ This plugin introduces vectorization for the CE.SDK editor, leveraging the power
 
 ## Installation
 
-You can install the plugin via npm or yarn. Use the following commands to install the package:
+You can install the plugin via npm or a compatible package manager. Use the following commands to install the package:
 
 ```
+pnpm add @imgly/plugin-vectorizer-web
 yarn add @imgly/plugin-vectorizer-web
 npm install @imgly/plugin-vectorizer-web
 ```
