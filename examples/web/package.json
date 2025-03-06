@@ -7,7 +7,7 @@
     "build": "pnpm _syncPnpm && tsc && vite build",
     "clean": "pnpm exec rimraf dist",
     "purge": "pnpm exec rimraf node_modules",
-    "dev": "vite --clearScreen=false --force",
+    "dev": "pnpm --filter \"${npm_package_name}^...\" --parallel run dev:wait && pnpm exec concurrently 'vite --clearScreen=false --force' 'pnpm _syncPnpm --watch' --names 'build,sync deps'",
     "check:types": "tsc --noEmit",
     "_syncPnpm": "pnpm sync-dependencies-meta-injected"
   },
