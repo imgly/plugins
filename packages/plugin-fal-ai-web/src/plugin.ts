@@ -69,6 +69,7 @@ export default (
       cesdk.ui.addAssetLibraryEntry({
         id: HISTORY_ASSET_LIBRARY_ENTRY_ID,
         sourceIds: [historyAssetSourceId],
+        canRemove: true,
         gridItemHeight: 'square',
         gridBackgroundType: 'cover'
       });
