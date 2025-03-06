@@ -5,11 +5,15 @@ import FalAiPlugin from '@imgly/plugin-fal-ai-web';
 import QrCodePlugin from '@imgly/plugin-qr-code-web';
 import RemoteAssetSourcePlugin from '@imgly/plugin-remote-asset-source-web';
 import VectorizerPlugin from '@imgly/plugin-vectorizer-web';
+import { IndexedDBAssetSource } from './IndexedDBAssetSource';
 
 const ENABLE_DEMO_ASSET_SOURCES = false;
 
 async function addPlugins(cesdk: CreativeEditorSDK): Promise<void> {
   console.log('Adding plugins...');
+
+  const historyAssetSourceId = 'ly.img.generatedImage.history';
+  cesdk.engine.asset.addSource(new IndexedDBAssetSource(historyAssetSourceId));
   try {
     await Promise.all([
       cesdk.addPlugin(
@@ -25,13 +29,17 @@ async function addPlugins(cesdk: CreativeEditorSDK): Promise<void> {
           dryRun: false,
           // @ts-ignore
           proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL,
-          onError: () => {
+          historyAssetSourceId,
+          uploadGeneratedAsset: 'configured',
+          onError: (error) => {
+            console.error(error);
             cesdk.ui.showDialog({
               size: 'large',
               type: 'warning',
               content: {
-                title: "Generation Limit Reached",
-                message: "You have reached the generation limit for this model. Please try again later or contact sales@img.ly for more access."
+                title: 'Generation Limit Reached',
+                message:
+                  'You have reached the generation limit for this model. Please try again later or contact sales@img.ly for more access.'
               }
             });
           }
