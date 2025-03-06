@@ -43,7 +43,7 @@
     "start": "pnpm run watch",
     "clean": "pnpm exec rimraf dist",
     "build": "pnpm run clean && pnpm _syncPnpm && pnpm exec node scripts/build.mjs",
-    "dev": "pnpm exec concurrently 'node scripts/watch.mjs' 'pnpm _syncPnpm --watch' --names 'build,sync deps'",
+    "dev": "pnpm --filter \"${npm_package_name}^...\" --parallel run dev:wait && pnpm exec concurrently 'node scripts/watch.mjs' 'pnpm _syncPnpm --watch' --names 'build,sync deps'",
     "dev:types": "tsc --emitDeclarationOnly --watch --preserveWatchOutput",
     "publish:latest": "pnpm run build && pnpm publish --tag latest --access public",
     "publish:next": "pnpm run build && pnpm publish --tag next --access public",
