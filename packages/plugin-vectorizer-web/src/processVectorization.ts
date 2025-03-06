@@ -1,6 +1,8 @@
 import type CreativeEditorSDK from '@cesdk/cesdk-js';
 import {
   fillProcessing,
+  uploadBlob,
+  fetchImageBlob,
   type FillProcessingMetadata
 } from '@imgly/plugin-utils';
 import * as vectorizer from '@imgly/vectorizer';
@@ -99,45 +101,3 @@ export async function processVectorization(
   });
 }
 
-async function uploadBlob(
-  blob: Blob,
-  initialUri: string,
-  cesdk: CreativeEditorSDK
-) {
-  const pathname = new URL(initialUri).pathname;
-  const parts = pathname.split('/');
-  const extension = mimeTypeToExtension(blob.type);
-  const filename =
-    parts[parts.length - 1]?.split('.')?.[0] ?? 'vectorized-image';
-  const filenameWithExtension = `${filename}.${extension}`;
-
-  const uploadedAssets = await cesdk.unstable_upload(
-    new File([blob], filenameWithExtension, { type: blob.type }),
-    () => {
-      // TODO Delegate process to UI component
-    }
-  );
-
-  const url = uploadedAssets.meta?.uri;
-  if (url == null) {
-    throw new Error('Could not upload processed fill');
-  }
-  return url;
-}
-
-function mimeTypeToExtension(mimeType: string): string {
-  switch (mimeType) {
-    case 'image/jpeg':
-      return 'jpg';
-    case 'image/png':
-      return 'png';
-    case 'image/svg+xml':
-      return 'svg';
-    default:
-      return 'jpg';
-  }
-}
-
-async function fetchImageBlob(uri: string): Promise<Blob> {
-  return fetch(uri).then((response) => response.blob());
-}
