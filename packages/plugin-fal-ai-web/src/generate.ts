@@ -1,7 +1,7 @@
 import type CreativeEditorSDK from '@cesdk/cesdk-js';
 import { type AssetResult } from '@cesdk/engine';
 import { fal } from '@fal-ai/client';
-import { HISTORY_ASSET_SOURCE_ID, PREFIX } from './constants';
+import { PREFIX } from './constants';
 import { getImageDimensions } from './imageSize';
 import previewUri from './previewUri';
 import { PluginConfiguration } from './types';
@@ -24,7 +24,8 @@ let counter = 0;
 async function generate(
   cesdk: CreativeEditorSDK,
   config: PluginConfiguration,
-  input: Input
+  input: Input,
+  historyAssetSourceId: string
 ) {
   const modelPath = 'fal-ai/recraft-v3';
   let block: number | undefined;
@@ -121,7 +122,7 @@ async function generate(
         JSON.stringify(historyAsset, undefined, 2)
       );
 
-    cesdk.engine.asset.addAssetToSource(HISTORY_ASSET_SOURCE_ID, historyAsset);
+    cesdk.engine.asset.addAssetToSource(historyAssetSourceId, historyAsset);
 
     cesdk.engine.block.setState(block, { type: 'Ready' });
   } catch (e: any) {

@@ -1,7 +1,7 @@
 import type CreativeEditorSDK from '@cesdk/cesdk-js';
 import StyleAssetSource from './StyleAssetSource';
 import {
-  HISTORY_ASSET_SOURCE_ID,
+  HISTORY_ASSET_LIBRARY_ENTRY_ID,
   PANEL_ID,
   PREFIX,
   STYLE_IMAGE_ASSET_SOURCE_ID,
@@ -198,7 +198,7 @@ function registerPanels(
       }
     });
     builder.Library(`${PREFIX}.history.library`, {
-      entries: [HISTORY_ASSET_SOURCE_ID]
+      entries: [HISTORY_ASSET_LIBRARY_ENTRY_ID]
     });
   });
 }

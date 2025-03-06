@@ -8,7 +8,9 @@ export const PANEL_ID = PREFIX;
 
 export const DOCK_COMPONENT_ID = `${PREFIX}.dock`;
 
-export const HISTORY_ASSET_SOURCE_ID = `${PREFIX}/history`;
+export const HISTORY_ASSET_LIBRARY_ENTRY_ID = `${PREFIX}/history`;
+
+export const LOCAL_HISTORY_ASSET_SOURCE_ID = `${PREFIX}/history`;
 
 export const STYLE_IMAGE_ASSET_SOURCE_ID = `${PREFIX}/styles/image`;
 

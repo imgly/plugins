@@ -2,7 +2,8 @@ import { EditorPlugin } from '@cesdk/cesdk-js';
 import { fal } from '@fal-ai/client';
 import StyleAssetSource from './StyleAssetSource';
 import {
-  HISTORY_ASSET_SOURCE_ID,
+  HISTORY_ASSET_LIBRARY_ENTRY_ID,
+  LOCAL_HISTORY_ASSET_SOURCE_ID,
   PANEL_ID,
   PLUGIN_ICON_SET,
   STYLE_IMAGE_ASSET_SOURCE_ID,
@@ -40,7 +41,12 @@ export default (
 
       cesdk.engine.asset.addSource(imageStyleAssetSource);
       cesdk.engine.asset.addSource(vectorStyleAssetSource);
-      cesdk.engine.asset.addLocalSource(HISTORY_ASSET_SOURCE_ID);
+      let historyAssetSourceId = LOCAL_HISTORY_ASSET_SOURCE_ID;
+      if (config.historyAssetSourceId != null) {
+        historyAssetSourceId = config.historyAssetSourceId;
+      } else {
+        cesdk.engine.asset.addLocalSource(LOCAL_HISTORY_ASSET_SOURCE_ID);
+      }
 
       cesdk.ui.addAssetLibraryEntry({
         id: STYLE_IMAGE_ASSET_SOURCE_ID,
@@ -61,15 +67,16 @@ export default (
       });
 
       cesdk.ui.addAssetLibraryEntry({
-        id: HISTORY_ASSET_SOURCE_ID,
-        sourceIds: [HISTORY_ASSET_SOURCE_ID],
+        id: HISTORY_ASSET_LIBRARY_ENTRY_ID,
+        sourceIds: [historyAssetSourceId],
         gridItemHeight: 'square',
         gridBackgroundType: 'cover'
       });
 
       registerComponents(cesdk);
       registerPanels(cesdk, config, {
-        onGenerate: (input) => generate(cesdk, config, input),
+        onGenerate: (input) =>
+          generate(cesdk, config, input, historyAssetSourceId),
         styleAssetSource: {
           image: imageStyleAssetSource,
           vector: vectorStyleAssetSource

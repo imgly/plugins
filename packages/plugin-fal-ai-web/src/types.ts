@@ -4,6 +4,7 @@ export interface PluginConfiguration {
   debug?: boolean;
   dryRun?: boolean;
   onError?: (error: any) => void;
+  historyAssetSourceId?: string;
 }
 
 export type SelectValue = {
