@@ -5,6 +5,7 @@ export interface PluginConfiguration {
   dryRun?: boolean;
   onError?: (error: any) => void;
   historyAssetSourceId?: string;
+  uploadGeneratedAsset?: 'configured' | ((url: string) => Promise<string>);
 }
 
 export type SelectValue = {

@@ -5,6 +5,7 @@ import { PREFIX } from './constants';
 import { getImageDimensions } from './imageSize';
 import previewUri from './previewUri';
 import { PluginConfiguration } from './types';
+import { uploadBlob, fetchImageBlob, uuid } from '@imgly/plugin-utils';
 
 export interface Input {
   prompt: string;
@@ -72,7 +73,16 @@ async function generate(
       ? generateWithDry
       : generateWithFal;
 
-    const url = await generateAsset(modelPath, input);
+    let url = await generateAsset(modelPath, input);
+    if (config.uploadGeneratedAsset != null) {
+      // Re-using the existing CE.SDK upload
+      if (config.uploadGeneratedAsset === 'configured') {
+        const blob = await fetchImageBlob(url);
+        url = await uploadBlob(blob, url, cesdk);
+      } else if (typeof config.uploadGeneratedAsset === 'function') {
+        url = await config.uploadGeneratedAsset(url);
+      }
+    }
 
     if (config.debug)
       // eslint-disable-next-line no-console
@@ -106,10 +116,13 @@ async function generate(
     };
 
     const historyAsset = {
-      id: url,
+      id: uuid(),
       groups: [],
+      label: {
+        en: input.prompt
+      },
       tags: {
-        en: ['fal.ai']
+        en: ['fal.ai', 'recraft-v3', input.style]
       },
       meta,
       payload
