@@ -1,6 +1,6 @@
-export const PLUGIN_ID = '@imgly/plugin-fal-ai-web';
+export const PLUGIN_ID = '@imgly/plugin-ai-image-generation-web';
 
-export const PLUGIN_ICON_SET = '@imgly/plugin/fal-ai';
+export const PLUGIN_ICON_SET = '@imgly/plugin/ai-image-generation';
 
 export const PREFIX = 'fal-ai/recraft-v3';
 

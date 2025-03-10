@@ -14,7 +14,7 @@
   "dependencies": {
     "@cesdk/cesdk-js": "^1.45.0",
     "@cesdk/engine": "^1.45.0",
-    "@imgly/plugin-fal-ai-web": "workspace:*",
+    "@imgly/plugin-ai-image-generation-web": "workspace:*",
     "@imgly/plugin-background-removal-web": "workspace:*",
     "@imgly/plugin-cutout-library-web": "workspace:*",
     "@imgly/plugin-qr-code-web": "workspace:*",

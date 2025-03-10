@@ -1,7 +1,7 @@
 import type CreativeEditorSDK from '@cesdk/cesdk-js';
 import { CreativeEngine } from '@cesdk/cesdk-js';
 import BackgroundRemovalPlugin from '@imgly/plugin-background-removal-web';
-import FalAiPlugin from '@imgly/plugin-fal-ai-web';
+import AiImageGeneration from '@imgly/plugin-ai-image-generation-web';
 import QrCodePlugin from '@imgly/plugin-qr-code-web';
 import RemoteAssetSourcePlugin from '@imgly/plugin-remote-asset-source-web';
 import VectorizerPlugin from '@imgly/plugin-vectorizer-web';
@@ -24,7 +24,7 @@ async function addPlugins(cesdk: CreativeEditorSDK): Promise<void> {
       cesdk.addPlugin(QrCodePlugin()),
 
       cesdk.addPlugin(
-        FalAiPlugin({
+        AiImageGeneration({
           debug: true,
           dryRun: false,
           // @ts-ignore
