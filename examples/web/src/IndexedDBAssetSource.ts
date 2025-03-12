@@ -562,6 +562,10 @@ export class IndexedDBAssetSource implements AssetSource {
             : 0;
         }
       });
+    } else if (sortingOrder === 'Descending') {
+      // If no sort key is specified, and sorting order set
+      // to Descending, just reverse original order
+      sortedAssets.reverse();
     }
 
     // Sort by active first if requested
