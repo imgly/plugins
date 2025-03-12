@@ -14,6 +14,7 @@ async function addPlugins(cesdk: CreativeEditorSDK): Promise<void> {
 
   const historyAssetSourceId = 'ly.img.generatedImage.history';
   cesdk.engine.asset.addSource(new IndexedDBAssetSource(historyAssetSourceId));
+
   try {
     await Promise.all([
       cesdk.addPlugin(
@@ -27,11 +28,34 @@ async function addPlugins(cesdk: CreativeEditorSDK): Promise<void> {
         AiImageGeneration({
           debug: true,
           dryRun: false,
-          // @ts-ignore
-          proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL,
+          // provider: {
+          //   type: 'custom',
+          //   id: 'custom',
+          //   initialize: async () => {},
+          //   renderPanel: ({ builder, state }) => {
+          //     const prompt = state('input.prompt', '');
+          //     builder.TextInput('input.prompt', {
+          //       ...prompt
+          //     });
+          //     return () => ({
+          //       input: {
+          //         prompt: prompt.value
+          //       },
+          //       imageSize: { width: 100, height: 100 }
+          //     });
+          //   },
+          //   generate: async (input) => {
+          //     return 'https://placehold.co/100';
+          //   }
+          // },
+          provider: {
+            type: 'fal.ai',
+            model: 'fal-ai/recraft-v3',
+            proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL as string
+          },
           historyAssetSourceId,
           uploadGeneratedAsset: 'configured',
-          onError: (error) => {
+          onError: (error: any) => {
             console.error(error);
             cesdk.ui.showDialog({
               size: 'large',

@@ -1,5 +1,9 @@
+import { RecraftV3Input } from '@fal-ai/client/endpoints';
+
+export type StyleId = Extract<RecraftV3Input['style'], string>;
+
 // prettier-ignore
-export const STYLES_IMAGE: { id: string; label: string }[] = [
+export const STYLES_IMAGE: { id: StyleId; label: string }[] = [
   // { id: 'any', label: 'Any' },
   { id: 'realistic_image', label: 'Realistic Image' },
   { id: 'digital_illustration', label: 'Digital Illustration' },
@@ -24,7 +28,7 @@ export const STYLES_IMAGE: { id: string; label: string }[] = [
 export const STYLE_IMAGE_DEFAULT = STYLES_IMAGE[0];
 
 // prettier-ignore
-export const STYLES_VECTOR: { id: string; label: string }[] = [
+export const STYLES_VECTOR: { id: StyleId; label: string }[] = [
   { id: 'vector_illustration',            label: 'Vector Illustration' },
   { id: 'vector_illustration/engraving',  label: 'Engraving' },
   { id: 'vector_illustration/line_art',   label: 'Line Art' },
@@ -35,7 +39,7 @@ export const STYLES_VECTOR: { id: string; label: string }[] = [
 export const STYLE_VECTOR_DEFAULT = STYLES_VECTOR[0];
 
 // prettier-ignore
-const STYLE_THUMBNAILS: Record<string, string> = {
+const STYLE_THUMBNAILS: { [key in StyleId]?: string } = {
 'realistic_image': 'https://ubique.img.ly/static/image-generation/thumbnails/realistic_image.webp',
 'digital_illustration': 'https://ubique.img.ly/static/image-generation/thumbnails/digital_illustration.webp',
 'realistic_image/b_and_w': 'https://ubique.img.ly/static/image-generation/thumbnails/realistic_image_black_&_white.webp',
@@ -61,6 +65,6 @@ const STYLE_THUMBNAILS: Record<string, string> = {
 'vector_illustration/linocut': 'https://ubique.img.ly/static/image-generation/thumbnails/vector_illustration_linocut.svg',
 }
 
-export function getStyleThumbnail(id: string): string {
+export function getStyleThumbnail(id: StyleId): string | undefined {
   return STYLE_THUMBNAILS[id];
 }

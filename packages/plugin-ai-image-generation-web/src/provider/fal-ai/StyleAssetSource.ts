@@ -1,5 +1,5 @@
 import { type AssetSource } from '@cesdk/cesdk-js';
-import { getStyleThumbnail } from './styles';
+import { getStyleThumbnail, StyleId } from './styles';
 
 export const BACK_ASSET = {
   id: 'back',
@@ -12,11 +12,11 @@ export const BACK_ASSET = {
 class StyleAssetSource implements AssetSource {
   id: string;
 
-  styles: { id: string; label: string }[];
+  styles: { id: StyleId; label: string }[];
 
   activeId: string | undefined;
 
-  constructor(id: string, styles: { id: string; label: string }[]) {
+  constructor(id: string, styles: { id: StyleId; label: string }[]) {
     this.id = id;
     this.styles = styles;
   }

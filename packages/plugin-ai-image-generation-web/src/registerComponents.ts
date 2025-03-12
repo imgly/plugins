@@ -1,24 +1,31 @@
 import type CreativeEditorSDK from '@cesdk/cesdk-js';
-import { DOCK_COMPONENT_ID, PANEL_ID } from './constants';
+import { PLUGIN_ICON } from './iconSprite';
 
-function registerComponents(cesdk: CreativeEditorSDK): void {
-  cesdk.ui.registerComponent(DOCK_COMPONENT_ID, ({ builder }) => {
-    const isPanelOpen = cesdk.ui.isPanelOpen(PANEL_ID);
+function registerComponents(options: {
+  cesdk: CreativeEditorSDK;
+  providerId: string;
+}): void {
+  const { cesdk, providerId } = options;
+  const dockComponentId = `${providerId}.dock`;
+  const panelId = providerId;
+
+  cesdk.ui.registerComponent(dockComponentId, ({ builder }) => {
+    const isPanelOpen = cesdk.ui.isPanelOpen(panelId);
 
     const replaceLibraryOpen = cesdk.ui.isPanelOpen(
       '//ly.img.panel/assetLibrary.replace'
     );
 
-    builder.Button(`${DOCK_COMPONENT_ID}.button`, {
-      label: `panel.${PANEL_ID}`,
-      icon: '@imgly/plugin/fal-ai',
+    builder.Button(`${dockComponentId}.button`, {
+      label: `panel.${panelId}`,
+      icon: PLUGIN_ICON,
       isDisabled: replaceLibraryOpen,
       isSelected: isPanelOpen,
       onClick: () => {
         if (isPanelOpen) {
-          cesdk.ui.closePanel(PANEL_ID);
+          cesdk.ui.closePanel(panelId);
         } else {
-          cesdk.ui.openPanel(PANEL_ID);
+          cesdk.ui.openPanel(panelId);
           cesdk.ui.closePanel('//ly.img.panel/assetLibrary');
         }
       }

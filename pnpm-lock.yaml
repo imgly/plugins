@@ -63,29 +63,29 @@ importers:
   examples/web:
     dependencies:
       '@cesdk/cesdk-js':
-        specifier: ^1.45.0
-        version: 1.45.0(react@18.3.1)
+        specifier: ^1.46.0
+        version: 1.46.0(react@18.3.1)
       '@cesdk/engine':
-        specifier: ^1.45.0
-        version: 1.45.0(react@18.3.1)
+        specifier: ^1.46.0
+        version: 1.46.0(react@18.3.1)
       '@imgly/plugin-ai-image-generation-web':
         specifier: workspace:*
         version: link:../../packages/plugin-ai-image-generation-web
       '@imgly/plugin-background-removal-web':
         specifier: workspace:*
-        version: file:packages/plugin-background-removal-web(@cesdk/cesdk-js@1.45.0(react@18.3.1))(onnxruntime-web@1.21.0-dev.20250206-d981b153d3)
+        version: file:packages/plugin-background-removal-web(@cesdk/cesdk-js@1.46.0(react@18.3.1))(onnxruntime-web@1.21.0-dev.20250206-d981b153d3)
       '@imgly/plugin-cutout-library-web':
         specifier: workspace:*
-        version: file:packages/plugin-cutout-library-web(@cesdk/cesdk-js@1.45.0(react@18.3.1))
+        version: file:packages/plugin-cutout-library-web(@cesdk/cesdk-js@1.46.0(react@18.3.1))
       '@imgly/plugin-qr-code-web':
         specifier: workspace:*
-        version: file:packages/plugin-qr-code-web(@cesdk/cesdk-js@1.45.0(react@18.3.1))
+        version: file:packages/plugin-qr-code-web(@cesdk/cesdk-js@1.46.0(react@18.3.1))
       '@imgly/plugin-remote-asset-source-web':
         specifier: workspace:*
-        version: file:packages/plugin-remote-asset-source-web(@cesdk/cesdk-js@1.45.0(react@18.3.1))
+        version: file:packages/plugin-remote-asset-source-web(@cesdk/cesdk-js@1.46.0(react@18.3.1))
       '@imgly/plugin-vectorizer-web':
         specifier: workspace:*
-        version: file:packages/plugin-vectorizer-web(@cesdk/cesdk-js@1.45.0(react@18.3.1))
+        version: file:packages/plugin-vectorizer-web(@cesdk/cesdk-js@1.46.0(react@18.3.1))
       onnxruntime-web:
         specifier: 1.21.0-dev.20250206-d981b153d3
         version: 1.21.0-dev.20250206-d981b153d3
@@ -148,7 +148,7 @@ importers:
   packages/plugin-ai-image-generation-web:
     dependencies:
       '@cesdk/cesdk-js':
-        specifier: ^1.45.0
+        specifier: ^1.46.0
         version: 1.46.0(react@18.3.1)
       '@fal-ai/client':
         specifier: ^1.0.4
@@ -492,9 +492,6 @@ packages:
   '@cesdk/cesdk-js@1.38.0':
     resolution: {integrity: sha512-qmnkRT6BkIQXbQMBa69y2N7hJvoLWeOOW59DT1woWQwb6o3B1V99Z3baya4sP7YraAoYEl4ssZcJ9opTG+EtnQ==}
 
-  '@cesdk/cesdk-js@1.45.0':
-    resolution: {integrity: sha512-Fgfj5i95NGbkbbr7x0zuf1vU+i1zg2qNWzVD0awPClJQ0Rxv6zBErb1MfwJYbWlxZDz65jrO30A3oIh6udm/jA==}
-
   '@cesdk/cesdk-js@1.46.0':
     resolution: {integrity: sha512-dJ1OwNGUOFH+9cwyC5CwbtbnAVkSfAHRPETms2f5B3v1PPD+Ny6A5Npi1I3ySWBmsSM29+JlF+US1sEsH9IXHQ==}
 
@@ -508,14 +505,6 @@ packages:
 
   '@cesdk/engine@1.38.0':
     resolution: {integrity: sha512-2Jn6M6/4npqD9649Y/92asxceKMvQLI4T4R/cmX0FqZPRususSwZ7GELWcsCvImEiu7HK6mrIw7ztDYCvmc2ZA==}
-    peerDependencies:
-      react: '>16'
-    peerDependenciesMeta:
-      react:
-        optional: true
-
-  '@cesdk/engine@1.45.0':
-    resolution: {integrity: sha512-Tw9PzLv6IymJR+d/z3BTHj6Nqw/2a4XxhUL261Xxnbi/tlcJ1bmaNeY7/L9kxV1v0UcDGSz3rtFtvSP4Y5tzSA==}
     peerDependencies:
       react: '>16'
     peerDependenciesMeta:
@@ -3351,12 +3340,6 @@ snapshots:
     transitivePeerDependencies:
       - react
 
-  '@cesdk/cesdk-js@1.45.0(react@18.3.1)':
-    dependencies:
-      '@cesdk/engine': 1.45.0(react@18.3.1)
-    transitivePeerDependencies:
-      - react
-
   '@cesdk/cesdk-js@1.46.0(react@18.3.1)':
     dependencies:
       '@cesdk/engine': 1.46.0(react@18.3.1)
@@ -3368,10 +3351,6 @@ snapshots:
       react: 18.3.1
 
   '@cesdk/engine@1.38.0(react@18.3.1)':
-    optionalDependencies:
-      react: 18.3.1
-
-  '@cesdk/engine@1.45.0(react@18.3.1)':
     optionalDependencies:
       react: 18.3.1
 
@@ -3573,24 +3552,24 @@ snapshots:
       onnxruntime-web: 1.21.0-dev.20250206-d981b153d3
       zod: 3.24.2
 
-  '@imgly/plugin-background-removal-web@file:packages/plugin-background-removal-web(@cesdk/cesdk-js@1.45.0(react@18.3.1))(onnxruntime-web@1.21.0-dev.20250206-d981b153d3)':
+  '@imgly/plugin-background-removal-web@file:packages/plugin-background-removal-web(@cesdk/cesdk-js@1.46.0(react@18.3.1))(onnxruntime-web@1.21.0-dev.20250206-d981b153d3)':
     dependencies:
-      '@cesdk/cesdk-js': 1.45.0(react@18.3.1)
+      '@cesdk/cesdk-js': 1.46.0(react@18.3.1)
       '@imgly/background-removal': 1.6.0(onnxruntime-web@1.21.0-dev.20250206-d981b153d3)
       onnxruntime-web: 1.21.0-dev.20250206-d981b153d3
 
-  '@imgly/plugin-cutout-library-web@file:packages/plugin-cutout-library-web(@cesdk/cesdk-js@1.45.0(react@18.3.1))':
+  '@imgly/plugin-cutout-library-web@file:packages/plugin-cutout-library-web(@cesdk/cesdk-js@1.46.0(react@18.3.1))':
     dependencies:
-      '@cesdk/cesdk-js': 1.45.0(react@18.3.1)
+      '@cesdk/cesdk-js': 1.46.0(react@18.3.1)
       lodash: 4.17.21
 
-  '@imgly/plugin-qr-code-web@file:packages/plugin-qr-code-web(@cesdk/cesdk-js@1.45.0(react@18.3.1))':
+  '@imgly/plugin-qr-code-web@file:packages/plugin-qr-code-web(@cesdk/cesdk-js@1.46.0(react@18.3.1))':
     dependencies:
-      '@cesdk/cesdk-js': 1.45.0(react@18.3.1)
+      '@cesdk/cesdk-js': 1.46.0(react@18.3.1)
 
-  '@imgly/plugin-remote-asset-source-web@file:packages/plugin-remote-asset-source-web(@cesdk/cesdk-js@1.45.0(react@18.3.1))':
+  '@imgly/plugin-remote-asset-source-web@file:packages/plugin-remote-asset-source-web(@cesdk/cesdk-js@1.46.0(react@18.3.1))':
     dependencies:
-      '@cesdk/cesdk-js': 1.45.0(react@18.3.1)
+      '@cesdk/cesdk-js': 1.46.0(react@18.3.1)
       lodash: 4.17.21
       zod: 3.24.2
 
@@ -3609,9 +3588,9 @@ snapshots:
       '@cesdk/cesdk-js': 1.46.0(react@18.3.1)
       lodash-es: 4.17.21
 
-  '@imgly/plugin-vectorizer-web@file:packages/plugin-vectorizer-web(@cesdk/cesdk-js@1.45.0(react@18.3.1))':
+  '@imgly/plugin-vectorizer-web@file:packages/plugin-vectorizer-web(@cesdk/cesdk-js@1.46.0(react@18.3.1))':
     dependencies:
-      '@cesdk/cesdk-js': 1.45.0(react@18.3.1)
+      '@cesdk/cesdk-js': 1.46.0(react@18.3.1)
       '@imgly/vectorizer': 1.0.0
 
   '@imgly/vectorizer@1.0.0':

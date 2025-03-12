@@ -1,14 +1,11 @@
+import { type RecraftV3Input } from '@fal-ai/client/endpoints';
+
 export type ImageSize =
-  | 'square_hd'
-  | 'square'
-  | 'portrait_4_3'
-  | 'portrait_16_9'
-  | 'landscape_4_3'
-  | 'landscape_16_9'
+  | Extract<RecraftV3Input['image_size'], string>
   | 'custom';
 
 // prettier-ignore
-export const IMAGE_SIZE_VALUES: { id: string; label: string | string[] }[] = [
+export const IMAGE_SIZE_VALUES: { id: ImageSize; label: string | string[], icon?: string }[] = [
   { id: 'square_hd',      label: 'Square HD' },
   { id: 'square',         label: 'Square' },
   { id: 'portrait_4_3',   label: 'Portrait 4:3' },
@@ -18,7 +15,7 @@ export const IMAGE_SIZE_VALUES: { id: string; label: string | string[] }[] = [
   { id: 'custom',         label: 'Custom' }
 ] as const;
 
-const IMAGE_SIZE_ICONS: Record<string, string> = {
+const IMAGE_SIZE_ICONS: Record<ImageSize, string> = {
   square: '@imgly/plugin/fal-ai/ratio1by1',
   square_hd: '@imgly/plugin/fal-ai/ratio1by1',
   portrait_4_3: '@imgly/plugin/fal-ai/ratio3by4',
@@ -28,7 +25,7 @@ const IMAGE_SIZE_ICONS: Record<string, string> = {
   custom: '@imgly/plugin/fal-ai/ratioFree'
 };
 
-export function getImageSizeIcon(id: string): string {
+export function getImageSizeIcon(id: ImageSize): string {
   return IMAGE_SIZE_ICONS[id];
 }
 
