@@ -397,7 +397,13 @@ function renderAnyOfProperty<K extends OutputKind, I, O extends Output>(
     }
   });
 
-  const propertyState = state<EnumValue>(id, values[0]);
+  const defaultValue =
+    property.schema.default != null
+      ? values.find((value) => value.id === property.schema.default) ??
+        values[0]
+      : values[0];
+
+  const propertyState = state<EnumValue>(id, defaultValue);
 
   builder.Select(id, {
     inputLabel,
