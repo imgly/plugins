@@ -98,7 +98,10 @@ async function registerPanelInputSchema<
           ...panelInput.createInputByKind(input)
         };
       },
-      options,
+      {
+        ...options,
+        requiredInputs: inputSchema.required
+      },
       config
     );
   });

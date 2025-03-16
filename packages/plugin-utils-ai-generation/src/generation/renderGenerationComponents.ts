@@ -1,3 +1,4 @@
+import { OpenAPIV3 } from 'openapi-types';
 import { type BuilderRenderFunctionContext } from '@cesdk/cesdk-js';
 import type Provider from './provider';
 import { type GetInput, type OutputKind, type Output } from './provider';
@@ -18,6 +19,7 @@ function renderGenerationComponents<K extends OutputKind, I, O extends Output>(
   getInput: GetInput<K, I>,
   options: UIOptions & {
     includeHistoryLibrary?: boolean;
+    requiredInputs?: string[];
   },
   config: InitProviderConfiguration
 ): void {
@@ -44,12 +46,23 @@ function renderGenerationComponents<K extends OutputKind, I, O extends Output>(
     }
   };
 
+  let isDisabled: boolean | undefined;
+  if (options.requiredInputs != null && options.requiredInputs.length > 0) {
+    const inputs = getInput();
+    isDisabled = options.requiredInputs.every((input) => {
+      // @ts-ignore
+      const hasInput = !inputs.input[input];
+      return hasInput;
+    });
+  }
+
   builder.Section(`${providerId}.generate.section`, {
     children: () => {
       builder.Button(`${providerId}.generate`, {
         label: `panel.${providerId}.generate`,
         isLoading: generatingState.value.isGenerating,
         color: 'accent',
+        isDisabled,
         suffix: canAbortNow
           ? {
               icon: '@imgly/Cross',
