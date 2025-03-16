@@ -1,3 +1,7 @@
+import { OpenAPIV3 } from 'openapi-types';
+import dereferenceDocument, {
+  resolveReference
+} from './openapi/dereferenceDocument';
 import {
   type OutputKind,
   type Output,
@@ -5,6 +9,11 @@ import {
 } from './provider';
 import type Provider from './provider';
 import { InitProviderConfiguration, UIOptions } from './types';
+import { isOpenAPISchema } from './openapi/isOpenAPISchema';
+import { GetPropertyInput } from './openapi/types';
+import renderProperty from './openapi/renderProperty';
+import renderGenerationComponents from './renderGenerationComponents';
+import getProperties from './openapi/getProperties';
 
 /**
  * Registers a schema-based panel input for a provider
@@ -15,7 +24,7 @@ async function registerPanelInputSchema<
   O extends Output
 >(
   provider: Provider<K, I, O>,
-  _panelInput: PanelInputSchema,
+  panelInput: PanelInputSchema<K, I>,
   options: UIOptions,
   config: InitProviderConfiguration
 ): Promise<void> {
@@ -31,30 +40,67 @@ async function registerPanelInputSchema<
     );
   }
 
-  // Implementation would:
-  // 1. Parse schema definition
-  // 2. Register appropriate UI components with cesdk.ui
-  // 3. Set up event listeners and data binding
+  const schemaDocument = dereferenceDocument(panelInput.document);
+  const resolvedInputReference = resolveReference(
+    schemaDocument,
+    panelInput.inputReference
+  );
 
-  // For now this is a placeholder implementation
-  cesdk.ui.registerPanel(`panel.${providerId}`, (context) => {
+  if (!isOpenAPISchema(resolvedInputReference, config.debug)) {
+    throw new Error(
+      `Input reference '${panelInput.inputReference}' does not resolve to a valid OpenAPI schema`
+    );
+  }
+
+  const inputSchema: OpenAPIV3.SchemaObject = resolvedInputReference;
+  const properties = getProperties(inputSchema, panelInput);
+
+  cesdk.ui.registerPanel(providerId, (context) => {
     const { builder } = context;
 
-    // Schema-based UI would be generated here
+    const getInputs: GetPropertyInput[] = [];
     builder.Section(`${providerId}.schema.section`, {
       children: () => {
-        builder.Text(`${providerId}.schema.placeholder`, {
-          content: 'Schema-based panel (placeholder)'
+        properties.forEach((property) => {
+          const getInput = renderProperty(
+            context,
+            property,
+            provider,
+            panelInput,
+            options,
+            config
+          );
+          if (getInput != null) {
+            if (Array.isArray(getInput)) {
+              getInputs.push(...getInput);
+            } else {
+              getInputs.push(getInput);
+            }
+          }
         });
       }
     });
 
-    // renderGenerationComponents(
-    //   context,
-    //   provider,
-    //   options,
-    //   config
-    // );
+    renderGenerationComponents(
+      context,
+      provider,
+      () => {
+        const inputs = getInputs.map((getInput) => {
+          const input = getInput();
+          return input;
+        });
+        const input = inputs.reduce((acc, { id, value }) => {
+          acc[id] = value;
+          return acc;
+        }, {} as Record<string, any>) as I;
+        return {
+          input,
+          ...panelInput.createInputByKind(input)
+        };
+      },
+      options,
+      config
+    );
   });
 }
 

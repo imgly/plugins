@@ -1,3 +1,4 @@
+import { type OpenAPIV3 } from 'openapi-types';
 import type CreativeEditorSDK from '@cesdk/cesdk-js';
 import {
   type BuilderRenderFunctionContext,
@@ -79,7 +80,7 @@ interface Provider<K extends OutputKind, I, O extends Output> {
 
 export type PanelInput<K extends OutputKind, I> =
   | PanelInputCustom<K, I>
-  | PanelInputSchema;
+  | PanelInputSchema<K, I>;
 
 interface PanelInputBase {
   /**
@@ -100,8 +101,38 @@ interface PanelInputBase {
   includeHistoryLibrary?: boolean;
 }
 
-export interface PanelInputSchema extends PanelInputBase {
+export interface PanelInputSchema<K extends OutputKind, I>
+  extends PanelInputBase {
   type: 'schema';
+
+  /**
+   * The OpenAPI document/schema for a service.
+   */
+  document: OpenAPIV3.Document;
+
+  /**
+   * The reference to the input in the OpenAPI document.
+   * This is used to determine the input components for the generation panel.
+   *
+   * @example
+   * `#/components/schemas/GenerationInput`
+   */
+  inputReference: string;
+
+  /**
+   * The keyword that determines the order of properties. the
+   * referenced extension keyword should contain an array of strings
+   * representing the properties.
+   */
+  orderExtensionKeyword?: string | string[];
+
+  /**
+   * After the input is created (from the schema), this
+   * method is called to create the additional and mandatory
+   * input by kind.
+   *
+   */
+  createInputByKind: (input: I) => Record<K, InputByKind[K]>;
 }
 
 export interface PanelInputCustom<K extends OutputKind, I>
