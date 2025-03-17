@@ -207,7 +207,7 @@ export type OutputKind = 'image' | 'video' | 'audio' | 'text';
  */
 export type InputByKind = {
   image: { width: number; height: number };
-  video: { width: number; height: number };
+  video: { width: number; height: number; duration: number };
   audio: { duration: number };
   text: { length: number };
 };

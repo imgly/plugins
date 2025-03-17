@@ -33,7 +33,7 @@ function registerGenerationPanel<I>(
         const generating = state('generating', false);
 
         builder.Button(`${providerId}.generate`, {
-          label: `panel.${panelId}.generate`,
+          label: [`panel.${panelId}.generate`],
           isLoading: generating.value,
           color: 'accent',
           onClick: async () => {
