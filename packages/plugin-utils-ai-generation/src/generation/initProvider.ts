@@ -43,6 +43,27 @@ async function initProvider<K extends OutputKind, I, O extends Output>(
     }
 
     await initInputs(provider, uiOptions, config);
+
+    options.cesdk.i18n.setTranslations({
+      en: {
+        'common.ai-generation.generate': 'Generate',
+        [`panel.${provider.id}`]: getName(provider)
+      }
+    });
+  }
+}
+
+function getName(provider: Provider<any, any, any>): string {
+  if (provider.name != null) return provider.name;
+  switch (provider.kind) {
+    case 'image':
+      return 'Generate Image';
+    case 'video':
+      return 'Generate Video';
+    case 'audio':
+      return 'Generate Audio';
+    default:
+      return 'Generate Asset';
   }
 }
 

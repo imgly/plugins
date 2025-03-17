@@ -19,6 +19,11 @@ interface Provider<K extends OutputKind, I, O extends Output> {
   id: string;
 
   /**
+   * The human-readable name of the provider.
+   */
+  name?: string;
+
+  /**
    * Initialize the provider when the plugin is loaded.
    * Can be used to initialize libraries, and register additional UI components.
    */
