@@ -4,6 +4,7 @@ import {
   type BuilderRenderFunctionContext,
   type CreativeEngine
 } from '@cesdk/cesdk-js';
+import { GetPropertyInput, Property } from './openapi/types';
 
 interface Provider<K extends OutputKind, I, O extends Output> {
   /**
@@ -138,6 +139,16 @@ export interface PanelInputSchema<K extends OutputKind, I>
    *
    */
   createInputByKind: (input: I) => Record<K, InputByKind[K]>;
+
+  /**
+    * Allows to customize the components for some properties.
+    */
+  renderCustomProperty?: {
+    [key: string]: (
+      context: BuilderRenderFunctionContext<any>,
+      property: Property
+    ) => GetPropertyInput;
+  };
 }
 
 export interface PanelInputCustom<K extends OutputKind, I>

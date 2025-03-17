@@ -23,6 +23,13 @@ function renderProperty<K extends OutputKind, I, O extends Output>(
 ): GetPropertyInput | undefined {
   const type = property.schema.type;
 
+  if (
+    panelInput.renderCustomProperty != null &&
+    panelInput.renderCustomProperty[property.id] != null
+  ) {
+    return panelInput.renderCustomProperty[property.id](context, property);
+  }
+
   switch (type) {
     case 'string': {
       if (property.schema.enum != null) {
