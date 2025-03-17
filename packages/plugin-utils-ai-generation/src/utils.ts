@@ -164,3 +164,30 @@ export function getThumbnailForVideo(
     }
   });
 }
+
+/**
+ * Converts an ID string to a human-readable label
+ * @param id - The ID string to convert
+ * @returns A human-readable label derived from the ID
+ * 
+ * Examples:
+ * - snake_case_id → Snake Case Id
+ * - kebab-case-id → Kebab Case Id
+ * - camelCaseId → Camel Case Id
+ * - PascalCaseId → Pascal Case Id
+ */
+export function getLabelFromId(id: string): string {
+  if (!id) return '';
+  
+  // Handle snake_case, kebab-case, camelCase, and PascalCase
+  return id
+    // Add spaces before uppercase letters (for camelCase and PascalCase)
+    .replace(/([A-Z])/g, ' $1')
+    // Replace underscores and hyphens with spaces (for snake_case and kebab-case)
+    .replace(/[_-]/g, ' ')
+    // Trim any extra spaces and ensure first letter is capitalized
+    .trim()
+    .split(' ')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(' ');
+}

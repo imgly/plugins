@@ -340,7 +340,7 @@ function renderAnyOfProperty<K extends OutputKind, I, O extends Output>(
         anySchema.enum.forEach((valueId) => {
           values.push({
             id: valueId,
-            label: valueId
+            label: getLabelFromId(valueId)
           });
         });
       } else {
