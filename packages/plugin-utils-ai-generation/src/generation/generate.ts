@@ -76,7 +76,7 @@ async function generate<K extends OutputKind, I, O extends Output>(
 
     let generatedAssetResult: AssetResult | undefined;
     if (placeholderBlock != null) {
-      generatedAssetResult = getAssetResultForGenerated(
+      generatedAssetResult = await getAssetResultForGenerated(
         assetId,
         kind,
         inputs,
@@ -98,7 +98,7 @@ async function generate<K extends OutputKind, I, O extends Output>(
 
     if (historyAssetSourceId != null) {
       if (generatedAssetResult == null) {
-        generatedAssetResult = getAssetResultForGenerated(
+        generatedAssetResult = await getAssetResultForGenerated(
           assetId,
           kind,
           inputs,

@@ -4,15 +4,17 @@ import {
   type OutputKind,
   ImageOutput,
   InputByKind,
-  Output
+  Output,
+  VideoOutput
 } from './provider';
+import { getThumbnailForVideo } from '../utils';
 
-function getAssetResultForGenerated<K extends OutputKind, I>(
+async function getAssetResultForGenerated<K extends OutputKind, I>(
   id: string,
   kind: K,
   inputs: ReturnType<GetInput<K, I>>,
   output: Output
-): AssetResult {
+): Promise<AssetResult> {
   switch (kind) {
     case 'image': {
       if (output.kind !== 'image') {
@@ -24,6 +26,20 @@ function getAssetResultForGenerated<K extends OutputKind, I>(
       return getImageAssetResultForGenerated(
         id,
         inputs[kind] as InputByKind['image'],
+        output
+      );
+    }
+
+    case 'video': {
+      if (output.kind !== 'video') {
+        throw new Error(
+          `Output kind does not match the expected type: ${output.kind} (expected: video)`
+        );
+      }
+
+      return getVideoAssetResultForGenerated(
+        id,
+        inputs[kind] as InputByKind['video'],
         output
       );
     }
@@ -65,5 +81,34 @@ function getImageAssetResultForGenerated(
     }
   };
 }
+
+async function getVideoAssetResultForGenerated(
+  id: string,
+  input: InputByKind['video'],
+  output: VideoOutput
+): Promise<AssetResult> {
+  const width = input.width;
+  const height = input.height;
+
+  const thumbUri = await getThumbnailForVideo(output.url, 0);
+
+  return {
+    id,
+    meta: {
+      uri: output.url,
+      thumbUri,
+
+      mimeType: "video/mp4",
+      kind: "video",
+      fillType: "//ly.img.ubq/fill/video",
+
+      duration: input.duration.toString(),
+
+      width,
+      height
+    }
+  };
+}
+
 
 export default getAssetResultForGenerated;

@@ -26,7 +26,8 @@
     "check:lint": "eslint --max-warnings 0 './src/**/*.{ts,tsx}'",
     "check:pretty": "prettier --list-different './src/**/*.{ts,tsx}'",
     "check:types": "tsc --noEmit",
-    "types:create": "tsc --emitDeclarationOnly"
+    "types:create": "tsc --emitDeclarationOnly",
+    "_syncPnpm": "pnpm sync-dependencies-meta-injected"
   },
   "devDependencies": {
     "@cesdk/cesdk-js": "^1.47.0-rc.0",
