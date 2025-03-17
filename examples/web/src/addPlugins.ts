@@ -1,7 +1,6 @@
 import type CreativeEditorSDK from '@cesdk/cesdk-js';
 import { CreativeEngine } from '@cesdk/cesdk-js';
 import BackgroundRemovalPlugin from '@imgly/plugin-background-removal-web';
-import AiImageGeneration from '@imgly/plugin-ai-image-generation-web';
 import QrCodePlugin from '@imgly/plugin-qr-code-web';
 import RemoteAssetSourcePlugin from '@imgly/plugin-remote-asset-source-web';
 import VectorizerPlugin from '@imgly/plugin-vectorizer-web';
@@ -23,52 +22,6 @@ async function addPlugins(cesdk: CreativeEditorSDK): Promise<void> {
       cesdk.addPlugin(VectorizerPlugin({ ui: { locations: 'canvasMenu' } })),
 
       cesdk.addPlugin(QrCodePlugin()),
-
-      cesdk.addPlugin(
-        AiImageGeneration({
-          debug: true,
-          dryRun: false,
-          // provider: {
-          //   type: 'custom',
-          //   id: 'custom',
-          //   initialize: async () => {},
-          //   renderPanel: ({ builder, state }) => {
-          //     const prompt = state('input.prompt', '');
-          //     builder.TextInput('input.prompt', {
-          //       ...prompt
-          //     });
-          //     return () => ({
-          //       input: {
-          //         prompt: prompt.value
-          //       },
-          //       imageSize: { width: 100, height: 100 }
-          //     });
-          //   },
-          //   generate: async (input) => {
-          //     return 'https://placehold.co/100';
-          //   }
-          // },
-          provider: {
-            type: 'fal.ai',
-            model: 'fal-ai/recraft-v3',
-            proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL as string
-          },
-          historyAssetSourceId,
-          uploadGeneratedAsset: 'configured',
-          onError: (error: any) => {
-            console.error(error);
-            cesdk.ui.showDialog({
-              size: 'large',
-              type: 'warning',
-              content: {
-                title: 'Generation Limit Reached',
-                message:
-                  'You have reached the generation limit for this model. Please try again later or contact sales@img.ly for more access.'
-              }
-            });
-          }
-        })
-      ),
 
       ...addDemoRemoteAssetSourcesPlugins(cesdk)
     ]);

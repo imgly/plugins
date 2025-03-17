@@ -38,6 +38,8 @@ function App() {
 
             instance.ui.setDockOrder([
               'fal-ai/recraft-v3.dock',
+              'custom.dock',
+              'fal-ai/pixverse/v3.5/text-to-video.dock',
               'ly.img.separator',
               ...instance.ui.getDockOrder(),
               {
@@ -53,7 +55,7 @@ function App() {
               'ly.img.generate-qr.dock'
             ]);
 
-            await instance.createDesignScene();
+            await instance.createVideoScene();
           });
         } else if (cesdk.current != null) {
           cesdk.current.dispose();
