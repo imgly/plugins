@@ -3,14 +3,21 @@ import { OutputKind, PanelInput, type Output } from './provider';
 import registerPanelInputSchema from './registerPanelInputSchema';
 import registerPanelInputCustom from './registerPanelInputCustom';
 import { InitProviderConfiguration, Options, UIOptions } from './types';
-import { type CreativeEngine } from '@cesdk/cesdk-js';
+import { BuilderRenderFunction, type CreativeEngine } from '@cesdk/cesdk-js';
 import { IndexedDBAssetSource } from '../IndexedDBAssetSource';
+import icons from '../icons';
+
+type RenderBuilderFunctions = {
+  panel?: BuilderRenderFunction<any>;
+};
 
 async function initProvider<K extends OutputKind, I, O extends Output>(
   provider: Provider<K, I, O>,
   options: Options,
   config: InitProviderConfiguration
-) {
+): Promise<{
+  renderBuilderFunctions?: RenderBuilderFunctions;
+}> {
   await provider.initialize(options);
   const historyAssetSourceId = await initHistory(
     options.engine,
@@ -18,39 +25,47 @@ async function initProvider<K extends OutputKind, I, O extends Output>(
     provider.output.history ?? '@imgly/local'
   );
 
-  if (options.cesdk != null) {
-    const historyAssetLibraryEntryId = historyAssetSourceId
-      ? `${provider.id}.history.entry`
-      : undefined;
-    const uiOptions: UIOptions = {
-      ...options,
-      cesdk: options.cesdk,
-      historyAssetSourceId,
-      historyAssetLibraryEntryId
-    };
+  if (options.cesdk == null) {
+    return {};
+  }
 
-    if (historyAssetLibraryEntryId != null && historyAssetSourceId != null) {
-      options.cesdk.ui.addAssetLibraryEntry({
-        id: historyAssetLibraryEntryId,
-        sourceIds: [historyAssetSourceId],
-        sortBy: {
-          sortingOrder: 'Descending'
-        },
-        canRemove: true,
-        gridItemHeight: 'square',
-        gridBackgroundType: 'cover'
-      });
-    }
+  const historyAssetLibraryEntryId = historyAssetSourceId
+    ? `${provider.id}.history.entry`
+    : undefined;
+  const uiOptions: UIOptions = {
+    ...options,
+    cesdk: options.cesdk,
+    historyAssetSourceId,
+    historyAssetLibraryEntryId
+  };
 
-    await initInputs(provider, uiOptions, config);
-
-    options.cesdk.i18n.setTranslations({
-      en: {
-        'common.ai-generation.generate': 'Generate',
-        [`panel.${provider.id}`]: getName(provider)
-      }
+  if (historyAssetLibraryEntryId != null && historyAssetSourceId != null) {
+    options.cesdk.ui.addAssetLibraryEntry({
+      id: historyAssetLibraryEntryId,
+      sourceIds: [historyAssetSourceId],
+      sortBy: {
+        sortingOrder: 'Descending'
+      },
+      canRemove: true,
+      gridItemHeight: 'square',
+      gridBackgroundType: 'cover'
     });
   }
+
+  options.cesdk.i18n.setTranslations({
+    en: {
+      'common.ai-generation.generate': 'Generate',
+      [`panel.${provider.id}`]: getName(provider)
+    }
+  });
+
+  options.cesdk.ui.addIconSet('@imgly/plugin-ai-generation', icons);
+
+  const renderBuilderFunctions = await initInputs(provider, uiOptions, config);
+
+  return {
+    renderBuilderFunctions
+  };
 }
 
 function getName(provider: Provider<any, any, any>): string {
@@ -96,11 +111,26 @@ async function initInputs<K extends OutputKind, I, O extends Output>(
   provider: Provider<K, I, O>,
   options: UIOptions,
   config: InitProviderConfiguration
-) {
+): Promise<{
+  panel?: BuilderRenderFunction<any>;
+}> {
+  const result: {
+    panel?: BuilderRenderFunction<any>;
+  } = {
+    panel: undefined
+  };
+
   if (provider.input?.panel != null) {
-    await initPanel(provider, provider.input.panel, options, config);
+    result.panel = await initPanel(
+      provider,
+      provider.input.panel,
+      options,
+      config
+    );
   }
   // TODO: Initialize other inputs like the "magic menu"
+
+  return result;
 }
 
 async function initPanel<K extends OutputKind, I, O extends Output>(
@@ -108,16 +138,14 @@ async function initPanel<K extends OutputKind, I, O extends Output>(
   panelInput: PanelInput<K, I>,
   options: UIOptions,
   config: InitProviderConfiguration
-) {
+): Promise<BuilderRenderFunction<any> | undefined> {
   switch (panelInput.type) {
     case 'custom': {
-      await registerPanelInputCustom(provider, panelInput, options, config);
-      break;
+      return registerPanelInputCustom(provider, panelInput, options, config);
     }
 
     case 'schema': {
-      await registerPanelInputSchema(provider, panelInput, options, config);
-      break;
+      return registerPanelInputSchema(provider, panelInput, options, config);
     }
 
     default: {

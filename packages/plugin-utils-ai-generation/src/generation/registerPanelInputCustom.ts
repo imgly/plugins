@@ -1,3 +1,4 @@
+import { BuilderRenderFunction } from '@cesdk/cesdk-js';
 import type Provider from './provider';
 import { OutputKind, PanelInputCustom, type Output } from './provider';
 import renderGenerationComponents, {
@@ -14,13 +15,13 @@ async function registerPanelInputCustom<
   panelInput: PanelInputCustom<K, I>,
   options: UIOptions,
   config: InitProviderConfiguration
-): Promise<void> {
+): Promise<BuilderRenderFunction<any>> {
   const { cesdk } = options;
   const { id: providerId } = provider;
 
   const render = panelInput.render;
 
-  cesdk.ui.registerPanel(providerId, (context) => {
+  const builderRenderFunction: BuilderRenderFunction<any> = (context) => {
     const { state } = context;
 
     const isGenerating = state(isGeneratingStateKey(providerId), {
@@ -41,7 +42,11 @@ async function registerPanelInputCustom<
     );
 
     return getInput;
-  });
+  };
+
+  cesdk.ui.registerPanel(providerId, builderRenderFunction);
+
+  return builderRenderFunction;
 }
 
 export default registerPanelInputCustom;
