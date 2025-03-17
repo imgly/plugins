@@ -71,7 +71,6 @@ async function initFalProvider(
           engine: cesdk.engine
         },
         {
-          dryRun: true,
           debug: config.debug
         }
       );
