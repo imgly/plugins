@@ -73,7 +73,7 @@
     }
   },
   "peerDependencies": {
-    "@cesdk/cesdk-js": "^1.47.0-rc.0"
+    "@cesdk/cesdk-js": "^1.47.0-rc.1"
   },
   "dependencies": {
     "@fal-ai/client": "^1.0.4"
