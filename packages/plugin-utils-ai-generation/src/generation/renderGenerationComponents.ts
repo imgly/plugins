@@ -1,4 +1,3 @@
-import { OpenAPIV3 } from 'openapi-types';
 import { type BuilderRenderFunctionContext } from '@cesdk/cesdk-js';
 import type Provider from './provider';
 import { type GetInput, type OutputKind, type Output } from './provider';
@@ -23,13 +22,13 @@ function renderGenerationComponents<K extends OutputKind, I, O extends Output>(
   },
   config: InitProviderConfiguration
 ): void {
-  const { builder, state } = context;
+  const { builder, experimental } = context;
   const { cesdk, includeHistoryLibrary = true } = options;
   const {
     id: providerId,
     output: { abortable }
   } = provider;
-  const generatingState = state<{
+  const generatingState = experimental.global<{
     isGenerating: boolean;
     abort: () => void;
   }>(isGeneratingStateKey(providerId), {
