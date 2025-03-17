@@ -1,0 +1,404 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Fal Queue API",
+    "version": "1.0.0",
+    "description": "The Fal Queue API."
+  },
+  "components": {
+    "securitySchemes": {
+      "apiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization",
+        "description": "Fal Key"
+      }
+    },
+    "schemas": {
+      "QueueStatus": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["IN_QUEUE", "IN_PROGRESS", "COMPLETED"]
+          },
+          "request_id": { "type": "string", "description": "The request id." },
+          "response_url": {
+            "type": "string",
+            "description": "The response url."
+          },
+          "status_url": { "type": "string", "description": "The status url." },
+          "cancel_url": { "type": "string", "description": "The cancel url." },
+          "logs": {
+            "type": "object",
+            "description": "The logs.",
+            "additionalProperties": true
+          },
+          "metrics": {
+            "type": "object",
+            "description": "The metrics.",
+            "additionalProperties": true
+          },
+          "queue_position": {
+            "type": "integer",
+            "description": "The queue position."
+          }
+        },
+        "required": ["status", "request_id"]
+      },
+      "RecraftV3Input": {
+        "title": "TextToImageInput",
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "title": "Prompt",
+            "type": "string",
+            "x-imgly-builder": {
+              "component": "TextArea"
+            }
+          },
+          "image_size": {
+            "anyOf": [
+              { "$ref": "#/components/schemas/ImageSize" },
+              {
+                "enum": [
+                  "square_hd",
+                  "square",
+                  "portrait_4_3",
+                  "portrait_16_9",
+                  "landscape_4_3",
+                  "landscape_16_9"
+                ],
+                "type": "string"
+              }
+            ],
+            "title": "Format",
+            "default": "square_hd"
+          },
+          "style": {
+            "enum": [
+              "any",
+              "realistic_image",
+              "digital_illustration",
+              "vector_illustration",
+              "realistic_image/b_and_w",
+              "realistic_image/hard_flash",
+              "realistic_image/hdr",
+              "realistic_image/natural_light",
+              "realistic_image/studio_portrait",
+              "realistic_image/enterprise",
+              "realistic_image/motion_blur",
+              "realistic_image/evening_light",
+              "realistic_image/faded_nostalgia",
+              "realistic_image/forest_life",
+              "realistic_image/mystic_naturalism",
+              "realistic_image/natural_tones",
+              "realistic_image/organic_calm",
+              "realistic_image/real_life_glow",
+              "realistic_image/retro_realism",
+              "realistic_image/retro_snapshot",
+              "realistic_image/urban_drama",
+              "realistic_image/village_realism",
+              "realistic_image/warm_folk",
+              "digital_illustration/pixel_art",
+              "digital_illustration/hand_drawn",
+              "digital_illustration/grain",
+              "digital_illustration/infantile_sketch",
+              "digital_illustration/2d_art_poster",
+              "digital_illustration/handmade_3d",
+              "digital_illustration/hand_drawn_outline",
+              "digital_illustration/engraving_color",
+              "digital_illustration/2d_art_poster_2",
+              "digital_illustration/antiquarian",
+              "digital_illustration/bold_fantasy",
+              "digital_illustration/child_book",
+              "digital_illustration/child_books",
+              "digital_illustration/cover",
+              "digital_illustration/crosshatch",
+              "digital_illustration/digital_engraving",
+              "digital_illustration/expressionism",
+              "digital_illustration/freehand_details",
+              "digital_illustration/grain_20",
+              "digital_illustration/graphic_intensity",
+              "digital_illustration/hard_comics",
+              "digital_illustration/long_shadow",
+              "digital_illustration/modern_folk",
+              "digital_illustration/multicolor",
+              "digital_illustration/neon_calm",
+              "digital_illustration/noir",
+              "digital_illustration/nostalgic_pastel",
+              "digital_illustration/outline_details",
+              "digital_illustration/pastel_gradient",
+              "digital_illustration/pastel_sketch",
+              "digital_illustration/pop_art",
+              "digital_illustration/pop_renaissance",
+              "digital_illustration/street_art",
+              "digital_illustration/tablet_sketch",
+              "digital_illustration/urban_glow",
+              "digital_illustration/urban_sketching",
+              "digital_illustration/vanilla_dreams",
+              "digital_illustration/young_adult_book",
+              "digital_illustration/young_adult_book_2",
+              "vector_illustration/bold_stroke",
+              "vector_illustration/chemistry",
+              "vector_illustration/colored_stencil",
+              "vector_illustration/contour_pop_art",
+              "vector_illustration/cosmics",
+              "vector_illustration/cutout",
+              "vector_illustration/depressive",
+              "vector_illustration/editorial",
+              "vector_illustration/emotional_flat",
+              "vector_illustration/infographical",
+              "vector_illustration/marker_outline",
+              "vector_illustration/mosaic",
+              "vector_illustration/naivector",
+              "vector_illustration/roundish_flat",
+              "vector_illustration/segmented_colors",
+              "vector_illustration/sharp_contrast",
+              "vector_illustration/thin",
+              "vector_illustration/vector_photo",
+              "vector_illustration/vivid_shapes",
+              "vector_illustration/engraving",
+              "vector_illustration/line_art",
+              "vector_illustration/line_circuit",
+              "vector_illustration/linocut"
+            ],
+            "title": "Style",
+            "type": "string",
+            "description": "The style of the generated images. Vector images cost 2X as much.",
+            "default": "realistic_image"
+          },
+          "colors": {
+            "title": "Colors",
+            "type": "array",
+            "description": "An array of preferable colors",
+            "items": { "$ref": "#/components/schemas/RGBColor" },
+            "default": []
+          }
+        },
+        "x-fal-order-properties": [
+          "prompt",
+          "style",
+          "image_size"
+        ],
+        "required": ["prompt"]
+      },
+      "RecraftV3Output": {
+        "title": "TextToImageOutput",
+        "type": "object",
+        "properties": {
+          "images": {
+            "title": "Images",
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/File" }
+          }
+        },
+        "x-fal-order-properties": ["images"],
+        "required": ["images"]
+      },
+      "ImageSize": {
+        "title": "ImageSize",
+        "type": "object",
+        "properties": {
+          "height": {
+            "maximum": 14142,
+            "type": "integer",
+            "title": "Height",
+            "description": "The height of the generated image.",
+            "exclusiveMinimum": 0,
+            "default": 512
+          },
+          "width": {
+            "maximum": 14142,
+            "type": "integer",
+            "title": "Width",
+            "description": "The width of the generated image.",
+            "exclusiveMinimum": 0,
+            "default": 512
+          }
+        },
+        "x-fal-order-properties": ["width", "height"]
+      },
+      "RGBColor": {
+        "title": "RGBColor",
+        "type": "object",
+        "properties": {
+          "r": {
+            "minimum": 0,
+            "maximum": 255,
+            "type": "integer",
+            "title": "R",
+            "description": "Red color value",
+            "default": 0
+          },
+          "b": {
+            "minimum": 0,
+            "maximum": 255,
+            "type": "integer",
+            "title": "B",
+            "description": "Blue color value",
+            "default": 0
+          },
+          "g": {
+            "minimum": 0,
+            "maximum": 255,
+            "type": "integer",
+            "title": "G",
+            "description": "Green color value",
+            "default": 0
+          }
+        },
+        "x-fal-order-properties": ["r", "g", "b"]
+      },
+      "File": {
+        "title": "File",
+        "type": "object",
+        "properties": {
+          "file_size": {
+            "title": "File Size",
+            "type": "integer",
+            "description": "The size of the file in bytes."
+          },
+          "file_name": {
+            "title": "File Name",
+            "type": "string",
+            "description": "The name of the file. It will be auto-generated if not provided."
+          },
+          "content_type": {
+            "title": "Content Type",
+            "type": "string",
+            "description": "The mime type of the file."
+          },
+          "url": {
+            "title": "Url",
+            "type": "string",
+            "description": "The URL where the file can be downloaded from."
+          },
+          "file_data": {
+            "format": "binary",
+            "title": "File Data",
+            "type": "string",
+            "description": "File data"
+          }
+        },
+        "x-fal-order-properties": [
+          "url",
+          "content_type",
+          "file_name",
+          "file_size",
+          "file_data"
+        ],
+        "required": ["url"]
+      }
+    }
+  },
+  "paths": {
+    "/fal-ai/recraft-v3/requests/{request_id}/status": {
+      "get": {
+        "parameters": [
+          {
+            "name": "request_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "description": "Request ID" }
+          },
+          {
+            "name": "logs",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "description": "Whether to include logs (`1`) in the response or not (`0`)."
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request status.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/QueueStatus" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/fal-ai/recraft-v3/requests/{request_id}/cancel": {
+      "put": {
+        "parameters": [
+          {
+            "name": "request_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "description": "Request ID" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request was cancelled.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "description": "Whether the request was cancelled successfully."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/fal-ai/recraft-v3": {
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/RecraftV3Input" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The request status.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/QueueStatus" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/fal-ai/recraft-v3/requests/{request_id}": {
+      "get": {
+        "parameters": [
+          {
+            "name": "request_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "description": "Request ID" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Result of the request.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/RecraftV3Output" }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "servers": [{ "url": "https://queue.fal.run" }],
+  "security": [{ "apiKeyAuth": [] }]
+}
