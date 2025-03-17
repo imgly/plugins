@@ -148,13 +148,16 @@ function renderStringProperty<K extends OutputKind, I, O extends Output>(
   options: UIOptions,
   config: InitProviderConfiguration
 ): GetPropertyInput {
-  const { builder, state } = context;
+  const {
+    builder,
+    experimental: { global }
+  } = context;
   const { id: propertyId } = property;
 
   const id = `${provider.id}.${propertyId}`;
   const inputLabel = property.schema.title ?? id;
 
-  const propertyState = state(id, '');
+  const propertyState = global(id, '');
 
   const extension = getImglyExtensionBuilder(property.schema);
   const builderComponent =
@@ -182,7 +185,10 @@ function renderEnumProperty<K extends OutputKind, I, O extends Output>(
   options: UIOptions,
   config: InitProviderConfiguration
 ): GetPropertyInput {
-  const { builder, state } = context;
+  const {
+    builder,
+    experimental: { global }
+  } = context;
   const { id: propertyId } = property;
 
   const id = `${provider.id}.${propertyId}`;
@@ -197,7 +203,7 @@ function renderEnumProperty<K extends OutputKind, I, O extends Output>(
       ? values.find((v) => v.id === property.schema.default) ?? values[0]
       : values[0];
 
-  const propertyState = state<EnumValue>(id, defaultValue);
+  const propertyState = global<EnumValue>(id, defaultValue);
 
   builder.Select(id, {
     inputLabel,
@@ -220,14 +226,17 @@ function renderBooleanProperty<K extends OutputKind, I, O extends Output>(
   options: UIOptions,
   config: InitProviderConfiguration
 ): GetPropertyInput {
-  const { builder, state } = context;
+  const {
+    builder,
+    experimental: { global }
+  } = context;
   const { id: propertyId } = property;
 
   const id = `${provider.id}.${propertyId}`;
   const inputLabel = property.schema.title ?? id;
 
   const defaultValue = !!property.schema.default;
-  const propertyState = state<boolean>(id, defaultValue);
+  const propertyState = global<boolean>(id, defaultValue);
 
   builder.Checkbox(id, {
     inputLabel,
@@ -249,7 +258,10 @@ function renderIntegerProperty<K extends OutputKind, I, O extends Output>(
   options: UIOptions,
   config: InitProviderConfiguration
 ): GetPropertyInput {
-  const { builder, state } = context;
+  const {
+    builder,
+    experimental: { global }
+  } = context;
   const { id: propertyId } = property;
 
   const id = `${provider.id}.${propertyId}`;
@@ -269,7 +281,7 @@ function renderIntegerProperty<K extends OutputKind, I, O extends Output>(
     }
   }
 
-  const propertyState = state<number>(id, defaultValue);
+  const propertyState = global<number>(id, defaultValue);
 
   if (minValue != null && maxValue != null) {
     builder.Slider(id, {
@@ -303,7 +315,10 @@ function renderAnyOfProperty<K extends OutputKind, I, O extends Output>(
   options: UIOptions,
   config: InitProviderConfiguration
 ): GetPropertyInput | undefined {
-  const { builder, state } = context;
+  const {
+    builder,
+    experimental: { global }
+  } = context;
   const { id: propertyId } = property;
 
   const id = `${provider.id}.${propertyId}`;
@@ -404,7 +419,7 @@ function renderAnyOfProperty<K extends OutputKind, I, O extends Output>(
         values[0]
       : values[0];
 
-  const propertyState = state<EnumValue>(id, defaultValue);
+  const propertyState = global<EnumValue>(id, defaultValue);
 
   builder.Select(id, {
     inputLabel,
