@@ -11,6 +11,7 @@ import Provider, { Output, OutputKind, PanelInputSchema } from '../provider';
 import { InitProviderConfiguration, UIOptions } from '../types';
 import { OpenAPIV3 } from 'openapi-types';
 import getProperties from './getProperties';
+import { getLabelFromId } from '../../utils';
 
 function renderProperty<K extends OutputKind, I, O extends Output>(
   context: BuilderRenderFunctionContext<any>,
@@ -189,7 +190,7 @@ function renderEnumProperty<K extends OutputKind, I, O extends Output>(
 
   const values: EnumValue[] = (property.schema.enum ?? []).map((valueId) => ({
     id: valueId,
-    label: valueId
+    label: getLabelFromId(valueId)
   }));
   const defaultValue =
     property.schema.default != null
