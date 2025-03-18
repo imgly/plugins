@@ -15,6 +15,7 @@
     "@cesdk/cesdk-js": "^1.47.0-rc.1",
     "@cesdk/engine": "^1.47.0-rc.1",
     "@imgly/plugin-utils-ai-generation": "workspace:*",
+    "@imgly/plugin-utils-fal-ai": "workspace:*",
     "@imgly/plugin-ai-image-generation-web": "workspace:*",
     "@imgly/plugin-ai-text2speech-web": "workspace:*",
     "@imgly/plugin-background-removal-web": "workspace:*",
