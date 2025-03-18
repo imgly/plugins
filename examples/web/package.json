@@ -18,7 +18,6 @@
     "@imgly/plugin-utils-fal-ai": "workspace:*",
     "@imgly/plugin-utils": "workspace:*",
     "@imgly/plugin-ai-image-generation-web": "workspace:*",
-    "@imgly/plugin-ai-text2speech-web": "workspace:*",
     "@imgly/plugin-background-removal-web": "workspace:*",
     "@imgly/plugin-cutout-library-web": "workspace:*",
     "@imgly/plugin-qr-code-web": "workspace:*",
@@ -34,9 +33,6 @@
       "injected": true
     },
     "@imgly/plugin-utils-fal-ai": {
-      "injected": true
-    },
-    "@imgly/plugin-ai-text2speech-web": {
       "injected": true
     },
     "@imgly/plugin-background-removal-web": {

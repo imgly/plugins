@@ -4,7 +4,6 @@ import { initFalProvider } from '@imgly/plugin-utils-fal-ai';
 import { useRef } from 'react';
 import CustomProvider from './provider/CustomProvider';
 import SchemaProvider from './provider/SchemaProvider';
-import Text2SpeechPlugin from '@imgly/plugin-ai-text2speech-web';
 
 function TestGenerationProvider() {
   const cesdk = useRef<CreativeEditorSDK>();
@@ -49,14 +48,10 @@ function TestGenerationProvider() {
               proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
             });
 
-            instance.addPlugin(Text2SpeechPlugin());
-
             instance.setTranslations({
               en: {
                 'panel.@imgly/plugin-ai-media': 'AI Media',
                 '@imgly/plugin-ai-media': 'AI Media',
-                'panel.@imgly/plugin-ai-text2speech': 'AI Voice',
-                '@imgly/plugin-ai-text2speech': 'AI Voice',
                 'libraries.ly.img.image.fal-ai/recraft-v3.history.label':
                   'AI Generated',
                 'libraries.ly.img.video.fal-ai/pixverse/v3.5/text-to-video.history.label':
@@ -186,10 +181,6 @@ function TestGenerationProvider() {
               // createDockButton('fal-ai/recraft-20b'),
               // createDockButton('fal-ai/pixverse/v3.5/text-to-video'),
               createDockButton('@imgly/plugin-ai-media'),
-              createDockButton(
-                '@imgly/plugin-ai-text2speech',
-                '@imgly/plugin-ai-generation/audio'
-              ),
               createDockButton(
                 'fal-ai/minimax/video-01-live/image-to-video',
                 '@imgly/plugin-ai-generation/video'
