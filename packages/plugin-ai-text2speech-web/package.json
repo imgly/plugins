@@ -77,6 +77,6 @@
     }
   },
   "peerDependencies": {
-    "@cesdk/cesdk-js": "^1.47.0-rc.1"
+    "@cesdk/cesdk-js": "^1.47.0-rc.2"
   }
 }
