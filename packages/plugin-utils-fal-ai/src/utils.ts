@@ -1,5 +1,7 @@
-import { type RecraftV3Input, type ImageSize as CustomImageSize } from '@fal-ai/client/endpoints';
-
+import {
+  type RecraftV3Input,
+  type ImageSize as CustomImageSize
+} from '@fal-ai/client/endpoints';
 
 type ImageSize = RecraftV3Input['image_size'];
 
@@ -34,7 +36,7 @@ export const IMAGE_SIZE_VALUES: { id: ImageSize; label: string | string[], icon?
 //   landscape_16_9: '@imgly/plugin/fal-ai/ratio16by9',
 //   // custom: '@imgly/plugin/fal-ai/ratioFree'
 // };
-// 
+//
 // export function getImageSizeIcon(id: ImageSize): string {
 //   return IMAGE_SIZE_ICONS[id];
 // }
@@ -54,4 +56,3 @@ export function getImageDimensions(id: string): {
 } {
   return ImageSizeEnumToSize[id];
 }
-

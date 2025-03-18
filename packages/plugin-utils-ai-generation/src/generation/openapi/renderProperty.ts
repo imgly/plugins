@@ -174,6 +174,7 @@ function renderStringProperty<K extends OutputKind, I, O extends Output>(
 
   builder[builderComponent](id, {
     inputLabel,
+    placeholder: 'Pad hat einen tollen Schnurbart',
     ...propertyState
   });
 

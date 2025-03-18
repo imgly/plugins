@@ -1,7 +1,6 @@
 import { type OpenAPIV3 } from 'openapi-types';
 import { type Provider, type ImageOutput } from "@imgly/plugin-utils-ai-generation";
 
-import recraft20b from './recraft-20b.json';
 import fluxProV11 from './flux-pro-v1-1-ultra.json';
 
 const SchemaProvider: Provider<'image', { prompt: string }, ImageOutput> = {

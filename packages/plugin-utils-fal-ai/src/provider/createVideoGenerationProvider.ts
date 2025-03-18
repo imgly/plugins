@@ -74,6 +74,9 @@ function createVideoGenerationProvider<I extends InputBase>(
               defaultUrl
             );
 
+            builder.Text('foo', {
+              content: "Image Input"
+            });
             builder.MediaPreview(property.id, {
               preview: {
                 type: 'image',

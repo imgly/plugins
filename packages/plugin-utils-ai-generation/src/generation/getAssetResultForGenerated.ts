@@ -98,9 +98,9 @@ async function getVideoAssetResultForGenerated(
       uri: output.url,
       thumbUri,
 
-      mimeType: "video/mp4",
-      kind: "video",
-      fillType: "//ly.img.ubq/fill/video",
+      mimeType: 'video/mp4',
+      kind: 'video',
+      fillType: '//ly.img.ubq/fill/video',
 
       duration: input.duration.toString(),
 
@@ -109,6 +109,5 @@ async function getVideoAssetResultForGenerated(
     }
   };
 }
-
 
 export default getAssetResultForGenerated;

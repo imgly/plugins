@@ -64,7 +64,7 @@ export function getDurationForVideo(url: string): Promise<number> {
     try {
       const video = document.createElement('video');
       video.style.display = 'none';
-      
+
       // Set up event handlers
       video.addEventListener('loadedmetadata', () => {
         if (video.duration === Infinity) {
@@ -81,12 +81,12 @@ export function getDurationForVideo(url: string): Promise<number> {
           document.body.removeChild(video);
         }
       });
-      
+
       video.addEventListener('error', () => {
         document.body.removeChild(video);
         reject(new Error(`Failed to load video from ${url}`));
       });
-      
+
       // Set source and begin loading
       video.src = url;
       document.body.appendChild(video);
@@ -105,9 +105,9 @@ export function getDurationForVideo(url: string): Promise<number> {
  * @returns A promise that resolves to the thumbnail data URL
  */
 export function getThumbnailForVideo(
-  url: string, 
-  seekTime = 0, 
-  format = 'image/jpeg', 
+  url: string,
+  seekTime = 0,
+  format = 'image/jpeg',
   quality = 0.8
 ): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -116,46 +116,56 @@ export function getThumbnailForVideo(
       // Set crossOrigin to anonymous to prevent tainted canvas issues
       video.crossOrigin = 'anonymous';
       video.style.display = 'none';
-      
+
       // Set up event handlers
       video.addEventListener('loadedmetadata', () => {
         // Seek to the specified time
         video.currentTime = Math.min(seekTime, video.duration);
-        
-        video.addEventListener('seeked', () => {
-          // Create a canvas to draw the video frame
-          const canvas = document.createElement('canvas');
-          canvas.width = video.videoWidth;
-          canvas.height = video.videoHeight;
-          
-          // Draw the video frame to the canvas
-          const ctx = canvas.getContext('2d');
-          if (!ctx) {
-            document.body.removeChild(video);
-            reject(new Error('Failed to create canvas context'));
-            return;
-          }
-          
-          ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-          
-          try {
-            // Convert canvas to data URL
-            const dataURL = canvas.toDataURL(format, quality);
-            // Clean up
-            document.body.removeChild(video);
-            resolve(dataURL);
-          } catch (e) {
-            document.body.removeChild(video);
-            reject(new Error(`Failed to create thumbnail: ${e instanceof Error ? e.message : String(e)}`));
-          }
-        }, { once: true });
+
+        video.addEventListener(
+          'seeked',
+          () => {
+            // Create a canvas to draw the video frame
+            const canvas = document.createElement('canvas');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+
+            // Draw the video frame to the canvas
+            const ctx = canvas.getContext('2d');
+            if (!ctx) {
+              document.body.removeChild(video);
+              reject(new Error('Failed to create canvas context'));
+              return;
+            }
+
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            try {
+              // Convert canvas to data URL
+              const dataURL = canvas.toDataURL(format, quality);
+              // Clean up
+              document.body.removeChild(video);
+              resolve(dataURL);
+            } catch (e) {
+              document.body.removeChild(video);
+              reject(
+                new Error(
+                  `Failed to create thumbnail: ${
+                    e instanceof Error ? e.message : String(e)
+                  }`
+                )
+              );
+            }
+          },
+          { once: true }
+        );
       });
-      
+
       video.addEventListener('error', () => {
         document.body.removeChild(video);
         reject(new Error(`Failed to load video from ${url}`));
       });
-      
+
       // Set source and begin loading
       video.src = url;
       document.body.appendChild(video);
@@ -169,7 +179,7 @@ export function getThumbnailForVideo(
  * Converts an ID string to a human-readable label
  * @param id - The ID string to convert
  * @returns A human-readable label derived from the ID
- * 
+ *
  * Examples:
  * - snake_case_id → Snake Case Id
  * - kebab-case-id → Kebab Case Id
@@ -178,16 +188,18 @@ export function getThumbnailForVideo(
  */
 export function getLabelFromId(id: string): string {
   if (!id) return '';
-  
+
   // Handle snake_case, kebab-case, camelCase, and PascalCase
-  return id
-    // Add spaces before uppercase letters (for camelCase and PascalCase)
-    .replace(/([A-Z])/g, ' $1')
-    // Replace underscores and hyphens with spaces (for snake_case and kebab-case)
-    .replace(/[_-]/g, ' ')
-    // Trim any extra spaces and ensure first letter is capitalized
-    .trim()
-    .split(' ')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-    .join(' ');
+  return (
+    id
+      // Add spaces before uppercase letters (for camelCase and PascalCase)
+      .replace(/([A-Z])/g, ' $1')
+      // Replace underscores and hyphens with spaces (for snake_case and kebab-case)
+      .replace(/[_-]/g, ' ')
+      // Trim any extra spaces and ensure first letter is capitalized
+      .trim()
+      .split(' ')
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(' ')
+  );
 }

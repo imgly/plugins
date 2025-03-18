@@ -6,4 +6,8 @@ export {
   type Output
 } from './generation/provider';
 export { default as initProvider } from './generation/initProvider';
-export { getDurationForVideo, getThumbnailForVideo, getLabelFromId } from './utils';
+export {
+  getDurationForVideo,
+  getThumbnailForVideo,
+  getLabelFromId
+} from './utils';

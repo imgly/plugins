@@ -141,8 +141,8 @@ export interface PanelInputSchema<K extends OutputKind, I>
   createInputByKind: (input: I) => Record<K, InputByKind[K]>;
 
   /**
-    * Allows to customize the components for some properties.
-    */
+   * Allows to customize the components for some properties.
+   */
   renderCustomProperty?: {
     [key: string]: (
       context: BuilderRenderFunctionContext<any>,
