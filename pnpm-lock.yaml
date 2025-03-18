@@ -63,26 +63,38 @@ importers:
   examples/web:
     dependencies:
       '@cesdk/cesdk-js':
-        specifier: ^1.45.0
-        version: 1.45.0(react@18.3.1)
+        specifier: ^1.47.0-rc.2
+        version: 1.47.0-rc.2(react@18.3.1)
       '@cesdk/engine':
-        specifier: ^1.45.0
-        version: 1.45.0(react@18.3.1)
+        specifier: ^1.47.0-rc.2
+        version: 1.47.0-rc.2(react@18.3.1)
+      '@imgly/plugin-ai-image-generation-web':
+        specifier: workspace:*
+        version: link:../../packages/plugin-ai-image-generation-web
       '@imgly/plugin-background-removal-web':
         specifier: workspace:*
-        version: file:packages/plugin-background-removal-web(@cesdk/cesdk-js@1.45.0(react@18.3.1))(onnxruntime-web@1.21.0-dev.20250206-d981b153d3)
+        version: file:packages/plugin-background-removal-web(@cesdk/cesdk-js@1.47.0-rc.2(react@18.3.1))(onnxruntime-web@1.21.0-dev.20250206-d981b153d3)
       '@imgly/plugin-cutout-library-web':
         specifier: workspace:*
-        version: file:packages/plugin-cutout-library-web(@cesdk/cesdk-js@1.45.0(react@18.3.1))
+        version: file:packages/plugin-cutout-library-web(@cesdk/cesdk-js@1.47.0-rc.2(react@18.3.1))
       '@imgly/plugin-qr-code-web':
         specifier: workspace:*
-        version: file:packages/plugin-qr-code-web(@cesdk/cesdk-js@1.45.0(react@18.3.1))
+        version: file:packages/plugin-qr-code-web(@cesdk/cesdk-js@1.47.0-rc.2(react@18.3.1))
       '@imgly/plugin-remote-asset-source-web':
         specifier: workspace:*
-        version: file:packages/plugin-remote-asset-source-web(@cesdk/cesdk-js@1.45.0(react@18.3.1))
+        version: file:packages/plugin-remote-asset-source-web(@cesdk/cesdk-js@1.47.0-rc.2(react@18.3.1))
+      '@imgly/plugin-utils':
+        specifier: workspace:*
+        version: file:packages/plugin-utils(@cesdk/cesdk-js@1.47.0-rc.2(react@18.3.1))
+      '@imgly/plugin-utils-ai-generation':
+        specifier: workspace:*
+        version: file:packages/plugin-utils-ai-generation(@cesdk/cesdk-js@1.47.0-rc.2(react@18.3.1))
+      '@imgly/plugin-utils-fal-ai':
+        specifier: workspace:*
+        version: file:packages/plugin-utils-fal-ai(@cesdk/cesdk-js@1.47.0-rc.2(react@18.3.1))
       '@imgly/plugin-vectorizer-web':
         specifier: workspace:*
-        version: file:packages/plugin-vectorizer-web(@cesdk/cesdk-js@1.45.0(react@18.3.1))
+        version: file:packages/plugin-vectorizer-web(@cesdk/cesdk-js@1.47.0-rc.2(react@18.3.1))
       onnxruntime-web:
         specifier: 1.21.0-dev.20250206-d981b153d3
         version: 1.21.0-dev.20250206-d981b153d3
@@ -92,6 +104,9 @@ importers:
       react-dom:
         specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
+      react-router-dom:
+        specifier: ^7.3.0
+        version: 7.3.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
     dependenciesMeta:
       '@imgly/plugin-background-removal-web':
         injected: true
@@ -102,6 +117,10 @@ importers:
       '@imgly/plugin-remote-asset-source-web':
         injected: true
       '@imgly/plugin-utils':
+        injected: true
+      '@imgly/plugin-utils-ai-generation':
+        injected: true
+      '@imgly/plugin-utils-fal-ai':
         injected: true
       '@imgly/plugin-vectorizer-web':
         injected: true
@@ -139,6 +158,46 @@ importers:
       vite:
         specifier: ^5.4.14
         version: 5.4.14(@types/node@22.13.5)
+
+  packages/plugin-ai-image-generation-web:
+    dependencies:
+      '@cesdk/cesdk-js':
+        specifier: ^1.47.0-rc.2
+        version: 1.47.0-rc.2(react@18.3.1)
+      '@fal-ai/client':
+        specifier: ^1.0.4
+        version: 1.2.3
+    dependenciesMeta:
+      '@imgly/plugin-utils':
+        injected: true
+    devDependencies:
+      '@imgly/plugin-utils':
+        specifier: workspace:*
+        version: file:packages/plugin-utils(@cesdk/cesdk-js@1.47.0-rc.2(react@18.3.1))
+      '@types/ndarray':
+        specifier: ^1.0.14
+        version: 1.0.14
+      chalk:
+        specifier: ^5.3.0
+        version: 5.4.1
+      concurrently:
+        specifier: ^8.2.2
+        version: 8.2.2
+      esbuild:
+        specifier: ^0.19.11
+        version: 0.19.12
+      eslint:
+        specifier: ^8.51.0
+        version: 8.57.1
+      lodash-es:
+        specifier: ^4.17.21
+        version: 4.17.21
+      openapi-types:
+        specifier: ^12.1.3
+        version: 12.1.3
+      typescript:
+        specifier: ^5.3.3
+        version: 5.7.3
 
   packages/plugin-background-removal-web:
     dependencies:
@@ -312,6 +371,40 @@ importers:
         specifier: ^5.7.3
         version: 5.7.3
 
+  packages/plugin-utils-ai-generation:
+    devDependencies:
+      '@cesdk/cesdk-js':
+        specifier: ^1.47.0-rc.2
+        version: 1.47.0-rc.2(react@18.3.1)
+      esbuild:
+        specifier: ^0.19.12
+        version: 0.19.12
+      openapi-types:
+        specifier: ^12.1.3
+        version: 12.1.3
+
+  packages/plugin-utils-fal-ai:
+    dependencies:
+      '@fal-ai/client':
+        specifier: ^1.0.4
+        version: 1.2.3
+    dependenciesMeta:
+      '@imgly/plugin-utils-ai-generation':
+        injected: true
+    devDependencies:
+      '@cesdk/cesdk-js':
+        specifier: ^1.47.0-rc.2
+        version: 1.47.0-rc.2(react@18.3.1)
+      '@imgly/plugin-utils-ai-generation':
+        specifier: workspace:*
+        version: file:packages/plugin-utils-ai-generation(@cesdk/cesdk-js@1.47.0-rc.2(react@18.3.1))
+      esbuild:
+        specifier: ^0.19.12
+        version: 0.19.12
+      openapi-types:
+        specifier: ^12.1.3
+        version: 12.1.3
+
   packages/plugin-vectorizer-web:
     dependencies:
       '@imgly/vectorizer':
@@ -447,8 +540,8 @@ packages:
   '@cesdk/cesdk-js@1.38.0':
     resolution: {integrity: sha512-qmnkRT6BkIQXbQMBa69y2N7hJvoLWeOOW59DT1woWQwb6o3B1V99Z3baya4sP7YraAoYEl4ssZcJ9opTG+EtnQ==}
 
-  '@cesdk/cesdk-js@1.45.0':
-    resolution: {integrity: sha512-Fgfj5i95NGbkbbr7x0zuf1vU+i1zg2qNWzVD0awPClJQ0Rxv6zBErb1MfwJYbWlxZDz65jrO30A3oIh6udm/jA==}
+  '@cesdk/cesdk-js@1.47.0-rc.2':
+    resolution: {integrity: sha512-IRXhGNN+5aLhXo2DBbk6qvCDkjKMeytkxGTmCaQ2G8PUGdPefb+AmeuKp/aVsDhpgWz+/hCpEk/KtIqf4jsl0Q==}
 
   '@cesdk/engine@1.37.0':
     resolution: {integrity: sha512-7UsBukfoQ6MVrHU7q3lBposcXTmtF32wuSPV0kwtDqkHdYC1CJ61jJLs2FbVb3yqtecI/AUxdzH3/RblTXeU6w==}
@@ -466,8 +559,8 @@ packages:
       react:
         optional: true
 
-  '@cesdk/engine@1.45.0':
-    resolution: {integrity: sha512-Tw9PzLv6IymJR+d/z3BTHj6Nqw/2a4XxhUL261Xxnbi/tlcJ1bmaNeY7/L9kxV1v0UcDGSz3rtFtvSP4Y5tzSA==}
+  '@cesdk/engine@1.47.0-rc.2':
+    resolution: {integrity: sha512-WFSbKXL8jVEFrCLJ/algZpuIXf5T536M8XMxU3C55ho+FuFJwzHI1jPhOJbDyyoP/vcFaK4QFArBhVvwlU3wEQ==}
     peerDependencies:
       react: '>16'
     peerDependenciesMeta:
@@ -768,6 +861,10 @@ packages:
     resolution: {integrity: sha512-d9zaMRSTIKDLhctzH12MtXvJKSSUhaHcjV+2Z+GK+EEY7XKpP5yR4x+N3TAcHTcu963nIr+TMcCb4DBCYX1z6Q==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
 
+  '@fal-ai/client@1.2.3':
+    resolution: {integrity: sha512-Lf37bJN16ssbaHYPSWDVCRspdTubcZvugyemEEtm6frhi83f9J+FJuq9uiY9WfR5bskQ8CZhBYhD9irZOPxY5Q==}
+    engines: {node: '>=18.0.0'}
+
   '@gwhitney/detect-indent@7.0.1':
     resolution: {integrity: sha512-7bQW+gkKa2kKZPeJf6+c6gFK9ARxQfn+FKy9ScTBppyKRWH2KzsmweXUoklqeEiHiNVWaeP5csIdsNq6w7QhzA==}
     engines: {node: '>=12.20'}
@@ -795,6 +892,7 @@ packages:
     resolution: {integrity: sha512-nmqOBDE9dQpDEJg73XrKNUoWugyyDHEVh+U1akjYdUW85ILh9UilvKu/kdv1MI822rKExwgLNuVLVulzAzgZJg==}
     peerDependencies:
       onnxruntime-web: 1.21.0-dev.20250206-d981b153d3
+    bundledDependencies: []
 
   '@imgly/plugin-background-removal-web@file:packages/plugin-background-removal-web':
     resolution: {directory: packages/plugin-background-removal-web, type: directory}
@@ -816,6 +914,16 @@ packages:
     resolution: {directory: packages/plugin-remote-asset-source-web, type: directory}
     peerDependencies:
       '@cesdk/cesdk-js': ^1.32.0
+
+  '@imgly/plugin-utils-ai-generation@file:packages/plugin-utils-ai-generation':
+    resolution: {directory: packages/plugin-utils-ai-generation, type: directory}
+    peerDependencies:
+      '@cesdk/cesdk-js': ^1.47.0-rc.2
+
+  '@imgly/plugin-utils-fal-ai@file:packages/plugin-utils-fal-ai':
+    resolution: {directory: packages/plugin-utils-fal-ai, type: directory}
+    peerDependencies:
+      '@cesdk/cesdk-js': ^1.47.0-rc.2
 
   '@imgly/plugin-utils@file:packages/plugin-utils':
     resolution: {directory: packages/plugin-utils, type: directory}
@@ -851,6 +959,10 @@ packages:
 
   '@jridgewell/trace-mapping@0.3.25':
     resolution: {integrity: sha512-vNk6aEwybGtawWmy/PzwnGDOjCkLWSD2wqvjGGAgOAwCGWySYXfYoxt00IJkTF+8Lb57DwOb3Aa0o9CApepiYQ==}
+
+  '@msgpack/msgpack@3.1.0':
+    resolution: {integrity: sha512-igBxaq5JHWdJ0lDyKkCo00pDu+bNVuBAs/cHra6a3ndCw6vlZK9BGLuG7Fvmar/DXK2uJ25zvgcAZEl+AvLpjQ==}
+    engines: {node: '>= 18'}
 
   '@nodelib/fs.scandir@2.1.5':
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
@@ -1187,6 +1299,9 @@ packages:
 
   '@types/babel__traverse@7.20.6':
     resolution: {integrity: sha512-r1bzfrm0tomOI8g1SzvCaQHo6Lcv6zu0EA+W2kHrt8dyrHQxGzBBL4kdkzIS+jBMV+EYcMAEAqXqYaLJq5rOZg==}
+
+  '@types/cookie@0.6.0':
+    resolution: {integrity: sha512-4Kh9a6B2bQciAhf7FSuMRRkUWecJgJu9nPnx3yzpsfXX/c50REIqpHY4C82bXP90qrLtXtkDxTZosYO3UpOwlA==}
 
   '@types/estree@1.0.6':
     resolution: {integrity: sha512-AYnb1nQyY49te+VRAVgmzfcgjYS91mY5P0TKUDCLEM+gNnA+3T6rWITXRLYCpahpqSQbN5cE+gHpnPyXjHWxcw==}
@@ -1534,6 +1649,10 @@ packages:
   convert-source-map@2.0.0:
     resolution: {integrity: sha512-Kvp459HrV2FEJ1CAsi1Ku+MY3kasH19TFykTz2xWmMeq6bk2NU3XXvfJ+Q61m0xktWwt+1HSYf3JZsTms3aRJg==}
 
+  cookie@1.0.2:
+    resolution: {integrity: sha512-9Kr/j4O16ISv8zBBhJoi4bXOYNTkFLOqSL3UDB0njXxCXNezjeyVrJyGOWtgfs/q2km1gwBcfH8q1yEGoMYunA==}
+    engines: {node: '>=18'}
+
   cross-spawn@7.0.6:
     resolution: {integrity: sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA==}
     engines: {node: '>= 8'}
@@ -1814,6 +1933,10 @@ packages:
   esutils@2.0.3:
     resolution: {integrity: sha512-kVscqXk4OCp68SZ0dkgEKVi6/8ij300KBWTJq32P/dYeWTSwK41WyTxalN1eRmA5Z9UU/LX9D7FWSmV9SAYx6g==}
     engines: {node: '>=0.10.0'}
+
+  eventsource-parser@1.1.2:
+    resolution: {integrity: sha512-v0eOBUbiaFojBu2s2NPBfYUoRR9GjcDNvCXVaqEf5vVfpIAh9f8RCo4vXTP8c63QRKCFwoLpMpTdPwwhEKVgzA==}
+    engines: {node: '>=14.18'}
 
   execa@4.1.0:
     resolution: {integrity: sha512-j5W0//W7f8UxAn8hXVnwG8tLwdiUy4FJLcSupCg6maBYZDpyBvTApK7KyuI4bKj8KOh1r2YH+6ucuYtJv1bTZA==}
@@ -2446,6 +2569,9 @@ packages:
   onnxruntime-web@1.21.0-dev.20250206-d981b153d3:
     resolution: {integrity: sha512-esDVQdRic6J44VBMFLumYvcGfioMh80ceLmzF1yheJyuLKq/Th8VT2aj42XWQst+2bcWnAhw4IKmRQaqzU8ugg==}
 
+  openapi-types@12.1.3:
+    resolution: {integrity: sha512-N4YtSYJqghVu4iek2ZUvcN/0aqH1kRDuNqzcycDxhOUpg7GdvLa2F3DgS6yBNhInhv2r/6I0Flkn7CqL8+nIcw==}
+
   optionator@0.9.4:
     resolution: {integrity: sha512-6IpQ7mKUxRcZNLIObR0hz7lxsapSSIYNZJwXPGeF0mTVqGKFIXj1DQcMoT22S3ROcLyY/rz0PWaWZ9ayWmad9g==}
     engines: {node: '>= 0.8.0'}
@@ -2658,6 +2784,23 @@ packages:
     resolution: {integrity: sha512-jCvmsr+1IUSMUyzOkRcvnVbX3ZYC6g9TDrDbFuFmRDq7PD4yaGbLKNQL6k2jnArV8hjYxh7hVhAZB6s9HDGpZA==}
     engines: {node: '>=0.10.0'}
 
+  react-router-dom@7.3.0:
+    resolution: {integrity: sha512-z7Q5FTiHGgQfEurX/FBinkOXhWREJIAB2RiU24lvcBa82PxUpwqvs/PAXb9lJyPjTs2jrl6UkLvCZVGJPeNuuQ==}
+    engines: {node: '>=20.0.0'}
+    peerDependencies:
+      react: '>=18'
+      react-dom: '>=18'
+
+  react-router@7.3.0:
+    resolution: {integrity: sha512-466f2W7HIWaNXTKM5nHTqNxLrHTyXybm7R0eBlVSt0k/u55tTCDO194OIx/NrYD4TS5SXKTNekXfT37kMKUjgw==}
+    engines: {node: '>=20.0.0'}
+    peerDependencies:
+      react: '>=18'
+      react-dom: '>=18'
+    peerDependenciesMeta:
+      react-dom:
+        optional: true
+
   react@18.3.1:
     resolution: {integrity: sha512-wS+hAgJShR0KhEvPJArfuPVN1+Hz1t0Y6n5jLrGQbkb4urgPE/0Rve+1kMB1v/oWgHgm4WIcV+i7F2pTVj+2iQ==}
     engines: {node: '>=0.10.0'}
@@ -2733,6 +2876,9 @@ packages:
     engines: {node: 20 || >=22}
     hasBin: true
 
+  robot3@0.4.1:
+    resolution: {integrity: sha512-hzjy826lrxzx8eRgv80idkf8ua1JAepRc9Efdtj03N3KNJuznQCPlyCJ7gnUmDFwZCLQjxy567mQVKmdv2BsXQ==}
+
   rollup@4.34.8:
     resolution: {integrity: sha512-489gTVMzAYdiZHFVA/ig/iYFllCcWFHMvUHI1rpFmkoUtRlQxqh6/yiNqnYibjMZ2b/+FUQwldG+aLsEt6bglQ==}
     engines: {node: '>=18.0.0', npm: '>=8.0.0'}
@@ -2774,6 +2920,9 @@ packages:
     resolution: {integrity: sha512-hlq8tAfn0m/61p4BVRcPzIGr6LKiMwo4VM6dGi6pt4qcRkmNzTcWq6eCEjEh+qXjkMDvPlOFFSGwQjoEa6gyMA==}
     engines: {node: '>=10'}
     hasBin: true
+
+  set-cookie-parser@2.7.1:
+    resolution: {integrity: sha512-IOc8uWeOZgnb3ptbCURJWNjWUPcO3ZnTTdzsurqERrP6nPyv+paC55vJM0LpOlT2ne+Ix+9+CRG1MNLlyZ4GjQ==}
 
   set-function-length@1.2.2:
     resolution: {integrity: sha512-pgRc4hJ4/sNjWCSS9AmnS40x3bNMDTknHgL5UaMBTMyJnU90EgWh1Rz+MC9eFu4BuN/UwZjKQuY/1v3rM7HMfg==}
@@ -2963,6 +3112,9 @@ packages:
   tslog@4.9.3:
     resolution: {integrity: sha512-oDWuGVONxhVEBtschLf2cs/Jy8i7h1T+CpdkTNWQgdAF7DhRo2G8vMCgILKe7ojdEkLhICWgI1LYSSKaJsRgcw==}
     engines: {node: '>=16'}
+
+  turbo-stream@2.4.0:
+    resolution: {integrity: sha512-FHncC10WpBd2eOmGwpmQsWLDoK4cqsA/UT/GqNoaKOQnT8uzhtCbg3EoUDMvqpOSAI0S26mr0rkjzbOO6S3v1g==}
 
   type-check@0.4.0:
     resolution: {integrity: sha512-XleUoc9uwGXqjWwXaUTZAmzMcFZ5858QA2vvx1Ur5xIcixXIP+8LnFDgRplU30us6teqdlskFfu+ae4K79Ooew==}
@@ -3276,9 +3428,9 @@ snapshots:
     transitivePeerDependencies:
       - react
 
-  '@cesdk/cesdk-js@1.45.0(react@18.3.1)':
+  '@cesdk/cesdk-js@1.47.0-rc.2(react@18.3.1)':
     dependencies:
-      '@cesdk/engine': 1.45.0(react@18.3.1)
+      '@cesdk/engine': 1.47.0-rc.2(react@18.3.1)
     transitivePeerDependencies:
       - react
 
@@ -3290,7 +3442,7 @@ snapshots:
     optionalDependencies:
       react: 18.3.1
 
-  '@cesdk/engine@1.45.0(react@18.3.1)':
+  '@cesdk/engine@1.47.0-rc.2(react@18.3.1)':
     optionalDependencies:
       react: 18.3.1
 
@@ -3455,6 +3607,12 @@ snapshots:
 
   '@eslint/js@8.57.1': {}
 
+  '@fal-ai/client@1.2.3':
+    dependencies:
+      '@msgpack/msgpack': 3.1.0
+      eventsource-parser: 1.1.2
+      robot3: 0.4.1
+
   '@gwhitney/detect-indent@7.0.1': {}
 
   '@hapi/hoek@9.3.0': {}
@@ -3482,26 +3640,35 @@ snapshots:
       onnxruntime-web: 1.21.0-dev.20250206-d981b153d3
       zod: 3.24.2
 
-  '@imgly/plugin-background-removal-web@file:packages/plugin-background-removal-web(@cesdk/cesdk-js@1.45.0(react@18.3.1))(onnxruntime-web@1.21.0-dev.20250206-d981b153d3)':
+  '@imgly/plugin-background-removal-web@file:packages/plugin-background-removal-web(@cesdk/cesdk-js@1.47.0-rc.2(react@18.3.1))(onnxruntime-web@1.21.0-dev.20250206-d981b153d3)':
     dependencies:
-      '@cesdk/cesdk-js': 1.45.0(react@18.3.1)
+      '@cesdk/cesdk-js': 1.47.0-rc.2(react@18.3.1)
       '@imgly/background-removal': 1.6.0(onnxruntime-web@1.21.0-dev.20250206-d981b153d3)
       onnxruntime-web: 1.21.0-dev.20250206-d981b153d3
 
-  '@imgly/plugin-cutout-library-web@file:packages/plugin-cutout-library-web(@cesdk/cesdk-js@1.45.0(react@18.3.1))':
+  '@imgly/plugin-cutout-library-web@file:packages/plugin-cutout-library-web(@cesdk/cesdk-js@1.47.0-rc.2(react@18.3.1))':
     dependencies:
-      '@cesdk/cesdk-js': 1.45.0(react@18.3.1)
+      '@cesdk/cesdk-js': 1.47.0-rc.2(react@18.3.1)
       lodash: 4.17.21
 
-  '@imgly/plugin-qr-code-web@file:packages/plugin-qr-code-web(@cesdk/cesdk-js@1.45.0(react@18.3.1))':
+  '@imgly/plugin-qr-code-web@file:packages/plugin-qr-code-web(@cesdk/cesdk-js@1.47.0-rc.2(react@18.3.1))':
     dependencies:
-      '@cesdk/cesdk-js': 1.45.0(react@18.3.1)
+      '@cesdk/cesdk-js': 1.47.0-rc.2(react@18.3.1)
 
-  '@imgly/plugin-remote-asset-source-web@file:packages/plugin-remote-asset-source-web(@cesdk/cesdk-js@1.45.0(react@18.3.1))':
+  '@imgly/plugin-remote-asset-source-web@file:packages/plugin-remote-asset-source-web(@cesdk/cesdk-js@1.47.0-rc.2(react@18.3.1))':
     dependencies:
-      '@cesdk/cesdk-js': 1.45.0(react@18.3.1)
+      '@cesdk/cesdk-js': 1.47.0-rc.2(react@18.3.1)
       lodash: 4.17.21
       zod: 3.24.2
+
+  '@imgly/plugin-utils-ai-generation@file:packages/plugin-utils-ai-generation(@cesdk/cesdk-js@1.47.0-rc.2(react@18.3.1))':
+    dependencies:
+      '@cesdk/cesdk-js': 1.47.0-rc.2(react@18.3.1)
+
+  '@imgly/plugin-utils-fal-ai@file:packages/plugin-utils-fal-ai(@cesdk/cesdk-js@1.47.0-rc.2(react@18.3.1))':
+    dependencies:
+      '@cesdk/cesdk-js': 1.47.0-rc.2(react@18.3.1)
+      '@fal-ai/client': 1.2.3
 
   '@imgly/plugin-utils@file:packages/plugin-utils(@cesdk/cesdk-js@1.32.0)':
     dependencies:
@@ -3513,9 +3680,14 @@ snapshots:
       '@cesdk/cesdk-js': 1.37.0(react@18.3.1)
       lodash-es: 4.17.21
 
-  '@imgly/plugin-vectorizer-web@file:packages/plugin-vectorizer-web(@cesdk/cesdk-js@1.45.0(react@18.3.1))':
+  '@imgly/plugin-utils@file:packages/plugin-utils(@cesdk/cesdk-js@1.47.0-rc.2(react@18.3.1))':
     dependencies:
-      '@cesdk/cesdk-js': 1.45.0(react@18.3.1)
+      '@cesdk/cesdk-js': 1.47.0-rc.2(react@18.3.1)
+      lodash-es: 4.17.21
+
+  '@imgly/plugin-vectorizer-web@file:packages/plugin-vectorizer-web(@cesdk/cesdk-js@1.47.0-rc.2(react@18.3.1))':
+    dependencies:
+      '@cesdk/cesdk-js': 1.47.0-rc.2(react@18.3.1)
       '@imgly/vectorizer': 1.0.0
 
   '@imgly/vectorizer@1.0.0':
@@ -3549,6 +3721,8 @@ snapshots:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.0
+
+  '@msgpack/msgpack@3.1.0': {}
 
   '@nodelib/fs.scandir@2.1.5':
     dependencies:
@@ -3952,6 +4126,8 @@ snapshots:
   '@types/babel__traverse@7.20.6':
     dependencies:
       '@babel/types': 7.26.9
+
+  '@types/cookie@0.6.0': {}
 
   '@types/estree@1.0.6': {}
 
@@ -4360,6 +4536,8 @@ snapshots:
   confusing-browser-globals@1.0.11: {}
 
   convert-source-map@2.0.0: {}
+
+  cookie@1.0.2: {}
 
   cross-spawn@7.0.6:
     dependencies:
@@ -4814,6 +4992,8 @@ snapshots:
   estraverse@5.3.0: {}
 
   esutils@2.0.3: {}
+
+  eventsource-parser@1.1.2: {}
 
   execa@4.1.0:
     dependencies:
@@ -5456,6 +5636,8 @@ snapshots:
       platform: 1.3.6
       protobufjs: 7.4.0
 
+  openapi-types@12.1.3: {}
+
   optionator@0.9.4:
     dependencies:
       deep-is: 0.1.4
@@ -5658,6 +5840,22 @@ snapshots:
 
   react-refresh@0.14.2: {}
 
+  react-router-dom@7.3.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+    dependencies:
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+      react-router: 7.3.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+
+  react-router@7.3.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+    dependencies:
+      '@types/cookie': 0.6.0
+      cookie: 1.0.2
+      react: 18.3.1
+      set-cookie-parser: 2.7.1
+      turbo-stream: 2.4.0
+    optionalDependencies:
+      react-dom: 18.3.1(react@18.3.1)
+
   react@18.3.1:
     dependencies:
       loose-envify: 1.4.0
@@ -5737,6 +5935,8 @@ snapshots:
       glob: 11.0.1
       package-json-from-dist: 1.0.1
 
+  robot3@0.4.1: {}
+
   rollup@4.34.8:
     dependencies:
       '@types/estree': 1.0.6
@@ -5804,6 +6004,8 @@ snapshots:
   semver@6.3.1: {}
 
   semver@7.7.1: {}
+
+  set-cookie-parser@2.7.1: {}
 
   set-function-length@1.2.2:
     dependencies:
@@ -6021,6 +6223,8 @@ snapshots:
   tslib@2.8.1: {}
 
   tslog@4.9.3: {}
+
+  turbo-stream@2.4.0: {}
 
   type-check@0.4.0:
     dependencies:
