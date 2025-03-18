@@ -50,6 +50,8 @@ function App() {
 
                     if (!isOpen) {
                       instance.ui.openPanel(modelKey);
+                    } else {
+                      instance.ui.closePanel(modelKey);
                     }
                   }
                 });
@@ -57,73 +59,117 @@ function App() {
 
               return componentId;
             }
+            const options = { cesdk: instance, engine: instance.engine };
+            const config = { debug: true };
 
-            initProvider(
-              recraftV3Provider(
-                instance,
-                {
-                  proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
-                }
-              ),
-              {
-                cesdk: instance,
-                engine: instance.engine
+            const recraftInstance = recraftV3Provider(instance, {
+              proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
+            });
+
+            const pixverseInstance = pixverseV35TextToVideo(instance, {
+              proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
+            });
+
+            const minimaxInstance = minimaxVideo01LiveImageToVideo(instance, {
+              proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
+            });
+
+            initProvider(recraftInstance, options, config);
+            initProvider(pixverseInstance, options, config);
+            initProvider(minimaxInstance, options, config);
+
+            const AI_APP_ID = 'ly.img.ai-generation.apps';
+            const THUMBNAIL_WIDTH = 256;
+            const THUMBNAIL_HEIGHT = 96;
+
+            instance.engine.asset.addLocalSource(AI_APP_ID);
+            instance.engine.asset.addAssetToSource(AI_APP_ID, {
+              id: recraftInstance.id,
+              label: {
+                en: 'Generate Image'
               },
-              {
-                debug: true
+              meta: {
+                thumbUri:
+                  'https://v3.fal.media/files/rabbit/x_CsMJ7tsfGIIEMh00vqv_image.webp',
+                width: THUMBNAIL_WIDTH,
+                height: THUMBNAIL_HEIGHT
               }
-            );
-            initProvider(
-              pixverseV35TextToVideo(
-                instance,
-                {
-                  proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
-                }
-              ),
-              {
-                cesdk: instance,
-                engine: instance.engine
+            });
+            instance.engine.asset.addAssetToSource(AI_APP_ID, {
+              id: pixverseInstance.id,
+              label: {
+                en: 'Generate Video'
               },
-              {
-                debug: true
+              meta: {
+                thumbUri:
+                  'https://v3.fal.media/files/koala/VC2NXBHSQ5gA1LUp64JxI_image.webp',
+                width: THUMBNAIL_WIDTH,
+                height: THUMBNAIL_HEIGHT
               }
-            );
-            initProvider(
-              minimaxVideo01LiveImageToVideo(
-                instance,
-                {
-                  proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
-                }
-              ),
-              {
-                cesdk: instance,
-                engine: instance.engine
+            });
+            instance.engine.asset.addAssetToSource(AI_APP_ID, {
+              id: 'audio-v3',
+              label: {
+                en: 'Generate Speech'
               },
-              {
-                debug: true
+              meta: {
+                thumbUri:
+                  'https://v3.fal.media/files/penguin/b5BkFs7IpZ6aIS851bi3H_image.webp',
+                width: THUMBNAIL_WIDTH,
+                height: THUMBNAIL_HEIGHT
               }
-            );
+            });
+
+            instance.ui.registerPanel(AI_APP_ID, ({ builder }) => {
+              builder.Library(AI_APP_ID, {
+                entries: [AI_APP_ID],
+                onSelect: async (asset) => {
+                  instance.ui.closePanel(AI_APP_ID);
+                  instance.ui.openPanel(asset.id);
+                }
+              });
+            });
+
+            instance.ui.addAssetLibraryEntry({
+              id: AI_APP_ID,
+              sourceIds: [AI_APP_ID],
+              gridColumns: 1,
+              gridItemHeight: 'auto',
+              gridBackgroundType: 'cover',
+              cardLabel: ({ label }) => label,
+              cardLabelPosition: () => 'inside'
+            });
 
             instance.ui.setDockOrder([
-              createDockItem(
-                'fal-ai/recraft-v3',
-                'Recraft V3',
-                '@imgly/Sparkle'
-              ),
-              createDockItem(
-                'fal-ai/pixverse/v3.5/text-to-video',
-                'Pixverse V3.5 Text to Video',
-                '@imgly/Sparkle'
-              ),
-              createDockItem(
-                'fal-ai/minimax/video-01-live/image-to-video',
-                'Minimax Video 01 Live Image to Video',
-                '@imgly/Sparkle'
-              ),
-              ...instance.ui.getDockOrder()
+              createDockItem(AI_APP_ID, 'AI', '@imgly/Sparkle'),
+              // createDockItem(
+              //   'fal-ai/recraft-v3',
+              //   'Recraft V3',
+              //   '@imgly/Sparkle'
+              // ),
+              // createDockItem(
+              //   'fal-ai/pixverse/v3.5/text-to-video',
+              //   'Pixverse V3.5 Text to Video',
+              //   '@imgly/Sparkle'
+              // ),
+              // createDockItem(
+              //   'fal-ai/minimax/video-01-live/image-to-video',
+              //   'Minimax Video 01 Live Image to Video',
+              //   '@imgly/Sparkle'
+              // ),
+              ...instance.ui.getDockOrder().filter(({ key }) => {
+                return key !== 'ly.img.video.template';
+              })
             ]);
 
+            instance.i18n.setTranslations({
+              en: {
+                'panel.ly.img.ai-generation.apps': 'AI'
+              }
+            });
+
             await instance.createVideoScene();
+
           });
         } else if (cesdk.current != null) {
           cesdk.current.dispose();

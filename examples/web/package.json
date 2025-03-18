@@ -17,7 +17,6 @@
     "@imgly/plugin-utils-ai-generation": "workspace:*",
     "@imgly/plugin-utils-fal-ai": "workspace:*",
     "@imgly/plugin-utils": "workspace:*",
-    "@imgly/plugin-ai-image-generation-web": "workspace:*",
     "@imgly/plugin-background-removal-web": "workspace:*",
     "@imgly/plugin-cutout-library-web": "workspace:*",
     "@imgly/plugin-qr-code-web": "workspace:*",
