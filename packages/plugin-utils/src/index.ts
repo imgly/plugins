@@ -16,3 +16,7 @@ export {
 } from './types/UserInterfaceConfiguration';
 
 export { hexToRgba, isValidHexColor, rgbaToHex } from './utils/colors';
+
+export { uploadBlob, fetchImageBlob } from './utils/upload';
+
+export { default as uuid } from './utils/uuid';
