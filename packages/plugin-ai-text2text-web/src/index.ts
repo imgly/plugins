@@ -1,8 +1,8 @@
 import plugin, { PLUGIN_ID } from './plugin';
 import { type PluginConfiguration } from './types';
 
-export { default as getMagicMenu } from './magic/getMagicMenu';
-export { default as registerMagicMenu } from './magic/registerMagicMenu';
+// Re-export magic menu functions from plugin-utils-ai-generation
+export { getMagicMenu, registerMagicMenu } from '@imgly/plugin-utils-ai-generation';
 
 const Plugin = (pluginConfiguration: PluginConfiguration) => ({
   name: PLUGIN_ID,

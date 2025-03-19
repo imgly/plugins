@@ -20,3 +20,15 @@ export {
   getThumbnailForVideo,
   getLabelFromId
 } from './utils';
+
+// Magic menu exports
+export { default as getMagicMenu } from './magic/getMagicMenu';
+export { default as registerMagicMenu } from './magic/registerMagicMenu';
+export {
+  type MagicEntry,
+  type MagicMenu,
+  type MagicContext,
+  type ApplyInferenceResult,
+  type MagicId,
+  type InferenceMetadata
+} from './magic/types';

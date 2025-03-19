@@ -1,5 +1,5 @@
 import CreativeEditorSDK from '@cesdk/cesdk-js';
-import { MagicEntry } from './magic/types';
+import { MagicEntry } from '@imgly/plugin-utils-ai-generation';
 
 function createMagicEntryForText(options: {
   cesdk: CreativeEditorSDK;
