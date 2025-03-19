@@ -1,0 +1,70 @@
+import type Anthropic from '@anthropic-ai/sdk';
+
+export const INFERENCE_AI_EDIT_MODE = 'ly.img.ai.inference.editMode';
+
+export const INFERENCE_AI_METADATA_KEY = 'ly.img.ai.inference.metadata';
+
+export const INFERENCE_CONFIRMATION_COMPONENT_ID =
+  'ly.img.ai.inference.confirmation.canvasMenu';
+
+export const DEFAULT_ANTHROPIC_PARAMS = {
+  // model: 'claude-3-5-sonnet-20241022',
+  model: 'claude-3-7-sonnet-20250219',
+  max_tokens: 8192,
+  temperature: 0.1
+};
+
+export const DEFAULT_ANTHROPIC_OPTIONS = {
+  headers: {
+    'x-api-key': null, // Ensuring headers are omitted
+    authorization: null
+  }
+};
+
+export async function sendPrompt(
+  anthropic: Anthropic,
+  prompt: string,
+  signal: AbortSignal
+): Promise<AsyncGenerator<string, void, unknown>> {
+  const msg = await anthropic.messages.create(
+    {
+      ...DEFAULT_ANTHROPIC_PARAMS,
+      stream: true,
+      messages: [
+        {
+          role: 'user',
+          content: [
+            {
+              type: 'text',
+              text: prompt
+            }
+          ]
+        }
+      ]
+    },
+    {
+      signal,
+      ...DEFAULT_ANTHROPIC_OPTIONS
+    }
+  );
+
+  // Return an async generator that yields only the text chunks
+  async function* textStreamGenerator() {
+    try {
+      for await (const chunk of msg) {
+        if (
+          chunk.type === 'content_block_delta' &&
+          chunk.delta.type === 'text_delta'
+        ) {
+          yield chunk.delta.text;
+        }
+      }
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('Stream error:', error);
+      throw error; // Re-throw to allow consumer to handle
+    }
+  }
+
+  return textStreamGenerator();
+}
