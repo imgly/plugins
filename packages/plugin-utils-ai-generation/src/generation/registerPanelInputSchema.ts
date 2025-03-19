@@ -80,22 +80,23 @@ async function registerPanelInputSchema<
       }
     });
 
+    const inputs = getInputs.map((getInput) => {
+      const input = getInput();
+      return input;
+    });
+    const input = inputs.reduce((acc, { id, value }) => {
+      acc[id] = value;
+      return acc;
+    }, {} as Record<string, any>) as I;
+
     renderGenerationComponents(
       context,
       provider,
       () => {
-        const inputs = getInputs.map((getInput) => {
-          const input = getInput();
-          return input;
-        });
-        const input = inputs.reduce((acc, { id, value }) => {
-          acc[id] = value;
-          return acc;
-        }, {} as Record<string, any>) as I;
-        return {
-          input,
-          ...panelInput.createInputByKind(input)
-        };
+        return { input };
+      },
+      () => {
+        return panelInput.getBlockInput(input);
       },
       {
         ...options,

@@ -5,7 +5,10 @@ export {
   type TextOutput,
   type Output,
   type PanelInputSchema,
-  type RenderCustomProperty
+  type RenderCustomProperty,
+  type GetBlockInput,
+  type GetBlockInputResult,
+  type GetInput
 } from './generation/provider';
 export {
   type GetPropertyInput,

@@ -140,12 +140,10 @@ export interface PanelInputSchema<K extends OutputKind, I>
   orderExtensionKeyword?: string | string[];
 
   /**
-   * After the input is created (from the schema), this
-   * method is called to create the additional and mandatory
-   * input by kind.
+   * Returns the necessary input for the creation of a block.
    *
    */
-  createInputByKind: (input: I) => Record<K, InputByKind[K]>;
+  getBlockInput: GetBlockInput<K, I>;
 
   /**
    * Allows to customize the components for some properties.
@@ -171,33 +169,42 @@ export interface PanelInputCustom<K extends OutputKind, I>
          ...promptState
        });
 
-       return () => ({
-         input: {
-           prompt: promptState.value
-         },
-         context: {
-           size: {
-             width: 1024,
-             height: 1024
-           }
-         }
-       });
+       return {
+         getInput: () => ({ prompt: promptState.value }),
+         getBlockInput: () => ({ image: { width: 1024, height: 1024 } })
+       };
      }
      ```
    */
   render: (
     context: BuilderRenderFunctionContext<any>,
     options: { cesdk: CreativeEditorSDK; isGenerating: boolean }
-  ) => GetInput<K, I>;
+  ) => {
+    getInput: GetInput<I>;
+    getBlockInput: GetBlockInput<K, I>;
+  };
 }
 
 /**
- * Returns the current input state and the context when called.
- * This is the input for which the ai generation is requested.
+ * Returns the current input state when called.
+ * This input is used for the AI generation
  */
-export type GetInput<K extends OutputKind, I> = () => {
+export type GetInput<I> = () => {
   input: I;
-} & Record<K, InputByKind[K]>;
+};
+
+/**
+ * Returns the input that is needed to create a block
+ * for a given output kind.
+ */
+export type GetBlockInput<K extends OutputKind, I> = (
+  input: I
+) => Promise<GetBlockInputResult<K>>;
+
+export type GetBlockInputResult<K extends OutputKind> = Record<
+  K,
+  InputByKind[K]
+>;
 
 /**
  * All possible output kinds.

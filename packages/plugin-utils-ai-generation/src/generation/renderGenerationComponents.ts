@@ -1,6 +1,11 @@
 import { type BuilderRenderFunctionContext } from '@cesdk/cesdk-js';
 import type Provider from './provider';
-import { type GetInput, type OutputKind, type Output } from './provider';
+import {
+  type GetInput,
+  type OutputKind,
+  type Output,
+  type GetBlockInput
+} from './provider';
 import { InitProviderConfiguration, UIOptions } from './types';
 import generate from './generate';
 import { extractErrorMessage } from '../utils';
@@ -15,7 +20,8 @@ export function isGeneratingStateKey(providerId: string): string {
 function renderGenerationComponents<K extends OutputKind, I, O extends Output>(
   context: BuilderRenderFunctionContext<any>,
   provider: Provider<K, I, O>,
-  getInput: GetInput<K, I>,
+  getInput: GetInput<I>,
+  getBlockInput: GetBlockInput<K, I>,
   options: UIOptions & {
     includeHistoryLibrary?: boolean;
     requiredInputs?: string[];
@@ -90,6 +96,7 @@ function renderGenerationComponents<K extends OutputKind, I, O extends Output>(
             await generate(
               provider.kind,
               getInput,
+              getBlockInput,
               provider,
               options,
               config,

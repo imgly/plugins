@@ -1,14 +1,14 @@
 import {
-  type GetInput,
   type OutputKind,
-  ImageOutput,
-  InputByKind,
-  Output
+  type GetBlockInputResult,
+  type ImageOutput,
+  type InputByKind,
+  type Output
 } from './provider';
 
-function getDryRunOutput<K extends OutputKind, I>(
+function getDryRunOutput<K extends OutputKind>(
   kind: K,
-  input: ReturnType<GetInput<K, I>>
+  input: GetBlockInputResult<K>
 ): Output {
   switch (kind) {
     case 'image': {
@@ -25,7 +25,7 @@ function getDryRunOutput<K extends OutputKind, I>(
 
 function getImageDryRunOutput(input: InputByKind['image']): ImageOutput {
   const width = input.width;
-  const height = input.width;
+  const height = input.height;
 
   const prompt: string =
     input != null &&

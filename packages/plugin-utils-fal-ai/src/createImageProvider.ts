@@ -4,11 +4,12 @@ import CreativeEditorSDK, { CreativeEngine } from '@cesdk/cesdk-js';
 import {
   Provider,
   ImageOutput,
-  PanelInputSchema,
   RenderCustomProperty
 } from '@imgly/plugin-utils-ai-generation';
 import { fal } from '@fal-ai/client';
 import renderCustomProperties from './renderCustomProperties';
+import { getImageDimensions, isCustomImageSize } from './utils';
+import { GetBlockInput } from '@imgly/plugin-utils-ai-generation/dist/generation/provider';
 
 /**
  * Creates a base provider from schema. This should work out of the box
@@ -17,6 +18,8 @@ import renderCustomProperties from './renderCustomProperties';
 function createImageProvider<I extends Record<string, any>>(
   options: {
     modelKey: string;
+    name?: string;
+
     schema: OpenAPIV3.Document;
     inputReference: string;
 
@@ -29,7 +32,8 @@ function createImageProvider<I extends Record<string, any>>(
 
     renderCustomProperty?: RenderCustomProperty;
 
-    createInputByKind: PanelInputSchema<'image', I>['createInputByKind'];
+    getBlockInput?: GetBlockInput<'image', I>;
+    getImageSize?: (input: I) => { width: number; height: number };
 
     cesdk?: CreativeEditorSDK;
   },
@@ -38,6 +42,7 @@ function createImageProvider<I extends Record<string, any>>(
   const provider: Provider<'image', I, ImageOutput> = {
     id: options.modelKey,
     kind: 'image',
+    name: options.name,
     initialize: async (context) => {
       fal.config({
         proxyUrl: config.proxyUrl
@@ -58,7 +63,39 @@ function createImageProvider<I extends Record<string, any>>(
             : {}),
           ...options.renderCustomProperty
         },
-        createInputByKind: options.createInputByKind,
+        getBlockInput: (input) => {
+          if (options.getBlockInput != null)
+            return options.getBlockInput(input);
+          if (options.getImageSize != null) {
+            const { width, height } = options.getImageSize(input);
+            return Promise.resolve({
+              image: {
+                width,
+                height
+              }
+            });
+          }
+          if (input.image_size != null && isCustomImageSize(input.image_size)) {
+            return Promise.resolve({
+              image: {
+                width: input.image_size.width ?? 512,
+                height: input.image_size.height ?? 512
+              }
+            });
+          }
+
+          if (
+            input.image_size != null &&
+            typeof input.image_size === 'string'
+          ) {
+            const imageDimension = getImageDimensions(input.image_size);
+            return Promise.resolve({
+              image: imageDimension
+            });
+          }
+
+          throw new Error('getBlockInput or getImageSize must be provided');
+        },
         userFlow: options.useFlow ?? 'placeholder'
       }
     },
@@ -84,6 +121,16 @@ function createImageProvider<I extends Record<string, any>>(
               kind: 'image',
               url
             };
+        } else {
+          const image = response?.data?.image;
+          if (image != null) {
+            const url = image?.url;
+            if (url != null)
+              return {
+                kind: 'image',
+                url
+              };
+          }
         }
 
         // eslint-disable-next-line no-console

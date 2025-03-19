@@ -3,12 +3,12 @@ import { PluginConfiguration } from './type';
 import CreativeEditorSDK, { CreativeEngine } from '@cesdk/cesdk-js';
 import {
   Provider,
-  PanelInputSchema,
   RenderCustomProperty,
   VideoOutput
 } from '@imgly/plugin-utils-ai-generation';
 import { fal } from '@fal-ai/client';
 import renderCustomProperties from './renderCustomProperties';
+import { GetBlockInput } from '@imgly/plugin-utils-ai-generation/dist/generation/provider';
 
 /**
  * Creates a base provider from schema. This should work out of the box
@@ -29,7 +29,7 @@ function createVideoProvider<I extends Record<string, any>>(
 
     renderCustomProperty?: RenderCustomProperty;
 
-    createInputByKind: PanelInputSchema<'video', I>['createInputByKind'];
+    getBlockInput: GetBlockInput<'video', I>;
 
     cesdk?: CreativeEditorSDK;
   },
@@ -58,7 +58,7 @@ function createVideoProvider<I extends Record<string, any>>(
             : {}),
           ...options.renderCustomProperty
         },
-        createInputByKind: options.createInputByKind,
+        getBlockInput: options.getBlockInput,
         userFlow: options.useFlow ?? 'generation-only'
       }
     },

@@ -183,23 +183,23 @@ function getProvider(
           };
         }
       },
-      createInputByKind: (input) => {
+      getBlockInput: (input) => {
         if (isCustomImageSize(input.image_size)) {
-          return {
+          return Promise.resolve({
             image: {
               width: input.image_size.width ?? 512,
               height: input.image_size.height ?? 512
             }
-          };
+          });
         }
 
         const imageDimension = getImageDimensions(
           input.image_size ?? 'square_hd'
         );
 
-        return {
+        return Promise.resolve({
           image: imageDimension
-        };
+        });
       }
     },
     config

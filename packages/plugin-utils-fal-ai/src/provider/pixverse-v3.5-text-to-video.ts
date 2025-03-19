@@ -23,7 +23,7 @@ function getProvider(
       inputReference: '#/components/schemas/PixverseV35TextToVideoInput',
       cesdk,
 
-      createInputByKind: (input) => {
+      getBlockInput: (input) => {
         if (input.aspect_ratio != null && input.resolution != null) {
           const [widthRatio, heightRatio] = input.aspect_ratio
             .split(':')
@@ -39,13 +39,13 @@ function getProvider(
                 ? parseInt(input.duration, 10)
                 : input.duration;
 
-            return {
+            return Promise.resolve({
               video: {
                 width,
                 height: resolutionHeight,
                 duration
               }
-            };
+            });
           }
 
           throw new Error('Cannot determine video duration');

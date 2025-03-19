@@ -2,7 +2,13 @@
 import type { AssetResult } from '@cesdk/cesdk-js';
 import { uuid4 } from '../utils';
 import type Provider from './provider';
-import { GetInput, OutputKind, type Output } from './provider';
+import {
+  type GetInput,
+  type GetBlockInput,
+  OutputKind,
+  type Output,
+  GetBlockInputResult
+} from './provider';
 import { InitProviderConfiguration, UIOptions } from './types';
 import CreativeEditorSDK from '@cesdk/cesdk-js';
 import getAssetResultForPlaceholder from './getAssetResultForPlaceholder';
@@ -14,7 +20,8 @@ import getAssetResultForGenerated from './getAssetResultForGenerated';
  */
 async function generate<K extends OutputKind, I, O extends Output>(
   kind: K,
-  getInput: GetInput<K, I>,
+  getInput: GetInput<I>,
+  getBlockInput: GetBlockInput<K, I>,
   provider: Provider<K, I, O>,
   options: UIOptions & {
     createPlaceholderBlock?: boolean;
@@ -28,6 +35,7 @@ async function generate<K extends OutputKind, I, O extends Output>(
     if (config.debug) console.group(`Starting Generation for '${kind}'`);
 
     const inputs = getInput();
+    const blockInputs = await getBlockInput(inputs.input);
     const assetId = uuid4();
     let assetResult: AssetResult;
 
@@ -35,7 +43,7 @@ async function generate<K extends OutputKind, I, O extends Output>(
 
     // Create a placeholder block
     if (createPlaceholderBlock) {
-      assetResult = getAssetResultForPlaceholder(assetId, kind, inputs);
+      assetResult = getAssetResultForPlaceholder(assetId, kind, blockInputs);
 
       if (config.debug)
         console.log(
@@ -58,9 +66,10 @@ async function generate<K extends OutputKind, I, O extends Output>(
       });
     }
 
+    console.log('blockInputs', blockInputs);
     // Trigger the generation
     const output = config.dryRun
-      ? await dryRun(kind, inputs)
+      ? await dryRun(kind, blockInputs)
       : await provider.output.generate(inputs.input, {
           abortSignal,
           engine: options.engine,
@@ -79,7 +88,7 @@ async function generate<K extends OutputKind, I, O extends Output>(
       generatedAssetResult = await getAssetResultForGenerated(
         assetId,
         kind,
-        inputs,
+        blockInputs,
         output
       );
       if (config.debug)
@@ -101,7 +110,7 @@ async function generate<K extends OutputKind, I, O extends Output>(
         generatedAssetResult = await getAssetResultForGenerated(
           assetId,
           kind,
-          inputs,
+          blockInputs,
           output
         );
       }
@@ -149,12 +158,15 @@ function checkAbortSignal(
 /**
  * Simulate the generation of the output without actually generating it.
  */
-async function dryRun<K extends OutputKind, I>(
+async function dryRun<K extends OutputKind>(
   kind: K,
-  inputs: ReturnType<GetInput<K, I>>
+  blockInputs: GetBlockInputResult<K>
 ): Promise<Output> {
-  console.log(`[DRY RUN]: Requesting dummy AI generation`);
-  const output = getDryRunOutput(kind, inputs);
+  console.log(
+    `[DRY RUN]: Requesting dummy AI generation with block inputs: `,
+    JSON.stringify(blockInputs, undefined, 2)
+  );
+  const output = getDryRunOutput(kind, blockInputs);
   await wait(2000);
   return output;
 }

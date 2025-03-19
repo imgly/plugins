@@ -1,17 +1,17 @@
 import { type AssetResult } from '@cesdk/cesdk-js';
-import { type GetInput, type OutputKind, InputByKind } from './provider';
+import { type OutputKind, GetBlockInputResult, InputByKind } from './provider';
 import previewUri from './previewUri';
 
-function getAssetResultForPlaceholder<K extends OutputKind, I>(
+function getAssetResultForPlaceholder<K extends OutputKind>(
   id: string,
   kind: K,
-  input: ReturnType<GetInput<K, I>>
+  blockInput: GetBlockInputResult<K>
 ): AssetResult {
   switch (kind) {
     case 'image': {
       return getImageAssetResultForPlaceholder(
         id,
-        input[kind] as InputByKind['image']
+        blockInput[kind] as InputByKind['image']
       );
     }
 

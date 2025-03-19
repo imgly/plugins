@@ -21,14 +21,14 @@ function getProvider(
       inputReference:
         '#/components/schemas/MinimaxVideo01LiveImageToVideoInput',
       cesdk,
-      createInputByKind: () => {
-        return {
+      getBlockInput: () => {
+        return Promise.resolve({
           video: {
             width: 1280,
             height: 720,
             duration: 5
           }
-        };
+        });
       }
     },
     config

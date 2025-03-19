@@ -29,11 +29,15 @@ async function registerPanelInputCustom<
       abort: () => {}
     }).value.isGenerating;
 
-    const getInput = render(context, { cesdk, isGenerating });
+    const { getInput, getBlockInput } = render(context, {
+      cesdk,
+      isGenerating
+    });
     renderGenerationComponents(
       context,
       provider,
       getInput,
+      getBlockInput,
       {
         ...options,
         includeHistoryLibrary: panelInput.includeHistoryLibrary ?? true

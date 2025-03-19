@@ -1,7 +1,7 @@
 import { type AssetResult } from '@cesdk/cesdk-js';
 import {
-  type GetInput,
   type OutputKind,
+  GetBlockInputResult,
   ImageOutput,
   InputByKind,
   Output,
@@ -9,10 +9,10 @@ import {
 } from './provider';
 import { getThumbnailForVideo } from '../utils';
 
-async function getAssetResultForGenerated<K extends OutputKind, I>(
+async function getAssetResultForGenerated<K extends OutputKind>(
   id: string,
   kind: K,
-  inputs: ReturnType<GetInput<K, I>>,
+  blockInputs: GetBlockInputResult<K>,
   output: Output
 ): Promise<AssetResult> {
   switch (kind) {
@@ -25,7 +25,7 @@ async function getAssetResultForGenerated<K extends OutputKind, I>(
 
       return getImageAssetResultForGenerated(
         id,
-        inputs[kind] as InputByKind['image'],
+        blockInputs[kind] as InputByKind['image'],
         output
       );
     }
@@ -39,7 +39,7 @@ async function getAssetResultForGenerated<K extends OutputKind, I>(
 
       return getVideoAssetResultForGenerated(
         id,
-        inputs[kind] as InputByKind['video'],
+        blockInputs[kind] as InputByKind['video'],
         output
       );
     }
@@ -58,7 +58,7 @@ function getImageAssetResultForGenerated(
   output: ImageOutput
 ): AssetResult {
   const width = input.width;
-  const height = input.width;
+  const height = input.height;
   return {
     id,
     meta: {
