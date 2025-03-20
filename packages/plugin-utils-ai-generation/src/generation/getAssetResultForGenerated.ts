@@ -1,6 +1,7 @@
 import { type AssetResult } from '@cesdk/cesdk-js';
 import {
   type OutputKind,
+  AudioOutput,
   GetBlockInputResult,
   ImageOutput,
   InputByKind,
@@ -44,6 +45,20 @@ async function getAssetResultForGenerated<K extends OutputKind>(
       );
     }
 
+    case 'audio': {
+      if (output.kind !== 'audio') {
+        throw new Error(
+          `Output kind does not match the expected type: ${output.kind} (expected: audio)`
+        );
+      }
+
+      return getAudioAssetResultForGenerated(
+        id,
+        blockInputs[kind] as InputByKind['audio'],
+        output
+      );
+    }
+
     default: {
       throw new Error(
         `Unsupported output kind for creating placeholder block: ${kind}`
@@ -61,6 +76,7 @@ function getImageAssetResultForGenerated(
   const height = input.height;
   return {
     id,
+    label: input.label,
     meta: {
       uri: output.url,
       thumbUri: output.url,
@@ -94,6 +110,7 @@ async function getVideoAssetResultForGenerated(
 
   return {
     id,
+    label: input.label,
     meta: {
       uri: output.url,
       thumbUri,
@@ -106,6 +123,24 @@ async function getVideoAssetResultForGenerated(
 
       width,
       height
+    }
+  };
+}
+
+function getAudioAssetResultForGenerated(
+  id: string,
+  input: InputByKind['audio'],
+  output: AudioOutput
+): AssetResult {
+  return {
+    id,
+    label: input.label,
+    meta: {
+      uri: output.url,
+      thumbUri: output.thumbnailUrl,
+      blockType: '//ly.img.ubq/audio',
+      mimeType: 'audio/x-m4a',
+      duration: output.duration.toString()
     }
   };
 }

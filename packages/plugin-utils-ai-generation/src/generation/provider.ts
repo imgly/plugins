@@ -215,10 +215,10 @@ export type OutputKind = 'image' | 'video' | 'audio' | 'text';
  * Mandatory kind-specific input needed for the generation.
  */
 export type InputByKind = {
-  image: { width: number; height: number };
-  video: { width: number; height: number; duration: number };
-  audio: { duration: number };
-  text: { length: number };
+  image: { label?: string; width: number; height: number };
+  video: { label?: string; width: number; height: number; duration: number };
+  audio: { label?: string; thumbnailUrl?: string; duration?: number };
+  text: { label?: string; length: number };
 };
 
 /**
@@ -242,6 +242,9 @@ export interface VideoOutput extends OutputBase<'video'> {
 
 export interface AudioOutput extends OutputBase<'audio'> {
   kind: 'audio';
+  url: string;
+  duration: number;
+  thumbnailUrl?: string;
 }
 
 export interface TextOutput extends OutputBase<'text'> {

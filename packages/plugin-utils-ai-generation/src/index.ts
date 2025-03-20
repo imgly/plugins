@@ -3,6 +3,7 @@ export {
   type ImageOutput,
   type VideoOutput,
   type TextOutput,
+  type AudioOutput,
   type Output,
   type PanelInputSchema,
   type RenderCustomProperty,
