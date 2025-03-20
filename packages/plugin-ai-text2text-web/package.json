@@ -2,13 +2,7 @@
   "name": "@imgly/plugin-ai-text2text-web",
   "version": "0.1.0-rc.1",
   "description": "AI text2text plugin for the CE.SDK editor",
-  "keywords": [
-    "CE.SDK",
-    "plugin",
-    "AI",
-    "text2text",
-    "llm"
-  ],
+  "keywords": ["CE.SDK", "plugin", "AI", "text2text", "llm"],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/imgly/plugins.git"
@@ -32,13 +26,7 @@
     }
   },
   "homepage": "https://img.ly/products/creative-sdk",
-  "files": [
-    "LICENSE.md",
-    "README.md",
-    "CHANGELOG.md",
-    "dist/",
-    "bin/"
-  ],
+  "files": ["LICENSE.md", "README.md", "CHANGELOG.md", "dist/", "bin/"],
   "scripts": {
     "start": "npm run watch",
     "clean": "pnpm exec rimraf dist",
@@ -78,7 +66,7 @@
     }
   },
   "peerDependencies": {
-    "@cesdk/cesdk-js": "^1.47.0-rc.2"
+    "@cesdk/cesdk-js": "^1.47.0-rc.3"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.39.0"

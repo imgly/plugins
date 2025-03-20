@@ -30,7 +30,7 @@
     "_syncPnpm": "pnpm sync-dependencies-meta-injected"
   },
   "devDependencies": {
-    "@cesdk/cesdk-js": "^1.47.0-rc.2",
+    "@cesdk/cesdk-js": "^1.47.0-rc.3",
     "@imgly/plugin-utils": "workspace:*",
     "esbuild": "^0.19.12",
     "openapi-types": "^12.1.3"
@@ -41,6 +41,6 @@
     }
   },
   "peerDependencies": {
-    "@cesdk/cesdk-js": "^1.47.0-rc.2"
+    "@cesdk/cesdk-js": "^1.47.0-rc.3"
   }
 }
