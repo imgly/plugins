@@ -1,4 +1,4 @@
-import { type Provider } from '@imgly/plugin-utils-ai-generation';
+import { type Provider, getPanelId } from '@imgly/plugin-utils-ai-generation';
 import { type RecraftV3Input } from '@fal-ai/client/endpoints';
 import { PluginConfiguration } from '../type';
 import recraftV3Schema from './schemas/recraft-v3.json';
@@ -87,7 +87,8 @@ function getProvider(
 
   cesdk.i18n.setTranslations({
     en: {
-      'panel.fal-ai/recraft-v3.styleSelection': 'Style Selection',
+      [`panel.${getPanelId('fal-ai/recraft-v3')}.styleSelection`]:
+        'Style Selection',
       [`${modelKey}.style`]: 'Style',
       [`${modelKey}.style.type`]: 'Type',
       [`${modelKey}.style.type.image`]: 'Image',
