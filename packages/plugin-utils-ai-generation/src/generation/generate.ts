@@ -15,6 +15,8 @@ import getAssetResultForPlaceholder from './getAssetResultForPlaceholder';
 import getDryRunOutput from './getDryRunOutput';
 import getAssetResultForGenerated from './getAssetResultForGenerated';
 
+type Result<O> = { status: 'success'; output: O } | { status: 'aborted' };
+
 /**
  * Generate content using the provider with the given input
  */
@@ -28,7 +30,7 @@ async function generate<K extends OutputKind, I, O extends Output>(
   },
   config: InitProviderConfiguration,
   abortSignal: AbortSignal
-): Promise<void> {
+): Promise<Result<O>> {
   const { cesdk, createPlaceholderBlock, historyAssetSourceId } = options;
 
   try {
@@ -55,7 +57,8 @@ async function generate<K extends OutputKind, I, O extends Output>(
         assetResult
       );
 
-      if (checkAbortSignal(cesdk, abortSignal, placeholderBlock)) return;
+      if (checkAbortSignal(cesdk, abortSignal, placeholderBlock))
+        return { status: 'aborted' };
 
       if (placeholderBlock == null)
         throw new Error('Could not create placeholder block');
@@ -68,15 +71,16 @@ async function generate<K extends OutputKind, I, O extends Output>(
 
     console.log('blockInputs', blockInputs);
     // Trigger the generation
-    const output = config.dryRun
-      ? await dryRun(kind, blockInputs)
+    const output: O = config.dryRun
+      ? ((await dryRun(kind, blockInputs)) as O)
       : await provider.output.generate(inputs.input, {
           abortSignal,
           engine: options.engine,
           cesdk
         });
 
-    if (checkAbortSignal(cesdk, abortSignal, placeholderBlock)) return;
+    if (checkAbortSignal(cesdk, abortSignal, placeholderBlock))
+      return { status: 'aborted' };
 
     if (output == null) throw new Error('Generation failed');
 
@@ -103,7 +107,8 @@ async function generate<K extends OutputKind, I, O extends Output>(
       );
     }
 
-    if (checkAbortSignal(cesdk, abortSignal, placeholderBlock)) return;
+    if (checkAbortSignal(cesdk, abortSignal, placeholderBlock))
+      return { status: 'aborted' };
 
     if (historyAssetSourceId != null) {
       if (generatedAssetResult == null) {
@@ -113,6 +118,8 @@ async function generate<K extends OutputKind, I, O extends Output>(
           blockInputs,
           output
         );
+        if (checkAbortSignal(cesdk, abortSignal, placeholderBlock))
+          return { status: 'aborted' };
       }
       const assetDefinition: AssetDefinition = {
         ...generatedAssetResult,
@@ -139,6 +146,7 @@ async function generate<K extends OutputKind, I, O extends Output>(
         type: 'Ready'
       });
     }
+    return { status: 'success', output };
   } finally {
     if (config.debug) console.groupEnd();
   }

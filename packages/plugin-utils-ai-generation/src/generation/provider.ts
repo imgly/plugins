@@ -69,6 +69,60 @@ interface Provider<K extends OutputKind, I, O extends Output> {
     history?: false | '@imgly/local' | '@imgly/indexedDB' | string;
 
     /**
+     * Configure if and what notification is shown after success and error.
+     */
+    notification?: {
+      /**
+       * Configure if and what notification is shown when the asset is generated.
+       */
+      success?: {
+        /**
+         * If true, the notification is shown. If false, the notification is not shown.
+         * Can be a function that returns a boolean.
+         */
+        show?: boolean | ((context: { input: I; output: O }) => boolean);
+
+        /**
+         * The message that is shown when the asset generation was successful. Can be a i18n key.
+         * A function can be used to dynamically generate the message based on the input and output.
+         */
+        message?: string | ((context: { input: I; output: O }) => string);
+
+        /**
+         * The action that is shown when the asset generation was successful.
+         */
+        action?: {
+          label: string | ((context: { input: I; output: O }) => string);
+          onClick: (context: { input: I; output: O }) => void;
+        };
+      };
+
+      /**
+       * Configure if and what notification is shown when generation failed
+       * If not set, a generic error message is shown.
+       */
+      error?: {
+        show?: boolean | ((context: { input: I; error: unknown }) => boolean);
+
+        /**
+         * The message that is shown when the asset generation failed. Can be a i18n key.
+         * A function can be used to dynamically generate the message based on the input and output.
+         */
+        message?:
+          | string
+          | ((context: { input: I; error: unknown }) => string);
+
+        /**
+         * The action that is shown when the asset generation failed.
+         */
+        action?: {
+          label: string | ((context: { input: I; error: unknown }) => string);
+          onClick: (context: { input: I; error: unknown }) => void;
+        };
+      };
+    };
+
+    /**
      * Generate the asset given the input.
      *
      * @returns The generated asset

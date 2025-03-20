@@ -1,4 +1,6 @@
-import { type BuilderRenderFunctionContext } from '@cesdk/cesdk-js';
+import CreativeEditorSDK, {
+  type BuilderRenderFunctionContext
+} from '@cesdk/cesdk-js';
 import type Provider from './provider';
 import {
   type GetInput,
@@ -93,7 +95,7 @@ function renderGenerationComponents<K extends OutputKind, I, O extends Output>(
               }
             });
 
-            await generate(
+            const result = await generate(
               provider.kind,
               getInput,
               getBlockInput,
@@ -102,6 +104,16 @@ function renderGenerationComponents<K extends OutputKind, I, O extends Output>(
               config,
               abortSignal
             );
+
+            if (result.status === 'aborted') {
+              return;
+            }
+
+            const notification = provider.output.notification;
+            showSuccessNotification(cesdk, notification, () => ({
+              input: getInput().input,
+              output: result.output
+            }));
           } catch (error) {
             if (
               config.onError != null &&
@@ -111,10 +123,20 @@ function renderGenerationComponents<K extends OutputKind, I, O extends Output>(
             } else {
               // eslint-disable-next-line no-console
               console.error('Generation failed:', error);
-              cesdk.ui.showNotification({
-                type: 'error',
-                message: extractErrorMessage(error)
-              });
+              const shown = showErrorNotification(
+                cesdk,
+                provider.output.notification,
+                () => ({
+                  input: getInput().input,
+                  error
+                })
+              );
+              if (!shown) {
+                cesdk.ui.showNotification({
+                  type: 'error',
+                  message: extractErrorMessage(error)
+                });
+              }
             }
           } finally {
             abortController = undefined;
@@ -133,6 +155,88 @@ function renderGenerationComponents<K extends OutputKind, I, O extends Output>(
       entries: [options.historyAssetLibraryEntryId]
     });
   }
+}
+
+function showSuccessNotification<I, O extends Output>(
+  cesdk: CreativeEditorSDK,
+  notifications: Provider<any, I, O>['output']['notification'],
+  createContext: () => { input: I; output: O }
+): boolean {
+  const successNotification = notifications?.success;
+  if (successNotification == null) return false;
+
+  const showOnSuccess =
+    typeof successNotification.show === 'function'
+      ? successNotification.show(createContext())
+      : successNotification.show;
+
+  if (!showOnSuccess) return false;
+
+  const message =
+    typeof successNotification.message === 'function'
+      ? successNotification.message(createContext())
+      : successNotification.message ?? 'common.ai-generation.success';
+
+  const action =
+    successNotification.action != null
+      ? {
+          label:
+            typeof successNotification.action.label === 'function'
+              ? successNotification.action.label(createContext())
+              : successNotification.action.label,
+          onClick: () => {
+            successNotification?.action?.onClick(createContext());
+          }
+        }
+      : undefined;
+
+  cesdk.ui.showNotification({
+    type: 'success',
+    message,
+    action
+  });
+  return true;
+}
+
+function showErrorNotification<I, O extends Output>(
+  cesdk: CreativeEditorSDK,
+  notifications: Provider<any, I, O>['output']['notification'],
+  createContext: () => { input: I; error: unknown }
+): boolean {
+  const errorNotification = notifications?.error;
+  if (errorNotification == null) return false;
+
+  const showOnSuccess =
+    typeof errorNotification.show === 'function'
+      ? errorNotification.show(createContext())
+      : errorNotification.show;
+
+  if (!showOnSuccess) return false;
+
+  const message =
+    typeof errorNotification.message === 'function'
+      ? errorNotification.message(createContext())
+      : errorNotification.message ?? 'common.ai-generation.success';
+
+  const action =
+    errorNotification.action != null
+      ? {
+          label:
+            typeof errorNotification.action.label === 'function'
+              ? errorNotification.action.label(createContext())
+              : errorNotification.action.label,
+          onClick: () => {
+            errorNotification?.action?.onClick(createContext());
+          }
+        }
+      : undefined;
+
+  cesdk.ui.showNotification({
+    type: 'error',
+    message,
+    action
+  });
+  return true;
 }
 
 export default renderGenerationComponents;

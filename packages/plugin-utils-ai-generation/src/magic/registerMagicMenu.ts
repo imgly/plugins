@@ -18,22 +18,29 @@ function registerMagicMenu(cesdk: CreativeEditorSDK, magicMenu: MagicMenu) {
       'ly.img.ai.inference.processing': 'Generating...'
     }
   });
+  const confirmationComponentId = `ly.img.ai.${magicMenu.id}.confirmation.canvasnMenu`;
 
-  let unlock: () => void = () => {};
-  let abort: () => void = () => {};
-  let applyInferenceResult: ApplyInferenceResult | undefined;
+  const shared: {
+    unlock: () => void;
+    abort: () => void;
+    applyInferenceResult: ApplyInferenceResult | undefined;
+  } = {
+    unlock: () => {},
+    abort: () => {},
+    applyInferenceResult: undefined
+  };
 
   const createAbortSignal = () => {
     const controller = new AbortController();
     const signal = controller.signal;
-    abort = () => {
+    shared.abort = () => {
       controller.abort();
     };
     return signal;
   };
 
   cesdk.ui.registerComponent(
-    INFERENCE_CONFIRMATION_COMPONENT_ID,
+    confirmationComponentId,
     ({ builder, engine, state }) => {
       const [selectedId] = engine.block.findAllSelected();
       if (selectedId == null) return null;
@@ -61,7 +68,7 @@ function registerMagicMenu(cesdk: CreativeEditorSDK, magicMenu: MagicMenu) {
             icon: '@imgly/Cross',
             tooltip: 'ly.img.ai.inference.cancel',
             onClick: () => {
-              abort();
+              shared.abort();
               md.clear(selectedId);
             }
           });
@@ -79,8 +86,8 @@ function registerMagicMenu(cesdk: CreativeEditorSDK, magicMenu: MagicMenu) {
             icon: '@imgly/Cross',
             tooltip: 'ly.img.ai.inference.cancel',
             onClick: () => {
-              unlock();
-              applyInferenceResult?.onCancel();
+              shared.unlock();
+              shared.applyInferenceResult?.onCancel();
               md.clear(selectedId);
             }
           });
@@ -92,7 +99,7 @@ function registerMagicMenu(cesdk: CreativeEditorSDK, magicMenu: MagicMenu) {
                 variant: 'regular',
                 isActive: inferenceComparingState.value === 'before',
                 onClick: () => {
-                  applyInferenceResult?.onBefore();
+                  shared.applyInferenceResult?.onBefore();
                   inferenceComparingState.setValue('before');
                 }
               });
@@ -101,7 +108,7 @@ function registerMagicMenu(cesdk: CreativeEditorSDK, magicMenu: MagicMenu) {
                 variant: 'regular',
                 isActive: inferenceComparingState.value === 'after',
                 onClick: () => {
-                  applyInferenceResult?.onAfter();
+                  shared.applyInferenceResult?.onAfter();
                   inferenceComparingState.setValue('after');
                 }
               });
@@ -114,8 +121,8 @@ function registerMagicMenu(cesdk: CreativeEditorSDK, magicMenu: MagicMenu) {
             color: 'accent',
             isDisabled: inferenceComparingState.value !== 'after',
             onClick: () => {
-              unlock();
-              applyInferenceResult?.onApply();
+              shared.unlock();
+              shared.applyInferenceResult?.onApply();
               engine.editor.addUndoStep();
               md.clear(selectedId);
             }
@@ -131,12 +138,32 @@ function registerMagicMenu(cesdk: CreativeEditorSDK, magicMenu: MagicMenu) {
     }
   );
 
-  cesdk.ui.setCanvasMenuOrder([INFERENCE_CONFIRMATION_COMPONENT_ID], {
-    editMode: INFERENCE_AI_EDIT_MODE
-  });
-
   const canvasMenuComponentId = `ly.img.ai.${magicMenu.id}.canvasMenu`;
   cesdk.ui.registerComponent(canvasMenuComponentId, (context) => {
+    const magicEntries = magicMenu
+      .getMagicOrder()
+      .map((magicId) => {
+        if (magicId === 'ly.img.separator') return magicId;
+        const magicEntry = magicMenu.getMagicEntry(magicId);
+        if (magicEntry == null) return null;
+
+        const blockId = magicEntry.getBlockId({ cesdk });
+        if (blockId == null) return null;
+
+        return { blockId, magicEntry };
+      })
+      .filter((entry) => entry != null);
+
+    if (
+      magicEntries.length === 0 ||
+      !magicEntries.some(
+        (entry) => typeof entry !== 'string' && entry.blockId != null
+      ) ||
+      magicEntries.every((entry) => entry === 'ly.img.separator')
+    ) {
+      return null;
+    }
+
     const { builder, experimental, state } = context;
     const toggleEditState = state<string | undefined>(
       'ly.img.ai.magic.toggleEditState',
@@ -161,6 +188,10 @@ function registerMagicMenu(cesdk: CreativeEditorSDK, magicMenu: MagicMenu) {
                     toggleEditState.setValue(undefined);
                   },
                   applyInference: async (payload) => {
+                    cesdk.ui.setCanvasMenuOrder([confirmationComponentId], {
+                      editMode: INFERENCE_AI_EDIT_MODE
+                    });
+
                     const result = await applyInference(
                       cesdk,
                       magicEntry,
@@ -168,8 +199,8 @@ function registerMagicMenu(cesdk: CreativeEditorSDK, magicMenu: MagicMenu) {
                       payload
                     );
                     if (result != null) {
-                      unlock = result.unlock;
-                      applyInferenceResult = result.appltInferenceResult;
+                      shared.unlock = result.unlock;
+                      shared.applyInferenceResult = result.appltInferenceResult;
                     }
                   }
                 });
@@ -179,41 +210,40 @@ function registerMagicMenu(cesdk: CreativeEditorSDK, magicMenu: MagicMenu) {
             }
             experimental.builder.Menu('ly.img.ai.magic.menu', {
               children: () => {
-                magicMenu.getMagicOrder().forEach((magicId) => {
-                  if (magicId === 'ly.img.separator') {
+                magicEntries.forEach((magicEntry) => {
+                  if (magicEntry === 'ly.img.separator') {
                     builder.Separator(
                       `ly.img.ai.magic.separator.${Math.random().toString()}`
                     );
                   } else {
-                    const magicEntry = magicMenu.getMagicEntry(magicId);
-
-                    if (
-                      magicEntry != null &&
-                      magicEntry.getBlockId({ cesdk }) != null
-                    ) {
-                      magicEntry.renderMenuEntry(context, {
-                        closeMenu: close,
-                        toggleEditState: () => {
-                          if (toggleEditState.value === magicId) {
-                            toggleEditState.setValue(undefined);
-                          } else {
-                            toggleEditState.setValue(magicId);
-                          }
-                        },
-                        applyInference: async (payload) => {
-                          const result = await applyInference(
-                            cesdk,
-                            magicEntry,
-                            createAbortSignal(),
-                            payload
-                          );
-                          if (result != null) {
-                            unlock = result.unlock;
-                            applyInferenceResult = result.appltInferenceResult;
-                          }
+                    magicEntry.magicEntry.renderMenuEntry(context, {
+                      closeMenu: close,
+                      toggleEditState: () => {
+                        if (
+                          toggleEditState.value === magicEntry.magicEntry.id
+                        ) {
+                          toggleEditState.setValue(undefined);
+                        } else {
+                          toggleEditState.setValue(magicEntry.magicEntry.id);
                         }
-                      });
-                    }
+                      },
+                      applyInference: async (payload) => {
+                        cesdk.ui.setCanvasMenuOrder([confirmationComponentId], {
+                          editMode: INFERENCE_AI_EDIT_MODE
+                        });
+                        const result = await applyInference(
+                          cesdk,
+                          magicEntry.magicEntry,
+                          createAbortSignal(),
+                          payload
+                        );
+                        if (result != null) {
+                          shared.unlock = result.unlock;
+                          shared.applyInferenceResult =
+                            result.appltInferenceResult;
+                        }
+                      }
+                    });
                   }
                 });
               }

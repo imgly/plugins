@@ -57,6 +57,7 @@ async function initProvider<K extends OutputKind, I, O extends Output>(
 
   options.cesdk.i18n.setTranslations({
     en: {
+      'common.ai-generation.success': 'Generation Successful',
       'common.ai-generation.generate': 'Generate',
       'common.ai-generation.prompt.placeholder':
         'Describe what you want to create...',
