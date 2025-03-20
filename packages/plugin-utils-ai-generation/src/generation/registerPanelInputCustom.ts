@@ -5,6 +5,7 @@ import renderGenerationComponents, {
   isGeneratingStateKey
 } from './renderGenerationComponents';
 import { InitProviderConfiguration, UIOptions } from './types';
+import { getPanelId } from '../utils';
 
 async function registerPanelInputCustom<
   K extends OutputKind,
@@ -48,7 +49,7 @@ async function registerPanelInputCustom<
     return getInput;
   };
 
-  cesdk.ui.registerPanel(providerId, builderRenderFunction);
+  cesdk.ui.registerPanel(getPanelId(providerId), builderRenderFunction);
 
   return builderRenderFunction;
 }

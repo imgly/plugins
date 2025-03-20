@@ -17,6 +17,7 @@ export {
 } from './generation/openapi/types';
 export { default as initProvider } from './generation/initProvider';
 export {
+  getPanelId,
   getDurationForVideo,
   getThumbnailForVideo,
   getLabelFromId

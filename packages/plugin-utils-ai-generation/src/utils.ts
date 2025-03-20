@@ -1,3 +1,13 @@
+export const AI_PANEL_ID_PREFIX = 'ly.img.ai';
+
+/**
+ * Returns a consistent panel ID for a provider ID
+ */
+export function getPanelId(providerId: string): string {
+  return `${AI_PANEL_ID_PREFIX}/${providerId}`;
+}
+
+export default getPanelId;
 /**
  * Extracts a readable error message from an unknown error
  *

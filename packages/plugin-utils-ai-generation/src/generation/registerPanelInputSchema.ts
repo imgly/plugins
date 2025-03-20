@@ -15,6 +15,7 @@ import renderProperty from './openapi/renderProperty';
 import renderGenerationComponents from './renderGenerationComponents';
 import getProperties from './openapi/getProperties';
 import { BuilderRenderFunction } from '@cesdk/cesdk-js';
+import { getPanelId } from '../utils';
 
 /**
  * Registers a schema-based panel input for a provider
@@ -106,7 +107,7 @@ async function registerPanelInputSchema<
     );
   };
 
-  cesdk.ui.registerPanel(providerId, builderRenderFunction);
+  cesdk.ui.registerPanel(getPanelId(providerId), builderRenderFunction);
   return builderRenderFunction;
 }
 
