@@ -59,7 +59,6 @@
           },
           "image_size": {
             "anyOf": [
-              { "$ref": "#/components/schemas/ImageSize" },
               {
                 "enum": [
                   "square_hd",
@@ -70,10 +69,29 @@
                   "landscape_16_9"
                 ],
                 "type": "string"
-              }
+              },
+              { "$ref": "#/components/schemas/ImageSize" }
             ],
             "title": "Format",
-            "default": "square_hd"
+            "default": "square_hd",
+            "x-imgly-enum-labels": {
+              "ImageSize": "Custom",
+              "square_hd": "Square HD",
+              "square": "Square",
+              "portrait_4_3": "Portrait 4:3",
+              "portrait_16_9": "Portrait 16:9",
+              "landscape_4_3": "Landscape 4:3",
+              "landscape_16_9": "Landscape 16:9"
+            },
+            "x-imgly-enum-icons": {
+              "square": "@imgly/plugin/fal-ai/ratio1by1",
+              "square_hd": "@imgly/plugin/fal-ai/ratio1by1",
+              "portrait_4_3": "@imgly/plugin/fal-ai/ratio3by4",
+              "portrait_16_9": "@imgly/plugin/fal-ai/ratio9by16",
+              "landscape_4_3": "@imgly/plugin/fal-ai/ratio4by3",
+              "landscape_16_9": "@imgly/plugin/fal-ai/ratio16by9",
+              "ImageSize": "@imgly/plugin/fal-ai/ratioFree"
+            }
           },
           "style": {
             "enum": [
@@ -176,11 +194,7 @@
             "default": []
           }
         },
-        "x-fal-order-properties": [
-          "prompt",
-          "style",
-          "image_size"
-        ],
+        "x-fal-order-properties": ["prompt", "style", "image_size"],
         "required": ["prompt"]
       },
       "RecraftV3Output": {

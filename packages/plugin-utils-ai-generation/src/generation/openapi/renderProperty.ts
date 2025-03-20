@@ -64,6 +64,7 @@ function renderProperty<K extends OutputKind, I, O extends Output>(
       );
     }
 
+    case 'number':
     case 'integer': {
       return renderIntegerProperty(
         context,
@@ -164,7 +165,7 @@ function renderStringProperty<K extends OutputKind, I, O extends Output>(
   const id = `${provider.id}.${propertyId}`;
   const inputLabel = property.schema.title ?? id;
 
-  const propertyState = global(id, '');
+  const propertyState = global(id, property.schema.default ?? '');
 
   const extension = getImglyExtensionBuilder(property.schema);
   const builderComponent =
@@ -202,9 +203,16 @@ function renderEnumProperty<K extends OutputKind, I, O extends Output>(
   const id = `${provider.id}.${propertyId}`;
   const inputLabel = property.schema.title ?? id;
 
+  const labels: Record<string, string> =
+    property.schema.enum != null &&
+    'x-imgly-enum-labels' in property.schema.enum &&
+    typeof property.schema.enum['x-imgly-enum-labels'] === 'object'
+      ? (property.schema.enum['x-imgly-enum-labels'] as Record<string, string>)
+      : {};
+
   const values: EnumValue[] = (property.schema.enum ?? []).map((valueId) => ({
     id: valueId,
-    label: getLabelFromId(valueId)
+    label: labels[valueId] ?? getLabelFromId(valueId)
   }));
   const defaultValue =
     property.schema.default != null
@@ -292,11 +300,19 @@ function renderIntegerProperty<K extends OutputKind, I, O extends Output>(
   const propertyState = global<number>(id, defaultValue);
 
   if (minValue != null && maxValue != null) {
+    let step = property.schema.type === 'number' ? 0.1 : 1;
+    if (
+      'x-imgly-step' in property.schema &&
+      typeof property.schema['x-imgly-step'] === 'number'
+    ) {
+      step = property.schema['x-imgly-step'];
+    }
+
     builder.Slider(id, {
       inputLabel,
       min: minValue,
       max: maxValue,
-      step: 1,
+      step,
       ...propertyState
     });
   } else {
@@ -343,12 +359,25 @@ function renderAnyOfProperty<K extends OutputKind, I, O extends Output>(
     const label = anySchema.title ?? 'common.custom';
     const schemaId = `${provider.id}.${propertyId}.anyOf[${index}]`;
 
+    const labels: Record<string, string> =
+      'x-imgly-enum-labels' in property.schema &&
+      typeof property.schema['x-imgly-enum-labels'] === 'object'
+        ? (property.schema['x-imgly-enum-labels'] as Record<string, string>)
+        : {};
+
+    const icons: Record<string, string> =
+      'x-imgly-enum-icons' in property.schema &&
+      typeof property.schema['x-imgly-enum-icons'] === 'object'
+        ? (property.schema['x-imgly-enum-icons'] as Record<string, string>)
+        : {};
+
     if (anySchema.type === 'string') {
       if (anySchema.enum != null) {
         anySchema.enum.forEach((valueId) => {
           values.push({
             id: valueId,
-            label: getLabelFromId(valueId)
+            label: labels[valueId] ?? getLabelFromId(valueId),
+            icon: icons[valueId]
           });
         });
       } else {
@@ -365,7 +394,8 @@ function renderAnyOfProperty<K extends OutputKind, I, O extends Output>(
 
         values.push({
           id: schemaId,
-          label
+          label: labels[label] ?? label,
+          icon: icons[label]
         });
       }
     } else if (anySchema.type === 'boolean') {
@@ -382,7 +412,8 @@ function renderAnyOfProperty<K extends OutputKind, I, O extends Output>(
 
       values.push({
         id: schemaId,
-        label
+        label: labels[label] ?? label,
+        icon: icons[label]
       });
     } else if (anySchema.type === 'integer') {
       conditionalRender[schemaId] = () => {
@@ -398,7 +429,8 @@ function renderAnyOfProperty<K extends OutputKind, I, O extends Output>(
 
       values.push({
         id: schemaId,
-        label
+        label: labels[label] ?? label,
+        icon: icons[label]
       });
     } else if (anySchema.type === 'array') {
       // not supported yet
@@ -416,7 +448,8 @@ function renderAnyOfProperty<K extends OutputKind, I, O extends Output>(
 
       values.push({
         id: schemaId,
-        label
+        label: labels[label] ?? label,
+        icon: icons[label]
       });
     }
   });

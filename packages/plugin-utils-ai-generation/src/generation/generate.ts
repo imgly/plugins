@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import type { AssetResult } from '@cesdk/cesdk-js';
+import type { AssetDefinition, AssetResult } from '@cesdk/cesdk-js';
 import { uuid4 } from '../utils';
 import type Provider from './provider';
 import {
@@ -114,11 +114,21 @@ async function generate<K extends OutputKind, I, O extends Output>(
           output
         );
       }
-      cesdk.engine.asset.addAssetToSource(historyAssetSourceId, {
+      const assetDefinition: AssetDefinition = {
         ...generatedAssetResult,
-        label: {},
+        label:
+          generatedAssetResult.label != null
+            ? {
+                en: generatedAssetResult.label
+              }
+            : {},
         tags: {}
-      });
+      };
+
+      cesdk.engine.asset.addAssetToSource(
+        historyAssetSourceId,
+        assetDefinition
+      );
     }
 
     if (

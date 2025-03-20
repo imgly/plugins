@@ -38,9 +38,20 @@ export type PropertyInput =
 
 export type GetPropertyInput = () => PropertyInput;
 
+type CustomIcon =
+  | string
+  | (({
+      theme,
+      iconSize
+    }: {
+      theme: string;
+      iconSize: 'normal' | 'large';
+    }) => string);
+
 export interface EnumValue {
   id: string;
   label: string | string[];
+  icon?: CustomIcon;
 }
 
 export interface ExtensionImglyBuilder {

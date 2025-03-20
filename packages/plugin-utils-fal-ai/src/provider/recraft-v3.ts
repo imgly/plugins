@@ -7,6 +7,7 @@ import CreativeEditorSDK, { AssetResult } from '@cesdk/cesdk-js';
 import StyleAssetSource from './StyleAssetSource';
 import { STYLES_IMAGE, STYLES_VECTOR } from './styles';
 import createImageProvider from '../createImageProvider';
+import iconSprite from './iconSprite';
 
 type RecraftV3Output = {
   kind: 'image';
@@ -32,6 +33,8 @@ function getProvider(
   const modelKey = 'fal-ai/recraft-v3';
   const styleImageAssetSourceId = `${modelKey}/styles/image`;
   const styleVectorAssetSourceId = `${modelKey}/styles/vector`;
+
+  cesdk.ui.addIconSet('@imgly/plugin-ai-fal', iconSprite);
 
   imageStyleAssetSource = new StyleAssetSource(
     styleImageAssetSourceId,
