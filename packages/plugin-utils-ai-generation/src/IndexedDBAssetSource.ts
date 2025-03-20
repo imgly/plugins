@@ -9,8 +9,12 @@ import {
 
 type BlobEntry = {
   id: string;
-
   blob: Blob;
+};
+
+// Extended asset definition with insertion timestamp
+type AssetEntryWithTimestamp = AssetDefinition & {
+  _insertedAt?: number;
 };
 
 /**
@@ -107,6 +111,7 @@ export class IndexedDBAssetSource implements AssetSource {
    * Find all assets for the given type and the provided query data.
    *
    * @param queryData - The query parameters for filtering assets
+   * @param insertionSortOrder - Optional parameter to sort by insertion time: 'asc' for oldest first, 'desc' for newest first (default)
    * @returns A promise that resolves to the query results or undefined if there was an error
    */
   public async findAssets(
@@ -119,8 +124,8 @@ export class IndexedDBAssetSource implements AssetSource {
     }
 
     try {
-      // Get all assets from the store
-      const assetDefinitions = await this.getAllAssets();
+      // Get all assets from the store with specified insertion order
+      const assetDefinitions = await this.getAllAssets('asc');
 
       let assetResults = assetDefinitions.reduce((acc, assetDefinition) => {
         const locale = queryData.locale ?? 'en';
@@ -245,8 +250,14 @@ export class IndexedDBAssetSource implements AssetSource {
           this.storeBlobUrls([...blobsToStore]);
         });
 
+        // Add timestamp for insertion order tracking
+        const assetWithTimestamp: AssetEntryWithTimestamp = {
+          ...asset,
+          _insertedAt: Date.now()
+        };
+
         // Store the asset in the database
-        assetStore.put(asset);
+        assetStore.put(assetWithTimestamp);
 
         transaction.onerror = () => {
           console.error(`Failed to add asset: ${transaction.error}`);
@@ -320,18 +331,35 @@ export class IndexedDBAssetSource implements AssetSource {
   }
 
   /**
-   * Get all assets from the database
+   * Get all assets from the database sorted by insertion order (newest to oldest)
    *
+   * @param sortOrder - Optional parameter to specify sort order: 'asc' for oldest first, 'desc' for newest first (default)
    * @returns A promise that resolves to an array of all assets
    */
-  private async getAllAssets(): Promise<AssetDefinition[]> {
+  private async getAllAssets(
+    sortOrder: 'asc' | 'desc' = 'desc'
+  ): Promise<AssetDefinition[]> {
     return new Promise((resolve, reject) => {
       const transaction = this.db!.transaction(this.assetStoreName, 'readonly');
       const store = transaction.objectStore(this.assetStoreName);
       const request = store.getAll();
 
       request.onsuccess = () => {
-        resolve(request.result as AssetDefinition[]);
+        const assets = request.result as AssetEntryWithTimestamp[];
+
+        // Sort by insertion timestamp
+        assets.sort((a, b) => {
+          // Default to current time if _insertedAt is missing (for backward compatibility)
+          const timeA = a._insertedAt || Date.now();
+          const timeB = b._insertedAt || Date.now();
+
+          // Sort based on requested order
+          return sortOrder === 'asc'
+            ? timeA - timeB // oldest first
+            : timeB - timeA; // newest first (default)
+        });
+
+        resolve(assets);
       };
 
       request.onerror = () => {
