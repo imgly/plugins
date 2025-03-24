@@ -1,5 +1,6 @@
 import { type MinimaxVideo01LiveImageToVideoInput } from '@fal-ai/client/endpoints';
 import { VideoOutput, type Provider } from '@imgly/plugin-utils-ai-generation';
+import { getImageDimensionsFromURL } from '@imgly/plugin-utils';
 import schema from './MinimaxVideo01LiveImageToVideo.json';
 import CreativeEditorSDK from '@cesdk/cesdk-js';
 import createVideoProvider from './createVideoProvider';
@@ -37,11 +38,16 @@ function getProvider(
       inputReference:
         '#/components/schemas/MinimaxVideo01LiveImageToVideoInput',
       cesdk,
-      getBlockInput: () => {
+      getBlockInput: async (input) => {
+        const imageDimension = await getImageDimensionsFromURL(
+          input.image_url as string
+        );
+
+
         return Promise.resolve({
           video: {
-            width: 1280,
-            height: 720,
+            width: imageDimension.width ?? 1280,
+            height: imageDimension.height ?? 720,
             duration: 5
           }
         });
