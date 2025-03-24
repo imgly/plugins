@@ -1,5 +1,6 @@
 import type CreativeEditorSDK from '@cesdk/cesdk-js';
 import { type CreativeEngine } from '@cesdk/cesdk-js';
+import type Provider from './provider';
 
 /**
  * Configuration options for provider initialization
@@ -25,7 +26,23 @@ export type InitProviderConfiguration = {
    * shows a notification to the user.
    */
   onError?: (error: unknown) => void;
+
+  /**
+   * Is called when the generation process is started. Can be used to
+   * extend the generation process with additional steps.
+   *
+   * @param generate A function that starts the actual generation process.
+   */
+  middleware?: GenerationMiddleware;
 };
+
+export type GenerationMiddleware = (
+    generate: () => Promise<void>,
+    context: {
+      provider: Provider<any, any, any>;
+      abort: () => void;
+    }
+  ) => Promise<void>;
 
 /**
  * Options for UI interactions

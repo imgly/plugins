@@ -88,69 +88,81 @@ function renderGenerationComponents<K extends OutputKind, I, O extends Output>(
             }
           : undefined,
         onClick: async () => {
-          try {
-            abortController = new AbortController();
-            const abortSignal = abortController.signal;
-            generatingState.setValue(true);
-            abortState.setValue(() => {
-              if (config.debug)
-                // eslint-disable-next-line no-console
-                console.log('Aborting generation');
-              abortController?.abort();
-            });
+          abortController = new AbortController();
+          const abortSignal = abortController.signal;
 
-            const result = await generate(
-              provider.kind,
-              getInput,
-              getBlockInput,
-              provider,
-              options,
-              config,
-              abortSignal
-            );
+          const triggerGeneration = async () => {
+            try {
+              generatingState.setValue(true);
+              abortState.setValue(() => {
+                if (config.debug)
+                  // eslint-disable-next-line no-console
+                  console.log('Aborting generation');
+                abortController?.abort();
+              });
 
-            if (result.status === 'aborted') {
-              return;
-            }
-
-            const notification = provider.output.notification;
-            showSuccessNotification(cesdk, notification, () => ({
-              input: getInput().input,
-              output: result.output
-            }));
-          } catch (error) {
-            // Do not treat abort errors as errors
-            if (isAbortError(error)) {
-              return;
-            }
-
-            if (
-              config.onError != null &&
-              typeof config.onError === 'function'
-            ) {
-              config.onError(error);
-            } else {
-              // eslint-disable-next-line no-console
-              console.error('Generation failed:', error);
-              const shown = showErrorNotification(
-                cesdk,
-                provider.output.notification,
-                () => ({
-                  input: getInput().input,
-                  error
-                })
+              const result = await generate(
+                provider.kind,
+                getInput,
+                getBlockInput,
+                provider,
+                options,
+                config,
+                abortSignal
               );
-              if (!shown) {
-                cesdk.ui.showNotification({
-                  type: 'error',
-                  message: extractErrorMessage(error)
-                });
+
+              if (result.status === 'aborted') {
+                return;
               }
+
+              const notification = provider.output.notification;
+              showSuccessNotification(cesdk, notification, () => ({
+                input: getInput().input,
+                output: result.output
+              }));
+            } catch (error) {
+              // Do not treat abort errors as errors
+              if (isAbortError(error)) {
+                return;
+              }
+
+              if (
+                config.onError != null &&
+                typeof config.onError === 'function'
+              ) {
+                config.onError(error);
+              } else {
+                // eslint-disable-next-line no-console
+                console.error('Generation failed:', error);
+                const shown = showErrorNotification(
+                  cesdk,
+                  provider.output.notification,
+                  () => ({
+                    input: getInput().input,
+                    error
+                  })
+                );
+                if (!shown) {
+                  cesdk.ui.showNotification({
+                    type: 'error',
+                    message: extractErrorMessage(error)
+                  });
+                }
+              }
+            } finally {
+              abortController = undefined;
+              generatingState.setValue(false);
+              abortState.setValue(() => {});
             }
-          } finally {
-            abortController = undefined;
-            generatingState.setValue(false);
-            abortState.setValue(() => {});
+          };
+
+          if (config.middleware != null) {
+            await config.middleware(triggerGeneration, {
+              provider,
+              abort
+            });
+          } else {
+            await triggerGeneration();
           }
         }
       });

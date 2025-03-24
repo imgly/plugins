@@ -16,7 +16,8 @@ export function AudioGeneration(
 
       const config = {
         debug: options.debug ?? false,
-        dryRun: options.dryRun ?? false
+        dryRun: options.dryRun ?? false,
+        middleware: options.middleware
       };
       cesdk.setTranslations({
         en: {

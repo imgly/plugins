@@ -21,7 +21,8 @@ export function ImageGeneration(
 
       const config = {
         debug: options.debug ?? false,
-        dryRun: options.dryRun ?? false
+        dryRun: options.dryRun ?? false,
+        middleware: options.middleware
       };
       cesdk.setTranslations({
         en: {
@@ -49,7 +50,8 @@ export function ImageGeneration(
               );
               const fromTypeOpen =
                 cesdk.ui.experimental.getGlobalStateValue(
-                  IMAGE_GENERATION_INPUT_TYPE_STATE_KEY
+                  IMAGE_GENERATION_INPUT_TYPE_STATE_KEY,
+                  'fromText'
                 ) === type;
 
               return !panelOpen || !fromTypeOpen;

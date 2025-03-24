@@ -24,6 +24,7 @@ export {
   type Property
 } from './generation/openapi/types';
 export { default as initProvider } from './generation/initProvider';
+export { type GenerationMiddleware } from './generation/types';
 export {
   getPanelId,
   getDurationForVideo,
