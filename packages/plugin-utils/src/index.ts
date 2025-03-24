@@ -10,6 +10,8 @@ export { CustomAssetSource } from './assetSources/CustomAssetSource';
 
 export { IndexedDBAssetSource } from './assetSources/IndexedDBAssetSource';
 
+export { AggregatedAssetSource } from './assetSources/AggregatedAssetSource';
+
 export { default as Metadata } from './metadata/Metadata';
 
 export { default as FillProcessingMetadata } from './metadata/FillProcessingMetadata';

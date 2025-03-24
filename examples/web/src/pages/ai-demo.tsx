@@ -16,6 +16,7 @@ import { useRef } from 'react';
 import { createCustomAssetSource } from './ActiveAssetSource';
 import { getPanelId } from '@imgly/plugin-utils-ai-generation';
 import { GenerationMiddleware } from '@imgly/plugin-utils-ai-generation';
+import { AggregatedAssetSource } from '@imgly/plugin-utils';
 
 function App() {
   const cesdk = useRef<CreativeEditorSDK>();
@@ -144,34 +145,62 @@ function App() {
                   'Generated From Text',
                 'libraries.ly.img.ai/fal-ai/minimax/video-01-live/image-to-video.history.label':
                   'Generated From Image',
-                'libraries.ly.img.ai/elevenlabs.history.label': 'Generated'
+                'libraries.elevenlabs/monolingual/v1.history.label':
+                  'Generated Speech',
+                'libraries.elevenlabs/sound-generation.history.label':
+                  'Generated Sound',
+
+                'libraries.ly.img.ai/image-generation.history.label':
+                  'AI Generated Images',
+                'libraries.ly.img.ai/video-generation.history.label':
+                  'AI Generated Videos'
               }
             });
+
+            const aggregatedImageAssetSource = new AggregatedAssetSource(
+              'ly.img.ai/image-generation.history',
+              instance,
+              ['fal-ai/recraft-v3.history', 'fal-ai/gemini-flash-edit.history']
+            );
+            instance.engine.asset.addSource(aggregatedImageAssetSource);
 
             const imageEntry = instance.ui.getAssetLibraryEntry('ly.img.image');
             if (imageEntry != null) {
               instance.ui.updateAssetLibraryEntry('ly.img.image', {
                 sourceIds: [
                   ...imageEntry.sourceIds,
-                  'fal-ai/recraft-v3.history',
-                  'fal-ai/gemini-flash-edit.history'
+                  'ly.img.ai/image-generation.history'
                 ]
               });
             }
+
+            const aggregatedVideoAssetSource = new AggregatedAssetSource(
+              'ly.img.ai/video-generation.history',
+              instance,
+              [
+                'fal-ai/minimax/video-01-live.history',
+                'fal-ai/minimax/video-01-live/image-to-video.history'
+              ]
+            );
+            instance.engine.asset.addSource(aggregatedVideoAssetSource);
+
             const videoEntry = instance.ui.getAssetLibraryEntry('ly.img.video');
             if (videoEntry != null) {
               instance.ui.updateAssetLibraryEntry('ly.img.video', {
                 sourceIds: [
                   ...videoEntry.sourceIds,
-                  'fal-ai/pixverse/v3.5/text-to-video.history',
-                  'fal-ai/minimax/video-01-live/image-to-video.history'
+                  'ly.img.ai/video-generation.history'
                 ]
               });
             }
             const audioEntry = instance.ui.getAssetLibraryEntry('ly.img.audio');
             if (audioEntry != null) {
               instance.ui.updateAssetLibraryEntry('ly.img.audio', {
-                sourceIds: [...audioEntry.sourceIds, 'elevenlabs.history']
+                sourceIds: [
+                  ...audioEntry.sourceIds,
+                  'elevenlabs/monolingual/v1.history',
+                  'elevenlabs/sound-generation.history'
+                ]
               });
             }
           });

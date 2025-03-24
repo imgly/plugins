@@ -47,6 +47,7 @@ async function initProvider<K extends OutputKind, I, O extends Output>(
       id: historyAssetLibraryEntryId,
       sourceIds: [historyAssetSourceId],
       sortBy: {
+        sortKey: 'insertedAt',
         sortingOrder: 'Descending'
       },
       canRemove: true,

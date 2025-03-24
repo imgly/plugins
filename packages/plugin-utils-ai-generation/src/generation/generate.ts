@@ -128,7 +128,11 @@ async function generate<K extends OutputKind, I, O extends Output>(
                 en: generatedAssetResult.label
               }
             : {},
-        tags: {}
+        tags: {},
+        meta: {
+          ...generatedAssetResult.meta,
+          insertedAt: Date.now()
+        }
       };
 
       cesdk.engine.asset.addAssetToSource(

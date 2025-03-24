@@ -12,10 +12,8 @@ type BlobEntry = {
   blob: Blob;
 };
 
-// Extended asset definition with insertion timestamp
-type AssetEntryWithTimestamp = AssetDefinition & {
-  _insertedAt?: number;
-};
+// Asset definition with meta containing insertedAt timestamp
+type AssetEntryWithMeta = AssetDefinition;
 
 /**
  * IndexedDBAssetSource implements the AssetSource interface using IndexedDB as the storage backend.
@@ -250,14 +248,17 @@ export class IndexedDBAssetSource implements AssetSource {
           this.storeBlobUrls([...blobsToStore]);
         });
 
-        // Add timestamp for insertion order tracking
-        const assetWithTimestamp: AssetEntryWithTimestamp = {
+        // Ensure asset has meta object with insertedAt timestamp
+        const assetWithMeta: AssetEntryWithMeta = {
           ...asset,
-          _insertedAt: Date.now()
+          meta: {
+            ...asset.meta,
+            insertedAt: asset.meta?.insertedAt || Date.now()
+          }
         };
 
         // Store the asset in the database
-        assetStore.put(assetWithTimestamp);
+        assetStore.put(assetWithMeta);
 
         transaction.onerror = () => {
           console.error(`Failed to add asset: ${transaction.error}`);
@@ -345,13 +346,16 @@ export class IndexedDBAssetSource implements AssetSource {
       const request = store.getAll();
 
       request.onsuccess = () => {
-        const assets = request.result as AssetEntryWithTimestamp[];
+        const assets = request.result as AssetEntryWithMeta[];
 
         // Sort by insertion timestamp
         assets.sort((a, b) => {
-          // Default to current time if _insertedAt is missing (for backward compatibility)
-          const timeA = a._insertedAt || Date.now();
-          const timeB = b._insertedAt || Date.now();
+          // Default to current time if insertedAt is missing (for backward compatibility)
+          // First check in meta.insertedAt, then fallback to legacy _insertedAt for backward compatibility
+          const timeA =
+            a.meta?.insertedAt || (a as any)._insertedAt || Date.now();
+          const timeB =
+            b.meta?.insertedAt || (b as any)._insertedAt || Date.now();
 
           // Sort based on requested order
           return sortOrder === 'asc'
