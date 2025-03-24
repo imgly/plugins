@@ -17,7 +17,7 @@ export default getPanelId;
  */
 export function extractErrorMessage(
   error: unknown,
-  fallbackMessage = 'An unknown error occurred'
+  fallbackMessage = 'We encountered an unknown error while generating the asset. Please try again.'
 ): string {
   if (error === null) {
     return fallbackMessage;
@@ -33,14 +33,43 @@ export function extractErrorMessage(
     if ('message' in errorObj && typeof errorObj.message === 'string') {
       return errorObj.message;
     }
-
-    // Try to convert to string
-    try {
-      return JSON.stringify(error);
-    } catch {
-      // If can't stringify, return the fallback
-      return fallbackMessage;
+    if ('cause' in errorObj && typeof errorObj.cause === 'string') {
+      return errorObj.cause;
     }
+
+    /*
+     * Elevenlabs for instance uses the following structure for errors:
+     * {
+     *   "detail": {
+     *     "status": "error_code",
+     *     "message": "Explanation of the rate limit issue."
+     *   }
+     * }
+     */
+    if (
+      'detail' in errorObj &&
+      typeof errorObj.detail === 'object' &&
+      errorObj.detail !== null &&
+      'message' in errorObj.detail &&
+      typeof errorObj.detail.message === 'string'
+    ) {
+      return errorObj.detail.message;
+    }
+
+    /*
+     * Used by e.g. Anthropic
+     */
+    if (
+      'error' in errorObj &&
+      typeof errorObj.error === 'object' &&
+      errorObj.error !== null &&
+      'message' in errorObj.error &&
+      typeof errorObj.error.message === 'string'
+    ) {
+      return errorObj.error.message;
+    }
+
+    return fallbackMessage;
   }
 
   if (typeof error === 'string') {
