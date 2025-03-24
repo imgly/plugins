@@ -114,14 +114,15 @@ function renderGenerationComponents<K extends OutputKind, I, O extends Output>(
             }
 
             const notification = provider.output.notification;
-            console.log('check notification', notification);
             showSuccessNotification(cesdk, notification, () => ({
               input: getInput().input,
               output: result.output
             }));
           } catch (error) {
             // Do not treat abort errors as errors
-            if (isAbortError(error)) { return; }
+            if (isAbortError(error)) {
+              return;
+            }
 
             if (
               config.onError != null &&
@@ -153,6 +154,9 @@ function renderGenerationComponents<K extends OutputKind, I, O extends Output>(
           }
         }
       });
+      if (provider.output.renderAfterGeneration != null) {
+        provider.output.renderAfterGeneration(context);
+      }
     }
   });
 

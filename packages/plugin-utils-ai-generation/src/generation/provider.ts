@@ -108,9 +108,7 @@ interface Provider<K extends OutputKind, I, O extends Output> {
          * The message that is shown when the asset generation failed. Can be a i18n key.
          * A function can be used to dynamically generate the message based on the input and output.
          */
-        message?:
-          | string
-          | ((context: { input: I; error: unknown }) => string);
+        message?: string | ((context: { input: I; error: unknown }) => string);
 
         /**
          * The action that is shown when the asset generation failed.
@@ -135,6 +133,13 @@ interface Provider<K extends OutputKind, I, O extends Output> {
         cesdk?: CreativeEditorSDK;
       }
     ) => Promise<O>;
+
+    /**
+     * Render custom components after the generation button.
+     */
+    renderAfterGeneration?: (
+      context: BuilderRenderFunctionContext<any>
+    ) => void;
   };
 }
 

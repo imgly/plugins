@@ -97,6 +97,12 @@ function createVideoProvider<I extends Record<string, any>>(
           response
         );
         throw new Error('Cannot find generated video');
+      },
+      renderAfterGeneration: (context) => {
+        context.builder.Text('ly.img.ai/video-generation.generate.info', {
+          align: 'center',
+          content: "Video generation may take up to a few minutes. This panel can be closed and you'll be notified when it's ready."
+        });
       }
     }
   };
