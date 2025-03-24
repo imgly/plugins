@@ -28,7 +28,7 @@ function getImageAssetResultForPlaceholder(
   input: InputByKind['image']
 ): AssetResult {
   const width = input.width;
-  const height = input.width;
+  const height = input.height;
   return {
     id,
     meta: {
