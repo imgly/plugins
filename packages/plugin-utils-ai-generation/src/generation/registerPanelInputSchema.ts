@@ -10,7 +10,7 @@ import {
 import type Provider from './provider';
 import { InitProviderConfiguration, UIOptions } from './types';
 import { isOpenAPISchema } from './openapi/isOpenAPISchema';
-import { GetPropertyInput } from './openapi/types';
+import { GetPropertyInput, PropertyInput } from './openapi/types';
 import renderProperty from './openapi/renderProperty';
 import renderGenerationComponents from './renderGenerationComponents';
 import getProperties from './openapi/getProperties';
@@ -85,8 +85,20 @@ async function registerPanelInputSchema<
       const input = getInput();
       return input;
     });
-    const input = inputs.reduce((acc, { id, value }) => {
-      acc[id] = value;
+
+    const resolveInput = (input: PropertyInput) => {
+      if (input.type === 'object') {
+        return Object.entries(input.value).reduce((acc, [key, value]) => {
+          acc[key] = resolveInput(value);
+
+          return acc;
+        }, {} as Record<string, any>);
+      }
+
+      return input.value;
+    };
+    const input = inputs.reduce((acc, propertyInput) => {
+      acc[propertyInput.id] = resolveInput(propertyInput);
       return acc;
     }, {} as Record<string, any>) as I;
 
