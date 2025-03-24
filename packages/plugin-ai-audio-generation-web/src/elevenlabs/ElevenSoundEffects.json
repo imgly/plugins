@@ -1,0 +1,34 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Elevenlabs Sound Effects API",
+    "version": "1.0.0",
+    "description": "Elevenlabs Sound Effects API"
+  },
+  "components": {
+    "schemas": {
+      "TextToSoundInput": {
+        "title": "TextToSoundInput",
+        "type": "object",
+        "properties": {
+          "text": {
+            "title": "Prompt",
+            "type": "string",
+            "x-imgly-builder": {
+              "component": "TextArea"
+            }
+          },
+          "duration_seconds": {
+            "title": "Duration (sec.)",
+            "type": "number",
+            "minimum": 0.6,
+            "maximum": 22,
+            "default": 2
+          }
+        },
+        "x-elevenlabs-order-properties": ["text"],
+        "required": ["text"]
+      }
+    }
+  }
+}

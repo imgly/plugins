@@ -12,6 +12,11 @@ export interface PluginConfiguration {
   text2speech?: AiAudioProvider;
 
   /**
+    * Provider of a model for speech generation just from a (prompt) text.
+    */
+  text2sound?: AiAudioProvider;
+
+  /**
    * Render console logs for debugging purposes.
    */
   debug?: boolean;
