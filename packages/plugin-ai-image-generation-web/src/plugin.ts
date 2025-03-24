@@ -1,4 +1,4 @@
-import { type EditorPlugin } from '@cesdk/cesdk-js';
+import { NotificationDuration, type EditorPlugin } from '@cesdk/cesdk-js';
 import {
   initProvider,
   isGeneratingStateKey
@@ -66,7 +66,8 @@ export function ImageGeneration(
                 );
                 cesdk.ui.openPanel(IMAGE_GENERATION_PANEL_ID);
               }
-            }
+            },
+            duration: 'long' as NotificationDuration
           }
         };
       }

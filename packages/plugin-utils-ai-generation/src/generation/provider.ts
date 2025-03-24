@@ -1,6 +1,7 @@
 import { type OpenAPIV3 } from 'openapi-types';
 import type CreativeEditorSDK from '@cesdk/cesdk-js';
 import {
+  type NotificationDuration,
   type BuilderRenderFunctionContext,
   type CreativeEngine
 } from '@cesdk/cesdk-js';
@@ -95,6 +96,11 @@ interface Provider<K extends OutputKind, I, O extends Output> {
           label: string | ((context: { input: I; output: O }) => string);
           onClick: (context: { input: I; output: O }) => void;
         };
+
+        /**
+         * The duration the notification is shown.
+         */
+        duration?: NotificationDuration;
       };
 
       /**
@@ -117,6 +123,11 @@ interface Provider<K extends OutputKind, I, O extends Output> {
           label: string | ((context: { input: I; error: unknown }) => string);
           onClick: (context: { input: I; error: unknown }) => void;
         };
+
+        /**
+         * The duration the notification is shown.
+         */
+        duration?: NotificationDuration;
       };
     };
 

@@ -1,4 +1,3 @@
-
 type CustomImageSize = {
   width: number;
   height: number;

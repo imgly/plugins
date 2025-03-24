@@ -1,6 +1,6 @@
 /**
  * Get the dimensions of an image from its URL
- * 
+ *
  * @param url - The URL of the image
  * @returns A promise that resolves to an object containing the width and height of the image
  */

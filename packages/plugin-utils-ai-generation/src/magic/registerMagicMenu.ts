@@ -1,11 +1,7 @@
 import CreativeEditorSDK from '@cesdk/cesdk-js';
 import applyInference from './applyInference';
 import { ApplyInferenceResult, InferenceMetadata, MagicMenu } from './types';
-import {
-  INFERENCE_AI_EDIT_MODE,
-  INFERENCE_AI_METADATA_KEY,
-  INFERENCE_CONFIRMATION_COMPONENT_ID
-} from './utils';
+import { INFERENCE_AI_EDIT_MODE, INFERENCE_AI_METADATA_KEY } from './utils';
 import { Metadata } from '@imgly/plugin-utils';
 
 function registerMagicMenu(cesdk: CreativeEditorSDK, magicMenu: MagicMenu) {

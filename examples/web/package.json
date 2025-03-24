@@ -17,7 +17,6 @@
     "@imgly/plugin-utils-ai-generation": "workspace:*",
     "@imgly/plugin-utils": "workspace:*",
     "@imgly/plugin-ai-text2text-web": "workspace:*",
-    "@imgly/plugin-ai-text2speech-web": "workspace:*",
     "@imgly/plugin-ai-image-generation-web": "workspace:*",
     "@imgly/plugin-ai-video-generation-web": "workspace:*",
     "@imgly/plugin-ai-audio-generation-web": "workspace:*",
@@ -36,9 +35,6 @@
       "injected": true
     },
     "@imgly/plugin-ai-text2text-web": {
-      "injected": true
-    },
-    "@imgly/plugin-ai-text2speech-web": {
       "injected": true
     },
     "@imgly/plugin-ai-image-generation-web": {

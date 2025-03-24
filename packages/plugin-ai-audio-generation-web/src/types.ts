@@ -10,13 +10,13 @@ type AiAudioProvider = (context: {
 
 export interface PluginConfiguration {
   /**
-    * Provider of a model for speech generation just from a (prompt) text.
-    */
+   * Provider of a model for speech generation just from a (prompt) text.
+   */
   text2speech?: AiAudioProvider;
 
   /**
-    * Provider of a model for speech generation just from a (prompt) text.
-    */
+   * Provider of a model for speech generation just from a (prompt) text.
+   */
   text2sound?: AiAudioProvider;
 
   /**

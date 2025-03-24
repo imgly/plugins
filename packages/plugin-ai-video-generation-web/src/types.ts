@@ -9,17 +9,17 @@ type AiVideoProvider = (context: {
 }) => Promise<Provider<'video', any, any>>;
 
 /**
-  * Configuration to set provider and models for video generation.
-  */
+ * Configuration to set provider and models for video generation.
+ */
 export interface PluginConfiguration {
   /**
-    * Provider of a model for video generation just from a (prompt) text.
-    */
+   * Provider of a model for video generation just from a (prompt) text.
+   */
   text2video?: AiVideoProvider;
 
   /**
-    * Provider of a model for video generation from a given image.
-    */
+   * Provider of a model for video generation from a given image.
+   */
   image2video?: AiVideoProvider;
 
   /**

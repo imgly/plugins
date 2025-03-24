@@ -13,9 +13,7 @@ export function MinimaxVideo01Live(
   config: ProviderConfiguration
 ): (context: {
   cesdk: CreativeEditorSDK;
-}) => Promise<
-  Provider<'video', MinimaxVideo01LiveInput, VideoOutput>
-> {
+}) => Promise<Provider<'video', MinimaxVideo01LiveInput, VideoOutput>> {
   return async ({ cesdk }: { cesdk: CreativeEditorSDK }) => {
     return getProvider(cesdk, config);
   };
@@ -24,18 +22,13 @@ export function MinimaxVideo01Live(
 function getProvider(
   cesdk: CreativeEditorSDK,
   config: ProviderConfiguration
-): Provider<
-  'video',
-  MinimaxVideo01LiveInput,
-  { kind: 'video'; url: string }
-> {
+): Provider<'video', MinimaxVideo01LiveInput, { kind: 'video'; url: string }> {
   return createVideoProvider(
     {
       modelKey: 'fal-ai/minimax/video-01-live',
       // @ts-ignore
       schema,
-      inputReference:
-        '#/components/schemas/MinimaxVideo01LiveInput',
+      inputReference: '#/components/schemas/MinimaxVideo01LiveInput',
       cesdk,
       getBlockInput: () => {
         return Promise.resolve({

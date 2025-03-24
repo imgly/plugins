@@ -128,6 +128,7 @@ function getProvider(
       // @ts-ignore
       schema: RecraftV3Schema,
       inputReference: '#/components/schemas/RecraftV3Input',
+      userFlow: 'placeholder',
       renderCustomProperty: {
         style: ({ builder, state }, property) => {
           const typeState = state<GenerationType>('type', 'image');

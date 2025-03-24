@@ -37,12 +37,12 @@ export type InitProviderConfiguration = {
 };
 
 export type GenerationMiddleware = (
-    generate: () => Promise<void>,
-    context: {
-      provider: Provider<any, any, any>;
-      abort: () => void;
-    }
-  ) => Promise<void>;
+  generate: () => Promise<void>,
+  context: {
+    provider: Provider<any, any, any>;
+    abort: () => void;
+  }
+) => Promise<void>;
 
 /**
  * Options for UI interactions

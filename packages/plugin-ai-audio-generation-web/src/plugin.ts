@@ -1,4 +1,4 @@
-import { type EditorPlugin } from '@cesdk/cesdk-js';
+import { NotificationDuration, type EditorPlugin } from '@cesdk/cesdk-js';
 import { initProvider } from '@imgly/plugin-utils-ai-generation';
 import { PluginConfiguration } from './types';
 
@@ -55,7 +55,8 @@ export function AudioGeneration(
               onClick: () => {
                 cesdk.ui.openPanel(SPEECH_GENERATION_PANEL_ID);
               }
-            }
+            },
+            duration: 'long' as NotificationDuration
           }
         };
       }

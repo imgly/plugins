@@ -192,4 +192,3 @@ export function truncate(
 
   return truncatedText + ellipsis;
 }
-

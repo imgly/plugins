@@ -68,12 +68,18 @@ importers:
       '@cesdk/engine':
         specifier: ^1.47.0-rc.3
         version: 1.47.0(react@18.3.1)
-      '@imgly/plugin-ai-text2speech-web':
+      '@imgly/plugin-ai-audio-generation-web':
         specifier: workspace:*
-        version: file:packages/plugin-ai-text2speech-web(@cesdk/cesdk-js@1.47.0(react@18.3.1))
+        version: file:packages/plugin-ai-audio-generation-web(@cesdk/cesdk-js@1.47.0(react@18.3.1))
+      '@imgly/plugin-ai-image-generation-web':
+        specifier: workspace:*
+        version: file:packages/plugin-ai-image-generation-web(@cesdk/cesdk-js@1.47.0(react@18.3.1))
       '@imgly/plugin-ai-text2text-web':
         specifier: workspace:*
         version: file:packages/plugin-ai-text2text-web(@cesdk/cesdk-js@1.47.0(react@18.3.1))
+      '@imgly/plugin-ai-video-generation-web':
+        specifier: workspace:*
+        version: file:packages/plugin-ai-video-generation-web(@cesdk/cesdk-js@1.47.0(react@18.3.1))
       '@imgly/plugin-background-removal-web':
         specifier: workspace:*
         version: file:packages/plugin-background-removal-web(@cesdk/cesdk-js@1.47.0(react@18.3.1))(onnxruntime-web@1.21.0-dev.20250206-d981b153d3)
@@ -92,9 +98,6 @@ importers:
       '@imgly/plugin-utils-ai-generation':
         specifier: workspace:*
         version: file:packages/plugin-utils-ai-generation(@cesdk/cesdk-js@1.47.0(react@18.3.1))
-      '@imgly/plugin-utils-fal-ai':
-        specifier: workspace:*
-        version: file:packages/plugin-utils-fal-ai(@cesdk/cesdk-js@1.47.0(react@18.3.1))
       '@imgly/plugin-vectorizer-web':
         specifier: workspace:*
         version: file:packages/plugin-vectorizer-web(@cesdk/cesdk-js@1.47.0(react@18.3.1))
@@ -111,9 +114,13 @@ importers:
         specifier: ^7.3.0
         version: 7.3.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
     dependenciesMeta:
-      '@imgly/plugin-ai-text2speech-web':
+      '@imgly/plugin-ai-audio-generation-web':
+        injected: true
+      '@imgly/plugin-ai-image-generation-web':
         injected: true
       '@imgly/plugin-ai-text2text-web':
+        injected: true
+      '@imgly/plugin-ai-video-generation-web':
         injected: true
       '@imgly/plugin-background-removal-web':
         injected: true
@@ -126,8 +133,6 @@ importers:
       '@imgly/plugin-utils':
         injected: true
       '@imgly/plugin-utils-ai-generation':
-        injected: true
-      '@imgly/plugin-utils-fal-ai':
         injected: true
       '@imgly/plugin-vectorizer-web':
         injected: true
@@ -166,21 +171,23 @@ importers:
         specifier: ^5.4.14
         version: 5.4.14(@types/node@22.13.5)
 
-  packages/plugin-ai-image-generation-web:
+  packages/plugin-ai-audio-generation-web:
     dependencies:
       '@cesdk/cesdk-js':
         specifier: ^1.47.0-rc.3
         version: 1.47.0(react@18.3.1)
-      '@fal-ai/client':
-        specifier: ^1.0.4
-        version: 1.2.3
     dependenciesMeta:
       '@imgly/plugin-utils':
+        injected: true
+      '@imgly/plugin-utils-ai-generation':
         injected: true
     devDependencies:
       '@imgly/plugin-utils':
         specifier: workspace:*
         version: file:packages/plugin-utils(@cesdk/cesdk-js@1.47.0(react@18.3.1))
+      '@imgly/plugin-utils-ai-generation':
+        specifier: workspace:*
+        version: file:packages/plugin-utils-ai-generation(@cesdk/cesdk-js@1.47.0(react@18.3.1))
       '@types/ndarray':
         specifier: ^1.0.14
         version: 1.0.14
@@ -206,11 +213,8 @@ importers:
         specifier: ^5.3.3
         version: 5.7.3
 
-  packages/plugin-ai-text2speech-web:
+  packages/plugin-ai-image-generation-web:
     dependencies:
-      '@anthropic-ai/sdk':
-        specifier: ^0.39.0
-        version: 0.39.0
       '@cesdk/cesdk-js':
         specifier: ^1.47.0-rc.3
         version: 1.47.0(react@18.3.1)
@@ -256,6 +260,48 @@ importers:
       '@anthropic-ai/sdk':
         specifier: ^0.39.0
         version: 0.39.0
+      '@cesdk/cesdk-js':
+        specifier: ^1.47.0-rc.3
+        version: 1.47.0(react@18.3.1)
+    dependenciesMeta:
+      '@imgly/plugin-utils':
+        injected: true
+      '@imgly/plugin-utils-ai-generation':
+        injected: true
+    devDependencies:
+      '@imgly/plugin-utils':
+        specifier: workspace:*
+        version: file:packages/plugin-utils(@cesdk/cesdk-js@1.47.0(react@18.3.1))
+      '@imgly/plugin-utils-ai-generation':
+        specifier: workspace:*
+        version: file:packages/plugin-utils-ai-generation(@cesdk/cesdk-js@1.47.0(react@18.3.1))
+      '@types/ndarray':
+        specifier: ^1.0.14
+        version: 1.0.14
+      chalk:
+        specifier: ^5.3.0
+        version: 5.4.1
+      concurrently:
+        specifier: ^8.2.2
+        version: 8.2.2
+      esbuild:
+        specifier: ^0.19.11
+        version: 0.19.12
+      eslint:
+        specifier: ^8.51.0
+        version: 8.57.1
+      lodash-es:
+        specifier: ^4.17.21
+        version: 4.17.21
+      openapi-types:
+        specifier: ^12.1.3
+        version: 12.1.3
+      typescript:
+        specifier: ^5.3.3
+        version: 5.7.3
+
+  packages/plugin-ai-video-generation-web:
+    dependencies:
       '@cesdk/cesdk-js':
         specifier: ^1.47.0-rc.3
         version: 1.47.0(react@18.3.1)
@@ -485,46 +531,6 @@ importers:
       openapi-types:
         specifier: ^12.1.3
         version: 12.1.3
-
-  packages/plugin-utils-fal-ai:
-    dependencies:
-      '@fal-ai/client':
-        specifier: ^1.0.4
-        version: 1.2.3
-    dependenciesMeta:
-      '@imgly/plugin-utils-ai-generation':
-        injected: true
-    devDependencies:
-      '@cesdk/cesdk-js':
-        specifier: ^1.47.0-rc.3
-        version: 1.47.0(react@18.3.1)
-      '@imgly/plugin-utils-ai-generation':
-        specifier: workspace:*
-        version: file:packages/plugin-utils-ai-generation(@cesdk/cesdk-js@1.47.0(react@18.3.1))
-      '@types/ndarray':
-        specifier: ^1.0.14
-        version: 1.0.14
-      chalk:
-        specifier: ^5.4.1
-        version: 5.4.1
-      concurrently:
-        specifier: ^8.2.2
-        version: 8.2.2
-      esbuild:
-        specifier: ^0.19.12
-        version: 0.19.12
-      eslint:
-        specifier: ^8.57.1
-        version: 8.57.1
-      lodash-es:
-        specifier: ^4.17.21
-        version: 4.17.21
-      pnpm-sync-dependencies-meta-injected:
-        specifier: ^0.0.14
-        version: 0.0.14
-      typescript:
-        specifier: ^5.7.3
-        version: 5.7.3
 
   packages/plugin-vectorizer-web:
     dependencies:
@@ -985,10 +991,6 @@ packages:
     resolution: {integrity: sha512-d9zaMRSTIKDLhctzH12MtXvJKSSUhaHcjV+2Z+GK+EEY7XKpP5yR4x+N3TAcHTcu963nIr+TMcCb4DBCYX1z6Q==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
 
-  '@fal-ai/client@1.2.3':
-    resolution: {integrity: sha512-Lf37bJN16ssbaHYPSWDVCRspdTubcZvugyemEEtm6frhi83f9J+FJuq9uiY9WfR5bskQ8CZhBYhD9irZOPxY5Q==}
-    engines: {node: '>=18.0.0'}
-
   '@gwhitney/detect-indent@7.0.1':
     resolution: {integrity: sha512-7bQW+gkKa2kKZPeJf6+c6gFK9ARxQfn+FKy9ScTBppyKRWH2KzsmweXUoklqeEiHiNVWaeP5csIdsNq6w7QhzA==}
     engines: {node: '>=12.20'}
@@ -1018,13 +1020,23 @@ packages:
       onnxruntime-web: 1.21.0-dev.20250206-d981b153d3
     bundledDependencies: []
 
-  '@imgly/plugin-ai-text2speech-web@file:packages/plugin-ai-text2speech-web':
-    resolution: {directory: packages/plugin-ai-text2speech-web, type: directory}
+  '@imgly/plugin-ai-audio-generation-web@file:packages/plugin-ai-audio-generation-web':
+    resolution: {directory: packages/plugin-ai-audio-generation-web, type: directory}
+    peerDependencies:
+      '@cesdk/cesdk-js': ^1.47.0-rc.3
+
+  '@imgly/plugin-ai-image-generation-web@file:packages/plugin-ai-image-generation-web':
+    resolution: {directory: packages/plugin-ai-image-generation-web, type: directory}
     peerDependencies:
       '@cesdk/cesdk-js': ^1.47.0-rc.3
 
   '@imgly/plugin-ai-text2text-web@file:packages/plugin-ai-text2text-web':
     resolution: {directory: packages/plugin-ai-text2text-web, type: directory}
+    peerDependencies:
+      '@cesdk/cesdk-js': ^1.47.0-rc.3
+
+  '@imgly/plugin-ai-video-generation-web@file:packages/plugin-ai-video-generation-web':
+    resolution: {directory: packages/plugin-ai-video-generation-web, type: directory}
     peerDependencies:
       '@cesdk/cesdk-js': ^1.47.0-rc.3
 
@@ -1051,11 +1063,6 @@ packages:
 
   '@imgly/plugin-utils-ai-generation@file:packages/plugin-utils-ai-generation':
     resolution: {directory: packages/plugin-utils-ai-generation, type: directory}
-    peerDependencies:
-      '@cesdk/cesdk-js': ^1.47.0-rc.3
-
-  '@imgly/plugin-utils-fal-ai@file:packages/plugin-utils-fal-ai':
-    resolution: {directory: packages/plugin-utils-fal-ai, type: directory}
     peerDependencies:
       '@cesdk/cesdk-js': ^1.47.0-rc.3
 
@@ -1093,10 +1100,6 @@ packages:
 
   '@jridgewell/trace-mapping@0.3.25':
     resolution: {integrity: sha512-vNk6aEwybGtawWmy/PzwnGDOjCkLWSD2wqvjGGAgOAwCGWySYXfYoxt00IJkTF+8Lb57DwOb3Aa0o9CApepiYQ==}
-
-  '@msgpack/msgpack@3.1.0':
-    resolution: {integrity: sha512-igBxaq5JHWdJ0lDyKkCo00pDu+bNVuBAs/cHra6a3ndCw6vlZK9BGLuG7Fvmar/DXK2uJ25zvgcAZEl+AvLpjQ==}
-    engines: {node: '>= 18'}
 
   '@nodelib/fs.scandir@2.1.5':
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
@@ -2086,10 +2089,6 @@ packages:
     resolution: {integrity: sha512-i/2XbnSz/uxRCU6+NdVJgKWDTM427+MqYbkQzD321DuCQJUqOuJKIA0IM2+W2xtYHdKOmZ4dR6fExsd4SXL+WQ==}
     engines: {node: '>=6'}
 
-  eventsource-parser@1.1.2:
-    resolution: {integrity: sha512-v0eOBUbiaFojBu2s2NPBfYUoRR9GjcDNvCXVaqEf5vVfpIAh9f8RCo4vXTP8c63QRKCFwoLpMpTdPwwhEKVgzA==}
-    engines: {node: '>=14.18'}
-
   execa@4.1.0:
     resolution: {integrity: sha512-j5W0//W7f8UxAn8hXVnwG8tLwdiUy4FJLcSupCg6maBYZDpyBvTApK7KyuI4bKj8KOh1r2YH+6ucuYtJv1bTZA==}
     engines: {node: '>=10'}
@@ -3051,9 +3050,6 @@ packages:
     engines: {node: 20 || >=22}
     hasBin: true
 
-  robot3@0.4.1:
-    resolution: {integrity: sha512-hzjy826lrxzx8eRgv80idkf8ua1JAepRc9Efdtj03N3KNJuznQCPlyCJ7gnUmDFwZCLQjxy567mQVKmdv2BsXQ==}
-
   rollup@4.34.8:
     resolution: {integrity: sha512-489gTVMzAYdiZHFVA/ig/iYFllCcWFHMvUHI1rpFmkoUtRlQxqh6/yiNqnYibjMZ2b/+FUQwldG+aLsEt6bglQ==}
     engines: {node: '>=18.0.0', npm: '>=8.0.0'}
@@ -3810,12 +3806,6 @@ snapshots:
 
   '@eslint/js@8.57.1': {}
 
-  '@fal-ai/client@1.2.3':
-    dependencies:
-      '@msgpack/msgpack': 3.1.0
-      eventsource-parser: 1.1.2
-      robot3: 0.4.1
-
   '@gwhitney/detect-indent@7.0.1': {}
 
   '@hapi/hoek@9.3.0': {}
@@ -3843,12 +3833,13 @@ snapshots:
       onnxruntime-web: 1.21.0-dev.20250206-d981b153d3
       zod: 3.24.2
 
-  '@imgly/plugin-ai-text2speech-web@file:packages/plugin-ai-text2speech-web(@cesdk/cesdk-js@1.47.0(react@18.3.1))':
+  '@imgly/plugin-ai-audio-generation-web@file:packages/plugin-ai-audio-generation-web(@cesdk/cesdk-js@1.47.0(react@18.3.1))':
     dependencies:
-      '@anthropic-ai/sdk': 0.39.0
       '@cesdk/cesdk-js': 1.47.0(react@18.3.1)
-    transitivePeerDependencies:
-      - encoding
+
+  '@imgly/plugin-ai-image-generation-web@file:packages/plugin-ai-image-generation-web(@cesdk/cesdk-js@1.47.0(react@18.3.1))':
+    dependencies:
+      '@cesdk/cesdk-js': 1.47.0(react@18.3.1)
 
   '@imgly/plugin-ai-text2text-web@file:packages/plugin-ai-text2text-web(@cesdk/cesdk-js@1.47.0(react@18.3.1))':
     dependencies:
@@ -3856,6 +3847,10 @@ snapshots:
       '@cesdk/cesdk-js': 1.47.0(react@18.3.1)
     transitivePeerDependencies:
       - encoding
+
+  '@imgly/plugin-ai-video-generation-web@file:packages/plugin-ai-video-generation-web(@cesdk/cesdk-js@1.47.0(react@18.3.1))':
+    dependencies:
+      '@cesdk/cesdk-js': 1.47.0(react@18.3.1)
 
   '@imgly/plugin-background-removal-web@file:packages/plugin-background-removal-web(@cesdk/cesdk-js@1.47.0(react@18.3.1))(onnxruntime-web@1.21.0-dev.20250206-d981b153d3)':
     dependencies:
@@ -3881,11 +3876,6 @@ snapshots:
   '@imgly/plugin-utils-ai-generation@file:packages/plugin-utils-ai-generation(@cesdk/cesdk-js@1.47.0(react@18.3.1))':
     dependencies:
       '@cesdk/cesdk-js': 1.47.0(react@18.3.1)
-
-  '@imgly/plugin-utils-fal-ai@file:packages/plugin-utils-fal-ai(@cesdk/cesdk-js@1.47.0(react@18.3.1))':
-    dependencies:
-      '@cesdk/cesdk-js': 1.47.0(react@18.3.1)
-      '@fal-ai/client': 1.2.3
 
   '@imgly/plugin-utils@file:packages/plugin-utils(@cesdk/cesdk-js@1.32.0)':
     dependencies:
@@ -3938,8 +3928,6 @@ snapshots:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.0
-
-  '@msgpack/msgpack@3.1.0': {}
 
   '@nodelib/fs.scandir@2.1.5':
     dependencies:
@@ -5229,8 +5217,6 @@ snapshots:
 
   event-target-shim@5.0.1: {}
 
-  eventsource-parser@1.1.2: {}
-
   execa@4.1.0:
     dependencies:
       cross-spawn: 7.0.6
@@ -6187,8 +6173,6 @@ snapshots:
     dependencies:
       glob: 11.0.1
       package-json-from-dist: 1.0.1
-
-  robot3@0.4.1: {}
 
   rollup@4.34.8:
     dependencies:

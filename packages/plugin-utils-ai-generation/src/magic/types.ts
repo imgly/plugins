@@ -27,7 +27,11 @@ export interface MagicEntry {
   ) => void;
   applyInference: (
     blockId: number,
-    options: { cesdk: CreativeEditorSDK; abortSignal: AbortSignal, payload?: any }
+    options: {
+      cesdk: CreativeEditorSDK;
+      abortSignal: AbortSignal;
+      payload?: any;
+    }
   ) => Promise<ApplyInferenceResult>;
 }
 

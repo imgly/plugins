@@ -49,13 +49,12 @@ function getImageDryRunOutput(input: InputByKind['image']): ImageOutput {
   };
 }
 
-// eslint-disable-next-line 
+// eslint-disable-next-line
 function getVideoDryRunOutput(_input: InputByKind['video']): VideoOutput {
   return {
     kind: 'video',
     url: 'https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'
   };
 }
-
 
 export default getDryRunOutput;

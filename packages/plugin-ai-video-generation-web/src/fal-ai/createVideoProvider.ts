@@ -4,9 +4,9 @@ import {
   Provider,
   RenderCustomProperty,
   VideoOutput,
-  GetBlockInput
+  GetBlockInput,
+  CommonProperties
 } from '@imgly/plugin-utils-ai-generation';
-import { CommonProperties } from '@imgly/plugin-utils-ai-generation';
 import { fal } from '@fal-ai/client';
 
 type VideoProviderConfiguration = {
@@ -101,7 +101,8 @@ function createVideoProvider<I extends Record<string, any>>(
       renderAfterGeneration: (context) => {
         context.builder.Text('ly.img.ai/video-generation.generate.info', {
           align: 'center',
-          content: "Video generation may take up to a few minutes. This panel can be closed and you'll be notified when it's ready."
+          content:
+            "Video generation may take up to a few minutes. This panel can be closed and you'll be notified when it's ready."
         });
       }
     }

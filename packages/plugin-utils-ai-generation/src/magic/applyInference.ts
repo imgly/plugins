@@ -8,9 +8,13 @@ export async function applyInference(
   magicEntry: MagicEntry,
   abortSignal: AbortSignal,
   payload?: any
-): Promise<{ unlock: () => void; appltInferenceResult: ApplyInferenceResult } | undefined> {
+): Promise<
+  { unlock: () => void; appltInferenceResult: ApplyInferenceResult } | undefined
+> {
   const blockId = magicEntry.getBlockId({ cesdk });
-  if (blockId == null) { return undefined; }
+  if (blockId == null) {
+    return undefined;
+  }
 
   cesdk.engine.block.setState(blockId, { type: 'Pending', progress: 0 });
   const unlock = lockSelectionInEditMode(

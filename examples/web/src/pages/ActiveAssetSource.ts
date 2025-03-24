@@ -1,3 +1,4 @@
+import CreativeEditorSDK from '@cesdk/cesdk-js';
 import type {
   AssetDefinition,
   AssetQueryData,
@@ -7,18 +8,8 @@ import type {
 } from '@cesdk/engine';
 
 /**
- * Simplified value type for select inputs that can be converted to asset definitions
- */
-export type SelectValue = {
-  id: string;
-  label: string;
-  thumbUri?: string;
-};
-
-/**
  * A custom AssetSource implementation that manages assets from an array
- * and provides additional functionality like to mark assets as active or changing
- * labels.
+ * and provides functionality to mark assets as active.
  */
 export class CustomAssetSource implements AssetSource {
   /** The unique id of the asset source */
@@ -30,36 +21,26 @@ export class CustomAssetSource implements AssetSource {
   /** Set of IDs for active assets */
   private activeAssetIds: Set<string>;
 
+  private loaderDisposer: Record<string, (() => void) | undefined>;
+
+  private cesdk: CreativeEditorSDK;
+
   /**
    * Creates a new instance of CustomAssetSource
    *
    * @param id - The unique identifier for this asset source
-   * @param assets - Array of asset definitions or SelectValue objects to include in this source
+   * @param assets - Array of asset definitions to include in this source
    */
-  constructor(id: string, assets: (AssetDefinition | SelectValue)[] = []) {
+  constructor(
+    id: string,
+    cesdk: CreativeEditorSDK,
+    assets: AssetDefinition[] = []
+  ) {
     this.id = id;
-    this.assets = assets.map((asset) => {
-      // Check if the asset is a SelectValue by looking for the label property as a string
-      if (
-        typeof (asset as SelectValue).label === 'string' &&
-        !(
-          (asset as AssetDefinition).label &&
-          typeof (asset as AssetDefinition).label === 'object'
-        )
-      ) {
-        const selectValue = asset as SelectValue;
-        // Convert SelectValue to AssetDefinition
-        return {
-          id: selectValue.id,
-          label: { en: selectValue.label },
-          meta: selectValue.thumbUri
-            ? { thumbUri: selectValue.thumbUri }
-            : undefined
-        } as AssetDefinition;
-      }
-      return asset as AssetDefinition;
-    });
+    this.assets = [...assets];
     this.activeAssetIds = new Set<string>();
+    this.loaderDisposer = {};
+    this.cesdk = cesdk;
   }
 
   /**
@@ -204,13 +185,26 @@ export class CustomAssetSource implements AssetSource {
     };
   }
 
-  updateLabel(assetId: string, label: string, locale: string): void {
+  updateLabel(
+    assetId: string,
+    label: (currentLabel: string) => string,
+    locale: string
+  ): void {
     this.assets.forEach((asset) => {
       if (asset.id === assetId) {
         asset.label = asset.label || {};
-        asset.label[locale] = label;
+        asset.label[locale] = label(asset.label[locale]);
       }
     });
+  }
+
+  getLabel(assetId: string, locale: string): string | undefined {
+    const foundAsset = this.assets.find((asset) => {
+      return (asset.id === assetId);
+    });
+    if (foundAsset == null) return undefined;
+
+    return foundAsset.label?.[locale];
   }
 
   /**
@@ -222,13 +216,23 @@ export class CustomAssetSource implements AssetSource {
     this.activeAssetIds.add(assetId);
   }
 
-  /**
-   * Set multiple assets as active by their IDs
-   *
-   * @param assetIds - Array of asset IDs to mark as active
-   */
-  setAssetsActive(assetIds: string[]): void {
-    assetIds.forEach((id) => this.activeAssetIds.add(id));
+  setAssetLoading(assetId: string, loading: boolean): void {
+    if (loading) {
+      const label = this.getLabel(assetId, 'en') ?? '';
+      const disposeAsciiLoader = createAsciiLoader((spinnerChar) => {
+        if (this.cesdk.engine.asset === null) return false;
+        this.updateLabel(assetId, () => `${spinnerChar} ${label}`, 'en');
+        this.cesdk.engine.asset.assetSourceContentsChanged(this.id);
+        return true;
+      });
+      this.loaderDisposer[assetId] = () => {
+        this.updateLabel(assetId, () => label, 'en');
+        disposeAsciiLoader();
+      };
+    } else {
+      this.loaderDisposer[assetId]?.();
+      this.loaderDisposer[assetId] = undefined;
+    }
   }
 
   /**
@@ -238,6 +242,8 @@ export class CustomAssetSource implements AssetSource {
    */
   setAssetInactive(assetId: string): void {
     this.activeAssetIds.delete(assetId);
+    this.loaderDisposer[assetId]?.();
+    this.loaderDisposer[assetId] = undefined;
   }
 
   /**
@@ -245,6 +251,10 @@ export class CustomAssetSource implements AssetSource {
    */
   clearActiveAssets(): void {
     this.activeAssetIds.clear();
+    Object.values(this.loaderDisposer).forEach((disposer) => {
+      disposer?.();
+    });
+    this.loaderDisposer = {};
   }
 
   /**
@@ -323,14 +333,49 @@ export class CustomAssetSource implements AssetSource {
  * Helper function to create a CustomAssetSource instance
  *
  * @param id - The unique identifier for this asset source
- * @param assets - Array of asset definitions or SelectValue objects to include in this source
+ * @param assets - Array of asset definitions to include in this source
  * @returns A new CustomAssetSource instance
  */
 export function createCustomAssetSource(
   id: string,
-  assets: (AssetDefinition | SelectValue)[] = []
+  cesdk: CreativeEditorSDK,
+  assets: AssetDefinition[] = []
 ): CustomAssetSource {
-  return new CustomAssetSource(id, assets);
+  return new CustomAssetSource(id, cesdk, assets);
+}
+
+/**
+ * Creates a periodically updating ASCII loader animation and calls a callback function
+ * with each update until a disposer is called.
+ *
+ * @param callback Function to call with each loader update
+ * @param interval Milliseconds between updates (default: 500ms)
+ * @returns A disposer function that stops the animation when called
+ */
+function createAsciiLoader(
+  callback: (loader: string) => boolean,
+  interval: number = 200
+): () => void {
+  // Spinner frames for the animation
+  const frames = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'];
+  let frameIndex = 0;
+
+  // Start the interval
+  const timerId = setInterval(() => {
+    // Get the current frame and update the index
+    const currentFrame = frames[frameIndex];
+    frameIndex = (frameIndex + 1) % frames.length;
+
+    // Call the callback with the current frame
+    if (!callback(currentFrame)) {
+      clearInterval(timerId);
+    }
+  }, interval);
+
+  // Return a disposer function
+  return () => {
+    clearInterval(timerId);
+  };
 }
 
 export default CustomAssetSource;

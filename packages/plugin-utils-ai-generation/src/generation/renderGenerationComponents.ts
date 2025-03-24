@@ -29,6 +29,7 @@ function renderGenerationComponents<K extends OutputKind, I, O extends Output>(
   getInput: GetInput<I>,
   getBlockInput: GetBlockInput<K, I>,
   options: UIOptions & {
+    createPlaceholderBlock?: boolean;
     includeHistoryLibrary?: boolean;
     requiredInputs?: string[];
   },
@@ -215,7 +216,8 @@ function showSuccessNotification<I, O extends Output>(
   cesdk.ui.showNotification({
     type: 'success',
     message,
-    action
+    action,
+    duration: successNotification.duration
   });
   return true;
 }

@@ -101,7 +101,8 @@ async function registerPanelInputSchema<
       },
       {
         ...options,
-        requiredInputs: inputSchema.required
+        requiredInputs: inputSchema.required,
+        createPlaceholderBlock: panelInput.userFlow === 'placeholder'
       },
       config
     );

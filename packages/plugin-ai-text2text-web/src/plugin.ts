@@ -5,7 +5,10 @@ import Anthropic from '@anthropic-ai/sdk';
 import translate, { LANGUAGES, LOCALES } from './prompts/translate';
 import improve from './prompts/improve';
 import createMagicEntryForText from './createMagicEntryForText';
-import { registerMagicMenu, getMagicMenu } from '@imgly/plugin-utils-ai-generation';
+import {
+  registerMagicMenu,
+  getMagicMenu
+} from '@imgly/plugin-utils-ai-generation';
 import fix from './prompts/fix';
 import shorter from './prompts/shorter';
 import longer from './prompts/longer';

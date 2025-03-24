@@ -1,4 +1,4 @@
-import { type EditorPlugin } from '@cesdk/cesdk-js';
+import { NotificationDuration, type EditorPlugin } from '@cesdk/cesdk-js';
 import {
   initProvider,
   isGeneratingStateKey
@@ -65,7 +65,8 @@ export function VideoGeneration(
                 );
                 cesdk.ui.openPanel(VIDEO_GENERATION_PANEL_ID);
               }
-            }
+            },
+            duration: 'long' as NotificationDuration
           }
         };
       }

@@ -41,7 +41,8 @@ async function registerPanelInputCustom<
       getBlockInput,
       {
         ...options,
-        includeHistoryLibrary: panelInput.includeHistoryLibrary ?? true
+        includeHistoryLibrary: panelInput.includeHistoryLibrary ?? true,
+        createPlaceholderBlock: panelInput.userFlow === 'placeholder'
       },
       config
     );
