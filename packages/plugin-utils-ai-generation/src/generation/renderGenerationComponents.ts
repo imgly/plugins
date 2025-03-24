@@ -16,6 +16,10 @@ export function isGeneratingStateKey(providerId: string): string {
   return `${providerId}.generating`;
 }
 
+export function abortGenerationStateKey(providerId: string): string {
+  return `${providerId}.abort`;
+}
+
 /**
  * Renders the generation UI components and sets up event handlers
  */
@@ -36,20 +40,22 @@ function renderGenerationComponents<K extends OutputKind, I, O extends Output>(
     id: providerId,
     output: { abortable }
   } = provider;
-  const generatingState = experimental.global<{
-    isGenerating: boolean;
-    abort: () => void;
-  }>(isGeneratingStateKey(providerId), {
-    isGenerating: false,
-    abort: () => {}
-  });
+  const abortState = experimental.global<() => void>(
+    abortGenerationStateKey(providerId),
+    () => {}
+  );
+  const generatingState = experimental.global<boolean>(
+    isGeneratingStateKey(providerId),
+    false
+  );
 
   let abortController: AbortController | undefined;
-  const canAbortNow = generatingState.value.isGenerating && abortable;
+  const canAbortNow = generatingState.value && abortable;
   const abort = () => {
     if (canAbortNow) {
-      generatingState.value.abort();
-      generatingState.setValue({ isGenerating: false, abort: () => {} });
+      abortState.value();
+      generatingState.setValue(false);
+      abortState.setValue(() => {});
     }
   };
 
@@ -70,7 +76,7 @@ function renderGenerationComponents<K extends OutputKind, I, O extends Output>(
           'common.ai-generation.generate',
           `panel.${providerId}.generate`
         ],
-        isLoading: generatingState.value.isGenerating,
+        isLoading: generatingState.value,
         color: 'accent',
         isDisabled,
         suffix: canAbortNow
@@ -85,14 +91,12 @@ function renderGenerationComponents<K extends OutputKind, I, O extends Output>(
           try {
             abortController = new AbortController();
             const abortSignal = abortController.signal;
-            generatingState.setValue({
-              isGenerating: true,
-              abort: () => {
-                if (config.debug)
-                  // eslint-disable-next-line no-console
-                  console.log('Aborting generation');
-                abortController?.abort();
-              }
+            generatingState.setValue(true);
+            abortState.setValue(() => {
+              if (config.debug)
+                // eslint-disable-next-line no-console
+                console.log('Aborting generation');
+              abortController?.abort();
             });
 
             const result = await generate(
@@ -110,11 +114,15 @@ function renderGenerationComponents<K extends OutputKind, I, O extends Output>(
             }
 
             const notification = provider.output.notification;
+            console.log('check notification', notification);
             showSuccessNotification(cesdk, notification, () => ({
               input: getInput().input,
               output: result.output
             }));
           } catch (error) {
+            // Do not treat abort errors as errors
+            if (isAbortError(error)) { return; }
+
             if (
               config.onError != null &&
               typeof config.onError === 'function'
@@ -140,10 +148,8 @@ function renderGenerationComponents<K extends OutputKind, I, O extends Output>(
             }
           } finally {
             abortController = undefined;
-            generatingState.setValue({
-              isGenerating: false,
-              abort: () => {}
-            });
+            generatingState.setValue(false);
+            abortState.setValue(() => {});
           }
         }
       });
@@ -237,6 +243,10 @@ function showErrorNotification<I, O extends Output>(
     action
   });
   return true;
+}
+
+function isAbortError(error: unknown): error is Error {
+  return error instanceof Error && error.name === 'AbortError';
 }
 
 export default renderGenerationComponents;

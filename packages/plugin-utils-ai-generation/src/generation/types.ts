@@ -41,7 +41,7 @@ export type UIOptions = {
 };
 
 /**
- * Basic options for provider initialization
+ * Basic context for provider initialization
  */
 export type Options = {
   cesdk?: CreativeEditorSDK;

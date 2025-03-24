@@ -15,10 +15,12 @@
     "@cesdk/cesdk-js": "^1.47.0-rc.3",
     "@cesdk/engine": "^1.47.0-rc.3",
     "@imgly/plugin-utils-ai-generation": "workspace:*",
-    "@imgly/plugin-utils-fal-ai": "workspace:*",
     "@imgly/plugin-utils": "workspace:*",
     "@imgly/plugin-ai-text2text-web": "workspace:*",
     "@imgly/plugin-ai-text2speech-web": "workspace:*",
+    "@imgly/plugin-ai-image-generation-web": "workspace:*",
+    "@imgly/plugin-ai-video-generation-web": "workspace:*",
+    "@imgly/plugin-ai-audio-generation-web": "workspace:*",
     "@imgly/plugin-background-removal-web": "workspace:*",
     "@imgly/plugin-cutout-library-web": "workspace:*",
     "@imgly/plugin-qr-code-web": "workspace:*",
@@ -33,13 +35,19 @@
     "@imgly/plugin-utils-ai-generation": {
       "injected": true
     },
-    "@imgly/plugin-utils-fal-ai": {
-      "injected": true
-    },
     "@imgly/plugin-ai-text2text-web": {
       "injected": true
     },
     "@imgly/plugin-ai-text2speech-web": {
+      "injected": true
+    },
+    "@imgly/plugin-ai-image-generation-web": {
+      "injected": true
+    },
+    "@imgly/plugin-ai-video-generation-web": {
+      "injected": true
+    },
+    "@imgly/plugin-ai-audio-generation-web": {
       "injected": true
     },
     "@imgly/plugin-background-removal-web": {

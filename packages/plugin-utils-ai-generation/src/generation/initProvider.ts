@@ -4,7 +4,7 @@ import registerPanelInputSchema from './registerPanelInputSchema';
 import registerPanelInputCustom from './registerPanelInputCustom';
 import { InitProviderConfiguration, Options, UIOptions } from './types';
 import { BuilderRenderFunction, type CreativeEngine } from '@cesdk/cesdk-js';
-import { IndexedDBAssetSource } from '../IndexedDBAssetSource';
+import { IndexedDBAssetSource } from '@imgly/plugin-utils';
 import icons from '../icons';
 
 type RenderBuilderFunctions = {

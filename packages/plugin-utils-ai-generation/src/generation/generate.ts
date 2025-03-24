@@ -69,7 +69,6 @@ async function generate<K extends OutputKind, I, O extends Output>(
       });
     }
 
-    console.log('blockInputs', blockInputs);
     // Trigger the generation
     const output: O = config.dryRun
       ? ((await dryRun(kind, blockInputs)) as O)
@@ -185,7 +184,7 @@ async function dryRun<K extends OutputKind>(
     JSON.stringify(blockInputs, undefined, 2)
   );
   const output = getDryRunOutput(kind, blockInputs);
-  await wait(2000);
+  await wait(3000);
   return output;
 }
 

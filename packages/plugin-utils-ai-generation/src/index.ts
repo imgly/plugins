@@ -1,3 +1,11 @@
+import renderImageUrlProperty from './common/renderImageUrlProperty';
+
+const CommonProperties = {
+  ImageUrl: renderImageUrlProperty
+};
+
+export { CommonProperties };
+
 export {
   type default as Provider,
   type ImageOutput,
@@ -34,3 +42,8 @@ export {
   type MagicId,
   type InferenceMetadata
 } from './magic/types';
+
+export {
+  isGeneratingStateKey,
+  abortGenerationStateKey
+} from './generation/renderGenerationComponents';
