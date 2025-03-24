@@ -137,6 +137,8 @@ function App() {
                 'panel.ly.img.ai/demo.image': 'Generate Image',
                 'panel.ly.img.ai/fal-ai/minimax/video-01-live/image-to-video.imageSelection':
                   'Select Image To Generate',
+                'panel.fal-ai/gemini-flash-edit.imageSelection':
+                  'Select Image To Generate',
                 'libraries.ly.img.ai/fal-ai/recraft-v3.history.label':
                   'Generated From Text',
                 'libraries.ly.img.ai/fal-ai/gemini-flash-edit.history.label':
