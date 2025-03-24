@@ -50,7 +50,12 @@
         "title": "TextToVideoLiveRequest",
         "type": "object",
         "properties": {
-          "prompt": { "title": "Prompt", "type": "string" },
+          "prompt": {
+            "title": "Prompt",
+            "type": "string",
+
+            "x-imgly-builder": { "component": "TextArea" }
+          },
           "prompt_optimizer": {
             "title": "Prompt Optimizer",
             "type": "boolean",
