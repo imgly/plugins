@@ -84,13 +84,13 @@
               "landscape_16_9": "Landscape 16:9"
             },
             "x-imgly-enum-icons": {
-              "square": "@imgly/plugin/fal-ai/ratio1by1",
-              "square_hd": "@imgly/plugin/fal-ai/ratio1by1",
-              "portrait_4_3": "@imgly/plugin/fal-ai/ratio3by4",
-              "portrait_16_9": "@imgly/plugin/fal-ai/ratio9by16",
-              "landscape_4_3": "@imgly/plugin/fal-ai/ratio4by3",
-              "landscape_16_9": "@imgly/plugin/fal-ai/ratio16by9",
-              "ImageSize": "@imgly/plugin/fal-ai/ratioFree"
+              "square": "@imgly/plugin/formats/ratio1by1",
+              "square_hd": "@imgly/plugin/formats/ratio1by1",
+              "portrait_4_3": "@imgly/plugin/formats/ratio3by4",
+              "portrait_16_9": "@imgly/plugin/formats/ratio9by16",
+              "landscape_4_3": "@imgly/plugin/formats/ratio4by3",
+              "landscape_16_9": "@imgly/plugin/formats/ratio16by9",
+              "ImageSize": "@imgly/plugin/formats/ratioFree"
             }
           },
           "style": {

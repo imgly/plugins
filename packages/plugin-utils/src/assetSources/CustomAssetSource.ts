@@ -49,7 +49,7 @@ export class CustomAssetSource implements AssetSource {
         return {
           id: selectValue.id,
           label: { en: selectValue.label },
-          meta: selectValue.thumbUri ? { thumbnailURI: selectValue.thumbUri } : undefined
+          meta: selectValue.thumbUri ? { thumbUri: selectValue.thumbUri } : undefined
         } as AssetDefinition;
       }
       return asset as AssetDefinition;

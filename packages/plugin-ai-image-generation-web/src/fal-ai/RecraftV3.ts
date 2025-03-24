@@ -93,7 +93,7 @@ function getProvider(
   });
 
   cesdk.ui.registerPanel<StyleSelectionPayload>(
-    `${modelKey}.styleSelection`,
+    `${getPanelId(modelKey)}.styleSelection`,
     ({ builder, payload }) => {
       if (payload == null) return null;
 
@@ -194,11 +194,11 @@ function getProvider(
                     styleVectorState.setValue(newValue);
                   }
 
-                  cesdk.ui.closePanel(`${modelKey}.styleSelection`);
+                  cesdk.ui.closePanel(`${getPanelId(modelKey)}.styleSelection`);
                 }
               };
 
-              cesdk.ui.openPanel(`${modelKey}.styleSelection`, {
+              cesdk.ui.openPanel(`${getPanelId(modelKey)}.styleSelection`, {
                 payload
               });
             }
@@ -208,7 +208,7 @@ function getProvider(
             return {
               id: property.id,
               type: 'string',
-              value: styleState.value.id ?? 'square_hd'
+              value: styleState.value.id ?? 'realistic_image'
             };
           };
         }
