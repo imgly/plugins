@@ -113,9 +113,23 @@ function createImageProvider<I extends Record<string, any>>(
         input: I,
         { abortSignal }: { abortSignal?: AbortSignal }
       ) => {
+        let image_url = input.image_url;
+
+        if (
+          (image_url != null && image_url.startsWith('data:')) ||
+          image_url.startsWith('blob:')
+        ) {
+          const imageUrlResponse = await fetch(image_url);
+          const imageUrlBlob = await imageUrlResponse.blob();
+          const imageUrlFile = new File([imageUrlBlob], 'image.png', {
+            type: 'image/png'
+          });
+          image_url = await fal.storage.upload(imageUrlFile);
+        }
+
         const response = await fal.subscribe(options.modelKey, {
           abortSignal,
-          input,
+          input: image_url != null ? { ...input, image_url } : input,
           logs: true
         });
 
