@@ -178,7 +178,10 @@ function registerMagicMenu(cesdk: CreativeEditorSDK, magicMenu: MagicMenu) {
               const magicEntry = magicMenu.getMagicEntry(editStateMagicId);
 
               if (magicEntry != null && magicEntry.renderEditState != null) {
+                const blockId = magicEntry.getBlockId({ cesdk });
+                if (blockId == null) return;
                 magicEntry.renderEditState(context, {
+                  blockId,
                   closeMenu: close,
                   toggleEditState: () => {
                     toggleEditState.setValue(undefined);
@@ -213,6 +216,7 @@ function registerMagicMenu(cesdk: CreativeEditorSDK, magicMenu: MagicMenu) {
                     );
                   } else {
                     magicEntry.magicEntry.renderMenuEntry(context, {
+                      blockId: magicEntry.blockId,
                       closeMenu: close,
                       toggleEditState: () => {
                         if (

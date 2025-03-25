@@ -2,6 +2,7 @@ import type CreativeEditorSDK from '@cesdk/cesdk-js';
 import { type BuilderRenderFunctionContext } from '@cesdk/cesdk-js';
 
 export interface MagicContext {
+  blockId: number;
   toggleEditState: () => void;
   closeMenu: () => void;
   applyInference: (payload?: any) => void;
