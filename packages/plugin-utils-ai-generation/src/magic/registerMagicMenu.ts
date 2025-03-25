@@ -200,6 +200,14 @@ function registerMagicMenu(cesdk: CreativeEditorSDK, magicMenu: MagicMenu) {
                     if (result != null) {
                       shared.unlock = result.unlock;
                       shared.applyInferenceResult = result.appltInferenceResult;
+                    } else {
+                      shared.abort();
+                      const md = new Metadata<InferenceMetadata>(
+                        cesdk.engine,
+                        INFERENCE_AI_METADATA_KEY
+                      );
+                      md.clear(blockId);
+                      cesdk.engine.block.setSelected(blockId, true);
                     }
                   }
                 });
@@ -244,6 +252,17 @@ function registerMagicMenu(cesdk: CreativeEditorSDK, magicMenu: MagicMenu) {
                           shared.unlock = result.unlock;
                           shared.applyInferenceResult =
                             result.appltInferenceResult;
+                        } else {
+                          shared.abort();
+                          const md = new Metadata<InferenceMetadata>(
+                            cesdk.engine,
+                            INFERENCE_AI_METADATA_KEY
+                          );
+                          md.clear(magicEntry.blockId);
+                          cesdk.engine.block.setSelected(
+                            magicEntry.blockId,
+                            true
+                          );
                         }
                       }
                     });

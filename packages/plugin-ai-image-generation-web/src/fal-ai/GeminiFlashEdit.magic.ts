@@ -276,7 +276,7 @@ function createMagicEntryForVideo(options: {
         labelAlignment: 'left',
         variant: 'plain',
         label: options.label ?? `ly.img.ai.inference.${options.id}`,
-        onClick: () => {
+        onClick: async () => {
           const fillBlock = cesdk.engine.block.getFill(blockId);
           const sourceSet = cesdk.engine.block.getSourceSet(
             fillBlock,
@@ -284,6 +284,16 @@ function createMagicEntryForVideo(options: {
           );
           const [source] = sourceSet;
           if (source == null) {
+            return;
+          }
+
+          const mimeType = await cesdk.engine.editor.getMimeType(source.uri);
+          if (mimeType === 'image/svg+xml') {
+            cesdk.ui.showNotification({
+              type: 'warning',
+              message:
+                'SVG images are not supported. Please choose a different image.'
+            });
             return;
           }
 
@@ -320,6 +330,11 @@ async function applyInferenceOnSourceSet(
     'fill/image/sourceSet'
   );
   const [sourceBefore] = sourceSetBefore;
+
+  const mimeType = await cesdk.engine.editor.getMimeType(sourceBefore.uri);
+  if (mimeType === 'image/svg+xml') {
+    throw new Error('SVG images are not supported');
+  }
 
   const cropScaleX = cesdk.engine.block.getCropScaleX(block);
   const cropScaleY = cesdk.engine.block.getCropScaleY(block);
@@ -399,6 +414,7 @@ async function generate(
   cesdk: CreativeEditorSDK
 ): Promise<{ kind: 'image'; url: string }> {
   const image_url = await uploadImageInputToFalIfNeeded(input.image_url, cesdk);
+  if (image_url == null) throw new Error('Cannot upload image');
 
   if (image_url.startsWith('buffer:'))
     throw new Error('Cannot process data URLs');

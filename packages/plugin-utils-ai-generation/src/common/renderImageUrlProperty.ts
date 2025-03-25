@@ -76,8 +76,25 @@ function createPanels(providerId: string, cesdk?: CreativeEditorSDK) {
     builder.Library(`${providerId}.library.image`, {
       entries: ['ly.img.image'],
       onSelect: async (asset) => {
-        payload?.onSelect(asset);
-        cesdk?.ui.closePanel(`${providerId}.imageSelection`);
+        const uri = asset?.meta?.uri;
+        if (uri == null) return;
+
+        const mimeType = await cesdk.engine.editor.getMimeType(uri);
+        if (mimeType === 'image/svg+xml') {
+          cesdk.ui.showNotification({
+            type: 'warning',
+            message:
+              'SVG images are not supported. Please choose a different image.'
+          });
+        } else if (mimeType.startsWith('image/')) {
+          payload?.onSelect(asset);
+          cesdk?.ui.closePanel(`${providerId}.imageSelection`);
+        } else {
+          cesdk.ui.showNotification({
+            type: 'warning',
+            message: `Only images are supported. Found '${mimeType}'. Please choose a different image.`
+          });
+        }
       }
     });
   });

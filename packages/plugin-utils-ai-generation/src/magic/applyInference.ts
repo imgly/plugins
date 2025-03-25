@@ -2,6 +2,7 @@ import CreativeEditorSDK from '@cesdk/cesdk-js';
 import { Metadata } from '@imgly/plugin-utils';
 import { ApplyInferenceResult, InferenceMetadata, MagicEntry } from './types';
 import { INFERENCE_AI_EDIT_MODE, INFERENCE_AI_METADATA_KEY } from './utils';
+import { extractErrorMessage } from '../utils';
 
 export async function applyInference(
   cesdk: CreativeEditorSDK,
@@ -57,7 +58,7 @@ export async function applyInference(
       console.error('Inference failed:', error);
       cesdk.ui.showNotification({
         type: 'error',
-        message: 'Inference failed'
+        message: extractErrorMessage(error)
       });
     }
 
