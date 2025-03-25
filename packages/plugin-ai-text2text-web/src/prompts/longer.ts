@@ -31,6 +31,7 @@ To expand the text:
    - Introducing related concepts or ideas
    - Explaining implications or consequences of the main ideas
 4. Ensure that the expanded text length is not exceeding the original text by more than 50%.
+5. Always expand the text, even if it is a single word. Explain the word with a few short sentences in that case. If the text is empty, make up a short sentence.
 
 Guidelines:
 
@@ -40,6 +41,10 @@ Guidelines:
 - Do not contradict any information in the original text.
 
 Only return the longer text and nothing else.
+
+Make sure to only return the expanded text and nothing else. Do not include any additional information or comments in your response about what you have done.
+
+Do not add the original text or the original_text tags to the response.
 `,
     signal
   );
