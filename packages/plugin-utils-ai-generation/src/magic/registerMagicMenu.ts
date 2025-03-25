@@ -224,6 +224,9 @@ function registerMagicMenu(cesdk: CreativeEditorSDK, magicMenu: MagicMenu) {
                         }
                       },
                       applyInference: async (payload) => {
+                        if (magicEntry.magicEntry.applyInference == null)
+                          return;
+
                         cesdk.ui.setCanvasMenuOrder([confirmationComponentId], {
                           editMode: INFERENCE_AI_EDIT_MODE
                         });

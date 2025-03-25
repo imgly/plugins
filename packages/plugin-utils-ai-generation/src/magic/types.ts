@@ -25,7 +25,7 @@ export interface MagicEntry {
     context: BuilderRenderFunctionContext<any>,
     magicContext: MagicContext
   ) => void;
-  applyInference: (
+  applyInference?: (
     blockId: number,
     options: {
       cesdk: CreativeEditorSDK;

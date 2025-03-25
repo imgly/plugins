@@ -11,6 +11,7 @@ export async function applyInference(
 ): Promise<
   { unlock: () => void; appltInferenceResult: ApplyInferenceResult } | undefined
 > {
+  if (magicEntry.applyInference == null) return;
   const blockId = magicEntry.getBlockId({ cesdk });
   if (blockId == null) {
     return undefined;
