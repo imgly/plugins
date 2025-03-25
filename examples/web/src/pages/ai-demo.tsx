@@ -11,7 +11,6 @@ import AudioGeneration from '@imgly/plugin-ai-audio-generation-web';
 import Elevenlabs from '@imgly/plugin-ai-audio-generation-web/elevenlabs';
 
 import Text2TextPlugin from '@imgly/plugin-ai-text2text-web';
-// import Text2SpeechPlugin from '@imgly/plugin-ai-text2speech-web';
 import { useRef } from 'react';
 import { createCustomAssetSource } from './ActiveAssetSource';
 import { getPanelId } from '@imgly/plugin-utils-ai-generation';
@@ -57,7 +56,14 @@ function App() {
               instance.addDemoAssetSources({ sceneMode: 'Video' })
             ]);
 
-            // createMagicEntryForGeminiFlashEdit(instance);
+            instance.addPlugin(
+              Text2TextPlugin({
+                provider: {
+                  id: 'anthropic',
+                  proxyUrl: import.meta.env.VITE_ANTHROPIC_PROXY_URL
+                }
+              })
+            );
 
             instance.addPlugin(
               AiPlugin((getConfig) => ({
@@ -97,15 +103,6 @@ function App() {
                 return key !== 'ly.img.video.template';
               })
             ]);
-
-            instance.addPlugin(
-              Text2TextPlugin({
-                provider: {
-                  id: 'anthropic',
-                  proxyUrl: import.meta.env.VITE_ANTHROPIC_PROXY_URL
-                }
-              })
-            );
 
             instance.ui.setCanvasMenuOrder([
               'ly.img.ai.text.canvasMenu',
