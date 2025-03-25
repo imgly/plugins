@@ -105,7 +105,7 @@ function lockSelectionInEditMode(
   const stateChangeDisposer = cesdk.engine.editor.onStateChanged(() => {
     const editMode = cesdk.engine.editor.getEditMode();
     if (editMode !== editModeToLock) {
-      dispose();
+      cesdk.engine.editor.setEditMode(editModeToLock);
     }
   });
 

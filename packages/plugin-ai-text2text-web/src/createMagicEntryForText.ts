@@ -102,6 +102,8 @@ function createMagicEntryForText(options: {
 
     applyInference: async (block, { abortSignal, payload }) => {
       const texteBefore = cesdk.engine.block.getString(block, 'text/text');
+      const wasAlwaysOnTop = cesdk.engine.block.isAlwaysOnTop(block);
+      cesdk.engine.block.setAlwaysOnTop(block, true);
 
       let inferredText = '';
       const stream = await options.infer(texteBefore, abortSignal, payload);
@@ -118,12 +120,20 @@ function createMagicEntryForText(options: {
         cesdk.engine.block.setString(block, 'text/text', texteBefore);
       const setTextAfter = () =>
         cesdk.engine.block.setString(block, 'text/text', inferredText);
+      const onCancel = () => {
+        setTextBefore();
+        cesdk.engine.block.setAlwaysOnTop(block, wasAlwaysOnTop);
+      };
+      const onApply = () => {
+        setTextAfter();
+        cesdk.engine.block.setAlwaysOnTop(block, wasAlwaysOnTop);
+      };
 
       return {
-        onCancel: setTextBefore,
+        onCancel,
         onBefore: setTextBefore,
         onAfter: setTextAfter,
-        onApply: setTextAfter
+        onApply
       };
     }
   };
