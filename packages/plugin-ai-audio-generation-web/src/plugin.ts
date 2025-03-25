@@ -1,10 +1,6 @@
 import CreativeEditorSDK from '@cesdk/cesdk-js';
 import { NotificationDuration, type EditorPlugin } from '@cesdk/cesdk-js';
-import {
-  initProvider,
-  registerMagicMenu,
-  getMagicMenu
-} from '@imgly/plugin-utils-ai-generation';
+import { initProvider, getMagicMenu } from '@imgly/plugin-utils-ai-generation';
 import { PluginConfiguration } from './types';
 
 export { PLUGIN_ID } from './constants';

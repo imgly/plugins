@@ -6,6 +6,7 @@ import {
   registerMagicMenu
 } from '@imgly/plugin-utils-ai-generation';
 import CreativeEditorSDK from '@cesdk/cesdk-js';
+import { uploadImageInputToFalIfNeeded } from './utils';
 
 export function createMagicEntry(cesdk: CreativeEditorSDK): MagicMenu {
   cesdk.setTranslations({
@@ -339,7 +340,8 @@ async function applyInferenceOnSourceSet(
 
   const { url } = await generate(
     { prompt: payload, image_url: sourceBefore.uri },
-    { abortSignal }
+    { abortSignal },
+    cesdk
   );
 
   const uri = await fetchImage(cesdk, url);
@@ -393,17 +395,13 @@ async function applyInferenceOnSourceSet(
 
 async function generate(
   input: { prompt: string; image_url: string },
-  { abortSignal }: { abortSignal?: AbortSignal }
+  { abortSignal }: { abortSignal?: AbortSignal },
+  cesdk: CreativeEditorSDK
 ): Promise<{ kind: 'image'; url: string }> {
-  let image_url = input.image_url;
-  if (image_url.startsWith('data:') || image_url.startsWith('blob:')) {
-    const imageUrlResponse = await fetch(image_url);
-    const imageUrlBlob = await imageUrlResponse.blob();
-    const imageUrlFile = new File([imageUrlBlob], 'image.png', {
-      type: 'image/png'
-    });
-    image_url = await fal.storage.upload(imageUrlFile);
-  }
+  const image_url = await uploadImageInputToFalIfNeeded(input.image_url, cesdk);
+
+  if (image_url.startsWith('buffer:'))
+    throw new Error('Cannot process data URLs');
 
   const response = await fal.subscribe('fal-ai/gemini-flash-edit', {
     abortSignal,

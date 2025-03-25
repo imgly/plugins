@@ -57,5 +57,4 @@ function getProvider(
   );
 }
 
-
 export default getProvider;

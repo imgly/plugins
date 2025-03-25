@@ -110,6 +110,8 @@ function App() {
               ...instance.ui.getCanvasMenuOrder()
             ]);
 
+            instance.feature.enable('ly.img.preview', false);
+
             await instance.createVideoScene();
             const page = instance.engine.scene.getCurrentPage();
             if (page != null) {
@@ -132,6 +134,8 @@ function App() {
                 'panel.ly.img.ai/elevenlabs': 'AI Voice',
                 'panel.ly.img.ai/demo.video': 'Generate Video',
                 'panel.ly.img.ai/demo.image': 'Generate Image',
+                'panel.fal-ai/minimax/video-01-live/image-to-video.imageSelection':
+                  'Select Image To Generate',
                 'panel.ly.img.ai/fal-ai/minimax/video-01-live/image-to-video.imageSelection':
                   'Select Image To Generate',
                 'panel.fal-ai/gemini-flash-edit.imageSelection':

@@ -1,5 +1,6 @@
 import { type OpenAPIV3 } from 'openapi-types';
 import CreativeEditorSDK, { CreativeEngine } from '@cesdk/cesdk-js';
+import { uploadImageInputToFalIfNeeded } from './utils';
 import {
   Provider,
   RenderCustomProperty,
@@ -75,9 +76,14 @@ function createVideoProvider<I extends Record<string, any>>(
         input: I,
         { abortSignal }: { abortSignal?: AbortSignal }
       ) => {
+        const image_url = await uploadImageInputToFalIfNeeded(
+          input.image_url,
+          options.cesdk
+        );
+
         const response = await fal.subscribe(options.modelKey, {
           abortSignal,
-          input,
+          input: image_url != null ? { ...input, image_url } : input,
           logs: true
         });
 

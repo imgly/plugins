@@ -43,7 +43,6 @@ function getProvider(
           input.image_url as string
         );
 
-
         return Promise.resolve({
           video: {
             width: imageDimension.width ?? 1280,
