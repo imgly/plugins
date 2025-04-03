@@ -45,6 +45,14 @@ async function withLock<R>(
      */
     alwaysOnTop?: boolean;
 
+    /**
+     * If true, the clipping of the parent of the affected blocks will be
+     * temporarily disabled until unlocked.
+     *
+     * @default true
+     */
+    disableClipping?: boolean;
+
     cesdk: CreativeEditorSDK;
   }
 ): Promise<{ unlock: () => void; returnValue: R }> {
@@ -54,6 +62,7 @@ async function withLock<R>(
     editMode,
     automaticallyUnlock = false,
     alwaysOnTop = true,
+    disableClipping = true,
     pending = true,
     locked = true
   } = options;
@@ -74,14 +83,54 @@ async function withLock<R>(
       });
     }
     const wasAlwaysOnTop: Record<number, boolean> = {};
+    const parentClipping: Record<number, boolean> = {};
     if (alwaysOnTop) {
       blockIds.forEach((blockId) => {
         wasAlwaysOnTop[blockId] = cesdk.engine.block.isAlwaysOnTop(blockId);
         cesdk.engine.block.setAlwaysOnTop(blockId, true);
       });
     }
+    if (disableClipping) {
+      blockIds.forEach((blockId) => {
+        const parent = cesdk.engine.block.getParent(blockId);
+        if (
+          parent != null &&
+          cesdk.engine.block.getType(parent) != '//ly.img.ubq/scene'
+        ) {
+          parentClipping[parent] = cesdk.engine.block.isClipped(parent);
+          cesdk.engine.block.setClipped(parent, false);
+        }
+      });
+    }
 
-    unlock = lockSelectionInEditMode(cesdk, blockIds, editMode);
+    const unlockSelectionLock = lockSelectionInEditMode(
+      cesdk,
+      blockIds,
+      editMode
+    );
+    unlock = () => {
+      unlockSelectionLock();
+      if (alwaysOnTop) {
+        blockIds.forEach((blockId) => {
+          if (wasAlwaysOnTop[blockId] != null) {
+            cesdk.engine.block.setAlwaysOnTop(blockId, wasAlwaysOnTop[blockId]);
+          }
+        });
+      }
+      if (disableClipping) {
+        blockIds.forEach((blockId) => {
+          const parent = cesdk.engine.block.getParent(blockId);
+          if (
+            parent != null &&
+            cesdk.engine.block.getType(parent) != '//ly.img.ubq/scene'
+          ) {
+            if (parentClipping[parent] != null) {
+              cesdk.engine.block.setClipped(parent, parentClipping[parent]);
+            }
+          }
+        });
+      }
+    };
 
     const returnValue = await fn();
 
