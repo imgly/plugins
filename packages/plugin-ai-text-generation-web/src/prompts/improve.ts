@@ -30,6 +30,8 @@ Please follow these steps to improve the text:
    - Restructuring paragraphs
    - Adding or removing content as appropriate
 4. Ensure that the improved version maintains the original meaning and intent of the text.
+5. Return the improved text without any additional commentary or explanation.
+6. If there is nothing to improve, simply return the original text without any changes.
 
 Once you have made the improvements, only return the improved text and nothing else.
 `,

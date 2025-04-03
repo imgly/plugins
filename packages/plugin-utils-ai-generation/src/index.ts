@@ -17,7 +17,10 @@ export {
   type RenderCustomProperty,
   type GetBlockInput,
   type GetBlockInputResult,
-  type GetInput
+  type GetInput,
+  type QuickAction,
+  type QuickActionsInput,
+  type QuickActionApplyCallbacks
 } from './generation/provider';
 export {
   type GetPropertyInput,
@@ -31,6 +34,9 @@ export {
   getThumbnailForVideo,
   getLabelFromId
 } from './utils';
+
+export { default as getQuickActionMenu } from './generation/quickAction/getQuickActionMenu';
+export { default as registerQuickActionMenuComponent } from './generation/quickAction/registerQuickActionMenuComponent';
 
 // Magic menu exports
 export { default as getMagicMenu } from './magic/getMagicMenu';

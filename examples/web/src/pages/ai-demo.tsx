@@ -10,12 +10,13 @@ import FalAiVideo from '@imgly/plugin-ai-video-generation-web/fal-ai';
 import AudioGeneration from '@imgly/plugin-ai-audio-generation-web';
 import Elevenlabs from '@imgly/plugin-ai-audio-generation-web/elevenlabs';
 
-import Text2TextPlugin from '@imgly/plugin-ai-text2text-web';
+import Text2TextPlugin from '@imgly/plugin-ai-text-generation-web';
 import { useRef } from 'react';
 import { createCustomAssetSource } from './ActiveAssetSource';
-import { getPanelId } from '@imgly/plugin-utils-ai-generation';
+import { getPanelId, initProvider } from '@imgly/plugin-utils-ai-generation';
 import { GenerationMiddleware } from '@imgly/plugin-utils-ai-generation';
 import { AggregatedAssetSource } from '@imgly/plugin-utils';
+import Anthropic from '@imgly/plugin-ai-text-generation-web/anthropic';
 
 function App() {
   const cesdk = useRef<CreativeEditorSDK>();
@@ -63,6 +64,16 @@ function App() {
                   proxyUrl: import.meta.env.VITE_ANTHROPIC_PROXY_URL
                 }
               })
+            );
+
+            const anthropicProvider = await Anthropic.AnthropicProvider({
+              proxyUrl: import.meta.env.VITE_ANTHROPIC_PROXY_URL
+            })({ cesdk: instance });
+
+            initProvider(
+              anthropicProvider,
+              { cesdk: instance, engine: instance.engine },
+              { debug: true }
             );
 
             instance.addPlugin(

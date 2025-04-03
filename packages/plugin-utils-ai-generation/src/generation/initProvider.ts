@@ -1,11 +1,21 @@
 import type Provider from './provider';
-import { OutputKind, PanelInput, type Output } from './provider';
+import {
+  OutputKind,
+  PanelInput,
+  QuickAction,
+  QuickActionsInput,
+  type Output
+} from './provider';
 import registerPanelInputSchema from './registerPanelInputSchema';
 import registerPanelInputCustom from './registerPanelInputCustom';
 import { InitProviderConfiguration, Options, UIOptions } from './types';
 import { BuilderRenderFunction, type CreativeEngine } from '@cesdk/cesdk-js';
 import { IndexedDBAssetSource } from '@imgly/plugin-utils';
 import icons from '../icons';
+import getMagicMenu from '../magic/getMagicMenu';
+import getQuickActionMenu from './quickAction/getQuickActionMenu';
+import { getFeatureIdForQuickAction } from './quickAction/utils';
+import registerQuickActionMenuComponent from './quickAction/registerQuickActionMenuComponent';
 
 type RenderBuilderFunctions = {
   panel?: BuilderRenderFunction<any>;
@@ -135,7 +145,9 @@ async function initInputs<K extends OutputKind, I, O extends Output>(
       config
     );
   }
-  // TODO: Initialize other inputs like the "magic menu"
+  if (provider.input?.quickActions != null) {
+    initQuickActions(provider, provider.input.quickActions, options, config);
+  }
 
   return result;
 }
@@ -164,6 +176,47 @@ async function initPanel<K extends OutputKind, I, O extends Output>(
         );
       }
     }
+  }
+}
+
+async function initQuickActions<K extends OutputKind, I, O extends Output>(
+  provider: Provider<K, I, O>,
+  quickActionsInput: QuickActionsInput<I, O>,
+  options: UIOptions,
+  config: InitProviderConfiguration
+) {
+  const { cesdk } = options;
+  const quickActionMenuId = provider.kind;
+  const quickActionMenu = getQuickActionMenu(cesdk, quickActionMenuId);
+  quickActionsInput.actions.forEach((quickAction) => {
+    const enable = quickAction.enable ?? true;
+    cesdk.feature.enable(
+      getFeatureIdForQuickAction({
+        quickActionId: quickAction.id,
+        quickActionMenuId
+      }),
+      enable
+    );
+    quickActionMenu.registerQuickAction(quickAction);
+    if (config.debug) {
+      // eslint-disable-next-line no-console
+      console.log(
+        `Registered quick action: '${quickAction.id}' (v${quickAction.version}) to menu '${quickActionMenuId}'`
+      );
+    }
+  });
+
+  const { canvasMenuComponentId } = registerQuickActionMenuComponent({
+    cesdk,
+    quickActionMenu,
+    provider
+  });
+
+  if (config.debug) {
+    // eslint-disable-next-line no-console
+    console.log(
+      `Registered quick action menu component: ${canvasMenuComponentId}`
+    );
   }
 }
 

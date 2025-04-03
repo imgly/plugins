@@ -16,7 +16,7 @@
     "@cesdk/engine": "^1.47.0-rc.3",
     "@imgly/plugin-utils-ai-generation": "workspace:*",
     "@imgly/plugin-utils": "workspace:*",
-    "@imgly/plugin-ai-text2text-web": "workspace:*",
+    "@imgly/plugin-ai-text-generation-web": "workspace:*",
     "@imgly/plugin-ai-image-generation-web": "workspace:*",
     "@imgly/plugin-ai-video-generation-web": "workspace:*",
     "@imgly/plugin-ai-audio-generation-web": "workspace:*",
@@ -34,7 +34,7 @@
     "@imgly/plugin-utils-ai-generation": {
       "injected": true
     },
-    "@imgly/plugin-ai-text2text-web": {
+    "@imgly/plugin-ai-text-generation-web": {
       "injected": true
     },
     "@imgly/plugin-ai-image-generation-web": {

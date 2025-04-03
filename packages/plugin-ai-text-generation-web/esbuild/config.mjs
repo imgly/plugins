@@ -15,9 +15,22 @@ export default ({ isDevelopment }) => {
     `${chalk.yellow('Building version:')} ${chalk.bold(packageJson.version)}`
   );
 
-  return baseConfig({
+  // Base configuration that applies to all builds
+  const baseOptions = {
     isDevelopment,
     external: ['@cesdk/cesdk-js'],
     pluginVersion: packageJson.version
-  });
+  };
+
+  // Get the base configuration
+  const config = baseConfig(baseOptions);
+
+  // Set entry points and output configuration
+  config.entryPoints = ['./src/index.ts', './src/anthropic/index.ts'];
+  config.outExtension = { '.js': '.mjs' };
+  config.outdir = './dist';
+  config.outbase = './src';
+  config.outfile = undefined;
+
+  return config;
 };

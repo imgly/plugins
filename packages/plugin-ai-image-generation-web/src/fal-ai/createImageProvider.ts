@@ -1,11 +1,11 @@
 import { type OpenAPIV3 } from 'openapi-types';
 import CreativeEditorSDK, { CreativeEngine } from '@cesdk/cesdk-js';
 import {
-  Provider,
   ImageOutput,
   RenderCustomProperty,
   GetBlockInput,
-  CommonProperties
+  CommonProperties,
+  Provider
 } from '@imgly/plugin-utils-ai-generation';
 import { fal } from '@fal-ai/client';
 import { isCustomImageSize, uploadImageInputToFalIfNeeded } from './utils';
@@ -24,12 +24,9 @@ function createImageProvider<I extends Record<string, any>>(
   options: {
     modelKey: string;
     name?: string;
-
     schema: OpenAPIV3.Document;
     inputReference: string;
-
     useFlow?: 'placeholder' | 'generation-only';
-
     initialize?: (context: {
       cesdk?: CreativeEditorSDK;
       engine: CreativeEngine;

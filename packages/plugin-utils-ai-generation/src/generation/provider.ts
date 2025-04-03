@@ -3,7 +3,8 @@ import type CreativeEditorSDK from '@cesdk/cesdk-js';
 import {
   type NotificationDuration,
   type BuilderRenderFunctionContext,
-  type CreativeEngine
+  type CreativeEngine,
+  Scope
 } from '@cesdk/cesdk-js';
 import { GetPropertyInput, Property } from './openapi/types';
 
@@ -48,6 +49,8 @@ interface Provider<K extends OutputKind, I, O extends Output> {
      * Is used to generate panel content for the input.
      */
     panel?: PanelInput<K, I>;
+
+    quickActions?: QuickActionsInput<I, O>;
   };
 
   /**
@@ -320,5 +323,54 @@ export interface AudioOutput extends OutputBase<'audio'> {
 export interface TextOutput extends OutputBase<'text'> {
   kind: 'text';
 }
+
+export type QuickActionContext<I, O extends Output> = {
+  blockIds: number[];
+  closeMenu: () => void;
+  toggleExpand: () => void;
+  generate: (input: I) => Promise<O>;
+};
+
+export type QuickActionsInput<I, O extends Output> = {
+  actions: QuickAction<I, O>[];
+};
+
+export type QuickAction<I, O extends Output> = {
+  id: string;
+
+  // Can be used to distinguish between different quick action
+  // versions used by different plugins.
+  version: '1';
+
+  /**
+   * Defines if the quick action is enabled or not by using the
+   * feature api.
+   */
+  enable: boolean | ((contxt: { engine: CreativeEngine }) => boolean);
+
+  /**
+   * Define the necessary scopes for this quick action.
+   */
+  scopes?: Scope[];
+
+  confirmation?: boolean;
+
+  render: (
+    context: BuilderRenderFunctionContext<any>,
+    quickActionContext: QuickActionContext<I, O>
+  ) => void;
+  renderExpanded?: (
+    context: BuilderRenderFunctionContext<any>,
+    quickActionContext: QuickActionContext<I, O>
+  ) => void;
+  apply: (output: O, input: I) => Promise<QuickActionApplyCallbacks>;
+};
+
+export type QuickActionApplyCallbacks = {
+  onBefore?: () => void;
+  onAfter?: () => void;
+  onCancel?: () => void;
+  onApply: () => void;
+};
 
 export default Provider;
