@@ -1,5 +1,5 @@
 import CreativeEditorSDK from '@cesdk/cesdk-js';
-import { InferenceMetadata, QuickActionMenu } from './types';
+import { InferenceMetadata, QuickActionMenu, ApplyCallbacks } from './types';
 import {
   getFeatureIdForQuickAction,
   INFERENCE_AI_EDIT_MODE,
@@ -7,13 +7,9 @@ import {
   removeDuplicatedSeparators
 } from './utils';
 import { Metadata } from '@imgly/plugin-utils';
-import Provider, {
-  Output,
-  OutputKind,
-  QuickAction,
-  QuickActionApplyCallbacks
-} from '../provider';
+import Provider, { Output, OutputKind, QuickAction } from '../provider';
 import withLock from './withLock';
+import withKind from './withKind';
 
 function registerQuickActionMenuComponent<
   K extends OutputKind,
@@ -42,7 +38,7 @@ function registerQuickActionMenuComponent<
   const shared: {
     unlock: () => void;
     abort: () => void;
-    applyCallbacks: QuickActionApplyCallbacks | undefined;
+    applyCallbacks: ApplyCallbacks | undefined;
   } = {
     unlock: () => {},
     abort: () => {},
@@ -245,22 +241,20 @@ function registerQuickActionMenuComponent<
                     toggleExpandedState.setValue(undefined);
                   },
                   generate: async (input) => {
-                    const { returnValue, dispose } = await triggerGeneration({
-                      input,
-                      quickAction,
-                      quickActionMenu,
-                      provider,
-                      cesdk,
-                      abortSignal: createAbortSignal(),
-                      blockIds,
-                      confirmationComponentId
-                    });
+                    const { returnValue, applyCallbacks, dispose } =
+                      await triggerGeneration({
+                        input,
+                        quickAction,
+                        quickActionMenu,
+                        provider,
+                        cesdk,
+                        abortSignal: createAbortSignal(),
+                        blockIds,
+                        confirmationComponentId
+                      });
 
                     shared.unlock = dispose;
-                    shared.applyCallbacks = await quickAction.apply(
-                      returnValue,
-                      input
-                    );
+                    shared.applyCallbacks = applyCallbacks;
 
                     return returnValue;
                   }
@@ -285,7 +279,7 @@ function registerQuickActionMenuComponent<
                         toggleExpandedState.setValue(undefined);
                       },
                       generate: async (input) => {
-                        const { returnValue, dispose } =
+                        const { returnValue, applyCallbacks, dispose } =
                           await triggerGeneration({
                             input,
                             quickAction,
@@ -298,11 +292,7 @@ function registerQuickActionMenuComponent<
                           });
 
                         shared.unlock = dispose;
-                        shared.applyCallbacks = await quickAction.apply(
-                          returnValue,
-                          input
-                        );
-
+                        shared.applyCallbacks = applyCallbacks;
                         return returnValue;
                       }
                     });
@@ -335,6 +325,7 @@ async function triggerGeneration<
 }): Promise<{
   dispose: () => void;
   returnValue: O;
+  applyCallbacks?: ApplyCallbacks;
 }> {
   const {
     cesdk,
@@ -351,7 +342,6 @@ async function triggerGeneration<
     });
   }
 
-  const wasAlwaysOnTop: Record<number, boolean> = {};
   const metadata = new Metadata<InferenceMetadata>(
     cesdk.engine,
     INFERENCE_AI_METADATA_KEY
@@ -361,17 +351,27 @@ async function triggerGeneration<
       status: 'processing',
       quickActionId: quickAction.id
     });
-    wasAlwaysOnTop[blockId] = cesdk.engine.block.isAlwaysOnTop(blockId);
   });
 
-  const { returnValue, unlock } = await withLock(
-    async () => {
-      return provider.output.generate(input, {
-        cesdk,
-        engine: cesdk.engine,
-        abortSignal
-      });
-    },
+  // TODO: Make this prettier and easier to read
+  const {
+    returnValue: { returnValue, applyCallbacks },
+    unlock
+  } = await withLock(
+    withKind(
+      () => {
+        return provider.output.generate(input, {
+          cesdk,
+          engine: cesdk.engine,
+          abortSignal
+        });
+      },
+      {
+        kind: provider.kind,
+        blockIds,
+        cesdk
+      }
+    ),
     {
       cesdk,
       blockIds,
@@ -404,7 +404,8 @@ async function triggerGeneration<
 
   return {
     dispose,
-    returnValue
+    returnValue,
+    applyCallbacks
   };
 }
 

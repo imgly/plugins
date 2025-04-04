@@ -19,8 +19,7 @@ export {
   type GetBlockInputResult,
   type GetInput,
   type QuickAction,
-  type QuickActionsInput,
-  type QuickActionApplyCallbacks
+  type QuickActionsInput
 } from './generation/provider';
 export {
   type GetPropertyInput,

@@ -322,6 +322,7 @@ export interface AudioOutput extends OutputBase<'audio'> {
 
 export interface TextOutput extends OutputBase<'text'> {
   kind: 'text';
+  text: string;
 }
 
 export type QuickActionContext<I, O extends Output> = {
@@ -363,14 +364,6 @@ export type QuickAction<I, O extends Output> = {
     context: BuilderRenderFunctionContext<any>,
     quickActionContext: QuickActionContext<I, O>
   ) => void;
-  apply: (output: O, input: I) => Promise<QuickActionApplyCallbacks>;
-};
-
-export type QuickActionApplyCallbacks = {
-  onBefore?: () => void;
-  onAfter?: () => void;
-  onCancel?: () => void;
-  onApply: () => void;
 };
 
 export default Provider;

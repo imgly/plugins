@@ -2,6 +2,13 @@ import { Output, type QuickAction } from '../provider';
 
 export type QuickActionId = 'ly.img.separator' | (string & {});
 
+export type ApplyCallbacks = {
+  onBefore?: () => void;
+  onAfter?: () => void;
+  onCancel?: () => void;
+  onApply: () => void;
+};
+
 export interface QuickActionMenu {
   id: string;
   registerQuickAction: <I, O extends Output>(

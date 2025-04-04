@@ -77,37 +77,6 @@ export function AnthropicProvider(
                     });
                   }
                 });
-              },
-              apply: (output, { blockId, initialText }) => {
-                const onApply = () => {
-                  if (blockId == null) return;
-                  context.cesdk.engine.block.setString(
-                    blockId,
-                    'text/text',
-                    output.text
-                  );
-                };
-
-                const onBefore =
-                  initialText != null && blockId != null
-                    ? () => {
-                        context.cesdk.engine.block.setString(
-                          blockId,
-                          'text/text',
-                          initialText
-                        );
-                      }
-                    : undefined;
-
-                const onAfter = blockId != null ? onApply : undefined;
-                const onCancel = onBefore;
-
-                return Promise.resolve({
-                  onBefore,
-                  onAfter,
-                  onCancel,
-                  onApply
-                });
               }
             }
           ]
@@ -187,6 +156,7 @@ Please follow these steps to improve the text:
 4. Ensure that the improved version maintains the original meaning and intent of the text.
 5. Return the improved text without any additional commentary or explanation.
 6. If there is nothing to improve, simply return the original text without any changes.
+7. If you cannot make any meaningful improvements, return the original text as is.
 
 Once you have made the improvements, only return the improved text and nothing else.
 `;

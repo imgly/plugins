@@ -172,6 +172,9 @@ function lockSelectionInEditMode(
   selectOnlyBlockIds();
   cesdk.engine.editor.setGlobalScope('editor/select', 'Deny');
   cesdk.engine.editor.setEditMode(editModeToLock);
+  const lockedHistory = cesdk.engine.editor.createHistory();
+  const historyBeforeLock = cesdk.engine.editor.getActiveHistory();
+  cesdk.engine.editor.setActiveHistory(lockedHistory);
 
   function selectOnlyBlockIds() {
     cesdk.engine.block.findAllSelected().forEach((currentlySelectedBlockId) => {
@@ -204,6 +207,8 @@ function lockSelectionInEditMode(
     }
 
     cesdk.engine.editor.setEditMode(editModeBeforeLock);
+    cesdk.engine.editor.setActiveHistory(historyBeforeLock);
+    cesdk.engine.editor.destroyHistory(lockedHistory);
 
     selectionDisposer();
     stateChangeDisposer();
