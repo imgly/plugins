@@ -2,7 +2,7 @@ import CreativeEditorSDK from '@cesdk/cesdk-js';
 import { Provider, QuickAction } from '@imgly/plugin-utils-ai-generation';
 import Anthropic from '@anthropic-ai/sdk';
 import sendPrompt from './sendPrompt';
-import { LANGUAGES, LOCALES, Locale } from './prompts/translate';
+import { LANGUAGES, LOCALES } from './prompts/translate';
 import improve from './prompts/improve';
 import shorter from './prompts/shorter';
 import longer from './prompts/longer';
@@ -141,47 +141,124 @@ export function AnthropicProvider(
   };
 }
 
+type Parameter = {
+  id: string;
+  label: string;
+  icon?: string;
+};
+
+// Define a type that can handle different prompt function signatures
+type PromptFunction =
+  | ((text: string) => string)
+  | ((text: string, param: string) => string)
+  | ((text: string, param: any) => string);
+
 type QuickActionOptions = {
   id: string;
   label: string;
   icon: string;
-  promptFn: (text: string) => string;
+  promptFn: PromptFunction;
+  parameters?: Parameter[];
 };
 
 /**
- * Creates a Quick Action for text operations that take a single text input
+ * Creates a Quick Action for text operations
+ * Supports both simple actions and ones with parameter selection via popover menus
  */
 function createTextQuickAction(
   options: QuickActionOptions
 ): QuickAction<AnthropicInput, AnthropicOutput> {
-  const { id, label, icon, promptFn } = options;
+  const { id, label, icon, promptFn, parameters } = options;
 
+  // Common enable function for all quick actions
+  const enableFn = ({ engine }: { engine: any }) => {
+    const blockIds = engine.block.findAllSelected();
+    if (blockIds == null || blockIds.length !== 1) return false;
+
+    const [blockId] = blockIds;
+    return engine.block.getType(blockId) === '//ly.img.ubq/text';
+  };
+
+  // For simple actions without parameters
+  if (!parameters || parameters.length === 0) {
+    return {
+      id,
+      version: '1',
+      confirmation: true,
+      enable: enableFn,
+      render: ({ builder, engine }, { generate, closeMenu }) => {
+        builder.Button(id, {
+          label,
+          icon,
+          labelAlignment: 'left',
+          variant: 'plain',
+          onClick: () => {
+            closeMenu();
+            const [blockId] = engine.block.findAllSelected();
+            const initialText = engine.block.getString(blockId, 'text/text');
+
+            // Type assertion to handle the simpler function signature
+            const simpleFn = promptFn as (text: string) => string;
+            generate({
+              prompt: simpleFn(initialText),
+              blockId,
+              initialText
+            });
+          }
+        });
+      }
+    };
+  }
+
+  // For actions with parameters displayed in a popover menu
   return {
     id,
     version: '1',
     confirmation: true,
-    enable: ({ engine }) => {
-      const blockIds = engine.block.findAllSelected();
-      if (blockIds == null || blockIds.length !== 1) return false;
-
-      const [blockId] = blockIds;
-      return engine.block.getType(blockId) === '//ly.img.ubq/text';
-    },
-    render: ({ builder, engine }, { generate, closeMenu }) => {
-      builder.Button(id, {
+    enable: enableFn,
+    render: ({ builder, engine, experimental }, { generate, closeMenu }) => {
+      experimental.builder.Popover(`${id}.popover`, {
         label,
         icon,
         labelAlignment: 'left',
         variant: 'plain',
-        onClick: () => {
-          closeMenu();
-          const [blockId] = engine.block.findAllSelected();
-          const initialText = engine.block.getString(blockId, 'text/text');
+        trailingIcon: '@imgly/ChevronRight',
+        placement: 'right',
+        children: () => {
+          builder.Section(`${id}.popover.section`, {
+            children: () => {
+              experimental.builder.Menu(`${id}.popover.menu`, {
+                children: () => {
+                  parameters.forEach((param) => {
+                    builder.Button(`${id}.popover.menu.${param.id}`, {
+                      label: param.label,
+                      icon: param.icon,
+                      labelAlignment: 'left',
+                      variant: 'plain',
+                      onClick: () => {
+                        closeMenu();
+                        const [blockId] = engine.block.findAllSelected();
+                        const initialText = engine.block.getString(
+                          blockId,
+                          'text/text'
+                        );
 
-          generate({
-            prompt: promptFn(initialText),
-            blockId,
-            initialText
+                        // Type assertion to handle the parameterized function signature
+                        const paramFn = promptFn as (
+                          text: string,
+                          param: any
+                        ) => string;
+                        generate({
+                          prompt: paramFn(initialText, param.id),
+                          blockId,
+                          initialText
+                        });
+                      }
+                    });
+                  });
+                }
+              });
+            }
           });
         }
       });
@@ -244,116 +321,29 @@ const TONE_TYPES = [
 ];
 
 function ChangeToneQuickAction(): QuickAction<AnthropicInput, AnthropicOutput> {
-  return {
+  return createTextQuickAction({
     id: 'changeTone',
-    version: '1',
-    confirmation: true,
-    enable: ({ engine }) => {
-      const blockIds = engine.block.findAllSelected();
-      if (blockIds == null || blockIds.length !== 1) return false;
-
-      const [blockId] = blockIds;
-      return engine.block.getType(blockId) === '//ly.img.ubq/text';
-    },
-    render: ({ builder, engine, experimental }, { generate, closeMenu }) => {
-      experimental.builder.Popover('changeTone.popover', {
-        label: 'Change Tone',
-        icon: '@imgly/Microphone',
-        labelAlignment: 'left',
-        variant: 'plain',
-        trailingIcon: '@imgly/ChevronRight',
-        placement: 'right',
-        children: () => {
-          builder.Section('changeTone.popover.section', {
-            children: () => {
-              experimental.builder.Menu('changeTone.popover.menu', {
-                children: () => {
-                  TONE_TYPES.forEach((toneType) => {
-                    builder.Button(`changeTone.popover.menu.${toneType}`, {
-                      label:
-                        toneType.charAt(0).toUpperCase() + toneType.slice(1),
-                      labelAlignment: 'left',
-                      variant: 'plain',
-                      onClick: () => {
-                        closeMenu();
-                        const [blockId] = engine.block.findAllSelected();
-                        const initialText = engine.block.getString(
-                          blockId,
-                          'text/text'
-                        );
-
-                        generate({
-                          prompt: changeTone(initialText, toneType),
-                          blockId,
-                          initialText
-                        });
-                      }
-                    });
-                  });
-                }
-              });
-            }
-          });
-        }
-      });
-    }
-  };
+    label: 'Change Tone',
+    icon: '@imgly/Microphone',
+    promptFn: changeTone,
+    parameters: TONE_TYPES.map((tone) => ({
+      id: tone,
+      label: tone.charAt(0).toUpperCase() + tone.slice(1)
+    }))
+  });
 }
 
 function TranslateQuickAction(): QuickAction<AnthropicInput, AnthropicOutput> {
-  return {
+  return createTextQuickAction({
     id: 'translate',
-    version: '1',
-    confirmation: true,
-    enable: ({ engine }) => {
-      const blockIds = engine.block.findAllSelected();
-      if (blockIds == null || blockIds.length !== 1) return false;
-
-      const [blockId] = blockIds;
-      return engine.block.getType(blockId) === '//ly.img.ubq/text';
-    },
-    render: ({ builder, engine, experimental }, { generate, closeMenu }) => {
-      experimental.builder.Popover('translate.popover', {
-        label: 'Translate',
-        icon: '@imgly/Language',
-        labelAlignment: 'left',
-        variant: 'plain',
-        trailingIcon: '@imgly/ChevronRight',
-        placement: 'right',
-        children: () => {
-          builder.Section('translate.popover.section', {
-            children: () => {
-              experimental.builder.Menu('translate.popover.menu', {
-                children: () => {
-                  LOCALES.forEach((locale) => {
-                    builder.Button(`translate.popover.menu.${locale}`, {
-                      label: LANGUAGES[locale],
-                      labelAlignment: 'left',
-                      variant: 'plain',
-                      onClick: () => {
-                        closeMenu();
-                        const [blockId] = engine.block.findAllSelected();
-                        const initialText = engine.block.getString(
-                          blockId,
-                          'text/text'
-                        );
-
-                        generate({
-                          prompt: translate(initialText, locale),
-                          blockId,
-                          initialText
-                        });
-                      }
-                    });
-                  });
-                }
-              });
-            }
-          });
-        }
-      });
-    }
-  };
+    label: 'Translate',
+    icon: '@imgly/Language',
+    promptFn: translate,
+    parameters: LOCALES.map((locale) => ({
+      id: locale,
+      label: LANGUAGES[locale]
+    }))
+  });
 }
 
 function ChangeTextToQuickAction(): QuickAction<
