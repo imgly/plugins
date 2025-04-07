@@ -1,17 +1,5 @@
-import type Anthropic from '@anthropic-ai/sdk';
-import { sendPrompt } from './utils';
-import { AnthropicProvider } from '../types';
-
-async function shorter(
-  anthropic: Anthropic,
-  provider: AnthropicProvider,
-  text: string,
-  signal: AbortSignal
-) {
-  return sendPrompt(
-    anthropic,
-    provider,
-    `
+function shorter(text: string): string {
+  return `
 You will be given a text to shorten. Your task is to reduce the length of the text by 30% to 50% while maintaining its original voice, perspective, and key information. This is not a summary - you should preserve the style and tone of the original text.
 
 Here is the original text:
@@ -42,9 +30,7 @@ To complete this task, follow these steps:
 6. Once you've finished shortening, review the text to ensure it still reads smoothly and retains the essence of the original.
 
 Provide only the shortened version of the text in your response, without any additional comments, tags or explanations.
-`,
-    signal
-  );
+`;
 }
 
 export default shorter;

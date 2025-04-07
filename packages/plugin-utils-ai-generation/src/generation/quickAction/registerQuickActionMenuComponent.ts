@@ -153,9 +153,14 @@ function registerQuickActionMenuComponent<
               isDisabled: comparingState.value !== 'after',
               onClick: () => {
                 shared.unlock();
+                clearMetadata();
+
+                // Activating the old history happens in the next update lop.
+                // @ts-ignore
+                cesdk.engine.editor._update();
+
                 onApply();
                 engine.editor.addUndoStep();
-                clearMetadata();
               }
             });
           }
@@ -276,7 +281,7 @@ function registerQuickActionMenuComponent<
                       blockIds,
                       closeMenu: close,
                       toggleExpand: () => {
-                        toggleExpandedState.setValue(undefined);
+                        toggleExpandedState.setValue(quickAction.id);
                       },
                       generate: async (input) => {
                         const { returnValue, applyCallbacks, dispose } =
@@ -367,6 +372,7 @@ async function triggerGeneration<
         });
       },
       {
+        abortSignal,
         kind: provider.kind,
         blockIds,
         cesdk

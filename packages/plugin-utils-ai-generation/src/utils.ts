@@ -1,3 +1,5 @@
+import { GenerationResult, Output } from "./generation/provider";
+
 export const AI_PANEL_ID_PREFIX = 'ly.img.ai';
 
 /**
@@ -240,5 +242,28 @@ export function getLabelFromId(id: string): string {
       .split(' ')
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
       .join(' ')
+  );
+}
+
+/**
+ * Type guard to check if a value is an AsyncGenerator rather than a Promise
+ * 
+ * @param value - Value of type Promise<O> | AsyncGenerator<O, C>
+ * @returns Boolean indicating if the value is an AsyncGenerator
+ */
+export function isAsyncGenerator<O extends Output, C>(
+  value: GenerationResult<O, C>
+): value is AsyncGenerator<O, C> {
+  return (
+    typeof value === 'object' && 
+    value !== null &&
+    'next' in value && 
+    'return' in value && 
+    'throw' in value &&
+    typeof value.next === 'function' &&
+    typeof value.return === 'function' &&
+    typeof value.throw === 'function' &&
+    Symbol.asyncIterator in value && 
+    typeof value[Symbol.asyncIterator] === "function"
   );
 }

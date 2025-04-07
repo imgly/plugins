@@ -1,17 +1,5 @@
-import type Anthropic from '@anthropic-ai/sdk';
-import { sendPrompt } from './utils';
-import { AnthropicProvider } from '../types';
-
-async function longer(
-  anthropic: Anthropic,
-  provider: AnthropicProvider,
-  text: string,
-  signal: AbortSignal
-) {
-  return sendPrompt(
-    anthropic,
-    provider,
-    `
+function longer(text: string): string {
+  return `
 You are tasked with expanding a given text to make it longer. Here's how to proceed:
 
 First, you will be provided with the original text:
@@ -45,9 +33,7 @@ Only return the longer text and nothing else.
 Make sure to only return the expanded text and nothing else. Do not include any additional information or comments in your response about what you have done.
 
 Do not add the original text or the original_text tags to the response.
-`,
-    signal
-  );
+`;
 }
 
 export default longer;

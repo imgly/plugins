@@ -2,18 +2,7 @@ import { type EditorPlugin } from '@cesdk/cesdk-js';
 import iconSprite, { PLUGIN_ICON_SET_ID } from './iconSprite';
 import { PluginConfiguration } from './types';
 import Anthropic from '@anthropic-ai/sdk';
-import translate, { LANGUAGES, LOCALES } from './prompts/translate';
-import improve from './prompts/improve';
-import createMagicEntryForText from './createMagicEntryForText';
-import {
-  registerQuickActionMenuComponent,
-  getQuickActionMenu
-} from '@imgly/plugin-utils-ai-generation';
-import fix from './prompts/fix';
-import shorter from './prompts/shorter';
-import longer from './prompts/longer';
-import changeTone from './prompts/changeTone';
-import changeTextTo from './prompts/changeTextTo';
+import { getQuickActionMenu } from '@imgly/plugin-utils-ai-generation';
 
 export { PLUGIN_ID } from './constants';
 
@@ -36,17 +25,19 @@ export default (
 
       const provider = config.provider;
 
-      const anthropic = new Anthropic({
-        dangerouslyAllowBrowser: true,
-        baseURL: provider.proxyUrl,
-        // Will be injected by the proxy
-        apiKey: null,
-        authToken: null
-      });
-
       const quickActionMenu = getQuickActionMenu(cesdk, 'text');
 
-      quickActionMenu.setQuickActionMenuOrder(['improve']);
+      quickActionMenu.setQuickActionMenuOrder([
+        'improve',
+        'fix',
+        'shorter',
+        'longer',
+        'ly.img.separator',
+        'changeTone',
+        'translate',
+        'ly.img.separator',
+        'changeTextTo'
+      ]);
       // magicMenu.registerMagicEntry(
       //   createMagicEntryForText({
       //     cesdk,
@@ -193,14 +184,7 @@ export default (
           'ly.img.ai.inference.translate.processing': 'Translating...',
 
           'ly.img.ai.inference.changeTextTo': 'Change Text to...',
-          'ly.img.ai.inference.changeTextTo.processing': 'Changing text...',
-          ...Object.entries(LANGUAGES).reduce(
-            (acc: Record<string, string>, [locale, langauge]) => {
-              acc[`ly.img.ai.inference.translate.type.${locale}`] = langauge;
-              return acc;
-            },
-            {}
-          )
+          'ly.img.ai.inference.changeTextTo.processing': 'Changing text...'
         }
       });
     }

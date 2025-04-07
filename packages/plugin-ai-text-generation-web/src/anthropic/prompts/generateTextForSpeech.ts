@@ -1,17 +1,5 @@
-import type Anthropic from '@anthropic-ai/sdk';
-import { sendPrompt } from './utils';
-import { AnthropicProvider } from '../types';
-
-async function generateTextForSpeech(
-  anthropic: Anthropic,
-  provider: AnthropicProvider,
-  text: string,
-  signal: AbortSignal
-) {
-  return sendPrompt(
-    anthropic,
-    provider,
-    `
+function generateTextForSpeech(text: string): string {
+  return `
     Your task is to create a new text based on a given prompt. The text should be short enough that it can be read aloud in no more than 5 seconds.
 
 Follow these guidelines when generating the text:
@@ -27,9 +15,7 @@ ${text}
 </prompt>
 
 Generate a short text based on this prompt. Output only the generated text, without any additional explanation or commentary. Do not include any XML tags in your response.
-`,
-    signal
-  );
+`;
 }
 
 export default generateTextForSpeech;

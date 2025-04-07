@@ -1,13 +1,14 @@
 /* eslint-disable no-console */
 import type { AssetDefinition, AssetResult } from '@cesdk/cesdk-js';
-import { uuid4 } from '../utils';
+import { isAsyncGenerator, uuid4 } from '../utils';
 import type Provider from './provider';
 import {
   type GetInput,
   type GetBlockInput,
   OutputKind,
   type Output,
-  GetBlockInputResult
+  GetBlockInputResult,
+  GenerationResult
 } from './provider';
 import { InitProviderConfiguration, UIOptions } from './types';
 import CreativeEditorSDK from '@cesdk/cesdk-js';
@@ -70,13 +71,17 @@ async function generate<K extends OutputKind, I, O extends Output>(
     }
 
     // Trigger the generation
-    const output: O = config.dryRun
+    const output: GenerationResult<O> = config.dryRun
       ? ((await dryRun(kind, blockInputs)) as O)
       : await provider.output.generate(inputs.input, {
           abortSignal,
           engine: options.engine,
           cesdk
         });
+
+    if (isAsyncGenerator(output)) {
+      throw new Error('Streaming generation is not supported yet from a panel');
+    }
 
     if (checkAbortSignal(cesdk, abortSignal, placeholderBlock))
       return { status: 'aborted' };

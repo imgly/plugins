@@ -207,7 +207,10 @@ function lockSelectionInEditMode(
     }
 
     cesdk.engine.editor.setEditMode(editModeBeforeLock);
+    console.log('history is now', cesdk.engine.editor.getActiveHistory());
+    console.log('resetting history to', historyBeforeLock);
     cesdk.engine.editor.setActiveHistory(historyBeforeLock);
+    console.log('now history is', cesdk.engine.editor.getActiveHistory());
     cesdk.engine.editor.destroyHistory(lockedHistory);
 
     selectionDisposer();

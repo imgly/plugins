@@ -1,7 +1,16 @@
 import CreativeEditorSDK from '@cesdk/cesdk-js';
-import { Provider } from '@imgly/plugin-utils-ai-generation';
+import { Provider, QuickAction } from '@imgly/plugin-utils-ai-generation';
 import Anthropic from '@anthropic-ai/sdk';
-import { sendPrompt } from '../prompts/utils';
+import sendPrompt from './sendPrompt';
+import { LANGUAGES, LOCALES, Locale } from './prompts/translate';
+import improve from './prompts/improve';
+import shorter from './prompts/shorter';
+import longer from './prompts/longer';
+import fix from './prompts/fix';
+import generateTextForSpeech from './prompts/generateTextForSpeech';
+import translate from './prompts/translate';
+import changeTone from './prompts/changeTone';
+import changeTextTo from './prompts/changeTextTo';
 
 type ProviderConfiguration = {
   proxyUrl: string;
@@ -28,6 +37,18 @@ export function AnthropicProvider(
   cesdk: CreativeEditorSDK;
 }) => Promise<Provider<'text', AnthropicInput, AnthropicOutput>> {
   return (context: { cesdk: CreativeEditorSDK }) => {
+    context.cesdk.i18n.setTranslations({
+      en: {
+        ...Object.entries(LANGUAGES).reduce(
+          (acc: Record<string, string>, [locale, langauge]) => {
+            acc[`ly.img.ai.inference.translate.type.${locale}`] = langauge;
+            return acc;
+          },
+          {}
+        )
+      }
+    });
+
     let anthropic: Anthropic | null = null;
     const provider: Provider<'text', AnthropicInput, AnthropicOutput> = {
       kind: 'text',
@@ -44,46 +65,22 @@ export function AnthropicProvider(
       input: {
         quickActions: {
           actions: [
-            {
-              id: 'improve',
-              version: '1',
-              confirmation: true,
-              enable: ({ engine }) => {
-                const blockIds = engine.block.findAllSelected();
-                if (blockIds == null || blockIds.length !== 1) return false;
-
-                const [blockId] = blockIds;
-                return engine.block.getType(blockId) === '//ly.img.ubq/text';
-              },
-              render: ({ builder, engine }, { generate, closeMenu }) => {
-                builder.Button('improve', {
-                  label: 'Improve',
-                  icon: '@imgly/MagicWand',
-                  labelAlignment: 'left',
-                  variant: 'plain',
-                  onClick: () => {
-                    closeMenu();
-                    const [blockId] = engine.block.findAllSelected();
-
-                    const initialText = engine.block.getString(
-                      blockId,
-                      'text/text'
-                    );
-
-                    generate({
-                      prompt: improve(initialText),
-                      blockId,
-                      initialText
-                    });
-                  }
-                });
-              }
-            }
+            ImproveQuickAction(),
+            FixQuickAction(),
+            ShorterQuickAction(),
+            LongerQuickAction(),
+            SpeechQuickAction(),
+            ChangeToneQuickAction(),
+            TranslateQuickAction(),
+            ChangeTextToQuickAction()
           ]
         }
       },
       output: {
-        generate: async ({ prompt, blockId }, { engine, abortSignal }) => {
+        generate: async function (
+          { prompt, blockId },
+          { engine, abortSignal }
+        ): Promise<AsyncGenerator<AnthropicOutput, AnthropicOutput>> {
           if (anthropic == null)
             throw new Error('Anthropic SDK is not initialized');
 
@@ -96,6 +93,12 @@ export function AnthropicProvider(
             );
           }
 
+          if (config.debug)
+            console.log(
+              'Sending prompt to Anthropic:',
+              JSON.stringify(prompt, undefined, 2)
+            );
+
           const stream = await sendPrompt(
             anthropic,
             {
@@ -106,26 +109,30 @@ export function AnthropicProvider(
             abortSignal
           );
 
-          let inferredText = '';
-          for await (const chunk of stream) {
-            if (abortSignal.aborted) {
-              break;
+          // Create a new AsyncGenerator that yields AnthropicOutput objects
+          async function* outputGenerator(): AsyncGenerator<
+            AnthropicOutput,
+            AnthropicOutput
+          > {
+            let inferredText: string = '';
+            for await (const chunk of stream) {
+              if (abortSignal.aborted) {
+                break;
+              }
+              inferredText += chunk;
+              yield {
+                kind: 'text',
+                text: inferredText
+              };
             }
-            inferredText += chunk;
-
-            if (blockId != null) {
-              context.cesdk.engine.block.setString(
-                blockId,
-                'text/text',
-                inferredText
-              );
-            }
+            // Return the final result
+            return {
+              kind: 'text',
+              text: inferredText
+            };
           }
 
-          return Promise.resolve({
-            kind: 'text',
-            text: inferredText
-          });
+          return outputGenerator();
         }
       }
     };
@@ -134,30 +141,289 @@ export function AnthropicProvider(
   };
 }
 
-function improve(text: string): string {
-  return `
-You are an AI writing assistant tasked with improving a given text based on a specific type of improvement requested. Your goal is to enhance the text while maintaining its original meaning and intent.
+type QuickActionOptions = {
+  id: string;
+  label: string;
+  icon: string;
+  promptFn: (text: string) => string;
+};
 
-Here is the original text you will be working with:
+/**
+ * Creates a Quick Action for text operations that take a single text input
+ */
+function createTextQuickAction(
+  options: QuickActionOptions
+): QuickAction<AnthropicInput, AnthropicOutput> {
+  const { id, label, icon, promptFn } = options;
 
-<original_text>
-${text}
-</original_text>
+  return {
+    id,
+    version: '1',
+    confirmation: true,
+    enable: ({ engine }) => {
+      const blockIds = engine.block.findAllSelected();
+      if (blockIds == null || blockIds.length !== 1) return false;
 
-Please follow these steps to improve the text:
+      const [blockId] = blockIds;
+      return engine.block.getType(blockId) === '//ly.img.ubq/text';
+    },
+    render: ({ builder, engine }, { generate, closeMenu }) => {
+      builder.Button(id, {
+        label,
+        icon,
+        labelAlignment: 'left',
+        variant: 'plain',
+        onClick: () => {
+          closeMenu();
+          const [blockId] = engine.block.findAllSelected();
+          const initialText = engine.block.getString(blockId, 'text/text');
 
-1. Carefully read and analyze the original text.
-2. Consider the specific improvement type requested and how it applies to the given text.
-3. Make the necessary changes to improve the text according to the requested improvement type. This may include:
-   - Rephrasing sentences
-   - Adjusting vocabulary
-   - Restructuring paragraphs
-   - Adding or removing content as appropriate
-4. Ensure that the improved version maintains the original meaning and intent of the text.
-5. Return the improved text without any additional commentary or explanation.
-6. If there is nothing to improve, simply return the original text without any changes.
-7. If you cannot make any meaningful improvements, return the original text as is.
+          generate({
+            prompt: promptFn(initialText),
+            blockId,
+            initialText
+          });
+        }
+      });
+    }
+  };
+}
 
-Once you have made the improvements, only return the improved text and nothing else.
-`;
+function ImproveQuickAction(): QuickAction<AnthropicInput, AnthropicOutput> {
+  return createTextQuickAction({
+    id: 'improve',
+    label: 'Improve',
+    icon: '@imgly/MagicWand',
+    promptFn: improve
+  });
+}
+
+function ShorterQuickAction(): QuickAction<AnthropicInput, AnthropicOutput> {
+  return createTextQuickAction({
+    id: 'shorter',
+    label: 'Make Shorter',
+    icon: '@imgly/TextShorter',
+    promptFn: shorter
+  });
+}
+
+function LongerQuickAction(): QuickAction<AnthropicInput, AnthropicOutput> {
+  return createTextQuickAction({
+    id: 'longer',
+    label: 'Make Longer',
+    icon: '@imgly/TextLonger',
+    promptFn: longer
+  });
+}
+
+function FixQuickAction(): QuickAction<AnthropicInput, AnthropicOutput> {
+  return createTextQuickAction({
+    id: 'fix',
+    label: 'Fix Spelling & Grammar',
+    icon: '@imgly/CheckmarkAll',
+    promptFn: fix
+  });
+}
+
+function SpeechQuickAction(): QuickAction<AnthropicInput, AnthropicOutput> {
+  return createTextQuickAction({
+    id: 'speech',
+    label: 'Generate Speech Text',
+    icon: '@imgly/Microphone',
+    promptFn: generateTextForSpeech
+  });
+}
+
+const TONE_TYPES = [
+  'professional',
+  'casual',
+  'friendly',
+  'serious',
+  'humorous',
+  'optimistic'
+];
+
+function ChangeToneQuickAction(): QuickAction<AnthropicInput, AnthropicOutput> {
+  return {
+    id: 'changeTone',
+    version: '1',
+    confirmation: true,
+    enable: ({ engine }) => {
+      const blockIds = engine.block.findAllSelected();
+      if (blockIds == null || blockIds.length !== 1) return false;
+
+      const [blockId] = blockIds;
+      return engine.block.getType(blockId) === '//ly.img.ubq/text';
+    },
+    render: ({ builder, engine, experimental }, { generate, closeMenu }) => {
+      experimental.builder.Popover('changeTone.popover', {
+        label: 'Change Tone',
+        icon: '@imgly/Microphone',
+        labelAlignment: 'left',
+        variant: 'plain',
+        trailingIcon: '@imgly/ChevronRight',
+        placement: 'right',
+        children: () => {
+          builder.Section('changeTone.popover.section', {
+            children: () => {
+              experimental.builder.Menu('changeTone.popover.menu', {
+                children: () => {
+                  TONE_TYPES.forEach((toneType) => {
+                    builder.Button(`changeTone.popover.menu.${toneType}`, {
+                      label:
+                        toneType.charAt(0).toUpperCase() + toneType.slice(1),
+                      labelAlignment: 'left',
+                      variant: 'plain',
+                      onClick: () => {
+                        closeMenu();
+                        const [blockId] = engine.block.findAllSelected();
+                        const initialText = engine.block.getString(
+                          blockId,
+                          'text/text'
+                        );
+
+                        generate({
+                          prompt: changeTone(initialText, toneType),
+                          blockId,
+                          initialText
+                        });
+                      }
+                    });
+                  });
+                }
+              });
+            }
+          });
+        }
+      });
+    }
+  };
+}
+
+function TranslateQuickAction(): QuickAction<AnthropicInput, AnthropicOutput> {
+  return {
+    id: 'translate',
+    version: '1',
+    confirmation: true,
+    enable: ({ engine }) => {
+      const blockIds = engine.block.findAllSelected();
+      if (blockIds == null || blockIds.length !== 1) return false;
+
+      const [blockId] = blockIds;
+      return engine.block.getType(blockId) === '//ly.img.ubq/text';
+    },
+    render: ({ builder, engine, experimental }, { generate, closeMenu }) => {
+      experimental.builder.Popover('translate.popover', {
+        label: 'Translate',
+        icon: '@imgly/Language',
+        labelAlignment: 'left',
+        variant: 'plain',
+        trailingIcon: '@imgly/ChevronRight',
+        placement: 'right',
+        children: () => {
+          builder.Section('translate.popover.section', {
+            children: () => {
+              experimental.builder.Menu('translate.popover.menu', {
+                children: () => {
+                  LOCALES.forEach((locale) => {
+                    builder.Button(`translate.popover.menu.${locale}`, {
+                      label: LANGUAGES[locale],
+                      labelAlignment: 'left',
+                      variant: 'plain',
+                      onClick: () => {
+                        closeMenu();
+                        const [blockId] = engine.block.findAllSelected();
+                        const initialText = engine.block.getString(
+                          blockId,
+                          'text/text'
+                        );
+
+                        generate({
+                          prompt: translate(initialText, locale),
+                          blockId,
+                          initialText
+                        });
+                      }
+                    });
+                  });
+                }
+              });
+            }
+          });
+        }
+      });
+    }
+  };
+}
+
+function ChangeTextToQuickAction(): QuickAction<
+  AnthropicInput,
+  AnthropicOutput
+> {
+  return {
+    id: 'changeTextTo',
+    version: '1',
+    confirmation: true,
+    enable: ({ engine }) => {
+      const blockIds = engine.block.findAllSelected();
+      if (blockIds == null || blockIds.length !== 1) return false;
+
+      const [blockId] = blockIds;
+      return engine.block.getType(blockId) === '//ly.img.ubq/text';
+    },
+    render: ({ builder }, { toggleExpand }) => {
+      builder.Button('changeTextTo.button', {
+        label: 'Change Text to...',
+        icon: '@imgly/Rename',
+        labelAlignment: 'left',
+        variant: 'plain',
+        onClick: toggleExpand
+      });
+    },
+    renderExpanded: (
+      { builder, engine, experimental, state },
+      { generate, toggleExpand }
+    ) => {
+      const customPromptState = state('changeTextTo.prompt', '');
+
+      builder.TextArea('changeTextTo.textarea', {
+        inputLabel: 'Change text to...',
+        ...customPromptState
+      });
+
+      builder.Separator('changeTextTo.separator');
+
+      experimental.builder.ButtonRow('changeTextTo.footer', {
+        justifyContent: 'space-between',
+        children: () => {
+          builder.Button('changeTextTo.footer.cancel', {
+            label: 'Back',
+            icon: '@imgly/ChevronLeft',
+            onClick: toggleExpand
+          });
+
+          builder.Button('changeTextTo.footer.apply', {
+            label: 'Rewrite',
+            icon: '@imgly/MagicWand',
+            color: 'accent',
+            onClick: () => {
+              const customPrompt = customPromptState.value;
+              if (!customPrompt) return;
+
+              const [blockId] = engine.block.findAllSelected();
+              const initialText = engine.block.getString(blockId, 'text/text');
+
+              generate({
+                prompt: changeTextTo(initialText, customPrompt),
+                blockId,
+                initialText
+              });
+
+              toggleExpand();
+            }
+          });
+        }
+      });
+    }
+  };
 }

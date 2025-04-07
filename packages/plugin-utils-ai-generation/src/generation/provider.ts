@@ -8,7 +8,7 @@ import {
 } from '@cesdk/cesdk-js';
 import { GetPropertyInput, Property } from './openapi/types';
 
-interface Provider<K extends OutputKind, I, O extends Output> {
+interface Provider<K extends OutputKind, I, O extends Output, C = O> {
   /**
    * Defines the kind of the generated asset. Maps to the kind
    * CE.SDK
@@ -146,7 +146,7 @@ interface Provider<K extends OutputKind, I, O extends Output> {
         engine: CreativeEngine;
         cesdk?: CreativeEditorSDK;
       }
-    ) => Promise<O>;
+    ) => Promise<GenerationResult<O, C>>;
 
     /**
      * Render custom components after the generation button.
@@ -156,6 +156,18 @@ interface Provider<K extends OutputKind, I, O extends Output> {
     ) => void;
   };
 }
+
+/**
+ * The result of the generation function.
+ *
+ * Is either a promise that is directly returning
+ * the result of the generation, or an async generator
+ * that streams the result in chunks (C) and finally
+ * returns the final result (O).
+ */
+export type GenerationResult<O extends Output, C = O> =
+  | O
+  | AsyncGenerator<O, C>;
 
 export type RenderCustomProperty = {
   [key: string]: (

@@ -1,17 +1,5 @@
-import type Anthropic from '@anthropic-ai/sdk';
-import { sendPrompt } from './utils';
-import { AnthropicProvider } from '../types';
-
-async function improve(
-  anthropic: Anthropic,
-  provider: AnthropicProvider,
-  text: string,
-  signal: AbortSignal
-) {
-  return sendPrompt(
-    anthropic,
-    provider,
-    `
+function improve(text: string): string {
+  return `
 You are an AI writing assistant tasked with improving a given text based on a specific type of improvement requested. Your goal is to enhance the text while maintaining its original meaning and intent.
 
 Here is the original text you will be working with:
@@ -32,11 +20,10 @@ Please follow these steps to improve the text:
 4. Ensure that the improved version maintains the original meaning and intent of the text.
 5. Return the improved text without any additional commentary or explanation.
 6. If there is nothing to improve, simply return the original text without any changes.
+7. If you cannot make any meaningful improvements, return the original text as is.
 
 Once you have made the improvements, only return the improved text and nothing else.
-`,
-    signal
-  );
+`;
 }
 
 export default improve;

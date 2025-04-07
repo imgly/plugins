@@ -1,17 +1,5 @@
-import type Anthropic from '@anthropic-ai/sdk';
-import { sendPrompt } from './utils';
-import { AnthropicProvider } from '../types';
-
-async function fix(
-  anthropic: Anthropic,
-  provider: AnthropicProvider,
-  text: string,
-  signal: AbortSignal
-) {
-  return sendPrompt(
-    anthropic,
-    provider,
-    `
+function fix(text: string): string {
+  return `
 You are tasked with fixing spelling and grammar errors in a given text. Your goal is to improve the text while maintaining its original meaning and style. Here is the text you need to correct:
 
 <original_text>
@@ -41,9 +29,7 @@ Please follow these steps to complete the task:
 After making the necessary corrections, please provide only the improved output and nothing else.
 
 Remember to preserve the original structure and formatting of the text as much as possible while making your corrections.
-`,
-    signal
-  );
+`;
 }
 
 export default fix;

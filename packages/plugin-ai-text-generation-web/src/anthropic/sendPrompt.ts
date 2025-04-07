@@ -1,13 +1,6 @@
 import type Anthropic from '@anthropic-ai/sdk';
 import { AnthropicProvider } from '../types';
 
-export const INFERENCE_AI_EDIT_MODE = 'ly.img.ai.inference.editMode';
-
-export const INFERENCE_AI_METADATA_KEY = 'ly.img.ai.inference.metadata';
-
-export const INFERENCE_CONFIRMATION_COMPONENT_ID =
-  'ly.img.ai.inference.confirmation.canvasMenu';
-
 export const DEFAULT_ANTHROPIC_PARAMS = {
   // model: 'claude-3-5-sonnet-20241022',
   model: 'claude-3-7-sonnet-20250219',
@@ -22,7 +15,7 @@ export const DEFAULT_ANTHROPIC_OPTIONS = {
   }
 };
 
-export async function sendPrompt(
+async function sendPrompt(
   anthropic: Anthropic,
   provider: AnthropicProvider,
   prompt: string,
@@ -76,3 +69,5 @@ export async function sendPrompt(
 
   return textStreamGenerator();
 }
+
+export default sendPrompt;
