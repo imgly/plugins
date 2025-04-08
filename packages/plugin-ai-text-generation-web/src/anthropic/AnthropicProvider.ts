@@ -159,6 +159,11 @@ type QuickActionOptions = {
   icon: string;
   promptFn: PromptFunction;
   parameters?: Parameter[];
+  // Optional custom renderExpanded function for complex quick actions
+  renderExpanded?: QuickAction<
+    AnthropicInput,
+    AnthropicOutput
+  >['renderExpanded'];
 };
 
 /**
@@ -168,7 +173,7 @@ type QuickActionOptions = {
 function createTextQuickAction(
   options: QuickActionOptions
 ): QuickAction<AnthropicInput, AnthropicOutput> {
-  const { id, label, icon, promptFn, parameters } = options;
+  const { id, label, icon, promptFn, parameters, renderExpanded } = options;
 
   // Common enable function for all quick actions
   const enableFn = ({ engine }: { engine: any }) => {
@@ -179,13 +184,40 @@ function createTextQuickAction(
     return engine.block.getType(blockId) === '//ly.img.ubq/text';
   };
 
+  // Base configuration shared by all types of quick actions
+  type BaseQuickAction = Pick<
+    QuickAction<AnthropicInput, AnthropicOutput>,
+    'id' | 'version' | 'confirmation' | 'enable'
+  >;
+
+  const baseConfig: BaseQuickAction = {
+    id,
+    version: '1',
+    confirmation: true,
+    enable: enableFn
+  };
+
+  // If a custom renderExpanded function is provided, create an expandable quick action
+  if (renderExpanded) {
+    return {
+      ...baseConfig,
+      render: ({ builder }, { toggleExpand }) => {
+        builder.Button(`${id}.button`, {
+          label,
+          icon,
+          labelAlignment: 'left',
+          variant: 'plain',
+          onClick: toggleExpand
+        });
+      },
+      renderExpanded
+    };
+  }
+
   // For simple actions without parameters
   if (!parameters || parameters.length === 0) {
     return {
-      id,
-      version: '1',
-      confirmation: true,
-      enable: enableFn,
+      ...baseConfig,
       render: ({ builder, engine }, { generate, closeMenu }) => {
         builder.Button(id, {
           label,
@@ -212,10 +244,7 @@ function createTextQuickAction(
 
   // For actions with parameters displayed in a popover menu
   return {
-    id,
-    version: '1',
-    confirmation: true,
-    enable: enableFn,
+    ...baseConfig,
     render: ({ builder, engine, experimental }, { generate, closeMenu }) => {
       experimental.builder.Popover(`${id}.popover`, {
         label,
@@ -350,26 +379,11 @@ function ChangeTextToQuickAction(): QuickAction<
   AnthropicInput,
   AnthropicOutput
 > {
-  return {
+  return createTextQuickAction({
     id: 'changeTextTo',
-    version: '1',
-    confirmation: true,
-    enable: ({ engine }) => {
-      const blockIds = engine.block.findAllSelected();
-      if (blockIds == null || blockIds.length !== 1) return false;
-
-      const [blockId] = blockIds;
-      return engine.block.getType(blockId) === '//ly.img.ubq/text';
-    },
-    render: ({ builder }, { toggleExpand }) => {
-      builder.Button('changeTextTo.button', {
-        label: 'Change Text to...',
-        icon: '@imgly/Rename',
-        labelAlignment: 'left',
-        variant: 'plain',
-        onClick: toggleExpand
-      });
-    },
+    label: 'Change Text to...',
+    icon: '@imgly/Rename',
+    promptFn: changeTextTo,
     renderExpanded: (
       { builder, engine, experimental, state },
       { generate, toggleExpand }
@@ -415,5 +429,5 @@ function ChangeTextToQuickAction(): QuickAction<
         }
       });
     }
-  };
+  });
 }
