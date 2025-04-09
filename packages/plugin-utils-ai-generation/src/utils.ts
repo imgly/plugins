@@ -1,4 +1,4 @@
-import { GenerationResult, Output } from "./generation/provider";
+import { GenerationResult, Output } from './generation/provider';
 
 export const AI_PANEL_ID_PREFIX = 'ly.img.ai';
 
@@ -233,13 +233,14 @@ export function getLabelFromId(id: string): string {
   // Handle snake_case, kebab-case, camelCase, and PascalCase
   return (
     id
-      // Add spaces before uppercase letters (for camelCase and PascalCase)
-      .replace(/([A-Z])/g, ' $1')
       // Replace underscores and hyphens with spaces (for snake_case and kebab-case)
       .replace(/[_-]/g, ' ')
+      // Add spaces before uppercase letters (for camelCase and PascalCase)
+      .replace(/([A-Z])/g, ' $1')
       // Trim any extra spaces and ensure first letter is capitalized
       .trim()
       .split(' ')
+      .filter((word) => word.length > 0) // Remove empty strings from multiple spaces
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
       .join(' ')
   );
@@ -247,7 +248,7 @@ export function getLabelFromId(id: string): string {
 
 /**
  * Type guard to check if a value is an AsyncGenerator rather than a Promise
- * 
+ *
  * @param value - Value of type Promise<O> | AsyncGenerator<O, C>
  * @returns Boolean indicating if the value is an AsyncGenerator
  */
@@ -255,15 +256,15 @@ export function isAsyncGenerator<O extends Output, C>(
   value: GenerationResult<O, C>
 ): value is AsyncGenerator<O, C> {
   return (
-    typeof value === 'object' && 
+    typeof value === 'object' &&
     value !== null &&
-    'next' in value && 
-    'return' in value && 
+    'next' in value &&
+    'return' in value &&
     'throw' in value &&
     typeof value.next === 'function' &&
     typeof value.return === 'function' &&
     typeof value.throw === 'function' &&
-    Symbol.asyncIterator in value && 
-    typeof value[Symbol.asyncIterator] === "function"
+    Symbol.asyncIterator in value &&
+    typeof value[Symbol.asyncIterator] === 'function'
   );
 }
