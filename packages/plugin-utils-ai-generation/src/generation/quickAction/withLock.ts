@@ -19,7 +19,7 @@ async function withLock<R>(
     editMode: string;
 
     /**
-     * Should the blocks be set to a pending state while locked?
+     * Should the blocks be set to a pending state?
      *
      * @default true
      */
@@ -67,17 +67,9 @@ async function withLock<R>(
     locked = true
   } = options;
 
-  if (!locked) {
-    const returnValue = await fn();
-    return {
-      unlock: () => {},
-      returnValue
-    };
-  }
-
   let unlock: () => void = () => {};
   try {
-    if (pending && locked) {
+    if (pending) {
       blockIds.forEach((blockId) => {
         cesdk.engine.block.setState(blockId, { type: 'Pending', progress: 0 });
       });
@@ -103,11 +95,9 @@ async function withLock<R>(
       });
     }
 
-    const unlockSelectionLock = lockSelectionInEditMode(
-      cesdk,
-      blockIds,
-      editMode
-    );
+    const unlockSelectionLock = locked
+      ? lockSelectionInEditMode(cesdk, blockIds, editMode)
+      : () => {};
     unlock = () => {
       unlockSelectionLock();
       if (alwaysOnTop) {
@@ -142,13 +132,17 @@ async function withLock<R>(
           }
         : unlock
     };
+  } catch (error) {
+    // Ensure that the blocks are unlocked on error
+    unlock();
+    throw error;
   } finally {
+    if (pending) {
+      blockIds.forEach((blockId) => {
+        cesdk.engine.block.setState(blockId, { type: 'Ready' });
+      });
+    }
     if (locked) {
-      if (pending) {
-        blockIds.forEach((blockId) => {
-          cesdk.engine.block.setState(blockId, { type: 'Ready' });
-        });
-      }
       if (automaticallyUnlock) {
         unlock();
       }

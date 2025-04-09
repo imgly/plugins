@@ -5,7 +5,9 @@ import {
   RenderCustomProperty,
   GetBlockInput,
   CommonProperties,
-  Provider
+  Provider,
+  QuickAction,
+  Output
 } from '@imgly/plugin-utils-ai-generation';
 import { fal } from '@fal-ai/client';
 import { isCustomImageSize, uploadImageInputToFalIfNeeded } from './utils';
@@ -34,6 +36,7 @@ function createImageProvider<I extends Record<string, any>>(
 
     renderCustomProperty?: RenderCustomProperty;
 
+    quickActions?: QuickAction<I, ImageOutput>[];
     getBlockInput?: GetBlockInput<'image', I>;
     getImageSize?: (input: I) => { width: number; height: number };
 
@@ -53,6 +56,9 @@ function createImageProvider<I extends Record<string, any>>(
       options.initialize?.(context);
     },
     input: {
+      quickActions: {
+        actions: options.quickActions ?? []
+      },
       panel: {
         type: 'schema',
         document: options.schema,

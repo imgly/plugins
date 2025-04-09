@@ -245,7 +245,7 @@ function registerQuickActionMenuComponent<
                   toggleExpand: () => {
                     toggleExpandedState.setValue(undefined);
                   },
-                  generate: async (input) => {
+                  generate: async (input, options) => {
                     const { returnValue, applyCallbacks, dispose } =
                       await triggerGeneration({
                         input,
@@ -254,7 +254,7 @@ function registerQuickActionMenuComponent<
                         provider,
                         cesdk,
                         abortSignal: createAbortSignal(),
-                        blockIds,
+                        blockIds: options?.blockIds ?? blockIds,
                         confirmationComponentId
                       });
 
@@ -283,7 +283,7 @@ function registerQuickActionMenuComponent<
                       toggleExpand: () => {
                         toggleExpandedState.setValue(quickAction.id);
                       },
-                      generate: async (input) => {
+                      generate: async (input, options) => {
                         const { returnValue, applyCallbacks, dispose } =
                           await triggerGeneration({
                             input,
@@ -292,7 +292,7 @@ function registerQuickActionMenuComponent<
                             provider,
                             cesdk,
                             abortSignal: createAbortSignal(),
-                            blockIds,
+                            blockIds: options?.blockIds ?? blockIds,
                             confirmationComponentId
                           });
 

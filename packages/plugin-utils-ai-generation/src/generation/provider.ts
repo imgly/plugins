@@ -341,7 +341,15 @@ export type QuickActionContext<I, O extends Output> = {
   blockIds: number[];
   closeMenu: () => void;
   toggleExpand: () => void;
-  generate: (input: I) => Promise<O>;
+
+  /**
+   * Trigger generation with the given input.
+   *
+   * @param input The input for the generation.
+   * @param options The options for the generation.
+   * @param options.blockIds Use these blocks ids for the generation instead of the currently selected blocks.
+   */
+  generate: (input: I, options?: { blockIds?: number[] }) => Promise<O>;
 };
 
 export type QuickActionsInput<I, O extends Output> = {

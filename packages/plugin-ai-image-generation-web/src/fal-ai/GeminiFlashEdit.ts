@@ -1,9 +1,13 @@
-import { ImageOutput, type Provider } from '@imgly/plugin-utils-ai-generation';
+import {
+  getQuickActionMenu,
+  ImageOutput,
+  type Provider
+} from '@imgly/plugin-utils-ai-generation';
 import schema from './GeminiFlashEdit.json';
-import { createMagicEntry } from './GeminiFlashEdit.magic';
 import { getImageDimensionsFromURL } from '@imgly/plugin-utils';
 import CreativeEditorSDK from '@cesdk/cesdk-js';
 import createImageProvider from './createImageProvider';
+import { createGeminiFlashEditQuickActions } from './GeminiFlashEditQuickActions';
 
 type GeminiFlashEditInput = {
   prompt: string;
@@ -31,7 +35,20 @@ function getProvider(
 ): Provider<'image', GeminiFlashEditInput, ImageOutput> {
   const modelKey = 'fal-ai/gemini-flash-edit';
 
-  createMagicEntry(cesdk);
+  const quickActions = createGeminiFlashEditQuickActions(cesdk);
+  const quickActionMenu = getQuickActionMenu(cesdk, 'image');
+
+  quickActionMenu.setQuickActionMenuOrder([
+    ...quickActionMenu.getQuickActionMenuOrder(),
+    'ly.img.separator',
+    'styleTransfer',
+    'artists',
+    'ly.img.separator',
+    'changeImage',
+    'createVariant',
+    'ly.img.separator',
+    'createVideo'
+  ]);
 
   return createImageProvider(
     {
@@ -41,6 +58,7 @@ function getProvider(
       schema,
       inputReference: '#/components/schemas/GeminiFlashEditInput',
       cesdk,
+      quickActions,
       getBlockInput: async (input) => {
         const { width, height } = await getImageDimensionsFromURL(
           input.image_url

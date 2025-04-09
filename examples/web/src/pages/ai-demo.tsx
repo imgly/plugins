@@ -10,7 +10,7 @@ import FalAiVideo from '@imgly/plugin-ai-video-generation-web/fal-ai';
 import AudioGeneration from '@imgly/plugin-ai-audio-generation-web';
 import Elevenlabs from '@imgly/plugin-ai-audio-generation-web/elevenlabs';
 
-import Text2TextPlugin from '@imgly/plugin-ai-text-generation-web';
+import TextGeneration from '@imgly/plugin-ai-text-generation-web';
 import { useRef } from 'react';
 import { createCustomAssetSource } from './ActiveAssetSource';
 import { getPanelId, initProvider } from '@imgly/plugin-utils-ai-generation';
@@ -58,7 +58,7 @@ function App() {
             ]);
 
             instance.addPlugin(
-              Text2TextPlugin({
+              TextGeneration({
                 provider: {
                   id: 'anthropic',
                   proxyUrl: import.meta.env.VITE_ANTHROPIC_PROXY_URL
@@ -85,7 +85,8 @@ function App() {
                   image2image: FalAiImage.GeminiFlashEdit({
                     proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
                   }),
-                  ...getConfig('image-generation')
+                  ...getConfig('image-generation'),
+                  debug: true
                 }),
                 video: VideoGeneration({
                   text2video: FalAiVideo.MinimaxVideo01Live({

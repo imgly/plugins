@@ -1,6 +1,7 @@
 import type CreativeEditorSDK from '@cesdk/cesdk-js';
 import {
   GenerationResult,
+  ImageOutput,
   TextOutput,
   type Output,
   type OutputKind
@@ -19,6 +20,15 @@ type WithReturnValue<O extends Output> = {
   returnValue: O;
   applyCallbacks?: ApplyCallbacks;
 };
+
+/**
+ * This method is used in the quick action menu to handle the result of the generation
+ * and providing methods for the comparision of the result.
+ *
+ * Different output kinds require different handling. E.g. the text generation
+ * is streamed to the text block, while the image generation is applied to the fill
+ * block with a source set and the same crop applied.
+ */
 function withKind<O extends Output>(
   fn: () => Promise<GenerationResult<O>>,
   options: WithOptions
@@ -110,11 +120,111 @@ async function withText<O extends Output>(
 }
 
 async function withImage<O extends Output>(
-  _fn: () => Promise<GenerationResult<O>>,
-  _options: WithOptions
+  fn: () => Promise<GenerationResult<O>>,
+  options: WithOptions
 ): Promise<WithReturnValue<O>> {
-  // TODO: Implement withImage
-  throw new Error('Function not implemented.');
+  const { cesdk, blockIds, abortSignal } = options;
+  if (blockIds.length !== 1) {
+    throw new Error('Only one block is supported for image generation');
+  }
+
+  const [block] = blockIds;
+  const fillBlock = cesdk.engine.block.getFill(block);
+  const sourceSetBefore = cesdk.engine.block.getSourceSet(
+    fillBlock,
+    'fill/image/sourceSet'
+  );
+  const [sourceBefore] = sourceSetBefore;
+
+  const mimeType = await cesdk.engine.editor.getMimeType(sourceBefore.uri);
+  abortSignal.throwIfAborted();
+
+  if (mimeType === 'image/svg+xml') {
+    throw new Error('SVG images are not supported');
+  }
+
+  const cropScaleX = cesdk.engine.block.getCropScaleX(block);
+  const cropScaleY = cesdk.engine.block.getCropScaleY(block);
+  const cropTranslationX = cesdk.engine.block.getCropTranslationX(block);
+  const cropTranslationY = cesdk.engine.block.getCropTranslationY(block);
+  const cropRotation = cesdk.engine.block.getCropRotation(block);
+
+  const wasAlwaysOnTop = cesdk.engine.block.isAlwaysOnTop(block);
+  cesdk.engine.block.setAlwaysOnTop(block, true);
+
+  const applyCrop = () => {
+    cesdk.engine.block.setCropScaleX(block, cropScaleX);
+    cesdk.engine.block.setCropScaleY(block, cropScaleY);
+    cesdk.engine.block.setCropTranslationX(block, cropTranslationX);
+    cesdk.engine.block.setCropTranslationY(block, cropTranslationY);
+    cesdk.engine.block.setCropRotation(block, cropRotation);
+  };
+
+  const generationResult = await fn();
+  if (isAsyncGenerator(generationResult)) {
+    throw new Error('Streaming generation is not supported yet from a panel');
+  }
+
+  if (
+    generationResult.kind !== 'image' ||
+    typeof generationResult.url !== 'string'
+  ) {
+    throw new Error('Output kind from generation is not an image');
+  }
+
+  const url = (generationResult as ImageOutput).url;
+  const generatedMimeType = await cesdk.engine.editor.getMimeType(url);
+
+  const uri = await reuploadImage(cesdk, url, generatedMimeType);
+
+  const sourceSetAfter = [
+    {
+      uri,
+      width: sourceBefore.width,
+      height: sourceBefore.height
+    }
+  ];
+  cesdk.engine.block.setSourceSet(
+    fillBlock,
+    'fill/image/sourceSet',
+    sourceSetAfter
+  );
+  applyCrop();
+
+  const onBefore = () => {
+    cesdk.engine.block.setSourceSet(
+      fillBlock,
+      'fill/image/sourceSet',
+      sourceSetBefore
+    );
+    applyCrop();
+  };
+  const onAfter = () => {
+    cesdk.engine.block.setSourceSet(
+      fillBlock,
+      'fill/image/sourceSet',
+      sourceSetAfter
+    );
+    applyCrop();
+  };
+  const onCancel = () => {
+    onBefore();
+    cesdk.engine.block.setAlwaysOnTop(block, wasAlwaysOnTop);
+  };
+  const onApply = () => {
+    onAfter();
+    cesdk.engine.block.setAlwaysOnTop(block, wasAlwaysOnTop);
+  };
+
+  return {
+    returnValue: generationResult,
+    applyCallbacks: {
+      onBefore,
+      onAfter,
+      onCancel,
+      onApply
+    }
+  };
 }
 
 async function withVideo<O extends Output>(
@@ -129,6 +239,35 @@ async function withAudio<O extends Output>(
   _options: WithOptions
 ): Promise<WithReturnValue<O>> {
   throw new Error('Function not implemented.');
+}
+
+async function reuploadImage(
+  cesdk: CreativeEditorSDK,
+  url: string,
+  mimeType: string
+): Promise<string> {
+  const response = await fetch(url);
+  const blob = await response.blob();
+  const file = new File([blob], `image.${getFileExtension(mimeType)}`, {
+    type: mimeType
+  });
+  const assetDefinition = await cesdk.unstable_upload(file, () => {});
+  const uploadedUri = assetDefinition?.meta?.uri;
+  if (uploadedUri != null) return uploadedUri;
+  // eslint-disable-next-line no-console
+  console.warn('Failed to upload image:', assetDefinition);
+  return url;
+}
+
+function getFileExtension(mimeType: string): string {
+  const mimeTypeToExtension: Record<string, string> = {
+    'image/png': 'png',
+    'image/jpeg': 'jpg',
+    'image/webp': 'webp',
+    'image/gif': 'gif',
+    'image/svg+xml': 'svg'
+  };
+  return mimeTypeToExtension[mimeType] ?? 'png';
 }
 
 export default withKind;

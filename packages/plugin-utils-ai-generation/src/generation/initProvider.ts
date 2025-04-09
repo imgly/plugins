@@ -146,6 +146,12 @@ async function initInputs<K extends OutputKind, I, O extends Output>(
     );
   }
   if (provider.input?.quickActions != null) {
+    if (config.debug) {
+      // eslint-disable-next-line no-console
+      console.log(
+        `Initializing quick actions for provider '${provider.kind}' (${provider.id})`
+      );
+    }
     initQuickActions(provider, provider.input.quickActions, options, config);
   }
 
