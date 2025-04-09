@@ -2,7 +2,6 @@ import type Provider from './provider';
 import {
   OutputKind,
   PanelInput,
-  QuickAction,
   QuickActionsInput,
   type Output
 } from './provider';
@@ -12,7 +11,6 @@ import { InitProviderConfiguration, Options, UIOptions } from './types';
 import { BuilderRenderFunction, type CreativeEngine } from '@cesdk/cesdk-js';
 import { IndexedDBAssetSource } from '@imgly/plugin-utils';
 import icons from '../icons';
-import getMagicMenu from '../magic/getMagicMenu';
 import getQuickActionMenu from './quickAction/getQuickActionMenu';
 import { getFeatureIdForQuickAction } from './quickAction/utils';
 import registerQuickActionMenuComponent from './quickAction/registerQuickActionMenuComponent';

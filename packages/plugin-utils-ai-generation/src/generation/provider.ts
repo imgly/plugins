@@ -141,11 +141,7 @@ interface Provider<K extends OutputKind, I, O extends Output, C = O> {
      */
     generate: (
       input: I,
-      options: {
-        abortSignal: AbortSignal;
-        engine: CreativeEngine;
-        cesdk?: CreativeEditorSDK;
-      }
+      options: GenerationOptions
     ) => Promise<GenerationResult<O, C>>;
 
     /**
@@ -168,6 +164,15 @@ interface Provider<K extends OutputKind, I, O extends Output, C = O> {
 export type GenerationResult<O extends Output, C = O> =
   | O
   | AsyncGenerator<O, C>;
+
+/**
+ * The options for the generation function.
+ */
+export type GenerationOptions = {
+  abortSignal: AbortSignal;
+  engine: CreativeEngine;
+  cesdk?: CreativeEditorSDK;
+};
 
 export type RenderCustomProperty = {
   [key: string]: (

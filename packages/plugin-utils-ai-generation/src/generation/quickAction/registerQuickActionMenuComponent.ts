@@ -7,9 +7,18 @@ import {
   removeDuplicatedSeparators
 } from './utils';
 import { Metadata } from '@imgly/plugin-utils';
-import Provider, { Output, OutputKind, QuickAction } from '../provider';
-import withLock from './withLock';
-import withKind from './withKind';
+import Provider, {
+  GenerationOptions,
+  Output,
+  OutputKind,
+  QuickAction
+} from '../provider';
+import { composeMiddlewares } from '../middleware/middleware';
+import loggingMiddleware from '../middleware/loggingMiddleware';
+import highlightBlocksMiddleware from '../middleware/highlightBlocksMiddleware';
+import pendingMiddleware from '../middleware/pendingMiddleware';
+import lockMiddleware from '../middleware/lockMiddleware';
+import consumeGeneratedResult from './consumeGeneratedResult';
 
 function registerQuickActionMenuComponent<
   K extends OutputKind,
@@ -358,33 +367,35 @@ async function triggerGeneration<
     });
   });
 
-  // TODO: Make this prettier and easier to read
-  const {
-    returnValue: { returnValue, applyCallbacks },
-    unlock
-  } = await withLock(
-    withKind(
-      () => {
-        return provider.output.generate(input, {
-          cesdk,
-          engine: cesdk.engine,
-          abortSignal
-        });
-      },
-      {
-        abortSignal,
-        kind: provider.kind,
-        blockIds,
-        cesdk
-      }
-    ),
-    {
-      cesdk,
+  const generationOptions: GenerationOptions = {
+    cesdk,
+    engine: cesdk.engine,
+    abortSignal
+  };
+
+  const composedMiddlewares = composeMiddlewares<I, O>([
+    loggingMiddleware(),
+    pendingMiddleware({}),
+    quickAction.confirmation && highlightBlocksMiddleware({}),
+    quickAction.confirmation &&
+      lockMiddleware({
+        editMode: INFERENCE_AI_EDIT_MODE
+      })
+  ]);
+
+  const { result: generationResult, dispose: generationDispose } =
+    await composedMiddlewares(provider.output.generate)(
+      input,
+      generationOptions
+    );
+
+  const { consumedGenerationResult, applyCallbacks } =
+    await consumeGeneratedResult(generationResult, {
+      abortSignal,
+      kind: provider.kind,
       blockIds,
-      locked: !!quickAction.confirmation,
-      editMode: INFERENCE_AI_EDIT_MODE
-    }
-  );
+      cesdk
+    });
 
   if (quickAction.confirmation) {
     blockIds.forEach((blockId) => {
@@ -400,7 +411,7 @@ async function triggerGeneration<
   }
 
   const dispose = () => {
-    unlock();
+    generationDispose();
     blockIds.forEach((blockId) => {
       metadata.clear(blockId);
     });
@@ -410,7 +421,7 @@ async function triggerGeneration<
 
   return {
     dispose,
-    returnValue,
+    returnValue: consumedGenerationResult,
     applyCallbacks
   };
 }

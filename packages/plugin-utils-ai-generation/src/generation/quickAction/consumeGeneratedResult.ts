@@ -9,16 +9,16 @@ import {
 import { ApplyCallbacks } from './types';
 import { isAsyncGenerator } from '../../utils';
 
-type WithOptions = {
+type ConsumeGeneratedResultOptions = {
   kind: OutputKind;
   blockIds: number[];
   cesdk: CreativeEditorSDK;
   abortSignal: AbortSignal;
 };
 
-type WithReturnValue<O extends Output> = {
-  returnValue: O;
-  applyCallbacks?: ApplyCallbacks;
+type ReturnValue<O extends Output> = {
+  consumedGenerationResult: O;
+  applyCallbacks: ApplyCallbacks;
 };
 
 /**
@@ -29,19 +29,19 @@ type WithReturnValue<O extends Output> = {
  * is streamed to the text block, while the image generation is applied to the fill
  * block with a source set and the same crop applied.
  */
-function withKind<O extends Output>(
-  fn: () => Promise<GenerationResult<O>>,
-  options: WithOptions
-): () => Promise<WithReturnValue<O>> {
+function consumeGeneratedResult<O extends Output>(
+  result: GenerationResult<O>,
+  options: ConsumeGeneratedResultOptions
+): Promise<ReturnValue<O>> {
   switch (options.kind) {
     case 'text':
-      return () => withText(fn, options);
+      return getApplyCallbacksForText(result, options);
     case 'image':
-      return () => withImage(fn, options);
+      return getApplyCallbacksForImage(result, options);
     case 'video':
-      return () => withVideo(fn, options);
+      return getApplyCallbacksForVideo(result, options);
     case 'audio':
-      return () => withAudio(fn, options);
+      return getApplyCallbacksForAudio(result, options);
     default:
       throw new Error(
         `Unsupported output kind for quick actions: ${options.kind}`
@@ -49,10 +49,10 @@ function withKind<O extends Output>(
   }
 }
 
-async function withText<O extends Output>(
-  fn: () => Promise<GenerationResult<O>>,
-  options: WithOptions
-): Promise<WithReturnValue<O>> {
+async function getApplyCallbacksForText<O extends Output>(
+  generationResult: GenerationResult<O>,
+  options: ConsumeGeneratedResultOptions
+): Promise<ReturnValue<O>> {
   const { cesdk, blockIds, abortSignal } = options;
 
   const beforeTexts = blockIds.map((blockId) => {
@@ -60,7 +60,6 @@ async function withText<O extends Output>(
   });
 
   let output: O | undefined = undefined;
-  const generationResult = await fn();
   if (isAsyncGenerator(generationResult)) {
     let inferredText = '';
     for await (const chunk of generationResult) {
@@ -109,7 +108,7 @@ async function withText<O extends Output>(
   const onApply = onAfter;
 
   return {
-    returnValue: output,
+    consumedGenerationResult: output,
     applyCallbacks: {
       onBefore,
       onAfter,
@@ -119,10 +118,10 @@ async function withText<O extends Output>(
   };
 }
 
-async function withImage<O extends Output>(
-  fn: () => Promise<GenerationResult<O>>,
-  options: WithOptions
-): Promise<WithReturnValue<O>> {
+async function getApplyCallbacksForImage<O extends Output>(
+  generationResult: GenerationResult<O>,
+  options: ConsumeGeneratedResultOptions
+): Promise<ReturnValue<O>> {
   const { cesdk, blockIds, abortSignal } = options;
   if (blockIds.length !== 1) {
     throw new Error('Only one block is supported for image generation');
@@ -149,9 +148,6 @@ async function withImage<O extends Output>(
   const cropTranslationY = cesdk.engine.block.getCropTranslationY(block);
   const cropRotation = cesdk.engine.block.getCropRotation(block);
 
-  const wasAlwaysOnTop = cesdk.engine.block.isAlwaysOnTop(block);
-  cesdk.engine.block.setAlwaysOnTop(block, true);
-
   const applyCrop = () => {
     cesdk.engine.block.setCropScaleX(block, cropScaleX);
     cesdk.engine.block.setCropScaleY(block, cropScaleY);
@@ -160,7 +156,6 @@ async function withImage<O extends Output>(
     cesdk.engine.block.setCropRotation(block, cropRotation);
   };
 
-  const generationResult = await fn();
   if (isAsyncGenerator(generationResult)) {
     throw new Error('Streaming generation is not supported yet from a panel');
   }
@@ -209,15 +204,13 @@ async function withImage<O extends Output>(
   };
   const onCancel = () => {
     onBefore();
-    cesdk.engine.block.setAlwaysOnTop(block, wasAlwaysOnTop);
   };
   const onApply = () => {
     onAfter();
-    cesdk.engine.block.setAlwaysOnTop(block, wasAlwaysOnTop);
   };
 
   return {
-    returnValue: generationResult,
+    consumedGenerationResult: generationResult,
     applyCallbacks: {
       onBefore,
       onAfter,
@@ -227,17 +220,17 @@ async function withImage<O extends Output>(
   };
 }
 
-async function withVideo<O extends Output>(
-  _fn: () => Promise<GenerationResult<O>>,
-  _options: WithOptions
-): Promise<WithReturnValue<O>> {
+async function getApplyCallbacksForVideo<O extends Output>(
+  _result: GenerationResult<O>,
+  _options: ConsumeGeneratedResultOptions
+): Promise<ReturnValue<O>> {
   throw new Error('Function not implemented.');
 }
 
-async function withAudio<O extends Output>(
-  _fn: () => Promise<GenerationResult<O>>,
-  _options: WithOptions
-): Promise<WithReturnValue<O>> {
+async function getApplyCallbacksForAudio<O extends Output>(
+  _result: GenerationResult<O>,
+  _options: ConsumeGeneratedResultOptions
+): Promise<ReturnValue<O>> {
   throw new Error('Function not implemented.');
 }
 
@@ -270,4 +263,4 @@ function getFileExtension(mimeType: string): string {
   return mimeTypeToExtension[mimeType] ?? 'png';
 }
 
-export default withKind;
+export default consumeGeneratedResult;
