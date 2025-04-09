@@ -27,6 +27,12 @@ export {
 } from './generation/openapi/types';
 export { default as initProvider } from './generation/initProvider';
 export { type GenerationMiddleware } from './generation/types';
+
+// Export middleware
+export {
+  composeMiddlewares,
+  type Middleware
+} from './generation/middleware/middleware';
 export {
   getPanelId,
   getDurationForVideo,

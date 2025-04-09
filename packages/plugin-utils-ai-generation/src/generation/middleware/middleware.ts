@@ -2,6 +2,23 @@ import CreativeEditorSDK, { CreativeEngine } from '@cesdk/cesdk-js';
 import { GenerationOptions, GenerationResult, Output } from '../provider';
 
 /**
+ * Result of the generation with a dispose function to clean up
+ */
+export interface DisposableGenerationResult<O extends Output> {
+  /**
+   * The actual generation result
+   */
+  result: GenerationResult<O>;
+
+  /**
+   * Function to dispose/clean up resources created during generation
+   * This should be called when the generation is cancelled or completely
+   * finished including the confirmation of the generation if applicable.
+   */
+  dispose: () => Promise<void>;
+}
+
+/**
  * Define the type for middleware functions
  */
 export type Middleware<I, O extends Output> = (
@@ -16,17 +33,22 @@ export type Middleware<I, O extends Output> = (
     blockIds?: number[] | null;
 
     /**
-      * Adds a disposer function to this genereation which is called
-    * when the generation is cancelled or completely finished.
-      */
+     * Adds a disposer function to this genereation which is called
+     * when the generation is cancelled or completely finished
+     * including the confirmation of the generation if applicable.
+     */
     addDisposer: (dispose: () => Promise<void>) => void;
   },
   next: (input: I, options: GenerationOptions) => Promise<GenerationResult<O>>
 ) => Promise<GenerationResult<O>>;
 
 export function composeMiddlewares<I, O extends Output>(
-  middlewares: Middleware<I, O>[]
+  middlewares: (Middleware<I, O> | false | undefined | null)[]
 ) {
+  // Filter out false, undefined, and null middlewares
+  const validMiddlewares = middlewares.filter(
+    (middleware): middleware is Middleware<I, O> => !!middleware
+  );
   // Start with the base handler
   return function (
     baseHandler: (
@@ -41,7 +63,15 @@ export function composeMiddlewares<I, O extends Output>(
     return async function (
       input: I,
       options: GenerationOptions
-    ): Promise<GenerationResult<O>> {
+    ): Promise<DisposableGenerationResult<O>> {
+      // Store disposer functions that will be called when dispose() is called
+      const disposers: Array<() => Promise<void>> = [];
+
+      // Function to add a disposer
+      const addDisposer = (dispose: () => Promise<void>) => {
+        disposers.push(dispose);
+      };
+
       // Define a function to process each middleware in sequence
       const runMiddleware = async (
         index: number,
@@ -49,12 +79,12 @@ export function composeMiddlewares<I, O extends Output>(
         currentOptions: GenerationOptions
       ): Promise<GenerationResult<O>> => {
         // If we've processed all middlewares, call the base handler
-        if (index >= middlewares.length) {
+        if (index >= validMiddlewares.length) {
           return baseHandler(currentInput, currentOptions);
         }
 
         // Get the current middleware
-        const currentMiddleware = middlewares[index];
+        const currentMiddleware = validMiddlewares[index];
 
         // Create a next function for this middleware that calls the next middleware in line
         const next = async (
@@ -64,12 +94,44 @@ export function composeMiddlewares<I, O extends Output>(
           return runMiddleware(index + 1, nextInput, nextOptions);
         };
 
-        // Call the current middleware with the input, options, and next function
-        return currentMiddleware(currentInput, currentOptions, next);
+        // Enhanced options with addDisposer
+        const enhancedOptions = {
+          ...currentOptions,
+          addDisposer
+        };
+
+        // Call the current middleware with the input, enhanced options, and next function
+        return currentMiddleware(currentInput, enhancedOptions, next);
       };
 
-      // Start processing with the first middleware
-      return runMiddleware(0, input, options);
+      // Create enhanced options with addDisposer for base handler as well
+      const enhancedOptions = {
+        ...options,
+        addDisposer
+      };
+
+      // Run the middleware chain
+      const result = await runMiddleware(0, input, enhancedOptions);
+
+      // Create the dispose function that will call all collected disposers in reverse order
+      const dispose = async (): Promise<void> => {
+        // Execute disposers in reverse order (last added, first disposed)
+        for (let i = disposers.length - 1; i >= 0; i--) {
+          try {
+            await disposers[i]();
+          } catch (error) {
+            console.error('Error in disposer:', error);
+          }
+        }
+        // Clear the disposers array after all are executed
+        disposers.length = 0;
+      };
+
+      // Return both the result and the dispose function
+      return {
+        result,
+        dispose
+      };
     };
   };
 }
