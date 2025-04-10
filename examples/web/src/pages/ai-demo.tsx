@@ -145,6 +145,10 @@ function App() {
 
             instance.i18n.setTranslations({
               en: {
+                'panel.ly.img.ai.generation.confirmCancel.content':
+                  'Are you sure you want to cancel the generation?',
+                'panel.ly.img.ai.generation.confirmCancel.confirm':
+                  'Cancel Generation',
                 'panel.ly.img.ai/apps': 'AI',
                 'panel.ly.img.ai/fal-ai/gemini-flash-edit.imageSelection':
                   'Select Image To Change',

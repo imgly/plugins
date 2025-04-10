@@ -70,6 +70,11 @@ function renderGenerationComponents<K extends OutputKind, I, O extends Output>(
     });
   }
 
+  const confirmCancelDialogId = experimental.global<string | undefined>(
+    `${providerId}.confirmationDialogId`,
+    undefined
+  );
+
   builder.Section(`${providerId}.generate.section`, {
     children: () => {
       builder.Button(`${providerId}.generate`, {
@@ -85,7 +90,29 @@ function renderGenerationComponents<K extends OutputKind, I, O extends Output>(
               icon: '@imgly/Cross',
               color: 'danger',
               tooltip: [`panel.${providerId}.abort`, 'common.cancel'],
-              onClick: () => abort()
+              onClick: () => {
+                const confirmationDialogId = cesdk.ui.showDialog({
+                  type: 'warning',
+                  content: 'panel.ly.img.ai.generation.confirmCancel.content',
+                  cancel: {
+                    label: 'common.close',
+                    onClick: ({ id }) => {
+                      cesdk.ui.closeDialog(id);
+                      confirmCancelDialogId.setValue(undefined);
+                    }
+                  },
+                  actions: {
+                    label: 'panel.ly.img.ai.generation.confirmCancel.confirm',
+                    color: 'danger',
+                    onClick: ({ id }) => {
+                      abort();
+                      cesdk.ui.closeDialog(id);
+                      confirmCancelDialogId.setValue(undefined);
+                    }
+                  }
+                });
+                confirmCancelDialogId.setValue(confirmationDialogId);
+              }
             }
           : undefined,
         onClick: async () => {
@@ -154,6 +181,11 @@ function renderGenerationComponents<K extends OutputKind, I, O extends Output>(
               abortController = undefined;
               generatingState.setValue(false);
               abortState.setValue(() => {});
+
+              if (confirmCancelDialogId.value != null) {
+                cesdk.ui.closeDialog(confirmCancelDialogId.value);
+                confirmCancelDialogId.setValue(undefined);
+              }
             }
           };
 
