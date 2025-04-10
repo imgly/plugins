@@ -1,6 +1,11 @@
 /* eslint-disable no-console */
 import type { AssetDefinition, AssetResult } from '@cesdk/cesdk-js';
-import { addAssetToScene, isAbortError, isAsyncGenerator, uuid4 } from '../utils';
+import {
+  addAssetToScene,
+  isAbortError,
+  isAsyncGenerator,
+  uuid4
+} from '../utils';
 import type Provider from './provider';
 import {
   type GetInput,
@@ -54,10 +59,7 @@ async function generate<K extends OutputKind, I, O extends Output>(
           JSON.stringify(assetResult, undefined, 2)
         );
 
-      placeholderBlock = await addAssetToScene(
-        cesdk,
-        assetResult
-      );
+      placeholderBlock = await addAssetToScene(cesdk, assetResult);
 
       if (checkAbortSignal(cesdk, abortSignal, placeholderBlock))
         return { status: 'aborted' };
@@ -93,7 +95,10 @@ async function generate<K extends OutputKind, I, O extends Output>(
       console.log('Generated output:', JSON.stringify(output, undefined, 2));
 
     let generatedAssetResult: AssetResult | undefined;
-    if (placeholderBlock != null) {
+    if (
+      placeholderBlock != null &&
+      cesdk.engine.block.isValid(placeholderBlock)
+    ) {
       generatedAssetResult = await getAssetResultForGenerated(
         assetId,
         kind,
