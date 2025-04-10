@@ -66,7 +66,7 @@ function createVideoProvider<I extends Record<string, any>>(
           ...options.renderCustomProperty
         },
         getBlockInput: options.getBlockInput,
-        userFlow: options.useFlow ?? 'generation-only'
+        userFlow: options.useFlow ?? 'placeholder'
       }
     },
     output: {
