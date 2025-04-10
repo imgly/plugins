@@ -66,7 +66,10 @@ function getImageEnableFunction() {
 // Helper to create base configuration for all quick actions
 function createBaseQuickAction<I, O extends Output>(
   id: string
-): Pick<QuickAction<I, O>, 'id' | 'version' | 'confirmation' | 'enable'> {
+): Pick<
+  QuickAction<I, O>,
+  'id' | 'version' | 'confirmation' | 'lockDuringConfirmation' | 'enable'
+> {
   return {
     id,
     version: '1',

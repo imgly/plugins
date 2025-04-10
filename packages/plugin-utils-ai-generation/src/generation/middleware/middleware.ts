@@ -1,4 +1,3 @@
-import CreativeEditorSDK, { CreativeEngine } from '@cesdk/cesdk-js';
 import { GenerationOptions, GenerationResult, Output } from '../provider';
 
 /**
@@ -50,20 +49,20 @@ export function composeMiddlewares<I, O extends Output>(
     (middleware): middleware is Middleware<I, O> => !!middleware
   );
   // Start with the base handler
-  return function (
+  return (
     baseHandler: (
       input: I,
       options: GenerationOptions
     ) => Promise<GenerationResult<O>>
-  ) {
+  ) => {
     // We need to build a chain where each step is a function with the signature:
     // (input, options) => Promise<Result>
 
     // The composed function that will be returned
-    return async function (
+    return async (
       input: I,
       options: GenerationOptions
-    ): Promise<DisposableGenerationResult<O>> {
+    ): Promise<DisposableGenerationResult<O>> => {
       // Store disposer functions that will be called when dispose() is called
       const disposers: Array<() => Promise<void>> = [];
 
@@ -118,8 +117,9 @@ export function composeMiddlewares<I, O extends Output>(
         // Execute disposers in reverse order (last added, first disposed)
         for (let i = disposers.length - 1; i >= 0; i--) {
           try {
-            await disposers[i]();
+            disposers[i]();
           } catch (error) {
+            // eslint-disable-next-line no-console
             console.error('Error in disposer:', error);
           }
         }

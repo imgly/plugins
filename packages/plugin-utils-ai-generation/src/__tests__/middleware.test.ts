@@ -1,7 +1,7 @@
+/* eslint-disable no-console */
 import { describe, expect, it, jest } from '@jest/globals';
 import {
   composeMiddlewares,
-  DisposableGenerationResult,
   Middleware
 } from '../generation/middleware/middleware';
 import {
@@ -46,9 +46,12 @@ describe('middleware', () => {
       const result = await handler(input, options);
 
       // Assert
-      expect(baseHandler).toHaveBeenCalledWith(input, expect.objectContaining({
-        addDisposer: expect.any(Function)
-      }));
+      expect(baseHandler).toHaveBeenCalledWith(
+        input,
+        expect.objectContaining({
+          addDisposer: expect.any(Function)
+        })
+      );
       expect(result).toHaveProperty('result');
       expect(result).toHaveProperty('dispose');
       expect(result.result).toEqual(outputResult);
@@ -144,7 +147,7 @@ describe('middleware', () => {
         'middleware1-after'
       ]);
       expect(baseHandler).toHaveBeenCalledWith(
-        { text: 'test-1-2' }, 
+        { text: 'test-1-2' },
         expect.objectContaining({
           addDisposer: expect.any(Function)
         })
@@ -180,7 +183,10 @@ describe('middleware', () => {
       const result = await handler(input, options);
 
       // Assert
-      expect(result.result).toEqual({ kind: 'text', text: 'original-transformed' });
+      expect(result.result).toEqual({
+        kind: 'text',
+        text: 'original-transformed'
+      });
     });
 
     it('should allow middlewares to short-circuit the chain', async () => {
@@ -252,30 +258,29 @@ describe('middleware', () => {
     it('should handle falsy middleware values (false, undefined, null)', async () => {
       // Arrange
       const outputResult: TextOutput = { kind: 'text', text: 'success' };
-      const baseHandler = jest.fn<BaseHandler>().mockResolvedValue(outputResult);
-      
+      const baseHandler = jest
+        .fn<BaseHandler>()
+        .mockResolvedValue(outputResult);
+
       const executedMiddleware = jest
         .fn<Middleware<TextInput, TextOutput>>()
         .mockImplementation(async (input, options, next) => {
           return next(input, options);
         });
-      
+
       // Create an array with falsy values mixed with a real middleware
-      const middlewares = [
-        false,
-        executedMiddleware,
-        undefined,
-        null
-      ];
-      
+      const middlewares = [false, executedMiddleware, undefined, null];
+
       const input: TextInput = { text: 'test' };
       const options: GenerationOptions = createOptions();
-      
+
       // Act
-      const composed = composeMiddlewares<TextInput, TextOutput>(middlewares as any);
+      const composed = composeMiddlewares<TextInput, TextOutput>(
+        middlewares as any
+      );
       const handler = composed(baseHandler);
       await handler(input, options);
-      
+
       // Assert - only the real middleware should be executed
       expect(executedMiddleware).toHaveBeenCalledTimes(1);
       expect(baseHandler).toHaveBeenCalledTimes(1);

@@ -45,7 +45,7 @@ function highlightBlocksMiddleware<I, O extends Output>({
         const parent = options.engine.block.getParent(blockId);
         if (
           parent != null &&
-          options.engine.block.getType(parent) != '//ly.img.ubq/scene'
+          options.engine.block.getType(parent) !== '//ly.img.ubq/scene'
         ) {
           parentClipping[parent] = options.engine.block.isClipped(parent);
           options.engine.block.setClipped(parent, false);
@@ -66,7 +66,7 @@ function highlightBlocksMiddleware<I, O extends Output>({
           const parent = options.engine.block.getParent(blockId);
           if (
             parent != null &&
-            options.engine.block.getType(parent) != '//ly.img.ubq/scene'
+            options.engine.block.getType(parent) !== '//ly.img.ubq/scene'
           ) {
             if (parentClipping[parent] != null) {
               options.engine.block.setClipped(parent, parentClipping[parent]);

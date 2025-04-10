@@ -75,7 +75,6 @@ function editModeMiddleware<I, O extends Output>({
       }
       return result;
     } catch (error) {
-      console.log('Error in editModeMiddleware', error);
       if (isAbortError(error)) {
         unlock();
       }

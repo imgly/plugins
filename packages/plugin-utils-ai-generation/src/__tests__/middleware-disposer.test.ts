@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { describe, expect, it, jest } from '@jest/globals';
 import {
   composeMiddlewares,

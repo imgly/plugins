@@ -23,7 +23,6 @@ To change the tone of the text:
 Now, rewrite the text to match the desired tone. Your response should contain only the rewritten text, without any additional explanations or comments. Do not use any tags in your response.
 `;
 
-  console.log('prompt', prompt);
   return prompt;
 }
 

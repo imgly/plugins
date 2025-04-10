@@ -6,8 +6,7 @@ import {
   GetBlockInput,
   CommonProperties,
   Provider,
-  QuickAction,
-  Output
+  QuickAction
 } from '@imgly/plugin-utils-ai-generation';
 import { fal } from '@fal-ai/client';
 import { isCustomImageSize, uploadImageInputToFalIfNeeded } from './utils';

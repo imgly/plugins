@@ -59,7 +59,7 @@ async function getApplyCallbacksForText<O extends Output>(
     return cesdk.engine.block.getString(blockId, 'text/text');
   });
 
-  let output: O | undefined = undefined;
+  let output: O | undefined;
   if (isAsyncGenerator(generationResult)) {
     let inferredText = '';
     for await (const chunk of generationResult) {
@@ -72,6 +72,7 @@ async function getApplyCallbacksForText<O extends Output>(
         inferredText = chunk.text;
       }
 
+      // eslint-disable-next-line @typescript-eslint/no-loop-func
       blockIds.forEach((blockId) => {
         cesdk.engine.block.setString(blockId, 'text/text', inferredText);
       });
@@ -221,14 +222,18 @@ async function getApplyCallbacksForImage<O extends Output>(
 }
 
 async function getApplyCallbacksForVideo<O extends Output>(
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _result: GenerationResult<O>,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _options: ConsumeGeneratedResultOptions
 ): Promise<ReturnValue<O>> {
   throw new Error('Function not implemented.');
 }
 
 async function getApplyCallbacksForAudio<O extends Output>(
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _result: GenerationResult<O>,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _options: ConsumeGeneratedResultOptions
 ): Promise<ReturnValue<O>> {
   throw new Error('Function not implemented.');

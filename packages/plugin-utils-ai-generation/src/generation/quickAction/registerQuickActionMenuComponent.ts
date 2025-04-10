@@ -198,7 +198,7 @@ function registerQuickActionMenuComponent<
 
         const isEnabled = cesdk.feature.isEnabled(
           getFeatureIdForQuickAction({
-            quickActionId: quickActionId,
+            quickActionId,
             quickActionMenuId: quickActionMenu.id
           }),
           {
@@ -255,7 +255,7 @@ function registerQuickActionMenuComponent<
                   toggleExpand: () => {
                     toggleExpandedState.setValue(undefined);
                   },
-                  generate: async (input, options) => {
+                  generate: async (input, generateOptions) => {
                     const { returnValue, applyCallbacks, dispose } =
                       await triggerGeneration({
                         input,
@@ -264,7 +264,7 @@ function registerQuickActionMenuComponent<
                         provider,
                         cesdk,
                         abortSignal: createAbortSignal(),
-                        blockIds: options?.blockIds ?? blockIds,
+                        blockIds: generateOptions?.blockIds ?? blockIds,
                         confirmationComponentId
                       });
 
@@ -293,7 +293,7 @@ function registerQuickActionMenuComponent<
                       toggleExpand: () => {
                         toggleExpandedState.setValue(quickAction.id);
                       },
-                      generate: async (input, options) => {
+                      generate: async (input, generateOptions) => {
                         const { returnValue, applyCallbacks, dispose } =
                           await triggerGeneration({
                             input,
@@ -302,7 +302,7 @@ function registerQuickActionMenuComponent<
                             provider,
                             cesdk,
                             abortSignal: createAbortSignal(),
-                            blockIds: options?.blockIds ?? blockIds,
+                            blockIds: generateOptions?.blockIds ?? blockIds,
                             confirmationComponentId
                           });
 

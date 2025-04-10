@@ -6,8 +6,8 @@ function loggingMiddleware<I, O extends Output>() {
   const middleware: Middleware<I, O> = async (input, options, next) => {
     console.group('[GENERATION]');
     console.log(`Generating with input:`, JSON.stringify(input, null, 2));
-    let result: GenerationResult<O> | undefined = undefined;
-    let start = Date.now();
+    let result: GenerationResult<O> | undefined;
+    const start = Date.now();
     try {
       result = await next(input, options);
       return result;

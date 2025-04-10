@@ -1,7 +1,6 @@
 import { type EditorPlugin } from '@cesdk/cesdk-js';
 import iconSprite, { PLUGIN_ICON_SET_ID } from './iconSprite';
 import { PluginConfiguration } from './types';
-import Anthropic from '@anthropic-ai/sdk';
 import { getQuickActionMenu } from '@imgly/plugin-utils-ai-generation';
 
 export { PLUGIN_ID } from './constants';

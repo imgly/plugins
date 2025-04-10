@@ -2,13 +2,12 @@ import CreativeEditorSDK from '@cesdk/cesdk-js';
 import { Provider, QuickAction } from '@imgly/plugin-utils-ai-generation';
 import Anthropic from '@anthropic-ai/sdk';
 import sendPrompt from './sendPrompt';
-import { LANGUAGES, LOCALES } from './prompts/translate';
 import improve from './prompts/improve';
 import shorter from './prompts/shorter';
 import longer from './prompts/longer';
 import fix from './prompts/fix';
 import generateTextForSpeech from './prompts/generateTextForSpeech';
-import translate from './prompts/translate';
+import translate, { LANGUAGES, LOCALES } from './prompts/translate';
 import changeTone from './prompts/changeTone';
 import changeTextTo from './prompts/changeTextTo';
 
@@ -77,10 +76,10 @@ export function AnthropicProvider(
         }
       },
       output: {
-        generate: async function (
+        generate: async (
           { prompt, blockId },
           { engine, abortSignal }
-        ): Promise<AsyncGenerator<AnthropicOutput, AnthropicOutput>> {
+        ): Promise<AsyncGenerator<AnthropicOutput, AnthropicOutput>> => {
           if (anthropic == null)
             throw new Error('Anthropic SDK is not initialized');
 
@@ -94,6 +93,7 @@ export function AnthropicProvider(
           }
 
           if (config.debug)
+            // eslint-disable-next-line no-console
             console.log(
               'Sending prompt to Anthropic:',
               JSON.stringify(prompt, undefined, 2)
