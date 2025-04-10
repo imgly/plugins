@@ -70,7 +70,7 @@
     }
   },
   "peerDependencies": {
-    "@cesdk/cesdk-js": "^1.47.0-rc.3"
+    "@cesdk/cesdk-js": "^1.48.0"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.39.0"

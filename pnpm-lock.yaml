@@ -63,44 +63,44 @@ importers:
   examples/web:
     dependencies:
       '@cesdk/cesdk-js':
-        specifier: ^1.47.0-rc.3
-        version: 1.47.0(react@18.3.1)
+        specifier: ^1.48.0
+        version: 1.48.0(react@18.3.1)
       '@cesdk/engine':
-        specifier: ^1.47.0-rc.3
-        version: 1.47.0(react@18.3.1)
+        specifier: ^1.48.0
+        version: 1.48.0(react@18.3.1)
       '@imgly/plugin-ai-audio-generation-web':
         specifier: workspace:*
-        version: file:packages/plugin-ai-audio-generation-web(@cesdk/cesdk-js@1.47.0(react@18.3.1))
+        version: file:packages/plugin-ai-audio-generation-web(@cesdk/cesdk-js@1.48.0(react@18.3.1))
       '@imgly/plugin-ai-image-generation-web':
         specifier: workspace:*
-        version: file:packages/plugin-ai-image-generation-web(@cesdk/cesdk-js@1.47.0(react@18.3.1))
+        version: file:packages/plugin-ai-image-generation-web(@cesdk/cesdk-js@1.48.0(react@18.3.1))
       '@imgly/plugin-ai-text-generation-web':
         specifier: workspace:*
-        version: file:packages/plugin-ai-text-generation-web(@cesdk/cesdk-js@1.47.0(react@18.3.1))
+        version: file:packages/plugin-ai-text-generation-web(@cesdk/cesdk-js@1.48.0(react@18.3.1))
       '@imgly/plugin-ai-video-generation-web':
         specifier: workspace:*
-        version: file:packages/plugin-ai-video-generation-web(@cesdk/cesdk-js@1.47.0(react@18.3.1))
+        version: file:packages/plugin-ai-video-generation-web(@cesdk/cesdk-js@1.48.0(react@18.3.1))
       '@imgly/plugin-background-removal-web':
         specifier: workspace:*
-        version: file:packages/plugin-background-removal-web(@cesdk/cesdk-js@1.47.0(react@18.3.1))(onnxruntime-web@1.21.0-dev.20250206-d981b153d3)
+        version: file:packages/plugin-background-removal-web(@cesdk/cesdk-js@1.48.0(react@18.3.1))(onnxruntime-web@1.21.0-dev.20250206-d981b153d3)
       '@imgly/plugin-cutout-library-web':
         specifier: workspace:*
-        version: file:packages/plugin-cutout-library-web(@cesdk/cesdk-js@1.47.0(react@18.3.1))
+        version: file:packages/plugin-cutout-library-web(@cesdk/cesdk-js@1.48.0(react@18.3.1))
       '@imgly/plugin-qr-code-web':
         specifier: workspace:*
-        version: file:packages/plugin-qr-code-web(@cesdk/cesdk-js@1.47.0(react@18.3.1))
+        version: file:packages/plugin-qr-code-web(@cesdk/cesdk-js@1.48.0(react@18.3.1))
       '@imgly/plugin-remote-asset-source-web':
         specifier: workspace:*
-        version: file:packages/plugin-remote-asset-source-web(@cesdk/cesdk-js@1.47.0(react@18.3.1))
+        version: file:packages/plugin-remote-asset-source-web(@cesdk/cesdk-js@1.48.0(react@18.3.1))
       '@imgly/plugin-utils':
         specifier: workspace:*
-        version: file:packages/plugin-utils(@cesdk/cesdk-js@1.47.0(react@18.3.1))
+        version: file:packages/plugin-utils(@cesdk/cesdk-js@1.48.0(react@18.3.1))
       '@imgly/plugin-utils-ai-generation':
         specifier: workspace:*
-        version: file:packages/plugin-utils-ai-generation(@cesdk/cesdk-js@1.47.0(react@18.3.1))
+        version: file:packages/plugin-utils-ai-generation(@cesdk/cesdk-js@1.48.0(react@18.3.1))
       '@imgly/plugin-vectorizer-web':
         specifier: workspace:*
-        version: file:packages/plugin-vectorizer-web(@cesdk/cesdk-js@1.47.0(react@18.3.1))
+        version: file:packages/plugin-vectorizer-web(@cesdk/cesdk-js@1.48.0(react@18.3.1))
       onnxruntime-web:
         specifier: 1.21.0-dev.20250206-d981b153d3
         version: 1.21.0-dev.20250206-d981b153d3
@@ -174,8 +174,8 @@ importers:
   packages/plugin-ai-audio-generation-web:
     dependencies:
       '@cesdk/cesdk-js':
-        specifier: ^1.47.0-rc.3
-        version: 1.47.0(react@18.3.1)
+        specifier: ^1.48.0
+        version: 1.48.0(react@18.3.1)
     dependenciesMeta:
       '@imgly/plugin-utils':
         injected: true
@@ -184,10 +184,10 @@ importers:
     devDependencies:
       '@imgly/plugin-utils':
         specifier: workspace:*
-        version: file:packages/plugin-utils(@cesdk/cesdk-js@1.47.0(react@18.3.1))
+        version: file:packages/plugin-utils(@cesdk/cesdk-js@1.48.0(react@18.3.1))
       '@imgly/plugin-utils-ai-generation':
         specifier: workspace:*
-        version: file:packages/plugin-utils-ai-generation(@cesdk/cesdk-js@1.47.0(react@18.3.1))
+        version: file:packages/plugin-utils-ai-generation(@cesdk/cesdk-js@1.48.0(react@18.3.1))
       '@types/ndarray':
         specifier: ^1.0.14
         version: 1.0.14
@@ -216,8 +216,8 @@ importers:
   packages/plugin-ai-image-generation-web:
     dependencies:
       '@cesdk/cesdk-js':
-        specifier: ^1.47.0-rc.3
-        version: 1.47.0(react@18.3.1)
+        specifier: ^1.48.0
+        version: 1.48.0(react@18.3.1)
       '@fal-ai/client':
         specifier: ^1.3.0
         version: 1.3.0
@@ -229,10 +229,10 @@ importers:
     devDependencies:
       '@imgly/plugin-utils':
         specifier: workspace:*
-        version: file:packages/plugin-utils(@cesdk/cesdk-js@1.47.0(react@18.3.1))
+        version: file:packages/plugin-utils(@cesdk/cesdk-js@1.48.0(react@18.3.1))
       '@imgly/plugin-utils-ai-generation':
         specifier: workspace:*
-        version: file:packages/plugin-utils-ai-generation(@cesdk/cesdk-js@1.47.0(react@18.3.1))
+        version: file:packages/plugin-utils-ai-generation(@cesdk/cesdk-js@1.48.0(react@18.3.1))
       '@types/ndarray':
         specifier: ^1.0.14
         version: 1.0.14
@@ -264,8 +264,8 @@ importers:
         specifier: ^0.39.0
         version: 0.39.0
       '@cesdk/cesdk-js':
-        specifier: ^1.47.0-rc.3
-        version: 1.47.0(react@18.3.1)
+        specifier: ^1.48.0
+        version: 1.48.0(react@18.3.1)
     dependenciesMeta:
       '@imgly/plugin-utils':
         injected: true
@@ -274,10 +274,10 @@ importers:
     devDependencies:
       '@imgly/plugin-utils':
         specifier: workspace:*
-        version: file:packages/plugin-utils(@cesdk/cesdk-js@1.47.0(react@18.3.1))
+        version: file:packages/plugin-utils(@cesdk/cesdk-js@1.48.0(react@18.3.1))
       '@imgly/plugin-utils-ai-generation':
         specifier: workspace:*
-        version: file:packages/plugin-utils-ai-generation(@cesdk/cesdk-js@1.47.0(react@18.3.1))
+        version: file:packages/plugin-utils-ai-generation(@cesdk/cesdk-js@1.48.0(react@18.3.1))
       '@types/ndarray':
         specifier: ^1.0.14
         version: 1.0.14
@@ -306,8 +306,8 @@ importers:
   packages/plugin-ai-video-generation-web:
     dependencies:
       '@cesdk/cesdk-js':
-        specifier: ^1.47.0-rc.3
-        version: 1.47.0(react@18.3.1)
+        specifier: ^1.48.0
+        version: 1.48.0(react@18.3.1)
     dependenciesMeta:
       '@imgly/plugin-utils':
         injected: true
@@ -316,10 +316,10 @@ importers:
     devDependencies:
       '@imgly/plugin-utils':
         specifier: workspace:*
-        version: file:packages/plugin-utils(@cesdk/cesdk-js@1.47.0(react@18.3.1))
+        version: file:packages/plugin-utils(@cesdk/cesdk-js@1.48.0(react@18.3.1))
       '@imgly/plugin-utils-ai-generation':
         specifier: workspace:*
-        version: file:packages/plugin-utils-ai-generation(@cesdk/cesdk-js@1.47.0(react@18.3.1))
+        version: file:packages/plugin-utils-ai-generation(@cesdk/cesdk-js@1.48.0(react@18.3.1))
       '@types/ndarray':
         specifier: ^1.0.14
         version: 1.0.14
@@ -523,11 +523,11 @@ importers:
         injected: true
     devDependencies:
       '@cesdk/cesdk-js':
-        specifier: ^1.47.0-rc.3
-        version: 1.47.0(react@18.3.1)
+        specifier: ^1.48.0
+        version: 1.48.0(react@18.3.1)
       '@imgly/plugin-utils':
         specifier: workspace:*
-        version: file:packages/plugin-utils(@cesdk/cesdk-js@1.47.0(react@18.3.1))
+        version: file:packages/plugin-utils(@cesdk/cesdk-js@1.48.0(react@18.3.1))
       esbuild:
         specifier: ^0.19.12
         version: 0.19.12
@@ -779,8 +779,8 @@ packages:
   '@cesdk/cesdk-js@1.38.0':
     resolution: {integrity: sha512-qmnkRT6BkIQXbQMBa69y2N7hJvoLWeOOW59DT1woWQwb6o3B1V99Z3baya4sP7YraAoYEl4ssZcJ9opTG+EtnQ==}
 
-  '@cesdk/cesdk-js@1.47.0':
-    resolution: {integrity: sha512-GfRlFTLJQwJ/WZgnxQbNYsuM9uMLcuvlAFHZKSWKB/mltBXRDWKeYLY3SPNkU1QBbMNYbF8fjH+woQYfyZ2xgg==}
+  '@cesdk/cesdk-js@1.48.0':
+    resolution: {integrity: sha512-itYi1QmguPBYxsglfpKJmMMaRpYiptS3ANjUwKuihDfZZwoUFkx2tJrli2mwnPw8J0ThoIgxGxZhsIpI9v5BGw==}
 
   '@cesdk/engine@1.37.0':
     resolution: {integrity: sha512-7UsBukfoQ6MVrHU7q3lBposcXTmtF32wuSPV0kwtDqkHdYC1CJ61jJLs2FbVb3yqtecI/AUxdzH3/RblTXeU6w==}
@@ -798,8 +798,8 @@ packages:
       react:
         optional: true
 
-  '@cesdk/engine@1.47.0':
-    resolution: {integrity: sha512-nKGiWwRx21KA/4LkDy2g66ynRtx7J/Oj3+o/JGoyiO47SMse5jT/X2z4BHfycC7qNA8GQzRbRr4rYragxOt5jA==}
+  '@cesdk/engine@1.48.0':
+    resolution: {integrity: sha512-J+hhcgIXo1QHaSJYrz/7RARN83HpLv6ykMp/XAt7DL1sH2ZttsIsh2jt6TVa4E7MRCJgeVkebx90M141MIdEYg==}
     peerDependencies:
       react: '>16'
     peerDependenciesMeta:
@@ -1140,22 +1140,22 @@ packages:
   '@imgly/plugin-ai-audio-generation-web@file:packages/plugin-ai-audio-generation-web':
     resolution: {directory: packages/plugin-ai-audio-generation-web, type: directory}
     peerDependencies:
-      '@cesdk/cesdk-js': ^1.47.0-rc.3
+      '@cesdk/cesdk-js': ^1.48.0
 
   '@imgly/plugin-ai-image-generation-web@file:packages/plugin-ai-image-generation-web':
     resolution: {directory: packages/plugin-ai-image-generation-web, type: directory}
     peerDependencies:
-      '@cesdk/cesdk-js': ^1.47.0-rc.3
+      '@cesdk/cesdk-js': ^1.48.0
 
   '@imgly/plugin-ai-text-generation-web@file:packages/plugin-ai-text-generation-web':
     resolution: {directory: packages/plugin-ai-text-generation-web, type: directory}
     peerDependencies:
-      '@cesdk/cesdk-js': ^1.47.0-rc.3
+      '@cesdk/cesdk-js': ^1.48.0
 
   '@imgly/plugin-ai-video-generation-web@file:packages/plugin-ai-video-generation-web':
     resolution: {directory: packages/plugin-ai-video-generation-web, type: directory}
     peerDependencies:
-      '@cesdk/cesdk-js': ^1.47.0-rc.3
+      '@cesdk/cesdk-js': ^1.48.0
 
   '@imgly/plugin-background-removal-web@file:packages/plugin-background-removal-web':
     resolution: {directory: packages/plugin-background-removal-web, type: directory}
@@ -1181,7 +1181,7 @@ packages:
   '@imgly/plugin-utils-ai-generation@file:packages/plugin-utils-ai-generation':
     resolution: {directory: packages/plugin-utils-ai-generation, type: directory}
     peerDependencies:
-      '@cesdk/cesdk-js': ^1.47.0-rc.3
+      '@cesdk/cesdk-js': ^1.48.0
 
   '@imgly/plugin-utils@file:packages/plugin-utils':
     resolution: {directory: packages/plugin-utils, type: directory}
@@ -4595,9 +4595,9 @@ snapshots:
     transitivePeerDependencies:
       - react
 
-  '@cesdk/cesdk-js@1.47.0(react@18.3.1)':
+  '@cesdk/cesdk-js@1.48.0(react@18.3.1)':
     dependencies:
-      '@cesdk/engine': 1.47.0(react@18.3.1)
+      '@cesdk/engine': 1.48.0(react@18.3.1)
     transitivePeerDependencies:
       - react
 
@@ -4609,7 +4609,7 @@ snapshots:
     optionalDependencies:
       react: 18.3.1
 
-  '@cesdk/engine@1.47.0(react@18.3.1)':
+  '@cesdk/engine@1.48.0(react@18.3.1)':
     optionalDependencies:
       react: 18.3.1
 
@@ -4811,50 +4811,50 @@ snapshots:
       onnxruntime-web: 1.21.0-dev.20250206-d981b153d3
       zod: 3.24.2
 
-  '@imgly/plugin-ai-audio-generation-web@file:packages/plugin-ai-audio-generation-web(@cesdk/cesdk-js@1.47.0(react@18.3.1))':
+  '@imgly/plugin-ai-audio-generation-web@file:packages/plugin-ai-audio-generation-web(@cesdk/cesdk-js@1.48.0(react@18.3.1))':
     dependencies:
-      '@cesdk/cesdk-js': 1.47.0(react@18.3.1)
+      '@cesdk/cesdk-js': 1.48.0(react@18.3.1)
 
-  '@imgly/plugin-ai-image-generation-web@file:packages/plugin-ai-image-generation-web(@cesdk/cesdk-js@1.47.0(react@18.3.1))':
+  '@imgly/plugin-ai-image-generation-web@file:packages/plugin-ai-image-generation-web(@cesdk/cesdk-js@1.48.0(react@18.3.1))':
     dependencies:
-      '@cesdk/cesdk-js': 1.47.0(react@18.3.1)
+      '@cesdk/cesdk-js': 1.48.0(react@18.3.1)
       '@fal-ai/client': 1.3.0
 
-  '@imgly/plugin-ai-text-generation-web@file:packages/plugin-ai-text-generation-web(@cesdk/cesdk-js@1.47.0(react@18.3.1))':
+  '@imgly/plugin-ai-text-generation-web@file:packages/plugin-ai-text-generation-web(@cesdk/cesdk-js@1.48.0(react@18.3.1))':
     dependencies:
       '@anthropic-ai/sdk': 0.39.0
-      '@cesdk/cesdk-js': 1.47.0(react@18.3.1)
+      '@cesdk/cesdk-js': 1.48.0(react@18.3.1)
     transitivePeerDependencies:
       - encoding
 
-  '@imgly/plugin-ai-video-generation-web@file:packages/plugin-ai-video-generation-web(@cesdk/cesdk-js@1.47.0(react@18.3.1))':
+  '@imgly/plugin-ai-video-generation-web@file:packages/plugin-ai-video-generation-web(@cesdk/cesdk-js@1.48.0(react@18.3.1))':
     dependencies:
-      '@cesdk/cesdk-js': 1.47.0(react@18.3.1)
+      '@cesdk/cesdk-js': 1.48.0(react@18.3.1)
 
-  '@imgly/plugin-background-removal-web@file:packages/plugin-background-removal-web(@cesdk/cesdk-js@1.47.0(react@18.3.1))(onnxruntime-web@1.21.0-dev.20250206-d981b153d3)':
+  '@imgly/plugin-background-removal-web@file:packages/plugin-background-removal-web(@cesdk/cesdk-js@1.48.0(react@18.3.1))(onnxruntime-web@1.21.0-dev.20250206-d981b153d3)':
     dependencies:
-      '@cesdk/cesdk-js': 1.47.0(react@18.3.1)
+      '@cesdk/cesdk-js': 1.48.0(react@18.3.1)
       '@imgly/background-removal': 1.6.0(onnxruntime-web@1.21.0-dev.20250206-d981b153d3)
       onnxruntime-web: 1.21.0-dev.20250206-d981b153d3
 
-  '@imgly/plugin-cutout-library-web@file:packages/plugin-cutout-library-web(@cesdk/cesdk-js@1.47.0(react@18.3.1))':
+  '@imgly/plugin-cutout-library-web@file:packages/plugin-cutout-library-web(@cesdk/cesdk-js@1.48.0(react@18.3.1))':
     dependencies:
-      '@cesdk/cesdk-js': 1.47.0(react@18.3.1)
+      '@cesdk/cesdk-js': 1.48.0(react@18.3.1)
       lodash: 4.17.21
 
-  '@imgly/plugin-qr-code-web@file:packages/plugin-qr-code-web(@cesdk/cesdk-js@1.47.0(react@18.3.1))':
+  '@imgly/plugin-qr-code-web@file:packages/plugin-qr-code-web(@cesdk/cesdk-js@1.48.0(react@18.3.1))':
     dependencies:
-      '@cesdk/cesdk-js': 1.47.0(react@18.3.1)
+      '@cesdk/cesdk-js': 1.48.0(react@18.3.1)
 
-  '@imgly/plugin-remote-asset-source-web@file:packages/plugin-remote-asset-source-web(@cesdk/cesdk-js@1.47.0(react@18.3.1))':
+  '@imgly/plugin-remote-asset-source-web@file:packages/plugin-remote-asset-source-web(@cesdk/cesdk-js@1.48.0(react@18.3.1))':
     dependencies:
-      '@cesdk/cesdk-js': 1.47.0(react@18.3.1)
+      '@cesdk/cesdk-js': 1.48.0(react@18.3.1)
       lodash: 4.17.21
       zod: 3.24.2
 
-  '@imgly/plugin-utils-ai-generation@file:packages/plugin-utils-ai-generation(@cesdk/cesdk-js@1.47.0(react@18.3.1))':
+  '@imgly/plugin-utils-ai-generation@file:packages/plugin-utils-ai-generation(@cesdk/cesdk-js@1.48.0(react@18.3.1))':
     dependencies:
-      '@cesdk/cesdk-js': 1.47.0(react@18.3.1)
+      '@cesdk/cesdk-js': 1.48.0(react@18.3.1)
 
   '@imgly/plugin-utils@file:packages/plugin-utils(@cesdk/cesdk-js@1.32.0)':
     dependencies:
@@ -4866,14 +4866,14 @@ snapshots:
       '@cesdk/cesdk-js': 1.37.0(react@18.3.1)
       lodash-es: 4.17.21
 
-  '@imgly/plugin-utils@file:packages/plugin-utils(@cesdk/cesdk-js@1.47.0(react@18.3.1))':
+  '@imgly/plugin-utils@file:packages/plugin-utils(@cesdk/cesdk-js@1.48.0(react@18.3.1))':
     dependencies:
-      '@cesdk/cesdk-js': 1.47.0(react@18.3.1)
+      '@cesdk/cesdk-js': 1.48.0(react@18.3.1)
       lodash-es: 4.17.21
 
-  '@imgly/plugin-vectorizer-web@file:packages/plugin-vectorizer-web(@cesdk/cesdk-js@1.47.0(react@18.3.1))':
+  '@imgly/plugin-vectorizer-web@file:packages/plugin-vectorizer-web(@cesdk/cesdk-js@1.48.0(react@18.3.1))':
     dependencies:
-      '@cesdk/cesdk-js': 1.47.0(react@18.3.1)
+      '@cesdk/cesdk-js': 1.48.0(react@18.3.1)
       '@imgly/vectorizer': 1.0.0
 
   '@imgly/vectorizer@1.0.0':

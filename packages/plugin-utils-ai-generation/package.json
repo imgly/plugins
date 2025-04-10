@@ -11,9 +11,7 @@
       "types": "./dist/index.d.ts"
     }
   },
-  "files": [
-    "dist/"
-  ],
+  "files": ["dist/"],
   "scripts": {
     "start": "pnpm run watch",
     "clean": "pnpm exec rimraf dist",
@@ -32,7 +30,7 @@
     "_syncPnpm": "pnpm sync-dependencies-meta-injected"
   },
   "devDependencies": {
-    "@cesdk/cesdk-js": "^1.47.0-rc.3",
+    "@cesdk/cesdk-js": "^1.48.0",
     "@imgly/plugin-utils": "workspace:*",
     "esbuild": "^0.19.12",
     "jest": "^29.7.0",
@@ -47,6 +45,6 @@
     }
   },
   "peerDependencies": {
-    "@cesdk/cesdk-js": "^1.47.0-rc.3"
+    "@cesdk/cesdk-js": "^1.48.0"
   }
 }

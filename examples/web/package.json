@@ -12,8 +12,8 @@
     "_syncPnpm": "pnpm sync-dependencies-meta-injected"
   },
   "dependencies": {
-    "@cesdk/cesdk-js": "^1.47.0-rc.3",
-    "@cesdk/engine": "^1.47.0-rc.3",
+    "@cesdk/cesdk-js": "^1.48.0",
+    "@cesdk/engine": "^1.48.0",
     "@imgly/plugin-utils-ai-generation": "workspace:*",
     "@imgly/plugin-utils": "workspace:*",
     "@imgly/plugin-ai-text-generation-web": "workspace:*",
