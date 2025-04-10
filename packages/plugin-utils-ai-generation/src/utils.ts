@@ -1,6 +1,30 @@
+import CreativeEditorSDK, { AssetResult } from '@cesdk/cesdk-js';
 import { GenerationResult, Output } from './generation/provider';
 
 export const AI_PANEL_ID_PREFIX = 'ly.img.ai';
+
+const TEMP_ASSET_SOURCE_ID = 'ly.img.ai/temp';
+
+/**
+ * Adding asset to the scene.
+ *
+ * NOTE: Will use a temporary asset source so that
+ * our asset source middleware trigger. This is necessary since there is
+ * a lot of extra logic in the video middlewares regarding trim, position etc.
+ *
+ * These will only trigger via an asset source, not by calling
+ * `defaultApplyAsset` directly.
+ */
+export async function addAssetToScene(
+  cesdk: CreativeEditorSDK,
+  assetResult: AssetResult
+) {
+  if (!cesdk.engine.asset.findAllSources().includes(TEMP_ASSET_SOURCE_ID)) {
+    cesdk.engine.asset.addLocalSource(TEMP_ASSET_SOURCE_ID);
+  }
+
+  return cesdk.engine.asset.apply(TEMP_ASSET_SOURCE_ID, assetResult);
+}
 
 /**
  * Returns a consistent panel ID for a provider ID

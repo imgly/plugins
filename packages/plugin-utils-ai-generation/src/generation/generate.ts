@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import type { AssetDefinition, AssetResult } from '@cesdk/cesdk-js';
-import { isAbortError, isAsyncGenerator, uuid4 } from '../utils';
+import { addAssetToScene, isAbortError, isAsyncGenerator, uuid4 } from '../utils';
 import type Provider from './provider';
 import {
   type GetInput,
@@ -54,7 +54,8 @@ async function generate<K extends OutputKind, I, O extends Output>(
           JSON.stringify(assetResult, undefined, 2)
         );
 
-      placeholderBlock = await cesdk.engine.asset.defaultApplyAsset(
+      placeholderBlock = await addAssetToScene(
+        cesdk,
         assetResult
       );
 
