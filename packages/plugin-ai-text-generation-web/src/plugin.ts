@@ -23,8 +23,6 @@ export default (
         );
       }
 
-      const provider = config.provider;
-
       const quickActionMenu = getQuickActionMenu(cesdk, 'text');
 
       quickActionMenu.setQuickActionMenuOrder([
@@ -36,126 +34,9 @@ export default (
         'changeTone',
         'translate',
         'ly.img.separator',
-        'changeTextTo'
+        'changeTextTo',
+        ...quickActionMenu.getQuickActionMenuOrder()
       ]);
-      // magicMenu.registerMagicEntry(
-      //   createMagicEntryForText({
-      //     cesdk,
-      //     id: 'improve',
-      //     icon: '@imgly/MagicWand',
-      //     infer: improve.bind(null, anthropic, provider)
-      //   })
-      // );
-      // magicMenu.registerMagicEntry(
-      //   createMagicEntryForText({
-      //     cesdk,
-      //     id: 'fix',
-      //     icon: '@imgly/CheckmarkAll',
-      //     infer: fix.bind(null, anthropic, provider)
-      //   })
-      // );
-      // magicMenu.registerMagicEntry(
-      //   createMagicEntryForText({
-      //     cesdk,
-      //     id: 'shorter',
-      //     icon: '@imgly/TextShorter',
-
-      //     infer: shorter.bind(null, anthropic, provider)
-      //   })
-      // );
-      // magicMenu.registerMagicEntry(
-      //   createMagicEntryForText({
-      //     cesdk,
-      //     id: 'longer',
-      //     icon: '@imgly/TextLonger',
-
-      //     infer: longer.bind(null, anthropic, provider)
-      //   })
-      // );
-      // magicMenu.registerMagicEntry(
-      //   createMagicEntryForText({
-      //     cesdk,
-      //     id: 'changeTone',
-      //     icon: '@imgly/Microphone',
-
-      //     parameter: [
-      //       { id: 'professional' },
-      //       { id: 'casual' },
-      //       { id: 'friendly' },
-      //       { id: 'serious' },
-      //       { id: 'humorous' },
-      //       { id: 'optimistic' }
-      //     ],
-
-      //     infer: changeTone.bind(null, anthropic, provider)
-      //   })
-      // );
-      // magicMenu.registerMagicEntry(
-      //   createMagicEntryForText({
-      //     cesdk,
-      //     id: 'translate',
-      //     icon: '@imgly/Language',
-
-      //     parameter: LOCALES.map((locale) => ({
-      //       id: locale
-      //     })),
-
-      //     infer: translate.bind(null, anthropic, provider)
-      //   })
-      // );
-      // magicMenu.registerMagicEntry(
-      //   createMagicEntryForText({
-      //     cesdk,
-      //     id: 'changeTextTo',
-      //     icon: '@imgly/Rename',
-
-      //     renderEditState: async (
-      //       { builder, state, experimental },
-      //       { applyInference, toggleEditState }
-      //     ) => {
-      //       const changeTextPrompt = state(
-      //         'ly.img.ai.inference.changeTextMode.changeText.prompt',
-      //         ''
-      //       );
-      //       builder.TextArea('ly.img.ai.inference.changeText.textArea', {
-      //         inputLabel: 'Change text to...',
-      //         ...changeTextPrompt
-      //       });
-      //       builder.Separator('ly.img.ai.inference.changeTextMode.separator.1');
-      //       experimental.builder.ButtonRow(
-      //         'ly.img.ai.inference.changeTextMode.footer',
-      //         {
-      //           justifyContent: 'space-between',
-      //           children: () => {
-      //             builder.Button(
-      //               'ly.img.ai.inference.changeTextMode.footer.cancel',
-      //               {
-      //                 label: 'common.back',
-      //                 icon: '@imgly/ChevronLeft',
-      //                 onClick: toggleEditState
-      //               }
-      //             );
-      //             builder.Button(
-      //               'ly.img.ai.inference.changeTextMode.footer.apply',
-      //               {
-      //                 label: 'Rewrite',
-      //                 icon: '@imgly/MagicWand',
-      //                 color: 'accent',
-      //                 onClick: async () => {
-      //                   const additionalPrompt = changeTextPrompt.value;
-      //                   applyInference(additionalPrompt);
-      //                   toggleEditState();
-      //                 }
-      //               }
-      //             );
-      //           }
-      //         }
-      //       );
-      //     },
-
-      //     infer: changeTextTo.bind(null, anthropic, provider)
-      //   })
-      // );
 
       cesdk.ui.addIconSet(PLUGIN_ICON_SET_ID, iconSprite);
       cesdk.setTranslations({

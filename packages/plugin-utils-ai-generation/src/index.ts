@@ -43,18 +43,6 @@ export {
 export { default as getQuickActionMenu } from './generation/quickAction/getQuickActionMenu';
 export { default as registerQuickActionMenuComponent } from './generation/quickAction/registerQuickActionMenuComponent';
 
-// Magic menu exports
-export { default as getMagicMenu } from './magic/getMagicMenu';
-export { default as registerMagicMenu } from './magic/registerMagicMenu';
-export {
-  type MagicEntry,
-  type MagicMenu,
-  type MagicContext,
-  type ApplyInferenceResult,
-  type MagicId,
-  type InferenceMetadata
-} from './magic/types';
-
 export {
   isGeneratingStateKey,
   abortGenerationStateKey
