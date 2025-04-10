@@ -14,6 +14,12 @@ function getAssetResultForPlaceholder<K extends OutputKind>(
         blockInput[kind] as InputByKind['image']
       );
     }
+    case 'video': {
+      return getVideoAssetResultForPlaceholder(
+        id,
+        blockInput[kind] as InputByKind['video']
+      );
+    }
 
     default: {
       throw new Error(
@@ -32,26 +38,35 @@ function getImageAssetResultForPlaceholder(
   return {
     id,
     meta: {
-      // previewUri,
+      previewUri,
       fillType: '//ly.img.ubq/fill/image',
       kind: 'image',
 
       width,
       height
-    },
-    payload: {
-      sourceSet: [
-        {
-          // Adding a previewUri to the source set for now. The engine
-          // has a bug where the replaced image will be distorted if the
-          // aspect ratio is different from the preview image.
-          // This will be fixed in a future release and we can use
-          // `meta.previewUri` again.
-          uri: previewUri,
-          width,
-          height
-        }
-      ]
+    }
+  };
+}
+
+function getVideoAssetResultForPlaceholder(
+  id: string,
+  input: InputByKind['video']
+): AssetResult {
+  const width = input.width;
+  const height = input.height;
+  return {
+    id,
+    label: input.label,
+    meta: {
+      previewUri,
+      mimeType: 'video/mp4',
+      kind: 'video',
+      fillType: '//ly.img.ubq/fill/video',
+
+      duration: input.duration.toString(),
+
+      width,
+      height
     }
   };
 }
