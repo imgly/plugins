@@ -10,7 +10,7 @@ import {
 } from './provider';
 import { InitProviderConfiguration, UIOptions } from './types';
 import generate from './generate';
-import { extractErrorMessage } from '../utils';
+import { extractErrorMessage, isAbortError } from '../utils';
 
 export function isGeneratingStateKey(providerId: string): string {
   return `${providerId}.generating`;
@@ -261,10 +261,6 @@ function showErrorNotification<I, O extends Output>(
     action
   });
   return true;
-}
-
-function isAbortError(error: unknown): error is Error {
-  return error instanceof Error && error.name === 'AbortError';
 }
 
 export default renderGenerationComponents;

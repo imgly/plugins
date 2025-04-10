@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import type { AssetDefinition, AssetResult } from '@cesdk/cesdk-js';
-import { isAsyncGenerator, uuid4 } from '../utils';
+import { isAbortError, isAsyncGenerator, uuid4 } from '../utils';
 import type Provider from './provider';
 import {
   type GetInput,
@@ -34,6 +34,8 @@ async function generate<K extends OutputKind, I, O extends Output>(
 ): Promise<Result<O>> {
   const { cesdk, createPlaceholderBlock, historyAssetSourceId } = options;
 
+  let placeholderBlock: number | undefined;
+
   try {
     if (config.debug) console.group(`Starting Generation for '${kind}'`);
 
@@ -41,8 +43,6 @@ async function generate<K extends OutputKind, I, O extends Output>(
     const blockInputs = await getBlockInput(inputs.input);
     const assetId = uuid4();
     let assetResult: AssetResult;
-
-    let placeholderBlock: number | undefined;
 
     // Create a placeholder block
     if (createPlaceholderBlock) {
@@ -155,6 +155,21 @@ async function generate<K extends OutputKind, I, O extends Output>(
       });
     }
     return { status: 'success', output };
+  } catch (error) {
+    if (
+      placeholderBlock != null &&
+      cesdk.engine.block.isValid(placeholderBlock)
+    ) {
+      if (isAbortError(error)) {
+        cesdk.engine.block.destroy(placeholderBlock);
+      } else {
+        cesdk.engine.block.setState(placeholderBlock, {
+          type: 'Error',
+          error: 'Unknown'
+        });
+      }
+    }
+    throw error;
   } finally {
     if (config.debug) console.groupEnd();
   }
