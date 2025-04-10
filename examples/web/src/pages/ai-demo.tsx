@@ -73,7 +73,7 @@ function App() {
             initProvider(
               anthropicProvider,
               { cesdk: instance, engine: instance.engine },
-              { debug: true }
+              { debug: true, dryRun: false }
             );
 
             instance.addPlugin(
@@ -86,7 +86,8 @@ function App() {
                     proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
                   }),
                   ...getConfig('image-generation'),
-                  debug: true
+                  debug: true,
+                  dryRun: false
                 }),
                 video: VideoGeneration({
                   text2video: FalAiVideo.MinimaxVideo01Live({
@@ -95,7 +96,9 @@ function App() {
                   image2video: FalAiVideo.MinimaxVideo01LiveImageToVideo({
                     proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
                   }),
-                  ...getConfig('video-generation')
+                  ...getConfig('video-generation'),
+                  debug: true,
+                  dryRun: false
                 }),
                 audio: AudioGeneration({
                   text2speech: Elevenlabs.ElevenMultilingualV2({
@@ -104,7 +107,9 @@ function App() {
                   text2sound: Elevenlabs.ElevenSoundEffects({
                     proxyUrl: import.meta.env.VITE_ELEVENLABS_PROXY_URL
                   }),
-                  ...getConfig('audio-generation')
+                  ...getConfig('audio-generation'),
+                  debug: true,
+                  dryRun: false
                 })
               }))
             );

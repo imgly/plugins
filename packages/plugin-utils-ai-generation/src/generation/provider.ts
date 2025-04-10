@@ -379,7 +379,17 @@ export type QuickAction<I, O extends Output> = {
    */
   scopes?: Scope[];
 
+  /**
+   * If set to `true`, after the generation, the canvas menu
+   * will show a confirmation UI to confirm the generation.
+   */
   confirmation?: boolean;
+
+  /**
+   * If set to `true`, the selection is locked during the confirmation.
+   * The user cannot change the selection until the confirmation is done.
+   */
+  lockDuringConfirmation?: boolean;
 
   render: (
     context: BuilderRenderFunctionContext<any>,

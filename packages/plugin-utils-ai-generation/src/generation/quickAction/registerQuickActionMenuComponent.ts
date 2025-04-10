@@ -19,6 +19,7 @@ import highlightBlocksMiddleware from '../middleware/highlightBlocksMiddleware';
 import pendingMiddleware from '../middleware/pendingMiddleware';
 import lockMiddleware from '../middleware/lockMiddleware';
 import consumeGeneratedResult from './consumeGeneratedResult';
+import editModeMiddleware from '../middleware/editModeMiddleware';
 
 function registerQuickActionMenuComponent<
   K extends OutputKind,
@@ -376,11 +377,18 @@ async function triggerGeneration<
   const composedMiddlewares = composeMiddlewares<I, O>([
     loggingMiddleware(),
     pendingMiddleware({}),
-    quickAction.confirmation && highlightBlocksMiddleware({}),
-    quickAction.confirmation &&
-      lockMiddleware({
-        editMode: INFERENCE_AI_EDIT_MODE
-      })
+    ...(quickAction.confirmation
+      ? [
+          quickAction.lockDuringConfirmation
+            ? editModeMiddleware<I, O>({
+                editMode: INFERENCE_AI_EDIT_MODE
+              })
+            : lockMiddleware<I, O>({
+                editMode: INFERENCE_AI_EDIT_MODE
+              }),
+          quickAction.confirmation && highlightBlocksMiddleware<I, O>({})
+        ]
+      : [])
   ]);
 
   const { result: generationResult, dispose: generationDispose } =

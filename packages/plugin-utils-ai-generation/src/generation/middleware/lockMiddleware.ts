@@ -1,6 +1,7 @@
 import { Middleware } from './middleware';
 import { Output } from '../provider';
 import { CreativeEngine } from '@cesdk/cesdk-js';
+import { isAbortError } from '../../utils';
 
 /**
  * Highlights the blocks while the middleware is running.
@@ -37,6 +38,11 @@ function lockMiddleware<I, O extends Output>({
       unlock = lockSelectionInEditMode(options.engine, blockIds, editMode);
       const result = await next(input, options);
       return result;
+    } catch (error) {
+      if (isAbortError(error)) {
+        unlock();
+      }
+      throw error;
     } finally {
       if (automaticallyUnlock) {
         unlock();

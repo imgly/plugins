@@ -172,7 +172,6 @@ function addQuickActionEntryForText2Speech(
     'ly.img.separator',
     generateSpeechId
   ]);
-  console.log('quickActionMenu', quickActionMenu.getQuickActionMenuOrder());
 }
 
 export default AudioGeneration;

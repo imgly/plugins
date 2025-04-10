@@ -71,6 +71,7 @@ function createBaseQuickAction<I, O extends Output>(
     id,
     version: '1',
     confirmation: true,
+    lockDuringConfirmation: false,
     enable: getImageEnableFunction()
   };
 }

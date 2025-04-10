@@ -84,7 +84,7 @@ function renderGenerationComponents<K extends OutputKind, I, O extends Output>(
           ? {
               icon: '@imgly/Cross',
               color: 'danger',
-              tooltip: `panel.${providerId}.abort`,
+              tooltip: [`panel.${providerId}.abort`, 'common.cancel'],
               onClick: () => abort()
             }
           : undefined,
