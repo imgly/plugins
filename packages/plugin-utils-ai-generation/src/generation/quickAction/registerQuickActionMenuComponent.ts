@@ -380,10 +380,10 @@ async function triggerGeneration<
     ...(quickAction.confirmation
       ? [
           quickAction.lockDuringConfirmation
-            ? editModeMiddleware<I, O>({
+            ? lockMiddleware<I, O>({
                 editMode: INFERENCE_AI_EDIT_MODE
               })
-            : lockMiddleware<I, O>({
+            : editModeMiddleware<I, O>({
                 editMode: INFERENCE_AI_EDIT_MODE
               }),
           quickAction.confirmation && highlightBlocksMiddleware<I, O>({})
