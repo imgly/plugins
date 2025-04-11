@@ -309,8 +309,7 @@ const AiPlugin = (
           },
           meta: {
             label: 'Generate Image',
-            thumbUri:
-              'https://ubique.img.ly/static/ai-demo/GenerateImage_logo.png',
+            thumbUri: 'https://ubique.img.ly/static/ai-demo/GenerateImage.png',
             width: THUMBNAIL_WIDTH,
             height: THUMBNAIL_HEIGHT
           }
@@ -322,8 +321,7 @@ const AiPlugin = (
           },
           meta: {
             label: 'Generate Video',
-            thumbUri:
-              'https://ubique.img.ly/static/ai-demo/GenerateVideo_logo.png',
+            thumbUri: 'https://ubique.img.ly/static/ai-demo/GenerateVideo.png',
             width: THUMBNAIL_WIDTH,
             height: THUMBNAIL_HEIGHT
           }
@@ -335,7 +333,7 @@ const AiPlugin = (
           },
           meta: {
             label: 'Generate Sound',
-            thumbUri: 'https://ubique.img.ly/static/ai-demo/AISound_logo.png',
+            thumbUri: 'https://ubique.img.ly/static/ai-demo/GenerateSound.png',
             width: THUMBNAIL_WIDTH,
             height: THUMBNAIL_HEIGHT
           }
@@ -347,7 +345,7 @@ const AiPlugin = (
           },
           meta: {
             label: 'AI Voice',
-            thumbUri: 'https://ubique.img.ly/static/ai-demo/AIVoice_logo.png',
+            thumbUri: 'https://ubique.img.ly/static/ai-demo/AIVoicev2.png',
             width: THUMBNAIL_WIDTH,
             height: THUMBNAIL_HEIGHT
           }
