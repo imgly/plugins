@@ -60,6 +60,25 @@ async function generate<K extends OutputKind, I, O extends Output>(
         );
 
       placeholderBlock = await addAssetToScene(cesdk, assetResult);
+      // This is a workaround. The middleware in the video timeline
+      // is calling APIs that will render the block in an error
+      // state if it does not have an URI set. It's difficult to
+      // recover from that. A bug report has been created for this.
+      // As a workaround: Duplicating the block will remove the error state
+      // but you will still see an error in the web console.
+      // TODO: Remove this workaround when the bug is fixed.
+      if (placeholderBlock != null && provider.kind === 'video') {
+        const positionX = cesdk.engine.block.getPositionX(placeholderBlock);
+        const positionY = cesdk.engine.block.getPositionY(placeholderBlock);
+        const duplicated = cesdk.engine.block.duplicate(placeholderBlock);
+        cesdk.engine.block.setPositionX(duplicated, positionX);
+        cesdk.engine.block.setPositionY(duplicated, positionY);
+        cesdk.engine.block.destroy(placeholderBlock);
+        placeholderBlock = duplicated;
+      }
+      // placeholderBlock = await options.engine.asset.defaultApplyAsset(
+      //   assetResult
+      // );
 
       if (checkAbortSignal(cesdk, abortSignal, placeholderBlock))
         return { status: 'aborted' };
