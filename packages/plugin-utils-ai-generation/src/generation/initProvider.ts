@@ -116,7 +116,7 @@ async function initHistory(
 
   if (history === '@imgly/indexedDB') {
     const historyId = `${providerId}.history`;
-    engine.asset.addSource(new IndexedDBAssetSource(historyId));
+    engine.asset.addSource(new IndexedDBAssetSource(historyId, engine));
     return historyId;
   }
 

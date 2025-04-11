@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 import {
+  CreativeEngine,
   type AssetDefinition,
   type AssetQueryData,
   type AssetResult,
@@ -22,6 +23,8 @@ export class IndexedDBAssetSource implements AssetSource {
   /** The unique id of the API */
   public readonly id: string;
 
+  public readonly engine: CreativeEngine;
+
   private readonly dbName: string;
 
   private readonly dbVersion: number;
@@ -42,12 +45,14 @@ export class IndexedDBAssetSource implements AssetSource {
    */
   constructor(
     id: string,
+    engine: CreativeEngine,
     options?: {
       dbName?: string;
       dbVersion?: number;
     }
   ) {
     this.id = id;
+    this.engine = engine;
     this.dbName = options?.dbName ?? `ly.img.assetSource/${id}`;
     this.dbVersion = options?.dbVersion ?? 1;
   }
@@ -290,9 +295,12 @@ export class IndexedDBAssetSource implements AssetSource {
         const store = transaction.objectStore(this.assetStoreName);
         store.delete(assetId);
 
-        processBlobUrls(asset, (value) => {
-          this.removeBlob(value);
-        });
+        transaction.oncomplete = () => {
+          processBlobUrls(asset, (value) => {
+            this.removeBlob(value);
+          });
+          this.engine.asset.assetSourceContentsChanged(this.id);
+        };
 
         transaction.onerror = () => {
           console.error(`Failed to remove asset: ${transaction.error}`);
