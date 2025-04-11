@@ -169,8 +169,7 @@ function App() {
                   'Generated From Text',
                 'libraries.ly.img.ai/fal-ai/minimax/video-01-live/image-to-video.history.label':
                   'Generated From Image',
-                'libraries.elevenlabs/monolingual/v1.history.label':
-                  'Generated Voice',
+                'libraries.elevenlabs/monolingual/v1.history.label': 'AI Voice',
                 'libraries.elevenlabs/sound-generation.history.label':
                   'Generated Sound',
 

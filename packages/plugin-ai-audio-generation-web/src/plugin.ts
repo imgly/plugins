@@ -25,10 +25,9 @@ export function AudioGeneration(
       };
       cesdk.setTranslations({
         en: {
-          [`panel.${SPEECH_GENERATION_PANEL_ID}`]: 'Voice Generation',
+          [`panel.${SPEECH_GENERATION_PANEL_ID}`]: 'AI Voice',
           [`panel.${SOUND_GENERATION_PANEL_ID}`]: 'Sound Generation',
-          'ly.img.ai.audio-generation.speech.success':
-            'Voice Generation Successful',
+          'ly.img.ai.audio-generation.speech.success': 'Generation Successful',
           'ly.img.ai.audio-generation.speech.success.action': 'Show',
           'ly.img.ai.audio-generation.sound.success':
             'Sound Generation Successful',
@@ -156,7 +155,7 @@ function addQuickActionEntryForText2Speech(
         icon: '@imgly/Audio',
         variant: 'plain',
         labelAlignment: 'left',
-        label: 'Generate Voice...',
+        label: 'AI Voice...',
         onClick: () => {
           const [blockId] = cesdk.engine.block.findAllSelected();
           const text = cesdk.engine.block.getString(blockId, 'text/text');

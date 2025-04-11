@@ -44,7 +44,7 @@ function getProvider(
 
   cesdk.setTranslations({
     en: {
-      [`panel.${modelKey}`]: 'Generate Voice',
+      [`panel.${modelKey}`]: 'AI Voice',
       [`panel.${voiceSelectionPanelId}`]: 'Select a Voice'
     }
   });
@@ -98,7 +98,6 @@ function getProvider(
               thumbnail: 'https://ubique.img.ly/static/voices/george.webp'
             });
 
-            // TODO: Render voice asset source selection
             context.builder.Button(`${prefix}.openVoiceSelection`, {
               inputLabel: 'Voice',
               icon: '@imgly/Appearance',
@@ -231,5 +230,4 @@ function createVoicesAssetSource(cesdk: CreativeEditorSDK): string {
   });
   return id;
 }
-
 export default getProvider;
