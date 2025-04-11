@@ -44,7 +44,7 @@ function getProvider(
 
   cesdk.setTranslations({
     en: {
-      [`panel.${modelKey}`]: 'Generate Speech',
+      [`panel.${modelKey}`]: 'Generate Voice',
       [`panel.${voiceSelectionPanelId}`]: 'Select a Voice'
     }
   });

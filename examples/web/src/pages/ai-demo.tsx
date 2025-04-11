@@ -170,7 +170,7 @@ function App() {
                 'libraries.ly.img.ai/fal-ai/minimax/video-01-live/image-to-video.history.label':
                   'Generated From Image',
                 'libraries.elevenlabs/monolingual/v1.history.label':
-                  'Generated Speech',
+                  'Generated Voice',
                 'libraries.elevenlabs/sound-generation.history.label':
                   'Generated Sound',
 
@@ -310,7 +310,8 @@ const AiPlugin = (
           },
           meta: {
             label: 'Generate Image',
-            thumbUri: 'https://ubique.img.ly/static/ai-demo/GenerateImage.png',
+            thumbUri:
+              'https://ubique.img.ly/static/ai-demo/GenerateImage_logo.png',
             width: THUMBNAIL_WIDTH,
             height: THUMBNAIL_HEIGHT
           }
@@ -322,7 +323,8 @@ const AiPlugin = (
           },
           meta: {
             label: 'Generate Video',
-            thumbUri: 'https://ubique.img.ly/static/ai-demo/GenerateVideo.png',
+            thumbUri:
+              'https://ubique.img.ly/static/ai-demo/GenerateVideo_logo.png',
             width: THUMBNAIL_WIDTH,
             height: THUMBNAIL_HEIGHT
           }
@@ -334,7 +336,7 @@ const AiPlugin = (
           },
           meta: {
             label: 'Generate Sound',
-            thumbUri: 'https://ubique.img.ly/static/ai-demo/GenerateSound.png',
+            thumbUri: 'https://ubique.img.ly/static/ai-demo/AISound_logo.png',
             width: THUMBNAIL_WIDTH,
             height: THUMBNAIL_HEIGHT
           }
@@ -346,7 +348,7 @@ const AiPlugin = (
           },
           meta: {
             label: 'AI Voice',
-            thumbUri: 'https://ubique.img.ly/static/ai-demo/AIVoicev2.png',
+            thumbUri: 'https://ubique.img.ly/static/ai-demo/AIVoice_logo.png',
             width: THUMBNAIL_WIDTH,
             height: THUMBNAIL_HEIGHT
           }
