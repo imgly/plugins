@@ -67,6 +67,7 @@ async function initProvider<K extends OutputKind, I, O extends Output>(
   options.cesdk.i18n.setTranslations({
     en: {
       'common.ai-generation.success': 'Generation Successful',
+      'common.ai-generation.failed': 'Generation Failed',
       'common.ai-generation.generate': 'Generate',
       'common.ai-generation.prompt.placeholder':
         'Describe what you want to create...',
@@ -210,11 +211,14 @@ async function initQuickActions<K extends OutputKind, I, O extends Output>(
     }
   });
 
-  const { canvasMenuComponentId } = registerQuickActionMenuComponent({
-    cesdk,
-    quickActionMenu,
-    provider
-  });
+  const { canvasMenuComponentId } = registerQuickActionMenuComponent(
+    {
+      cesdk,
+      quickActionMenu,
+      provider
+    },
+    config
+  );
 
   if (config.debug) {
     // eslint-disable-next-line no-console

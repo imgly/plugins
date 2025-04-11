@@ -20,16 +20,22 @@ import pendingMiddleware from '../middleware/pendingMiddleware';
 import lockMiddleware from '../middleware/lockMiddleware';
 import consumeGeneratedResult from './consumeGeneratedResult';
 import editModeMiddleware from '../middleware/editModeMiddleware';
+import { isAbortError } from '../../utils';
+import { InitProviderConfiguration } from '../types';
+import handleGenerationError from '../handleGenerationError';
 
 function registerQuickActionMenuComponent<
   K extends OutputKind,
   I,
   O extends Output
->(options: {
-  cesdk: CreativeEditorSDK;
-  quickActionMenu: QuickActionMenu;
-  provider: Provider<K, I, O>;
-}) {
+>(
+  options: {
+    cesdk: CreativeEditorSDK;
+    quickActionMenu: QuickActionMenu;
+    provider: Provider<K, I, O>;
+  },
+  config: InitProviderConfiguration
+) {
   const { cesdk, quickActionMenu, provider } = options;
 
   const prefix = `ly.img.ai.${quickActionMenu.id}`;
@@ -255,23 +261,47 @@ function registerQuickActionMenuComponent<
                   toggleExpand: () => {
                     toggleExpandedState.setValue(undefined);
                   },
-                  generate: async (input, generateOptions) => {
-                    const { returnValue, applyCallbacks, dispose } =
-                      await triggerGeneration({
-                        input,
-                        quickAction,
-                        quickActionMenu,
-                        provider,
+                  handleGenerationError: (error) => {
+                    handleGenerationError(
+                      error,
+                      {
                         cesdk,
-                        abortSignal: createAbortSignal(),
-                        blockIds: generateOptions?.blockIds ?? blockIds,
-                        confirmationComponentId
-                      });
+                        provider
+                      },
+                      config
+                    );
+                  },
+                  generate: async (input, generateOptions) => {
+                    try {
+                      const { returnValue, applyCallbacks, dispose } =
+                        await triggerGeneration({
+                          input,
+                          quickAction,
+                          quickActionMenu,
+                          provider,
+                          cesdk,
+                          abortSignal: createAbortSignal(),
+                          blockIds: generateOptions?.blockIds ?? blockIds,
+                          confirmationComponentId
+                        });
 
-                    shared.unlock = dispose;
-                    shared.applyCallbacks = applyCallbacks;
+                      shared.unlock = dispose;
+                      shared.applyCallbacks = applyCallbacks;
 
-                    return returnValue;
+                      return returnValue;
+                    } catch (error) {
+                      if (!isAbortError(error)) {
+                        handleGenerationError(
+                          error,
+                          {
+                            cesdk,
+                            provider
+                          },
+                          config
+                        );
+                      }
+                      throw error;
+                    }
                   }
                 });
 
@@ -290,25 +320,49 @@ function registerQuickActionMenuComponent<
                     quickAction.render(context, {
                       blockIds,
                       closeMenu: close,
+                      handleGenerationError: (error) => {
+                        handleGenerationError(
+                          error,
+                          {
+                            cesdk,
+                            provider
+                          },
+                          config
+                        );
+                      },
                       toggleExpand: () => {
                         toggleExpandedState.setValue(quickAction.id);
                       },
                       generate: async (input, generateOptions) => {
-                        const { returnValue, applyCallbacks, dispose } =
-                          await triggerGeneration({
-                            input,
-                            quickAction,
-                            quickActionMenu,
-                            provider,
-                            cesdk,
-                            abortSignal: createAbortSignal(),
-                            blockIds: generateOptions?.blockIds ?? blockIds,
-                            confirmationComponentId
-                          });
+                        try {
+                          const { returnValue, applyCallbacks, dispose } =
+                            await triggerGeneration({
+                              input,
+                              quickAction,
+                              quickActionMenu,
+                              provider,
+                              cesdk,
+                              abortSignal: createAbortSignal(),
+                              blockIds: generateOptions?.blockIds ?? blockIds,
+                              confirmationComponentId
+                            });
 
-                        shared.unlock = dispose;
-                        shared.applyCallbacks = applyCallbacks;
-                        return returnValue;
+                          shared.unlock = dispose;
+                          shared.applyCallbacks = applyCallbacks;
+                          return returnValue;
+                        } catch (error) {
+                          if (!isAbortError(error)) {
+                            handleGenerationError(
+                              error,
+                              {
+                                cesdk,
+                                provider
+                              },
+                              config
+                            );
+                          }
+                          throw error;
+                        }
                       }
                     });
                   }

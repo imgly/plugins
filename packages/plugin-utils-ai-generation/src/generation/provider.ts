@@ -111,20 +111,20 @@ interface Provider<K extends OutputKind, I, O extends Output, C = O> {
        * If not set, a generic error message is shown.
        */
       error?: {
-        show?: boolean | ((context: { input: I; error: unknown }) => boolean);
+        show?: boolean | ((context: { input?: I; error: unknown }) => boolean);
 
         /**
          * The message that is shown when the asset generation failed. Can be a i18n key.
          * A function can be used to dynamically generate the message based on the input and output.
          */
-        message?: string | ((context: { input: I; error: unknown }) => string);
+        message?: string | ((context: { input?: I; error: unknown }) => string);
 
         /**
          * The action that is shown when the asset generation failed.
          */
         action?: {
-          label: string | ((context: { input: I; error: unknown }) => string);
-          onClick: (context: { input: I; error: unknown }) => void;
+          label: string | ((context: { input?: I; error: unknown }) => string);
+          onClick: (context: { input?: I; error: unknown }) => void;
         };
 
         /**
@@ -355,6 +355,12 @@ export type QuickActionContext<I, O extends Output> = {
    * @param options.blockIds Use these blocks ids for the generation instead of the currently selected blocks.
    */
   generate: (input: I, options?: { blockIds?: number[] }) => Promise<O>;
+
+  /**
+   * Can be called to show a notification after the generation as it is
+   * configured for the provider.
+   */
+  handleGenerationError: (error: unknown) => void;
 };
 
 export type QuickActionsInput<I, O extends Output> = {

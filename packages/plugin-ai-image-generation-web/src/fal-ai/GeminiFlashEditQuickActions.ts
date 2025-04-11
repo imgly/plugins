@@ -119,7 +119,7 @@ function ChangeImageQuickAction(
     },
     renderExpanded: (
       { builder, state, experimental },
-      { generate, toggleExpand }
+      { generate, toggleExpand, handleGenerationError }
     ) => {
       const promptState = state('changeImage.prompt', '');
 
@@ -145,19 +145,23 @@ function ChangeImageQuickAction(
             icon: '@imgly/MagicWand',
             color: 'accent',
             onClick: async () => {
-              const prompt = promptState.value;
-              if (!prompt) return;
+              try {
+                const prompt = promptState.value;
+                if (!prompt) return;
 
-              const [blockId] = cesdk.engine.block.findAllSelected();
-              const source = await getImageSource(blockId, cesdk);
+                const [blockId] = cesdk.engine.block.findAllSelected();
+                const source = await getImageSource(blockId, cesdk);
 
-              generate({
-                prompt,
-                image_url: source.uri,
-                blockId
-              });
+                generate({
+                  prompt,
+                  image_url: source.uri,
+                  blockId
+                });
 
-              toggleExpand();
+                toggleExpand();
+              } catch (error) {
+                handleGenerationError(error);
+              }
             }
           });
         }
@@ -223,7 +227,7 @@ function CreateVariantQuickAction(
     },
     renderExpanded: (
       { builder, state, experimental, engine },
-      { generate, toggleExpand }
+      { generate, toggleExpand, handleGenerationError }
     ) => {
       const promptState = state('createVariant.prompt', '');
 
@@ -249,51 +253,55 @@ function CreateVariantQuickAction(
             icon: '@imgly/MagicWand',
             color: 'accent',
             onClick: async () => {
-              const prompt = promptState.value;
-              if (!prompt) return;
+              try {
+                const prompt = promptState.value;
+                if (!prompt) return;
 
-              const [blockId] = engine.block.findAllSelected();
+                const [blockId] = engine.block.findAllSelected();
 
-              // Duplicate the selected block
-              const duplicated = engine.block.duplicate(blockId);
-              engine.block.setSelected(blockId, false);
-              engine.block.setSelected(duplicated, true);
+                // Duplicate the selected block
+                const duplicated = engine.block.duplicate(blockId);
+                engine.block.setSelected(blockId, false);
+                engine.block.setSelected(duplicated, true);
 
-              // Offset the duplicated block
-              const parent = engine.block.getParent(duplicated);
-              if (parent == null) throw new Error('Parent not found');
+                // Offset the duplicated block
+                const parent = engine.block.getParent(duplicated);
+                if (parent == null) throw new Error('Parent not found');
 
-              const offsetFactor = 1.0;
-              const parentWidth = engine.block.getWidth(parent);
-              const parentHeight = engine.block.getHeight(parent);
-              const offset =
-                0.02 * Math.min(parentWidth, parentHeight) * offsetFactor;
+                const offsetFactor = 1.0;
+                const parentWidth = engine.block.getWidth(parent);
+                const parentHeight = engine.block.getHeight(parent);
+                const offset =
+                  0.02 * Math.min(parentWidth, parentHeight) * offsetFactor;
 
-              engine.block.setPositionX(
-                duplicated,
-                engine.block.getPositionX(duplicated) + offset
-              );
-              engine.block.setPositionY(
-                duplicated,
-                engine.block.getPositionY(duplicated) + offset
-              );
+                engine.block.setPositionX(
+                  duplicated,
+                  engine.block.getPositionX(duplicated) + offset
+                );
+                engine.block.setPositionY(
+                  duplicated,
+                  engine.block.getPositionY(duplicated) + offset
+                );
 
-              // Get the source of the duplicated block
-              const source = await getImageSource(duplicated, cesdk);
+                // Get the source of the duplicated block
+                const source = await getImageSource(duplicated, cesdk);
 
-              // Generate a variant for the duplicated block
-              generate(
-                {
-                  prompt,
-                  image_url: source.uri,
-                  blockId: duplicated
-                },
-                {
-                  blockIds: [duplicated]
-                }
-              );
+                // Generate a variant for the duplicated block
+                generate(
+                  {
+                    prompt,
+                    image_url: source.uri,
+                    blockId: duplicated
+                  },
+                  {
+                    blockIds: [duplicated]
+                  }
+                );
 
-              toggleExpand();
+                toggleExpand();
+              } catch (error) {
+                handleGenerationError(error);
+              }
             }
           });
         }
@@ -310,27 +318,31 @@ function CreateVideoQuickAction(
 
   return {
     ...baseConfig,
-    render: ({ builder }, { closeMenu }) => {
+    render: ({ builder }, { closeMenu, handleGenerationError }) => {
       builder.Button(`createVideo.button`, {
         label: 'ly.img.ai.inference.createVideo',
         icon: '@imgly/plugin-ai-generation/video',
         labelAlignment: 'left',
         variant: 'plain',
         onClick: async () => {
-          const [blockId] = cesdk.engine.block.findAllSelected();
-          const source = await getImageSource(blockId, cesdk);
+          try {
+            const [blockId] = cesdk.engine.block.findAllSelected();
+            const source = await getImageSource(blockId, cesdk);
 
-          cesdk.ui.openPanel('ly.img.ai/video-generation');
-          cesdk.ui.experimental.setGlobalStateValue(
-            'ly.img.ai.video-generation.fromType',
-            'fromImage'
-          );
-          cesdk.ui.experimental.setGlobalStateValue(
-            'fal-ai/minimax/video-01-live/image-to-video.image_url',
-            source.uri
-          );
+            cesdk.ui.openPanel('ly.img.ai/video-generation');
+            cesdk.ui.experimental.setGlobalStateValue(
+              'ly.img.ai.video-generation.fromType',
+              'fromImage'
+            );
+            cesdk.ui.experimental.setGlobalStateValue(
+              'fal-ai/minimax/video-01-live/image-to-video.image_url',
+              source.uri
+            );
 
-          closeMenu();
+            closeMenu();
+          } catch (error) {
+            handleGenerationError(error);
+          }
         }
       });
     }
@@ -389,7 +401,10 @@ function StyleTransferQuickAction(
 
   return {
     ...baseConfig,
-    render: ({ builder, experimental }, { generate, closeMenu }) => {
+    render: (
+      { builder, experimental },
+      { generate, closeMenu, handleGenerationError }
+    ) => {
       experimental.builder.Popover('styleTransfer.popover', {
         label: 'ly.img.ai.inference.changeArtStyle',
         icon: '@imgly/Appearance',
@@ -408,15 +423,20 @@ function StyleTransferQuickAction(
                       labelAlignment: 'left',
                       variant: 'plain',
                       onClick: async () => {
-                        closeMenu();
-                        const [blockId] = cesdk.engine.block.findAllSelected();
-                        const source = await getImageSource(blockId, cesdk);
+                        try {
+                          closeMenu();
+                          const [blockId] =
+                            cesdk.engine.block.findAllSelected();
+                          const source = await getImageSource(blockId, cesdk);
 
-                        generate({
-                          prompt: style.prompt,
-                          image_url: source.uri,
-                          blockId
-                        });
+                          generate({
+                            prompt: style.prompt,
+                            image_url: source.uri,
+                            blockId
+                          });
+                        } catch (error) {
+                          handleGenerationError(error);
+                        }
                       }
                     });
                   });
@@ -514,7 +534,10 @@ function ArtistStyleQuickAction(
 
   return {
     ...baseConfig,
-    render: ({ builder, experimental }, { generate, closeMenu }) => {
+    render: (
+      { builder, experimental },
+      { generate, closeMenu, handleGenerationError }
+    ) => {
       experimental.builder.Popover('artists.popover', {
         label: 'ly.img.ai.inference.paintedBy',
         icon: '@imgly/MixingPlate',
@@ -533,15 +556,20 @@ function ArtistStyleQuickAction(
                       labelAlignment: 'left',
                       variant: 'plain',
                       onClick: async () => {
-                        closeMenu();
-                        const [blockId] = cesdk.engine.block.findAllSelected();
-                        const source = await getImageSource(blockId, cesdk);
+                        try {
+                          closeMenu();
+                          const [blockId] =
+                            cesdk.engine.block.findAllSelected();
+                          const source = await getImageSource(blockId, cesdk);
 
-                        generate({
-                          prompt: artist.prompt,
-                          image_url: source.uri,
-                          blockId
-                        });
+                          generate({
+                            prompt: artist.prompt,
+                            image_url: source.uri,
+                            blockId
+                          });
+                        } catch (error) {
+                          handleGenerationError(error);
+                        }
                       }
                     });
                   });
