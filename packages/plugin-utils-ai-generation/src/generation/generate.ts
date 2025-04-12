@@ -152,17 +152,14 @@ async function generate<K extends OutputKind, I, O extends Output>(
       }
       const assetDefinition: AssetDefinition = {
         ...generatedAssetResult,
+        id: `${Date.now()}-${generatedAssetResult.id}`,
         label:
           generatedAssetResult.label != null
             ? {
                 en: generatedAssetResult.label
               }
             : {},
-        tags: {},
-        meta: {
-          ...generatedAssetResult.meta,
-          insertedAt: Date.now()
-        }
+        tags: {}
       };
 
       cesdk.engine.asset.addAssetToSource(
