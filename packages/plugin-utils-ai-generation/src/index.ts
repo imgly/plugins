@@ -33,6 +33,9 @@ export {
   composeMiddlewares,
   type Middleware
 } from './generation/middleware/middleware';
+export { default as loggingMiddleware } from './generation/middleware/loggingMiddleware';
+export { default as rateLimitMiddleware, type RateLimitOptions } from './generation/middleware/rateLimitMiddleware';
+
 export {
   getPanelId,
   getDurationForVideo,
