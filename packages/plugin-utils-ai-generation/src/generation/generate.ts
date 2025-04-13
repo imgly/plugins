@@ -20,6 +20,8 @@ import CreativeEditorSDK from '@cesdk/cesdk-js';
 import getAssetResultForPlaceholder from './getAssetResultForPlaceholder';
 import getDryRunOutput from './getDryRunOutput';
 import getAssetResultForGenerated from './getAssetResultForGenerated';
+import { composeMiddlewares } from './middleware/middleware';
+import loggingMiddleware from './middleware/loggingMiddleware';
 
 type Result<O> = { status: 'success'; output: O } | { status: 'aborted' };
 
@@ -93,13 +95,24 @@ async function generate<K extends OutputKind, I, O extends Output>(
     }
 
     // Trigger the generation
-    const output: GenerationResult<O> = config.dryRun
-      ? ((await dryRun(kind, blockInputs)) as O)
-      : await provider.output.generate(inputs.input, {
-          abortSignal,
-          engine: options.engine,
-          cesdk
-        });
+    const composedMiddlewares = composeMiddlewares<I, O>([
+      ...(provider.output.middleware ?? []),
+      config.debug ? loggingMiddleware() : undefined
+    ]);
+
+    let output: GenerationResult<O>;
+    if (config.dryRun) {
+      output = (await dryRun(kind, blockInputs)) as O;
+    } else {
+      const disposableGenerationResult = await composedMiddlewares(
+        provider.output.generate
+      )(inputs.input, {
+        abortSignal,
+        engine: options.engine,
+        cesdk
+      });
+      output = disposableGenerationResult.result;
+    }
 
     if (isAsyncGenerator(output)) {
       throw new Error('Streaming generation is not supported yet from a panel');

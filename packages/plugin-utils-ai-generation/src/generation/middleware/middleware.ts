@@ -117,7 +117,7 @@ export function composeMiddlewares<I, O extends Output>(
         // Execute disposers in reverse order (last added, first disposed)
         for (let i = disposers.length - 1; i >= 0; i--) {
           try {
-            disposers[i]();
+            await disposers[i]();
           } catch (error) {
             // eslint-disable-next-line no-console
             console.error('Error in disposer:', error);

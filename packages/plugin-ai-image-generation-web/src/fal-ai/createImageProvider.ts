@@ -6,7 +6,8 @@ import {
   GetBlockInput,
   CommonProperties,
   Provider,
-  QuickAction
+  QuickAction,
+  loggingMiddleware
 } from '@imgly/plugin-utils-ai-generation';
 import { fal } from '@fal-ai/client';
 import { isCustomImageSize, uploadImageInputToFalIfNeeded } from './utils';
@@ -110,6 +111,7 @@ function createImageProvider<I extends Record<string, any>>(
     },
     output: {
       abortable: true,
+      middleware: [loggingMiddleware<I, ImageOutput>()],
       history: '@imgly/indexedDB',
       generate: async (
         input: I,

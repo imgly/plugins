@@ -7,6 +7,7 @@ import {
   Scope
 } from '@cesdk/cesdk-js';
 import { GetPropertyInput, Property } from './openapi/types';
+import { Middleware } from './middleware/middleware';
 
 interface Provider<K extends OutputKind, I, O extends Output, C = O> {
   /**
@@ -150,6 +151,12 @@ interface Provider<K extends OutputKind, I, O extends Output, C = O> {
     renderAfterGeneration?: (
       context: BuilderRenderFunctionContext<any>
     ) => void;
+
+    /**
+     * Middlware functions that can be used to hook into the
+     * generation process.
+     */
+    middleware?: Middleware<I, O>[];
   };
 }
 

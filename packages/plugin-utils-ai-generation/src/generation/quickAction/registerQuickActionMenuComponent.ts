@@ -274,16 +274,19 @@ function registerQuickActionMenuComponent<
                   generate: async (input, generateOptions) => {
                     try {
                       const { returnValue, applyCallbacks, dispose } =
-                        await triggerGeneration({
-                          input,
-                          quickAction,
-                          quickActionMenu,
-                          provider,
-                          cesdk,
-                          abortSignal: createAbortSignal(),
-                          blockIds: generateOptions?.blockIds ?? blockIds,
-                          confirmationComponentId
-                        });
+                        await triggerGeneration(
+                          {
+                            input,
+                            quickAction,
+                            quickActionMenu,
+                            provider,
+                            cesdk,
+                            abortSignal: createAbortSignal(),
+                            blockIds: generateOptions?.blockIds ?? blockIds,
+                            confirmationComponentId
+                          },
+                          config
+                        );
 
                       shared.unlock = dispose;
                       shared.applyCallbacks = applyCallbacks;
@@ -336,16 +339,19 @@ function registerQuickActionMenuComponent<
                       generate: async (input, generateOptions) => {
                         try {
                           const { returnValue, applyCallbacks, dispose } =
-                            await triggerGeneration({
-                              input,
-                              quickAction,
-                              quickActionMenu,
-                              provider,
-                              cesdk,
-                              abortSignal: createAbortSignal(),
-                              blockIds: generateOptions?.blockIds ?? blockIds,
-                              confirmationComponentId
-                            });
+                            await triggerGeneration(
+                              {
+                                input,
+                                quickAction,
+                                quickActionMenu,
+                                provider,
+                                cesdk,
+                                abortSignal: createAbortSignal(),
+                                blockIds: generateOptions?.blockIds ?? blockIds,
+                                confirmationComponentId
+                              },
+                              config
+                            );
 
                           shared.unlock = dispose;
                           shared.applyCallbacks = applyCallbacks;
@@ -378,20 +384,19 @@ function registerQuickActionMenuComponent<
   return { canvasMenuComponentId };
 }
 
-async function triggerGeneration<
-  K extends OutputKind,
-  I,
-  O extends Output
->(options: {
-  input: I;
-  blockIds: number[];
-  cesdk: CreativeEditorSDK;
-  quickAction: QuickAction<I, O>;
-  quickActionMenu: QuickActionMenu;
-  provider: Provider<K, I, O>;
-  abortSignal: AbortSignal;
-  confirmationComponentId: string;
-}): Promise<{
+async function triggerGeneration<K extends OutputKind, I, O extends Output>(
+  options: {
+    input: I;
+    blockIds: number[];
+    cesdk: CreativeEditorSDK;
+    quickAction: QuickAction<I, O>;
+    quickActionMenu: QuickActionMenu;
+    provider: Provider<K, I, O>;
+    abortSignal: AbortSignal;
+    confirmationComponentId: string;
+  },
+  config: InitProviderConfiguration
+): Promise<{
   dispose: () => void;
   returnValue: O;
   applyCallbacks?: ApplyCallbacks;
@@ -429,7 +434,8 @@ async function triggerGeneration<
   };
 
   const composedMiddlewares = composeMiddlewares<I, O>([
-    loggingMiddleware(),
+    ...(provider.output.middleware ?? []),
+    config.debug ? loggingMiddleware() : undefined,
     pendingMiddleware({}),
     ...(quickAction.confirmation
       ? [
