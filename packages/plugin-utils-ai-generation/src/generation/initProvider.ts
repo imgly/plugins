@@ -19,6 +19,15 @@ type RenderBuilderFunctions = {
   panel?: BuilderRenderFunction<any>;
 };
 
+/**
+ * Initialize the provider. Based on the given options and configuration
+ * it will register panels and components that is used to render
+ * the provider in the UI.
+ *
+ * @param provider The provider to initialize.
+ * @param options The options to use for the provider.
+ * @param config The configuration to use for the provider.
+ */
 async function initProvider<K extends OutputKind, I, O extends Output>(
   provider: Provider<K, I, O>,
   options: Options,
