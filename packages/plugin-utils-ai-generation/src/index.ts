@@ -13,6 +13,7 @@ export {
   type TextOutput,
   type AudioOutput,
   type Output,
+  type OutputKind,
   type PanelInputSchema,
   type RenderCustomProperty,
   type GetBlockInput,
