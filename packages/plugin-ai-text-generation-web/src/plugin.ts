@@ -1,7 +1,10 @@
 import { type EditorPlugin } from '@cesdk/cesdk-js';
 import iconSprite, { PLUGIN_ICON_SET_ID } from './iconSprite';
 import { PluginConfiguration } from './types';
-import { getQuickActionMenu } from '@imgly/plugin-utils-ai-generation';
+import {
+  getQuickActionMenu,
+  initProvider
+} from '@imgly/plugin-utils-ai-generation';
 
 export { PLUGIN_ID } from './constants';
 
@@ -12,15 +15,13 @@ export default (
     async initialize({ cesdk }) {
       if (cesdk == null) return;
 
-      if (config.provider.id !== 'anthropic') {
-        throw new Error('Only the "anthropic" provider is supported for now');
-      }
+      const provider = await config.provider?.({ cesdk });
 
-      if (config.provider.proxyUrl == null) {
-        throw new Error(
-          'The "proxyUrl" is required as the provider configuration.'
-        );
-      }
+      initProvider(
+        provider,
+        { cesdk, engine: cesdk.engine },
+        { debug: true, dryRun: false }
+      );
 
       const quickActionMenu = getQuickActionMenu(cesdk, 'text');
 
