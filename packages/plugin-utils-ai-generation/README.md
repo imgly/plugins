@@ -772,6 +772,11 @@ CreativeEditorSDK.create(domElement, {
 The package includes a middleware system to augment the generation flow:
 
 ```typescript
+// NOTE:: This middleware will not protect against calling the server directly as
+// many times as you want. It is only meant to be used for rate-limiting the UI before it
+// hits the server.
+// Always secure your API endpoints with authentication and authorization or server-side
+// rate-limiting.
 import { rateLimitMiddleware } from '@imgly/plugin-utils-ai-generation';
 
 // Create a rate limiting middleware
