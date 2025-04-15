@@ -102,7 +102,6 @@ export function AnthropicProvider(
           const stream = await sendPrompt(
             anthropic,
             {
-              id: 'anthropic',
               proxyUrl: config.proxyUrl
             },
             prompt,

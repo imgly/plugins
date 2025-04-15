@@ -1,5 +1,4 @@
 import type Anthropic from '@anthropic-ai/sdk';
-import { AnthropicProvider } from '../types';
 
 export const DEFAULT_ANTHROPIC_PARAMS = {
   // model: 'claude-3-5-sonnet-20241022',
@@ -17,14 +16,20 @@ export const DEFAULT_ANTHROPIC_OPTIONS = {
 
 async function sendPrompt(
   anthropic: Anthropic,
-  provider: AnthropicProvider,
+  config: {
+    proxyUrl: string;
+
+    model?: string;
+    maxTokens?: number;
+    temperature?: number;
+  },
   prompt: string,
   signal: AbortSignal
 ): Promise<AsyncGenerator<string, void, unknown>> {
   const customOptions: Partial<typeof DEFAULT_ANTHROPIC_PARAMS> = {};
-  if (provider.model) customOptions.model = provider.model;
-  if (provider.maxTokens) customOptions.max_tokens = provider.maxTokens;
-  if (provider.temperature) customOptions.temperature = provider.temperature;
+  if (config.model) customOptions.model = config.model;
+  if (config.maxTokens) customOptions.max_tokens = config.maxTokens;
+  if (config.temperature) customOptions.temperature = config.temperature;
 
   const msg = await anthropic.messages.create(
     {
