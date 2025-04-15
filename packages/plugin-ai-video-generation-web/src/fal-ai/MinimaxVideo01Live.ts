@@ -1,5 +1,5 @@
 import { type MinimaxVideo01LiveInput } from '@fal-ai/client/endpoints';
-import { VideoOutput, type Provider } from '@imgly/plugin-utils-ai-generation';
+import { VideoOutput, type Provider } from '@imgly/plugin-ai-generation-web';
 import schema from './MinimaxVideo01Live.json';
 import CreativeEditorSDK from '@cesdk/cesdk-js';
 import createVideoProvider from './createVideoProvider';

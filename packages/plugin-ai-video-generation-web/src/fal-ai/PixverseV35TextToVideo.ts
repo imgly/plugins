@@ -1,4 +1,4 @@
-import { VideoOutput, type Provider } from '@imgly/plugin-utils-ai-generation';
+import { VideoOutput, type Provider } from '@imgly/plugin-ai-generation-web';
 import schema from './PixverseV35TextToVideo.json';
 import CreativeEditorSDK from '@cesdk/cesdk-js';
 import createVideoProvider from './createVideoProvider';

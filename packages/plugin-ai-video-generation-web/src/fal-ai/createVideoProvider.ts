@@ -7,7 +7,7 @@ import {
   VideoOutput,
   GetBlockInput,
   CommonProperties
-} from '@imgly/plugin-utils-ai-generation';
+} from '@imgly/plugin-ai-generation-web';
 import { fal } from '@fal-ai/client';
 
 type VideoProviderConfiguration = {

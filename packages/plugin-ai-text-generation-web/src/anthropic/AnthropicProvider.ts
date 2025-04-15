@@ -1,5 +1,5 @@
 import CreativeEditorSDK from '@cesdk/cesdk-js';
-import { Provider, QuickAction } from '@imgly/plugin-utils-ai-generation';
+import { Provider, QuickAction } from '@imgly/plugin-ai-generation-web';
 import Anthropic from '@anthropic-ai/sdk';
 import sendPrompt from './sendPrompt';
 import improve from './prompts/improve';

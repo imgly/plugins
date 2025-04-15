@@ -8,7 +8,7 @@ import {
   Provider,
   QuickAction,
   loggingMiddleware
-} from '@imgly/plugin-utils-ai-generation';
+} from '@imgly/plugin-ai-generation-web';
 import { fal } from '@fal-ai/client';
 import { isCustomImageSize, uploadImageInputToFalIfNeeded } from './utils';
 import { getImageDimensions } from './RecraftV3.constants';

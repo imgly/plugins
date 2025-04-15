@@ -2,7 +2,7 @@ import {
   getQuickActionMenu,
   ImageOutput,
   type Provider
-} from '@imgly/plugin-utils-ai-generation';
+} from '@imgly/plugin-ai-generation-web';
 import schema from './GeminiFlashEdit.json';
 import { getImageDimensionsFromURL } from '@imgly/plugin-utils';
 import CreativeEditorSDK from '@cesdk/cesdk-js';

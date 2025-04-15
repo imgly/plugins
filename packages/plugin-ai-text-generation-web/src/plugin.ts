@@ -4,7 +4,7 @@ import { PluginConfiguration } from './types';
 import {
   getQuickActionMenu,
   initProvider
-} from '@imgly/plugin-utils-ai-generation';
+} from '@imgly/plugin-ai-generation-web';
 
 export { PLUGIN_ID } from './constants';
 

@@ -8,7 +8,7 @@ import {
   OutputKind,
   getPanelId,
   Output
-} from '@imgly/plugin-utils-ai-generation';
+} from '@imgly/plugin-ai-generation-web';
 
 import ImageGeneration from '@imgly/plugin-ai-image-generation-web';
 import VideoGeneration from '@imgly/plugin-ai-video-generation-web';

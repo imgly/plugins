@@ -1,5 +1,5 @@
 import { type MinimaxVideo01LiveImageToVideoInput } from '@fal-ai/client/endpoints';
-import { VideoOutput, type Provider } from '@imgly/plugin-utils-ai-generation';
+import { VideoOutput, type Provider } from '@imgly/plugin-ai-generation-web';
 import { getImageDimensionsFromURL } from '@imgly/plugin-utils';
 import schema from './MinimaxVideo01LiveImageToVideo.json';
 import CreativeEditorSDK from '@cesdk/cesdk-js';

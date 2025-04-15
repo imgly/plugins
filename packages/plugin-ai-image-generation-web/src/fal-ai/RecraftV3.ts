@@ -1,5 +1,5 @@
 import { Icons, CustomAssetSource } from '@imgly/plugin-utils';
-import { type Provider, getPanelId } from '@imgly/plugin-utils-ai-generation';
+import { type Provider, getPanelId } from '@imgly/plugin-ai-generation-web';
 import { type RecraftV3Input } from '@fal-ai/client/endpoints';
 import RecraftV3Schema from './RecraftV3.json';
 import CreativeEditorSDK, { AssetResult } from '@cesdk/cesdk-js';

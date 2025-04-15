@@ -1,4 +1,4 @@
-import { QuickAction, Output } from '@imgly/plugin-utils-ai-generation';
+import { QuickAction, Output } from '@imgly/plugin-ai-generation-web';
 import CreativeEditorSDK from '@cesdk/cesdk-js';
 
 type GeminiFlashEditInput = {

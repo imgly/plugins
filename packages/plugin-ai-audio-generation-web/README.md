@@ -195,7 +195,7 @@ Generated audio files are automatically stored in asset sources with the followi
 
 ## Related Packages
 
--   [@imgly/plugin-utils-ai-generation](https://github.com/imgly/plugin-utils-ai-generation) - Core utilities for AI generation
+-   [@imgly/plugin-ai-generation-web](https://github.com/imgly/plugin-ai-generation-web) - Core utilities for AI generation
 -   [@imgly/plugin-ai-image-generation-web](https://github.com/imgly/plugin-ai-image-generation-web) - AI image generation
 -   [@imgly/plugin-ai-video-generation-web](https://github.com/imgly/plugin-ai-video-generation-web) - AI video generation
 

@@ -14,7 +14,7 @@ This package provides the foundation for creating AI generation plugins for Crea
 ### Installation
 
 ```bash
-npm install @imgly/plugin-utils-ai-generation
+npm install @imgly/plugin-ai-generation-web
 ```
 
 ### Creating a Custom Provider
@@ -27,7 +27,7 @@ import {
     ImageOutput,
     initProvider,
     loggingMiddleware
-} from '@imgly/plugin-utils-ai-generation';
+} from '@imgly/plugin-ai-generation-web';
 
 // Create your image generation provider
 const myImageProvider: Provider<'image', MyInputType, ImageOutput> = {
@@ -612,7 +612,7 @@ Once you've created your provider, you need to initialize it with CreativeEditor
 The most basic way is to use the `initProvider` function to register your provider with CreativeEditor SDK:
 
 ```typescript
-import { initProvider } from '@imgly/plugin-utils-ai-generation';
+import { initProvider } from '@imgly/plugin-ai-generation-web';
 
 // Create your provider
 const myProvider = createMyProvider({
@@ -657,7 +657,7 @@ For example:
 You can programmatically get a panel ID using the `getPanelId` function:
 
 ```typescript
-import { getPanelId } from '@imgly/plugin-utils-ai-generation';
+import { getPanelId } from '@imgly/plugin-ai-generation-web';
 
 // Get panel ID for a provider
 const panelId = getPanelId('my-image-provider'); // returns "ly.img.ai/my-image-provider"
@@ -777,7 +777,7 @@ The package includes a middleware system to augment the generation flow:
 // hits the server.
 // Always secure your API endpoints with authentication and authorization or server-side
 // rate-limiting.
-import { rateLimitMiddleware } from '@imgly/plugin-utils-ai-generation';
+import { rateLimitMiddleware } from '@imgly/plugin-ai-generation-web';
 
 // Create a rate limiting middleware
 const rateLimit = rateLimitMiddleware({

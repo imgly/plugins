@@ -2,7 +2,7 @@ import type CreativeEditorSDK from '@cesdk/cesdk-js';
 import {
   type Provider,
   type GenerationMiddleware
-} from '@imgly/plugin-utils-ai-generation';
+} from '@imgly/plugin-ai-generation-web';
 
 type AiAudioProvider = (context: {
   cesdk: CreativeEditorSDK;

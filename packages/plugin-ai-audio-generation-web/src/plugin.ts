@@ -3,7 +3,7 @@ import { NotificationDuration, type EditorPlugin } from '@cesdk/cesdk-js';
 import {
   initProvider,
   getQuickActionMenu
-} from '@imgly/plugin-utils-ai-generation';
+} from '@imgly/plugin-ai-generation-web';
 import { PluginConfiguration } from './types';
 
 export { PLUGIN_ID } from './constants';

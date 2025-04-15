@@ -1,7 +1,7 @@
 import {
   type Provider,
   type AudioOutput
-} from '@imgly/plugin-utils-ai-generation';
+} from '@imgly/plugin-ai-generation-web';
 import CreativeEditorSDK from '@cesdk/cesdk-js';
 import schema from './ElevenMultilingualV2.json';
 import voices from './ElevenMultilingualV2.voices.json';

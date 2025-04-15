@@ -1,5 +1,5 @@
 import type CreativeEditorSDK from '@cesdk/cesdk-js';
-import { type Provider } from '@imgly/plugin-utils-ai-generation';
+import { type Provider } from '@imgly/plugin-ai-generation-web';
 
 export interface PluginConfiguration {
   /**
