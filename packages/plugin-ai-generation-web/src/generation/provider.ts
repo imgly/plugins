@@ -312,7 +312,7 @@ export type OutputKind = 'image' | 'video' | 'audio' | 'text';
  * Mandatory kind-specific input needed for the generation.
  */
 export type InputByKind = {
-  image: { label?: string; width: number; height: number; assetKind?: string };
+  image: { label?: string; width: number; height: number };
   video: { label?: string; width: number; height: number; duration: number };
   audio: { label?: string; thumbnailUrl?: string; duration?: number };
   text: { label?: string; length: number };
