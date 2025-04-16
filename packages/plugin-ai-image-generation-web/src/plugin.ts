@@ -1,7 +1,8 @@
 import { NotificationDuration, type EditorPlugin } from '@cesdk/cesdk-js';
 import {
   initProvider,
-  isGeneratingStateKey
+  isGeneratingStateKey,
+  registerDockComponent
 } from '@imgly/plugin-ai-generation-web';
 import { PluginConfiguration } from './types';
 
@@ -200,6 +201,16 @@ export function ImageGeneration(
           IMAGE_GENERATION_PANEL_ID,
           renderBuilderFunction
         );
+
+        cesdk.i18n.setTranslations({
+          en: {
+            [`${IMAGE_GENERATION_PANEL_ID}.dock.label`]: 'AI Image'
+          }
+        });
+        registerDockComponent({
+          cesdk,
+          panelId: IMAGE_GENERATION_PANEL_ID
+        });
       }
     }
   };

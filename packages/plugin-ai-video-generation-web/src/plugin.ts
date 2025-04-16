@@ -1,7 +1,8 @@
 import { NotificationDuration, type EditorPlugin } from '@cesdk/cesdk-js';
 import {
   initProvider,
-  isGeneratingStateKey
+  isGeneratingStateKey,
+  registerDockComponent
 } from '@imgly/plugin-ai-generation-web';
 import { PluginConfiguration } from './types';
 
@@ -199,6 +200,16 @@ export function VideoGeneration(
           VIDEO_GENERATION_PANEL_ID,
           renderBuilderFunction
         );
+
+        cesdk.i18n.setTranslations({
+          en: {
+            [`${VIDEO_GENERATION_PANEL_ID}.dock.label`]: 'AI Video'
+          }
+        });
+        registerDockComponent({
+          cesdk,
+          panelId: VIDEO_GENERATION_PANEL_ID
+        });
       }
     }
   };

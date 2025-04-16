@@ -195,6 +195,7 @@ The plugin automatically registers the following UI components:
 1. **Generation Panel**: A sidebar panel for text-to-video generation
 2. **Quick Actions**: Canvas menu items for image-to-video transformations
 3. **History Library**: Displays previously generated videos
+4. **Dock Component**: A button in the dock area to open the video generation panel
 
 ### Panel IDs
 
@@ -212,6 +213,23 @@ Generated videos are automatically stored in asset sources with the following ID
 -   MinimaxVideo01Live: `fal-ai/minimax/video-01-live.history`
 -   MinimaxVideo01LiveImageToVideo: `fal-ai/minimax/video-01-live/image-to-video.history`
 -   PixverseV35TextToVideo: `fal-ai/pixverse/v3.5/text-to-video.history`
+
+### Dock Integration
+
+The plugin automatically registers a dock component with a sparkle icon that opens the video generation panel. To customize the component's position in the dock, use the `setDockOrder` method:
+
+```typescript
+// Add the AI Video component to the beginning of the dock
+cesdk.ui.setDockOrder([
+  'ly.img.ai/video-generation.dock',
+  ...cesdk.ui.getDockOrder()
+]);
+
+// Or add it at a specific position
+const currentOrder = cesdk.ui.getDockOrder();
+currentOrder.splice(2, 0, 'ly.img.ai/video-generation.dock');
+cesdk.ui.setDockOrder(currentOrder);
+```
 
 ## Related Packages
 

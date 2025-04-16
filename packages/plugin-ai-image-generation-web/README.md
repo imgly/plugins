@@ -175,6 +175,7 @@ The plugin automatically registers the following UI components:
 1. **Generation Panel**: A sidebar panel for text-to-image generation
 2. **Quick Actions**: Canvas menu items for image-to-image transformations
 3. **History Library**: Displays previously generated images
+4. **Dock Component**: A button in the dock area to open the image generation panel
 
 ### Panel IDs
 
@@ -189,6 +190,23 @@ The plugin automatically registers the following UI components:
 Generated images are automatically stored in asset sources with the following IDs:
 - RecraftV3: `fal-ai/recraft-v3.history`
 - GeminiFlashEdit: `fal-ai/gemini-flash-edit.history`
+
+### Dock Integration
+
+The plugin automatically registers a dock component with a sparkle icon that opens the image generation panel. To customize the component's position in the dock, use the `setDockOrder` method:
+
+```typescript
+// Add the AI Image component to the beginning of the dock
+cesdk.ui.setDockOrder([
+  'ly.img.ai/image-generation.dock',
+  ...cesdk.ui.getDockOrder()
+]);
+
+// Or add it at a specific position
+const currentOrder = cesdk.ui.getDockOrder();
+currentOrder.splice(2, 0, 'ly.img.ai/image-generation.dock');
+cesdk.ui.setDockOrder(currentOrder);
+```
 
 ## Related Packages
 
