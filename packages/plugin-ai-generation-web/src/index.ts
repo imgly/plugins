@@ -35,7 +35,10 @@ export {
   type Middleware
 } from './generation/middleware/middleware';
 export { default as loggingMiddleware } from './generation/middleware/loggingMiddleware';
-export { default as rateLimitMiddleware, type RateLimitOptions } from './generation/middleware/rateLimitMiddleware';
+export {
+  default as rateLimitMiddleware,
+  type RateLimitOptions
+} from './generation/middleware/rateLimitMiddleware';
 
 export {
   getPanelId,
@@ -43,6 +46,8 @@ export {
   getThumbnailForVideo,
   getLabelFromId
 } from './utils';
+
+export { default as registerDockComponent } from './registerDockComponent';
 
 export { default as getQuickActionMenu } from './generation/quickAction/getQuickActionMenu';
 export { default as registerQuickActionMenuComponent } from './generation/quickAction/registerQuickActionMenuComponent';
