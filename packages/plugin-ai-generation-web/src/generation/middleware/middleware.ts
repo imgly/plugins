@@ -115,6 +115,7 @@ export function composeMiddlewares<I, O extends Output>(
       // Create the dispose function that will call all collected disposers in reverse order
       const dispose = async (): Promise<void> => {
         // Execute disposers in reverse order (last added, first disposed)
+        /* eslint-disable no-await-in-loop */
         for (let i = disposers.length - 1; i >= 0; i--) {
           try {
             await disposers[i]();
