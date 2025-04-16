@@ -186,8 +186,11 @@ function renderGenerationComponents<K extends OutputKind, I, O extends Output>(
           }
         }
       });
-      if (provider.output.renderAfterGeneration != null) {
-        provider.output.renderAfterGeneration(context);
+      if (provider.output.generationHintText != null) {
+        builder.Text(`${providerId}.generation-hint`, {
+          align: 'center',
+          content: provider.output.generationHintText
+        });
       }
     }
   });

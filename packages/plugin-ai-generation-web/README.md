@@ -138,7 +138,7 @@ The `output` property has several important options:
 -   **abortable**: Whether generation can be cancelled by the user
 -   **middleware**: Array of middleware functions for pre/post-processing
 -   **notification**: Success and error notification configuration
--   **renderAfterGeneration**: Function to render additional UI after the generation button
+-   **generationHintText**: Text to display below the generation button
 
 ##### Notification Configuration
 
@@ -199,20 +199,12 @@ generate: async function* (input, options) {
 }
 ```
 
-##### Custom UI Components
+##### Generation Hint Text
 
-The `renderAfterGeneration` function allows providers to render additional UI elements:
+The `generationHintText` property allows providers to display helpful information below the generation button:
 
 ```typescript
-renderAfterGeneration: (context) => {
-    // Add extra controls after the generate button
-    context.builder.Button('save-preset', {
-        label: 'Save as Preset',
-        onClick: () => {
-            /* save the current settings */
-        }
-    });
-};
+generationHintText: "Generation may take up to a minute. You can close this panel and will be notified when ready."
 ```
 
 ## Input Panel Types

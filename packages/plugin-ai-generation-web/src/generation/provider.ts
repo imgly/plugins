@@ -146,11 +146,9 @@ interface Provider<K extends OutputKind, I, O extends Output, C = O> {
     ) => Promise<GenerationResult<O, C>>;
 
     /**
-     * Render custom components after the generation button.
+     * Short informational text to display below the generation button.
      */
-    renderAfterGeneration?: (
-      context: BuilderRenderFunctionContext<any>
-    ) => void;
+    generationHintText?: string;
 
     /**
      * Middlware functions that can be used to hook into the
