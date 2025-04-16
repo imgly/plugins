@@ -192,7 +192,7 @@ function getProvider(
                     imageStyleAssetSource.setAssetActive(asset.id);
                     styleImageState.setValue(newValue);
                   } else if (typeState.value === 'vector') {
-                    imageStyleAssetSource.clearActiveAssets();
+                    vectorStyleAssetSource.clearActiveAssets();
                     vectorStyleAssetSource.setAssetActive(asset.id);
                     styleVectorState.setValue(newValue);
                   }
