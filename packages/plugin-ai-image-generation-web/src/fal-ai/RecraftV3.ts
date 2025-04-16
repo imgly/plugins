@@ -71,6 +71,9 @@ function getProvider(
     }))
   );
 
+  imageStyleAssetSource.setAssetActive('realistic_image');
+  vectorStyleAssetSource.setAssetActive('vector_illustration');
+
   cesdk.engine.asset.addSource(imageStyleAssetSource);
   cesdk.engine.asset.addSource(vectorStyleAssetSource);
 
