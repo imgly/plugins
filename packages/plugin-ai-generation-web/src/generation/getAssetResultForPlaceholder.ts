@@ -40,7 +40,7 @@ function getImageAssetResultForPlaceholder(
     meta: {
       previewUri,
       fillType: '//ly.img.ubq/fill/image',
-      kind: 'image',
+      kind: input.assetKind ?? 'image',
 
       width,
       height

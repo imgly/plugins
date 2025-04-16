@@ -7,7 +7,9 @@ import {
   Provider,
   OutputKind,
   getPanelId,
-  Output
+  Output,
+  initProvider,
+  registerDockComponent
 } from '@imgly/plugin-ai-generation-web';
 
 import ImageGeneration from '@imgly/plugin-ai-image-generation-web';
@@ -31,6 +33,8 @@ interface Providers {
 
   text2image?: GetProvider<'image'>;
   image2image?: GetProvider<'image'>;
+
+  text2sticker?: GetProvider<'image'>;
 
   text2video?: GetProvider<'video'>;
   image2video?: GetProvider<'video'>;
@@ -58,7 +62,10 @@ const AiPlugin: (config: AiPluginConfiguration) => EditorPlugin = (config) => {
 
       const { providers } = config;
 
-      const { activeAssetSource } = await addAiAppDockMenu(cesdk, isVideoMode);
+      const { activeAssetSource } = await addAiAppDockMenu(cesdk, {
+        isVideoMode,
+        includeText2Sticker: !!providers.text2sticker
+      });
 
       const text2text = await extendProvider(
         cesdk,
@@ -74,6 +81,11 @@ const AiPlugin: (config: AiPluginConfiguration) => EditorPlugin = (config) => {
         cesdk,
         activeAssetSource,
         providers.image2image
+      );
+      const text2sticker = await extendProvider(
+        cesdk,
+        activeAssetSource,
+        providers.text2sticker
       );
 
       let text2video: GetProvider<'video'> | undefined;
@@ -112,6 +124,10 @@ const AiPlugin: (config: AiPluginConfiguration) => EditorPlugin = (config) => {
 
       cesdk.addPlugin(ImageGeneration({ text2image, image2image }));
 
+      if (text2sticker != null) {
+        initializeText2Sticker(cesdk, text2sticker);
+      }
+
       addAggregatedAssetSources(
         cesdk,
         {
@@ -130,6 +146,31 @@ const AiPlugin: (config: AiPluginConfiguration) => EditorPlugin = (config) => {
     }
   };
 };
+
+async function initializeText2Sticker(
+  cesdk: CreativeEditorSDK,
+  text2sticker: GetProvider<'image'>
+) {
+  const provider = await text2sticker({ cesdk });
+
+  await initProvider(
+    provider,
+    { cesdk, engine: cesdk.engine },
+    {
+      debug: true
+    }
+  );
+  const panelId = getPanelId(provider.id);
+  cesdk.i18n.setTranslations({
+    en: {
+      [`${panelId}.dock.label`]: 'AI Sticker'
+    }
+  });
+  registerDockComponent({
+    cesdk,
+    panelId
+  });
+}
 
 async function extendProvider<K extends OutputKind, I, O extends Output>(
   cesdk: CreativeEditorSDK,
@@ -152,6 +193,11 @@ async function extendProvider<K extends OutputKind, I, O extends Output>(
           aiAppAssetId = 'audio-generation/sound';
         } else if (provider.id.includes('speech')) {
           aiAppAssetId = 'audio-generation/speech';
+        }
+      }
+      if (provider.kind === 'image') {
+        if (provider.id.includes('recraft-20b')) {
+          aiAppAssetId = 'image-generation/sticker';
         }
       }
 
@@ -186,64 +232,90 @@ async function extendProvider<K extends OutputKind, I, O extends Output>(
 
 async function addAiAppDockMenu(
   cesdk: CreativeEditorSDK,
-  isVideoMode: boolean
+  options: {
+    isVideoMode: boolean;
+    includeText2Sticker?: boolean;
+  }
 ): Promise<{
   activeAssetSource?: CustomAssetSource;
 }> {
   overrideAssetLibraryDockComponent(cesdk);
 
   let activeAssetSource: CustomAssetSource | undefined;
-  if (isVideoMode) {
-    activeAssetSource = createCustomAssetSource(AI_APP_ID, cesdk, [
-      {
-        id: 'image-generation',
-        label: {
-          en: 'Generate Image'
-        },
-        meta: {
-          label: 'Generate Image',
-          thumbUri: 'https://ubique.img.ly/static/ai-demo/GenerateImage.png',
-          width: AI_APP_THUMBNAIL_WIDTH,
-          height: AI_APP_THUMBNAIL_HEIGHT
-        }
+  const appAssets = [
+    {
+      id: 'image-generation',
+      label: {
+        en: 'Generate Image'
       },
-      {
-        id: 'video-generation',
-        label: {
-          en: 'Generate Video'
-        },
-        meta: {
-          label: 'Generate Video',
-          thumbUri: 'https://ubique.img.ly/static/ai-demo/GenerateVideo.png',
-          width: AI_APP_THUMBNAIL_WIDTH,
-          height: AI_APP_THUMBNAIL_HEIGHT
-        }
-      },
-      {
-        id: 'audio-generation/sound',
-        label: {
-          en: 'Generate Sound'
-        },
-        meta: {
-          label: 'Generate Sound',
-          thumbUri: 'https://ubique.img.ly/static/ai-demo/GenerateSound.png',
-          width: AI_APP_THUMBNAIL_WIDTH,
-          height: AI_APP_THUMBNAIL_HEIGHT
-        }
-      },
-      {
-        id: 'audio-generation/speech',
-        label: {
-          en: 'AI Voice'
-        },
-        meta: {
-          label: 'AI Voice',
-          thumbUri: 'https://ubique.img.ly/static/ai-demo/AIVoicev2.png',
-          width: AI_APP_THUMBNAIL_WIDTH,
-          height: AI_APP_THUMBNAIL_HEIGHT
-        }
+      meta: {
+        label: 'Generate Image',
+        thumbUri: 'https://ubique.img.ly/static/ai-demo/GenerateImage.png',
+        width: AI_APP_THUMBNAIL_WIDTH,
+        height: AI_APP_THUMBNAIL_HEIGHT
       }
-    ]);
+    }
+  ];
+  if (options.includeText2Sticker) {
+    appAssets.push({
+      id: 'fal-ai/recraft-20b',
+      label: {
+        en: 'Generate Sticker'
+      },
+      meta: {
+        label: 'Generate Sticker',
+        thumbUri: 'https://ubique.img.ly/static/ai-demo/GenerateImage.png',
+        width: AI_APP_THUMBNAIL_WIDTH,
+        height: AI_APP_THUMBNAIL_HEIGHT
+      }
+    });
+  }
+
+  if (options.isVideoMode) {
+    appAssets.push(
+      ...[
+        {
+          id: 'video-generation',
+          label: {
+            en: 'Generate Video'
+          },
+          meta: {
+            label: 'Generate Video',
+            thumbUri: 'https://ubique.img.ly/static/ai-demo/GenerateVideo.png',
+            width: AI_APP_THUMBNAIL_WIDTH,
+            height: AI_APP_THUMBNAIL_HEIGHT
+          }
+        },
+        {
+          id: 'audio-generation/sound',
+          label: {
+            en: 'Generate Sound'
+          },
+          meta: {
+            label: 'Generate Sound',
+            thumbUri: 'https://ubique.img.ly/static/ai-demo/GenerateSound.png',
+            width: AI_APP_THUMBNAIL_WIDTH,
+            height: AI_APP_THUMBNAIL_HEIGHT
+          }
+        },
+        {
+          id: 'audio-generation/speech',
+          label: {
+            en: 'AI Voice'
+          },
+          meta: {
+            label: 'AI Voice',
+            thumbUri: 'https://ubique.img.ly/static/ai-demo/AIVoicev2.png',
+            width: AI_APP_THUMBNAIL_WIDTH,
+            height: AI_APP_THUMBNAIL_HEIGHT
+          }
+        }
+      ]
+    );
+  }
+
+  if (appAssets.length > 0) {
+    activeAssetSource = createCustomAssetSource(AI_APP_ID, cesdk, appAssets);
 
     cesdk.engine.asset.addSource(activeAssetSource);
 
@@ -269,7 +341,7 @@ async function addAiAppDockMenu(
   }
 
   const componentId = `${AI_APP_ID}.dock`;
-  if (isVideoMode) {
+  if (appAssets.length > 0) {
     console.log('Registering AI App Dock Button', componentId);
     cesdk.ui.registerComponent(componentId, ({ builder, experimental }) => {
       const isOpen = cesdk.ui.isPanelOpen(AI_APP_ID);

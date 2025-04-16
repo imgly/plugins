@@ -81,7 +81,7 @@ function getImageAssetResultForGenerated(
       uri: output.url,
       thumbUri: output.url,
       fillType: '//ly.img.ubq/fill/image',
-      kind: 'image',
+      kind: input.assetKind ?? 'image',
 
       width,
       height
