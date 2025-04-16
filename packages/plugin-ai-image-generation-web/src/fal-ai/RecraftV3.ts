@@ -188,9 +188,11 @@ function getProvider(
                   };
 
                   if (typeState.value === 'image') {
+                    imageStyleAssetSource.clearActiveAssets();
                     imageStyleAssetSource.setAssetActive(asset.id);
                     styleImageState.setValue(newValue);
                   } else if (typeState.value === 'vector') {
+                    imageStyleAssetSource.clearActiveAssets();
                     vectorStyleAssetSource.setAssetActive(asset.id);
                     styleVectorState.setValue(newValue);
                   }
