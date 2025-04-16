@@ -84,7 +84,19 @@ async function initProvider<K extends OutputKind, I, O extends Output>(
     }
   });
 
-  options.cesdk.ui.addIconSet('@imgly/plugin-ai-generation', icons);
+  // Avoid adding the icon set multiple times for different providers
+  const globalStateIconSetAddedId = `@imgly/plugin-ai-generation.iconSetAdded`;
+  if (
+    !options.cesdk.ui.experimental.hasGlobalStateValue(
+      globalStateIconSetAddedId
+    )
+  ) {
+    options.cesdk.ui.addIconSet('@imgly/plugin-ai-generation', icons);
+    options.cesdk.ui.experimental.setGlobalStateValue(
+      globalStateIconSetAddedId,
+      true
+    );
+  }
 
   const renderBuilderFunctions = await initInputs(provider, uiOptions, config);
 
