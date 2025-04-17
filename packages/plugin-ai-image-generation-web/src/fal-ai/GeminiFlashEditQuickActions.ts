@@ -219,7 +219,7 @@ function CreateVariantQuickAction(
     render: ({ builder }, { toggleExpand }) => {
       builder.Button(`createVariant.button`, {
         label: 'ly.img.ai.inference.createVariant',
-        icon: '@imgly/plugin-ai-generation/image',
+        icon: '@imgly/ImageVariation',
         labelAlignment: 'left',
         variant: 'plain',
         onClick: toggleExpand

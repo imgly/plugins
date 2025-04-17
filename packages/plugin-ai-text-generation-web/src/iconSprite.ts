@@ -1,4 +1,4 @@
-export const PLUGIN_ICON_SET_ID = '@imgly/plugin-ai-text2text';
+export const PLUGIN_ICON_SET_ID = '@imgly/plugin-ai-text-generation';
 
 const iconSprite = `
         <svg>

@@ -5,6 +5,7 @@ import {
   registerDockComponent
 } from '@imgly/plugin-ai-generation-web';
 import { PluginConfiguration } from './types';
+import iconSprite, { PLUGIN_ICON_SET_ID } from './iconSprite';
 
 export { PLUGIN_ID } from './constants';
 
@@ -25,6 +26,8 @@ export function ImageGeneration(
         dryRun: options.dryRun ?? false,
         middleware: options.middleware
       };
+
+      cesdk.ui.addIconSet(PLUGIN_ICON_SET_ID, iconSprite);
       cesdk.setTranslations({
         en: {
           [`panel.${IMAGE_GENERATION_PANEL_ID}`]: 'Image Generation',
