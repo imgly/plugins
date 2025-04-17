@@ -1,126 +1,185 @@
-# IMG.LY Creative Editor SDK AI Text2Text Plugin
+# IMG.LY AI Text Generation for Web
 
-A plugin for [IMG.LY Creative Editor SDK](https://img.ly/) that provides AI-powered text transformation capabilities using the Claude AI model from Anthropic. Other providers will be added in the future.
+A plugin for integrating AI text generation capabilities into CreativeEditor SDK.
 
-## Features
+## Overview
 
-This plugin adds a "Magic Menu" with the following text transformation options:
+The `@imgly/plugin-ai-text-generation-web` package enables users to generate and transform text using AI directly within CreativeEditor SDK. This plugin provides text generation capabilities through AI models like Anthropic Claude.
+
+Features include:
+
+-   Text-to-text transformations
+-   Quick AI actions for text blocks
+-   Multiple transformation options:
+    -   Improve writing
+    -   Fix spelling and grammar
+    -   Make text shorter or longer
+    -   Change tone (professional, casual, friendly, etc.)
+    -   Translate to various languages
+    -   Custom text transformation with prompts
+-   Seamless integration with CreativeEditor SDK
+
+## Installation
+
+```bash
+npm install @imgly/plugin-ai-text-generation-web
+```
+
+## Usage
+
+### Basic Configuration
+
+To use the plugin, import it and configure it with your preferred provider:
+
+```typescript
+import CreativeEditorSDK from '@cesdk/cesdk-js';
+import TextGeneration from '@imgly/plugin-ai-text-generation-web';
+import Anthropic from '@imgly/plugin-ai-text-generation-web/anthropic';
+
+// Initialize CreativeEditor SDK
+CreativeEditorSDK.create(domElement, {
+    license: 'your-license-key'
+    // Other configuration options...
+}).then(async (cesdk) => {
+    // Add the text generation plugin
+    cesdk.addPlugin(
+        TextGeneration({
+            provider: Anthropic.AnthropicProvider({
+                proxyUrl: 'https://your-anthropic-proxy.example.com'
+            }),
+
+            // Optional configuration
+            debug: false
+        })
+    );
+
+    // Set canvas menu order to display AI text actions
+    cesdk.ui.setCanvasMenuOrder([
+        'ly.img.ai.text.canvasMenu',
+        ...cesdk.ui.getCanvasMenuOrder()
+    ]);
+});
+```
+
+### Providers
+
+The plugin currently includes the following provider:
+
+#### Anthropic Claude
+
+A versatile text generation model that handles various text transformations:
+
+```typescript
+provider: Anthropic.AnthropicProvider({
+    proxyUrl: 'https://your-anthropic-proxy.example.com',
+    // Optional debug mode
+    debug: false
+});
+```
+
+Key features:
+
+-   High-quality text transformations
+-   Multiple transformation types
+-   Supports various languages
+-   Natural, human-like outputs
+
+### Configuration Options
+
+The plugin accepts the following configuration options:
+
+| Option     | Type     | Description                                     | Default  |
+| ---------- | -------- | ----------------------------------------------- | -------- |
+| `provider` | Provider | Provider for text generation and transformation | required |
+| `debug`    | boolean  | Enable debug logging                            | false    |
+
+### Using a Proxy
+
+For security reasons, you must use a proxy server to handle API requests to Anthropic. The proxy URL is required when configuring providers:
+
+```typescript
+provider: Anthropic.AnthropicProvider({
+    proxyUrl: 'https://your-anthropic-proxy.example.com'
+});
+```
+
+Your proxy server should:
+
+1. Receive requests from the client
+2. Add the necessary authentication (API key) to the requests
+3. Forward requests to the Anthropic API
+4. Return responses to the client
+
+Never expose your Anthropic API key in client-side code.
+
+## API Reference
+
+### Main Plugin
+
+```typescript
+TextGeneration(options: PluginConfiguration): EditorPlugin
+```
+
+Creates and returns a plugin that can be added to CreativeEditor SDK.
+
+### Plugin Configuration
+
+```typescript
+interface PluginConfiguration {
+    // Provider for text generation and transformation
+    provider: (context: {
+        cesdk: CreativeEditorSDK;
+    }) => Promise<Provider<'text', any, any>>;
+
+    // Enable debug logging
+    debug?: boolean;
+}
+```
+
+### Anthropic Provider Configuration
+
+```typescript
+Anthropic.AnthropicProvider(config: {
+  proxyUrl: string;
+  debug?: boolean;
+})
+```
+
+## UI Integration
+
+The plugin automatically registers the following UI components:
+
+1. **Quick Actions**: Canvas menu items for text transformations
+
+### Canvas Menu Integration
+
+The plugin adds a "Magic Menu" to the canvas context menu for text blocks with the following transformation options:
 
 -   **Improve Writing**: Enhance the quality and clarity of text
 -   **Fix Spelling & Grammar**: Correct language errors in text
 -   **Make Shorter**: Create a more concise version of the text
 -   **Make Longer**: Expand text with additional details
+-   **Generate Speech Text**: Format text for speech or presentations
 -   **Change Tone**: Modify the tone of text to professional, casual, friendly, serious, humorous, or optimistic
 -   **Translate**: Translate text to various languages
 -   **Change Text to...**: Completely rewrite text based on a custom prompt
 
-## Installation
-
-```bash
-npm install @imgly/plugin-ai-text2text-web
-```
-
-## Usage
-
-Add the plugin to your Creative Engine instance:
+To add the AI text menu to your canvas menu, use:
 
 ```typescript
-import CreativeEditorSDK from '@cesdk/cesdk-js';
-import AIText2TextPlugin from '@imgly/plugin-ai-text2text-web';
-
-const cesdk = CreativeEditorSDK.create(domElement, {
-    // other configuration options...
-});
-
-// Add the plugin
-cesdk.addPlugin(
-    AIText2TextPlugin({
-        provider: {
-            id: 'anthropic',
-            proxyUrl: 'https://your-proxy-server.com/anthropic',
-            // Optional configuration
-            model: 'claude-3-haiku-20240307',
-            maxTokens: 1000,
-            temperature: 0.7
-        },
-        // Optional debug mode
-        debug: false
-    })
-);
-
-// The plugin registers new canvas "magic menu" for text. It can
-// be placed in the desired position in the menu order with the
-// following code:
 cesdk.ui.setCanvasMenuOrder([
     'ly.img.ai.text.canvasMenu',
-    ...instance.ui.getCanvasMenuOrder()
+    ...cesdk.ui.getCanvasMenuOrder()
 ]);
 ```
 
-## Security Note
+## Related Packages
 
-This plugin requires a proxy server to handle API key injection. The proxy server should:
+-   [@imgly/plugin-ai-generation-web](https://github.com/imgly/plugin-ai-generation-web) - Core utilities for AI generation
+-   [@imgly/plugin-ai-image-generation-web](https://github.com/imgly/plugin-ai-image-generation-web) - AI image generation
+-   [@imgly/plugin-ai-video-generation-web](https://github.com/imgly/plugin-ai-video-generation-web) - AI video generation
+-   [@imgly/plugin-ai-audio-generation-web](https://github.com/imgly/plugin-ai-audio-generation-web) - AI audio generation
 
-1. Receive requests from the client
-2. Add the Anthropic API key to the request
-3. Forward the request to Anthropic
-4. Return the response to the client
+## License
 
-Never expose your Anthropic API key in client-side code.
-
-## Configuration
-
-### PluginConfiguration
-
-| Option     | Type                | Required | Description                       |
-| ---------- | ------------------- | -------- | --------------------------------- |
-| `provider` | `Text2TextProvider` | Yes      | The AI provider configuration     |
-| `debug`    | `boolean`           | No       | Enable console logs for debugging |
-
-### AnthropicProvider (only supported provider for now)
-
-| Option        | Type          | Required | Description                                                                                                               |
-| ------------- | ------------- | -------- | ------------------------------------------------------------------------------------------------------------------------- |
-| `id`          | `'anthropic'` | Yes      | Provider identifier (must be 'anthropic')                                                                                 |
-| `proxyUrl`    | `string`      | Yes      | URL to AI service that handles API key injection                                                                          |
-| `model`       | `string`      | No       | Anthropic model to use (see [Anthropic documentation](https://docs.anthropic.com/en/docs/about-claude/models/all-models)) |
-| `maxTokens`   | `number`      | No       | Maximum token generation limit                                                                                            |
-| `temperature` | `number`      | No       | Randomness level (0.0-1.0)                                                                                                |
-
-### Extending the "magic menu"
-
-The "magic menu" can be extended with additional entries from other plugins. This allows you to combine multiple AI-powered text transformation plugins, each providing their own specialized capabilities.
-
-#### Adding entries from other plugins
-
-When other plugins export their own `MagicEntry` objects, you can add them to the existing magic menu:
-
-```typescript
-import CreativeEditorSDK from '@cesdk/cesdk-js';
-import AIText2TextPlugin from '@imgly/plugin-ai-text2text-web';
-import OtherPlugin from '@imgly/other-plugin';
-
-// Initialize Creative Engine
-const cesdk = CreativeEditorSDK.create(domElement, {
-    // config options...
-});
-
-// Add the plugins
-cesdk.addPlugin(
-    AIText2TextPlugin({
-        provider: {
-            id: 'anthropic',
-            proxyUrl: 'https://your-proxy-server.com/anthropic'
-        }
-    })
-);
-cesdk.addPlugin(OtherPlugin());
-
-// Set canvas menu order to render the magic button
-instance.ui.setCanvasMenuOrder([
-    'ly.img.ai.text.canvasMenu',
-    ...instance.ui.getCanvasMenuOrder()
-]);
-```
-
-For plugin developers wanting to create and export compatible magic entries, refer to the `MagicEntry` interface in the plugin source code.
+This plugin is part of the IMG.LY plugin ecosystem for CreativeEditor SDK. Please refer to the license terms in the package.
