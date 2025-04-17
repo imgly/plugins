@@ -1,13 +1,8 @@
 {
   "name": "@imgly/plugin-ai-image-generation-web",
-  "version": "0.1.0-rc.1",
+  "version": "0.1.0-rc.0",
   "description": "AI image generation plugin for the CE.SDK editor",
-  "keywords": [
-    "CE.SDK",
-    "plugin",
-    "AI",
-    "image-generation"
-  ],
+  "keywords": ["CE.SDK", "plugin", "AI", "image-generation"],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/imgly/plugins.git"
@@ -35,13 +30,7 @@
     }
   },
   "homepage": "https://img.ly/products/creative-sdk",
-  "files": [
-    "LICENSE.md",
-    "README.md",
-    "CHANGELOG.md",
-    "dist/",
-    "bin/"
-  ],
+  "files": ["LICENSE.md", "README.md", "CHANGELOG.md", "dist/", "bin/"],
   "scripts": {
     "start": "npm run watch",
     "clean": "pnpm exec rimraf dist",
