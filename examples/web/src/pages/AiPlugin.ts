@@ -304,19 +304,26 @@ async function addAiAppDockMenu(
     });
   } else {
     cesdk.ui.registerComponent(componentId, ({ builder, experimental }) => {
+      const panelId = getPanelId('image-generation');
+
       const isGeneratingState = experimental.global<boolean>(
         `${AI_APP_ID}.isGenerating`,
         false
       );
-      const panelId = getPanelId('image-generation');
+      const isOpen = cesdk.ui.isPanelOpen(panelId);
+
       builder.Button(`${AI_APP_ID}.dock.button`, {
         label: 'AI',
-        isSelected: cesdk.ui.isPanelOpen(panelId),
+        isSelected: isOpen,
         icon: isGeneratingState.value
           ? '@imgly/LoadingSpinner'
           : '@imgly/Sparkle',
         onClick: () => {
-          cesdk.ui.openPanel(panelId);
+          if (!isOpen) {
+            cesdk.ui.openPanel(panelId);
+          } else {
+            cesdk.ui.closePanel(panelId);
+          }
         }
       });
     });
