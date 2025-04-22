@@ -143,17 +143,19 @@ async function extendProvider<K extends OutputKind, I, O extends Output>(
       activeAssetSource.setAssetLoading(aiAppAssetId, true);
       cesdk.engine.asset.assetSourceContentsChanged(AI_APP_ID);
 
-      const result = await next(input, options);
+      try {
+        const result = await next(input, options);
 
-      cesdk.engine.asset.assetSourceContentsChanged(AI_APP_ID);
-      activeAssetSource.setAssetLoading(aiAppAssetId, false);
-      // activeAssetSource.setAssetInactive(appAssetId);
-      cesdk.ui.experimental.setGlobalStateValue(
-        `${AI_APP_ID}.isGenerating`,
-        false
-      );
-
-      return result;
+        return result;
+      } finally {
+        cesdk.engine.asset.assetSourceContentsChanged(AI_APP_ID);
+        activeAssetSource.setAssetLoading(aiAppAssetId, false);
+        // activeAssetSource.setAssetInactive(appAssetId);
+        cesdk.ui.experimental.setGlobalStateValue(
+          `${AI_APP_ID}.isGenerating`,
+          false
+        );
+      }
     };
 
     provider.output.middleware = [
