@@ -1,12 +1,66 @@
-import { describe, expect, it, jest, beforeEach } from '@jest/globals';
+import {
+  describe,
+  expect,
+  it,
+  jest,
+  beforeEach,
+  beforeAll
+} from '@jest/globals';
 import { GenerationOptions, TextOutput } from '../generation/provider';
 import rateLimitMiddleware, {
-  requestsStore
+  inMemoryStores
 } from '../generation/middleware/rateLimitMiddleware';
 import { Middleware } from '../generation/middleware/middleware';
 
 // Mock for timing functions
 jest.useFakeTimers();
+
+const mockTransaction = {
+  objectStore: jest.fn(),
+  oncomplete: null as Function | null,
+  onerror: null as Function | null
+};
+
+const mockObjectStore = {
+  put: jest.fn(),
+  get: jest.fn(),
+  delete: jest.fn(),
+  getAll: jest.fn()
+};
+
+const mockRequest = {
+  result: null,
+  error: null,
+  onsuccess: null as Function | null,
+  onerror: null as Function | null
+};
+
+// Mock IDBRequest result
+beforeAll(() => {
+  // Mock indexedDB globally
+  Object.defineProperty(global, 'indexedDB', {
+    value: undefined
+  });
+
+  // Initialize the mock IndexedDB
+  mockTransaction.objectStore.mockReturnValue(mockObjectStore);
+  mockObjectStore.put.mockImplementation(() => {
+    setTimeout(() => {
+      if (mockTransaction.oncomplete) {
+        mockTransaction.oncomplete();
+      }
+    }, 0);
+    return mockRequest;
+  });
+  mockObjectStore.get.mockImplementation(() => {
+    setTimeout(() => {
+      if (mockRequest.onsuccess) {
+        mockRequest.onsuccess({ target: { result: mockRequest.result } });
+      }
+    }, 0);
+    return mockRequest;
+  });
+});
 
 // Define our test types
 interface TestInput {
@@ -36,10 +90,8 @@ describe('rateLimitMiddleware', () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
-    // Explicitly clear the requestsStore between tests
-    Object.keys(requestsStore).forEach((key) => {
-      delete requestsStore[key];
-    });
+    // Explicitly clear the inMemoryStores between tests
+    inMemoryStores.clear();
 
     // Re-initialize test objects for each test
     mockInput = { prompt: 'test prompt' };
@@ -126,29 +178,21 @@ describe('rateLimitMiddleware', () => {
     // Advance time by 1001ms to exceed the time window
     jest.advanceTimersByTime(1001);
 
-    // Manually trigger cleanup by creating a new middleware with the same config
-    // (necessary since the module-level requestsStore is not directly accessible)
-    const middleware2 = rateLimitMiddleware<TestInput, TextOutput>({
-      maxRequests: 1,
-      timeWindowMs: 1000
-    });
-
-    // Now the request should succeed as the time window has passed
+    // After time has passed, the next request should work with the same middleware instance
     await expect(
-      middleware2(mockInput, mockOptions, mockNext)
+      middleware(mockInput, mockOptions, mockNext as any)
     ).resolves.toEqual(mockOutput);
 
     // Verify next was called 2 times in total
     expect(mockNext).toHaveBeenCalledTimes(2);
   });
 
-  it('should use different rate limits for different keys', async () => {
+  it('should use different rate limits for different keys with a key function', async () => {
     // Create middleware with custom key function
     const middleware = rateLimitMiddleware<TestInput, TextOutput>({
       maxRequests: 1,
       timeWindowMs: 1000,
-      // Use type assertion to satisfy the compiler
-      keyFn: ((input: TestInput) => input.prompt) as any
+      keyFn: (input) => input.prompt
     });
 
     // First input with prompt "test1"
@@ -273,5 +317,124 @@ describe('rateLimitMiddleware', () => {
 
     // Verify next was called for both requests
     expect(mockNext).toHaveBeenCalledTimes(2);
+  });
+
+  it('should allow custom database name', async () => {
+    // Create middleware with custom database name
+    const middleware = rateLimitMiddleware<TestInput, TextOutput>({
+      maxRequests: 2,
+      timeWindowMs: 1000,
+      dbName: 'custom-rate-limit-db'
+    });
+
+    // Make requests - should work with in-memory fallback
+    await expect(
+      middleware(mockInput, mockOptions, mockNext as any)
+    ).resolves.toEqual(mockOutput);
+
+    // Verify next was called
+    expect(mockNext).toHaveBeenCalledTimes(1);
+  });
+
+  it('should isolate rate limits between different middleware instances with different configurations', async () => {
+    // Create middleware with limit of 1 request in a 1000ms window
+    const middleware1 = rateLimitMiddleware<TestInput, TextOutput>({
+      maxRequests: 1,
+      timeWindowMs: 1000
+    }) as TestMiddleware;
+
+    // Create a second middleware with different configuration
+    const middleware2 = rateLimitMiddleware<TestInput, TextOutput>({
+      maxRequests: 2,
+      timeWindowMs: 1000
+    }) as TestMiddleware;
+
+    // First request to middleware1 should succeed
+    await expect(
+      middleware1(mockInput, mockOptions, mockNext as any)
+    ).resolves.toEqual(mockOutput);
+
+    // First request to middleware2 should also succeed (separate rate limit)
+    await expect(
+      middleware2(mockInput, mockOptions, mockNext as any)
+    ).resolves.toEqual(mockOutput);
+
+    // Second request to middleware1 should be rejected (rate limit exceeded)
+    await expect(middleware1(mockInput, mockOptions, mockNext)).rejects.toThrow(
+      'Rate limit exceeded. Please try again later.'
+    );
+
+    // Second request to middleware2 should still succeed (limit of 2)
+    await expect(
+      middleware2(mockInput, mockOptions, mockNext as any)
+    ).resolves.toEqual(mockOutput);
+
+    // Verify next was called 3 times total
+    expect(mockNext).toHaveBeenCalledTimes(3);
+  });
+
+  it('should isolate rate limits using different keyFn strings', async () => {
+    // Create two middlewares with identical configurations but different keyFn strings
+    const middleware1 = rateLimitMiddleware<TestInput, TextOutput>({
+      maxRequests: 1,
+      timeWindowMs: 1000,
+      keyFn: 'service1' // Using a string directly as keyFn
+    }) as TestMiddleware;
+
+    const middleware2 = rateLimitMiddleware<TestInput, TextOutput>({
+      maxRequests: 1,
+      timeWindowMs: 1000,
+      keyFn: 'service2' // Using a different string directly as keyFn
+    }) as TestMiddleware;
+
+    // First request to middleware1 should succeed
+    await expect(
+      middleware1(mockInput, mockOptions, mockNext as any)
+    ).resolves.toEqual(mockOutput);
+
+    // First request to middleware2 should also succeed (separate rate limit)
+    await expect(
+      middleware2(mockInput, mockOptions, mockNext as any)
+    ).resolves.toEqual(mockOutput);
+
+    // Second request to middleware1 should be rejected (rate limit exceeded)
+    await expect(middleware1(mockInput, mockOptions, mockNext)).rejects.toThrow(
+      'Rate limit exceeded. Please try again later.'
+    );
+
+    // Second request to middleware2 should also be rejected (separate but identical rate limit)
+    await expect(middleware2(mockInput, mockOptions, mockNext)).rejects.toThrow(
+      'Rate limit exceeded. Please try again later.'
+    );
+
+    // Verify next was called only 2 times total (one for each middleware's first request)
+    expect(mockNext).toHaveBeenCalledTimes(2);
+  });
+
+  it('should share rate limits between middleware instances with identical configurations and no prefix', async () => {
+    // Create two middlewares with identical configurations and no prefix
+    const middleware1 = rateLimitMiddleware<TestInput, TextOutput>({
+      maxRequests: 1,
+      timeWindowMs: 1000
+    }) as TestMiddleware;
+
+    const middleware2 = rateLimitMiddleware<TestInput, TextOutput>({
+      maxRequests: 1,
+      timeWindowMs: 1000
+    }) as TestMiddleware;
+
+    // First request to middleware1 should succeed
+    await expect(
+      middleware1(mockInput, mockOptions, mockNext as any)
+    ).resolves.toEqual(mockOutput);
+
+    // First request to middleware2 should fail because they share the same rate limit
+    // since they have identical configuration and no prefix
+    await expect(middleware2(mockInput, mockOptions, mockNext)).rejects.toThrow(
+      'Rate limit exceeded. Please try again later.'
+    );
+
+    // Verify next was called only once
+    expect(mockNext).toHaveBeenCalledTimes(1);
   });
 });
