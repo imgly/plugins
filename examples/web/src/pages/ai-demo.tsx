@@ -9,6 +9,7 @@ import Anthropic from '@imgly/plugin-ai-text-generation-web/anthropic';
 import { useRef } from 'react';
 import { rateLimitMiddleware } from '@imgly/plugin-ai-generation-web';
 import { Middleware } from '@imgly/plugin-ai-generation-web';
+import { RateLimitOptions } from '@imgly/plugin-ai-generation-web';
 
 function App() {
   const cesdk = useRef<CreativeEditorSDK>();
@@ -69,17 +70,18 @@ function App() {
 
             await instance.createVideoScene();
 
-            const onRateLimitExceeded = () => {
-              instance.ui.showDialog({
-                type: 'warning',
+            const onRateLimitExceeded: RateLimitOptions<any>['onRateLimitExceeded'] =
+              () => {
+                instance.ui.showDialog({
+                  type: 'warning',
 
-                size: 'large',
-                content:
-                  'You’ve reached the generation limit for this demo. To explore further or request extended access, please contact us at ai@img.ly.'
-              });
+                  size: 'large',
+                  content:
+                    'You’ve reached the generation limit for this demo. To explore further or request extended access, please contact us at ai@img.ly.'
+                });
 
-              return false;
-            };
+                return false;
+              };
 
             const rateLimitMiddlewareConfig = {
               timeWindowMs: 24 * 60 * 60 * 1000,
@@ -104,11 +106,34 @@ function App() {
                 ...rateLimitMiddlewareConfig
               });
 
+            const errorMiddleware: Middleware<any, any> = async (
+              input,
+              options,
+              next
+            ) => {
+              return next(input, options).catch((error) => {
+                console.error('Error:', error);
+                instance.ui.showDialog({
+                  type: 'warning',
+                  size: 'large',
+                  content:
+                    'Due to high demand, we’re currently unable to process your request. Please try again shortly — we appreciate your patience!'
+                });
+                // Throw abort error to stop the generation without further
+                // error notification.
+                throw new DOMException(
+                  'Operation aborted: Rate limit exceeded',
+                  'AbortError'
+                );
+              });
+            };
+
             instance.addPlugin(
               AiApps({
                 providers: {
                   text2text: Anthropic.AnthropicProvider({
                     middleware: [
+                      errorMiddleware,
                       rateLimitMiddleware({
                         maxRequests: 50,
                         ...rateLimitMiddlewareConfig
@@ -117,27 +142,27 @@ function App() {
                     proxyUrl: import.meta.env.VITE_ANTHROPIC_PROXY_URL
                   }),
                   text2image: FalAiImage.RecraftV3({
-                    middleware: [imageRateLimitMiddleware],
+                    middleware: [imageRateLimitMiddleware, errorMiddleware],
                     proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
                   }),
                   image2image: FalAiImage.GeminiFlashEdit({
-                    middleware: [imageRateLimitMiddleware],
+                    middleware: [errorMiddleware, imageRateLimitMiddleware],
                     proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
                   }),
                   text2video: FalAiVideo.MinimaxVideo01Live({
-                    middleware: [videoRateLimitMiddleware],
+                    middleware: [errorMiddleware, videoRateLimitMiddleware],
                     proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
                   }),
                   image2video: FalAiVideo.MinimaxVideo01LiveImageToVideo({
-                    middleware: [videoRateLimitMiddleware],
+                    middleware: [errorMiddleware, videoRateLimitMiddleware],
                     proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
                   }),
                   text2speech: Elevenlabs.ElevenMultilingualV2({
-                    middleware: [soundRateLimitMiddleware],
+                    middleware: [errorMiddleware, soundRateLimitMiddleware],
                     proxyUrl: import.meta.env.VITE_ELEVENLABS_PROXY_URL
                   }),
                   text2sound: Elevenlabs.ElevenSoundEffects({
-                    middleware: [soundRateLimitMiddleware],
+                    middleware: [errorMiddleware, soundRateLimitMiddleware],
                     proxyUrl: import.meta.env.VITE_ELEVENLABS_PROXY_URL
                   })
                 }
