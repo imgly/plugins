@@ -1,6 +1,6 @@
 {
   "name": "@imgly/plugin-ai-text-generation-web",
-  "version": "0.1.0-rc.0",
+  "version": "0.1.0-rc.2",
   "description": "AI text generation plugin for the CE.SDK editor",
   "keywords": ["CE.SDK", "plugin", "AI", "text generation", "llm"],
   "repository": {
@@ -25,7 +25,7 @@
       "types": "./dist/index.d.ts"
     },
     "./anthropic": {
-      "import": "./dist/anthropic/index.mjs", 
+      "import": "./dist/anthropic/index.mjs",
       "types": "./dist/anthropic/index.d.ts"
     }
   },
