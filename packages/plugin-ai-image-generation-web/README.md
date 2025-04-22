@@ -103,7 +103,87 @@ The plugin accepts the following configuration options:
 | `image2image` | Provider | Provider for image-to-image transformation | undefined |
 | `debug` | boolean | Enable debug logging | false |
 | `dryRun` | boolean | Simulate generation without API calls | false |
-| `middleware` | Function | Custom middleware for the generation process | undefined |
+| `middleware` | Function[] | Array of middleware functions to extend the generation process | undefined |
+
+### Middleware Configuration
+
+The `middleware` option allows you to add pre-processing and post-processing capabilities to the generation process:
+
+```typescript
+import ImageGeneration from '@imgly/plugin-ai-image-generation-web';
+import FalAiImage from '@imgly/plugin-ai-image-generation-web/fal-ai';
+import { loggingMiddleware, rateLimitMiddleware } from '@imgly/plugin-ai-generation-web';
+
+// Create middleware functions
+const logging = loggingMiddleware();
+const rateLimit = rateLimitMiddleware({
+  maxRequests: 10,
+  timeWindowMs: 60000, // 1 minute
+  onRateLimitExceeded: (input, options, info) => {
+    console.log(`Rate limit exceeded: ${info.currentCount}/${info.maxRequests}`);
+    return false; // Reject request
+  }
+});
+
+// Apply middleware to plugin
+cesdk.addPlugin(
+  ImageGeneration({
+    text2image: FalAiImage.RecraftV3({
+      proxyUrl: 'https://your-fal-ai-proxy.example.com'
+    }),
+    middleware: [logging, rateLimit] // Apply middleware in order
+  })
+);
+```
+
+Built-in middleware options:
+
+- **loggingMiddleware**: Logs generation requests and responses
+- **rateLimitMiddleware**: Limits the number of generation requests in a time window
+
+#### Creating Custom Middleware
+
+Custom middleware functions follow this pattern:
+
+```typescript
+const customMiddleware = async (input, options, next) => {
+  // Pre-processing logic
+  console.log('Before generation:', input);
+  
+  // Add custom fields or modify the input if needed
+  const modifiedInput = {
+    ...input,
+    customField: 'custom value'
+  };
+  
+  // Call the next middleware or generation function
+  const result = await next(modifiedInput, options);
+  
+  // Post-processing logic
+  console.log('After generation:', result);
+  
+  // You can also modify the result before returning it
+  return result;
+};
+```
+
+The middleware function signature is:
+
+```typescript
+type Middleware<I, O extends Output> = (
+  input: I,
+  options: GenerationOptions & {
+    // The block IDs the generation is applied on
+    blockIds?: number[] | null;
+    
+    // Function to add a cleanup handler
+    addDisposer: (dispose: () => Promise<void>) => void;
+  },
+  next: (input: I, options: GenerationOptions) => Promise<GenerationResult<O>>
+) => Promise<GenerationResult<O>>;
+```
+
+Middleware functions are applied in order, creating a chain of processing steps. The `next` parameter calls the next middleware in the chain or the generation function itself.
 
 ### Using a Proxy
 

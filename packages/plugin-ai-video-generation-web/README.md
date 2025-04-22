@@ -108,13 +108,70 @@ text2video: FalAiVideo.PixverseV35TextToVideo({
 
 The plugin accepts the following configuration options:
 
-| Option        | Type     | Description                                  | Default   |
-| ------------- | -------- | -------------------------------------------- | --------- |
-| `text2video`  | Provider | Provider for text-to-video generation        | undefined |
-| `image2video` | Provider | Provider for image-to-video transformation   | undefined |
-| `debug`       | boolean  | Enable debug logging                         | false     |
-| `dryRun`      | boolean  | Simulate generation without API calls        | false     |
-| `middleware`  | Function | Custom middleware for the generation process | undefined |
+| Option        | Type      | Description                                     | Default   |
+| ------------- | --------- | ----------------------------------------------- | --------- |
+| `text2video`  | Provider  | Provider for text-to-video generation           | undefined |
+| `image2video` | Provider  | Provider for image-to-video transformation      | undefined |
+| `debug`       | boolean   | Enable debug logging                            | false     |
+| `dryRun`      | boolean   | Simulate generation without API calls           | false     |
+| `middleware`  | Function[] | Array of middleware functions for the generation | undefined |
+
+### Middleware Configuration
+
+The `middleware` option allows you to add pre-processing and post-processing capabilities to the generation process:
+
+```typescript
+import VideoGeneration from '@imgly/plugin-ai-video-generation-web';
+import FalAiVideo from '@imgly/plugin-ai-video-generation-web/fal-ai';
+import { loggingMiddleware, rateLimitMiddleware } from '@imgly/plugin-ai-generation-web';
+
+// Create middleware functions
+const logging = loggingMiddleware();
+const rateLimit = rateLimitMiddleware({
+  maxRequests: 5,
+  timeWindowMs: 300000, // 5 minutes
+  onRateLimitExceeded: (input, options, info) => {
+    console.log(`Video generation rate limit exceeded: ${info.currentCount}/${info.maxRequests}`);
+    return false; // Reject request
+  }
+});
+
+// Create custom middleware
+const customMiddleware = async (input, options, next) => {
+  console.log('Before generation:', input);
+  
+  // Add custom fields or modify the input
+  const modifiedInput = {
+    ...input,
+    customField: 'custom value'
+  };
+  
+  // Call the next middleware or generation function
+  const result = await next(modifiedInput, options);
+  
+  console.log('After generation:', result);
+  
+  // You can also modify the result before returning it
+  return result;
+};
+
+// Apply middleware to plugin
+cesdk.addPlugin(
+  VideoGeneration({
+    text2video: FalAiVideo.MinimaxVideo01Live({
+      proxyUrl: 'https://your-fal-ai-proxy.example.com'
+    }),
+    middleware: [logging, rateLimit, customMiddleware] // Apply middleware in order
+  })
+);
+```
+
+Built-in middleware options:
+
+- **loggingMiddleware**: Logs generation requests and responses
+- **rateLimitMiddleware**: Limits the number of generation requests in a time window
+
+You can also create custom middleware functions to meet your specific needs.
 
 ### Using a Proxy
 

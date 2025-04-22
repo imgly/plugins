@@ -100,13 +100,70 @@ Key features:
 
 The plugin accepts the following configuration options:
 
-| Option        | Type     | Description                                  | Default   |
-| ------------- | -------- | -------------------------------------------- | --------- |
-| `text2speech` | Provider | Provider for text-to-speech generation       | undefined |
-| `text2sound`  | Provider | Provider for sound effect generation         | undefined |
-| `debug`       | boolean  | Enable debug logging                         | false     |
-| `dryRun`      | boolean  | Simulate generation without API calls        | false     |
-| `middleware`  | Function | Custom middleware for the generation process | undefined |
+| Option        | Type      | Description                                     | Default   |
+| ------------- | --------- | ----------------------------------------------- | --------- |
+| `text2speech` | Provider  | Provider for text-to-speech generation          | undefined |
+| `text2sound`  | Provider  | Provider for sound effect generation            | undefined |
+| `debug`       | boolean   | Enable debug logging                            | false     |
+| `dryRun`      | boolean   | Simulate generation without API calls           | false     |
+| `middleware`  | Function[] | Array of middleware functions for the generation | undefined |
+
+### Middleware Configuration
+
+The `middleware` option allows you to add pre-processing and post-processing capabilities to the generation process:
+
+```typescript
+import AudioGeneration from '@imgly/plugin-ai-audio-generation-web';
+import Elevenlabs from '@imgly/plugin-ai-audio-generation-web/elevenlabs';
+import { loggingMiddleware, rateLimitMiddleware } from '@imgly/plugin-ai-generation-web';
+
+// Create middleware functions
+const logging = loggingMiddleware();
+const rateLimit = rateLimitMiddleware({
+  maxRequests: 15,
+  timeWindowMs: 60000, // 1 minute
+  onRateLimitExceeded: (input, options, info) => {
+    console.log(`Audio generation rate limit exceeded: ${info.currentCount}/${info.maxRequests}`);
+    return false; // Reject request
+  }
+});
+
+// Create custom middleware
+const customMiddleware = async (input, options, next) => {
+  console.log('Before generation:', input);
+  
+  // Add custom fields or modify the input
+  const modifiedInput = {
+    ...input,
+    customField: 'custom value'
+  };
+  
+  // Call the next middleware or generation function
+  const result = await next(modifiedInput, options);
+  
+  console.log('After generation:', result);
+  
+  // You can also modify the result before returning it
+  return result;
+};
+
+// Apply middleware to plugin
+cesdk.addPlugin(
+  AudioGeneration({
+    text2speech: Elevenlabs.ElevenMultilingualV2({
+      proxyUrl: 'https://your-elevenlabs-proxy.example.com'
+    }),
+    middleware: [logging, rateLimit, customMiddleware] // Apply middleware in order
+  })
+);
+```
+
+Built-in middleware options:
+
+- **loggingMiddleware**: Logs generation requests and responses
+- **rateLimitMiddleware**: Limits the number of generation requests in a time window
+
+You can also create custom middleware functions to meet your specific needs.
 
 ### Using a Proxy
 
