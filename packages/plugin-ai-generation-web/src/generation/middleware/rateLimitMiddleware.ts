@@ -350,7 +350,14 @@ function rateLimitMiddleware<I, O extends Output>(
           rateLimitInfo
         );
         if (!shouldProceed) {
-          throw new Error('Rate limit exceeded. Please try again later.');
+          // The callback should indicate the error, so we throw
+          // an abort error instead of a generic error to indicate
+          // the generation was aborted and we do not show any further
+          // error notification.
+          throw new DOMException(
+            'Operation aborted: Rate limit exceeded',
+            'AbortError'
+          );
         }
       } else {
         // Default behavior: throw an error
