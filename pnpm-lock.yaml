@@ -177,22 +177,6 @@ importers:
         version: 5.4.14(@types/node@22.13.5)
 
   packages/plugin-ai-apps-web:
-    dependencies:
-      '@imgly/plugin-ai-audio-generation-web':
-        specifier: workspace:*
-        version: file:packages/plugin-ai-audio-generation-web(@cesdk/cesdk-js@1.48.0(react@18.3.1))
-      '@imgly/plugin-ai-generation-web':
-        specifier: workspace:*
-        version: file:packages/plugin-ai-generation-web(@cesdk/cesdk-js@1.48.0(react@18.3.1))
-      '@imgly/plugin-ai-image-generation-web':
-        specifier: workspace:*
-        version: file:packages/plugin-ai-image-generation-web(@cesdk/cesdk-js@1.48.0(react@18.3.1))
-      '@imgly/plugin-ai-text-generation-web':
-        specifier: workspace:*
-        version: file:packages/plugin-ai-text-generation-web(@cesdk/cesdk-js@1.48.0(react@18.3.1))
-      '@imgly/plugin-ai-video-generation-web':
-        specifier: workspace:*
-        version: file:packages/plugin-ai-video-generation-web(@cesdk/cesdk-js@1.48.0(react@18.3.1))
     dependenciesMeta:
       '@imgly/plugin-ai-audio-generation-web':
         injected: true
@@ -210,6 +194,21 @@ importers:
       '@cesdk/cesdk-js':
         specifier: ^1.48.0
         version: 1.48.0(react@18.3.1)
+      '@imgly/plugin-ai-audio-generation-web':
+        specifier: workspace:*
+        version: file:packages/plugin-ai-audio-generation-web(@cesdk/cesdk-js@1.48.0(react@18.3.1))
+      '@imgly/plugin-ai-generation-web':
+        specifier: workspace:*
+        version: file:packages/plugin-ai-generation-web(@cesdk/cesdk-js@1.48.0(react@18.3.1))
+      '@imgly/plugin-ai-image-generation-web':
+        specifier: workspace:*
+        version: file:packages/plugin-ai-image-generation-web(@cesdk/cesdk-js@1.48.0(react@18.3.1))
+      '@imgly/plugin-ai-text-generation-web':
+        specifier: workspace:*
+        version: file:packages/plugin-ai-text-generation-web(@cesdk/cesdk-js@1.48.0(react@18.3.1))
+      '@imgly/plugin-ai-video-generation-web':
+        specifier: workspace:*
+        version: file:packages/plugin-ai-video-generation-web(@cesdk/cesdk-js@1.48.0(react@18.3.1))
       '@imgly/plugin-utils':
         specifier: workspace:*
         version: file:packages/plugin-utils(@cesdk/cesdk-js@1.48.0(react@18.3.1))
@@ -4883,13 +4882,6 @@ snapshots:
   '@imgly/plugin-ai-apps-web@file:packages/plugin-ai-apps-web(@cesdk/cesdk-js@1.48.0(react@18.3.1))':
     dependencies:
       '@cesdk/cesdk-js': 1.48.0(react@18.3.1)
-      '@imgly/plugin-ai-audio-generation-web': file:packages/plugin-ai-audio-generation-web(@cesdk/cesdk-js@1.48.0(react@18.3.1))
-      '@imgly/plugin-ai-generation-web': file:packages/plugin-ai-generation-web(@cesdk/cesdk-js@1.48.0(react@18.3.1))
-      '@imgly/plugin-ai-image-generation-web': file:packages/plugin-ai-image-generation-web(@cesdk/cesdk-js@1.48.0(react@18.3.1))
-      '@imgly/plugin-ai-text-generation-web': file:packages/plugin-ai-text-generation-web(@cesdk/cesdk-js@1.48.0(react@18.3.1))
-      '@imgly/plugin-ai-video-generation-web': file:packages/plugin-ai-video-generation-web(@cesdk/cesdk-js@1.48.0(react@18.3.1))
-    transitivePeerDependencies:
-      - encoding
 
   '@imgly/plugin-ai-audio-generation-web@file:packages/plugin-ai-audio-generation-web(@cesdk/cesdk-js@1.48.0(react@18.3.1))':
     dependencies:
