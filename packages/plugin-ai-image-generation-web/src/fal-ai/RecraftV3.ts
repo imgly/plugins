@@ -1,5 +1,9 @@
 import { Icons, CustomAssetSource } from '@imgly/plugin-utils';
-import { type Provider, getPanelId } from '@imgly/plugin-ai-generation-web';
+import {
+  Middleware,
+  type Provider,
+  getPanelId
+} from '@imgly/plugin-ai-generation-web';
 import { type RecraftV3Input } from '@fal-ai/client/endpoints';
 import RecraftV3Schema from './RecraftV3.json';
 import CreativeEditorSDK, { AssetResult } from '@cesdk/cesdk-js';
@@ -29,6 +33,7 @@ type StyleSelectionPayload = {
 type ProviderConfiguration = {
   proxyUrl: string;
   debug?: boolean;
+  middleware?: Middleware<RecraftV3Input, RecraftV3Output>[];
 };
 
 let imageStyleAssetSource: CustomAssetSource;
@@ -131,6 +136,7 @@ function getProvider(
       // @ts-ignore
       schema: RecraftV3Schema,
       inputReference: '#/components/schemas/RecraftV3Input',
+      middleware: config.middleware ?? [],
       userFlow: 'placeholder',
       renderCustomProperty: {
         style: ({ builder, state }, property) => {

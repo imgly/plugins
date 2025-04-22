@@ -1,6 +1,7 @@
 import {
   type Provider,
-  type AudioOutput
+  type AudioOutput,
+  Middleware
 } from '@imgly/plugin-ai-generation-web';
 import CreativeEditorSDK from '@cesdk/cesdk-js';
 import schema from './ElevenMultilingualV2.json';
@@ -21,6 +22,7 @@ type ElevenlabsInput = {
 type ProviderConfiguration = {
   proxyUrl: string;
   debug?: boolean;
+  middleware?: Middleware<ElevenlabsInput, AudioOutput>[];
 };
 
 export function ElevenMultilingualV2(
@@ -144,6 +146,7 @@ function getProvider(
     output: {
       abortable: true,
       history: '@imgly/indexedDB',
+      middleware: config.middleware,
       generate: async (
         input: ElevenlabsInput,
         { abortSignal }: { abortSignal?: AbortSignal }

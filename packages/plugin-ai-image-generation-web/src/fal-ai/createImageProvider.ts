@@ -7,7 +7,8 @@ import {
   CommonProperties,
   Provider,
   QuickAction,
-  loggingMiddleware
+  loggingMiddleware,
+  Middleware
 } from '@imgly/plugin-ai-generation-web';
 import { fal } from '@fal-ai/client';
 import { isCustomImageSize, uploadImageInputToFalIfNeeded } from './utils';
@@ -40,10 +41,17 @@ function createImageProvider<I extends Record<string, any>>(
     getBlockInput?: GetBlockInput<'image', I>;
     getImageSize?: (input: I) => { width: number; height: number };
 
+    middleware?: Middleware<I, ImageOutput>[];
+
     cesdk?: CreativeEditorSDK;
   },
   config: ImageProviderConfiguration
 ): Provider<'image', I, { kind: 'image'; url: string }> {
+  const middleware = options.middleware ?? [];
+  if (config.debug) {
+    middleware.unshift(loggingMiddleware<I, ImageOutput>());
+  }
+
   const provider: Provider<'image', I, ImageOutput> = {
     id: options.modelKey,
     kind: 'image',
@@ -111,7 +119,7 @@ function createImageProvider<I extends Record<string, any>>(
     },
     output: {
       abortable: true,
-      middleware: [loggingMiddleware<I, ImageOutput>()],
+      middleware,
       history: '@imgly/indexedDB',
       generate: async (
         input: I,

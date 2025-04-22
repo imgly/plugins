@@ -1,5 +1,9 @@
 import CreativeEditorSDK from '@cesdk/cesdk-js';
-import { Provider, QuickAction } from '@imgly/plugin-ai-generation-web';
+import {
+  Middleware,
+  Provider,
+  QuickAction
+} from '@imgly/plugin-ai-generation-web';
 import Anthropic from '@anthropic-ai/sdk';
 import sendPrompt from './sendPrompt';
 import improve from './prompts/improve';
@@ -14,6 +18,7 @@ import changeTextTo from './prompts/changeTextTo';
 type ProviderConfiguration = {
   proxyUrl: string;
   debug?: boolean;
+  middleware?: Middleware<AnthropicInput, AnthropicOutput>[];
 };
 
 type AnthropicInput = {
@@ -76,6 +81,7 @@ export function AnthropicProvider(
         }
       },
       output: {
+        middleware: config.middleware,
         generate: async (
           { prompt, blockId },
           { engine, abortSignal }

@@ -1,5 +1,9 @@
 import { type MinimaxVideo01LiveImageToVideoInput } from '@fal-ai/client/endpoints';
-import { VideoOutput, type Provider } from '@imgly/plugin-ai-generation-web';
+import {
+  Middleware,
+  VideoOutput,
+  type Provider
+} from '@imgly/plugin-ai-generation-web';
 import { getImageDimensionsFromURL } from '@imgly/plugin-utils';
 import schema from './MinimaxVideo01LiveImageToVideo.json';
 import CreativeEditorSDK from '@cesdk/cesdk-js';
@@ -8,6 +12,7 @@ import createVideoProvider from './createVideoProvider';
 type ProviderConfiguration = {
   proxyUrl: string;
   debug?: boolean;
+  middleware?: Middleware<MinimaxVideo01LiveImageToVideoInput, VideoOutput>[];
 };
 
 export function MinimaxVideo01LiveImageToVideo(
@@ -38,6 +43,7 @@ function getProvider(
       inputReference:
         '#/components/schemas/MinimaxVideo01LiveImageToVideoInput',
       cesdk,
+      middleware: config.middleware,
       getBlockInput: async (input) => {
         const imageDimension = await getImageDimensionsFromURL(
           input.image_url as string

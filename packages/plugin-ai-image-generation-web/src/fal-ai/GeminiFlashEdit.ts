@@ -1,6 +1,7 @@
 import {
   getQuickActionMenu,
   ImageOutput,
+  Middleware,
   type Provider
 } from '@imgly/plugin-ai-generation-web';
 import schema from './GeminiFlashEdit.json';
@@ -17,11 +18,12 @@ type GeminiFlashEditInput = {
 type ProviderConfiguration = {
   proxyUrl: string;
   debug?: boolean;
+  middleware?: Middleware<GeminiFlashEditInput, ImageOutput>[];
 };
 
-export function GeminiFlashEdit(config: {
-  proxyUrl: string;
-}): (context: {
+export function GeminiFlashEdit(
+  config: ProviderConfiguration
+): (context: {
   cesdk: CreativeEditorSDK;
 }) => Promise<Provider<'image', GeminiFlashEditInput, ImageOutput>> {
   return async ({ cesdk }: { cesdk: CreativeEditorSDK }) => {
@@ -59,6 +61,7 @@ function getProvider(
       inputReference: '#/components/schemas/GeminiFlashEditInput',
       cesdk,
       quickActions,
+      middleware: config.middleware,
       getBlockInput: async (input) => {
         const { width, height } = await getImageDimensionsFromURL(
           input.image_url

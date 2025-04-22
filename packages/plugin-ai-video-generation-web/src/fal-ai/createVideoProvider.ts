@@ -6,7 +6,9 @@ import {
   RenderCustomProperty,
   VideoOutput,
   GetBlockInput,
-  CommonProperties
+  CommonProperties,
+  Middleware,
+  loggingMiddleware
 } from '@imgly/plugin-ai-generation-web';
 import { fal } from '@fal-ai/client';
 
@@ -36,10 +38,17 @@ function createVideoProvider<I extends Record<string, any>>(
 
     getBlockInput: GetBlockInput<'video', I>;
 
+    middleware?: Middleware<I, VideoOutput>[];
+
     cesdk?: CreativeEditorSDK;
   },
   config: VideoProviderConfiguration
 ): Provider<'video', I, { kind: 'video'; url: string }> {
+  const middleware = options.middleware ?? [];
+  if (config.debug) {
+    middleware.unshift(loggingMiddleware<I, VideoOutput>());
+  }
+
   const provider: Provider<'video', I, VideoOutput> = {
     id: options.modelKey,
     kind: 'video',
@@ -72,6 +81,7 @@ function createVideoProvider<I extends Record<string, any>>(
     output: {
       abortable: true,
       history: '@imgly/indexedDB',
+      middleware,
       generate: async (
         input: I,
         { abortSignal }: { abortSignal?: AbortSignal }

@@ -1,5 +1,9 @@
 import { type MinimaxVideo01LiveInput } from '@fal-ai/client/endpoints';
-import { VideoOutput, type Provider } from '@imgly/plugin-ai-generation-web';
+import {
+  Middleware,
+  VideoOutput,
+  type Provider
+} from '@imgly/plugin-ai-generation-web';
 import schema from './MinimaxVideo01Live.json';
 import CreativeEditorSDK from '@cesdk/cesdk-js';
 import createVideoProvider from './createVideoProvider';
@@ -7,6 +11,7 @@ import createVideoProvider from './createVideoProvider';
 type ProviderConfiguration = {
   proxyUrl: string;
   debug?: boolean;
+  middleware?: Middleware<MinimaxVideo01LiveInput, VideoOutput>[];
 };
 
 export function MinimaxVideo01Live(
@@ -29,6 +34,8 @@ function getProvider(
       // @ts-ignore
       schema,
       inputReference: '#/components/schemas/MinimaxVideo01LiveInput',
+
+      middleware: config.middleware,
       cesdk,
       getBlockInput: () => {
         return Promise.resolve({
