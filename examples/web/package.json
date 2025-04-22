@@ -15,6 +15,7 @@
     "@cesdk/cesdk-js": "^1.48.0",
     "@cesdk/engine": "^1.48.0",
     "@imgly/plugin-ai-generation-web": "workspace:*",
+    "@imgly/plugin-ai-apps-web": "workspace:*",
     "@imgly/plugin-utils": "workspace:*",
     "@imgly/plugin-ai-text-generation-web": "workspace:*",
     "@imgly/plugin-ai-image-generation-web": "workspace:*",
@@ -31,6 +32,9 @@
     "react-router-dom": "^7.3.0"
   },
   "dependenciesMeta": {
+    "@imgly/plugin-ai-apps-web": {
+      "injected": true
+    },
     "@imgly/plugin-ai-generation-web": {
       "injected": true
     },

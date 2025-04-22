@@ -1,6 +1,6 @@
 import CreativeEditorSDK from '@cesdk/cesdk-js';
 
-import AiPlugin from './AiPlugin';
+import AiApps from '@imgly/plugin-ai-apps-web';
 import FalAiImage from '@imgly/plugin-ai-image-generation-web/fal-ai';
 import FalAiVideo from '@imgly/plugin-ai-video-generation-web/fal-ai';
 import Elevenlabs from '@imgly/plugin-ai-audio-generation-web/elevenlabs';
@@ -68,7 +68,7 @@ function App() {
             await instance.createVideoScene();
 
             instance.addPlugin(
-              AiPlugin({
+              AiApps({
                 providers: {
                   text2text: Anthropic.AnthropicProvider({
                     proxyUrl: import.meta.env.VITE_ANTHROPIC_PROXY_URL
