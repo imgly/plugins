@@ -1,0 +1,49 @@
+{
+  "openapi": "3.0.0",
+  "components": {
+    "schemas": {
+      "GptImage1Input": {
+        "title": "TextToImageInput",
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "title": "Prompt",
+            "type": "string",
+            "x-imgly-builder": {
+              "component": "TextArea"
+            }
+          },
+          "size": {
+            "enum": ["1024x1024", "1536x1024", "1024x1536"],
+            "type": "string",
+            "title": "Format",
+            "default": "1024x1024",
+            "x-imgly-enum-labels": {
+              "1024x1024": "Square",
+              "1536x1024": "Landscape",
+              "1024x1536": "Portrait"
+            },
+            "x-imgly-enum-icons": {
+              "1024x1024": "@imgly/plugin/formats/ratio1by1",
+              "1024x1536": "@imgly/plugin/formats/ratio3by4",
+              "1536x1024": "@imgly/plugin/formats/ratio4by3"
+            }
+          },
+          "background": {
+            "enum": ["auto", "transparent", "opaque"],
+            "type": "string",
+            "title": "Background",
+            "default": "auto",
+            "x-imgly-enum-labels": {
+              "auto": "Auto",
+              "transparent": "Transparent",
+              "opaque": "Opaque"
+            }
+          }
+        },
+        "x-order-properties": ["prompt", "size", "background"],
+        "required": ["prompt"]
+      }
+    }
+  }
+}
