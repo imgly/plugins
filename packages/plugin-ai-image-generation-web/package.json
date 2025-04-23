@@ -1,6 +1,6 @@
 {
   "name": "@imgly/plugin-ai-image-generation-web",
-  "version": "0.1.0-rc.2",
+  "version": "0.1.0",
   "description": "AI image generation plugin for the CE.SDK editor",
   "keywords": ["CE.SDK", "plugin", "AI", "image-generation"],
   "repository": {
