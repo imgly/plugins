@@ -1,6 +1,7 @@
 import CreativeEditorSDK from '@cesdk/cesdk-js';
 
 import AiApps from '@imgly/plugin-ai-apps-web';
+import OpenAiImage from '@imgly/plugin-ai-image-generation-web/open-ai';
 import FalAiImage from '@imgly/plugin-ai-image-generation-web/fal-ai';
 import FalAiVideo from '@imgly/plugin-ai-video-generation-web/fal-ai';
 import Elevenlabs from '@imgly/plugin-ai-audio-generation-web/elevenlabs';
@@ -144,9 +145,9 @@ function App() {
                     ],
                     proxyUrl: import.meta.env.VITE_ANTHROPIC_PROXY_URL
                   }),
-                  text2image: FalAiImage.RecraftV3({
+                  text2image: OpenAiImage.GptImage1({
                     middleware: [imageRateLimitMiddleware, errorMiddleware],
-                    proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
+                    proxyUrl: import.meta.env.VITE_OPENAI_PROXY_URL
                   }),
                   image2image: FalAiImage.GeminiFlashEdit({
                     middleware: [errorMiddleware, imageRateLimitMiddleware],
