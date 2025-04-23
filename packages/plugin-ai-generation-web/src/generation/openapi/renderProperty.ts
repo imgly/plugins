@@ -208,11 +208,21 @@ function renderEnumProperty<K extends OutputKind, I, O extends Output>(
     'x-imgly-enum-labels' in property.schema.enum &&
     typeof property.schema.enum['x-imgly-enum-labels'] === 'object'
       ? (property.schema.enum['x-imgly-enum-labels'] as Record<string, string>)
+      : 'x-imgly-enum-labels' in property.schema &&
+        typeof property.schema['x-imgly-enum-labels'] === 'object'
+      ? (property.schema['x-imgly-enum-labels'] as Record<string, string>)
+      : {};
+
+  const icons: Record<string, string> =
+    'x-imgly-enum-icons' in property.schema &&
+    typeof property.schema['x-imgly-enum-icons'] === 'object'
+      ? (property.schema['x-imgly-enum-icons'] as Record<string, string>)
       : {};
 
   const values: EnumValue[] = (property.schema.enum ?? []).map((valueId) => ({
     id: valueId,
-    label: labels[valueId] ?? getLabelFromId(valueId)
+    label: labels[valueId] ?? getLabelFromId(valueId),
+    icon: icons[valueId]
   }));
   const defaultValue =
     property.schema.default != null
