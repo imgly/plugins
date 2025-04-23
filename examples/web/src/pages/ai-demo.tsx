@@ -85,7 +85,8 @@ function App() {
 
             const rateLimitMiddlewareConfig = {
               timeWindowMs: 24 * 60 * 60 * 1000,
-              onRateLimitExceeded
+              onRateLimitExceeded,
+              disable: true
             };
 
             const imageRateLimitMiddleware: Middleware<any, any> =
