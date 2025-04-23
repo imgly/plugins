@@ -12,7 +12,7 @@
       },
       "meta": {
         "uri": "https://storage.googleapis.com/eleven-public-prod/premade/voices/JBFqnCBsd6RMkjVDRZzb/e6206d1a-0721-4787-aafb-06a6e705cac5.mp3",
-        "thumbUri": "https://ubique.img.ly/static/voices/george.webp",
+        "thumbUri": "{{base_url}}george.webp",
         "blockType": "//ly.img.ubq/audio",
         "mimeType": "audio/x-m4a",
         "duration": "3.42"
@@ -28,7 +28,7 @@
       },
       "meta": {
         "uri": "https://storage.googleapis.com/eleven-public-prod/premade/voices/FGY2WhTYpPnrIDTdsKH5/67341759-ad08-41a5-be6e-de12fe448618.mp3",
-        "thumbUri": "https://ubique.img.ly/static/voices/laura.webp",
+        "thumbUri": "{{base_url}}laura.webp",
         "blockType": "//ly.img.ubq/audio",
         "mimeType": "audio/x-m4a",
         "duration": "2.04"
@@ -50,7 +50,7 @@
       },
       "meta": {
         "uri": "https://storage.googleapis.com/eleven-public-prod/premade/voices/IKne3meq5aSn9XLyUdCD/102de6f2-22ed-43e0-a1f1-111fa75c5481.mp3",
-        "thumbUri": "https://ubique.img.ly/static/voices/charlie.webp",
+        "thumbUri": "{{base_url}}charlie.webp",
         "blockType": "//ly.img.ubq/audio",
         "mimeType": "audio/x-m4a",
         "duration": "2.53"
@@ -72,7 +72,7 @@
       },
       "meta": {
         "uri": "https://storage.googleapis.com/eleven-public-prod/premade/voices/9BWtsMINqrJLrRacOk9x/405766b8-1f4e-4d3c-aba1-6f25333823ec.mp3",
-        "thumbUri": "https://ubique.img.ly/static/voices/aria.webp",
+        "thumbUri": "{{base_url}}aria.webp",
         "blockType": "//ly.img.ubq/audio",
         "mimeType": "audio/x-m4a",
         "duration": "3.71"
@@ -88,7 +88,7 @@
       },
       "meta": {
         "uri": "https://storage.googleapis.com/eleven-public-prod/premade/voices/EXAVITQu4vr4xnSDxMaL/01a3e33c-6e99-4ee7-8543-ff2216a32186.mp3",
-        "thumbUri": "https://ubique.img.ly/static/voices/sarah2.webp",
+        "thumbUri": "{{base_url}}sarah2.webp",
         "blockType": "//ly.img.ubq/audio",
         "mimeType": "audio/x-m4a",
         "duration": "2.53"
@@ -110,7 +110,7 @@
       },
       "meta": {
         "uri": "https://storage.googleapis.com/eleven-public-prod/premade/voices/SAz9YHcvj6GT2YYXdXww/e6c95f0b-2227-491a-b3d7-2249240decb7.mp3",
-        "thumbUri": "https://ubique.img.ly/static/voices/river.webp",
+        "thumbUri": "{{base_url}}river.webp",
         "blockType": "//ly.img.ubq/audio",
         "mimeType": "audio/x-m4a",
         "duration": "3.53"
@@ -132,7 +132,7 @@
       },
       "meta": {
         "uri": "https://storage.googleapis.com/eleven-public-prod/premade/voices/XrExE9yKIg1WjnnlVkGX/b930e18d-6b4d-466e-bab2-0ae97c6d8535.mp3",
-        "thumbUri": "https://ubique.img.ly/static/voices/matilda.webp",
+        "thumbUri": "{{base_url}}matilda.webp",
         "blockType": "//ly.img.ubq/audio",
         "mimeType": "audio/x-m4a",
         "duration": "2.64"
@@ -154,7 +154,7 @@
       },
       "meta": {
         "uri": "https://storage.googleapis.com/eleven-public-prod/premade/voices/N2lVS1w4EtoT3dr4eOWO/ac833bd8-ffda-4938-9ebc-b0f99ca25481.mp3",
-        "thumbUri": "https://ubique.img.ly/static/voices/callum.webp",
+        "thumbUri": "{{base_url}}callum.webp",
         "blockType": "//ly.img.ubq/audio",
         "mimeType": "audio/x-m4a",
         "duration": "4.18"
@@ -170,7 +170,7 @@
       },
       "meta": {
         "uri": "https://storage.googleapis.com/eleven-public-prod/premade/voices/TX3LPaxmHKxFdv7VOQHJ/63148076-6363-42db-aea8-31424308b92c.mp3",
-        "thumbUri": "https://ubique.img.ly/static/voices/liam.webp",
+        "thumbUri": "{{base_url}}liam.webp",
         "blockType": "//ly.img.ubq/audio",
         "mimeType": "audio/x-m4a",
         "duration": "4.13"
@@ -186,7 +186,7 @@
       },
       "meta": {
         "uri": "https://storage.googleapis.com/eleven-public-prod/premade/voices/XB0fDUnXU5powFXDhCwa/942356dc-f10d-4d89-bda5-4f8505ee038b.mp3",
-        "thumbUri": "https://ubique.img.ly/static/voices/charlotte.webp",
+        "thumbUri": "{{base_url}}charlotte.webp",
         "blockType": "//ly.img.ubq/audio",
         "mimeType": "audio/x-m4a",
         "duration": "5.25"
@@ -208,7 +208,7 @@
       },
       "meta": {
         "uri": "https://storage.googleapis.com/eleven-public-prod/premade/voices/CwhRBWXzGAHq8TQ4Fs17/58ee3ff5-f6f2-4628-93b8-e38eb31806b0.mp3",
-        "thumbUri": "https://ubique.img.ly/static/voices/roger.webp",
+        "thumbUri": "{{base_url}}roger.webp",
         "blockType": "//ly.img.ubq/audio",
         "mimeType": "audio/x-m4a",
         "duration": "3.89"
@@ -224,7 +224,7 @@
       },
       "meta": {
         "uri": "https://storage.googleapis.com/eleven-public-prod/premade/voices/nPczCjzI2devNBz1zQrb/2dd3e72c-4fd3-42f1-93ea-abc5d4e5aa1d.mp3",
-        "thumbUri": "https://ubique.img.ly/static/voices/brian.webp",
+        "thumbUri": "{{base_url}}brian.webp",
         "blockType": "//ly.img.ubq/audio",
         "mimeType": "audio/x-m4a",
         "duration": "5.46"
@@ -246,7 +246,7 @@
       },
       "meta": {
         "uri": "https://storage.googleapis.com/eleven-public-prod/premade/voices/cgSgspJ2msm6clMCkdW9/56a97bf8-b69b-448f-846c-c3a11683d45a.mp3",
-        "thumbUri": "https://ubique.img.ly/static/voices/jessica.webp",
+        "thumbUri": "{{base_url}}jessica.webp",
         "blockType": "//ly.img.ubq/audio",
         "mimeType": "audio/x-m4a",
         "duration": "3.89"
@@ -262,7 +262,7 @@
       },
       "meta": {
         "uri": "https://storage.googleapis.com/eleven-public-prod/premade/voices/Xb7hH8MSUJpSbSDYk0k2/d10f7534-11f6-41fe-a012-2de1e482d336.mp3",
-        "thumbUri": "https://ubique.img.ly/static/voices/alice.webp",
+        "thumbUri": "{{base_url}}alice.webp",
         "blockType": "//ly.img.ubq/audio",
         "mimeType": "audio/x-m4a",
         "duration": "3.53"
@@ -278,7 +278,7 @@
       },
       "meta": {
         "uri": "https://storage.googleapis.com/eleven-public-prod/premade/voices/pFZP5JQG7iQjIQuC4Bku/89b68b35-b3dd-4348-a84a-a3c13a3c2b30.mp3",
-        "thumbUri": "https://ubique.img.ly/static/voices/lily.webp",
+        "thumbUri": "{{base_url}}lily.webp",
         "blockType": "//ly.img.ubq/audio",
         "mimeType": "audio/x-m4a",
         "duration": "3.11"
@@ -300,7 +300,7 @@
       },
       "meta": {
         "uri": "https://storage.googleapis.com/eleven-public-prod/premade/voices/cjVigY5qzO86Huf0OWal/d098fda0-6456-4030-b3d8-63aa048c9070.mp3",
-        "thumbUri": "https://ubique.img.ly/static/voices/eric.webp",
+        "thumbUri": "{{base_url}}eric.webp",
         "blockType": "//ly.img.ubq/audio",
         "mimeType": "audio/x-m4a",
         "duration": "2.32"
@@ -316,7 +316,7 @@
       },
       "meta": {
         "uri": "https://storage.googleapis.com/eleven-public-prod/premade/voices/bIHbv24MWmeRgasZH58o/8caf8f3d-ad29-4980-af41-53f20c72d7a4.mp3",
-        "thumbUri": "https://ubique.img.ly/static/voices/will.webp",
+        "thumbUri": "{{base_url}}will.webp",
         "blockType": "//ly.img.ubq/audio",
         "mimeType": "audio/x-m4a",
         "duration": "2.74"
@@ -338,7 +338,7 @@
       },
       "meta": {
         "uri": "https://storage.googleapis.com/eleven-public-prod/premade/voices/iP95p4xoKVk53GoZ742B/3f4bde72-cc48-40dd-829f-57fbf906f4d7.mp3",
-        "thumbUri": "https://ubique.img.ly/static/voices/chris.webp",
+        "thumbUri": "{{base_url}}chris.webp",
         "blockType": "//ly.img.ubq/audio",
         "mimeType": "audio/x-m4a",
         "duration": "3.29"
@@ -354,7 +354,7 @@
       },
       "meta": {
         "uri": "https://storage.googleapis.com/eleven-public-prod/premade/voices/pqHfZKP75CvOlQylNhV4/d782b3ff-84ba-4029-848c-acf01285524d.mp3",
-        "thumbUri": "https://ubique.img.ly/static/voices/bill.webp",
+        "thumbUri": "{{base_url}}bill.webp",
         "blockType": "//ly.img.ubq/audio",
         "mimeType": "audio/x-m4a",
         "duration": "5.51"
@@ -370,7 +370,7 @@
       },
       "meta": {
         "uri": "https://storage.googleapis.com/eleven-public-prod/premade/voices/onwK4e9ZLuTAKqWW03F9/7eee0236-1a72-4b86-b303-5dcadc007ba9.mp3",
-        "thumbUri": "https://ubique.img.ly/static/voices/daniel.webp",
+        "thumbUri": "{{base_url}}daniel.webp",
         "blockType": "//ly.img.ubq/audio",
         "mimeType": "audio/x-m4a",
         "duration": "5.75"

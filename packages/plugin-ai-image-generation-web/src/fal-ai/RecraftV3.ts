@@ -34,6 +34,14 @@ type ProviderConfiguration = {
   proxyUrl: string;
   debug?: boolean;
   middleware?: Middleware<RecraftV3Input, RecraftV3Output>[];
+
+  /**
+   * Base URL used for the UI assets used in the plugin.
+   *
+   * By default, we load the assets from the IMG.LY CDN You can copy the assets.
+   * from the `/assets` folder to your own server and set the base URL to your server.
+   */
+  baseURL?: string;
 };
 
 let imageStyleAssetSource: CustomAssetSource;
@@ -56,6 +64,9 @@ function getProvider(
   const modelKey = 'fal-ai/recraft-v3';
   const styleImageAssetSourceId = `${modelKey}/styles/image`;
   const styleVectorAssetSourceId = `${modelKey}/styles/vector`;
+  const baseURL =
+    config.baseURL ??
+    'https://cdn.img.ly/assets/plugins/plugin-ai-image-generation-web/v1/recraft-v3/';
 
   cesdk.ui.addIconSet('@imgly/plugin/formats', Icons.Formats);
 
@@ -64,7 +75,7 @@ function getProvider(
     STYLES_IMAGE.map(({ id, label }) => ({
       id,
       label,
-      thumbUri: getStyleThumbnail(id)
+      thumbUri: getStyleThumbnail(id, baseURL)
     }))
   );
   vectorStyleAssetSource = new CustomAssetSource(
@@ -72,7 +83,7 @@ function getProvider(
     STYLES_VECTOR.map(({ id, label }) => ({
       id,
       label,
-      thumbUri: getStyleThumbnail(id)
+      thumbUri: getStyleThumbnail(id, baseURL)
     }))
   );
 

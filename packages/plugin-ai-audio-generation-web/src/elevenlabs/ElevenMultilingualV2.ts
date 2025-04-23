@@ -23,6 +23,14 @@ type ProviderConfiguration = {
   proxyUrl: string;
   debug?: boolean;
   middleware?: Middleware<ElevenlabsInput, AudioOutput>[];
+
+  /**
+   * Base URL used for the UI assets used in the plugin.
+   *
+   * By default, we load the assets from the IMG.LY CDN You can copy the assets.
+   * from the `/assets` folder to your own server and set the base URL to your server.
+   */
+  baseURL?: string;
 };
 
 export function ElevenMultilingualV2(
@@ -39,9 +47,13 @@ function getProvider(
   cesdk: CreativeEditorSDK,
   config: ProviderConfiguration
 ): Provider<'audio', ElevenlabsInput, AudioOutput> {
+  const baseURL =
+    config.baseURL ??
+    'https://cdn.img.ly/assets/plugins/plugin-ai-audio-generation-web/v1/elevenlabs/';
+
   const prefix = 'ly.img.ai/audio-generation/speech/elevenlabs';
   const voiceSelectionPanelId = `${prefix}.voiceSelection`;
-  const voiceAssetSourceId = createVoicesAssetSource(cesdk);
+  const voiceAssetSourceId = createVoicesAssetSource(cesdk, baseURL);
   const modelKey = 'elevenlabs/monolingual/v1';
 
   cesdk.setTranslations({
@@ -97,7 +109,7 @@ function getProvider(
             }>('voice', {
               voiceId: 'JBFqnCBsd6RMkjVDRZzb',
               name: 'George',
-              thumbnail: 'https://ubique.img.ly/static/voices/george.webp'
+              thumbnail: `${baseURL}george.webp`
             });
 
             context.builder.Button(`${prefix}.openVoiceSelection`, {
@@ -225,11 +237,23 @@ export async function generateSpeech(
   return response.blob();
 }
 
-function createVoicesAssetSource(cesdk: CreativeEditorSDK): string {
+function createVoicesAssetSource(
+  cesdk: CreativeEditorSDK,
+  baseURL: string
+): string {
   const { id, assets } = voices;
   cesdk.engine.asset.addLocalSource(id);
   assets.map(async (asset) => {
-    cesdk.engine.asset.addAssetToSource(id, asset);
+    cesdk.engine.asset.addAssetToSource(id, {
+      ...asset,
+      meta: {
+        ...asset.meta,
+        thumbUri: asset.meta.thumbUri.replace(
+          '{{base_url}}',
+          `${baseURL}thumbnails/`
+        )
+      }
+    });
   });
   return id;
 }

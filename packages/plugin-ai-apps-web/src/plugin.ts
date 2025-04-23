@@ -33,10 +33,14 @@ export default (
       if (cesdk == null) return;
       const isVideoMode = cesdk.engine.scene.getMode() === 'Video';
 
-      const { providers } = config;
+      const {
+        providers,
+        baseURL = 'https://cdn.img.ly/assets/plugins/plugin-ai-apps-web/v1/'
+      } = config;
 
       const { activeAssetSource } = await addAiAppDockMenu(cesdk, {
         isVideoMode,
+        baseURL,
         debug: config.debug
       });
 
@@ -170,12 +174,13 @@ async function addAiAppDockMenu(
   cesdk: CreativeEditorSDK,
   options: {
     isVideoMode: boolean;
+    baseURL: string;
     debug?: boolean;
   }
 ): Promise<{
   activeAssetSource?: CustomAssetSource;
 }> {
-  const { isVideoMode, debug } = options;
+  const { isVideoMode, debug, baseURL } = options;
   overrideAssetLibraryDockComponent(cesdk);
 
   let activeAssetSource: CustomAssetSource | undefined;
@@ -188,7 +193,7 @@ async function addAiAppDockMenu(
         },
         meta: {
           label: 'Generate Image',
-          thumbUri: 'https://ubique.img.ly/static/ai-demo/GenerateImage.png',
+          thumbUri: `${baseURL}GenerateImage.png`,
           width: AI_APP_THUMBNAIL_WIDTH,
           height: AI_APP_THUMBNAIL_HEIGHT
         }
@@ -200,7 +205,7 @@ async function addAiAppDockMenu(
         },
         meta: {
           label: 'Generate Video',
-          thumbUri: 'https://ubique.img.ly/static/ai-demo/GenerateVideo.png',
+          thumbUri: `${baseURL}GenerateVideo.png`,
           width: AI_APP_THUMBNAIL_WIDTH,
           height: AI_APP_THUMBNAIL_HEIGHT
         }
@@ -212,7 +217,7 @@ async function addAiAppDockMenu(
         },
         meta: {
           label: 'Generate Sound',
-          thumbUri: 'https://ubique.img.ly/static/ai-demo/GenerateSound.png',
+          thumbUri: `${baseURL}GenerateSound.png`,
           width: AI_APP_THUMBNAIL_WIDTH,
           height: AI_APP_THUMBNAIL_HEIGHT
         }
@@ -224,7 +229,7 @@ async function addAiAppDockMenu(
         },
         meta: {
           label: 'AI Voice',
-          thumbUri: 'https://ubique.img.ly/static/ai-demo/AIVoicev2.png',
+          thumbUri: `${baseURL}AIVoice.png`,
           width: AI_APP_THUMBNAIL_WIDTH,
           height: AI_APP_THUMBNAIL_HEIGHT
         }

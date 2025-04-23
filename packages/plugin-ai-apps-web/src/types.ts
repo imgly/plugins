@@ -48,4 +48,12 @@ export interface Providers {
 export interface PluginConfiguration {
   providers: Providers;
   debug?: boolean;
+
+  /**
+   * Base URL used for the UI assets used in the plugin.
+   *
+   * By default, we load the assets from the IMG.LY CDN. You can copy the assets.
+   * from the `/assets` folder to your own server and set the base URL to your server.
+   */
+  baseURL?: string;
 }
