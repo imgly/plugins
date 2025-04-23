@@ -151,7 +151,7 @@ describe('rateLimitMiddleware', () => {
 
     // The 3rd request should be rejected
     await expect(middleware(mockInput, mockOptions, mockNext)).rejects.toThrow(
-      'Rate limit exceeded. Please try again later.'
+      'Rate limit exceeded'
     );
 
     // Verify next was called only 2 times
@@ -172,7 +172,7 @@ describe('rateLimitMiddleware', () => {
 
     // The 2nd request should be rejected (rate limit exceeded)
     await expect(middleware(mockInput, mockOptions, mockNext)).rejects.toThrow(
-      'Rate limit exceeded. Please try again later.'
+      'Rate limit exceeded'
     );
 
     // Advance time by 1001ms to exceed the time window
@@ -210,12 +210,12 @@ describe('rateLimitMiddleware', () => {
 
     // Second request with same prompt "test1" should be rejected
     await expect(middleware(input1, mockOptions, mockNext)).rejects.toThrow(
-      'Rate limit exceeded. Please try again later.'
+      'Rate limit exceeded'
     );
 
     // Second request with prompt "test2" should also be rejected
     await expect(middleware(input2, mockOptions, mockNext)).rejects.toThrow(
-      'Rate limit exceeded. Please try again later.'
+      'Rate limit exceeded'
     );
 
     // Verify next was called 2 times in total
@@ -243,7 +243,7 @@ describe('rateLimitMiddleware', () => {
 
     // The 3rd request should trigger the callback
     await expect(middleware(mockInput, mockOptions, mockNext)).rejects.toThrow(
-      'Rate limit exceeded. Please try again later.'
+      'Operation aborted: Rate limit exceeded'
     );
 
     // Verify the callback was called with correct parameters
