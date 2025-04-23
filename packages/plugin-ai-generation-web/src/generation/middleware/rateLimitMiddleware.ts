@@ -47,7 +47,7 @@ export interface RateLimitOptions<I> {
   /**
    * Disable the rate limit middleware
    */
-  disable: boolean;
+  disable?: boolean;
 }
 
 // Store for tracking requests per key
