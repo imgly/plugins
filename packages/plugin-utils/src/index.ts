@@ -1,3 +1,17 @@
+import formatsIconSprite from './icons/formats';
+
+const Icons = {
+  Formats: formatsIconSprite
+};
+
+export { Icons };
+
+export { CustomAssetSource } from './assetSources/CustomAssetSource';
+
+export { IndexedDBAssetSource } from './assetSources/IndexedDBAssetSource';
+
+export { AggregatedAssetSource } from './assetSources/AggregatedAssetSource';
+
 export { default as Metadata } from './metadata/Metadata';
 
 export { default as FillProcessingMetadata } from './metadata/FillProcessingMetadata';
@@ -16,3 +30,9 @@ export {
 } from './types/UserInterfaceConfiguration';
 
 export { hexToRgba, isValidHexColor, rgbaToHex } from './utils/colors';
+
+export { uploadBlob, fetchImageBlob } from './utils/upload';
+
+export { default as uuid } from './utils/uuid';
+
+export { getImageDimensionsFromURL } from './utils/images';

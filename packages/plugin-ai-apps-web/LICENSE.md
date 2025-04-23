@@ -1,0 +1,1 @@
+The licensed code may be used by the customer solely in connection with an IMG.LY licensed product and for commercial purposes under the terms set forth in this agreement. Any other use of the licensed code is strictly prohibited unless otherwise agreed in writing by IMG.LY.

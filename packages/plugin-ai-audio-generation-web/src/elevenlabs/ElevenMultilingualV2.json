@@ -1,0 +1,42 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Elevenlabs API",
+    "version": "1.0.0",
+    "description": "Elevenlabs API"
+  },
+  "components": {
+    "schemas": {
+      "ElevenlabsInput": {
+        "title": "TextToSpeechInput",
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "title": "Prompt",
+            "type": "string",
+            "x-imgly-builder": {
+              "component": "TextArea"
+            }
+          },
+          "voice_id": {
+            "title": "Voice",
+            "type": "string",
+            "description": "The voice ID to use for the speech synthesis.",
+            "default": "JBFqnCBsd6RMkjVDRZzb"
+          },
+          "speed": {
+            "title": "Speed",
+            "type": "number",
+            "description": "The speed of the speech synthesis.",
+            "default": 1,
+            "x-imgly-step": 0.05,
+            "minimum": 0.7,
+            "maximum": 1.2
+          }
+        },
+        "x-elevenlabs-order-properties": ["prompt", "style", "image_size"],
+        "required": ["prompt", "voice_id"]
+      }
+    }
+  }
+}

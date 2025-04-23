@@ -4,6 +4,8 @@ examples/*/dist
 .env.local
 .nvmrc
 *.tgz
+CLAUDE.md
+packages/*/CLAUDE.md
 
 .DS_Store
 yarn-error.log
