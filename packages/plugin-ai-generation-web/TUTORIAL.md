@@ -109,7 +109,8 @@ Let's create a simple provider that generates images by calling your API. Create
 import {
     Provider,
     ImageOutput,
-    loggingMiddleware
+    loggingMiddleware,
+    uploadMiddleware
 } from '@imgly/plugin-ai-generation-web';
 import type CreativeEditorSDK from '@cesdk/cesdk-js';
 import apiSchema from './myApiSchema.json';
@@ -176,8 +177,32 @@ export function MyImageProvider({
                 // Store generated assets in browser's IndexedDB
                 history: '@imgly/indexedDB',
 
-                // Add logging middleware
-                middleware: [loggingMiddleware()],
+                // Add middleware for logging and uploading
+                middleware: [
+                    loggingMiddleware(),
+                    // Example of upload middleware that stores generated images on your server
+                    uploadMiddleware(async (output) => {
+                        // Upload the image to your server
+                        const response = await fetch('https://your-server.com/api/upload', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ 
+                                url: output.url,
+                                type: 'ai-generated-image'
+                            })
+                        });
+                        
+                        const result = await response.json();
+                        
+                        // Return the output with the updated URL from your server
+                        return {
+                            ...output,
+                            url: result.storedImageUrl
+                        };
+                    })
+                ],
 
                 // Configure success/error notifications
                 notification: {

@@ -39,6 +39,9 @@ import FalAiImage from '@imgly/plugin-ai-image-generation-web/fal-ai';
 import FalAiVideo from '@imgly/plugin-ai-video-generation-web/fal-ai';
 import Elevenlabs from '@imgly/plugin-ai-audio-generation-web/elevenlabs';
 
+// Import middleware utilities
+import { uploadMiddleware } from '@imgly/plugin-ai-generation-web';
+
 function App() {
     const cesdk = useRef<CreativeEditorSDK>();
 
@@ -97,8 +100,29 @@ function App() {
 
                                     // Image generation
                                     text2image: FalAiImage.RecraftV3({
-                                        proxyUrl:
-                                            'https://your-server.com/api/fal-ai-proxy'
+                                        proxyUrl: 'https://your-server.com/api/fal-ai-proxy',
+                                        // Add upload middleware to store generated images on your server
+                                        middleware: [
+                                            uploadMiddleware(async (output) => {
+                                                // Upload the generated image to your server
+                                                const response = await fetch('https://your-server.com/api/store-image', {
+                                                    method: 'POST',
+                                                    headers: { 'Content-Type': 'application/json' },
+                                                    body: JSON.stringify({ 
+                                                        imageUrl: output.url,
+                                                        metadata: { source: 'ai-generation' }
+                                                    })
+                                                });
+                                                
+                                                const result = await response.json();
+                                                
+                                                // Return the output with your server's URL
+                                                return {
+                                                    ...output,
+                                                    url: result.permanentUrl
+                                                };
+                                            })
+                                        ]
                                     }),
                                     image2image: FalAiImage.GeminiFlashEdit({
                                         proxyUrl:
@@ -265,7 +289,102 @@ cesdk.ui.setCanvasMenuOrder([
 
 In video mode, clicking the AI dock button shows cards for all available AI generation types. This menu automatically adjusts based on the available providers you've configured.
 
-## 5. Using Proxy Services
+## 5. Using Middleware
+
+The AI generation framework supports middleware that can enhance or modify the generation process. Middleware functions are executed in sequence and can perform operations before generation, after generation, or both.
+
+### Common Middleware Types
+
+#### Upload Middleware
+
+The `uploadMiddleware` is useful when you need to store generated content on your server before it's used:
+
+```typescript
+import { uploadMiddleware } from '@imgly/plugin-ai-generation-web';
+
+// In your provider configuration
+middleware: [
+  uploadMiddleware(async (output) => {
+    // Upload the output to your server
+    const response = await fetch('https://your-server.com/api/upload', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url: output.url })
+    });
+    
+    const result = await response.json();
+    
+    // Return updated output with your server's URL
+    return {
+      ...output,
+      url: result.permanentUrl
+    };
+  })
+]
+```
+
+Use cases for upload middleware:
+- Storing generated assets in your own cloud storage
+- Adding watermarks or processing assets before use
+- Tracking/logging generated content
+- Implementing licensing or rights management
+
+#### Rate Limiting Middleware
+
+To prevent abuse of AI services, you can implement rate limiting:
+
+```typescript
+import { rateLimitMiddleware } from '@imgly/plugin-ai-generation-web';
+
+// In your provider configuration
+middleware: [
+  rateLimitMiddleware({
+    maxRequests: 10,
+    timeWindowMs: 60 * 60 * 1000, // 1 hour
+    onRateLimitExceeded: (input, options, info) => {
+      // Show a notice to the user
+      console.log(`Rate limit reached: ${info.currentCount}/${info.maxRequests}`);
+      return false; // Reject the request
+    }
+  })
+]
+```
+
+#### Custom Error Handling Middleware
+
+You can create custom middleware for error handling:
+
+```typescript
+const errorMiddleware = async (input, options, next) => {
+  try {
+    return await next(input, options);
+  } catch (error) {
+    // Handle error (show UI notification, log, etc.)
+    console.error('Generation failed:', error);
+    // You can rethrow or return a fallback
+    throw error;
+  }
+};
+```
+
+### Middleware Order
+
+The order of middleware is important - they're executed in the sequence provided:
+
+```typescript
+middleware: [
+  // Executes first
+  rateLimitMiddleware({ maxRequests: 10, timeWindowMs: 3600000 }),
+  
+  // Executes second (only if rate limit wasn't exceeded)
+  loggingMiddleware(),
+  
+  // Executes third (after generation completes)
+  uploadMiddleware(async (output) => { /* ... */ })
+]
+```
+
+## 6. Using Proxy Services
 
 For security reasons, you should never include your AI service API keys directly in client-side code. Instead, you should set up proxy services that securely forward requests to AI providers while keeping your API keys secure on the server side.
 

@@ -763,6 +763,8 @@ CreativeEditorSDK.create(domElement, {
 
 The package includes a middleware system to augment the generation flow:
 
+#### Rate Limiting Middleware
+
 ```typescript
 // NOTE:: This middleware will not protect against calling the server directly as
 // many times as you want. It is only meant to be used for rate-limiting the UI before it
@@ -792,6 +794,53 @@ const provider = {
     }
 };
 ```
+
+#### Upload Middleware
+
+The `uploadMiddleware` allows you to upload the output of a generation process to a server or cloud storage before it's returned to the user. This is useful when:
+
+- You need to store generated content on your own servers
+- You want to process or transform the content before it's used
+- You need to handle licensing or attribution for the generated content
+- You need to apply additional validation or security checks
+
+```typescript
+import { uploadMiddleware } from '@imgly/plugin-ai-generation-web';
+
+// Create an upload middleware with your custom upload function
+const upload = uploadMiddleware(async (output) => {
+  // Upload the output to your server/storage
+  const response = await fetch('https://your-api.example.com/upload', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(output)
+  });
+  
+  // Get the response which should include the new URL
+  const result = await response.json();
+  
+  // Return the output with the updated URL from your server
+  return {
+    ...output,
+    url: result.url
+  };
+});
+
+// Apply middleware to your provider
+const provider = {
+  // ...provider config
+  output: {
+    middleware: [upload]
+    // ...other output config
+  }
+};
+```
+
+**Important notes about uploadMiddleware:**
+- It automatically detects and skips async generators (streaming results)
+- For non-streaming results, it awaits the upload function and returns the updated output
+- The upload function should return the same type of output object (but with modified properties like URL)
+- You can chain it with other middleware functions
 
 ## TypeScript Support
 

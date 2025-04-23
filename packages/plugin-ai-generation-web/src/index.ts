@@ -35,6 +35,7 @@ export {
   type Middleware
 } from './generation/middleware/middleware';
 export { default as loggingMiddleware } from './generation/middleware/loggingMiddleware';
+export { default as uploadMiddleware } from './generation/middleware/uploadMiddleware';
 export {
   default as rateLimitMiddleware,
   type RateLimitOptions
