@@ -135,8 +135,17 @@ async function getApplyCallbacksForImage<O extends Output>(
     'fill/image/sourceSet'
   );
   const [sourceBefore] = sourceSetBefore;
+  let uriBefore: string | undefined;
+  if (sourceBefore == null) {
+    uriBefore = cesdk.engine.block.getString(
+      fillBlock,
+      'fill/image/imageFileURI'
+    );
+  }
 
-  const mimeType = await cesdk.engine.editor.getMimeType(sourceBefore.uri);
+  const mimeType = await cesdk.engine.editor.getMimeType(
+    sourceBefore?.uri ?? uriBefore
+  );
   abortSignal.throwIfAborted();
 
   if (mimeType === 'image/svg+xml') {
@@ -173,34 +182,68 @@ async function getApplyCallbacksForImage<O extends Output>(
 
   const uri = await reuploadImage(cesdk, url, generatedMimeType);
 
-  const sourceSetAfter = [
-    {
-      uri,
-      width: sourceBefore.width,
-      height: sourceBefore.height
-    }
-  ];
-  cesdk.engine.block.setSourceSet(
-    fillBlock,
-    'fill/image/sourceSet',
-    sourceSetAfter
-  );
-  applyCrop();
+  const sourceSetAfter = sourceBefore
+    ? [
+        {
+          uri,
+          width: sourceBefore.width,
+          height: sourceBefore.height
+        }
+      ]
+    : undefined;
+  const uriAfter = uri;
 
-  const onBefore = () => {
-    cesdk.engine.block.setSourceSet(
+  if (sourceSetAfter == null) {
+    cesdk.engine.block.setString(
       fillBlock,
-      'fill/image/sourceSet',
-      sourceSetBefore
+      'fill/image/imageFileURI',
+      uriAfter
     );
-    applyCrop();
-  };
-  const onAfter = () => {
+  } else {
     cesdk.engine.block.setSourceSet(
       fillBlock,
       'fill/image/sourceSet',
       sourceSetAfter
     );
+  }
+  applyCrop();
+
+  const onBefore = () => {
+    if (sourceSetBefore == null) {
+      if (uriBefore == null) {
+        throw new Error('No image URI found');
+      }
+      cesdk.engine.block.setString(
+        fillBlock,
+        'fill/image/imageFileURI',
+        uriBefore
+      );
+    } else {
+      cesdk.engine.block.setSourceSet(
+        fillBlock,
+        'fill/image/sourceSet',
+        sourceSetBefore
+      );
+    }
+    applyCrop();
+  };
+  const onAfter = () => {
+    if (sourceSetAfter == null) {
+      if (uriAfter == null) {
+        throw new Error('No image URI found');
+      }
+      cesdk.engine.block.setString(
+        fillBlock,
+        'fill/image/imageFileURI',
+        uriAfter
+      );
+    } else {
+      cesdk.engine.block.setSourceSet(
+        fillBlock,
+        'fill/image/sourceSet',
+        sourceSetAfter
+      );
+    }
     applyCrop();
   };
   const onCancel = () => {
