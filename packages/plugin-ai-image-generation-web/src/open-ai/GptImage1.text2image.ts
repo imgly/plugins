@@ -68,6 +68,9 @@ function getProvider(
               return Promise.resolve({ image: { width: 1536, height: 1024 } });
             case '1024x1536':
               return Promise.resolve({ image: { width: 1024, height: 1536 } });
+            default: {
+              throw new Error('Invalid image size');
+            }
           }
         },
         userFlow: 'placeholder'
