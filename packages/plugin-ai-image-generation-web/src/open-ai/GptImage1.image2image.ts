@@ -1,13 +1,16 @@
-import { Icons } from '@imgly/plugin-utils';
-import { Middleware, type Provider } from '@imgly/plugin-ai-generation-web';
-import GptImage1Schema from './GptImage1.json';
+import { getImageDimensionsFromURL, Icons } from '@imgly/plugin-utils';
+import {
+  CommonProperties,
+  Middleware,
+  type Provider
+} from '@imgly/plugin-ai-generation-web';
+import GptImage1Schema from './GptImage1.image2image.json';
 import CreativeEditorSDK from '@cesdk/cesdk-js';
 import OpenAI from 'openai';
 
 type GptImage1Input = {
   prompt: string;
-  size: 'auto' | '1024x1024' | '1536x1024' | '1024x1536';
-  background: 'transparent' | 'opaque' | 'auto';
+  image_url: string;
 };
 
 type GptImage1Output = {
@@ -19,14 +22,6 @@ type ProviderConfiguration = {
   proxyUrl: string;
   debug?: boolean;
   middleware?: Middleware<GptImage1Input, GptImage1Output>[];
-
-  /**
-   * Base URL used for the UI assets used in the plugin.
-   *
-   * By default, we load the assets from the IMG.LY CDN You can copy the assets.
-   * from the `/assets` folder to your own server and set the base URL to your server.
-   */
-  baseURL?: string;
 };
 
 export function GptImage1(
@@ -47,13 +42,14 @@ function getProvider(
 
   let client: OpenAI | undefined;
   const provider: Provider<'image', GptImage1Input, GptImage1Output> = {
-    id: 'open-ai/gpt-image-1',
+    id: 'open-ai/gpt-image-1/image2image',
     kind: 'image',
     name: 'gpt-image-1',
     initialize: async () => {
       client = new OpenAI({
         baseURL: config.proxyUrl,
         dangerouslyAllowBrowser: true,
+        // Will be inserted by the proxy
         apiKey: ''
       });
     },
@@ -65,17 +61,23 @@ function getProvider(
         inputReference: '#/components/schemas/GptImage1Input',
         includeHistoryLibrary: true,
         orderExtensionKeyword: 'x-order-properties',
-        getBlockInput: (input) => {
-          switch (input.size) {
-            case 'auto':
-              return Promise.resolve({ image: { width: 512, height: 512 } });
-            case '1024x1024':
-              return Promise.resolve({ image: { width: 1024, height: 1024 } });
-            case '1536x1024':
-              return Promise.resolve({ image: { width: 1536, height: 1024 } });
-            case '1024x1536':
-              return Promise.resolve({ image: { width: 1024, height: 1536 } });
-          }
+        renderCustomProperty: {
+          ...(cesdk != null
+            ? CommonProperties.ImageUrl('gpt-image-1', {
+                cesdk
+              })
+            : {})
+        },
+        getBlockInput: async (input) => {
+          const { width, height } = await getImageDimensionsFromURL(
+            input.image_url
+          );
+          return Promise.resolve({
+            image: {
+              width,
+              height
+            }
+          });
         },
         userFlow: 'placeholder'
       }
@@ -83,6 +85,7 @@ function getProvider(
     output: {
       abortable: true,
       history: '@imgly/indexedDB',
+      middleware: config.middleware ?? [],
       generate: async (
         input: GptImage1Input,
         { abortSignal }: { abortSignal?: AbortSignal }
@@ -91,13 +94,28 @@ function getProvider(
           throw new Error('Client not initialized');
         }
 
-        const img = await client.images.generate({
-          model: 'gpt-image-1',
-          prompt: input.prompt,
-          n: 1,
-          size: input.size,
-          background: input.background
+        const mimeType = await cesdk.engine.editor.getMimeType(input.image_url);
+        const imageUrlResponse = await fetch(input.image_url);
+        const imageUrlBlob = await imageUrlResponse.blob();
+
+        const formData = new FormData();
+        formData.append(
+          'image',
+          imageUrlBlob,
+          `image.${getFileExtension(mimeType)}`
+        );
+        formData.append('prompt', input.prompt);
+        formData.append('model', 'gpt-image-1');
+        formData.append('size', 'auto');
+        formData.append('n', '1');
+
+        const response = await fetch(`${config.proxyUrl}/images/edits`, {
+          signal: abortSignal,
+          method: 'POST',
+          body: formData
         });
+
+        const img = await response.json();
 
         const b64_json = img.data?.[0].b64_json;
         if (b64_json == null) {
@@ -133,6 +151,17 @@ function getProvider(
   };
 
   return provider;
+}
+
+function getFileExtension(mimeType: string): string {
+  const mimeTypeToExtension: Record<string, string> = {
+    'image/png': 'png',
+    'image/jpeg': 'jpg',
+    'image/webp': 'webp',
+    'image/gif': 'gif',
+    'image/svg+xml': 'svg'
+  };
+  return mimeTypeToExtension[mimeType] ?? 'png';
 }
 
 export default getProvider;
