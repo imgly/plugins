@@ -41,7 +41,10 @@ function renderImageUrlProperty(
         action: {
           label: 'Select Image',
           onClick: () => {
-            cesdk?.ui.openPanel(`${provderId}.imageSelection`, {
+            if (cesdk == null) return;
+
+            const panelId = getImageSelectionPanelId(provderId);
+            cesdk.ui.openPanel(panelId, {
               payload: {
                 onSelect: (assetResult: AssetResult) => {
                   if (assetResult.meta?.uri != null) {
@@ -72,7 +75,7 @@ function createPanels(providerId: string, cesdk?: CreativeEditorSDK) {
 
   cesdk.ui.registerPanel<{
     onSelect: (assetResult: AssetResult) => void;
-  }>(`${providerId}.imageSelection`, ({ builder, payload }) => {
+  }>(getImageSelectionPanelId(providerId), ({ builder, payload }) => {
     builder.Library(`${providerId}.library.image`, {
       entries: ['ly.img.image'],
       onSelect: async (asset) => {
@@ -88,7 +91,7 @@ function createPanels(providerId: string, cesdk?: CreativeEditorSDK) {
           });
         } else if (mimeType.startsWith('image/')) {
           payload?.onSelect(asset);
-          cesdk?.ui.closePanel(`${providerId}.imageSelection`);
+          cesdk?.ui.closePanel(getImageSelectionPanelId(providerId));
         } else {
           cesdk.ui.showNotification({
             type: 'warning',
@@ -98,6 +101,10 @@ function createPanels(providerId: string, cesdk?: CreativeEditorSDK) {
       }
     });
   });
+}
+
+function getImageSelectionPanelId(providerId: string) {
+  return `ly.img.ai/${providerId}.imageSelection`;
 }
 
 export default renderImageUrlProperty;
