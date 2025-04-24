@@ -510,6 +510,7 @@ function addTranslations(cesdk: CreativeEditorSDK) {
       'panel.ly.img.ai/apps': 'AI',
       'panel.ly.img.ai/fal-ai/gemini-flash-edit.imageSelection':
         'Select Image To Change',
+      'panel.gpt-image-1.imageSelection': 'Select Image To Change',
       'panel.ly.img.ai/elevenlabs': 'AI Voice',
       'panel.ly.img.ai/demo.video': 'Generate Video',
       'panel.ly.img.ai/demo.image': 'Generate Image',

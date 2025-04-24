@@ -1,12 +1,14 @@
 import { getImageDimensionsFromURL, Icons } from '@imgly/plugin-utils';
 import {
   CommonProperties,
+  getQuickActionMenu,
   Middleware,
   type Provider
 } from '@imgly/plugin-ai-generation-web';
 import GptImage1Schema from './GptImage1.image2image.json';
 import CreativeEditorSDK from '@cesdk/cesdk-js';
 import OpenAI from 'openai';
+import { createGptImage1QuickActions } from './GptImage1QuickActions';
 
 type GptImage1Input = {
   prompt: string;
@@ -39,6 +41,19 @@ function getProvider(
   config: ProviderConfiguration
 ): Provider<'image', GptImage1Input, GptImage1Output> {
   cesdk.ui.addIconSet('@imgly/plugin/formats', Icons.Formats);
+
+  const quickActions = createGptImage1QuickActions(cesdk);
+  const quickActionMenu = getQuickActionMenu(cesdk, 'image');
+
+  quickActionMenu.setQuickActionMenuOrder([
+    ...quickActionMenu.getQuickActionMenuOrder(),
+    'ly.img.separator',
+    'swapBackground',
+    'changeImage',
+    'createVariant',
+    'ly.img.separator',
+    'createVideo'
+  ]);
 
   let client: OpenAI | undefined;
   const provider: Provider<'image', GptImage1Input, GptImage1Output> = {
@@ -80,6 +95,9 @@ function getProvider(
           });
         },
         userFlow: 'placeholder'
+      },
+      quickActions: {
+        actions: quickActions ?? []
       }
     },
     output: {
