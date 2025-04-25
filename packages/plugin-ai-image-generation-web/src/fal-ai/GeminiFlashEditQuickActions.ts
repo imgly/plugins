@@ -1,3 +1,4 @@
+import { bufferURIToObjectURL } from '@imgly/plugin-utils';
 import { QuickAction, Output } from '@imgly/plugin-ai-generation-web';
 import CreativeEditorSDK from '@cesdk/cesdk-js';
 
@@ -104,7 +105,7 @@ async function getImageUri(
     throw new Error('SVG images are not supported');
   }
 
-  return uri;
+  return bufferURIToObjectURL(uri, cesdk);
 }
 
 // Change Image Quick Action (with text input)

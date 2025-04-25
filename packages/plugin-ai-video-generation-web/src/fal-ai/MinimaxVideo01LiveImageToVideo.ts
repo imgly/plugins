@@ -46,7 +46,8 @@ function getProvider(
       middleware: config.middleware,
       getBlockInput: async (input) => {
         const imageDimension = await getImageDimensionsFromURL(
-          input.image_url as string
+          input.image_url as string,
+          cesdk
         );
 
         return Promise.resolve({

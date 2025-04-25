@@ -28,19 +28,38 @@ export async function uploadBlob(
   return url;
 }
 
+/**
+ * Returns the file extension for a given mime type.
+ */
 export function mimeTypeToExtension(mimeType: string): string {
-  switch (mimeType) {
-    case 'image/jpeg':
-      return 'jpg';
-    case 'image/png':
-      return 'png';
-    case 'image/svg+xml':
-      return 'svg';
-    default:
-      return 'jpg';
-  }
+  const extensions: Record<string, string> = {
+    'image/png': 'png',
+    'image/jpeg': 'jpg',
+    'image/webp': 'webp',
+    'image/gif': 'gif',
+    'image/svg+xml': 'svg'
+  };
+  return extensions[mimeType] ?? 'png';
 }
 
 export async function fetchImageBlob(uri: string): Promise<Blob> {
   return fetch(uri).then((response) => response.blob());
+}
+
+/**
+ *  Converts a buffer URI to a object url.
+ */
+export async function bufferURIToObjectURL(
+  uri: string,
+  cesdk: CreativeEditorSDK
+): Promise<string> {
+  if (uri.startsWith('buffer:')) {
+    const mimeType = await cesdk.engine.editor.getMimeType(uri);
+    const length = cesdk.engine.editor.getBufferLength(uri);
+    const data = cesdk.engine.editor.getBufferData(uri, 0, length);
+    const blob = new Blob([data], { type: mimeType });
+    return URL.createObjectURL(blob);
+  } else {
+    return uri;
+  }
 }

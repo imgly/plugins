@@ -31,7 +31,12 @@ export {
 
 export { hexToRgba, isValidHexColor, rgbaToHex } from './utils/colors';
 
-export { uploadBlob, fetchImageBlob } from './utils/upload';
+export {
+  uploadBlob,
+  fetchImageBlob,
+  bufferURIToObjectURL,
+  mimeTypeToExtension
+} from './utils/upload';
 
 export { default as uuid } from './utils/uuid';
 

@@ -7,6 +7,7 @@ import {
   type OutputKind
 } from '../provider';
 import { ApplyCallbacks } from './types';
+import { mimeTypeToExtension } from '@imgly/plugin-utils';
 import { isAsyncGenerator } from '../../utils';
 
 type ConsumeGeneratedResultOptions = {
@@ -289,7 +290,7 @@ async function reuploadImage(
 ): Promise<string> {
   const response = await fetch(url);
   const blob = await response.blob();
-  const file = new File([blob], `image.${getFileExtension(mimeType)}`, {
+  const file = new File([blob], `image.${mimeTypeToExtension(mimeType)}`, {
     type: mimeType
   });
   const assetDefinition = await cesdk.unstable_upload(file, () => {});
@@ -298,17 +299,6 @@ async function reuploadImage(
   // eslint-disable-next-line no-console
   console.warn('Failed to upload image:', assetDefinition);
   return url;
-}
-
-function getFileExtension(mimeType: string): string {
-  const mimeTypeToExtension: Record<string, string> = {
-    'image/png': 'png',
-    'image/jpeg': 'jpg',
-    'image/webp': 'webp',
-    'image/gif': 'gif',
-    'image/svg+xml': 'svg'
-  };
-  return mimeTypeToExtension[mimeType] ?? 'png';
 }
 
 export default consumeGeneratedResult;
