@@ -56,19 +56,10 @@ function getProvider(
     'createVideo'
   ]);
 
-  let client: OpenAI | undefined;
   const provider: Provider<'image', GptImage1Input, GptImage1Output> = {
     id: 'open-ai/gpt-image-1/image2image',
     kind: 'image',
     name: 'gpt-image-1',
-    initialize: async () => {
-      client = new OpenAI({
-        baseURL: config.proxyUrl,
-        dangerouslyAllowBrowser: true,
-        // Will be inserted by the proxy
-        apiKey: ''
-      });
-    },
     input: {
       panel: {
         type: 'schema',
@@ -86,7 +77,8 @@ function getProvider(
         },
         getBlockInput: async (input) => {
           const { width, height } = await getImageDimensionsFromURL(
-            input.image_url
+            input.image_url,
+            cesdk
           );
           return Promise.resolve({
             image: {
@@ -109,10 +101,6 @@ function getProvider(
         input: GptImage1Input,
         { abortSignal }: { abortSignal?: AbortSignal }
       ) => {
-        if (client == null) {
-          throw new Error('Client not initialized');
-        }
-
         const mimeType = await cesdk.engine.editor.getMimeType(input.image_url);
         const imageUrlResponse = await fetch(input.image_url);
         const imageUrlBlob = await imageUrlResponse.blob();

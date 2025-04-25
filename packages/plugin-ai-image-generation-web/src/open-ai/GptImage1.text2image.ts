@@ -2,7 +2,6 @@ import { Icons } from '@imgly/plugin-utils';
 import { Middleware, type Provider } from '@imgly/plugin-ai-generation-web';
 import GptImage1Schema from './GptImage1.text2image.json';
 import CreativeEditorSDK from '@cesdk/cesdk-js';
-import OpenAI from 'openai';
 import { b64JsonToBlob } from './utils';
 
 type GptImage1Input = {
@@ -38,19 +37,10 @@ function getProvider(
 ): Provider<'image', GptImage1Input, GptImage1Output> {
   cesdk.ui.addIconSet('@imgly/plugin/formats', Icons.Formats);
 
-  let client: OpenAI | undefined;
   const provider: Provider<'image', GptImage1Input, GptImage1Output> = {
     id: 'open-ai/gpt-image-1/text2image',
     kind: 'image',
     name: 'gpt-image-1',
-    initialize: async () => {
-      client = new OpenAI({
-        baseURL: config.proxyUrl,
-        dangerouslyAllowBrowser: true,
-        // Will be inserted by the proxy
-        apiKey: ''
-      });
-    },
     input: {
       panel: {
         type: 'schema',
@@ -85,22 +75,21 @@ function getProvider(
         input: GptImage1Input,
         { abortSignal }: { abortSignal?: AbortSignal }
       ) => {
-        if (client == null) {
-          throw new Error('Client not initialized');
-        }
-
-        const img = await client.images.generate(
-          {
+        const response = await fetch(`${config.proxyUrl}/images/generations`, {
+          signal: abortSignal,
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
             model: 'gpt-image-1',
             prompt: input.prompt,
             n: 1,
             size: input.size,
             background: input.background
-          },
-          {
-            signal: abortSignal
-          }
-        );
+          })
+        });
+        const img = await response.json();
 
         const b64_json = img.data?.[0].b64_json;
         if (b64_json == null) {
