@@ -31,7 +31,7 @@ interface Provider<K extends OutputKind, I, O extends Output, C = O> {
    * Initialize the provider when the plugin is loaded.
    * Can be used to initialize libraries, and register additional UI components.
    */
-  initialize: (options: {
+  initialize?: (options: {
     engine: CreativeEngine;
 
     /**

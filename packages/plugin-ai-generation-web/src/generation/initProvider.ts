@@ -35,7 +35,7 @@ async function initProvider<K extends OutputKind, I, O extends Output>(
 ): Promise<{
   renderBuilderFunctions?: RenderBuilderFunctions;
 }> {
-  await provider.initialize(options);
+  await provider.initialize?.(options);
   const historyAssetSourceId = await initHistory(
     options.engine,
     provider.id,
