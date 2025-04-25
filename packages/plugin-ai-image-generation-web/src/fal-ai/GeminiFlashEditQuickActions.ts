@@ -1,3 +1,4 @@
+import { bufferURIToObjectURL } from '@imgly/plugin-utils';
 import { QuickAction, Output } from '@imgly/plugin-ai-generation-web';
 import CreativeEditorSDK from '@cesdk/cesdk-js';
 
@@ -80,7 +81,11 @@ function createBaseQuickAction<I, O extends Output>(
 }
 
 // Helper to get image source from a block
-async function getImageSource(blockId: number, cesdk: CreativeEditorSDK) {
+async function getImageUri(
+  blockId: number,
+  cesdk: CreativeEditorSDK
+): Promise<string> {
+  let uri;
   const fillBlock = cesdk.engine.block.getFill(blockId);
   const sourceSet = cesdk.engine.block.getSourceSet(
     fillBlock,
@@ -88,16 +93,19 @@ async function getImageSource(blockId: number, cesdk: CreativeEditorSDK) {
   );
   const [source] = sourceSet;
   if (source == null) {
-    throw new Error('No image source found');
+    uri = cesdk.engine.block.getString(fillBlock, 'fill/image/imageFileURI');
+    if (uri == null) throw new Error('No image source/uri found');
+  } else {
+    uri = source.uri;
   }
 
   // Check if the image is SVG (not supported)
-  const mimeType = await cesdk.engine.editor.getMimeType(source.uri);
+  const mimeType = await cesdk.engine.editor.getMimeType(uri);
   if (mimeType === 'image/svg+xml') {
     throw new Error('SVG images are not supported');
   }
 
-  return source;
+  return bufferURIToObjectURL(uri, cesdk);
 }
 
 // Change Image Quick Action (with text input)
@@ -150,11 +158,11 @@ function ChangeImageQuickAction(
                 if (!prompt) return;
 
                 const [blockId] = cesdk.engine.block.findAllSelected();
-                const source = await getImageSource(blockId, cesdk);
+                const uri = await getImageUri(blockId, cesdk);
 
                 generate({
                   prompt,
-                  image_url: source.uri,
+                  image_url: uri,
                   blockId
                 });
 
@@ -284,13 +292,13 @@ function CreateVariantQuickAction(
                 );
 
                 // Get the source of the duplicated block
-                const source = await getImageSource(duplicated, cesdk);
+                const uri = await getImageUri(duplicated, cesdk);
 
                 // Generate a variant for the duplicated block
                 generate(
                   {
                     prompt,
-                    image_url: source.uri,
+                    image_url: uri,
                     blockId: duplicated
                   },
                   {
@@ -327,7 +335,7 @@ function CreateVideoQuickAction(
         onClick: async () => {
           try {
             const [blockId] = cesdk.engine.block.findAllSelected();
-            const source = await getImageSource(blockId, cesdk);
+            const uri = await getImageUri(blockId, cesdk);
 
             cesdk.ui.openPanel('ly.img.ai/video-generation');
             cesdk.ui.experimental.setGlobalStateValue(
@@ -336,7 +344,7 @@ function CreateVideoQuickAction(
             );
             cesdk.ui.experimental.setGlobalStateValue(
               'fal-ai/minimax/video-01-live/image-to-video.image_url',
-              source.uri
+              uri
             );
 
             closeMenu();
@@ -427,11 +435,11 @@ function StyleTransferQuickAction(
                           closeMenu();
                           const [blockId] =
                             cesdk.engine.block.findAllSelected();
-                          const source = await getImageSource(blockId, cesdk);
+                          const uri = await getImageUri(blockId, cesdk);
 
                           generate({
                             prompt: style.prompt,
-                            image_url: source.uri,
+                            image_url: uri,
                             blockId
                           });
                         } catch (error) {
@@ -560,11 +568,11 @@ function ArtistStyleQuickAction(
                           closeMenu();
                           const [blockId] =
                             cesdk.engine.block.findAllSelected();
-                          const source = await getImageSource(blockId, cesdk);
+                          const uri = await getImageUri(blockId, cesdk);
 
                           generate({
                             prompt: artist.prompt,
-                            image_url: source.uri,
+                            image_url: uri,
                             blockId
                           });
                         } catch (error) {

@@ -68,7 +68,9 @@ function App() {
             instance.feature.enable('ly.img.preview', false);
             instance.feature.enable('ly.img.placeholder', false);
 
-            await instance.createVideoScene();
+            await instance.engine.scene.loadFromArchiveURL(
+              `https://img.ly/showcases/cesdk/cases/ai-editor/ai_editor_video.archive`
+            );
 
             const onRateLimitExceeded: RateLimitOptions<any>['onRateLimitExceeded'] =
               () => {
@@ -170,18 +172,18 @@ function App() {
               })
             );
 
-            const page = instance.engine.scene.getCurrentPage();
-            if (page != null) {
-              const pageFill = instance.engine.block.getFill(page);
-              instance.engine.block.setColorRGBA(
-                pageFill,
-                'fill/color/value',
-                1,
-                1,
-                1,
-                1
-              );
-            }
+            // const page = instance.engine.scene.getCurrentPage();
+            // if (page != null) {
+            //   const pageFill = instance.engine.block.getFill(page);
+            //   instance.engine.block.setColorRGBA(
+            //     pageFill,
+            //     'fill/color/value',
+            //     1,
+            //     1,
+            //     1,
+            //     1
+            //   );
+            // }
           });
         } else if (cesdk.current != null) {
           cesdk.current.dispose();

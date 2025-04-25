@@ -7,6 +7,7 @@ import {
   type OutputKind
 } from '../provider';
 import { ApplyCallbacks } from './types';
+import { mimeTypeToExtension } from '@imgly/plugin-utils';
 import { isAsyncGenerator } from '../../utils';
 
 type ConsumeGeneratedResultOptions = {
@@ -135,8 +136,17 @@ async function getApplyCallbacksForImage<O extends Output>(
     'fill/image/sourceSet'
   );
   const [sourceBefore] = sourceSetBefore;
+  let uriBefore: string | undefined;
+  if (sourceBefore == null) {
+    uriBefore = cesdk.engine.block.getString(
+      fillBlock,
+      'fill/image/imageFileURI'
+    );
+  }
 
-  const mimeType = await cesdk.engine.editor.getMimeType(sourceBefore.uri);
+  const mimeType = await cesdk.engine.editor.getMimeType(
+    sourceBefore?.uri ?? uriBefore
+  );
   abortSignal.throwIfAborted();
 
   if (mimeType === 'image/svg+xml') {
@@ -173,34 +183,68 @@ async function getApplyCallbacksForImage<O extends Output>(
 
   const uri = await reuploadImage(cesdk, url, generatedMimeType);
 
-  const sourceSetAfter = [
-    {
-      uri,
-      width: sourceBefore.width,
-      height: sourceBefore.height
-    }
-  ];
-  cesdk.engine.block.setSourceSet(
-    fillBlock,
-    'fill/image/sourceSet',
-    sourceSetAfter
-  );
-  applyCrop();
+  const sourceSetAfter = sourceBefore
+    ? [
+        {
+          uri,
+          width: sourceBefore.width,
+          height: sourceBefore.height
+        }
+      ]
+    : undefined;
+  const uriAfter = uri;
 
-  const onBefore = () => {
-    cesdk.engine.block.setSourceSet(
+  if (sourceSetAfter == null) {
+    cesdk.engine.block.setString(
       fillBlock,
-      'fill/image/sourceSet',
-      sourceSetBefore
+      'fill/image/imageFileURI',
+      uriAfter
     );
-    applyCrop();
-  };
-  const onAfter = () => {
+  } else {
     cesdk.engine.block.setSourceSet(
       fillBlock,
       'fill/image/sourceSet',
       sourceSetAfter
     );
+  }
+  applyCrop();
+
+  const onBefore = () => {
+    if (sourceSetBefore == null) {
+      if (uriBefore == null) {
+        throw new Error('No image URI found');
+      }
+      cesdk.engine.block.setString(
+        fillBlock,
+        'fill/image/imageFileURI',
+        uriBefore
+      );
+    } else {
+      cesdk.engine.block.setSourceSet(
+        fillBlock,
+        'fill/image/sourceSet',
+        sourceSetBefore
+      );
+    }
+    applyCrop();
+  };
+  const onAfter = () => {
+    if (sourceSetAfter == null) {
+      if (uriAfter == null) {
+        throw new Error('No image URI found');
+      }
+      cesdk.engine.block.setString(
+        fillBlock,
+        'fill/image/imageFileURI',
+        uriAfter
+      );
+    } else {
+      cesdk.engine.block.setSourceSet(
+        fillBlock,
+        'fill/image/sourceSet',
+        sourceSetAfter
+      );
+    }
     applyCrop();
   };
   const onCancel = () => {
@@ -246,7 +290,7 @@ async function reuploadImage(
 ): Promise<string> {
   const response = await fetch(url);
   const blob = await response.blob();
-  const file = new File([blob], `image.${getFileExtension(mimeType)}`, {
+  const file = new File([blob], `image.${mimeTypeToExtension(mimeType)}`, {
     type: mimeType
   });
   const assetDefinition = await cesdk.unstable_upload(file, () => {});
@@ -255,17 +299,6 @@ async function reuploadImage(
   // eslint-disable-next-line no-console
   console.warn('Failed to upload image:', assetDefinition);
   return url;
-}
-
-function getFileExtension(mimeType: string): string {
-  const mimeTypeToExtension: Record<string, string> = {
-    'image/png': 'png',
-    'image/jpeg': 'jpg',
-    'image/webp': 'webp',
-    'image/gif': 'gif',
-    'image/svg+xml': 'svg'
-  };
-  return mimeTypeToExtension[mimeType] ?? 'png';
 }
 
 export default consumeGeneratedResult;
