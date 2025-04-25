@@ -3,6 +3,7 @@ import { Middleware, type Provider } from '@imgly/plugin-ai-generation-web';
 import GptImage1Schema from './GptImage1.text2image.json';
 import CreativeEditorSDK from '@cesdk/cesdk-js';
 import OpenAI from 'openai';
+import { b64JsonToBlob } from './utils';
 
 type GptImage1Input = {
   prompt: string;
@@ -106,24 +107,7 @@ function getProvider(
           throw new Error('No image data returned');
         }
 
-        const base64Data = b64_json.split(',')[1] || b64_json;
-
-        // Step 2: Decode the base64 string to a byte array
-        const byteCharacters = atob(base64Data);
-        const byteArrays = [];
-
-        // Step 3: Convert the decoded string to a Uint8Array
-        for (let i = 0; i < byteCharacters.length; i++) {
-          byteArrays.push(byteCharacters.charCodeAt(i));
-        }
-        const byteArray = new Uint8Array(byteArrays);
-
-        // Step 4: Create a Blob from the Uint8Array
-        // You may need to specify the correct MIME type based on your image
-        const blob = new Blob([byteArray], { type: 'image/png' });
-
-        // Step 5: Use the blob as needed - examples:
-        // Create an object URL to display the image
+        const blob = b64JsonToBlob(b64_json, 'image/png');
         const imageUrl = URL.createObjectURL(blob);
 
         return {
