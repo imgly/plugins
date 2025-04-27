@@ -40,4 +40,4 @@ export {
 
 export { default as uuid } from './utils/uuid';
 
-export { getImageDimensionsFromURL } from './utils/images';
+export { getImageDimensionsFromURL, getImageUri } from './utils/images';
