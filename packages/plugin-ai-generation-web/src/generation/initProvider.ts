@@ -14,6 +14,7 @@ import icons from '../icons';
 import getQuickActionMenu from './quickAction/getQuickActionMenu';
 import { getFeatureIdForQuickAction } from './quickAction/utils';
 import registerQuickActionMenuComponent from './quickAction/registerQuickActionMenuComponent';
+import { QuickActionMenu } from './quickAction/types';
 
 type RenderBuilderFunctions = {
   panel?: BuilderRenderFunction<any>;
@@ -212,9 +213,19 @@ async function initQuickActions<K extends OutputKind, I, O extends Output>(
   config: InitProviderConfiguration
 ) {
   const { cesdk } = options;
-  const quickActionMenuId = provider.kind;
-  const quickActionMenu = getQuickActionMenu(cesdk, quickActionMenuId);
+
+  const quickActionMenus: { [kind: string]: QuickActionMenu } = {};
+
   quickActionsInput.actions.forEach((quickAction) => {
+    const quickActionMenuId = quickAction.kind ?? provider.kind;
+    if (quickActionMenus[quickActionMenuId] == null) {
+      quickActionMenus[quickActionMenuId] = getQuickActionMenu(
+        cesdk,
+        quickActionMenuId
+      );
+    }
+    const quickActionMenu = quickActionMenus[quickActionMenuId];
+
     const enable = quickAction.enable ?? true;
     cesdk.feature.enable(
       getFeatureIdForQuickAction({
@@ -232,21 +243,22 @@ async function initQuickActions<K extends OutputKind, I, O extends Output>(
     }
   });
 
-  const { canvasMenuComponentId } = registerQuickActionMenuComponent(
-    {
-      cesdk,
-      quickActionMenu,
-      provider
-    },
-    config
-  );
-
-  if (config.debug) {
-    // eslint-disable-next-line no-console
-    console.log(
-      `Registered quick action menu component: ${canvasMenuComponentId}`
+  Object.values(quickActionMenus).forEach((quickActionMenu) => {
+    const { canvasMenuComponentId } = registerQuickActionMenuComponent(
+      {
+        cesdk,
+        quickActionMenu,
+        provider
+      },
+      config
     );
-  }
+    if (config.debug) {
+      // eslint-disable-next-line no-console
+      console.log(
+        `Registered quick action menu component: ${canvasMenuComponentId}`
+      );
+    }
+  });
 }
 
 export default initProvider;
