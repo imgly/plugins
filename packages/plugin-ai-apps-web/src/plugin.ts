@@ -87,14 +87,22 @@ export default (
           providers.text2sound
         );
 
-        cesdk.addPlugin(VideoGeneration({ text2video, image2video }));
-        cesdk.addPlugin(AudioGeneration({ text2speech, text2sound }));
+        cesdk.addPlugin(
+          VideoGeneration({ text2video, image2video, debug: config.debug })
+        );
+        cesdk.addPlugin(
+          AudioGeneration({ text2speech, text2sound, debug: config.debug })
+        );
       }
 
       if (text2text != null)
-        cesdk.addPlugin(TextGeneration({ provider: text2text }));
+        cesdk.addPlugin(
+          TextGeneration({ provider: text2text, debug: config.debug })
+        );
 
-      cesdk.addPlugin(ImageGeneration({ text2image, image2image }));
+      cesdk.addPlugin(
+        ImageGeneration({ text2image, image2image, debug: config.debug })
+      );
 
       addAggregatedAssetSources(
         cesdk,

@@ -20,7 +20,7 @@ export default (
       initProvider(
         provider,
         { cesdk, engine: cesdk.engine },
-        { debug: true, dryRun: false }
+        { debug: config.debug ?? false, dryRun: false }
       );
 
       const quickActionMenu = getQuickActionMenu(cesdk, 'text');
