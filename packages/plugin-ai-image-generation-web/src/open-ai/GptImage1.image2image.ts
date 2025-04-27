@@ -1,14 +1,21 @@
-import { getImageDimensionsFromURL, Icons } from '@imgly/plugin-utils';
 import {
+  bufferURIToObjectURL,
+  getImageDimensionsFromURL,
+  Icons,
+  mimeTypeToExtension
+} from '@imgly/plugin-utils';
+import {
+  QuickActionImageVariant,
+  QuickActionChangeImage,
+  QuickActionSwapImageBackground,
   CommonProperties,
   getQuickActionMenu,
   Middleware,
+  QuickAction,
   type Provider
 } from '@imgly/plugin-ai-generation-web';
 import GptImage1Schema from './GptImage1.image2image.json';
 import CreativeEditorSDK from '@cesdk/cesdk-js';
-import OpenAI from 'openai';
-import { createGptImage1QuickActions } from './GptImage1QuickActions';
 import { b64JsonToBlob } from './utils';
 
 type GptImage1Input = {
@@ -43,17 +50,15 @@ function getProvider(
 ): Provider<'image', GptImage1Input, GptImage1Output> {
   cesdk.ui.addIconSet('@imgly/plugin/formats', Icons.Formats);
 
-  const quickActions = createGptImage1QuickActions(cesdk);
+  const quickActions = createQuickActions(cesdk);
   const quickActionMenu = getQuickActionMenu(cesdk, 'image');
 
   quickActionMenu.setQuickActionMenuOrder([
-    ...quickActionMenu.getQuickActionMenuOrder(),
-    'ly.img.separator',
     'swapBackground',
     'changeImage',
     'createVariant',
     'ly.img.separator',
-    'createVideo'
+    ...quickActionMenu.getQuickActionMenuOrder()
   ]);
 
   const provider: Provider<'image', GptImage1Input, GptImage1Output> = {
@@ -102,14 +107,18 @@ function getProvider(
         { abortSignal }: { abortSignal?: AbortSignal }
       ) => {
         const mimeType = await cesdk.engine.editor.getMimeType(input.image_url);
-        const imageUrlResponse = await fetch(input.image_url);
+        const resolvedImageUrl = await bufferURIToObjectURL(
+          input.image_url,
+          cesdk
+        );
+        const imageUrlResponse = await fetch(resolvedImageUrl);
         const imageUrlBlob = await imageUrlResponse.blob();
 
         const formData = new FormData();
         formData.append(
           'image',
           imageUrlBlob,
-          `image.${getFileExtension(mimeType)}`
+          `image.${mimeTypeToExtension(mimeType)}`
         );
         formData.append('prompt', input.prompt);
         formData.append('model', 'gpt-image-1');
@@ -143,15 +152,34 @@ function getProvider(
   return provider;
 }
 
-function getFileExtension(mimeType: string): string {
-  const mimeTypeToExtension: Record<string, string> = {
-    'image/png': 'png',
-    'image/jpeg': 'jpg',
-    'image/webp': 'webp',
-    'image/gif': 'gif',
-    'image/svg+xml': 'svg'
-  };
-  return mimeTypeToExtension[mimeType] ?? 'png';
+function createQuickActions(
+  cesdk: CreativeEditorSDK
+): QuickAction<GptImage1Input, GptImage1Output>[] {
+  return [
+    QuickActionSwapImageBackground<GptImage1Input, GptImage1Output>({
+      mapInput: (input) => ({ ...input, image_url: input.uri }),
+      cesdk
+    }),
+    QuickActionChangeImage<GptImage1Input, GptImage1Output>({
+      mapInput: (input) => ({ ...input, image_url: input.uri }),
+      cesdk
+    }),
+    QuickActionImageVariant<GptImage1Input, GptImage1Output>({
+      onApply: async ({ prompt, uri, duplicatedBlockId }, context) => {
+        // Generate a variant for the duplicated block
+        return context.generate(
+          {
+            prompt,
+            image_url: uri
+          },
+          {
+            blockIds: [duplicatedBlockId]
+          }
+        );
+      },
+      cesdk
+    })
+  ];
 }
 
 export default getProvider;
