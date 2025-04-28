@@ -1,4 +1,5 @@
 import type CreativeEditorSDK from '@cesdk/cesdk-js';
+import { CreativeEngine } from '@cesdk/cesdk-js';
 
 /**
  * Uploads a blob with the help of CE.SDK
@@ -51,12 +52,12 @@ export async function fetchImageBlob(uri: string): Promise<Blob> {
  */
 export async function bufferURIToObjectURL(
   uri: string,
-  cesdk: CreativeEditorSDK
+  engine: CreativeEngine
 ): Promise<string> {
   if (uri.startsWith('buffer:')) {
-    const mimeType = await cesdk.engine.editor.getMimeType(uri);
-    const length = cesdk.engine.editor.getBufferLength(uri);
-    const data = cesdk.engine.editor.getBufferData(uri, 0, length);
+    const mimeType = await engine.editor.getMimeType(uri);
+    const length = engine.editor.getBufferLength(uri);
+    const data = engine.editor.getBufferData(uri, 0, length);
     const blob = new Blob([data], { type: mimeType });
     return URL.createObjectURL(blob);
   } else {

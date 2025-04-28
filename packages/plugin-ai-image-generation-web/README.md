@@ -31,13 +31,15 @@ To use the plugin, import it and configure it with your preferred providers:
 import CreativeEditorSDK from '@cesdk/cesdk-js';
 import ImageGeneration from '@imgly/plugin-ai-image-generation-web';
 import FalAiImage from '@imgly/plugin-ai-image-generation-web/fal-ai';
+// For OpenAI providers
+import OpenAiImage from '@imgly/plugin-ai-image-generation-web/open-ai';
 
 // Initialize CreativeEditor SDK
 CreativeEditorSDK.create(domElement, {
   license: 'your-license-key',
   // Other configuration options...
 }).then(async (cesdk) => {
-  // Add the image generation plugin
+  // Add the image generation plugin with fal.ai providers
   cesdk.addPlugin(
     ImageGeneration({
       // Text-to-image provider
@@ -55,16 +57,35 @@ CreativeEditorSDK.create(domElement, {
       dryRun: false
     })
   );
+  
+  // Alternatively, use OpenAI providers
+  // cesdk.addPlugin(
+  //   ImageGeneration({
+  //     // Text-to-image provider
+  //     text2image: OpenAiImage.GptImage1.Text2Image({
+  //       proxyUrl: 'https://your-openai-proxy.example.com'
+  //     }),
+  //     
+  //     // Image-to-image provider (optional)
+  //     image2image: OpenAiImage.GptImage1.Image2Image({
+  //       proxyUrl: 'https://your-openai-proxy.example.com'
+  //     }),
+  //     
+  //     // Optional configuration
+  //     debug: false,
+  //     dryRun: false
+  //   })
+  // );
 });
 ```
 
 ### Providers
 
-The plugin comes with two pre-configured providers for fal.ai models:
+The plugin comes with pre-configured providers for fal.ai and OpenAI models:
 
 #### 1. RecraftV3 (Text-to-Image)
 
-A versatile text-to-image model that generates images based on text prompts:
+A versatile text-to-image model from fal.ai that generates images based on text prompts:
 
 ```typescript
 text2image: FalAiImage.RecraftV3({
@@ -78,9 +99,25 @@ Key features:
 - Custom dimensions support
 - Adjustable quality settings
 
-#### 2. GeminiFlashEdit (Image-to-Image)
+#### 2. GptImage1.Text2Image (Text-to-Image)
 
-An image modification model that transforms existing images:
+OpenAI's GPT-4 Vision based text-to-image model that generates high-quality images:
+
+```typescript
+text2image: OpenAiImage.GptImage1.Text2Image({
+  proxyUrl: 'https://your-openai-proxy.example.com'
+})
+```
+
+Key features:
+- High-quality image generation
+- Multiple size options (1024×1024, 1536×1024, 1024×1536)
+- Background transparency options
+- Automatic prompt optimization
+
+#### 3. GeminiFlashEdit (Image-to-Image)
+
+An image modification model from fal.ai that transforms existing images:
 
 ```typescript
 image2image: FalAiImage.GeminiFlashEdit({
@@ -92,6 +129,23 @@ Key features:
 - Transform existing images with text prompts
 - Available directly through canvas quick actions
 - Maintains original image dimensions
+- Includes style presets and artist-specific transformations
+
+#### 4. GptImage1.Image2Image (Image-to-Image)
+
+OpenAI's GPT-4 Vision based image editing model that can transform existing images:
+
+```typescript
+image2image: OpenAiImage.GptImage1.Image2Image({
+  proxyUrl: 'https://your-openai-proxy.example.com'
+})
+```
+
+Key features:
+- Powerful image transformation capabilities
+- Supports the same quick actions as GeminiFlashEdit
+- Maintains original image dimensions
+- Can be used as a direct alternative to GeminiFlashEdit
 
 ### Configuration Options
 
@@ -257,6 +311,53 @@ The plugin automatically registers the following UI components:
 3. **History Library**: Displays previously generated images
 4. **Dock Component**: A button in the dock area to open the image generation panel
 
+### Quick Action Features
+
+The plugin includes several pre-configured quick actions for both providers, built using helper components from the core generation library:
+
+1. **Change Image**: Edit the currently selected image using a text prompt
+2. **Swap Background**: Change only the background of the selected image
+3. **Create Variant**: Duplicate the selected image and generate a variant
+4. **Style Transfer**: Apply different artistic styles to the selected image (GeminiFlashEdit only)
+5. **Artist Painting Styles**: Transform the image in the style of famous artists (GeminiFlashEdit only)
+
+These quick actions are implemented using helper components from `@imgly/plugin-ai-generation-web`:
+
+```typescript
+// Example of how the GptImage1 provider implements quick actions
+function createQuickActions(cesdk): QuickAction[] {
+  return [
+    // Swap background quick action
+    QuickActionSwapImageBackground({
+      mapInput: (input) => ({ ...input, image_url: input.uri }),
+      cesdk
+    }),
+    
+    // Change image quick action
+    QuickActionChangeImage({
+      mapInput: (input) => ({ ...input, image_url: input.uri }),
+      cesdk
+    }),
+    
+    // Create variant quick action
+    QuickActionImageVariant({
+      onApply: async ({ prompt, uri, duplicatedBlockId }, context) => {
+        return context.generate(
+          {
+            prompt,
+            image_url: uri
+          },
+          {
+            blockIds: [duplicatedBlockId]
+          }
+        );
+      },
+      cesdk
+    })
+  ];
+}
+```
+
 ### Panel IDs
 
 - Main panel: `ly.img.ai/image-generation`
@@ -264,12 +365,16 @@ The plugin automatically registers the following UI components:
 - Provider-specific panels:
   - RecraftV3: `ly.img.ai/fal-ai/recraft-v3`
   - GeminiFlashEdit: `ly.img.ai/fal-ai/gemini-flash-edit`
+  - GptImage1.Text2Image: `ly.img.ai/open-ai/gpt-image-1/text2image`
+  - GptImage1.Image2Image: `ly.img.ai/open-ai/gpt-image-1/image2image`
 
 ### Asset History
 
 Generated images are automatically stored in asset sources with the following IDs:
 - RecraftV3: `fal-ai/recraft-v3.history`
 - GeminiFlashEdit: `fal-ai/gemini-flash-edit.history`
+- GptImage1.Text2Image: `open-ai/gpt-image-1/text2image.history`
+- GptImage1.Image2Image: `open-ai/gpt-image-1/image2image.history`
 
 ### Dock Integration
 

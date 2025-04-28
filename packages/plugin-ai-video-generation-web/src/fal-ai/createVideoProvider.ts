@@ -8,7 +8,8 @@ import {
   GetBlockInput,
   CommonProperties,
   Middleware,
-  loggingMiddleware
+  loggingMiddleware,
+  QuickAction
 } from '@imgly/plugin-ai-generation-web';
 import { fal } from '@fal-ai/client';
 
@@ -38,6 +39,7 @@ function createVideoProvider<I extends Record<string, any>>(
 
     getBlockInput: GetBlockInput<'video', I>;
 
+    quickActions?: QuickAction<I, VideoOutput>[];
     middleware?: Middleware<I, VideoOutput>[];
 
     cesdk?: CreativeEditorSDK;
@@ -60,6 +62,9 @@ function createVideoProvider<I extends Record<string, any>>(
       options.initialize?.(context);
     },
     input: {
+      quickActions: {
+        actions: options.quickActions ?? []
+      },
       panel: {
         type: 'schema',
         document: options.schema,

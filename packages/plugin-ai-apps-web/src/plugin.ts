@@ -87,14 +87,37 @@ export default (
           providers.text2sound
         );
 
-        cesdk.addPlugin(VideoGeneration({ text2video, image2video }));
-        cesdk.addPlugin(AudioGeneration({ text2speech, text2sound }));
+        cesdk.addPlugin(
+          VideoGeneration({
+            text2video,
+            image2video,
+            debug: config.debug,
+            dryRun: config.dryRun
+          })
+        );
+        cesdk.addPlugin(
+          AudioGeneration({
+            text2speech,
+            text2sound,
+            debug: config.debug,
+            dryRun: config.dryRun
+          })
+        );
       }
 
       if (text2text != null)
-        cesdk.addPlugin(TextGeneration({ provider: text2text }));
+        cesdk.addPlugin(
+          TextGeneration({ provider: text2text, debug: config.debug })
+        );
 
-      cesdk.addPlugin(ImageGeneration({ text2image, image2image }));
+      cesdk.addPlugin(
+        ImageGeneration({
+          text2image,
+          image2image,
+          debug: config.debug,
+          dryRun: config.dryRun
+        })
+      );
 
       addAggregatedAssetSources(
         cesdk,
@@ -510,6 +533,7 @@ function addTranslations(cesdk: CreativeEditorSDK) {
       'panel.ly.img.ai/apps': 'AI',
       'panel.ly.img.ai/fal-ai/gemini-flash-edit.imageSelection':
         'Select Image To Change',
+      'panel.gpt-image-1.imageSelection': 'Select Image To Change',
       'panel.ly.img.ai/elevenlabs': 'AI Voice',
       'panel.ly.img.ai/demo.video': 'Generate Video',
       'panel.ly.img.ai/demo.image': 'Generate Image',

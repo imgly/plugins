@@ -24,13 +24,17 @@ export default ({ isDevelopment }) => {
 
   // Get the base configuration
   const config = baseConfig(baseOptions);
-  
+
   // Set entry points and output configuration
-  config.entryPoints = ['./src/index.ts', './src/fal-ai/index.ts'];
+  config.entryPoints = [
+    './src/index.ts',
+    './src/fal-ai/index.ts',
+    './src/open-ai/index.ts'
+  ];
   config.outExtension = { '.js': '.mjs' };
   config.outdir = './dist';
   config.outbase = './src';
   config.outfile = undefined;
-  
+
   return config;
 };

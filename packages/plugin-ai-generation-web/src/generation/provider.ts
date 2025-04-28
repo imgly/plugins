@@ -31,7 +31,7 @@ interface Provider<K extends OutputKind, I, O extends Output, C = O> {
    * Initialize the provider when the plugin is loaded.
    * Can be used to initialize libraries, and register additional UI components.
    */
-  initialize: (options: {
+  initialize?: (options: {
     engine: CreativeEngine;
 
     /**
@@ -374,6 +374,13 @@ export type QuickActionsInput<I, O extends Output> = {
 
 export type QuickAction<I, O extends Output> = {
   id: string;
+
+  /**
+   * If set, the quick action is shown in the menu for this kind, instead
+   * of the kind of the provider. E.g. a video provider can add a quick action,
+   * to add a button in the image menu to generate a video from.
+   */
+  kind?: OutputKind;
 
   // Can be used to distinguish between different quick action
   // versions used by different plugins.

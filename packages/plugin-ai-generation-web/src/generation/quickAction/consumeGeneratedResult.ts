@@ -7,7 +7,10 @@ import {
   type OutputKind
 } from '../provider';
 import { ApplyCallbacks } from './types';
-import { mimeTypeToExtension } from '@imgly/plugin-utils';
+import {
+  getImageDimensionsFromURL,
+  mimeTypeToExtension
+} from '@imgly/plugin-utils';
 import { isAsyncGenerator } from '../../utils';
 
 type ConsumeGeneratedResultOptions = {
@@ -107,7 +110,10 @@ async function getApplyCallbacksForText<O extends Output>(
     });
   };
   const onCancel = onBefore;
-  const onApply = onAfter;
+  const onApply = () => {
+    onAfter();
+    options.cesdk.engine.editor.addUndoStep();
+  };
 
   return {
     consumedGenerationResult: output,
@@ -147,6 +153,12 @@ async function getApplyCallbacksForImage<O extends Output>(
   const mimeType = await cesdk.engine.editor.getMimeType(
     sourceBefore?.uri ?? uriBefore
   );
+  const originalDimension = await getImageDimensionsFromURL(
+    sourceBefore?.uri ?? uriBefore,
+    options.cesdk.engine
+  );
+  const originalAspectRatio =
+    originalDimension.width / originalDimension.height;
   abortSignal.throwIfAborted();
 
   if (mimeType === 'image/svg+xml') {
@@ -182,6 +194,15 @@ async function getApplyCallbacksForImage<O extends Output>(
   const generatedMimeType = await cesdk.engine.editor.getMimeType(url);
 
   const uri = await reuploadImage(cesdk, url, generatedMimeType);
+  const generatedDimension = await getImageDimensionsFromURL(
+    uri,
+    options.cesdk.engine
+  );
+  const generatedAspectRatio =
+    generatedDimension.width / generatedDimension.height;
+
+  const differentAspectRatio =
+    Math.abs(originalAspectRatio - generatedAspectRatio) > 0.001;
 
   const sourceSetAfter = sourceBefore
     ? [
@@ -207,10 +228,14 @@ async function getApplyCallbacksForImage<O extends Output>(
       sourceSetAfter
     );
   }
-  applyCrop();
+  if (differentAspectRatio) {
+    cesdk.engine.block.setContentFillMode(block, 'Cover');
+  } else {
+    applyCrop();
+  }
 
   const onBefore = () => {
-    if (sourceSetBefore == null) {
+    if (sourceSetBefore == null || sourceSetBefore.length === 0) {
       if (uriBefore == null) {
         throw new Error('No image URI found');
       }
@@ -245,13 +270,18 @@ async function getApplyCallbacksForImage<O extends Output>(
         sourceSetAfter
       );
     }
-    applyCrop();
+    if (differentAspectRatio) {
+      cesdk.engine.block.setContentFillMode(block, 'Cover');
+    } else {
+      applyCrop();
+    }
   };
   const onCancel = () => {
     onBefore();
   };
   const onApply = () => {
     onAfter();
+    options.cesdk.engine.editor.addUndoStep();
   };
 
   return {

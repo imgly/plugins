@@ -1,0 +1,27 @@
+{
+  "openapi": "3.0.0",
+  "components": {
+    "schemas": {
+      "GptImage1Input": {
+        "title": "ImageToImageInput",
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "title": "Prompt",
+            "type": "string",
+            "x-imgly-builder": {
+              "component": "TextArea"
+            }
+          },
+          "image_url": {
+            "title": "Image Url",
+            "type": "string",
+            "description": "Optional URL of an input image for editing."
+          }
+        },
+        "x-order-properties": ["image_url", "prompt", "background"],
+        "required": ["image_url", "prompt"]
+      }
+    }
+  }
+}

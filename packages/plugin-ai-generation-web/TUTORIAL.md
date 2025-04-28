@@ -110,7 +110,11 @@ import {
     Provider,
     ImageOutput,
     loggingMiddleware,
-    uploadMiddleware
+    uploadMiddleware,
+    // Quick action helper components
+    QuickActionChangeImage,
+    QuickActionSwapImageBackground,
+    QuickActionImageVariant
 } from '@imgly/plugin-ai-generation-web';
 import type CreativeEditorSDK from '@cesdk/cesdk-js';
 import apiSchema from './myApiSchema.json';
@@ -121,6 +125,7 @@ interface MyProviderInput {
     width: number;
     height: number;
     style: string;
+    image_url?: string; // For image-to-image operations
 }
 
 // Create a function that returns your provider
@@ -166,6 +171,54 @@ export function MyImageProvider({
                             label: `AI: ${input.prompt?.substring(0, 20)}...`
                         }
                     })
+                },
+                
+                // Add quick actions for canvas menu
+                quickActions: {
+                    actions: [
+                        // Use helper components for common quick actions
+                        QuickActionChangeImage<MyProviderInput, ImageOutput>({
+                            cesdk,
+                            // Map input from quick action to your provider's input format
+                            mapInput: (input) => ({
+                                prompt: input.prompt,
+                                image_url: input.uri,
+                                width: 512,
+                                height: 512,
+                                style: 'photorealistic'
+                            })
+                        }),
+                        
+                        QuickActionSwapImageBackground<MyProviderInput, ImageOutput>({
+                            cesdk,
+                            mapInput: (input) => ({
+                                prompt: input.prompt,
+                                image_url: input.uri,
+                                width: 512,
+                                height: 512,
+                                style: 'photorealistic'
+                            })
+                        }),
+                        
+                        QuickActionImageVariant<MyProviderInput, ImageOutput>({
+                            cesdk,
+                            onApply: async ({ prompt, uri, duplicatedBlockId }, context) => {
+                                // Generate a variant for the duplicated block
+                                return context.generate(
+                                    {
+                                        prompt,
+                                        image_url: uri,
+                                        width: 512,
+                                        height: 512,
+                                        style: 'photorealistic'
+                                    },
+                                    {
+                                        blockIds: [duplicatedBlockId]
+                                    }
+                                );
+                            }
+                        })
+                    ]
                 }
             },
 
@@ -220,6 +273,18 @@ export function MyImageProvider({
                 // The core generation function
                 generate: async (input, { abortSignal }) => {
                     try {
+                        const requestBody: any = {
+                            prompt: input.prompt,
+                            width: input.width,
+                            height: input.height,
+                            style: input.style
+                        };
+                        
+                        // If we have an image_url, this is an image-to-image operation
+                        if (input.image_url) {
+                            requestBody.image_url = input.image_url;
+                        }
+                        
                         // Call your API to generate an image
                         const response = await fetch(apiUrl, {
                             method: 'POST',
@@ -227,12 +292,7 @@ export function MyImageProvider({
                                 'Content-Type': 'application/json',
                                 Authorization: `Bearer ${apiKey}`
                             },
-                            body: JSON.stringify({
-                                prompt: input.prompt,
-                                width: input.width,
-                                height: input.height,
-                                style: input.style
-                            }),
+                            body: JSON.stringify(requestBody),
                             signal: abortSignal
                         });
 

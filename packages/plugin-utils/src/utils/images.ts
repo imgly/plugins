@@ -1,5 +1,5 @@
-import type CreativeEditorSDK from '@cesdk/cesdk-js';
 import { bufferURIToObjectURL } from './upload';
+import { type CreativeEngine } from '@cesdk/cesdk-js';
 
 /**
  * Get the dimensions of an image from its URL
@@ -9,9 +9,9 @@ import { bufferURIToObjectURL } from './upload';
  */
 export async function getImageDimensionsFromURL(
   url: string,
-  cesdk: CreativeEditorSDK
+  engine: CreativeEngine
 ): Promise<{ width: number; height: number }> {
-  const resolvedUrl = await bufferURIToObjectURL(url, cesdk);
+  const resolvedUrl = await bufferURIToObjectURL(url, engine);
   return new Promise((resolve, reject) => {
     const img = new Image();
     img.onload = () => {
@@ -20,4 +20,38 @@ export async function getImageDimensionsFromURL(
     img.onerror = reject;
     img.src = resolvedUrl;
   });
+}
+
+/**
+ * Get the URI of an image from a block ID, either the first source of a source set or
+ * the image file URI. Will handle buffer URIs and convert them to object URLs.
+ */
+export async function getImageUri(
+  blockId: number,
+  engine: CreativeEngine,
+  options?: { throwErrorIfSvg?: boolean }
+): Promise<string> {
+  let uri;
+  const fillBlock = engine.block.getFill(blockId);
+  const sourceSet = engine.block.getSourceSet(
+    fillBlock,
+    'fill/image/sourceSet'
+  );
+  const [source] = sourceSet;
+  if (source == null) {
+    uri = engine.block.getString(fillBlock, 'fill/image/imageFileURI');
+    if (uri == null) throw new Error('No image source/uri found');
+  } else {
+    uri = source.uri;
+  }
+
+  // Check if the image is SVG (not supported)
+  if (options?.throwErrorIfSvg) {
+    const mimeType = await engine.editor.getMimeType(uri);
+    if (mimeType === 'image/svg+xml') {
+      throw new Error('SVG images are not supported');
+    }
+  }
+
+  return bufferURIToObjectURL(uri, engine);
 }

@@ -11,17 +11,15 @@ import {
   type GetInput,
   type GetBlockInput,
   OutputKind,
-  type Output,
-  GetBlockInputResult,
-  GenerationResult
+  type Output
 } from './provider';
 import { InitProviderConfiguration, UIOptions } from './types';
 import CreativeEditorSDK from '@cesdk/cesdk-js';
 import getAssetResultForPlaceholder from './getAssetResultForPlaceholder';
-import getDryRunOutput from './getDryRunOutput';
 import getAssetResultForGenerated from './getAssetResultForGenerated';
 import { composeMiddlewares } from './middleware/middleware';
 import loggingMiddleware from './middleware/loggingMiddleware';
+import dryRunMiddleware from './middleware/dryRunMiddleware';
 
 type Result<O> = { status: 'success'; output: O } | { status: 'aborted' };
 
@@ -97,22 +95,19 @@ async function generate<K extends OutputKind, I, O extends Output>(
     // Trigger the generation
     const composedMiddlewares = composeMiddlewares<I, O>([
       ...(provider.output.middleware ?? []),
-      config.debug ? loggingMiddleware() : undefined
+      config.debug ? loggingMiddleware() : undefined,
+      config.dryRun
+        ? dryRunMiddleware({ kind: provider.kind, blockInputs })
+        : undefined
     ]);
 
-    let output: GenerationResult<O>;
-    if (config.dryRun) {
-      output = (await dryRun(kind, blockInputs)) as O;
-    } else {
-      const disposableGenerationResult = await composedMiddlewares(
-        provider.output.generate
-      )(inputs.input, {
-        abortSignal,
-        engine: options.engine,
-        cesdk
-      });
-      output = disposableGenerationResult.result;
-    }
+    const { result: output } = await composedMiddlewares(
+      provider.output.generate
+    )(inputs.input, {
+      abortSignal,
+      engine: options.engine,
+      cesdk
+    });
 
     if (isAsyncGenerator(output)) {
       throw new Error('Streaming generation is not supported yet from a panel');
@@ -229,28 +224,6 @@ function checkAbortSignal(
     return true;
   }
   return false;
-}
-
-/**
- * Simulate the generation of the output without actually generating it.
- */
-async function dryRun<K extends OutputKind>(
-  kind: K,
-  blockInputs: GetBlockInputResult<K>
-): Promise<Output> {
-  console.log(
-    `[DRY RUN]: Requesting dummy AI generation with block inputs: `,
-    JSON.stringify(blockInputs, undefined, 2)
-  );
-  const output = getDryRunOutput(kind, blockInputs);
-  await wait(3000);
-  return output;
-}
-
-async function wait(ms: number) {
-  return new Promise((resolve) => {
-    setTimeout(resolve, ms);
-  });
 }
 
 export default generate;
