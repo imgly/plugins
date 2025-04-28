@@ -80,25 +80,6 @@ async function getImageDryRunOutput<I>(
   let width;
   let height;
 
-  if (options.blockInputs != null) {
-    width = options.blockInputs.image.width;
-    height = options.blockInputs.image.height;
-  }
-  if (
-    options.blockIds != null &&
-    Array.isArray(options.blockIds) &&
-    options.blockIds.length > 0
-  ) {
-    const [blockId] = options.blockIds;
-    const url = await getImageUri(blockId, engine);
-    const dimension = await getImageDimensionsFromURL(url, engine);
-    width = dimension.width;
-    height = dimension.height;
-  } else {
-    width = 512;
-    height = 512;
-  }
-
   const prompt: string =
     generationInput != null &&
     typeof generationInput === 'object' &&
@@ -106,6 +87,34 @@ async function getImageDryRunOutput<I>(
     typeof generationInput.prompt === 'string'
       ? generationInput.prompt
       : 'AI Generated Image';
+
+  // If prompt includes something that looks like a dimension
+  // e.g. 512x512, 1024x768, etc. than we will use this as the
+  // output image size for testing purposes.
+  const promptDimension = prompt.match(/(\d+)x(\d+)/);
+  if (promptDimension != null) {
+    width = parseInt(promptDimension[1], 10);
+    height = parseInt(promptDimension[2], 10);
+  } else {
+    if (options.blockInputs != null) {
+      width = options.blockInputs.image.width;
+      height = options.blockInputs.image.height;
+    }
+    if (
+      options.blockIds != null &&
+      Array.isArray(options.blockIds) &&
+      options.blockIds.length > 0
+    ) {
+      const [blockId] = options.blockIds;
+      const url = await getImageUri(blockId, engine);
+      const dimension = await getImageDimensionsFromURL(url, engine);
+      width = dimension.width;
+      height = dimension.height;
+    } else {
+      width = 512;
+      height = 512;
+    }
+  }
 
   const url = `https://placehold.co/${width}x${height}/000000/FFF?text=${prompt
     .replace(' ', '+')
