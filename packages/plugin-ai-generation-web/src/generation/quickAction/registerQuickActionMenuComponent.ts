@@ -164,7 +164,6 @@ function registerQuickActionMenuComponent<
                 cesdk.engine.editor._update();
 
                 onApply();
-                engine.editor.addUndoStep();
               }
             });
           }

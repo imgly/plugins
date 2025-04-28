@@ -110,7 +110,10 @@ async function getApplyCallbacksForText<O extends Output>(
     });
   };
   const onCancel = onBefore;
-  const onApply = onAfter;
+  const onApply = () => {
+    onAfter();
+    options.cesdk.engine.editor.addUndoStep();
+  };
 
   return {
     consumedGenerationResult: output,
@@ -278,6 +281,7 @@ async function getApplyCallbacksForImage<O extends Output>(
   };
   const onApply = () => {
     onAfter();
+    options.cesdk.engine.editor.addUndoStep();
   };
 
   return {

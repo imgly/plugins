@@ -44,7 +44,7 @@ function QuickActionChangeImage<I, O extends ImageOutput>(options: {
     quickAction: {
       id,
       version: '1',
-      confirmation: true,
+      confirmation: false,
       scopes: ['fill/change'],
       enable: enableImageFill()
     },

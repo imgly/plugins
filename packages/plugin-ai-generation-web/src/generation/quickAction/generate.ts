@@ -110,6 +110,7 @@ async function generate<K extends OutputKind, I, O extends Output>(
       });
     });
   } else {
+    applyCallbacks.onApply();
     blockIds.forEach((blockId) => {
       metadata.clear(blockId);
     });
