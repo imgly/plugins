@@ -1,8 +1,8 @@
 import CreativeEditorSDK from '@cesdk/cesdk-js';
 
 import AiApps from '@imgly/plugin-ai-apps-web';
-import OpenAiImage from '@imgly/plugin-ai-image-generation-web/open-ai';
-// import FalAiImage from '@imgly/plugin-ai-image-generation-web/fal-ai';
+// import OpenAiImage from '@imgly/plugin-ai-image-generation-web/open-ai';
+import FalAiImage from '@imgly/plugin-ai-image-generation-web/fal-ai';
 import FalAiVideo from '@imgly/plugin-ai-video-generation-web/fal-ai';
 import Elevenlabs from '@imgly/plugin-ai-audio-generation-web/elevenlabs';
 import Anthropic from '@imgly/plugin-ai-text-generation-web/anthropic';
@@ -69,8 +69,11 @@ function App() {
             instance.feature.enable('ly.img.preview', false);
             instance.feature.enable('ly.img.placeholder', false);
 
+            // await instance.engine.scene.loadFromArchiveURL(
+            //   `https://img.ly/showcases/cesdk/cases/ai-editor/ai_editor_video.archive`
+            // );
             await instance.engine.scene.loadFromArchiveURL(
-              `https://img.ly/showcases/cesdk/cases/ai-editor/ai_editor_video.archive`
+              `https://img.ly/showcases/cesdk/cases/ai-editor/ai_editor_design.archive`
             );
 
             const onRateLimitExceeded: RateLimitOptions<any>['onRateLimitExceeded'] =
@@ -134,6 +137,8 @@ function App() {
 
             instance.addPlugin(
               AiApps({
+                debug: true,
+                dryRun: false,
                 providers: {
                   text2text: Anthropic.AnthropicProvider({
                     middleware: [
@@ -145,13 +150,21 @@ function App() {
                     ],
                     proxyUrl: import.meta.env.VITE_ANTHROPIC_PROXY_URL
                   }),
-                  text2image: OpenAiImage.GptImage1.Text2Image({
+                  // text2image: OpenAiImage.GptImage1.Text2Image({
+                  //   middleware: [imageRateLimitMiddleware, errorMiddleware],
+                  //   proxyUrl: import.meta.env.VITE_OPENAI_PROXY_URL
+                  // }),
+                  // image2image: OpenAiImage.GptImage1.Image2Image({
+                  //   middleware: [imageRateLimitMiddleware, errorMiddleware],
+                  //   proxyUrl: import.meta.env.VITE_OPENAI_PROXY_URL
+                  // }),
+                  text2image: FalAiImage.RecraftV3({
                     middleware: [imageRateLimitMiddleware, errorMiddleware],
-                    proxyUrl: import.meta.env.VITE_OPENAI_PROXY_URL
+                    proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
                   }),
-                  image2image: OpenAiImage.GptImage1.Image2Image({
+                  image2image: FalAiImage.GeminiFlashEdit({
                     middleware: [imageRateLimitMiddleware, errorMiddleware],
-                    proxyUrl: import.meta.env.VITE_OPENAI_PROXY_URL
+                    proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
                   }),
                   text2video: FalAiVideo.MinimaxVideo01Live({
                     middleware: [videoRateLimitMiddleware, errorMiddleware],
