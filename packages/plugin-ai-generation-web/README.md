@@ -485,6 +485,159 @@ quickActions: {
 }
 ```
 
+### Quick Action Helper Components
+
+The package provides several helper components for common quick action patterns:
+
+#### 1. QuickActionBaseButton
+
+A simple button that triggers an action when clicked:
+
+```typescript
+import { QuickActionBaseButton } from '@imgly/plugin-ai-generation-web';
+
+const quickAction = QuickActionBaseButton<MyInput, ImageOutput>({
+  quickAction: {
+    id: 'enhanceImage',
+    version: '1',
+    enable: true
+  },
+  buttonOptions: {
+    icon: '@imgly/MagicWand'
+  },
+  onClick: async (context) => {
+    await context.generate({
+      prompt: 'Enhance this image and improve quality'
+    });
+  }
+});
+```
+
+#### 2. QuickActionBasePrompt
+
+A button that expands to show a text prompt input:
+
+```typescript
+import { QuickActionBasePrompt } from '@imgly/plugin-ai-generation-web';
+
+const quickAction = QuickActionBasePrompt<MyInput, ImageOutput>({
+  quickAction: {
+    id: 'changeImage',
+    version: '1',
+    enable: true,
+    confirmation: true
+  },
+  buttonOptions: {
+    icon: '@imgly/Edit'
+  },
+  textAreaOptions: {
+    placeholder: 'Describe the changes you want...'
+  },
+  onApply: async (prompt, context) => {
+    return context.generate({
+      prompt: prompt,
+      // other parameters
+    });
+  }
+});
+```
+
+#### 3. QuickActionBaseSelect
+
+A button that opens a menu with selectable options:
+
+```typescript
+import { QuickActionBaseSelect } from '@imgly/plugin-ai-generation-web';
+
+const quickAction = QuickActionBaseSelect<MyInput, ImageOutput>({
+  cesdk: cesdk,
+  quickAction: {
+    id: 'styleTransfer',
+    version: '1',
+    enable: true,
+    confirmation: true
+  },
+  buttonOptions: {
+    icon: '@imgly/Appearance'
+  },
+  items: [
+    {
+      id: 'water',
+      label: 'Watercolor Painting',
+      prompt: 'Convert to watercolor painting.'
+    },
+    {
+      id: 'oil',
+      label: 'Oil Painting',
+      prompt: 'Render in oil painting style.'
+    }
+  ],
+  mapInput: (input) => ({
+    prompt: input.item.prompt,
+    image_url: input.uri
+  })
+});
+```
+
+### Ready-to-Use Image Quick Actions
+
+The package includes several ready-to-use quick actions for common image manipulation tasks:
+
+#### 1. QuickActionChangeImage
+
+Changes an image based on a text prompt:
+
+```typescript
+import { QuickActionChangeImage } from '@imgly/plugin-ai-generation-web';
+
+const changeImageAction = QuickActionChangeImage<MyInput, ImageOutput>({
+  cesdk: cesdk,
+  mapInput: (input) => ({
+    prompt: input.prompt,
+    image_url: input.uri
+  })
+});
+```
+
+#### 2. QuickActionSwapImageBackground
+
+Changes just the background of an image:
+
+```typescript
+import { QuickActionSwapImageBackground } from '@imgly/plugin-ai-generation-web';
+
+const swapBackgroundAction = QuickActionSwapImageBackground<MyInput, ImageOutput>({
+  cesdk: cesdk,
+  mapInput: (input) => ({
+    prompt: input.prompt,
+    image_url: input.uri
+  })
+});
+```
+
+#### 3. QuickActionImageVariant
+
+Creates a variant of an image by duplicating it first:
+
+```typescript
+import { QuickActionImageVariant } from '@imgly/plugin-ai-generation-web';
+
+const imageVariantAction = QuickActionImageVariant<MyInput, ImageOutput>({
+  cesdk: cesdk,
+  onApply: async ({ prompt, uri, duplicatedBlockId }, context) => {
+    return context.generate(
+      {
+        prompt,
+        image_url: uri
+      },
+      {
+        blockIds: [duplicatedBlockId]
+      }
+    );
+  }
+});
+```
+
 ### Simple Quick Action Example
 
 ```typescript
