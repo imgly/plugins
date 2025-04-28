@@ -16,6 +16,7 @@ import lockMiddleware from '../middleware/lockMiddleware';
 import consumeGeneratedResult from './consumeGeneratedResult';
 import editModeMiddleware from '../middleware/editModeMiddleware';
 import { InitProviderConfiguration } from '../types';
+import dryRunMiddleware from '../middleware/dryRunMiddleware';
 
 async function generate<K extends OutputKind, I, O extends Output>(
   options: {
@@ -81,7 +82,10 @@ async function generate<K extends OutputKind, I, O extends Output>(
               }),
           quickAction.confirmation && highlightBlocksMiddleware<I, O>({})
         ]
-      : [])
+      : []),
+    config.dryRun
+      ? dryRunMiddleware({ kind: provider.kind, blockIds })
+      : undefined
   ]);
 
   const { result: generationResult, dispose: generationDispose } =

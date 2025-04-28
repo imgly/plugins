@@ -232,7 +232,7 @@ async function getApplyCallbacksForImage<O extends Output>(
   }
 
   const onBefore = () => {
-    if (sourceSetBefore == null) {
+    if (sourceSetBefore == null || sourceSetBefore.length === 0) {
       if (uriBefore == null) {
         throw new Error('No image URI found');
       }
