@@ -49,7 +49,7 @@ function QuickActionChangeImage<I, O extends ImageOutput>(options: {
     },
     onApply: async (userPrompt, context) => {
       const [blockId] = options.cesdk.engine.block.findAllSelected();
-      const uri = await getImageUri(blockId, options.cesdk, {
+      const uri = await getImageUri(blockId, options.cesdk.engine, {
         throwErrorIfSvg: true
       });
 

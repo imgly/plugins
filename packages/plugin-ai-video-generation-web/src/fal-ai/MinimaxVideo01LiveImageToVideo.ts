@@ -61,7 +61,7 @@ function getProvider(
       getBlockInput: async (input) => {
         const imageDimension = await getImageDimensionsFromURL(
           input.image_url as string,
-          cesdk
+          cesdk.engine
         );
 
         return Promise.resolve({
@@ -99,7 +99,7 @@ function getQuickActions(
       },
       onClick: async () => {
         const [blockId] = cesdk.engine.block.findAllSelected();
-        const uri = await getImageUri(blockId, cesdk, {
+        const uri = await getImageUri(blockId, cesdk.engine, {
           throwErrorIfSvg: true
         });
 

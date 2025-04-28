@@ -152,7 +152,7 @@ async function getApplyCallbacksForImage<O extends Output>(
   );
   const originalDimension = await getImageDimensionsFromURL(
     sourceBefore?.uri ?? uriBefore,
-    options.cesdk
+    options.cesdk.engine
   );
   const originalAspectRatio =
     originalDimension.width / originalDimension.height;
@@ -193,7 +193,7 @@ async function getApplyCallbacksForImage<O extends Output>(
   const uri = await reuploadImage(cesdk, url, generatedMimeType);
   const generatedDimension = await getImageDimensionsFromURL(
     uri,
-    options.cesdk
+    options.cesdk.engine
   );
   const generatedAspectRatio =
     generatedDimension.width / generatedDimension.height;

@@ -111,7 +111,7 @@ function QuickActionImageVariant<I, O extends ImageOutput>(options: {
       );
 
       // Get the source of the duplicated block
-      const uri = await getImageUri(duplicated, options.cesdk, {
+      const uri = await getImageUri(duplicated, options.cesdk.engine, {
         throwErrorIfSvg: true
       });
 

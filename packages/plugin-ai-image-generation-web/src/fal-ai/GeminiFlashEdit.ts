@@ -68,7 +68,7 @@ function getProvider(
       getBlockInput: async (input) => {
         const { width, height } = await getImageDimensionsFromURL(
           input.image_url,
-          cesdk
+          cesdk.engine
         );
         return Promise.resolve({
           image: {

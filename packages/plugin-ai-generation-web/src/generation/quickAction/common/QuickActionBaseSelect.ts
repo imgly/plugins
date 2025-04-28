@@ -72,7 +72,7 @@ function QuickActionBaseSelect<I, O extends Output>(options: {
                             options.cesdk.engine.block.findAllSelected();
                           const uri = await getImageUri(
                             blockId,
-                            options.cesdk,
+                            options.cesdk.engine,
                             {
                               throwErrorIfSvg: true
                             }
