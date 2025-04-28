@@ -88,10 +88,20 @@ export default (
         );
 
         cesdk.addPlugin(
-          VideoGeneration({ text2video, image2video, debug: config.debug })
+          VideoGeneration({
+            text2video,
+            image2video,
+            debug: config.debug,
+            dryRun: config.dryRun
+          })
         );
         cesdk.addPlugin(
-          AudioGeneration({ text2speech, text2sound, debug: config.debug })
+          AudioGeneration({
+            text2speech,
+            text2sound,
+            debug: config.debug,
+            dryRun: config.dryRun
+          })
         );
       }
 
@@ -101,7 +111,12 @@ export default (
         );
 
       cesdk.addPlugin(
-        ImageGeneration({ text2image, image2image, debug: config.debug })
+        ImageGeneration({
+          text2image,
+          image2image,
+          debug: config.debug,
+          dryRun: config.dryRun
+        })
       );
 
       addAggregatedAssetSources(

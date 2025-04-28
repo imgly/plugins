@@ -47,7 +47,17 @@ export interface Providers {
 
 export interface PluginConfiguration {
   providers: Providers;
+
+  /**
+   * Whether to enable debug mode. Will print additional debug information
+   */
   debug?: boolean;
+
+  /**
+   * If true the generation process wll be replaced with a dummy generation.
+   * Useful for testing the UI without actually generating images.
+   */
+  dryRun?: boolean;
 
   /**
    * Base URL used for the UI assets used in the plugin.
