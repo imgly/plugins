@@ -6,6 +6,7 @@ import {
 } from '@imgly/plugin-utils';
 import {
   QuickActionImageVariant,
+  QuickActionCombineImages,
   QuickActionChangeImage,
   QuickActionEditTextStyle,
   QuickActionSwapImageBackground,
@@ -16,12 +17,13 @@ import {
   type Provider
 } from '@imgly/plugin-ai-generation-web';
 import GptImage1Schema from './GptImage1.image2image.json';
-import CreativeEditorSDK from '@cesdk/cesdk-js';
+import CreativeEditorSDK, { MimeType } from '@cesdk/cesdk-js';
 import { b64JsonToBlob } from './utils';
 
 type GptImage1Input = {
   prompt: string;
-  image_url: string;
+  image_url: string | string[];
+  exportFromBlockIds?: number[];
 };
 
 type GptImage1Output = {
@@ -59,6 +61,7 @@ function getProvider(
     'swapBackground',
     'changeImage',
     'createVariant',
+    'combineImages',
     'ly.img.separator',
     ...quickActionMenu.getQuickActionMenuOrder()
   ]);
@@ -89,6 +92,10 @@ function getProvider(
             : {})
         },
         getBlockInput: async (input) => {
+          if (input.image_url == null || Array.isArray(input.image_url)) {
+            throw new Error('Cannot process getBlockInput for multiple images');
+          }
+
           const { width, height } = await getImageDimensionsFromURL(
             input.image_url,
             cesdk.engine
@@ -114,20 +121,64 @@ function getProvider(
         input: GptImage1Input,
         { abortSignal }: { abortSignal?: AbortSignal }
       ) => {
-        const mimeType = await cesdk.engine.editor.getMimeType(input.image_url);
-        const resolvedImageUrl = await bufferURIToObjectURL(
-          input.image_url,
-          cesdk.engine
-        );
-        const imageUrlResponse = await fetch(resolvedImageUrl);
-        const imageUrlBlob = await imageUrlResponse.blob();
-
         const formData = new FormData();
-        formData.append(
-          'image',
-          imageUrlBlob,
-          `image.${mimeTypeToExtension(mimeType)}`
-        );
+
+        if (Array.isArray(input.image_url)) {
+          if (input.exportFromBlockIds != null) {
+            await Promise.all(
+              input.exportFromBlockIds.map(async (blockId) => {
+                const exportedBlob = await cesdk.engine.block.export(
+                  blockId,
+                  MimeType.Jpeg,
+                  {
+                    targetHeight: 1024,
+                    targetWidth: 1024
+                  }
+                );
+                formData.append(
+                  'image[]',
+                  exportedBlob,
+                  `image_${blockId}.jpeg`
+                );
+              })
+            );
+          } else {
+            await Promise.all(
+              input.image_url.map(async (image_url) => {
+                const mimeType = await cesdk.engine.editor.getMimeType(
+                  image_url
+                );
+                const resolvedImageUrl = await bufferURIToObjectURL(
+                  image_url,
+                  cesdk.engine
+                );
+                const imageUrlResponse = await fetch(resolvedImageUrl);
+                const imageUrlBlob = await imageUrlResponse.blob();
+                formData.append(
+                  'image[]',
+                  imageUrlBlob,
+                  `image.${mimeTypeToExtension(mimeType)}`
+                );
+              })
+            );
+          }
+        } else {
+          const mimeType = await cesdk.engine.editor.getMimeType(
+            input.image_url
+          );
+          const resolvedImageUrl = await bufferURIToObjectURL(
+            input.image_url,
+            cesdk.engine
+          );
+          const imageUrlResponse = await fetch(resolvedImageUrl);
+          const imageUrlBlob = await imageUrlResponse.blob();
+          formData.append(
+            'image',
+            imageUrlBlob,
+            `image.${mimeTypeToExtension(mimeType)}`
+          );
+        }
+
         formData.append('prompt', input.prompt);
         formData.append('model', 'gpt-image-1');
         formData.append('size', 'auto');
@@ -194,6 +245,22 @@ function createQuickActions(
           {
             prompt,
             image_url: uri
+          },
+          {
+            blockIds: [duplicatedBlockId]
+          }
+        );
+      },
+      cesdk
+    }),
+    QuickActionCombineImages<GptImage1Input, GptImage1Output>({
+      onApply: async ({ prompt, uris, duplicatedBlockId }, context) => {
+        // Generate a variant for the duplicated block
+        return context.generate(
+          {
+            prompt,
+            image_url: uris,
+            exportFromBlockIds: context.blockIds
           },
           {
             blockIds: [duplicatedBlockId]
