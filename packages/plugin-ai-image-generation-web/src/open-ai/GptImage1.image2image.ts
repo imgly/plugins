@@ -7,6 +7,7 @@ import {
 import {
   QuickActionImageVariant,
   QuickActionChangeImage,
+  QuickActionEditTextStyle,
   QuickActionSwapImageBackground,
   CommonProperties,
   getQuickActionMenu,
@@ -52,6 +53,7 @@ function getProvider(
 
   const quickActions = createQuickActions(cesdk);
   const quickActionMenu = getQuickActionMenu(cesdk, 'image');
+  const quickActionMenuForText = getQuickActionMenu(cesdk, 'text');
 
   quickActionMenu.setQuickActionMenuOrder([
     'swapBackground',
@@ -59,6 +61,12 @@ function getProvider(
     'createVariant',
     'ly.img.separator',
     ...quickActionMenu.getQuickActionMenuOrder()
+  ]);
+
+  quickActionMenuForText.setQuickActionMenuOrder([
+    ...quickActionMenuForText.getQuickActionMenuOrder(),
+    'ly.img.separator',
+    'changeToImage'
   ]);
 
   const provider: Provider<'image', GptImage1Input, GptImage1Output> = {
@@ -156,6 +164,21 @@ function createQuickActions(
   cesdk: CreativeEditorSDK
 ): QuickAction<GptImage1Input, GptImage1Output>[] {
   return [
+    QuickActionEditTextStyle<GptImage1Input, GptImage1Output>({
+      onApply: async ({ prompt, uri, duplicatedBlockId }, context) => {
+        // Generate a variant for the duplicated block
+        return context.generate(
+          {
+            prompt,
+            image_url: uri
+          },
+          {
+            blockIds: [duplicatedBlockId]
+          }
+        );
+      },
+      cesdk
+    }),
     QuickActionSwapImageBackground<GptImage1Input, GptImage1Output>({
       mapInput: (input) => ({ ...input, image_url: input.uri }),
       cesdk
