@@ -208,8 +208,8 @@ async function getApplyCallbacksForImage<O extends Output>(
     ? [
         {
           uri,
-          width: sourceBefore.width,
-          height: sourceBefore.height
+          width: generatedDimension.width,
+          height: generatedDimension.height
         }
       ]
     : undefined;
@@ -222,6 +222,7 @@ async function getApplyCallbacksForImage<O extends Output>(
       uriAfter
     );
   } else {
+    cesdk.engine.block.setString(fillBlock, 'fill/image/imageFileURI', '');
     cesdk.engine.block.setSourceSet(
       fillBlock,
       'fill/image/sourceSet',
