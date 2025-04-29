@@ -13,6 +13,8 @@ function QuickActionBasePrompt<I, O extends Output>(options: {
 }): QuickAction<I, O> {
   const id = options.quickAction.id;
   return {
+    confirmation: true,
+    lockDuringConfirmation: false,
     ...options.quickAction,
     render: ({ builder }, { toggleExpand }) => {
       builder.Button(`${id}.button`, {

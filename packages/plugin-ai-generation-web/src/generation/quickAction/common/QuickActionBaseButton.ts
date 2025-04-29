@@ -12,6 +12,8 @@ function QuickActionBaseButton<I, O extends Output>(options: {
 }): QuickAction<I, O> {
   const id = options.quickAction.id;
   return {
+    confirmation: true,
+    lockDuringConfirmation: false,
     ...options.quickAction,
     render: ({ builder }, context) => {
       builder.Button(`${id}.button`, {

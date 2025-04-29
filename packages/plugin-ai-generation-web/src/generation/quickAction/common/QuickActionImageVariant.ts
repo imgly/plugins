@@ -50,6 +50,7 @@ function QuickActionImageVariant<I, O extends ImageOutput>(options: {
       id,
       version: '1',
       confirmation: false,
+      lockDuringConfirmation: false,
       scopes: ['lifecycle/duplicate', 'fill/change'],
       enable: (context) => {
         if (!enableImageFill()(context)) return false;
