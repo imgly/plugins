@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Root from './pages/root.tsx';
 import AiDemo from './pages/ai-demo.tsx';
+import GptDemo from './pages/gpt-demo.tsx';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
@@ -10,6 +11,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       <Routes>
         <Route path="/" element={<Root />} />
         <Route path="/ai-demo" element={<AiDemo />} />
+        <Route path="/gpt-demo" element={<GptDemo />} />
       </Routes>
     </BrowserRouter>
   </React.StrictMode>
