@@ -57,11 +57,23 @@ function getProvider(
   const quickActionMenu = getQuickActionMenu(cesdk, 'image');
   const quickActionMenuForText = getQuickActionMenu(cesdk, 'text');
 
+  cesdk.i18n.setTranslations({
+    en: {
+      'ly.img.ai.quickAction.remixPage': 'Remix Page',
+      'ly.img.ai.quickAction.remixPage.prompt.inputLabel': 'Remix Page Prompt',
+      'ly.img.ai.quickAction.remixPage.prompt.placeholder':
+        'e.g. rearrange the layout to...',
+      'ly.img.ai.quickAction.remixPage.apply': 'Remix'
+    }
+  });
+
   quickActionMenu.setQuickActionMenuOrder([
     'swapBackground',
     'changeImage',
     'createVariant',
     'combineImages',
+    'ly.img.separator',
+    'remixPage',
     'ly.img.separator',
     ...quickActionMenu.getQuickActionMenuOrder()
   ]);
@@ -268,6 +280,72 @@ function createQuickActions(
         );
       },
       cesdk
+    }),
+    QuickActionBasePrompt<GptImage1Input, GptImage1Output>({
+      quickAction: {
+        id: 'remixPage',
+        version: '1',
+        confirmation: false,
+        lockDuringConfirmation: false,
+        scopes: ['lifecycle/duplicate'],
+        enable: ({ engine }) => {
+          const blockIds = engine.block.findAllSelected();
+          if (blockIds.length !== 1) return false;
+          const blockId = blockIds[0];
+          const type = engine.block.getType(blockId);
+          return type === '//ly.img.ubq/page';
+        }
+      },
+      onApply: async (prompt, context) => {
+        const engine = cesdk.engine;
+        const [page] = engine.block.findAllSelected();
+
+        const exportedPageBlob = await engine.block.export(page);
+        const exportedPageUrl = URL.createObjectURL(exportedPageBlob);
+
+        const duplicatedPage = engine.block.duplicate(page);
+        engine.block.getChildren(duplicatedPage).forEach((childId) => {
+          engine.block.destroy(childId);
+        });
+        engine.block.setSelected(page, false);
+
+        const width = cesdk.engine.block.getFrameWidth(page);
+        const height = cesdk.engine.block.getFrameHeight(page);
+        const positionX = cesdk.engine.block.getPositionX(page);
+        const positionY = cesdk.engine.block.getPositionY(page);
+
+        const shape = cesdk.engine.block.createShape('rect');
+        const rasterizedPageBlock = cesdk.engine.block.create('graphic');
+
+        cesdk.engine.block.setShape(rasterizedPageBlock, shape);
+        cesdk.engine.block.appendChild(duplicatedPage, rasterizedPageBlock);
+        cesdk.engine.block.setWidth(rasterizedPageBlock, width);
+        cesdk.engine.block.setHeight(rasterizedPageBlock, height);
+        cesdk.engine.block.setPositionX(rasterizedPageBlock, positionX);
+        cesdk.engine.block.setPositionY(rasterizedPageBlock, positionY);
+
+        const fillBlock = cesdk.engine.block.createFill('image');
+        cesdk.engine.block.setFill(rasterizedPageBlock, fillBlock);
+
+        cesdk.engine.block.setString(
+          fillBlock,
+          'fill/image/imageFileURI',
+          exportedPageUrl
+        );
+
+        engine.block.setSelected(rasterizedPageBlock, true);
+        engine.scene.zoomToBlock(rasterizedPageBlock);
+
+        return context.generate(
+          {
+            image_url: exportedPageUrl,
+            prompt
+          },
+          {
+            blockIds: [rasterizedPageBlock]
+          }
+        );
+      }
     })
   ];
 }
