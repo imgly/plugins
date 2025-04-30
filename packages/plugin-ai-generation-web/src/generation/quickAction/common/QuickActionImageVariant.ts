@@ -69,47 +69,49 @@ function QuickActionImageVariant<I, O extends ImageOutput>(options: {
           return false;
         }
 
-        const parent = context.engine.block.getParent(blockId);
-        const isBackgroundClip =
-          parent != null &&
-          context.engine.block.getType(parent) === '//ly.img.ubq/track' &&
-          context.engine.block.isPageDurationSource(parent);
-
-        if (isBackgroundClip) {
-          return false;
-        }
-
-        const blockType = context.engine.block.getType(blockId);
-        if (blockType === '//ly.img.ubq/page') return false;
         return true;
       }
     },
     onApply: async (prompt, context) => {
       const engine = options.cesdk.engine;
       const [blockId] = engine.block.findAllSelected();
+      const type = engine.block.getType(blockId);
 
       // Duplicate the selected block
       const duplicated = engine.block.duplicate(blockId);
+      if (type === '//ly.img.ubq/page') {
+        engine.block.getChildren(duplicated).forEach((childId) => {
+          engine.block.destroy(childId);
+        });
+      }
       engine.block.setSelected(blockId, false);
       engine.block.setSelected(duplicated, true);
 
-      // Offset the duplicated block
       const parent = engine.block.getParent(duplicated);
       if (parent == null) throw new Error('Parent not found');
 
-      const offsetFactor = 1.0;
-      const parentWidth = engine.block.getWidth(parent);
-      const parentHeight = engine.block.getHeight(parent);
-      const offset = 0.02 * Math.min(parentWidth, parentHeight) * offsetFactor;
+      const isBackgroundClip =
+        parent != null &&
+        engine.block.getType(parent) === '//ly.img.ubq/track' &&
+        engine.block.isPageDurationSource(parent);
 
-      engine.block.setPositionX(
-        duplicated,
-        engine.block.getPositionX(duplicated) + offset
-      );
-      engine.block.setPositionY(
-        duplicated,
-        engine.block.getPositionY(duplicated) + offset
-      );
+      // Offset the duplicated block unless it is a background track
+      if (!isBackgroundClip && type !== '//ly.img.ubq/page') {
+        const offsetFactor = 1.0;
+        const parentWidth = engine.block.getWidth(parent);
+        const parentHeight = engine.block.getHeight(parent);
+        const offset =
+          0.02 * Math.min(parentWidth, parentHeight) * offsetFactor;
+
+        engine.block.setPositionX(
+          duplicated,
+          engine.block.getPositionX(duplicated) + offset
+        );
+        engine.block.setPositionY(
+          duplicated,
+          engine.block.getPositionY(duplicated) + offset
+        );
+      }
 
       // Get the source of the duplicated block
       const uri = await getImageUri(duplicated, options.cesdk.engine, {
