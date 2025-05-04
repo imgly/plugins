@@ -13,8 +13,10 @@ import {
   CommonProperties,
   getQuickActionMenu,
   Middleware,
+  QuickActionBasePrompt,
   QuickAction,
-  type Provider
+  type Provider,
+  getPanelId
 } from '@imgly/plugin-ai-generation-web';
 import GptImage1Schema from './GptImage1.image2image.json';
 import CreativeEditorSDK, { MimeType } from '@cesdk/cesdk-js';
