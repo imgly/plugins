@@ -47,7 +47,7 @@ export interface RateLimitOptions<I> {
   /**
    * Disable the rate limit middleware
    */
-  disable?: boolean;
+  disable?: boolean | (() => boolean);
 }
 
 // Store for tracking requests per key
@@ -276,7 +276,11 @@ function rateLimitMiddleware<I, O extends Output>(
   const inMemoryStore = inMemoryStores.get(instanceId)!;
 
   const middleware: Middleware<I, O> = async (input, options, next) => {
-    if (middlewareOptions.disable) {
+    if (
+      typeof middlewareOptions.disable === 'function'
+        ? middlewareOptions.disable()
+        : middlewareOptions.disable
+    ) {
       return next(input, options);
     }
     // Get rate limit key based on input using the provided keyFn
