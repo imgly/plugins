@@ -54,7 +54,8 @@ function getProvider(
     'https://cdn.img.ly/assets/plugins/plugin-ai-image-generation-web/v1/gpt-image-1/';
   const styleAssetSourceId = `${modelKey}/styles`;
   const styleAssetSource = createStyleAssetSource(styleAssetSourceId, {
-    baseURL
+    baseURL,
+    includeNone: true
   });
   addStyleAssetSource(styleAssetSource, { cesdk });
 

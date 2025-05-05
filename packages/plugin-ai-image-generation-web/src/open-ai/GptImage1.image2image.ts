@@ -18,12 +18,18 @@ import {
   QuickAction,
   type Provider,
   QuickActionBaseSelect,
-  enableQuickActionForImageFill
+  QuickActionBaseLibrary,
+  enableQuickActionForImageFill,
+  QuickActionBaseButton
 } from '@imgly/plugin-ai-generation-web';
 import GptImage1Schema from './GptImage1.image2image.json';
 import CreativeEditorSDK, { MimeType } from '@cesdk/cesdk-js';
 import { b64JsonToBlob } from './utils';
-import { STYLES } from './GptImage1.styles';
+import {
+  addStyleAssetSource,
+  createStyleAssetSource,
+  STYLES
+} from './GptImage1.styles';
 
 type GptImage1Input = {
   prompt: string;
@@ -56,25 +62,38 @@ function getProvider(
   cesdk: CreativeEditorSDK,
   config: ProviderConfiguration
 ): Provider<'image', GptImage1Input, GptImage1Output> {
+  const modelKey = 'open-ai/gpt-image-1/image2image';
   cesdk.ui.addIconSet('@imgly/plugin/formats', Icons.Formats);
+  const baseURL =
+    'https://cdn.img.ly/assets/plugins/plugin-ai-image-generation-web/v1/gpt-image-1/';
 
-  const quickActions = createQuickActions(cesdk);
+  const quickActions = createQuickActions({ cesdk, modelKey });
   const quickActionMenu = getQuickActionMenu(cesdk, 'image');
   const quickActionMenuForText = getQuickActionMenu(cesdk, 'text');
+
+  const styleAssetSourceId = `${modelKey}/styles`;
+  const styleAssetSource = createStyleAssetSource(styleAssetSourceId, {
+    baseURL
+  });
+  addStyleAssetSource(styleAssetSource, { cesdk });
 
   cesdk.i18n.setTranslations({
     en: {
       'ly.img.ai.quickAction.changeStyle': 'Change Style',
-      'ly.img.ai.quickAction.remixPage': 'Remix Page',
-      'ly.img.ai.quickAction.remixPage.prompt.inputLabel': 'Remix Page Prompt',
-      'ly.img.ai.quickAction.remixPage.prompt.placeholder':
+      'ly.img.ai.quickAction.changeStyleLibrary': 'Change Style',
+      'ly.img.ai.quickAction.remixPage': 'Turn Page into Image',
+      'ly.img.ai.quickAction.remixPageWithPrompt': 'Remix Page',
+      'ly.img.ai.quickAction.remixPageWithPrompt.prompt.inputLabel':
+        'Remix Page Prompt',
+      'ly.img.ai.quickAction.remixPageWithPrompt.prompt.placeholder':
         'e.g. rearrange the layout to...',
-      'ly.img.ai.quickAction.remixPage.apply': 'Remix'
+      'ly.img.ai.quickAction.remixPageWithPrompt.apply': 'Remix'
     }
   });
 
   quickActionMenu.setQuickActionMenuOrder([
-    'changeStyle',
+    'changeStyleLibrary',
+    // 'changeStyle',
     'ly.img.separator',
     'swapBackground',
     'changeImage',
@@ -93,7 +112,7 @@ function getProvider(
   ]);
 
   const provider: Provider<'image', GptImage1Input, GptImage1Output> = {
-    id: 'open-ai/gpt-image-1/image2image',
+    id: modelKey,
     kind: 'image',
     name: 'gpt-image-1',
     input: {
@@ -231,13 +250,44 @@ function getProvider(
   return provider;
 }
 
-function createQuickActions(
-  cesdk: CreativeEditorSDK
-): QuickAction<GptImage1Input, GptImage1Output>[] {
+function createQuickActions(options: {
+  cesdk: CreativeEditorSDK;
+  modelKey: string;
+}): QuickAction<GptImage1Input, GptImage1Output>[] {
+  const { cesdk, modelKey } = options;
   return [
+    QuickActionBaseLibrary<GptImage1Input, GptImage1Output>({
+      cesdk: options.cesdk,
+      entries: [`${modelKey}/styles`],
+      quickAction: {
+        id: 'changeStyleLibrary',
+        version: '1',
+        confirmation: true,
+        lockDuringConfirmation: false,
+        scopes: ['fill/change'],
+        enable: enableQuickActionForImageFill()
+      },
+      onApply: async (input, context) => {
+        const [blockId] = cesdk.engine.block.findAllSelected();
+        const uri = await getImageUri(blockId, cesdk.engine, {
+          throwErrorIfSvg: true
+        });
+
+        const styleId = input.assetResult.id;
+        const style = STYLES.find(({ id }) => id === styleId);
+        if (style == null) {
+          throw new Error(`Style not found: ${styleId}`);
+        }
+
+        return context.generate({
+          prompt: style.prompt,
+          image_url: uri
+        });
+      }
+    }),
     QuickActionBaseSelect<GptImage1Input, GptImage1Output>({
       cesdk,
-      items: STYLES.filter((style) => style.id !== 'none'),
+      items: STYLES.filter(({ id }) => id !== 'none'),
       quickAction: {
         id: 'changeStyle',
         version: '1',
@@ -312,9 +362,76 @@ function createQuickActions(
       },
       cesdk
     }),
-    QuickActionBasePrompt<GptImage1Input, GptImage1Output>({
+    QuickActionBaseButton<GptImage1Input, GptImage1Output>({
       quickAction: {
         id: 'remixPage',
+        version: '1',
+        confirmation: false,
+        lockDuringConfirmation: false,
+        scopes: ['lifecycle/duplicate'],
+        enable: ({ engine }) => {
+          const blockIds = engine.block.findAllSelected();
+          if (blockIds.length !== 1) return false;
+          const blockId = blockIds[0];
+          const type = engine.block.getType(blockId);
+          return type === '//ly.img.ubq/page';
+        }
+      },
+      onClick: async (context) => {
+        const engine = cesdk.engine;
+        const [page] = engine.block.findAllSelected();
+
+        const exportedPageBlob = await engine.block.export(page);
+        const exportedPageUrl = URL.createObjectURL(exportedPageBlob);
+
+        const duplicatedPage = engine.block.duplicate(page);
+        engine.block.getChildren(duplicatedPage).forEach((childId) => {
+          engine.block.destroy(childId);
+        });
+        engine.block.setSelected(page, false);
+
+        const width = cesdk.engine.block.getFrameWidth(page);
+        const height = cesdk.engine.block.getFrameHeight(page);
+        const positionX = cesdk.engine.block.getPositionX(page);
+        const positionY = cesdk.engine.block.getPositionY(page);
+
+        const shape = cesdk.engine.block.createShape('rect');
+        const rasterizedPageBlock = cesdk.engine.block.create('graphic');
+
+        cesdk.engine.block.setShape(rasterizedPageBlock, shape);
+        cesdk.engine.block.appendChild(duplicatedPage, rasterizedPageBlock);
+        cesdk.engine.block.setWidth(rasterizedPageBlock, width);
+        cesdk.engine.block.setHeight(rasterizedPageBlock, height);
+        cesdk.engine.block.setPositionX(rasterizedPageBlock, positionX);
+        cesdk.engine.block.setPositionY(rasterizedPageBlock, positionY);
+
+        const fillBlock = cesdk.engine.block.createFill('image');
+        cesdk.engine.block.setFill(rasterizedPageBlock, fillBlock);
+
+        cesdk.engine.block.setString(
+          fillBlock,
+          'fill/image/imageFileURI',
+          exportedPageUrl
+        );
+
+        engine.block.setSelected(rasterizedPageBlock, true);
+        engine.scene.zoomToBlock(rasterizedPageBlock);
+
+        context.generate(
+          {
+            image_url: exportedPageUrl,
+            prompt:
+              'Follow instructions but don’t add the instructions for the image'
+          },
+          {
+            blockIds: [rasterizedPageBlock]
+          }
+        );
+      }
+    }),
+    QuickActionBasePrompt<GptImage1Input, GptImage1Output>({
+      quickAction: {
+        id: 'remixPageWithPrompt',
         version: '1',
         confirmation: false,
         lockDuringConfirmation: false,
