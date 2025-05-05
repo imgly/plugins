@@ -182,13 +182,26 @@ function getProvider(
         ) {
           prompt = `${prompt}, ${stylePrompt.prompt}`;
         }
+        const hasGlobalAPIKey =
+          cesdk.ui.experimental.hasGlobalStateValue('OPENAI_API_KEY');
 
-        const response = await fetch(`${config.proxyUrl}/images/generations`, {
+        const baseUrl = hasGlobalAPIKey
+          ? 'https://api.openai.com/v1'
+          : config.proxyUrl;
+
+        const response = await fetch(`${baseUrl}/images/generations`, {
           signal: abortSignal,
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
+          headers: hasGlobalAPIKey
+            ? {
+                Authorization: `Bearer ${cesdk.ui.experimental.getGlobalStateValue(
+                  'OPENAI_API_KEY'
+                )}`,
+                'Content-Type': 'application/json'
+              }
+            : {
+                'Content-Type': 'application/json'
+              },
           body: JSON.stringify({
             model: 'gpt-image-1',
             prompt,

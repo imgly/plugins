@@ -223,9 +223,23 @@ function getProvider(
         formData.append('size', 'auto');
         formData.append('n', '1');
 
-        const response = await fetch(`${config.proxyUrl}/images/edits`, {
+        const hasGlobalAPIKey =
+          cesdk.ui.experimental.hasGlobalStateValue('OPENAI_API_KEY');
+
+        const baseUrl = hasGlobalAPIKey
+          ? 'https://api.openai.com/v1'
+          : config.proxyUrl;
+
+        const response = await fetch(`${baseUrl}/images/edits`, {
           signal: abortSignal,
           method: 'POST',
+          headers: hasGlobalAPIKey
+            ? {
+                Authorization: `Bearer ${cesdk.ui.experimental.getGlobalStateValue(
+                  'OPENAI_API_KEY'
+                )}`
+              }
+            : {},
           body: formData
         });
 
