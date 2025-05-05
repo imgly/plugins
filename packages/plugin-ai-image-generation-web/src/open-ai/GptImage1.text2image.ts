@@ -1,4 +1,4 @@
-import { CustomAssetSource, Icons } from '@imgly/plugin-utils';
+import { Icons } from '@imgly/plugin-utils';
 import {
   getPanelId,
   Middleware,
@@ -7,6 +7,11 @@ import {
 import GptImage1Schema from './GptImage1.text2image.json';
 import CreativeEditorSDK, { AssetResult } from '@cesdk/cesdk-js';
 import { b64JsonToBlob } from './utils';
+import {
+  addStyleAssetSource,
+  createStyleAssetSource,
+  STYLES
+} from './GptImage1.styles';
 
 type StyleSelectionPayload = {
   onSelect: (asset: AssetResult) => Promise<void>;
@@ -48,35 +53,10 @@ function getProvider(
   const baseURL =
     'https://cdn.img.ly/assets/plugins/plugin-ai-image-generation-web/v1/gpt-image-1/';
   const styleAssetSourceId = `${modelKey}/styles`;
-  const styleAssetSource = new CustomAssetSource(
-    styleAssetSourceId,
-    STYLES.map(({ id, label }) => {
-      if (id === 'none') {
-        return {
-          id,
-          label,
-          thumbUri: `${baseURL}/thumbnails/None.svg`
-        };
-      }
-      return {
-        id,
-        label,
-        thumbUri: `${baseURL}/thumbnails/${id}.jpeg`
-      };
-    })
-  );
-  const defaultStyle = STYLES[0];
-  styleAssetSource.setAssetActive(defaultStyle.id);
-
-  cesdk.engine.asset.addSource(styleAssetSource);
-  cesdk.ui.addAssetLibraryEntry({
-    id: styleAssetSourceId,
-    sourceIds: [styleAssetSourceId],
-    gridItemHeight: 'square',
-    gridBackgroundType: 'cover',
-    cardLabel: ({ label }) => label,
-    cardLabelPosition: () => 'below'
+  const styleAssetSource = createStyleAssetSource(styleAssetSourceId, {
+    baseURL
   });
+  addStyleAssetSource(styleAssetSource, { cesdk });
 
   cesdk.ui.registerPanel<StyleSelectionPayload>(
     `${getPanelId(modelKey)}.styleSelection`,
@@ -117,7 +97,12 @@ function getProvider(
             const styleState = state<{
               id: string;
               label: string;
-            }>('style', defaultStyle);
+            }>(
+              'style',
+              styleAssetSource.getAssetSelectValue(
+                styleAssetSource.getActiveAssetIds()[0]
+              ) ?? STYLES[0]
+            );
 
             // Show the style library for the selected type.
             builder.Button(`${property.id}`, {
@@ -154,7 +139,8 @@ function getProvider(
               return {
                 id: property.id,
                 type: 'string',
-                value: styleState.value.id ?? defaultStyle.id
+                value:
+                  styleState.value.id ?? styleAssetSource.getActiveAssetIds()[0]
               };
             };
           }
@@ -230,90 +216,5 @@ function getProvider(
 
   return provider;
 }
-
-const STYLES = [
-  {
-    id: 'none',
-    label: 'None',
-    prompt: ''
-  },
-  {
-    id: 'anime-celshaded',
-    label: 'Anime Cel‑Shaded',
-    prompt:
-      'anime cel‑shaded, bright pastel palette, expressive eyes, clean line art '
-  },
-  {
-    id: 'cyberpunk-neon',
-    label: 'Cyberpunk Neon',
-    prompt:
-      'cyberpunk cityscape, glowing neon signage, reflective puddles, dark atmosphere'
-  },
-  {
-    id: 'kodak-portra-400',
-    label: 'Kodak Portra 400',
-    prompt:
-      'shot on Kodak Portra 400, soft grain, golden‑hour warmth, 35 mm photo'
-  },
-  {
-    id: 'watercolor-storybook',
-    label: 'Watercolor Storybook',
-    prompt: 'loose watercolor washes, gentle gradients, dreamy storybook feel'
-  },
-  {
-    id: 'dark-fantasy-realism',
-    label: 'Dark Fantasy Realism',
-    prompt:
-      'dark fantasy realm, moody chiaroscuro lighting, hyper‑real textures'
-  },
-  {
-    id: 'vaporwave-retrofuturism',
-    label: 'Vaporwave Retro‑Futurism',
-    prompt:
-      'retro‑futuristic vaporwave, pastel sunset gradient, chrome text, VHS scanlines'
-  },
-  {
-    id: 'minimal-vector-flat',
-    label: 'Minimal Vector Flat',
-    prompt:
-      'minimalist flat vector illustration, bold geometry, two‑tone palette'
-  },
-  {
-    id: 'pixarstyle-3d-render',
-    label: 'Pixar‑Style 3D Render',
-    prompt:
-      'Pixar‑style 3D render, oversized eyes, subtle subsurface scattering, cinematic lighting'
-  },
-  {
-    id: 'ukiyoe-woodblock',
-    label: 'Ukiyo‑e Woodblock',
-    prompt:
-      'ukiyo‑e woodblock print, Edo‑period style, visible washi texture, limited color ink'
-  },
-  {
-    id: 'surreal-dreamscape',
-    label: 'Surreal Dreamscape',
-    prompt:
-      'surreal dreamscape, floating objects, impossible architecture, vivid clouds'
-  },
-  {
-    id: 'steampunk-victorian',
-    label: 'Steampunk Victorian',
-    prompt:
-      'Victorian steampunk world, ornate brass gears, leather attire, atmospheric fog'
-  },
-  {
-    id: 'nightstreet-photo-bokeh',
-    label: 'Night‑Street Photo (Bokeh)',
-    prompt:
-      'night‑time street shot, large aperture bokeh lights, candid urban mood'
-  },
-  {
-    id: 'comicbook-pop-art',
-    label: 'Comic‑Book Pop Art',
-    prompt:
-      'classic comic‑book panel, halftone shading, exaggerated action lines, CMYK pop colors'
-  }
-];
 
 export default getProvider;

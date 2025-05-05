@@ -1,6 +1,7 @@
 import {
   bufferURIToObjectURL,
   getImageDimensionsFromURL,
+  getImageUri,
   Icons,
   mimeTypeToExtension
 } from '@imgly/plugin-utils';
@@ -16,11 +17,13 @@ import {
   QuickActionBasePrompt,
   QuickAction,
   type Provider,
-  getPanelId
+  QuickActionBaseSelect,
+  enableQuickActionForImageFill
 } from '@imgly/plugin-ai-generation-web';
 import GptImage1Schema from './GptImage1.image2image.json';
 import CreativeEditorSDK, { MimeType } from '@cesdk/cesdk-js';
 import { b64JsonToBlob } from './utils';
+import { STYLES } from './GptImage1.styles';
 
 type GptImage1Input = {
   prompt: string;
@@ -61,6 +64,7 @@ function getProvider(
 
   cesdk.i18n.setTranslations({
     en: {
+      'ly.img.ai.quickAction.changeStyle': 'Change Style',
       'ly.img.ai.quickAction.remixPage': 'Remix Page',
       'ly.img.ai.quickAction.remixPage.prompt.inputLabel': 'Remix Page Prompt',
       'ly.img.ai.quickAction.remixPage.prompt.placeholder':
@@ -70,6 +74,8 @@ function getProvider(
   });
 
   quickActionMenu.setQuickActionMenuOrder([
+    'changeStyle',
+    'ly.img.separator',
     'swapBackground',
     'changeImage',
     'createVariant',
@@ -229,6 +235,29 @@ function createQuickActions(
   cesdk: CreativeEditorSDK
 ): QuickAction<GptImage1Input, GptImage1Output>[] {
   return [
+    QuickActionBaseSelect<GptImage1Input, GptImage1Output>({
+      cesdk,
+      items: STYLES.filter((style) => style.id !== 'none'),
+      quickAction: {
+        id: 'changeStyle',
+        version: '1',
+        confirmation: true,
+        lockDuringConfirmation: false,
+        scopes: ['fill/change'],
+        enable: enableQuickActionForImageFill()
+      },
+      onApply: async (input, context) => {
+        const [blockId] = cesdk.engine.block.findAllSelected();
+        const uri = await getImageUri(blockId, cesdk.engine, {
+          throwErrorIfSvg: true
+        });
+
+        return context.generate({
+          prompt: input.item.prompt,
+          image_url: uri
+        });
+      }
+    }),
     QuickActionEditTextStyle<GptImage1Input, GptImage1Output>({
       onApply: async ({ prompt, uri, duplicatedBlockId }, context) => {
         // Generate a variant for the duplicated block
