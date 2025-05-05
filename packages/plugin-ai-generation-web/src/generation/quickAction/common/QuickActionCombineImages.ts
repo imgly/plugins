@@ -1,7 +1,6 @@
 import CreativeEditorSDK from '@cesdk/cesdk-js';
 import { ImageOutput, QuickAction, QuickActionContext } from '../../provider';
 import QuickActionBasePrompt from './QuickActionBasePrompt';
-import enableImageFill from './enableImageFill';
 import { getImageUri } from '@imgly/plugin-utils';
 
 function QuickActionCombineImages<I, O extends ImageOutput>(options: {
