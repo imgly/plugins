@@ -56,6 +56,7 @@ export { default as registerQuickActionMenuComponent } from './generation/quickA
 export { default as QuickActionBasePrompt } from './generation/quickAction/common/QuickActionBasePrompt';
 export { default as QuickActionBaseButton } from './generation/quickAction/common/QuickActionBaseButton';
 export { default as QuickActionBaseSelect } from './generation/quickAction/common/QuickActionBaseSelect';
+export { default as QuickActionBaseLibrary } from './generation/quickAction/common/QuickActionBaseLibrary';
 
 export { default as QuickActionEditTextStyle } from './generation/quickAction/common/QuickActionEditTextStyle';
 export { default as QuickActionChangeImage } from './generation/quickAction/common/QuickActionChangeImage';
