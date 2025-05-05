@@ -1,0 +1,92 @@
+{
+  "private": true,
+  "name": "@imgly/plugin-gpt-demo-web",
+  "version": "0.0.0",
+  "description": "GPT Demo",
+  "keywords": ["CE.SDK", "plugin", "AI", "GPT"],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/imgly/plugins.git"
+  },
+  "license": "SEE LICENSE IN LICENSE.md",
+  "author": {
+    "name": "IMG.LY GmbH",
+    "email": "support@img.ly",
+    "url": "https://img.ly"
+  },
+  "bugs": {
+    "email": "support@img.ly"
+  },
+  "source": "./src/index.ts",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "homepage": "https://img.ly/products/creative-sdk",
+  "files": ["LICENSE.md", "README.md", "CHANGELOG.md", "dist/", "bin/"],
+  "scripts": {
+    "start": "npm run watch",
+    "clean": "pnpm exec rimraf dist",
+    "purge": "pnpm exec rimraf node_modules",
+    "build": "pnpm run clean && pnpm _syncPnpm && pnpm exec node scripts/build.mjs",
+    "test": "echo No tests",
+    "dev": "pnpm --filter \"${npm_package_name}^...\" --parallel run dev:wait && pnpm exec concurrently 'node scripts/watch.mjs' 'pnpm _syncPnpm --watch' --names 'build,sync deps'",
+    "dev:wait": "pnpm exec wait-on ./dist/index.mjs ./dist/index.d.ts --window 250 --timeout 30000",
+    "dev:types": "tsc --emitDeclarationOnly --watch --preserveWatchOutput",
+    "publish:latest": "pnpm run build && npm publish --tag latest --access public",
+    "publish:next": "pnpm run build && npm publish --tag next --access public",
+    "check:all": "concurrently -n type,pretty \"pnpm run check:types\" \"pnpm run check:pretty\"",
+    "check:pretty": "prettier --list-different './src/**/*.{ts,tsx}'",
+    "check:types": "tsc --noEmit",
+    "types:create": "tsc --emitDeclarationOnly",
+    "_syncPnpm": "pnpm sync-dependencies-meta-injected"
+  },
+  "devDependencies": {
+    "@types/ndarray": "^1.0.14",
+    "chalk": "^5.3.0",
+    "concurrently": "^8.2.2",
+    "esbuild": "^0.19.11",
+    "eslint": "^8.51.0",
+    "lodash-es": "^4.17.21",
+    "typescript": "^5.3.3"
+  },
+  "dependenciesMeta": {
+    "@imgly/plugin-ai-apps-web": {
+      "injected": true
+    },
+    "@imgly/plugin-ai-generation-web": {
+      "injected": true
+    },
+    "@imgly/plugin-ai-text-generation-web": {
+      "injected": true
+    },
+    "@imgly/plugin-ai-image-generation-web": {
+      "injected": true
+    },
+    "@imgly/plugin-ai-video-generation-web": {
+      "injected": true
+    },
+    "@imgly/plugin-ai-audio-generation-web": {
+      "injected": true
+    },
+    "@imgly/plugin-utils": {
+      "injected": true
+    }
+  },
+  "dependencies": {
+    "@cesdk/cesdk-js": "^1.49.1",
+    "@cesdk/engine": "^1.49.1",
+    "@imgly/plugin-ai-apps-web": "workspace:*",
+    "@imgly/plugin-ai-audio-generation-web": "workspace:*",
+    "@imgly/plugin-ai-generation-web": "workspace:*",
+    "@imgly/plugin-ai-image-generation-web": "workspace:*",
+    "@imgly/plugin-ai-text-generation-web": "workspace:*",
+    "@imgly/plugin-ai-video-generation-web": "workspace:*",
+    "@imgly/plugin-utils": "workspace:*",
+    "dotenv": "^16.5.0"
+  }
+}
