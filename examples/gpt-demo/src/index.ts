@@ -201,6 +201,7 @@ function initialize(
           });
         };
 
+        instance.engine.scene.setDesignUnit('Pixel');
         instance.addPlugin(
           AiApps({
             debug: true,
