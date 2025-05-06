@@ -36,7 +36,11 @@ export default ({ isDevelopment }) => {
   config.outfile = undefined;
   config.define = {
     ...config.define,
-    'process.env.CESDK_LICENSE': JSON.stringify(process.env.CESDK_LICENSE)
+    'process.env.CESDK_LICENSE': JSON.stringify(
+      isDevelopment && 'CESDK_LICENSE' in process.env
+        ? process.env.CESDK_LICENSE
+        : ''
+    )
   };
 
   return config;

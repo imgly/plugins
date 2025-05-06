@@ -9,12 +9,18 @@ import { rateLimitMiddleware } from '@imgly/plugin-ai-generation-web';
 import { Middleware } from '@imgly/plugin-ai-generation-web';
 import { RateLimitOptions } from '@imgly/plugin-ai-generation-web';
 
-function initialize(selector: string) {
+function initialize(
+  selector: string,
+  options?: {
+    archiveUrl?: string;
+    license?: string;
+  }
+) {
   document.addEventListener('DOMContentLoaded', function () {
     const domElement = document.querySelector<HTMLDivElement>(selector);
     if (domElement != null) {
       CreativeEditorSDK.create(domElement, {
-        license: process.env.CESDK_LICENSE,
+        license: options?.license ?? process.env.CESDK_LICENSE ?? '',
         userId: 'plugins-vercel',
         callbacks: {
           onUpload: 'local',
@@ -41,7 +47,7 @@ function initialize(selector: string) {
 
         await Promise.all([
           instance.addDefaultAssetSources(),
-          instance.addDemoAssetSources({ sceneMode: 'Video' })
+          instance.addDemoAssetSources({ sceneMode: 'Design' })
         ]);
 
         instance.ui.setDockOrder([
@@ -56,17 +62,16 @@ function initialize(selector: string) {
         instance.ui.setCanvasMenuOrder([
           'ly.img.ai.text.canvasMenu',
           `ly.img.ai.image.canvasMenu`,
+          'ly.img.separator',
           ...instance.ui.getCanvasMenuOrder()
         ]);
 
         instance.feature.enable('ly.img.preview', false);
         instance.feature.enable('ly.img.placeholder', false);
 
-        // await instance.engine.scene.loadFromArchiveURL(
-        //   `https://img.ly/showcases/cesdk/cases/ai-editor/ai_editor_video.archive`
-        // );
         await instance.engine.scene.loadFromArchiveURL(
-          `https://img.ly/showcases/cesdk/cases/ai-editor/ai_editor_design.archive`
+          options?.archiveUrl ??
+            'https://ubique.img.ly/static/gpt-demo/gpt-template-v1.zip'
         );
 
         instance.i18n.setTranslations({
@@ -177,6 +182,10 @@ function initialize(selector: string) {
         ) => {
           return next(input, options).catch((error) => {
             console.error('Error:', error);
+            if (error.name === 'AbortError') {
+              // Ignore abort errors
+              return;
+            }
             instance.ui.showDialog({
               type: 'warning',
               size: 'large',
@@ -201,7 +210,7 @@ function initialize(selector: string) {
                 middleware: [
                   errorMiddleware,
                   rateLimitMiddleware({
-                    maxRequests: 50,
+                    maxRequests: 500,
                     ...rateLimitMiddlewareConfig
                   })
                 ],
