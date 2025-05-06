@@ -17,6 +17,13 @@ function renderImageUrlProperty(
 ): RenderCustomProperty {
   const { cesdk } = options;
   const propertyKey = options.propertyKey ?? 'image_url';
+  const panelIdForImageSelection = getImageSelectionPanelId(provderId);
+
+  cesdk.i18n.setTranslations({
+    en: {
+      [`panel.${panelIdForImageSelection}`]: 'Select Image To Change'
+    }
+  });
 
   createPanels(provderId, cesdk);
 
@@ -43,8 +50,7 @@ function renderImageUrlProperty(
           onClick: () => {
             if (cesdk == null) return;
 
-            const panelId = getImageSelectionPanelId(provderId);
-            cesdk.ui.openPanel(panelId, {
+            cesdk.ui.openPanel(panelIdForImageSelection, {
               payload: {
                 onSelect: (assetResult: AssetResult) => {
                   if (assetResult.meta?.uri != null) {
