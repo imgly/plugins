@@ -13,6 +13,11 @@
               "component": "TextArea"
             }
           },
+          "style": {
+            "title": "Style",
+            "type": "string",
+            "description": "The style of the generated images."
+          },
           "size": {
             "enum": ["1024x1024", "1536x1024", "1024x1536"],
             "type": "string",
@@ -41,7 +46,7 @@
             }
           }
         },
-        "x-order-properties": ["prompt", "size", "background"],
+        "x-order-properties": ["prompt", "style", "size", "background"],
         "required": ["prompt"]
       }
     }

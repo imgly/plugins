@@ -60,6 +60,76 @@ importers:
         specifier: 8.0.2
         version: 8.0.2
 
+  examples/gpt-demo:
+    dependencies:
+      '@cesdk/cesdk-js':
+        specifier: ^1.49.1
+        version: 1.49.1(react@18.3.1)
+      '@cesdk/engine':
+        specifier: ^1.49.1
+        version: 1.49.1(react@18.3.1)
+      '@imgly/plugin-ai-apps-web':
+        specifier: workspace:*
+        version: file:packages/plugin-ai-apps-web(@cesdk/cesdk-js@1.49.1(react@18.3.1))
+      '@imgly/plugin-ai-audio-generation-web':
+        specifier: workspace:*
+        version: file:packages/plugin-ai-audio-generation-web(@cesdk/cesdk-js@1.49.1(react@18.3.1))
+      '@imgly/plugin-ai-generation-web':
+        specifier: workspace:*
+        version: file:packages/plugin-ai-generation-web(@cesdk/cesdk-js@1.49.1(react@18.3.1))
+      '@imgly/plugin-ai-image-generation-web':
+        specifier: workspace:*
+        version: file:packages/plugin-ai-image-generation-web(@cesdk/cesdk-js@1.49.1(react@18.3.1))
+      '@imgly/plugin-ai-text-generation-web':
+        specifier: workspace:*
+        version: file:packages/plugin-ai-text-generation-web(@cesdk/cesdk-js@1.49.1(react@18.3.1))
+      '@imgly/plugin-ai-video-generation-web':
+        specifier: workspace:*
+        version: file:packages/plugin-ai-video-generation-web(@cesdk/cesdk-js@1.49.1(react@18.3.1))
+      '@imgly/plugin-utils':
+        specifier: workspace:*
+        version: file:packages/plugin-utils(@cesdk/cesdk-js@1.49.1(react@18.3.1))
+      dotenv:
+        specifier: ^16.5.0
+        version: 16.5.0
+    dependenciesMeta:
+      '@imgly/plugin-ai-apps-web':
+        injected: true
+      '@imgly/plugin-ai-audio-generation-web':
+        injected: true
+      '@imgly/plugin-ai-generation-web':
+        injected: true
+      '@imgly/plugin-ai-image-generation-web':
+        injected: true
+      '@imgly/plugin-ai-text-generation-web':
+        injected: true
+      '@imgly/plugin-ai-video-generation-web':
+        injected: true
+      '@imgly/plugin-utils':
+        injected: true
+    devDependencies:
+      '@types/ndarray':
+        specifier: ^1.0.14
+        version: 1.0.14
+      chalk:
+        specifier: ^5.3.0
+        version: 5.4.1
+      concurrently:
+        specifier: ^8.2.2
+        version: 8.2.2
+      esbuild:
+        specifier: ^0.19.11
+        version: 0.19.12
+      eslint:
+        specifier: ^8.51.0
+        version: 8.57.1
+      lodash-es:
+        specifier: ^4.17.21
+        version: 4.17.21
+      typescript:
+        specifier: ^5.3.3
+        version: 5.7.3
+
   examples/web:
     dependencies:
       '@cesdk/cesdk-js':
@@ -1198,7 +1268,6 @@ packages:
     resolution: {integrity: sha512-nmqOBDE9dQpDEJg73XrKNUoWugyyDHEVh+U1akjYdUW85ILh9UilvKu/kdv1MI822rKExwgLNuVLVulzAzgZJg==}
     peerDependencies:
       onnxruntime-web: 1.21.0-dev.20250206-d981b153d3
-    bundledDependencies: []
 
   '@imgly/plugin-ai-apps-web@file:packages/plugin-ai-apps-web':
     resolution: {directory: packages/plugin-ai-apps-web, type: directory}
@@ -2347,6 +2416,10 @@ packages:
     resolution: {integrity: sha512-A2is4PLG+eeSfoTMA95/s4pvAoSo2mKtiM5jlHkAVewmiO8ISFTFKZjH7UAM1Atli/OT/7JHOrJRJiMKUZKYBw==}
     engines: {node: '>=12'}
     deprecated: Use your platform's native DOMException instead
+
+  dotenv@16.5.0:
+    resolution: {integrity: sha512-m/C+AwOAr9/W1UOIZUo232ejMNnJAJtYQjUbHoNTBNTJSvqzzDh7vnrei3o3r3m9blf6ZoDkvcw0VmozNRFJxg==}
+    engines: {node: '>=12'}
 
   dunder-proto@1.0.1:
     resolution: {integrity: sha512-KIN/nDJBQRcXw0MLVhZE9iQHmG68qAVIBg9CqmUYjmQIhgij9U5MFvrqkUL5FbtyyzZuOeOt0zdeRe4UY7ct+A==}
@@ -6278,6 +6351,8 @@ snapshots:
   domexception@4.0.0:
     dependencies:
       webidl-conversions: 7.0.0
+
+  dotenv@16.5.0: {}
 
   dunder-proto@1.0.1:
     dependencies:

@@ -9,9 +9,13 @@ function enableImageFill() {
     if (blockIds == null || blockIds.length !== 1) return false;
 
     const [blockId] = blockIds;
+
+    if (!engine.block.supportsFill(blockId)) return false;
+
     if (
-      engine.block.getType(blockId) !== '//ly.img.ubq/graphic' &&
-      !engine.block.supportsFill(blockId)
+      !['//ly.img.ubq/graphic', '//ly.img.ubq/page'].includes(
+        engine.block.getType(blockId)
+      )
     ) {
       return false;
     }

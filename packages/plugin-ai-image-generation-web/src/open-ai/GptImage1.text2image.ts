@@ -1,11 +1,25 @@
 import { Icons } from '@imgly/plugin-utils';
-import { Middleware, type Provider } from '@imgly/plugin-ai-generation-web';
+import {
+  getPanelId,
+  Middleware,
+  type Provider
+} from '@imgly/plugin-ai-generation-web';
 import GptImage1Schema from './GptImage1.text2image.json';
-import CreativeEditorSDK from '@cesdk/cesdk-js';
+import CreativeEditorSDK, { AssetResult } from '@cesdk/cesdk-js';
 import { b64JsonToBlob } from './utils';
+import {
+  addStyleAssetSource,
+  createStyleAssetSource,
+  STYLES
+} from './GptImage1.styles';
+
+type StyleSelectionPayload = {
+  onSelect: (asset: AssetResult) => Promise<void>;
+};
 
 type GptImage1Input = {
   prompt: string;
+  style?: string;
   size: 'auto' | '1024x1024' | '1536x1024' | '1024x1536';
   background: 'transparent' | 'opaque' | 'auto';
 };
@@ -35,7 +49,37 @@ function getProvider(
   cesdk: CreativeEditorSDK,
   config: ProviderConfiguration
 ): Provider<'image', GptImage1Input, GptImage1Output> {
+  const modelKey = 'open-ai/gpt-image-1/text2image';
+  const baseURL =
+    'https://cdn.img.ly/assets/plugins/plugin-ai-image-generation-web/v1/gpt-image-1/';
+  const styleAssetSourceId = `${modelKey}/styles`;
+  const styleAssetSource = createStyleAssetSource(styleAssetSourceId, {
+    baseURL,
+    includeNone: true
+  });
+  addStyleAssetSource(styleAssetSource, { cesdk });
+
+  cesdk.ui.registerPanel<StyleSelectionPayload>(
+    `${getPanelId(modelKey)}.styleSelection`,
+    ({ builder, payload }) => {
+      if (payload == null) return null;
+
+      builder.Library(`${modelKey}.library.style`, {
+        entries: [styleAssetSourceId],
+        onSelect: async (asset) => {
+          payload.onSelect(asset);
+        }
+      });
+    }
+  );
+
   cesdk.ui.addIconSet('@imgly/plugin/formats', Icons.Formats);
+  cesdk.i18n.setTranslations({
+    en: {
+      [`panel.${getPanelId(modelKey)}.styleSelection`]: 'Style Selection',
+      [`${modelKey}.style`]: 'Style'
+    }
+  });
 
   const provider: Provider<'image', GptImage1Input, GptImage1Output> = {
     id: 'open-ai/gpt-image-1/text2image',
@@ -49,6 +93,59 @@ function getProvider(
         inputReference: '#/components/schemas/GptImage1Input',
         includeHistoryLibrary: true,
         orderExtensionKeyword: 'x-order-properties',
+        renderCustomProperty: {
+          style: ({ builder, state }, property) => {
+            const styleState = state<{
+              id: string;
+              label: string;
+            }>(
+              'style',
+              styleAssetSource.getAssetSelectValue(
+                styleAssetSource.getActiveAssetIds()[0]
+              ) ?? STYLES[0]
+            );
+
+            // Show the style library for the selected type.
+            builder.Button(`${property.id}`, {
+              inputLabel: `${modelKey}.${property.id}`,
+              icon: '@imgly/Appearance',
+              trailingIcon: '@imgly/ChevronRight',
+              label: styleState.value.label,
+              labelAlignment: 'left',
+              onClick: () => {
+                const payload: StyleSelectionPayload = {
+                  onSelect: async (asset) => {
+                    const newValue = {
+                      id: asset.id,
+                      label: asset.label ?? asset.id
+                    };
+
+                    styleAssetSource.clearActiveAssets();
+                    styleAssetSource.setAssetActive(asset.id);
+                    styleState.setValue(newValue);
+
+                    cesdk.ui.closePanel(
+                      `${getPanelId(modelKey)}.styleSelection`
+                    );
+                  }
+                };
+
+                cesdk.ui.openPanel(`${getPanelId(modelKey)}.styleSelection`, {
+                  payload
+                });
+              }
+            });
+
+            return () => {
+              return {
+                id: property.id,
+                type: 'string',
+                value:
+                  styleState.value.id ?? styleAssetSource.getActiveAssetIds()[0]
+              };
+            };
+          }
+        },
         getBlockInput: (input) => {
           switch (input.size) {
             case 'auto':
@@ -75,15 +172,39 @@ function getProvider(
         input: GptImage1Input,
         { abortSignal }: { abortSignal?: AbortSignal }
       ) => {
-        const response = await fetch(`${config.proxyUrl}/images/generations`, {
+        const stylePrompt = STYLES.find((style) => style.id === input.style);
+        let prompt = input.prompt;
+
+        if (
+          stylePrompt != null &&
+          stylePrompt.id !== 'none' &&
+          stylePrompt.prompt
+        ) {
+          prompt = `${prompt}, ${stylePrompt.prompt}`;
+        }
+        const hasGlobalAPIKey =
+          cesdk.ui.experimental.hasGlobalStateValue('OPENAI_API_KEY');
+
+        const baseUrl = hasGlobalAPIKey
+          ? 'https://api.openai.com/v1'
+          : config.proxyUrl;
+
+        const response = await fetch(`${baseUrl}/images/generations`, {
           signal: abortSignal,
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
+          headers: hasGlobalAPIKey
+            ? {
+                Authorization: `Bearer ${cesdk.ui.experimental.getGlobalStateValue(
+                  'OPENAI_API_KEY'
+                )}`,
+                'Content-Type': 'application/json'
+              }
+            : {
+                'Content-Type': 'application/json'
+              },
           body: JSON.stringify({
             model: 'gpt-image-1',
-            prompt: input.prompt,
+            prompt,
             n: 1,
             size: input.size,
             background: input.background

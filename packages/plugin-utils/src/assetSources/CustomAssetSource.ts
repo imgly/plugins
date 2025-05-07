@@ -214,12 +214,46 @@ export class CustomAssetSource implements AssetSource {
   }
 
   /**
+   * Get the asset select value by its ID
+   *
+   * @param assetId - The ID of the asset to retrieve
+   * @returns The SelectValue object for the asset or undefined if not found
+   */
+  getAssetSelectValue(assetId: string): SelectValue | undefined {
+    const asset = this.assets.find(({ id }) => id === assetId);
+    if (asset) {
+      return {
+        id: asset.id,
+        label: asset.label?.en || '',
+        thumbUri: asset.meta?.thumbUri
+      };
+    }
+    return undefined;
+  }
+
+  /**
+   * Get an asset by its ID
+   */
+  getAsset(id: string): AssetDefinition | undefined {
+    return this.assets.find((asset) => asset.id === id);
+  }
+
+  /**
    * Set an asset as active by its ID
    *
    * @param assetId - The ID of the asset to mark as active
    */
   setAssetActive(assetId: string): void {
     this.activeAssetIds.add(assetId);
+  }
+
+  /**
+   * Get all active asset IDs
+   *
+   * @returns Array of active asset IDs
+   */
+  getActiveAssetIds(): string[] {
+    return Array.from(this.activeAssetIds);
   }
 
   /**

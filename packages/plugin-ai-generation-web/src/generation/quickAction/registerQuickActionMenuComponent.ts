@@ -181,6 +181,9 @@ function registerQuickActionMenuComponent<
   const canvasMenuComponentId = `${prefix}.canvasMenu`;
   cesdk.ui.registerComponent(canvasMenuComponentId, (context) => {
     const blockIds = context.engine.block.findAllSelected();
+    const isEveryBlockInReadyState = blockIds.every((blockId) => {
+      return context.engine.block.getState(blockId).type === 'Ready';
+    });
 
     let quickActions = quickActionMenu
       .getQuickActionMenuOrder()
@@ -231,6 +234,7 @@ function registerQuickActionMenuComponent<
     experimental.builder.Popover(`${prefix}.popover`, {
       icon: '@imgly/Sparkle',
       variant: 'plain',
+      isDisabled: !isEveryBlockInReadyState,
       trailingIcon: null,
       children: ({ close }) => {
         builder.Section(`${prefix}.popover.section`, {
