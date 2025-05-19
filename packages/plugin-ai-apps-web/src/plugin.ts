@@ -399,11 +399,25 @@ function overrideAssetLibraryDockComponent(cesdk: CreativeEditorSDK) {
       const entryIds = payloadEntryIds.filter((entryId) => {
         const entry = cesdk.ui.getAssetLibraryEntry(entryId);
         if (entry == null) return false;
-
-        if (entry.sceneMode != null) {
-          return entry.sceneMode === sceneMode;
+        const entrySceneMode = entry.sceneMode;
+        if (typeof entrySceneMode === 'string') {
+          return (
+            entry.sceneMode === sceneMode ||
+            // Changes in the interface in CE.SDK version 1.51.0
+            // We do not want to bump the version for this change.
+            // @ts-ignore
+            entry.sceneMode === 'All'
+          );
         }
-
+        if (typeof entrySceneMode === 'function') {
+          return entry.sourceIds.some((sourceId) => {
+            // Changes in the interface in CE.SDK version 1.51.0
+            // We do not want to bump the version for this change.
+            // @ts-ignore
+            const sourceSceneMode = entrySceneMode(sourceId);
+            return sourceSceneMode === sceneMode || sourceSceneMode === 'All';
+          });
+        }
         return true;
       });
 

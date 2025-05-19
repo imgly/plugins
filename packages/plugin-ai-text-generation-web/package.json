@@ -1,6 +1,6 @@
 {
   "name": "@imgly/plugin-ai-text-generation-web",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "AI text generation plugin for the CE.SDK editor",
   "keywords": ["CE.SDK", "plugin", "AI", "text generation", "llm"],
   "repository": {
