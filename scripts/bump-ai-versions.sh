@@ -1,17 +1,74 @@
 #!/bin/bash
 
-# Check if version is provided
-if [ $# -ne 1 ]; then
-  echo "Usage: $0 <new-version>"
-  echo "Example: $0 1.2.3"
+# Read version from file
+VERSION_FILE=".current-ai-plugin-version"
+
+# Check if version file exists
+if [ ! -f "$VERSION_FILE" ]; then
+  echo "Error: Version file $VERSION_FILE not found"
   exit 1
 fi
 
-NEW_VERSION=$1
+# Get new version from arguments or use the version file content
+if [ $# -eq 1 ]; then
+  NEW_VERSION=$1
+else
+  # Read current version from file
+  CURRENT_VERSION=$(cat "$VERSION_FILE")
+  
+  echo "Current version from $VERSION_FILE: $CURRENT_VERSION"
+  echo "Enter new version (or press Enter to cancel):"
+  read -r NEW_VERSION
+  
+  if [ -z "$NEW_VERSION" ]; then
+    echo "Operation cancelled."
+    exit 0
+  fi
+fi
 
-# Find all AI plugin package.json files directly in packages directory, excluding node_modules
+# Perform sanity check to ensure all AI plugins have the same version
+echo "Performing version sanity check..."
+VERSIONS=()
+
 for pkg in packages/plugin-ai-*/package.json; do
-  # Skip if file doesn't exist (in case the glob doesn't match anything)
+  # Skip if file doesn't exist
+  [ -f "$pkg" ] || continue
+  
+  # Extract version from package.json
+  VERSION=$(grep -E '"version":[[:space:]]*"[^"]+"' "$pkg" | sed -E 's/.*"version":[[:space:]]*"([^"]+)".*/\1/')
+  VERSIONS+=("$VERSION")
+  echo "  $pkg: $VERSION"
+done
+
+# Check if all versions are the same
+FIRST_VERSION="${VERSIONS[0]}"
+VERSIONS_DIFFER=false
+
+for version in "${VERSIONS[@]}"; do
+  if [ "$version" != "$FIRST_VERSION" ]; then
+    VERSIONS_DIFFER=true
+    break
+  fi
+done
+
+if [ "$VERSIONS_DIFFER" = true ]; then
+  echo "Warning: Not all AI plugins have the same version!"
+  echo "Do you want to proceed anyway? (y/n)"
+  read -r CONFIRM
+  
+  if [ "$CONFIRM" != "y" ] && [ "$CONFIRM" != "Y" ]; then
+    echo "Operation cancelled."
+    exit 0
+  fi
+fi
+
+# Update version in the version file
+echo "$NEW_VERSION" > "$VERSION_FILE"
+echo "Updated $VERSION_FILE to $NEW_VERSION"
+
+# Find all AI plugin package.json files directly in packages directory
+for pkg in packages/plugin-ai-*/package.json; do
+  # Skip if file doesn't exist
   [ -f "$pkg" ] || continue
   
   echo "Updating $pkg to version $NEW_VERSION"
