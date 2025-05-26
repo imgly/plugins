@@ -1,4 +1,5 @@
-import { Output, QuickAction } from '../provider';
+import { Output } from '../provider';
+import { RegisteredQuickAction } from './types';
 
 export const INFERENCE_AI_EDIT_MODE = 'ly.img.ai.inference.editMode';
 
@@ -19,8 +20,8 @@ export function getFeatureIdForQuickAction(options: {
  * actions array or if it is first or last in the array.
  */
 export function removeDuplicatedSeparators<I, O extends Output>(
-  quickActions: (QuickAction<I, O> | 'ly.img.separator')[]
-): (QuickAction<I, O> | 'ly.img.separator')[] {
+  quickActions: (RegisteredQuickAction<I, O> | 'ly.img.separator')[]
+): (RegisteredQuickAction<I, O> | 'ly.img.separator')[] {
   if (quickActions.length === 0) {
     return [];
   }
@@ -42,7 +43,7 @@ export function removeDuplicatedSeparators<I, O extends Output>(
   }
 
   // Remove consecutive separators
-  return result.reduce<(QuickAction<I, O> | 'ly.img.separator')[]>(
+  return result.reduce<(RegisteredQuickAction<I, O> | 'ly.img.separator')[]>(
     (acc, current) => {
       // Skip if current is a separator and previous was also a separator
       if (

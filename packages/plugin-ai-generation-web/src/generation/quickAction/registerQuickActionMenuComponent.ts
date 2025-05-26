@@ -6,25 +6,14 @@ import {
   removeDuplicatedSeparators
 } from './utils';
 import { Metadata } from '@imgly/plugin-utils';
-import Provider, { Output, OutputKind } from '../provider';
+import { Output } from '../provider';
 import { isAbortError } from '../../utils';
-import { InitProviderConfiguration } from '../types';
-import handleGenerationError from '../handleGenerationError';
-import generate from './generate';
 
-function registerQuickActionMenuComponent<
-  K extends OutputKind,
-  I,
-  O extends Output
->(
-  options: {
-    cesdk: CreativeEditorSDK;
-    quickActionMenu: QuickActionMenu;
-    provider: Provider<K, I, O>;
-  },
-  config: InitProviderConfiguration
-) {
-  const { cesdk, quickActionMenu, provider } = options;
+function registerQuickActionMenuComponent<I, O extends Output>(options: {
+  cesdk: CreativeEditorSDK;
+  quickActionMenu: QuickActionMenu;
+}) {
+  const { cesdk, quickActionMenu } = options;
 
   const prefix = `ly.img.ai.${quickActionMenu.id}`;
   const confirmationPrefix = `${prefix}.confirmation`;
@@ -253,30 +242,17 @@ function registerQuickActionMenuComponent<
                     toggleExpandedState.setValue(undefined);
                   },
                   handleGenerationError: (error) => {
-                    handleGenerationError(
-                      error,
-                      {
-                        cesdk,
-                        provider
-                      },
-                      config
-                    );
+                    quickAction.onError(error);
                   },
                   generate: async (input, generateOptions) => {
                     try {
                       const { returnValue, applyCallbacks, dispose } =
-                        await generate(
-                          {
-                            input,
-                            quickAction,
-                            provider,
-                            cesdk,
-                            abortSignal: createAbortSignal(),
-                            blockIds: generateOptions?.blockIds ?? blockIds,
-                            confirmationComponentId
-                          },
-                          config
-                        );
+                        await quickAction.generate({
+                          input,
+                          abortSignal: createAbortSignal(),
+                          blockIds: generateOptions?.blockIds ?? blockIds,
+                          confirmationComponentId
+                        });
 
                       shared.unlock = dispose;
                       shared.applyCallbacks = applyCallbacks;
@@ -284,14 +260,7 @@ function registerQuickActionMenuComponent<
                       return returnValue;
                     } catch (error) {
                       if (!isAbortError(error)) {
-                        handleGenerationError(
-                          error,
-                          {
-                            cesdk,
-                            provider
-                          },
-                          config
-                        );
+                        quickAction.onError(error);
                       }
                       throw error;
                     }
@@ -314,14 +283,7 @@ function registerQuickActionMenuComponent<
                       blockIds,
                       closeMenu: close,
                       handleGenerationError: (error) => {
-                        handleGenerationError(
-                          error,
-                          {
-                            cesdk,
-                            provider
-                          },
-                          config
-                        );
+                        quickAction.onError(error);
                       },
                       toggleExpand: () => {
                         toggleExpandedState.setValue(quickAction.id);
@@ -329,32 +291,19 @@ function registerQuickActionMenuComponent<
                       generate: async (input, generateOptions) => {
                         try {
                           const { returnValue, applyCallbacks, dispose } =
-                            await generate(
-                              {
-                                input,
-                                quickAction,
-                                provider,
-                                cesdk,
-                                abortSignal: createAbortSignal(),
-                                blockIds: generateOptions?.blockIds ?? blockIds,
-                                confirmationComponentId
-                              },
-                              config
-                            );
+                            await quickAction.generate({
+                              input,
+                              abortSignal: createAbortSignal(),
+                              blockIds: generateOptions?.blockIds ?? blockIds,
+                              confirmationComponentId
+                            });
 
                           shared.unlock = dispose;
                           shared.applyCallbacks = applyCallbacks;
                           return returnValue;
                         } catch (error) {
                           if (!isAbortError(error)) {
-                            handleGenerationError(
-                              error,
-                              {
-                                cesdk,
-                                provider
-                              },
-                              config
-                            );
+                            quickAction.onError(error);
                           }
                           throw error;
                         }

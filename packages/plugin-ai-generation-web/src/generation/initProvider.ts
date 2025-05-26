@@ -15,6 +15,8 @@ import getQuickActionMenu from './quickAction/getQuickActionMenu';
 import { getFeatureIdForQuickAction } from './quickAction/utils';
 import registerQuickActionMenuComponent from './quickAction/registerQuickActionMenuComponent';
 import { QuickActionMenu } from './quickAction/types';
+import createGenerateFunction from './quickAction/generate';
+import { createHandleGenerationError } from './handleGenerationError';
 
 type RenderBuilderFunctions = {
   panel?: BuilderRenderFunction<any>;
@@ -234,7 +236,30 @@ async function initQuickActions<K extends OutputKind, I, O extends Output>(
       }),
       enable
     );
-    quickActionMenu.registerQuickAction(quickAction);
+
+    const boundGenerate = createGenerateFunction(
+      {
+        cesdk,
+        provider,
+        quickAction
+      },
+      config
+    );
+
+    const boundErrorHandler = createHandleGenerationError<K, I, O>(
+      {
+        cesdk,
+        provider
+      },
+      config
+    );
+
+    quickActionMenu.registerQuickAction({
+      ...quickAction,
+      generate: boundGenerate,
+      onError: boundErrorHandler
+    });
+
     if (config.debug) {
       // eslint-disable-next-line no-console
       console.log(
@@ -244,14 +269,10 @@ async function initQuickActions<K extends OutputKind, I, O extends Output>(
   });
 
   Object.values(quickActionMenus).forEach((quickActionMenu) => {
-    const { canvasMenuComponentId } = registerQuickActionMenuComponent(
-      {
-        cesdk,
-        quickActionMenu,
-        provider
-      },
-      config
-    );
+    const { canvasMenuComponentId } = registerQuickActionMenuComponent({
+      cesdk,
+      quickActionMenu
+    });
     if (config.debug) {
       // eslint-disable-next-line no-console
       console.log(

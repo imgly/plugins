@@ -1,6 +1,6 @@
 import CreativeEditorSDK from '@cesdk/cesdk-js';
-import { QuickActionId, QuickActionMenu } from './types';
-import { Output, QuickAction } from '../provider';
+import { QuickActionId, QuickActionMenu, RegisteredQuickAction } from './types';
+import { type Output, type QuickAction } from '../provider';
 
 const QUICK_ACTION_ORDER_KEY_PREFIX = 'ly.img.ai.quickAction.order';
 
@@ -28,7 +28,7 @@ function getQuickActionMenu(cesdk: CreativeEditorSDK, id: string) {
       );
     },
     registerQuickAction: <I, O extends Output>(
-      quickAction: QuickAction<I, O>
+      quickAction: RegisteredQuickAction<I, O>
     ) => {
       if (
         !cesdk.ui.experimental.hasGlobalStateValue(
@@ -57,7 +57,7 @@ function getQuickActionMenu(cesdk: CreativeEditorSDK, id: string) {
 
     getQuickAction: <I, O extends Output>(quickActionId: string) => {
       const entries = cesdk.ui.experimental.getGlobalStateValue<{
-        [key: string]: QuickAction<I, O>;
+        [key: string]: RegisteredQuickAction<I, O>;
       }>(`${QUICK_ACTION_REGISTRY_PREFIX}.${id}`, {});
 
       return entries[quickActionId];
