@@ -269,7 +269,6 @@ function registerQuickActionMenuComponent<
                           {
                             input,
                             quickAction,
-                            quickActionMenu,
                             provider,
                             cesdk,
                             abortSignal: createAbortSignal(),
@@ -334,7 +333,6 @@ function registerQuickActionMenuComponent<
                               {
                                 input,
                                 quickAction,
-                                quickActionMenu,
                                 provider,
                                 cesdk,
                                 abortSignal: createAbortSignal(),

@@ -1,5 +1,5 @@
 import CreativeEditorSDK from '@cesdk/cesdk-js';
-import { InferenceMetadata, QuickActionMenu, ApplyCallbacks } from './types';
+import { InferenceMetadata, ApplyCallbacks } from './types';
 import { INFERENCE_AI_EDIT_MODE, INFERENCE_AI_METADATA_KEY } from './utils';
 import { Metadata } from '@imgly/plugin-utils';
 import Provider, {
@@ -24,7 +24,6 @@ async function generate<K extends OutputKind, I, O extends Output>(
     blockIds: number[];
     cesdk: CreativeEditorSDK;
     quickAction: QuickAction<I, O>;
-    quickActionMenu: QuickActionMenu;
     provider: Provider<K, I, O>;
     abortSignal: AbortSignal;
     confirmationComponentId: string;
