@@ -26,8 +26,6 @@ export interface QuickActionMenu {
   registerQuickAction: <I, O extends Output>(
     quickAction: RegisteredQuickAction<I, O>
   ) => void;
-  setQuickActionMenuOrder: (quickActionIds: QuickActionId[]) => void;
-  getQuickActionMenuOrder: () => string[];
   getQuickAction: <I, O extends Output>(
     magicId: QuickActionId
   ) => RegisteredQuickAction<I, O> | undefined;

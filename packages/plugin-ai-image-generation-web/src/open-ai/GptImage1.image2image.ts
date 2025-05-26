@@ -12,7 +12,6 @@ import {
   QuickActionEditTextStyle,
   QuickActionSwapImageBackground,
   CommonProperties,
-  getQuickActionMenu,
   Middleware,
   QuickActionBasePrompt,
   QuickAction,
@@ -68,8 +67,6 @@ function getProvider(
     'https://cdn.img.ly/assets/plugins/plugin-ai-image-generation-web/v1/gpt-image-1/';
 
   const quickActions = createQuickActions({ cesdk, modelKey });
-  const quickActionMenu = getQuickActionMenu(cesdk, 'image');
-  const quickActionMenuForText = getQuickActionMenu(cesdk, 'text');
 
   const styleAssetSourceId = `${modelKey}/styles`;
   const styleAssetSource = createStyleAssetSource(styleAssetSourceId, {
@@ -90,26 +87,6 @@ function getProvider(
       'ly.img.ai.quickAction.remixPageWithPrompt.apply': 'Remix'
     }
   });
-
-  quickActionMenu.setQuickActionMenuOrder([
-    'changeStyleLibrary',
-    // 'changeStyle',
-    'ly.img.separator',
-    'swapBackground',
-    'changeImage',
-    'createVariant',
-    'combineImages',
-    'ly.img.separator',
-    'remixPage',
-    'ly.img.separator',
-    ...quickActionMenu.getQuickActionMenuOrder()
-  ]);
-
-  quickActionMenuForText.setQuickActionMenuOrder([
-    ...quickActionMenuForText.getQuickActionMenuOrder(),
-    'ly.img.separator',
-    'changeToImage'
-  ]);
 
   const provider: Provider<'image', GptImage1Input, GptImage1Output> = {
     id: modelKey,

@@ -61,8 +61,36 @@ function App() {
             ]);
 
             instance.ui.setCanvasMenuOrder([
-              'ly.img.ai.text.canvasMenu',
-              `ly.img.ai.image.canvasMenu`,
+              {
+                id: 'ly.img.ai.text.canvasMenu',
+                children: [
+                  'improve',
+                  'fix',
+                  'shorter',
+                  'longer',
+                  'ly.img.separator',
+                  'changeTone',
+                  'translate',
+                  'ly.img.separator',
+                  'changeTextTo',
+                  'ly.img.separator',
+                  'changeToImage'
+                ]
+              },
+              {
+                id: `ly.img.ai.image.canvasMenu`,
+
+                children: [
+                  'styleTransfer',
+                  'artists',
+                  'ly.img.separator',
+                  'changeImage',
+                  'createVariant',
+                  'ly.img.separator',
+                  'createVideo'
+                ]
+              },
+
               ...instance.ui.getCanvasMenuOrder()
             ]);
 

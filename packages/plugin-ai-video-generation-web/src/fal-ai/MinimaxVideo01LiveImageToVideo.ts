@@ -5,8 +5,7 @@ import {
   QuickAction,
   type Provider,
   QuickActionBaseButton,
-  enableQuickActionForImageFill,
-  getQuickActionMenu
+  enableQuickActionForImageFill
 } from '@imgly/plugin-ai-generation-web';
 import { getImageDimensionsFromURL, getImageUri } from '@imgly/plugin-utils';
 import schema from './MinimaxVideo01LiveImageToVideo.json';
@@ -40,13 +39,6 @@ function getProvider(
   { kind: 'video'; url: string }
 > {
   const quickActions = getQuickActions(cesdk);
-  const quickActionMenu = getQuickActionMenu(cesdk, 'image');
-
-  quickActionMenu.setQuickActionMenuOrder([
-    ...quickActionMenu.getQuickActionMenuOrder(),
-    'ly.img.separator',
-    'createVideo'
-  ]);
 
   return createVideoProvider(
     {

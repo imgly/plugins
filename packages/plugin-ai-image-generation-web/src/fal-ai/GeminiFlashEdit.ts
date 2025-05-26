@@ -1,5 +1,4 @@
 import {
-  getQuickActionMenu,
   ImageOutput,
   Middleware,
   QuickAction,
@@ -43,17 +42,6 @@ function getProvider(
   const modelKey = 'fal-ai/gemini-flash-edit';
 
   const quickActions = createGeminiFlashEditQuickActions(cesdk);
-  const quickActionMenu = getQuickActionMenu(cesdk, 'image');
-
-  quickActionMenu.setQuickActionMenuOrder([
-    ...quickActionMenu.getQuickActionMenuOrder(),
-    'ly.img.separator',
-    'styleTransfer',
-    'artists',
-    'ly.img.separator',
-    'changeImage',
-    'createVariant'
-  ]);
 
   return createImageProvider(
     {
