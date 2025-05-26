@@ -24,6 +24,8 @@ export { default as registerFillProcessingComponents } from './processing/regist
 
 export { type Optional } from './types/Optional';
 
+export { type ReturnType } from './types/ReturnType';
+
 export {
   type Location,
   type UserInterfaceConfiguration
