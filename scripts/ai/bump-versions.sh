@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Store the root directory path
+ROOT_DIR=$(cd "$(dirname "$0")/../.." && pwd)
+cd "$ROOT_DIR"
+
 # Read version from file
 VERSION_FILE=".current-ai-plugin-version"
 CHANGELOG_FILE="CHANGELOG-AI.md"

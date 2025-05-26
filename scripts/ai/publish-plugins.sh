@@ -11,7 +11,7 @@ print_header() {
 }
 
 # Store the root directory path
-ROOT_DIR=$(cd "$(dirname "$0")/.." && pwd)
+ROOT_DIR=$(cd "$(dirname "$0")/../.." && pwd)
 
 # Build all packages first
 print_header "Building all packages"
