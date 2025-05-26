@@ -2,10 +2,17 @@
 
 # Read version from file
 VERSION_FILE=".current-ai-plugin-version"
+CHANGELOG_FILE="CHANGELOG-AI.md"
 
 # Check if version file exists
 if [ ! -f "$VERSION_FILE" ]; then
   echo "Error: Version file $VERSION_FILE not found"
+  exit 1
+fi
+
+# Check if changelog file exists
+if [ ! -f "$CHANGELOG_FILE" ]; then
+  echo "Error: Changelog file $CHANGELOG_FILE not found"
   exit 1
 fi
 
@@ -62,6 +69,41 @@ if [ "$VERSIONS_DIFFER" = true ]; then
   fi
 fi
 
+# Update the changelog: convert [Unreleased] to the new version
+DATE=$(date +%Y-%m-%d)
+echo "Updating changelog: Converting [Unreleased] section to [$NEW_VERSION]"
+
+# Create a temporary file for the new changelog content
+TEMP_FILE=$(mktemp)
+
+# Process the changelog file
+awk -v new_version="$NEW_VERSION" -v date="$DATE" '
+BEGIN { unreleased_found = 0; empty_line_after_unreleased = 0; }
+
+# If we find the Unreleased header, replace it with new version and keep track
+/^## \[Unreleased\]$/ {
+  print "## [Unreleased]";
+  print "";
+  print "## [" new_version "] - " date;
+  unreleased_found = 1;
+  next;
+}
+
+# Print all other lines
+{ print }
+
+' "$CHANGELOG_FILE" > "$TEMP_FILE"
+
+# If the [Unreleased] section was not found, show an error
+if ! grep -q "## \[Unreleased\]" "$TEMP_FILE"; then
+  echo "Error: Failed to process changelog. [Unreleased] section not found or not properly updated."
+  rm "$TEMP_FILE"
+  exit 1
+fi
+
+# Update the changelog file
+mv "$TEMP_FILE" "$CHANGELOG_FILE"
+
 # Update version in the version file
 echo "$NEW_VERSION" > "$VERSION_FILE"
 echo "Updated $VERSION_FILE to $NEW_VERSION"
@@ -81,3 +123,4 @@ for pkg in packages/plugin-ai-*/package.json; do
 done
 
 echo "All AI plugin versions updated to $NEW_VERSION"
+echo "Changelog updated with new version $NEW_VERSION - $DATE"
