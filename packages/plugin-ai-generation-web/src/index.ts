@@ -27,7 +27,10 @@ export {
   type Property
 } from './generation/openapi/types';
 export { default as initProvider } from './generation/initProvider';
-export { type GenerationMiddleware } from './generation/types';
+export {
+  type GenerationMiddleware,
+  type GetProvider
+} from './generation/types';
 
 // Export middleware
 export {

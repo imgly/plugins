@@ -1,6 +1,16 @@
 import type CreativeEditorSDK from '@cesdk/cesdk-js';
 import { type CreativeEngine } from '@cesdk/cesdk-js';
 import type Provider from './provider';
+import { Output, OutputKind } from './provider';
+
+/**
+ * Getting a provider instance for the given CE.SDK instance.
+ */
+export type GetProvider<
+  K extends OutputKind,
+  I = any,
+  O extends Output = any
+> = ({ cesdk }: { cesdk: CreativeEditorSDK }) => Promise<Provider<K, I, O>>;
 
 /**
  * Configuration options for provider initialization
