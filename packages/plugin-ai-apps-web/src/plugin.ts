@@ -413,8 +413,13 @@ function overrideAssetLibraryDockComponent(cesdk: CreativeEditorSDK) {
           return entry.sourceIds.some((sourceId) => {
             // Changes in the interface in CE.SDK version 1.51.0
             // We do not want to bump the version for this change.
+            // In addition, 1.51.0 will only accept the sourceId as a string
+            // and 1.52.0 onwards will accept an object with sourceId.
             // @ts-ignore
-            const sourceSceneMode = entrySceneMode(sourceId);
+            const sourceSceneMode = entrySceneMode(
+              cesdk.version.startsWith('1.51.') ? sourceId : { sourceId }
+            );
+            // @ts-ignore
             return sourceSceneMode === sceneMode || sourceSceneMode === 'All';
           });
         }

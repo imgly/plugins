@@ -11,7 +11,18 @@ print_header() {
 }
 
 # Store the root directory path
-ROOT_DIR=$(cd "$(dirname "$0")/.." && pwd)
+ROOT_DIR=$(cd "$(dirname "$0")/../.." && pwd)
+
+# Read and display CHANGELOG-AI.md
+print_header "CHANGELOG-AI.md Content"
+if [ -f "$ROOT_DIR/CHANGELOG-AI.md" ]; then
+  cat "$ROOT_DIR/CHANGELOG-AI.md"
+  echo
+  read -p "Should this changelog be copied to all AI packages about to be published? (y/n): " copy_changelog
+else
+  echo "CHANGELOG-AI.md not found"
+  copy_changelog="n"
+fi
 
 # Build all packages first
 print_header "Building all packages"
@@ -29,6 +40,12 @@ for pkg_dir in "$ROOT_DIR"/packages/plugin-ai-*/; do
   
   print_header "Publishing $pkg_name (version $pkg_version)"
   echo "Directory: $pkg_dir"
+  
+  # Copy changelog if user confirmed
+  if [[ $copy_changelog == [yY] ]] && [ -f "$ROOT_DIR/CHANGELOG-AI.md" ]; then
+    echo "Copying CHANGELOG-AI.md to $pkg_name"
+    cp "$ROOT_DIR/CHANGELOG-AI.md" "$pkg_dir/CHANGELOG.md"
+  fi
   
   # Ask for confirmation
   read -p "Publish this package? (y/n): " confirm
