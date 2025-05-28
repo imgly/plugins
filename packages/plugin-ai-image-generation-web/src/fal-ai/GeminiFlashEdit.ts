@@ -26,16 +26,18 @@ type ProviderConfiguration = {
   middleware?: Middleware<GeminiFlashEditInput, ImageOutput>[];
 };
 
+const MODEL_KEY = 'fal-ai/gemini-flash-edit';
+
 export const GeminiFlashEdit = enhanceProvider(getProvider, {
   canvasMenu: {
     image: {
       id: 'ly.img.ai.image.canvasMenu',
       children: [
-        'fal-ai/gemini-flash-edit.styleTransfer',
-        'fal-ai/gemini-flash-edit.artists',
+        `${MODEL_KEY}.styleTransfer`,
+        `${MODEL_KEY}.artists`,
         'ly.img.separator',
-        'fal-ai/gemini-flash-edit.changeImage',
-        'fal-ai/gemini-flash-edit.createVariant'
+        `${MODEL_KEY}.changeImage`,
+        `${MODEL_KEY}.createVariant`
       ]
     }
   }
@@ -45,13 +47,11 @@ function getProvider(
   cesdk: CreativeEditorSDK,
   config: ProviderConfiguration
 ): Provider<'image', GeminiFlashEditInput, ImageOutput> {
-  const modelKey = 'fal-ai/gemini-flash-edit';
-
   const quickActions = createGeminiFlashEditQuickActions(cesdk);
 
   return createImageProvider(
     {
-      modelKey,
+      modelKey: MODEL_KEY,
       name: 'Change Image',
       // @ts-ignore
       schema,
@@ -88,17 +88,17 @@ function createGeminiFlashEditQuickActions(
 
   return [
     QuickActionSwapImageBackground<GeminiFlashEditInput, ImageOutput>({
-      id: 'fal-ai/gemini-flash-edit.swapBackground',
+      id: `${MODEL_KEY}.swapBackground`,
       mapInput: (input) => ({ ...input, image_url: input.uri }),
       cesdk
     }),
     QuickActionChangeImage<GeminiFlashEditInput, ImageOutput>({
-      id: 'fal-ai/gemini-flash-edit.changeImage',
+      id: `${MODEL_KEY}.changeImage`,
       mapInput: (input) => ({ ...input, image_url: input.uri }),
       cesdk
     }),
     QuickActionImageVariant<GeminiFlashEditInput, ImageOutput>({
-      id: 'fal-ai/gemini-flash-edit.createVariant',
+      id: `${MODEL_KEY}.createVariant`,
       onApply: async ({ prompt, uri, duplicatedBlockId }, context) => {
         // Generate a variant for the duplicated block
         return context.generate(
@@ -116,7 +116,7 @@ function createGeminiFlashEditQuickActions(
 
     QuickActionBaseSelect<GeminiFlashEditInput, ImageOutput>({
       quickAction: {
-        id: 'fal-ai/gemini-flash-edit.styleTransfer',
+        id: `${MODEL_KEY}.styleTransfer`,
         version: '1',
         enable: enableQuickActionForImageFill(),
         scopes: ['fill/change'],
@@ -175,7 +175,7 @@ function createGeminiFlashEditQuickActions(
 
     QuickActionBaseSelect<GeminiFlashEditInput, ImageOutput>({
       quickAction: {
-        id: 'fal-ai/gemini-flash-edit.artists',
+        id: `${MODEL_KEY}.artists`,
         version: '1',
         enable: enableQuickActionForImageFill(),
         scopes: ['fill/change'],

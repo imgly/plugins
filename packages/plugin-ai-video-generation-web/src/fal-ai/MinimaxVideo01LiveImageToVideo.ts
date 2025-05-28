@@ -19,11 +19,13 @@ type ProviderConfiguration = {
   middleware?: Middleware<MinimaxVideo01LiveImageToVideoInput, VideoOutput>[];
 };
 
+const MODEL_KEY = 'fal-ai/minimax/video-01-live/image-to-video';
+
 export const MinimaxVideo01LiveImageToVideo = enhanceProvider(getProvider, {
   canvasMenu: {
     image: {
       id: 'ly.img.ai.image.canvasMenu',
-      children: ['ly.img.separator', 'ly.img.separator', 'fal-ai/minimax/video-01-live/image-to-video.createVideo']
+      children: ['ly.img.separator', `${MODEL_KEY}.createVideo`]
     }
   }
 });
@@ -40,7 +42,7 @@ function getProvider(
 
   return createVideoProvider(
     {
-      modelKey: 'fal-ai/minimax/video-01-live/image-to-video',
+      modelKey: MODEL_KEY,
       // @ts-ignore
       schema,
       inputReference:
@@ -79,7 +81,7 @@ function getQuickActions(
   return [
     QuickActionBaseButton<MinimaxVideo01LiveImageToVideoInput, VideoOutput>({
       quickAction: {
-        id: 'fal-ai/minimax/video-01-live/image-to-video.createVideo',
+        id: `${MODEL_KEY}.createVideo`,
         kind: 'image',
         version: '1',
         enable: enableQuickActionForImageFill()
@@ -99,7 +101,7 @@ function getQuickActions(
           'fromImage'
         );
         cesdk.ui.experimental.setGlobalStateValue(
-          'fal-ai/minimax/video-01-live/image-to-video.image_url',
+          `${MODEL_KEY}.image_url`,
           uri
         );
       }

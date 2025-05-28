@@ -16,6 +16,8 @@ import translate, { LANGUAGES, LOCALES } from './prompts/translate';
 import changeTone from './prompts/changeTone';
 import changeTextTo from './prompts/changeTextTo';
 
+const MODEL_KEY = 'anthropic';
+
 type ProviderConfiguration = {
   proxyUrl: string;
   debug?: boolean;
@@ -41,15 +43,15 @@ export const AnthropicProvider = enhanceProvider(getProvider, {
     text: {
       id: 'ly.img.ai.text.canvasMenu',
       children: [
-        'anthropic.improve',
-        'anthropic.fix',
-        'anthropic.shorter',
-        'anthropic.longer',
+        `${MODEL_KEY}.improve`,
+        `${MODEL_KEY}.fix`,
+        `${MODEL_KEY}.shorter`,
+        `${MODEL_KEY}.longer`,
         'ly.img.separator',
-        'anthropic.changeTone',
-        'anthropic.translate',
+        `${MODEL_KEY}.changeTone`,
+        `${MODEL_KEY}.translate`,
         'ly.img.separator',
-        'anthropic.changeTextTo'
+        `${MODEL_KEY}.changeTextTo`
       ]
     }
   }
@@ -59,8 +61,8 @@ function getProvider(cesdk: CreativeEditorSDK, config: ProviderConfiguration) {
   cesdk.i18n.setTranslations({
     en: {
       ...Object.entries(LANGUAGES).reduce(
-        (acc: Record<string, string>, [locale, langauge]) => {
-          acc[`ly.img.ai.inference.translate.type.${locale}`] = langauge;
+        (acc: Record<string, string>, [locale, language]) => {
+          acc[`ly.img.ai.inference.translate.type.${locale}`] = language;
           return acc;
         },
         {}
@@ -316,7 +318,7 @@ function createTextQuickAction(
 
 function ImproveQuickAction(): QuickAction<AnthropicInput, AnthropicOutput> {
   return createTextQuickAction({
-    id: 'anthropic.improve',
+    id: `${MODEL_KEY}.improve`,
     label: 'Improve',
     icon: '@imgly/MagicWand',
     promptFn: improve
@@ -325,7 +327,7 @@ function ImproveQuickAction(): QuickAction<AnthropicInput, AnthropicOutput> {
 
 function ShorterQuickAction(): QuickAction<AnthropicInput, AnthropicOutput> {
   return createTextQuickAction({
-    id: 'anthropic.shorter',
+    id: `${MODEL_KEY}.shorter`,
     label: 'Make Shorter',
     icon: '@imgly/TextShorter',
     promptFn: shorter
@@ -334,7 +336,7 @@ function ShorterQuickAction(): QuickAction<AnthropicInput, AnthropicOutput> {
 
 function LongerQuickAction(): QuickAction<AnthropicInput, AnthropicOutput> {
   return createTextQuickAction({
-    id: 'anthropic.longer',
+    id: `${MODEL_KEY}.longer`,
     label: 'Make Longer',
     icon: '@imgly/TextLonger',
     promptFn: longer
@@ -343,7 +345,7 @@ function LongerQuickAction(): QuickAction<AnthropicInput, AnthropicOutput> {
 
 function FixQuickAction(): QuickAction<AnthropicInput, AnthropicOutput> {
   return createTextQuickAction({
-    id: 'anthropic.fix',
+    id: `${MODEL_KEY}.fix`,
     label: 'Fix Spelling & Grammar',
     icon: '@imgly/CheckmarkAll',
     promptFn: fix
@@ -352,7 +354,7 @@ function FixQuickAction(): QuickAction<AnthropicInput, AnthropicOutput> {
 
 function SpeechQuickAction(): QuickAction<AnthropicInput, AnthropicOutput> {
   return createTextQuickAction({
-    id: 'anthropic.speech',
+    id: `${MODEL_KEY}.speech`,
     label: 'Generate Speech Text',
     icon: '@imgly/Microphone',
     promptFn: generateTextForSpeech
@@ -370,7 +372,7 @@ const TONE_TYPES = [
 
 function ChangeToneQuickAction(): QuickAction<AnthropicInput, AnthropicOutput> {
   return createTextQuickAction({
-    id: 'anthropic.changeTone',
+    id: `${MODEL_KEY}.changeTone`,
     label: 'Change Tone',
     icon: '@imgly/Microphone',
     promptFn: changeTone,
@@ -383,7 +385,7 @@ function ChangeToneQuickAction(): QuickAction<AnthropicInput, AnthropicOutput> {
 
 function TranslateQuickAction(): QuickAction<AnthropicInput, AnthropicOutput> {
   return createTextQuickAction({
-    id: 'anthropic.translate',
+    id: `${MODEL_KEY}.translate`,
     label: 'Translate',
     icon: '@imgly/Language',
     promptFn: translate,
@@ -399,7 +401,7 @@ function ChangeTextToQuickAction(): QuickAction<
   AnthropicOutput
 > {
   return createTextQuickAction({
-    id: 'anthropic.changeTextTo',
+    id: `${MODEL_KEY}.changeTextTo`,
     label: 'Change Text to...',
     icon: '@imgly/Rename',
     promptFn: changeTextTo,
