@@ -74,7 +74,7 @@ function getQuickActions(
 ): QuickAction<MinimaxVideo01LiveImageToVideoInput, VideoOutput>[] {
   cesdk.i18n.setTranslations({
     en: {
-      'ly.img.ai.quickAction.createVideo': 'Create Video...'
+      [`ly.img.ai.quickAction.${MODEL_KEY}.createVideo`]: 'Create Video...'
     }
   });
 

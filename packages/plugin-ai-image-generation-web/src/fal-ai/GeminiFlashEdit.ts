@@ -81,8 +81,8 @@ function createGeminiFlashEditQuickActions(
 ): QuickAction<GeminiFlashEditInput, ImageOutput>[] {
   cesdk.i18n.setTranslations({
     en: {
-      'ly.img.ai.quickAction.styleTransfer': 'Change Art Style',
-      'ly.img.ai.quickAction.artists': 'Painted By'
+      [`ly.img.ai.quickAction.${MODEL_KEY}.styleTransfer`]: 'Change Art Style',
+      [`ly.img.ai.quickAction.${MODEL_KEY}.artists`]: 'Painted By'
     }
   });
 
