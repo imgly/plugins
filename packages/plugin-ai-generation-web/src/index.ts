@@ -56,7 +56,7 @@ export { default as registerDockComponent } from './registerDockComponent';
 
 export { type QuickActionCanvasMenuComponents } from './generation/quickAction/types';
 
-export { default as getQuickActionMenu } from './generation/quickAction/getQuickActionMenu';
+export { default as getQuickActionRegistry } from './generation/quickAction/getQuickActionRegistry';
 
 export { default as QuickActionBasePrompt } from './generation/quickAction/common/QuickActionBasePrompt';
 export { default as QuickActionBaseButton } from './generation/quickAction/common/QuickActionBaseButton';

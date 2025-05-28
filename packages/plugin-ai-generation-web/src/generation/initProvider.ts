@@ -11,7 +11,7 @@ import { InitProviderConfiguration, Options, UIOptions } from './types';
 import { BuilderRenderFunction, type CreativeEngine } from '@cesdk/cesdk-js';
 import { IndexedDBAssetSource } from '@imgly/plugin-utils';
 import icons from '../icons';
-import getQuickActionMenu from './quickAction/getQuickActionMenu';
+import getQuickActionRegistry from './quickAction/getQuickActionRegistry';
 import { getFeatureIdForQuickAction } from './quickAction/utils';
 import registerQuickActionMenuComponent from './quickAction/registerQuickActionMenuComponent';
 import { QuickActionMenu } from './quickAction/types';
@@ -221,7 +221,7 @@ async function initQuickActions<K extends OutputKind, I, O extends Output>(
   quickActionsInput.actions.forEach((quickAction) => {
     const quickActionMenuId = quickAction.kind ?? provider.kind;
     if (quickActionMenus[quickActionMenuId] == null) {
-      quickActionMenus[quickActionMenuId] = getQuickActionMenu(
+      quickActionMenus[quickActionMenuId] = getQuickActionRegistry(
         cesdk,
         quickActionMenuId
       );

@@ -5,12 +5,12 @@ import { type Output, type QuickAction } from '../provider';
 const QUICK_ACTION_REGISTRY_PREFIX = 'ly.img.ai.quickAction.actions';
 
 /**
- * Returns an object representing the quick action menu. Can be called and
+ * Returns an object representing the quick action registry. Can be called and
  * retrieved multiple times.
  *
  * It's backed up by the global state.
  */
-function getQuickActionMenu(cesdk: CreativeEditorSDK, id: string) {
+function getQuickActionRegistry(cesdk: CreativeEditorSDK, id: string) {
   const quickActionMenu: QuickActionMenu = {
     id,
     registerQuickAction: <I, O extends Output>(
@@ -52,4 +52,4 @@ function getQuickActionMenu(cesdk: CreativeEditorSDK, id: string) {
   return quickActionMenu;
 }
 
-export default getQuickActionMenu;
+export default getQuickActionRegistry;
