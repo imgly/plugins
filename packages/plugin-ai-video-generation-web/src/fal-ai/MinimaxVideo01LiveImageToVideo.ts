@@ -5,7 +5,8 @@ import {
   QuickAction,
   type Provider,
   QuickActionBaseButton,
-  enableQuickActionForImageFill
+  enableQuickActionForImageFill,
+  enhanceProvider
 } from '@imgly/plugin-ai-generation-web';
 import { getImageDimensionsFromURL, getImageUri } from '@imgly/plugin-utils';
 import schema from './MinimaxVideo01LiveImageToVideo.json';
@@ -18,17 +19,14 @@ type ProviderConfiguration = {
   middleware?: Middleware<MinimaxVideo01LiveImageToVideoInput, VideoOutput>[];
 };
 
-export function MinimaxVideo01LiveImageToVideo(
-  config: ProviderConfiguration
-): (context: {
-  cesdk: CreativeEditorSDK;
-}) => Promise<
-  Provider<'video', MinimaxVideo01LiveImageToVideoInput, VideoOutput>
-> {
-  return async ({ cesdk }: { cesdk: CreativeEditorSDK }) => {
-    return getProvider(cesdk, config);
-  };
-}
+export const MinimaxVideo01LiveImageToVideo = enhanceProvider(getProvider, {
+  canvasMenu: {
+    image: {
+      id: 'ly.img.ai.image.canvasMenu',
+      children: ['ly.img.separator', 'ly.img.separator', 'createVideo']
+    }
+  }
+});
 
 function getProvider(
   cesdk: CreativeEditorSDK,
@@ -108,5 +106,3 @@ function getQuickActions(
     })
   ];
 }
-
-export default getProvider;

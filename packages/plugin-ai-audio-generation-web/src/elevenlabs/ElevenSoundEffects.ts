@@ -1,7 +1,8 @@
 import {
   type Provider,
   type AudioOutput,
-  Middleware
+  Middleware,
+  enhanceProvider
 } from '@imgly/plugin-ai-generation-web';
 import CreativeEditorSDK from '@cesdk/cesdk-js';
 import schema from './ElevenSoundEffects.json';
@@ -18,15 +19,7 @@ type ProviderConfiguration = {
   middleware?: Middleware<ElevenlabsInput, AudioOutput>[];
 };
 
-export function ElevenSoundEffects(
-  config: ProviderConfiguration
-): (context: {
-  cesdk: CreativeEditorSDK;
-}) => Promise<Provider<'audio', ElevenlabsInput, AudioOutput>> {
-  return async ({ cesdk }: { cesdk: CreativeEditorSDK }) => {
-    return getProvider(cesdk, config);
-  };
-}
+export const ElevenSoundEffects = enhanceProvider(getProvider);
 
 function getProvider(
   cesdk: CreativeEditorSDK,

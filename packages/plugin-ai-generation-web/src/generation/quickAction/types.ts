@@ -1,5 +1,5 @@
 import { createHandleGenerationError } from '../handleGenerationError';
-import { type Output, type QuickAction } from '../provider';
+import { type OutputKind, type Output, type QuickAction } from '../provider';
 
 export type QuickActionId = 'ly.img.separator' | (string & {});
 
@@ -36,6 +36,13 @@ export interface RegisteredQuickAction<I, O extends Output>
   generate: QuickActionGenerateFunction<I, O>;
   onError: ReturnType<typeof createHandleGenerationError<any, I, O>>;
 }
+
+export type QuickActionCanvasMenuComponents = {
+  [K in OutputKind]?: {
+    id: `ly.img.ai.${K}.canvasMenu`;
+    children: string[];
+  };
+};
 
 export type InferenceStatus = 'processing' | 'confirmation';
 

@@ -19,7 +19,8 @@ import {
   QuickActionBaseSelect,
   QuickActionBaseLibrary,
   enableQuickActionForImageFill,
-  QuickActionBaseButton
+  QuickActionBaseButton,
+  enhanceProvider
 } from '@imgly/plugin-ai-generation-web';
 import GptImage1Schema from './GptImage1.image2image.json';
 import CreativeEditorSDK, { MimeType } from '@cesdk/cesdk-js';
@@ -47,15 +48,24 @@ type ProviderConfiguration = {
   middleware?: Middleware<GptImage1Input, GptImage1Output>[];
 };
 
-export function GptImage1(
-  config: ProviderConfiguration
-): (context: {
-  cesdk: CreativeEditorSDK;
-}) => Promise<Provider<'image', GptImage1Input, GptImage1Output>> {
-  return async ({ cesdk }: { cesdk: CreativeEditorSDK }) => {
-    return getProvider(cesdk, config);
-  };
-}
+export const GptImage1 = enhanceProvider(getProvider, {
+  canvasMenu: {
+    image: {
+      id: 'ly.img.ai.image.canvasMenu',
+      children: [
+        'changeStyleLibrary',
+        // 'changeStyle',
+        'ly.img.separator',
+        'swapBackground',
+        'changeImage',
+        'createVariant',
+        'combineImages',
+        'ly.img.separator',
+        'remixPage'
+      ]
+    }
+  }
+});
 
 function getProvider(
   cesdk: CreativeEditorSDK,

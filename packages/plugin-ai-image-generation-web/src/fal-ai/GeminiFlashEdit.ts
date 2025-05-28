@@ -7,7 +7,8 @@ import {
   QuickActionChangeImage,
   QuickActionImageVariant,
   enableQuickActionForImageFill,
-  type Provider
+  type Provider,
+  enhanceProvider
 } from '@imgly/plugin-ai-generation-web';
 import schema from './GeminiFlashEdit.json';
 import { getImageDimensionsFromURL } from '@imgly/plugin-utils';
@@ -25,15 +26,20 @@ type ProviderConfiguration = {
   middleware?: Middleware<GeminiFlashEditInput, ImageOutput>[];
 };
 
-export function GeminiFlashEdit(
-  config: ProviderConfiguration
-): (context: {
-  cesdk: CreativeEditorSDK;
-}) => Promise<Provider<'image', GeminiFlashEditInput, ImageOutput>> {
-  return async ({ cesdk }: { cesdk: CreativeEditorSDK }) => {
-    return getProvider(cesdk, config);
-  };
-}
+export const GeminiFlashEdit = enhanceProvider(getProvider, {
+  canvasMenu: {
+    image: {
+      id: 'ly.img.ai.image.canvasMenu',
+      children: [
+        'styleTransfer',
+        'artists',
+        'ly.img.separator',
+        'changeImage',
+        'createVariant'
+      ]
+    }
+  }
+});
 
 function getProvider(
   cesdk: CreativeEditorSDK,
