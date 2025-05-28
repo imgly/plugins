@@ -1,30 +1,24 @@
-import CreativeEditorSDK from '@cesdk/cesdk-js';
-import { InferenceMetadata, QuickActionMenu, ApplyCallbacks } from './types';
+import CreativeEditorSDK, { ComponentPayload } from '@cesdk/cesdk-js';
+import {
+  InferenceMetadata,
+  QuickActionMenu,
+  ApplyCallbacks,
+  QuickActionId
+} from './types';
 import {
   getFeatureIdForQuickAction,
   INFERENCE_AI_METADATA_KEY,
   removeDuplicatedSeparators
 } from './utils';
 import { Metadata } from '@imgly/plugin-utils';
-import Provider, { Output, OutputKind } from '../provider';
+import { Output } from '../provider';
 import { isAbortError } from '../../utils';
-import { InitProviderConfiguration } from '../types';
-import handleGenerationError from '../handleGenerationError';
-import generate from './generate';
 
-function registerQuickActionMenuComponent<
-  K extends OutputKind,
-  I,
-  O extends Output
->(
-  options: {
-    cesdk: CreativeEditorSDK;
-    quickActionMenu: QuickActionMenu;
-    provider: Provider<K, I, O>;
-  },
-  config: InitProviderConfiguration
-) {
-  const { cesdk, quickActionMenu, provider } = options;
+function registerQuickActionMenuComponent<I, O extends Output>(options: {
+  cesdk: CreativeEditorSDK;
+  quickActionMenu: QuickActionMenu;
+}) {
+  const { cesdk, quickActionMenu } = options;
 
   const prefix = `ly.img.ai.${quickActionMenu.id}`;
   const confirmationPrefix = `${prefix}.confirmation`;
@@ -180,15 +174,21 @@ function registerQuickActionMenuComponent<
 
   const canvasMenuComponentId = `${prefix}.canvasMenu`;
   cesdk.ui.registerComponent(canvasMenuComponentId, (context) => {
+    const payload = context.payload;
     const blockIds = context.engine.block.findAllSelected();
     const isEveryBlockInReadyState = blockIds.every((blockId) => {
       return context.engine.block.getState(blockId).type === 'Ready';
     });
 
-    let quickActions = quickActionMenu
-      .getQuickActionMenuOrder()
+    const quickActionOrder: QuickActionId[] = getQuickActionIdsFromPayload(
+      cesdk,
+      canvasMenuComponentId,
+      payload
+    );
+
+    let quickActions = quickActionOrder
       .map((quickActionId) => {
-        if (quickActionId === 'ly.img.separator') return quickActionId;
+        if (quickActionId === 'ly.img.separator') return 'ly.img.separator';
         const quickAction = quickActionMenu.getQuickAction<I, O>(quickActionId);
         if (quickAction == null) return null;
 
@@ -253,31 +253,17 @@ function registerQuickActionMenuComponent<
                     toggleExpandedState.setValue(undefined);
                   },
                   handleGenerationError: (error) => {
-                    handleGenerationError(
-                      error,
-                      {
-                        cesdk,
-                        provider
-                      },
-                      config
-                    );
+                    quickAction.onError(error);
                   },
                   generate: async (input, generateOptions) => {
                     try {
                       const { returnValue, applyCallbacks, dispose } =
-                        await generate(
-                          {
-                            input,
-                            quickAction,
-                            quickActionMenu,
-                            provider,
-                            cesdk,
-                            abortSignal: createAbortSignal(),
-                            blockIds: generateOptions?.blockIds ?? blockIds,
-                            confirmationComponentId
-                          },
-                          config
-                        );
+                        await quickAction.generate({
+                          input,
+                          abortSignal: createAbortSignal(),
+                          blockIds: generateOptions?.blockIds ?? blockIds,
+                          confirmationComponentId
+                        });
 
                       shared.unlock = dispose;
                       shared.applyCallbacks = applyCallbacks;
@@ -285,14 +271,7 @@ function registerQuickActionMenuComponent<
                       return returnValue;
                     } catch (error) {
                       if (!isAbortError(error)) {
-                        handleGenerationError(
-                          error,
-                          {
-                            cesdk,
-                            provider
-                          },
-                          config
-                        );
+                        quickAction.onError(error);
                       }
                       throw error;
                     }
@@ -315,14 +294,7 @@ function registerQuickActionMenuComponent<
                       blockIds,
                       closeMenu: close,
                       handleGenerationError: (error) => {
-                        handleGenerationError(
-                          error,
-                          {
-                            cesdk,
-                            provider
-                          },
-                          config
-                        );
+                        quickAction.onError(error);
                       },
                       toggleExpand: () => {
                         toggleExpandedState.setValue(quickAction.id);
@@ -330,33 +302,19 @@ function registerQuickActionMenuComponent<
                       generate: async (input, generateOptions) => {
                         try {
                           const { returnValue, applyCallbacks, dispose } =
-                            await generate(
-                              {
-                                input,
-                                quickAction,
-                                quickActionMenu,
-                                provider,
-                                cesdk,
-                                abortSignal: createAbortSignal(),
-                                blockIds: generateOptions?.blockIds ?? blockIds,
-                                confirmationComponentId
-                              },
-                              config
-                            );
+                            await quickAction.generate({
+                              input,
+                              abortSignal: createAbortSignal(),
+                              blockIds: generateOptions?.blockIds ?? blockIds,
+                              confirmationComponentId
+                            });
 
                           shared.unlock = dispose;
                           shared.applyCallbacks = applyCallbacks;
                           return returnValue;
                         } catch (error) {
                           if (!isAbortError(error)) {
-                            handleGenerationError(
-                              error,
-                              {
-                                cesdk,
-                                provider
-                              },
-                              config
-                            );
+                            quickAction.onError(error);
                           }
                           throw error;
                         }
@@ -373,6 +331,31 @@ function registerQuickActionMenuComponent<
   });
 
   return { canvasMenuComponentId };
+}
+
+function getQuickActionIdsFromPayload(
+  cesdk: CreativeEditorSDK,
+  canvasMenuComponentId: string,
+  payload?: ComponentPayload
+): QuickActionId[] {
+  if (payload == null || !Array.isArray(payload.children)) {
+    // Fallback to get the children order from the canvas menu order.
+    // Happens e.g. for CE.SDK versions < 1.53.0 because the payload
+    // is not passed correctly to the render function.
+    const canvasMenuOrder = cesdk.ui.getCanvasMenuOrder();
+    const component = canvasMenuOrder.find(({ id }) => {
+      return id === canvasMenuComponentId;
+    });
+
+    if (component != null && Array.isArray(component.children)) {
+      return component.children;
+    } else {
+      return [];
+    }
+  }
+  return payload.children.filter(
+    (child) => typeof child === 'string'
+  ) as QuickActionId[];
 }
 
 export default registerQuickActionMenuComponent;

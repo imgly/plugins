@@ -1,10 +1,7 @@
 import { type EditorPlugin } from '@cesdk/cesdk-js';
 import iconSprite, { PLUGIN_ICON_SET_ID } from './iconSprite';
 import { PluginConfiguration } from './types';
-import {
-  getQuickActionMenu,
-  initProvider
-} from '@imgly/plugin-ai-generation-web';
+import { initProvider } from '@imgly/plugin-ai-generation-web';
 
 export { PLUGIN_ID } from './constants';
 
@@ -22,21 +19,6 @@ export default (
         { cesdk, engine: cesdk.engine },
         { debug: config.debug ?? false, dryRun: false }
       );
-
-      const quickActionMenu = getQuickActionMenu(cesdk, 'text');
-
-      quickActionMenu.setQuickActionMenuOrder([
-        'improve',
-        'fix',
-        'shorter',
-        'longer',
-        'ly.img.separator',
-        'changeTone',
-        'translate',
-        'ly.img.separator',
-        'changeTextTo',
-        ...quickActionMenu.getQuickActionMenuOrder()
-      ]);
 
       cesdk.ui.addIconSet(PLUGIN_ICON_SET_ID, iconSprite);
       cesdk.setTranslations({

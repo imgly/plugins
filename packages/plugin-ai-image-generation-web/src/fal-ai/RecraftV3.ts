@@ -2,6 +2,7 @@ import { Icons, CustomAssetSource } from '@imgly/plugin-utils';
 import {
   Middleware,
   type Provider,
+  enhanceProvider,
   getPanelId
 } from '@imgly/plugin-ai-generation-web';
 import { type RecraftV3Input } from '@fal-ai/client/endpoints';
@@ -47,15 +48,7 @@ type ProviderConfiguration = {
 let imageStyleAssetSource: CustomAssetSource;
 let vectorStyleAssetSource: CustomAssetSource;
 
-export function RecraftV3(
-  config: ProviderConfiguration
-): (context: {
-  cesdk: CreativeEditorSDK;
-}) => Promise<Provider<'image', RecraftV3Input, RecraftV3Output>> {
-  return async ({ cesdk }: { cesdk: CreativeEditorSDK }) => {
-    return getProvider(cesdk, config);
-  };
-}
+export const RecraftV3 = enhanceProvider(getProvider);
 
 function getProvider(
   cesdk: CreativeEditorSDK,

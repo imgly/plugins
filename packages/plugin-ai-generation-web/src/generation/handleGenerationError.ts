@@ -3,6 +3,29 @@ import Provider, { GetInput, Output, OutputKind } from './provider';
 import { InitProviderConfiguration } from './types';
 import { extractErrorMessage } from '../utils';
 
+export function createHandleGenerationError<
+  K extends OutputKind,
+  I,
+  O extends Output
+>(
+  boundOptions: {
+    cesdk: CreativeEditorSDK;
+    provider: Provider<K, I, O>;
+  },
+  config: InitProviderConfiguration
+) {
+  return (error: unknown, options?: { getInput?: GetInput<I> }) => {
+    handleGenerationError<K, I, O>(
+      error,
+      {
+        ...boundOptions,
+        ...options
+      },
+      config
+    );
+  };
+}
+
 function handleGenerationError<K extends OutputKind, I, O extends Output>(
   error: unknown,
   options: {

@@ -1,5 +1,9 @@
 import CreativeEditorSDK from '@cesdk/cesdk-js';
-import { InferenceMetadata, QuickActionMenu, ApplyCallbacks } from './types';
+import {
+  InferenceMetadata,
+  ApplyCallbacks,
+  QuickActionGenerateFunction
+} from './types';
 import { INFERENCE_AI_EDIT_MODE, INFERENCE_AI_METADATA_KEY } from './utils';
 import { Metadata } from '@imgly/plugin-utils';
 import Provider, {
@@ -18,13 +22,30 @@ import editModeMiddleware from '../middleware/editModeMiddleware';
 import { InitProviderConfiguration } from '../types';
 import dryRunMiddleware from '../middleware/dryRunMiddleware';
 
+function createGenerateFunction<K extends OutputKind, I, O extends Output>(
+  boundOptions: {
+    cesdk: CreativeEditorSDK;
+    provider: Provider<K, I, O>;
+    quickAction: QuickAction<I, O>;
+  },
+  config: InitProviderConfiguration
+): QuickActionGenerateFunction<I, O> {
+  return async (options: {
+    input: I;
+    blockIds: number[];
+    abortSignal: AbortSignal;
+    confirmationComponentId: string;
+  }) => {
+    return generate<K, I, O>({ ...options, ...boundOptions }, config);
+  };
+}
+
 async function generate<K extends OutputKind, I, O extends Output>(
   options: {
     input: I;
     blockIds: number[];
     cesdk: CreativeEditorSDK;
     quickAction: QuickAction<I, O>;
-    quickActionMenu: QuickActionMenu;
     provider: Provider<K, I, O>;
     abortSignal: AbortSignal;
     confirmationComponentId: string;
@@ -132,4 +153,4 @@ async function generate<K extends OutputKind, I, O extends Output>(
   };
 }
 
-export default generate;
+export default createGenerateFunction;

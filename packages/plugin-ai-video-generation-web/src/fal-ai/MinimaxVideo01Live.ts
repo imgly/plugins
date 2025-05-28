@@ -1,5 +1,6 @@
 import { type MinimaxVideo01LiveInput } from '@fal-ai/client/endpoints';
 import {
+  enhanceProvider,
   Middleware,
   VideoOutput,
   type Provider
@@ -14,15 +15,7 @@ type ProviderConfiguration = {
   middleware?: Middleware<MinimaxVideo01LiveInput, VideoOutput>[];
 };
 
-export function MinimaxVideo01Live(
-  config: ProviderConfiguration
-): (context: {
-  cesdk: CreativeEditorSDK;
-}) => Promise<Provider<'video', MinimaxVideo01LiveInput, VideoOutput>> {
-  return async ({ cesdk }: { cesdk: CreativeEditorSDK }) => {
-    return getProvider(cesdk, config);
-  };
-}
+export const MinimaxVideo01Live = enhanceProvider(getProvider);
 
 function getProvider(
   cesdk: CreativeEditorSDK,
@@ -50,5 +43,3 @@ function getProvider(
     config
   );
 }
-
-export default getProvider;

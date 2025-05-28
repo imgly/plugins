@@ -1,8 +1,6 @@
 import CreativeEditorSDK from '@cesdk/cesdk-js';
 import AiApps from '@imgly/plugin-ai-apps-web';
-// @ts-ignore
 import OpenAiImage from '@imgly/plugin-ai-image-generation-web/open-ai';
-// @ts-ignore
 import Anthropic from '@imgly/plugin-ai-text-generation-web/anthropic';
 
 import { rateLimitMiddleware } from '@imgly/plugin-ai-generation-web';
@@ -60,8 +58,8 @@ function initialize(
         ]);
 
         instance.ui.setCanvasMenuOrder([
-          'ly.img.ai.text.canvasMenu',
-          `ly.img.ai.image.canvasMenu`,
+          Anthropic.AnthropicProvider.canvasMenu.text,
+          OpenAiImage.GptImage1.Image2Image.canvasMenu.image,
           'ly.img.separator',
           ...instance.ui.getCanvasMenuOrder()
         ]);

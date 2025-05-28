@@ -1,7 +1,8 @@
 import {
   type Provider,
   type AudioOutput,
-  Middleware
+  Middleware,
+  enhanceProvider
 } from '@imgly/plugin-ai-generation-web';
 import CreativeEditorSDK from '@cesdk/cesdk-js';
 import schema from './ElevenMultilingualV2.json';
@@ -33,15 +34,7 @@ type ProviderConfiguration = {
   baseURL?: string;
 };
 
-export function ElevenMultilingualV2(
-  config: ProviderConfiguration
-): (context: {
-  cesdk: CreativeEditorSDK;
-}) => Promise<Provider<'audio', ElevenlabsInput, AudioOutput>> {
-  return async ({ cesdk }: { cesdk: CreativeEditorSDK }) => {
-    return getProvider(cesdk, config);
-  };
-}
+export const ElevenMultilingualV2 = enhanceProvider(getProvider);
 
 function getProvider(
   cesdk: CreativeEditorSDK,

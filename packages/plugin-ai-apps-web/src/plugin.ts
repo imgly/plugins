@@ -6,7 +6,8 @@ import {
   Middleware,
   OutputKind,
   getPanelId,
-  Output
+  Output,
+  GetProvider
 } from '@imgly/plugin-ai-generation-web';
 
 import ImageGeneration from '@imgly/plugin-ai-image-generation-web';
@@ -17,7 +18,7 @@ import { AggregatedAssetSource } from '@imgly/plugin-utils';
 import CustomAssetSource, {
   createCustomAssetSource
 } from './ActiveAssetSource';
-import { GetProvider, PluginConfiguration, Providers } from './types';
+import { PluginConfiguration, Providers } from './types';
 
 export { PLUGIN_ID } from './constants';
 

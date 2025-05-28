@@ -77,6 +77,12 @@ CreativeEditorSDK.create(domElement, {
 
     // Position the AI dock button in the dock order
     cesdk.ui.setDockOrder(['ly.img.ai/apps.dock', ...cesdk.ui.getDockOrder()]);
+    
+    // Note: Canvas menu quick actions are automatically added by the providers
+    // You can access them via provider canvasMenu properties if needed:
+    // - AnthropicProvider.canvasMenu.text
+    // - FalAiImage.RecraftV3.canvasMenu.image
+    // - FalAiVideo.MinimaxVideo01LiveImageToVideo.canvasMenu.image
 });
 ```
 
@@ -133,6 +139,104 @@ The plugin automatically integrates generated assets into the appropriate asset 
 -   AI-generated audio appears in the standard audio library
 
 This integration creates a seamless experience where users can easily find and reuse their AI-generated assets.
+
+## Provider Quick Actions Reference
+
+Each AI provider automatically registers quick actions in canvas menus. Here's what gets added by each provider type:
+
+### Text Providers (Anthropic)
+
+**Canvas Menu:** `ly.img.ai.text.canvasMenu`
+
+- `anthropic.improve` - Improve writing quality
+- `anthropic.fix` - Fix spelling & grammar
+- `anthropic.shorter` / `anthropic.longer` - Adjust text length
+- `anthropic.changeTone` - Change writing tone
+- `anthropic.translate` - Translate to different languages
+- `anthropic.changeTextTo` - Custom text transformation
+
+### Image Providers (fal.ai/OpenAI)
+
+**Canvas Menu:** `ly.img.ai.image.canvasMenu`
+
+**GeminiFlashEdit (fal.ai):**
+- `fal-ai/gemini-flash-edit.changeImage` - Edit image with text prompt
+- `fal-ai/gemini-flash-edit.swapBackground` - Change image background
+- `fal-ai/gemini-flash-edit.styleTransfer` - Apply artistic styles
+- `fal-ai/gemini-flash-edit.createVariant` - Create image variants
+
+**OpenAI GPT-4:**
+- `open-ai/gpt-image-1/image2image.changeImage` - Edit image with text prompt
+- `open-ai/gpt-image-1/image2image.swapBackground` - Change image background
+- `open-ai/gpt-image-1/image2image.createVariant` - Create image variants
+
+### Video Providers (fal.ai)
+
+**Canvas Menu:** `ly.img.ai.image.canvasMenu` (appears in image context)
+
+**MinimaxVideo01LiveImageToVideo:**
+- `fal-ai/minimax/video-01-live/image-to-video.createVideo` - Convert image to video
+
+### Canvas Menu Control
+
+To disable automatic canvas menu registration and handle manually:
+
+```typescript
+AiApps({
+    providers: {
+        text2text: AnthropicProvider({
+            proxyUrl: 'https://your-anthropic-proxy.example.com',
+            addToCanvasMenu: false // Disable automatic registration
+        }),
+        // ... other providers
+    }
+})
+
+// Manually configure canvas menu
+cesdk.ui.setCanvasMenuOrder([
+    {
+        id: AnthropicProvider.canvasMenu.text.id,
+        children: AnthropicProvider.canvasMenu.text.children
+    },
+    {
+        id: FalAiImage.GeminiFlashEdit.canvasMenu.image.id,
+        children: FalAiImage.GeminiFlashEdit.canvasMenu.image.children
+    },
+    ...cesdk.ui.getCanvasMenuOrder()
+]);
+```
+
+### Customizing Quick Action Order
+
+To customize quick action ordering or remove specific actions, disable automatic registration and configure manually:
+
+```typescript
+// Example: Customize text quick actions - remove some actions and reorder
+cesdk.ui.setCanvasMenuOrder([
+    {
+        id: 'ly.img.ai.text.canvasMenu',
+        children: [
+            'anthropic.improve',      // Keep most commonly used first
+            'anthropic.fix',
+            'ly.img.separator',
+            'anthropic.translate',    // Moved up in priority
+            'anthropic.changeTextTo'  // Keep custom transformation
+            // Removed: shorter, longer, changeTone for simplified menu
+        ]
+    },
+    {
+        id: 'ly.img.ai.image.canvasMenu', 
+        children: [
+            'fal-ai/gemini-flash-edit.changeImage',     // Most used first
+            'fal-ai/gemini-flash-edit.swapBackground',
+            'ly.img.separator',
+            'fal-ai/gemini-flash-edit.createVariant'    // Keep variant creation
+            // Removed: styleTransfer, artistStyles for focused menu
+        ]
+    },
+    ...cesdk.ui.getCanvasMenuOrder()
+]);
+```
 
 ## Related Packages
 

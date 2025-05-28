@@ -109,6 +109,7 @@ Let's create a simple provider that generates images by calling your API. Create
 import {
     Provider,
     ImageOutput,
+    enhanceProvider,
     loggingMiddleware,
     uploadMiddleware,
     // Quick action helper components
@@ -128,20 +129,19 @@ interface MyProviderInput {
     image_url?: string; // For image-to-image operations
 }
 
-// Create a function that returns your provider
-export function MyImageProvider({
-    apiKey,
-    apiUrl = 'https://your-api-url.com'
-}: {
-    apiKey: string;
-    apiUrl?: string;
-}): (context: {
-    cesdk: CreativeEditorSDK;
-}) => Promise<Provider<'image', MyProviderInput, ImageOutput>> {
-    // Return a function that returns the provider
-    return async ({ cesdk }) => {
-        // Create and return the provider
-        const provider: Provider<'image', MyProviderInput, ImageOutput> = {
+// Create your base provider function  
+function createMyImageProvider(
+    cesdk: CreativeEditorSDK,
+    {
+        apiKey,
+        apiUrl = 'https://your-api-url.com'
+    }: {
+        apiKey: string;
+        apiUrl?: string;
+    }
+): Provider<'image', MyProviderInput, ImageOutput> {
+    // Create and return the provider
+    const provider: Provider<'image', MyProviderInput, ImageOutput> = {
             // Unique identifier for your provider
             id: 'my-image-provider',
 
@@ -317,9 +317,22 @@ export function MyImageProvider({
             }
         };
 
-        return provider;
-    };
+    return provider;
 }
+
+// Use enhanceProvider to get automatic canvas menu integration
+export const MyImageProvider = enhanceProvider(createMyImageProvider, {
+    canvasMenu: {
+        image: {
+            id: 'ly.img.ai.image.canvasMenu',
+            children: [
+                'my-image-provider.changeImage',
+                'my-image-provider.swapBackground', 
+                'my-image-provider.createVariant'
+            ]
+        }
+    }
+});
 ```
 
 ## 5. Integrating with CE.SDK
@@ -347,7 +360,8 @@ async function initializeEditor(container: HTMLElement) {
         ImageGeneration({
             text2image: MyImageProvider({
                 apiKey: 'your-api-key',
-                apiUrl: 'https://your-api-url.com'
+                apiUrl: 'https://your-api-url.com',
+                addToCanvasMenu: true // This is the default
             }),
             debug: true
         })
@@ -361,6 +375,9 @@ async function initializeEditor(container: HTMLElement) {
       'ly.img.ai/image-generation.dock',
       ...cesdk.ui.getDockOrder()
     ]);
+
+    // Note: Canvas menu quick actions are automatically added by the enhanced provider
+    // You can access the canvas menu ID via: MyImageProvider.canvasMenu.image.id
 
     return cesdk;
 }
@@ -529,14 +546,16 @@ Remember that this build setup is just an example - feel free to adapt it to you
 
 ## Conclusion
 
-You've now created a custom image generation provider for CE.SDK using the schema-based approach! Your provider integrates with the AI image generation plugin and provides a seamless user experience for generating images.
+You've now created a custom image generation provider for CE.SDK using the enhanced provider approach! Your provider integrates with the AI image generation plugin and provides a seamless user experience for generating images.
 
-The schema-based approach offers several advantages:
+The enhanced provider approach offers several advantages:
 
--   Automatic UI generation based on your schema
--   Built-in validation of input parameters
--   Consistent UI experience that matches the CE.SDK style
--   Easy ordering of properties using the `x-order-properties` extension
+-   **Automatic canvas menu integration**: Quick actions are automatically added to canvas menus
+-   **Schema-based UI generation**: Automatic UI generation based on your OpenAPI schema
+-   **Built-in validation**: Input validation based on schema constraints
+-   **Consistent UI experience**: Matches the CE.SDK style guidelines
+-   **Easy configuration**: Simple `addToCanvasMenu` option for controlling canvas menu behavior
+-   **Canvas menu access**: Direct access to canvas menu component IDs via `.canvasMenu` properties
 
 Next steps:
 
@@ -544,6 +563,7 @@ Next steps:
 2. Add more advanced validation in your schema
 3. Implement proper error handling and retry logic
 4. Add custom asset sources for generated images
+5. Explore advanced middleware options for upload handling and rate limiting
 
 ## Additional Resources
 

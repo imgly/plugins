@@ -1,9 +1,5 @@
-import CreativeEditorSDK from '@cesdk/cesdk-js';
 import { NotificationDuration, type EditorPlugin } from '@cesdk/cesdk-js';
-import {
-  initProvider,
-  getQuickActionMenu
-} from '@imgly/plugin-ai-generation-web';
+import { initProvider } from '@imgly/plugin-ai-generation-web';
 import { PluginConfiguration } from './types';
 
 export { PLUGIN_ID } from './constants';
@@ -111,13 +107,6 @@ export function AudioGeneration(
       }
 
       if (text2speechInitialized?.renderBuilderFunctions?.panel != null) {
-        addQuickActionEntryForText2Speech(cesdk, (text) => {
-          cesdk.ui.openPanel(SPEECH_GENERATION_PANEL_ID);
-          cesdk.ui.experimental.setGlobalStateValue(
-            `${text2speech?.id}.prompt`,
-            text
-          );
-        });
         cesdk.ui.registerPanel(
           SPEECH_GENERATION_PANEL_ID,
           text2speechInitialized.renderBuilderFunctions.panel
@@ -125,52 +114,6 @@ export function AudioGeneration(
       }
     }
   };
-}
-
-function addQuickActionEntryForText2Speech(
-  cesdk: CreativeEditorSDK,
-  onClick: (text: string) => void
-) {
-  const quickActionMenu = getQuickActionMenu(cesdk, 'text');
-  const generateSpeechId = 'generateSpeech';
-  quickActionMenu.registerQuickAction({
-    id: generateSpeechId,
-    version: '1',
-    confirmation: false,
-    enable: ({ engine }) => {
-      const blockIds = engine.block.findAllSelected();
-      if (blockIds.length !== 1) {
-        return false;
-      }
-
-      const [blockId] = blockIds;
-      if (engine.block.getType(blockId) !== '//ly.img.ubq/text') {
-        return false;
-      }
-
-      return true;
-    },
-    render: ({ builder }, context) => {
-      builder.Button(generateSpeechId, {
-        icon: '@imgly/Audio',
-        variant: 'plain',
-        labelAlignment: 'left',
-        label: 'AI Voice...',
-        onClick: () => {
-          const [blockId] = cesdk.engine.block.findAllSelected();
-          const text = cesdk.engine.block.getString(blockId, 'text/text');
-          onClick(text);
-          context.closeMenu();
-        }
-      });
-    }
-  });
-
-  quickActionMenu.setQuickActionMenuOrder([
-    ...quickActionMenu.getQuickActionMenuOrder(),
-    'ly.img.separator',
-    generateSpeechId
-  ]);
 }
 
 export default AudioGeneration;

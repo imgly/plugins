@@ -53,11 +53,8 @@ CreativeEditorSDK.create(domElement, {
         })
     );
 
-    // Set canvas menu order to display AI text actions
-    cesdk.ui.setCanvasMenuOrder([
-        'ly.img.ai.text.canvasMenu',
-        ...cesdk.ui.getCanvasMenuOrder()
-    ]);
+    // Note: Canvas menu quick actions are automatically added by the provider
+    // The text quick actions are available via: Anthropic.AnthropicProvider.canvasMenu.text
 });
 ```
 
@@ -222,11 +219,102 @@ The plugin adds a "Magic Menu" to the canvas context menu for text blocks with t
 -   **Translate**: Translate text to various languages
 -   **Change Text to...**: Completely rewrite text based on a custom prompt
 
-To add the AI text menu to your canvas menu, use:
+The AI text menu is automatically added to the canvas menu by the enhanced provider. You can access the canvas menu component ID via:
 
 ```typescript
+// Access the canvas menu ID from the enhanced provider
+const textCanvasMenuId = Anthropic.AnthropicProvider.canvasMenu.text.id; // 'ly.img.ai.text.canvasMenu'
+
+// Manual canvas menu ordering (if needed)
 cesdk.ui.setCanvasMenuOrder([
-    'ly.img.ai.text.canvasMenu',
+    Anthropic.AnthropicProvider.canvasMenu.text.id,
+    ...cesdk.ui.getCanvasMenuOrder()
+]);
+```
+
+### Canvas Menu Control
+
+If you need full control over canvas menu integration, you can disable automatic registration:
+
+```typescript
+provider: Anthropic.AnthropicProvider({
+    proxyUrl: 'https://your-anthropic-proxy.example.com',
+    addToCanvasMenu: false // Disable automatic canvas menu registration
+})
+
+// You are now responsible for manually adding the canvas menu components
+cesdk.ui.setCanvasMenuOrder([
+    {
+        id: Anthropic.AnthropicProvider.canvasMenu.text.id,
+        children: Anthropic.AnthropicProvider.canvasMenu.text.children
+    },
+    ...cesdk.ui.getCanvasMenuOrder()
+]);
+```
+
+## Anthropic Provider Quick Actions
+
+The Anthropic provider automatically registers the following quick actions in the text canvas menu (in this default order):
+
+### Default Quick Action Order
+
+| Quick Action ID | Label | Description | Icon |
+|-----------------|-------|-------------|------|
+| `anthropic.improve` | Improve | Enhance the quality and clarity of text | @imgly/MagicWand |
+| `anthropic.fix` | Fix Spelling & Grammar | Correct language errors in text | @imgly/CheckmarkAll |
+| `anthropic.shorter` | Make Shorter | Create a more concise version of the text | @imgly/TextShorter |
+| `anthropic.longer` | Make Longer | Expand text with additional details | @imgly/TextLonger |
+| `ly.img.separator` | — | Visual separator | — |
+| `anthropic.changeTone` | Change Tone | Modify tone (professional, casual, friendly, etc.) | @imgly/Microphone |
+| `anthropic.translate` | Translate | Translate text to various languages | @imgly/Language |
+| `ly.img.separator` | — | Visual separator | — |
+| `anthropic.changeTextTo` | Change Text to... | Completely rewrite text based on custom prompt | @imgly/Rename |
+
+### Canvas Menu Component Information
+
+```typescript
+// Access the Anthropic provider's canvas menu information
+Anthropic.AnthropicProvider.canvasMenu.text = {
+    id: 'ly.img.ai.text.canvasMenu',
+    children: [
+        'anthropic.improve',
+        'anthropic.fix', 
+        'anthropic.shorter',
+        'anthropic.longer',
+        'ly.img.separator',
+        'anthropic.changeTone',
+        'anthropic.translate',
+        'ly.img.separator',
+        'anthropic.changeTextTo'
+    ]
+}
+```
+
+### Customizing Quick Action Order
+
+To customize the order of text quick actions, disable automatic canvas menu registration and configure manually:
+
+```typescript
+// Configure provider without automatic canvas menu registration
+provider: Anthropic.AnthropicProvider({
+    proxyUrl: 'https://your-anthropic-proxy.example.com',
+    addToCanvasMenu: false
+})
+
+// Manually configure canvas menu with custom order
+cesdk.ui.setCanvasMenuOrder([
+    {
+        id: 'ly.img.ai.text.canvasMenu',
+        children: [
+            'anthropic.improve',      // Most commonly used first
+            'anthropic.fix',
+            'ly.img.separator',
+            'anthropic.changeTone',   // Advanced options
+            'anthropic.translate',
+            'anthropic.changeTextTo'
+            // Note: removed shorter/longer for a more focused menu
+        ]
+    },
     ...cesdk.ui.getCanvasMenuOrder()
 ]);
 ```

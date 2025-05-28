@@ -19,93 +19,151 @@ npm install @imgly/plugin-ai-generation-web
 
 ### Creating a Custom Provider
 
-The core of this package is the `Provider` interface which defines the contract for AI generation providers. Before we go into details, here's how to implement a basic provider:
+The core of this package is the `Provider` interface which defines the contract for AI generation providers. For easier integration and automatic canvas menu registration, we recommend using the `enhanceProvider` helper function. Here's how to implement a basic provider:
 
 ```typescript
 import {
     Provider,
     ImageOutput,
     initProvider,
+    enhanceProvider,
     loggingMiddleware
 } from '@imgly/plugin-ai-generation-web';
 
-// Create your image generation provider
-const myImageProvider: Provider<'image', MyInputType, ImageOutput> = {
-    // Unique identifier for this provider
-    id: 'my-image-provider',
+```typescript
+import {
+    Provider,
+    ImageOutput,
+    initProvider,
+    enhanceProvider,
+    loggingMiddleware
+} from '@imgly/plugin-ai-generation-web';
 
-    // Define output asset type, other options are 'video', 'audio', 'text'
-    kind: 'image',
+// Create your base provider function
+function createMyProvider(
+    cesdk: CreativeEditorSDK,
+    config: { apiKey: string }
+): Provider<'image', MyInputType, ImageOutput> {
+    return {
+        // Unique identifier for this provider
+        id: 'my-image-provider',
 
-    // Initialize the provider
-    initialize: async ({ engine, cesdk }) => {
-        // Setup APIs, register further components, etc.
-        myAIApi.configure({ apiKey: 'YOUR_API_KEY' });
-    },
+        // Define output asset type, other options are 'video', 'audio', 'text'
+        kind: 'image',
 
-    // Define input panel and UI components
-    input: {
-        // Define how the input panel is rendered
-        panel: {
-            // Option 1: Schema-based UI (using OpenAPI)
-            type: 'schema',
-            document: myApiSchema,
-            inputReference: '#/components/schemas/GenerationInput',
-            getBlockInput: async (input) => ({
-                image: { width: 1024, height: 1024 }
-            })
+        // Initialize the provider
+        initialize: async ({ engine, cesdk }) => {
+            // Setup APIs, register further components, etc.
+            myAIApi.configure({ apiKey: config.apiKey });
         },
 
-        // Optional: Quick actions for the quick action (sub)menu in the canvas menu
-        quickActions: {
-            actions: [
-                {
-                    id: 'enhance-image',
-                    version: '1',
-                    enable: true,
-                    render: (context, quickActionContext) => {
-                        // Render quick action UI
+        // Define input panel and UI components
+        input: {
+            // Define how the input panel is rendered
+            panel: {
+                // Option 1: Schema-based UI (using OpenAPI)
+                type: 'schema',
+                document: myApiSchema,
+                inputReference: '#/components/schemas/GenerationInput',
+                getBlockInput: async (input) => ({
+                    image: { width: 1024, height: 1024 }
+                })
+            },
+
+            // Optional: Quick actions for the quick action (sub)menu in the canvas menu
+            quickActions: {
+                actions: [
+                    {
+                        id: 'my-image-provider.enhance-image', // Note: ID should be prefixed with provider key
+                        version: '1',
+                        enable: true,
+                        render: (context, quickActionContext) => {
+                            // Render quick action UI
+                        }
                     }
-                }
-            ]
-        }
-    },
-
-    // Define output generation behavior
-    output: {
-        // Allow cancellation
-        abortable: true,
-
-        // Store generated assets, options are:
-        // - false: No history
-        // - '@imgly/local': In-memory storage (lost on refresh)
-        // - '@imgly/indexedDB': Browser IndexedDB storage
-        // - any other string: Handled as a custom asset source ID
-        history: '@imgly/indexedDB',
-
-        // Add middleware for pre/post-processing of the generation
-        middleware: [loggingMiddleware()],
-
-        // Configure success/error notifications
-        notification: {
-            success: {
-                show: true,
-                message: 'Generation successful!'
+                ]
             }
         },
 
-        // Core generation function
-        generate: async (input, { abortSignal, engine }) => {
-            // Call your AI API and return result
-            const response = await myAIApi.generateImage(input);
+        // Define output generation behavior
+        output: {
+            // Allow cancellation
+            abortable: true,
 
-            return {
-                kind: 'image',
-                url: response.imageUrl
-            };
+            // Store generated assets, options are:
+            // - false: No history
+            // - '@imgly/local': In-memory storage (lost on refresh)
+            // - '@imgly/indexedDB': Browser IndexedDB storage
+            // - any other string: Handled as a custom asset source ID
+            history: '@imgly/indexedDB',
+
+            // Add middleware for pre/post-processing of the generation
+            middleware: [loggingMiddleware()],
+
+            // Configure success/error notifications
+            notification: {
+                success: {
+                    show: true,
+                    message: 'Generation successful!'
+                }
+            },
+
+            // Core generation function
+            generate: async (input, { abortSignal, engine }) => {
+                // Call your AI API and return result
+                const response = await myAIApi.generateImage(input);
+
+                return {
+                    kind: 'image',
+                    url: response.imageUrl
+                };
+            }
+        }
+    };
+}
+```
+
+### Enhancing Your Provider
+
+As a final step before exporting your provider, use the `enhanceProvider` helper to add automatic canvas menu integration and configuration options:
+
+```typescript
+// Use enhanceProvider to get automatic canvas menu integration
+export const MyImageProvider = enhanceProvider(createMyProvider, {
+    canvasMenu: {
+        image: {
+            id: 'ly.img.ai.image.canvasMenu',
+            children: ['my-image-provider.enhance-image']
         }
     }
-};
+});
+```
+
+The `enhanceProvider` function:
+- Adds automatic canvas menu integration (when `addToCanvasMenu: true`)
+- Provides the `addToCanvasMenu` configuration option
+- Makes canvas menu component IDs accessible via `.canvasMenu` properties
+- Maintains full backwards compatibility with existing provider implementations
+
+Now your enhanced provider can be used like this:
+
+```typescript
+// With automatic canvas menu integration (default)
+const provider = MyImageProvider({
+    apiKey: 'your-key',
+    addToCanvasMenu: true // default
+});
+
+// Or without automatic canvas menu integration
+const providerManual = MyImageProvider({
+    apiKey: 'your-key', 
+    addToCanvasMenu: false
+});
+
+// Access canvas menu information
+console.log(MyImageProvider.canvasMenu.image.id); // 'ly.img.ai.image.canvasMenu'
+console.log(MyImageProvider.canvasMenu.image.children); // ['my-image-provider.enhance-image']
+```
 ```
 
 ## Provider Interface
@@ -752,16 +810,17 @@ The `quickActionContext` parameter gives you access to:
 
 Once you've created your provider, you need to initialize it with CreativeEditor SDK and integrate it into the UI. This section covers how to use your provider effectively.
 
-### Initializing Your Provider
+### Using Enhanced Providers
 
-The most basic way is to use the `initProvider` function to register your provider with CreativeEditor SDK:
+With the new `enhanceProvider` system, providers automatically handle canvas menu integration and provide easy access to canvas menu component IDs:
 
 ```typescript
 import { initProvider } from '@imgly/plugin-ai-generation-web';
 
-// Create your provider
-const myProvider = createMyProvider({
-    proxyUrl: 'https://your-api-proxy.example.com'
+// Create your enhanced provider with automatic canvas menu integration (default)
+const myProvider = MyImageProvider({
+    apiKey: 'your-api-key',
+    addToCanvasMenu: true // This is the default
 });
 
 // Initialize the provider with CreativeEditor SDK
@@ -780,9 +839,42 @@ function setupMyProvider(cesdk) {
 
     return result;
 }
+
+// Access canvas menu component IDs from the enhanced provider
+const imageCanvasMenuId = MyImageProvider.canvasMenu.image.id; // 'ly.img.ai.image.canvasMenu'
+const imageQuickActions = MyImageProvider.canvasMenu.image.children; // Array of quick action IDs
 ```
 
-Now you can render the provider's UI components in your application. The `initProvider` function takes care of registering the provider with CreativeEditor SDK and setting up the necessary UI components (see the next section for the ids of the panel).
+### Manual Canvas Menu Control
+
+If you need full control over canvas menu integration, you can disable automatic registration and handle it manually:
+
+```typescript
+// Disable automatic canvas menu integration
+const myProvider = MyImageProvider({
+    apiKey: 'your-api-key',
+    addToCanvasMenu: false // Disable automatic canvas menu registration
+});
+
+// You are now responsible for manually adding the canvas menu components
+// Use the provider's canvasMenu properties to get the correct IDs and children
+cesdk.ui.setCanvasMenuOrder([
+    // Add the provider's canvas menu components manually
+    {
+        id: MyImageProvider.canvasMenu.image.id, // 'ly.img.ai.image.canvasMenu'
+        children: MyImageProvider.canvasMenu.image.children // Provider's quick action IDs
+    },
+    // Add other canvas menu items
+    ...cesdk.ui.getCanvasMenuOrder()
+]);
+```
+
+**Important:** When `addToCanvasMenu: false` is set, the provider will NOT automatically register its quick actions in the canvas menu. You must manually handle canvas menu integration using the provider's `canvasMenu` properties.
+
+The `enhanceProvider` function automatically:
+- Adds quick actions to the appropriate canvas menu (when `addToCanvasMenu: true`)
+- Provides canvas menu component IDs for manual ordering if needed
+- Handles the `addToCanvasMenu` configuration option
 
 Alternatively, the `initProvider` function returns an object with `renderBuilderFunctions` which contains render functions that can be used to create custom UI.
 
@@ -811,6 +903,19 @@ const panelId = getPanelId('my-image-provider'); // returns "ly.img.ai/my-image-
 cesdk.ui.openPanel(panelId);
 ```
 
+#### Quick Action ID Patterns
+
+Quick action IDs follow the pattern `{provider-model-key}.{action-name}` to avoid conflicts:
+
+```
+fal-ai/recraft-v3.changeImage
+fal-ai/gemini-flash-edit.swapBackground  
+anthropic.improve
+open-ai/gpt-image-1/text2image.enhanceImage
+```
+
+This prefixing ensures that quick actions from different providers don't conflict, even if they have similar action names.
+
 For quick actions in the canvas menu, the following format is used:
 
 ```
@@ -823,6 +928,65 @@ For example:
 -   Video quick actions: `ly.img.ai.video.canvasMenu`
 -   Audio quick actions: `ly.img.ai.audio.canvasMenu`
 -   Text quick actions: `ly.img.ai.text.canvasMenu`
+
+With enhanced providers, you can access these IDs directly:
+
+```typescript
+// Access canvas menu IDs from enhanced providers
+MyImageProvider.canvasMenu.image.id // 'ly.img.ai.image.canvasMenu'
+MyTextProvider.canvasMenu.text.id   // 'ly.img.ai.text.canvasMenu'
+```
+
+### Customizing Quick Action Order
+
+You can customize the order of quick actions within canvas menus using the same ordering principles as other CreativeEditor SDK UI components (similar to `setCanvasMenuOrder`, `setNavigationBarOrder`, etc.).
+
+#### Canvas Menu Ordering
+
+To control the order of canvas menu components:
+
+```typescript
+// Get current canvas menu order
+const currentOrder = cesdk.ui.getCanvasMenuOrder();
+
+// Reorder canvas menu components
+cesdk.ui.setCanvasMenuOrder([
+    MyTextProvider.canvasMenu.text.id,     // Text quick actions first
+    MyImageProvider.canvasMenu.image.id,   // Image quick actions second  
+    MyVideoProvider.canvasMenu.video.id,   // Video quick actions third
+    ...currentOrder                         // Keep existing items
+]);
+```
+
+#### Quick Action Ordering Within Menus
+
+To control the order of quick actions within a specific canvas menu component, you need to specify the `children` array when manually configuring the canvas menu:
+
+```typescript
+// Manual configuration with custom quick action order
+cesdk.ui.setCanvasMenuOrder([
+    {
+        id: 'ly.img.ai.image.canvasMenu',
+        children: [
+            'my-provider.enhance-image',        // First quick action
+            'my-provider.change-background',    // Second quick action  
+            'ly.img.separator',                 // Add separator
+            'my-provider.create-variant',       // Third quick action
+            'another-provider.transform'        // Quick action from different provider
+        ]
+    },
+    ...cesdk.ui.getCanvasMenuOrder()
+]);
+```
+
+#### Ordering Best Practices
+
+1. **Logical Grouping**: Group related quick actions together
+2. **Frequency-Based**: Put most commonly used actions at the top
+3. **Separators**: Use `'ly.img.separator'` to visually separate different groups
+4. **Provider Consistency**: Maintain consistent ordering across similar providers
+
+**Note:** When using automatic canvas menu integration (`addToCanvasMenu: true`), the provider's default order is used. For custom ordering, either set `addToCanvasMenu: false` and configure manually, or override the canvas menu after initialization.
 
 ### Using with Existing AI Generation Plugins
 
@@ -901,13 +1065,99 @@ CreativeEditorSDK.create(domElement, {
         })
     );
 
-    // Add the quick action menu to the canvas menu
+    // Canvas menu quick actions are automatically added by enhanced providers
+    // You can manually order them if needed:
     cesdk.ui.setCanvasMenuOrder([
-        'ly.img.ai.text.canvasMenu',
-        'ly.img.ai.image.canvasMenu',
+        Anthropic.AnthropicProvider.canvasMenu.text.id,
+        FalAiImage.RecraftV3.canvasMenu.image.id,
         ...cesdk.ui.getCanvasMenuOrder()
     ]);
+
+    // Or disable automatic registration and handle manually:
+    // const textProvider = Anthropic.AnthropicProvider({
+    //     proxyUrl: 'https://proxy.example.com',
+    //     addToCanvasMenu: false
+    // });
+    // 
+    // cesdk.ui.setCanvasMenuOrder([
+    //     {
+    //         id: Anthropic.AnthropicProvider.canvasMenu.text.id,
+    //         children: Anthropic.AnthropicProvider.canvasMenu.text.children
+    //     },
+    //     ...cesdk.ui.getCanvasMenuOrder()
+    // ]);}
 });
+```
+
+## The enhanceProvider Helper
+
+The `enhanceProvider` function is a powerful utility that simplifies provider creation and automatically handles canvas menu integration:
+
+### Basic Usage
+
+```typescript
+import { enhanceProvider } from '@imgly/plugin-ai-generation-web';
+
+// Create your base provider function
+function createMyProvider(cesdk: CreativeEditorSDK, config: MyConfig) {
+    return {
+        id: 'my-provider',
+        kind: 'image',
+        // ... rest of provider implementation
+    };
+}
+
+// Enhance it with automatic canvas menu integration
+export const MyProvider = enhanceProvider(createMyProvider, {
+    canvasMenu: {
+        image: {
+            id: 'ly.img.ai.image.canvasMenu',
+            children: ['my-provider.enhance', 'my-provider.transform']
+        }
+    }
+});
+```
+
+### Configuration Options
+
+The `enhanceProvider` function accepts these options:
+
+```typescript
+enhanceProvider(baseProviderFunction, {
+    canvasMenu?: {
+        image?: { id: string; children: string[] };
+        text?: { id: string; children: string[] };
+        video?: { id: string; children: string[] };
+        audio?: { id: string; children: string[] };
+    }
+})
+```
+
+### What enhanceProvider Does
+
+1. **Automatic Canvas Menu Integration**: Adds quick actions to canvas menus automatically
+2. **Configuration Options**: Adds an `addToCanvasMenu` option to your provider config
+3. **Canvas Menu Access**: Provides `canvasMenu` property for accessing component IDs
+4. **Backwards Compatibility**: Works with existing provider implementations
+
+### Using Enhanced Providers
+
+```typescript
+// Configuration with automatic canvas menu integration (default)
+const provider = MyProvider({
+    apiKey: 'your-key',
+    addToCanvasMenu: true // default: true
+});
+
+// Disable automatic canvas menu integration if needed
+const providerNoMenu = MyProvider({
+    apiKey: 'your-key',
+    addToCanvasMenu: false
+});
+
+// Access canvas menu component information
+console.log(MyProvider.canvasMenu.image.id); // 'ly.img.ai.image.canvasMenu'
+console.log(MyProvider.canvasMenu.image.children); // ['my-provider.enhance', 'my-provider.transform']
 ```
 
 ## Advanced Features
@@ -938,14 +1188,16 @@ const rateLimit = rateLimitMiddleware({
     }
 });
 
-// Apply middleware to your provider
-const provider = {
-    // ...provider config
-    output: {
-        middleware: [rateLimit]
-        // ...other output config
-    }
-};
+// Apply middleware to your enhanced provider
+const MyProvider = enhanceProvider(createMyProvider, {
+    canvasMenu: { /* canvas menu config */ }
+});
+
+// Use the provider with middleware
+const provider = MyProvider({
+    apiKey: 'your-key',
+    middleware: [rateLimit]
+});
 ```
 
 #### Upload Middleware
@@ -994,6 +1246,21 @@ const provider = {
 - For non-streaming results, it awaits the upload function and returns the updated output
 - The upload function should return the same type of output object (but with modified properties like URL)
 - You can chain it with other middleware functions
+
+## Canvas Menu Quick Action Reference
+
+Each enhanced provider automatically registers quick actions in canvas menus. The following sections detail the default quick action orders for each provider type.
+
+### Understanding Quick Action IDs
+
+Quick action IDs follow this pattern: `{provider-model-key}.{action-name}`
+
+For example:
+- `anthropic.improve` - Anthropic provider's "improve text" action
+- `fal-ai/recraft-v3.changeImage` - RecraftV3 provider's "change image" action  
+- `open-ai/gpt-image-1/text2image.enhanceImage` - OpenAI GPT-4 provider's "enhance image" action
+
+This prefixing prevents conflicts between providers and makes it clear which provider owns each quick action.
 
 ## TypeScript Support
 

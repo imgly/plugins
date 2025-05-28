@@ -313,7 +313,7 @@ The plugin automatically registers the following UI components:
 
 ### Quick Action Features
 
-The plugin includes several pre-configured quick actions for both providers, built using helper components from the core generation library:
+The plugin includes several pre-configured quick actions for both providers, built using helper components from the core generation library. These are automatically registered in the canvas menu through the `enhanceProvider` system:
 
 1. **Change Image**: Edit the currently selected image using a text prompt
 2. **Swap Background**: Change only the background of the selected image
@@ -321,25 +321,30 @@ The plugin includes several pre-configured quick actions for both providers, bui
 4. **Style Transfer**: Apply different artistic styles to the selected image (GeminiFlashEdit only)
 5. **Artist Painting Styles**: Transform the image in the style of famous artists (GeminiFlashEdit only)
 
-These quick actions are implemented using helper components from `@imgly/plugin-ai-generation-web`:
+These quick actions are automatically added to the canvas menu via the enhanced providers. You can access their component IDs:
 
 ```typescript
-// Example of how the GptImage1 provider implements quick actions
+// Access canvas menu quick actions from enhanced providers
+FalAiImage.RecraftV3.canvasMenu.image.id // 'ly.img.ai.image.canvasMenu'
+FalAiImage.RecraftV3.canvasMenu.image.children // Array of quick action IDs
+
+FalAiImage.GeminiFlashEdit.canvasMenu.image.id // 'ly.img.ai.image.canvasMenu'
+OpenAiImage.GptImage1.Image2Image.canvasMenu.image.id // 'ly.img.ai.image.canvasMenu'
+
+// Quick actions are implemented using helper components from @imgly/plugin-ai-generation-web
+// Example implementation (done internally by the providers):
 function createQuickActions(cesdk): QuickAction[] {
   return [
-    // Swap background quick action
     QuickActionSwapImageBackground({
       mapInput: (input) => ({ ...input, image_url: input.uri }),
       cesdk
     }),
     
-    // Change image quick action
     QuickActionChangeImage({
       mapInput: (input) => ({ ...input, image_url: input.uri }),
       cesdk
     }),
     
-    // Create variant quick action
     QuickActionImageVariant({
       onApply: async ({ prompt, uri, duplicatedBlockId }, context) => {
         return context.generate(
@@ -361,12 +366,49 @@ function createQuickActions(cesdk): QuickAction[] {
 ### Panel IDs
 
 - Main panel: `ly.img.ai/image-generation`
-- Canvas quick actions: `ly.img.ai.image.canvasMenu`
+- Canvas quick actions: `ly.img.ai.image.canvasMenu` (accessible via `Provider.canvasMenu.image.id`)
 - Provider-specific panels:
   - RecraftV3: `ly.img.ai/fal-ai/recraft-v3`
   - GeminiFlashEdit: `ly.img.ai/fal-ai/gemini-flash-edit`
   - GptImage1.Text2Image: `ly.img.ai/open-ai/gpt-image-1/text2image`
   - GptImage1.Image2Image: `ly.img.ai/open-ai/gpt-image-1/image2image`
+
+With enhanced providers, you can access canvas menu information directly:
+
+```typescript
+// Access canvas menu IDs from enhanced providers
+FalAiImage.RecraftV3.canvasMenu.image.id // 'ly.img.ai.image.canvasMenu'
+FalAiImage.GeminiFlashEdit.canvasMenu.image.id // 'ly.img.ai.image.canvasMenu'
+OpenAiImage.GptImage1.Text2Image.canvasMenu.image.id // 'ly.img.ai.image.canvasMenu'
+```
+
+### Canvas Menu Control
+
+To disable automatic canvas menu registration and handle it manually:
+
+```typescript
+// Disable automatic canvas menu integration
+text2image: FalAiImage.RecraftV3({
+    proxyUrl: 'https://your-fal-ai-proxy.example.com',
+    addToCanvasMenu: false
+}),
+image2image: FalAiImage.GeminiFlashEdit({
+    proxyUrl: 'https://your-fal-ai-proxy.example.com',
+    addToCanvasMenu: false
+})
+
+// Manually configure canvas menu
+cesdk.ui.setCanvasMenuOrder([
+    {
+        id: 'ly.img.ai.image.canvasMenu',
+        children: [
+            ...FalAiImage.GeminiFlashEdit.canvasMenu.image.children,
+            // Add custom ordering or additional quick actions
+        ]
+    },
+    ...cesdk.ui.getCanvasMenuOrder()
+]);
+```
 
 ### Asset History
 
@@ -391,6 +433,101 @@ cesdk.ui.setDockOrder([
 const currentOrder = cesdk.ui.getDockOrder();
 currentOrder.splice(2, 0, 'ly.img.ai/image-generation.dock');
 cesdk.ui.setDockOrder(currentOrder);
+```
+
+## Provider Quick Actions Reference
+
+### GeminiFlashEdit (Image-to-Image) Quick Actions
+
+The GeminiFlashEdit provider automatically registers the following quick actions (in this default order):
+
+| Quick Action ID | Label | Description | Availability |
+|-----------------|-------|-------------|-------------|
+| `fal-ai/gemini-flash-edit.changeImage` | Change Image | Edit the selected image with a text prompt | Always |
+| `fal-ai/gemini-flash-edit.swapBackground` | Swap Background | Change only the background of the image | Always |
+| `ly.img.separator` | — | Visual separator | — |
+| `fal-ai/gemini-flash-edit.styleTransfer` | Style Transfer | Apply artistic styles (watercolor, oil painting, etc.) | Always |
+| `fal-ai/gemini-flash-edit.artistStyles` | Artist Styles | Transform in famous artist styles | Always |
+| `ly.img.separator` | — | Visual separator | — |
+| `fal-ai/gemini-flash-edit.createVariant` | Create Variant | Duplicate and generate a variant of the image | Always |
+
+**Canvas Menu Information:**
+```typescript
+FalAiImage.GeminiFlashEdit.canvasMenu.image = {
+    id: 'ly.img.ai.image.canvasMenu',
+    children: [
+        'fal-ai/gemini-flash-edit.changeImage',
+        'fal-ai/gemini-flash-edit.swapBackground',
+        'ly.img.separator',
+        'fal-ai/gemini-flash-edit.styleTransfer',
+        'fal-ai/gemini-flash-edit.artistStyles',
+        'ly.img.separator',
+        'fal-ai/gemini-flash-edit.createVariant'
+    ]
+}
+```
+
+### GptImage1.Image2Image (OpenAI) Quick Actions
+
+The OpenAI GPT-4 Image2Image provider registers these quick actions:
+
+| Quick Action ID | Label | Description | Availability |
+|-----------------|-------|-------------|-------------|
+| `open-ai/gpt-image-1/image2image.changeImage` | Change Image | Edit the selected image with a text prompt | Always |
+| `open-ai/gpt-image-1/image2image.swapBackground` | Swap Background | Change only the background of the image | Always |
+| `open-ai/gpt-image-1/image2image.createVariant` | Create Variant | Duplicate and generate a variant of the image | Always |
+
+**Canvas Menu Information:**
+```typescript
+OpenAiImage.GptImage1.Image2Image.canvasMenu.image = {
+    id: 'ly.img.ai.image.canvasMenu',
+    children: [
+        'open-ai/gpt-image-1/image2image.changeImage',
+        'open-ai/gpt-image-1/image2image.swapBackground',
+        'open-ai/gpt-image-1/image2image.createVariant'
+    ]
+}
+```
+
+### Text-to-Image Providers
+
+Text-to-image providers (RecraftV3, GptImage1.Text2Image) do not register canvas menu quick actions as they operate independently of existing canvas content.
+
+### Customizing Quick Action Order
+
+To customize the order of image quick actions across multiple providers:
+
+```typescript
+// Disable automatic canvas menu registration for all providers
+ImageGeneration({
+    text2image: FalAiImage.RecraftV3({
+        proxyUrl: 'https://your-fal-ai-proxy.example.com',
+        addToCanvasMenu: false
+    }),
+    image2image: FalAiImage.GeminiFlashEdit({
+        proxyUrl: 'https://your-fal-ai-proxy.example.com', 
+        addToCanvasMenu: false
+    })
+})
+
+// Manually configure with custom order
+cesdk.ui.setCanvasMenuOrder([
+    {
+        id: 'ly.img.ai.image.canvasMenu',
+        children: [
+            // Most commonly used actions first
+            'fal-ai/gemini-flash-edit.changeImage',
+            'fal-ai/gemini-flash-edit.swapBackground',
+            'ly.img.separator',
+            // Advanced styling options
+            'fal-ai/gemini-flash-edit.styleTransfer',
+            'ly.img.separator',
+            // Variant creation
+            'fal-ai/gemini-flash-edit.createVariant'
+        ]
+    },
+    ...cesdk.ui.getCanvasMenuOrder()
+]);
 ```
 
 ## Related Packages

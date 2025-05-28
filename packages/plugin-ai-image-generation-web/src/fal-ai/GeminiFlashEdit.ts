@@ -1,5 +1,4 @@
 import {
-  getQuickActionMenu,
   ImageOutput,
   Middleware,
   QuickAction,
@@ -8,7 +7,8 @@ import {
   QuickActionChangeImage,
   QuickActionImageVariant,
   enableQuickActionForImageFill,
-  type Provider
+  type Provider,
+  enhanceProvider
 } from '@imgly/plugin-ai-generation-web';
 import schema from './GeminiFlashEdit.json';
 import { getImageDimensionsFromURL } from '@imgly/plugin-utils';
@@ -26,38 +26,32 @@ type ProviderConfiguration = {
   middleware?: Middleware<GeminiFlashEditInput, ImageOutput>[];
 };
 
-export function GeminiFlashEdit(
-  config: ProviderConfiguration
-): (context: {
-  cesdk: CreativeEditorSDK;
-}) => Promise<Provider<'image', GeminiFlashEditInput, ImageOutput>> {
-  return async ({ cesdk }: { cesdk: CreativeEditorSDK }) => {
-    return getProvider(cesdk, config);
-  };
-}
+const MODEL_KEY = 'fal-ai/gemini-flash-edit';
+
+export const GeminiFlashEdit = enhanceProvider(getProvider, {
+  canvasMenu: {
+    image: {
+      id: 'ly.img.ai.image.canvasMenu',
+      children: [
+        `${MODEL_KEY}.styleTransfer`,
+        `${MODEL_KEY}.artists`,
+        'ly.img.separator',
+        `${MODEL_KEY}.changeImage`,
+        `${MODEL_KEY}.createVariant`
+      ]
+    }
+  }
+});
 
 function getProvider(
   cesdk: CreativeEditorSDK,
   config: ProviderConfiguration
 ): Provider<'image', GeminiFlashEditInput, ImageOutput> {
-  const modelKey = 'fal-ai/gemini-flash-edit';
-
   const quickActions = createGeminiFlashEditQuickActions(cesdk);
-  const quickActionMenu = getQuickActionMenu(cesdk, 'image');
-
-  quickActionMenu.setQuickActionMenuOrder([
-    ...quickActionMenu.getQuickActionMenuOrder(),
-    'ly.img.separator',
-    'styleTransfer',
-    'artists',
-    'ly.img.separator',
-    'changeImage',
-    'createVariant'
-  ]);
 
   return createImageProvider(
     {
-      modelKey,
+      modelKey: MODEL_KEY,
       name: 'Change Image',
       // @ts-ignore
       schema,
@@ -87,21 +81,24 @@ function createGeminiFlashEditQuickActions(
 ): QuickAction<GeminiFlashEditInput, ImageOutput>[] {
   cesdk.i18n.setTranslations({
     en: {
-      'ly.img.ai.quickAction.styleTransfer': 'Change Art Style',
-      'ly.img.ai.quickAction.artists': 'Painted By'
+      [`ly.img.ai.quickAction.${MODEL_KEY}.styleTransfer`]: 'Change Art Style',
+      [`ly.img.ai.quickAction.${MODEL_KEY}.artists`]: 'Painted By'
     }
   });
 
   return [
     QuickActionSwapImageBackground<GeminiFlashEditInput, ImageOutput>({
+      id: `${MODEL_KEY}.swapBackground`,
       mapInput: (input) => ({ ...input, image_url: input.uri }),
       cesdk
     }),
     QuickActionChangeImage<GeminiFlashEditInput, ImageOutput>({
+      id: `${MODEL_KEY}.changeImage`,
       mapInput: (input) => ({ ...input, image_url: input.uri }),
       cesdk
     }),
     QuickActionImageVariant<GeminiFlashEditInput, ImageOutput>({
+      id: `${MODEL_KEY}.createVariant`,
       onApply: async ({ prompt, uri, duplicatedBlockId }, context) => {
         // Generate a variant for the duplicated block
         return context.generate(
@@ -119,7 +116,7 @@ function createGeminiFlashEditQuickActions(
 
     QuickActionBaseSelect<GeminiFlashEditInput, ImageOutput>({
       quickAction: {
-        id: 'styleTransfer',
+        id: `${MODEL_KEY}.styleTransfer`,
         version: '1',
         enable: enableQuickActionForImageFill(),
         scopes: ['fill/change'],
@@ -178,7 +175,7 @@ function createGeminiFlashEditQuickActions(
 
     QuickActionBaseSelect<GeminiFlashEditInput, ImageOutput>({
       quickAction: {
-        id: 'artists',
+        id: `${MODEL_KEY}.artists`,
         version: '1',
         enable: enableQuickActionForImageFill(),
         scopes: ['fill/change'],

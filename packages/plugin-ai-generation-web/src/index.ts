@@ -27,7 +27,11 @@ export {
   type Property
 } from './generation/openapi/types';
 export { default as initProvider } from './generation/initProvider';
-export { type GenerationMiddleware } from './generation/types';
+export { default as enhanceProvider } from './generation/enhanceProvider';
+export {
+  type GenerationMiddleware,
+  type GetProvider
+} from './generation/types';
 
 // Export middleware
 export {
@@ -50,8 +54,9 @@ export {
 
 export { default as registerDockComponent } from './registerDockComponent';
 
-export { default as getQuickActionMenu } from './generation/quickAction/getQuickActionMenu';
-export { default as registerQuickActionMenuComponent } from './generation/quickAction/registerQuickActionMenuComponent';
+export { type QuickActionCanvasMenuComponents } from './generation/quickAction/types';
+
+export { default as getQuickActionRegistry } from './generation/quickAction/getQuickActionRegistry';
 
 export { default as QuickActionBasePrompt } from './generation/quickAction/common/QuickActionBasePrompt';
 export { default as QuickActionBaseButton } from './generation/quickAction/common/QuickActionBaseButton';
