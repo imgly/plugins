@@ -23,7 +23,7 @@ export const MinimaxVideo01LiveImageToVideo = enhanceProvider(getProvider, {
   canvasMenu: {
     image: {
       id: 'ly.img.ai.image.canvasMenu',
-      children: ['ly.img.separator', 'ly.img.separator', 'createVideo']
+      children: ['ly.img.separator', 'ly.img.separator', 'fal-ai/minimax/video-01-live/image-to-video.createVideo']
     }
   }
 });
@@ -79,7 +79,7 @@ function getQuickActions(
   return [
     QuickActionBaseButton<MinimaxVideo01LiveImageToVideoInput, VideoOutput>({
       quickAction: {
-        id: 'createVideo',
+        id: 'fal-ai/minimax/video-01-live/image-to-video.createVideo',
         kind: 'image',
         version: '1',
         enable: enableQuickActionForImageFill()

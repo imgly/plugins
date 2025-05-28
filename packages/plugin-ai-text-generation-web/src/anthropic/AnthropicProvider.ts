@@ -41,15 +41,15 @@ export const AnthropicProvider = enhanceProvider(getProvider, {
     text: {
       id: 'ly.img.ai.text.canvasMenu',
       children: [
-        'improve',
-        'fix',
-        'shorter',
-        'longer',
+        'anthropic.improve',
+        'anthropic.fix',
+        'anthropic.shorter',
+        'anthropic.longer',
         'ly.img.separator',
-        'changeTone',
-        'translate',
+        'anthropic.changeTone',
+        'anthropic.translate',
         'ly.img.separator',
-        'changeTextTo'
+        'anthropic.changeTextTo'
       ]
     }
   }
@@ -316,7 +316,7 @@ function createTextQuickAction(
 
 function ImproveQuickAction(): QuickAction<AnthropicInput, AnthropicOutput> {
   return createTextQuickAction({
-    id: 'improve',
+    id: 'anthropic.improve',
     label: 'Improve',
     icon: '@imgly/MagicWand',
     promptFn: improve
@@ -325,7 +325,7 @@ function ImproveQuickAction(): QuickAction<AnthropicInput, AnthropicOutput> {
 
 function ShorterQuickAction(): QuickAction<AnthropicInput, AnthropicOutput> {
   return createTextQuickAction({
-    id: 'shorter',
+    id: 'anthropic.shorter',
     label: 'Make Shorter',
     icon: '@imgly/TextShorter',
     promptFn: shorter
@@ -334,7 +334,7 @@ function ShorterQuickAction(): QuickAction<AnthropicInput, AnthropicOutput> {
 
 function LongerQuickAction(): QuickAction<AnthropicInput, AnthropicOutput> {
   return createTextQuickAction({
-    id: 'longer',
+    id: 'anthropic.longer',
     label: 'Make Longer',
     icon: '@imgly/TextLonger',
     promptFn: longer
@@ -343,7 +343,7 @@ function LongerQuickAction(): QuickAction<AnthropicInput, AnthropicOutput> {
 
 function FixQuickAction(): QuickAction<AnthropicInput, AnthropicOutput> {
   return createTextQuickAction({
-    id: 'fix',
+    id: 'anthropic.fix',
     label: 'Fix Spelling & Grammar',
     icon: '@imgly/CheckmarkAll',
     promptFn: fix
@@ -352,7 +352,7 @@ function FixQuickAction(): QuickAction<AnthropicInput, AnthropicOutput> {
 
 function SpeechQuickAction(): QuickAction<AnthropicInput, AnthropicOutput> {
   return createTextQuickAction({
-    id: 'speech',
+    id: 'anthropic.speech',
     label: 'Generate Speech Text',
     icon: '@imgly/Microphone',
     promptFn: generateTextForSpeech
@@ -370,7 +370,7 @@ const TONE_TYPES = [
 
 function ChangeToneQuickAction(): QuickAction<AnthropicInput, AnthropicOutput> {
   return createTextQuickAction({
-    id: 'changeTone',
+    id: 'anthropic.changeTone',
     label: 'Change Tone',
     icon: '@imgly/Microphone',
     promptFn: changeTone,
@@ -383,7 +383,7 @@ function ChangeToneQuickAction(): QuickAction<AnthropicInput, AnthropicOutput> {
 
 function TranslateQuickAction(): QuickAction<AnthropicInput, AnthropicOutput> {
   return createTextQuickAction({
-    id: 'translate',
+    id: 'anthropic.translate',
     label: 'Translate',
     icon: '@imgly/Language',
     promptFn: translate,
@@ -399,7 +399,7 @@ function ChangeTextToQuickAction(): QuickAction<
   AnthropicOutput
 > {
   return createTextQuickAction({
-    id: 'changeTextTo',
+    id: 'anthropic.changeTextTo',
     label: 'Change Text to...',
     icon: '@imgly/Rename',
     promptFn: changeTextTo,

@@ -53,15 +53,15 @@ export const GptImage1 = enhanceProvider(getProvider, {
     image: {
       id: 'ly.img.ai.image.canvasMenu',
       children: [
-        'changeStyleLibrary',
-        // 'changeStyle',
+        'open-ai/gpt-image-1/image2image.changeStyleLibrary',
+        // 'open-ai/gpt-image-1/image2image.changeStyle',
         'ly.img.separator',
-        'swapBackground',
-        'changeImage',
-        'createVariant',
-        'combineImages',
+        'open-ai/gpt-image-1/image2image.swapBackground',
+        'open-ai/gpt-image-1/image2image.changeImage',
+        'open-ai/gpt-image-1/image2image.createVariant',
+        'open-ai/gpt-image-1/image2image.combineImages',
         'ly.img.separator',
-        'remixPage'
+        'open-ai/gpt-image-1/image2image.remixPage'
       ]
     }
   }
@@ -261,7 +261,7 @@ function createQuickActions(options: {
       cesdk: options.cesdk,
       entries: [`${modelKey}/styles`],
       quickAction: {
-        id: 'changeStyleLibrary',
+        id: 'open-ai/gpt-image-1/image2image.changeStyleLibrary',
         version: '1',
         confirmation: true,
         lockDuringConfirmation: false,
@@ -290,7 +290,7 @@ function createQuickActions(options: {
       cesdk,
       items: STYLES.filter(({ id }) => id !== 'none'),
       quickAction: {
-        id: 'changeStyle',
+        id: 'open-ai/gpt-image-1/image2image.changeStyle',
         version: '1',
         confirmation: true,
         lockDuringConfirmation: false,
@@ -310,6 +310,7 @@ function createQuickActions(options: {
       }
     }),
     QuickActionEditTextStyle<GptImage1Input, GptImage1Output>({
+      id: 'open-ai/gpt-image-1/image2image.editTextStyle',
       onApply: async ({ prompt, uri, duplicatedBlockId }, context) => {
         // Generate a variant for the duplicated block
         return context.generate(
@@ -325,14 +326,17 @@ function createQuickActions(options: {
       cesdk
     }),
     QuickActionSwapImageBackground<GptImage1Input, GptImage1Output>({
+      id: 'open-ai/gpt-image-1/image2image.swapBackground',
       mapInput: (input) => ({ ...input, image_url: input.uri }),
       cesdk
     }),
     QuickActionChangeImage<GptImage1Input, GptImage1Output>({
+      id: 'open-ai/gpt-image-1/image2image.changeImage',
       mapInput: (input) => ({ ...input, image_url: input.uri }),
       cesdk
     }),
     QuickActionImageVariant<GptImage1Input, GptImage1Output>({
+      id: 'open-ai/gpt-image-1/image2image.createVariant',
       onApply: async ({ prompt, uri, duplicatedBlockId }, context) => {
         // Generate a variant for the duplicated block
         return context.generate(
@@ -348,6 +352,7 @@ function createQuickActions(options: {
       cesdk
     }),
     QuickActionCombineImages<GptImage1Input, GptImage1Output>({
+      id: 'open-ai/gpt-image-1/image2image.combineImages',
       onApply: async ({ prompt, uris, duplicatedBlockId }, context) => {
         // Generate a variant for the duplicated block
         return context.generate(
@@ -365,7 +370,7 @@ function createQuickActions(options: {
     }),
     QuickActionBaseButton<GptImage1Input, GptImage1Output>({
       quickAction: {
-        id: 'remixPage',
+        id: 'open-ai/gpt-image-1/image2image.remixPage',
         version: '1',
         confirmation: false,
         lockDuringConfirmation: false,
@@ -432,7 +437,7 @@ function createQuickActions(options: {
     }),
     QuickActionBasePrompt<GptImage1Input, GptImage1Output>({
       quickAction: {
-        id: 'remixPageWithPrompt',
+        id: 'open-ai/gpt-image-1/image2image.remixPageWithPrompt',
         version: '1',
         confirmation: false,
         lockDuringConfirmation: false,

@@ -31,11 +31,11 @@ export const GeminiFlashEdit = enhanceProvider(getProvider, {
     image: {
       id: 'ly.img.ai.image.canvasMenu',
       children: [
-        'styleTransfer',
-        'artists',
+        'fal-ai/gemini-flash-edit.styleTransfer',
+        'fal-ai/gemini-flash-edit.artists',
         'ly.img.separator',
-        'changeImage',
-        'createVariant'
+        'fal-ai/gemini-flash-edit.changeImage',
+        'fal-ai/gemini-flash-edit.createVariant'
       ]
     }
   }
@@ -88,14 +88,17 @@ function createGeminiFlashEditQuickActions(
 
   return [
     QuickActionSwapImageBackground<GeminiFlashEditInput, ImageOutput>({
+      id: 'fal-ai/gemini-flash-edit.swapBackground',
       mapInput: (input) => ({ ...input, image_url: input.uri }),
       cesdk
     }),
     QuickActionChangeImage<GeminiFlashEditInput, ImageOutput>({
+      id: 'fal-ai/gemini-flash-edit.changeImage',
       mapInput: (input) => ({ ...input, image_url: input.uri }),
       cesdk
     }),
     QuickActionImageVariant<GeminiFlashEditInput, ImageOutput>({
+      id: 'fal-ai/gemini-flash-edit.createVariant',
       onApply: async ({ prompt, uri, duplicatedBlockId }, context) => {
         // Generate a variant for the duplicated block
         return context.generate(
@@ -113,7 +116,7 @@ function createGeminiFlashEditQuickActions(
 
     QuickActionBaseSelect<GeminiFlashEditInput, ImageOutput>({
       quickAction: {
-        id: 'styleTransfer',
+        id: 'fal-ai/gemini-flash-edit.styleTransfer',
         version: '1',
         enable: enableQuickActionForImageFill(),
         scopes: ['fill/change'],
@@ -172,7 +175,7 @@ function createGeminiFlashEditQuickActions(
 
     QuickActionBaseSelect<GeminiFlashEditInput, ImageOutput>({
       quickAction: {
-        id: 'artists',
+        id: 'fal-ai/gemini-flash-edit.artists',
         version: '1',
         enable: enableQuickActionForImageFill(),
         scopes: ['fill/change'],
