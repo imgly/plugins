@@ -1,5 +1,6 @@
 import CreativeEditorSDK from '@cesdk/cesdk-js';
 import {
+  enhanceProvider,
   Middleware,
   Provider,
   QuickAction
@@ -14,6 +15,8 @@ import generateTextForSpeech from './prompts/generateTextForSpeech';
 import translate, { LANGUAGES, LOCALES } from './prompts/translate';
 import changeTone from './prompts/changeTone';
 import changeTextTo from './prompts/changeTextTo';
+
+const MODEL_KEY = 'anthropic';
 
 type ProviderConfiguration = {
   proxyUrl: string;
@@ -35,115 +38,128 @@ type AnthropicOutput = {
   text: string;
 };
 
-export function AnthropicProvider(
-  config: ProviderConfiguration
-): (context: {
-  cesdk: CreativeEditorSDK;
-}) => Promise<Provider<'text', AnthropicInput, AnthropicOutput>> {
-  return (context: { cesdk: CreativeEditorSDK }) => {
-    context.cesdk.i18n.setTranslations({
-      en: {
-        ...Object.entries(LANGUAGES).reduce(
-          (acc: Record<string, string>, [locale, langauge]) => {
-            acc[`ly.img.ai.inference.translate.type.${locale}`] = langauge;
-            return acc;
-          },
-          {}
-        )
+export const AnthropicProvider = enhanceProvider(getProvider, {
+  canvasMenu: {
+    text: {
+      id: 'ly.img.ai.text.canvasMenu',
+      children: [
+        `${MODEL_KEY}.improve`,
+        `${MODEL_KEY}.fix`,
+        `${MODEL_KEY}.shorter`,
+        `${MODEL_KEY}.longer`,
+        'ly.img.separator',
+        `${MODEL_KEY}.changeTone`,
+        `${MODEL_KEY}.translate`,
+        'ly.img.separator',
+        `${MODEL_KEY}.changeTextTo`
+      ]
+    }
+  }
+});
+
+function getProvider(cesdk: CreativeEditorSDK, config: ProviderConfiguration) {
+  cesdk.i18n.setTranslations({
+    en: {
+      ...Object.entries(LANGUAGES).reduce(
+        (acc: Record<string, string>, [locale, language]) => {
+          acc[`ly.img.ai.inference.translate.type.${locale}`] = language;
+          return acc;
+        },
+        {}
+      )
+    }
+  });
+
+  let anthropic: Anthropic | null = null;
+  const provider: Provider<'text', AnthropicInput, AnthropicOutput> = {
+    kind: 'text',
+    id: 'anthropic',
+    initialize: async () => {
+      anthropic = new Anthropic({
+        dangerouslyAllowBrowser: true,
+        baseURL: config.proxyUrl,
+        // Will be injected by the proxy
+        apiKey: null,
+        authToken: null
+      });
+    },
+    input: {
+      quickActions: {
+        actions: [
+          ImproveQuickAction(),
+          FixQuickAction(),
+          ShorterQuickAction(),
+          LongerQuickAction(),
+          SpeechQuickAction(),
+          ChangeToneQuickAction(),
+          TranslateQuickAction(),
+          ChangeTextToQuickAction()
+        ]
       }
-    });
+    },
+    output: {
+      middleware: config.middleware,
+      generate: async (
+        { prompt, blockId },
+        { engine, abortSignal }
+      ): Promise<AsyncGenerator<AnthropicOutput, AnthropicOutput>> => {
+        if (anthropic == null)
+          throw new Error('Anthropic SDK is not initialized');
 
-    let anthropic: Anthropic | null = null;
-    const provider: Provider<'text', AnthropicInput, AnthropicOutput> = {
-      kind: 'text',
-      id: 'anthropic',
-      initialize: async () => {
-        anthropic = new Anthropic({
-          dangerouslyAllowBrowser: true,
-          baseURL: config.proxyUrl,
-          // Will be injected by the proxy
-          apiKey: null,
-          authToken: null
-        });
-      },
-      input: {
-        quickActions: {
-          actions: [
-            ImproveQuickAction(),
-            FixQuickAction(),
-            ShorterQuickAction(),
-            LongerQuickAction(),
-            SpeechQuickAction(),
-            ChangeToneQuickAction(),
-            TranslateQuickAction(),
-            ChangeTextToQuickAction()
-          ]
+        if (
+          blockId != null &&
+          engine.block.getType(blockId) !== '//ly.img.ubq/text'
+        ) {
+          throw new Error(
+            'If a block is provided to this generation, it most be a text block'
+          );
         }
-      },
-      output: {
-        middleware: config.middleware,
-        generate: async (
-          { prompt, blockId },
-          { engine, abortSignal }
-        ): Promise<AsyncGenerator<AnthropicOutput, AnthropicOutput>> => {
-          if (anthropic == null)
-            throw new Error('Anthropic SDK is not initialized');
 
-          if (
-            blockId != null &&
-            engine.block.getType(blockId) !== '//ly.img.ubq/text'
-          ) {
-            throw new Error(
-              'If a block is provided to this generation, it most be a text block'
-            );
-          }
-
-          if (config.debug)
-            // eslint-disable-next-line no-console
-            console.log(
-              'Sending prompt to Anthropic:',
-              JSON.stringify(prompt, undefined, 2)
-            );
-
-          const stream = await sendPrompt(
-            anthropic,
-            {
-              proxyUrl: config.proxyUrl
-            },
-            prompt,
-            abortSignal
+        if (config.debug)
+          // eslint-disable-next-line no-console
+          console.log(
+            'Sending prompt to Anthropic:',
+            JSON.stringify(prompt, undefined, 2)
           );
 
-          // Create a new AsyncGenerator that yields AnthropicOutput objects
-          async function* outputGenerator(): AsyncGenerator<
-            AnthropicOutput,
-            AnthropicOutput
-          > {
-            let inferredText: string = '';
-            for await (const chunk of stream) {
-              if (abortSignal.aborted) {
-                break;
-              }
-              inferredText += chunk;
-              yield {
-                kind: 'text',
-                text: inferredText
-              };
+        const stream = await sendPrompt(
+          anthropic,
+          {
+            proxyUrl: config.proxyUrl
+          },
+          prompt,
+          abortSignal
+        );
+
+        // Create a new AsyncGenerator that yields AnthropicOutput objects
+        async function* outputGenerator(): AsyncGenerator<
+          AnthropicOutput,
+          AnthropicOutput
+        > {
+          let inferredText: string = '';
+          for await (const chunk of stream) {
+            if (abortSignal.aborted) {
+              break;
             }
-            // Return the final result
-            return {
+            inferredText += chunk;
+            yield {
               kind: 'text',
               text: inferredText
             };
           }
-
-          return outputGenerator();
+          // Return the final result
+          return {
+            kind: 'text',
+            text: inferredText
+          };
         }
-      }
-    };
 
-    return Promise.resolve(provider);
+        return outputGenerator();
+      }
+    }
   };
+
+  return Promise.resolve(provider);
 }
 
 type Parameter = {
@@ -302,7 +318,7 @@ function createTextQuickAction(
 
 function ImproveQuickAction(): QuickAction<AnthropicInput, AnthropicOutput> {
   return createTextQuickAction({
-    id: 'improve',
+    id: `${MODEL_KEY}.improve`,
     label: 'Improve',
     icon: '@imgly/MagicWand',
     promptFn: improve
@@ -311,7 +327,7 @@ function ImproveQuickAction(): QuickAction<AnthropicInput, AnthropicOutput> {
 
 function ShorterQuickAction(): QuickAction<AnthropicInput, AnthropicOutput> {
   return createTextQuickAction({
-    id: 'shorter',
+    id: `${MODEL_KEY}.shorter`,
     label: 'Make Shorter',
     icon: '@imgly/TextShorter',
     promptFn: shorter
@@ -320,7 +336,7 @@ function ShorterQuickAction(): QuickAction<AnthropicInput, AnthropicOutput> {
 
 function LongerQuickAction(): QuickAction<AnthropicInput, AnthropicOutput> {
   return createTextQuickAction({
-    id: 'longer',
+    id: `${MODEL_KEY}.longer`,
     label: 'Make Longer',
     icon: '@imgly/TextLonger',
     promptFn: longer
@@ -329,7 +345,7 @@ function LongerQuickAction(): QuickAction<AnthropicInput, AnthropicOutput> {
 
 function FixQuickAction(): QuickAction<AnthropicInput, AnthropicOutput> {
   return createTextQuickAction({
-    id: 'fix',
+    id: `${MODEL_KEY}.fix`,
     label: 'Fix Spelling & Grammar',
     icon: '@imgly/CheckmarkAll',
     promptFn: fix
@@ -338,7 +354,7 @@ function FixQuickAction(): QuickAction<AnthropicInput, AnthropicOutput> {
 
 function SpeechQuickAction(): QuickAction<AnthropicInput, AnthropicOutput> {
   return createTextQuickAction({
-    id: 'speech',
+    id: `${MODEL_KEY}.speech`,
     label: 'Generate Speech Text',
     icon: '@imgly/Microphone',
     promptFn: generateTextForSpeech
@@ -356,7 +372,7 @@ const TONE_TYPES = [
 
 function ChangeToneQuickAction(): QuickAction<AnthropicInput, AnthropicOutput> {
   return createTextQuickAction({
-    id: 'changeTone',
+    id: `${MODEL_KEY}.changeTone`,
     label: 'Change Tone',
     icon: '@imgly/Microphone',
     promptFn: changeTone,
@@ -369,7 +385,7 @@ function ChangeToneQuickAction(): QuickAction<AnthropicInput, AnthropicOutput> {
 
 function TranslateQuickAction(): QuickAction<AnthropicInput, AnthropicOutput> {
   return createTextQuickAction({
-    id: 'translate',
+    id: `${MODEL_KEY}.translate`,
     label: 'Translate',
     icon: '@imgly/Language',
     promptFn: translate,
@@ -385,7 +401,7 @@ function ChangeTextToQuickAction(): QuickAction<
   AnthropicOutput
 > {
   return createTextQuickAction({
-    id: 'changeTextTo',
+    id: `${MODEL_KEY}.changeTextTo`,
     label: 'Change Text to...',
     icon: '@imgly/Rename',
     promptFn: changeTextTo,
