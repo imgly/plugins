@@ -235,6 +235,15 @@ export interface PanelInputSchema<K extends OutputKind, I>
   orderExtensionKeyword?: string | string[];
 
   /**
+   * Defined the order of the properties in the panel. Takes precedence over
+   * the order defined in the schema (also see `orderExtensionKeyword`).
+   *
+   * If a function is provided, it receives the current order of properties from
+   * the schema and can return a new order.
+   */
+  order?: string[] | ((order: string[]) => string[]);
+
+  /**
    * Returns the necessary input for the creation of a block.
    *
    */
