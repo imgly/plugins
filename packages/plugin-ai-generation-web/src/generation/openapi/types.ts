@@ -3,7 +3,7 @@ import { OpenAPIV3 } from 'openapi-types';
 
 export interface Property {
   id: string;
-  schema: OpenAPIV3.SchemaObject;
+  schema?: OpenAPIV3.SchemaObject;
 }
 
 type PropertyInputForString = {
