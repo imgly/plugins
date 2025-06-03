@@ -45,7 +45,8 @@ export {
   getPanelId,
   getDurationForVideo,
   getThumbnailForVideo,
-  getLabelFromId
+  getLabelFromId,
+  isAsyncGenerator
 } from './utils';
 
 export { default as registerDockComponent } from './registerDockComponent';
