@@ -13,6 +13,7 @@ export type SelectValue = {
   id: string;
   label: string;
   thumbUri?: string;
+  meta?: { [key: string]: any };
 };
 
 /**
@@ -53,8 +54,8 @@ export class CustomAssetSource implements AssetSource {
           id: selectValue.id,
           label: { en: selectValue.label },
           meta: selectValue.thumbUri
-            ? { thumbUri: selectValue.thumbUri }
-            : undefined
+            ? { ...(selectValue.meta ?? {}), thumbUri: selectValue.thumbUri }
+            : selectValue.meta
         } as AssetDefinition;
       }
       return asset as AssetDefinition;

@@ -1,7 +1,9 @@
 import renderImageUrlProperty from './common/renderImageUrlProperty';
+import renderStyleTransferProperty from './common/renderStyleTransferProperty';
 
 const CommonProperties = {
-  ImageUrl: renderImageUrlProperty
+  ImageUrl: renderImageUrlProperty,
+  StyleTransfer: renderStyleTransferProperty
 };
 
 export { CommonProperties };
