@@ -9,31 +9,60 @@ function getProperties<K extends OutputKind, I>(
   if (inputSchema.properties == null) {
     throw new Error('Input schema must have properties');
   }
-
+  const propertiesFromSchema = inputSchema.properties;
   const properties: Property[] = [];
 
-  const orderedProperties = getOrderedProperties(inputSchema, panelInput);
-  if (orderedProperties != null) {
-    return orderedProperties;
-  } else {
-    Object.entries(inputSchema.properties).forEach((property) => {
-      const id = property[0];
-      const schema = property[1] as OpenAPIV3.SchemaObject;
-      properties.push({ id, schema });
-    });
-  }
+  const order = getOrder(inputSchema, panelInput);
+  order.forEach((propertyKey) => {
+    const id = propertyKey;
+    const schema =
+      (propertiesFromSchema[propertyKey] as OpenAPIV3.SchemaObject) ??
+      undefined;
+    properties.push({ id, schema });
+  });
 
   return properties;
 }
 
-function getOrderedProperties<K extends OutputKind, I>(
+function getOrder<K extends OutputKind, I>(
   inputSchema: OpenAPIV3.SchemaObject,
   panelInput: PanelInputSchema<K, I>
-): Property[] | undefined {
+): string[] {
+  const panelInputOrder = panelInput.order;
+  if (panelInputOrder != null && Array.isArray(panelInputOrder)) {
+    return panelInputOrder;
+  }
+
+  if (inputSchema.properties == null) {
+    throw new Error('Input schema must have properties');
+  }
+  const propertiesFromSchema = inputSchema.properties;
+  const orderFromKeys = Object.keys(propertiesFromSchema);
+  const orderFromExtensionKeyword = getOrderFromExtensionKeyword(
+    inputSchema,
+    panelInput
+  );
+
+  let order = orderFromExtensionKeyword ?? orderFromKeys;
+
+  if (panelInputOrder != null && typeof panelInputOrder === 'function') {
+    order = panelInputOrder(order);
+  }
+
+  // Return order with no duplicates
+  return [...new Set(order)];
+}
+
+/**
+ * Get the order from an extension keyword in the input schema (e.g. x-order) if it exists.
+ */
+function getOrderFromExtensionKeyword<K extends OutputKind, I>(
+  inputSchema: OpenAPIV3.SchemaObject,
+  panelInput: PanelInputSchema<K, I>
+): string[] | undefined {
   if (panelInput.orderExtensionKeyword == null) {
     return undefined;
   }
-  const properties: Property[] = [];
 
   if (
     typeof panelInput.orderExtensionKeyword !== 'string' &&
@@ -43,7 +72,6 @@ function getOrderedProperties<K extends OutputKind, I>(
       'orderExtensionKeyword must be a string or an array of strings'
     );
   }
-
   const orderExtensionKeywords =
     typeof panelInput.orderExtensionKeyword === 'string'
       ? [panelInput.orderExtensionKeyword]
@@ -62,30 +90,7 @@ function getOrderedProperties<K extends OutputKind, I>(
     // @ts-ignore
     inputSchema[orderExtensionKeyword] as string[];
 
-  if (order == null || Array.isArray(order) === false) {
-    throw new Error(
-      `Extension keyword ${orderExtensionKeyword} must be an array of strings`
-    );
-  }
-
-  [...new Set(order)].forEach((orderKey) => {
-    const property = inputSchema.properties?.[orderKey];
-    if (property != null) {
-      properties.push({
-        id: orderKey,
-        schema: property as OpenAPIV3.SchemaObject
-      });
-    }
-  });
-
-  if (properties.length === 0) {
-    throw new Error(
-      `Could not find any properties with order extension keyword(s) ${orderExtensionKeywords.join(
-        ', '
-      )}`
-    );
-  }
-  return properties;
+  return order;
 }
 
 export default getProperties;

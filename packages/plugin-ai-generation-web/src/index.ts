@@ -1,7 +1,9 @@
 import renderImageUrlProperty from './common/renderImageUrlProperty';
+import renderStyleTransferProperty from './common/renderStyleTransferProperty';
 
 const CommonProperties = {
-  ImageUrl: renderImageUrlProperty
+  ImageUrl: renderImageUrlProperty,
+  StyleTransfer: renderStyleTransferProperty
 };
 
 export { CommonProperties };
@@ -48,7 +50,8 @@ export {
   getPanelId,
   getDurationForVideo,
   getThumbnailForVideo,
-  getLabelFromId
+  getLabelFromId,
+  isAsyncGenerator
 } from './utils';
 
 export { default as registerDockComponent } from './registerDockComponent';
