@@ -60,7 +60,13 @@ const PhotoEditorPlugin: (options: {
       inputPanel.renderCustomProperty = {
         ...(inputPanel.renderCustomProperty ?? {}),
         ...CommonProperties.StyleTransfer(provider.id, {
-          cesdk
+          cesdk,
+          i18n: {
+            prompt: {
+              inputLabel: 'Prompt',
+              placeholder: 'Replace the setting with a tropical beach at sunset'
+            }
+          }
         }),
         image_url: () => {
           return () => {

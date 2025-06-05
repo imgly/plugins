@@ -47,6 +47,16 @@ function renderStyleTransferProperty(
      * Override the default styles
      */
     styles?: Style[] | ((defaultStyles: Style[]) => Style[]);
+
+    /**
+     * Overrides the default i18n translations for the prompt input.
+     */
+    i18n?: {
+      prompt?: {
+        inputLabel?: string;
+        placeholder?: string;
+      };
+    };
   }
 ): RenderCustomProperty {
   const { cesdk } = options;
@@ -92,10 +102,14 @@ function renderStyleTransferProperty(
   });
 
   const customProperties: RenderCustomProperty = {
-    prompt: (context, property) => {
+    [options.propertyKeyForPrompt ?? 'prompt']: (context, property) => {
       const promptState = context.state<string>('prompt', '');
       context.builder.TextArea(`${property.id}`, {
-        inputLabel: 'Prompt',
+        inputLabel:
+          options.i18n?.prompt?.inputLabel ??
+          options.propertyKeyForPrompt ??
+          'prompt',
+        placeholder: options.i18n?.prompt?.placeholder,
         ...promptState
       });
 
