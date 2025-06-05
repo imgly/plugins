@@ -35,7 +35,7 @@ const PhotoEditorPlugin: (options: {
       const providerDefinedOrder = inputPanel.order;
       inputPanel.order = (passedOrder) => {
         let order = passedOrder;
-        if (inputPanel.order != null) {
+        if (providerDefinedOrder != null) {
           if (Array.isArray(providerDefinedOrder)) {
             order = providerDefinedOrder;
           } else if (typeof providerDefinedOrder === 'function') {
