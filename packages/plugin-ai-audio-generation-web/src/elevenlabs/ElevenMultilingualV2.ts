@@ -1,7 +1,7 @@
 import {
   type Provider,
   type AudioOutput,
-  Middleware
+  CommonProviderConfiguration
 } from '@imgly/plugin-ai-generation-web';
 import CreativeEditorSDK from '@cesdk/cesdk-js';
 import schema from './ElevenMultilingualV2.json';
@@ -19,11 +19,8 @@ type ElevenlabsInput = {
   speed: number;
 };
 
-type ProviderConfiguration = {
-  proxyUrl: string;
-  debug?: boolean;
-  middleware?: Middleware<ElevenlabsInput, AudioOutput>[];
-
+interface ProviderConfiguration
+  extends CommonProviderConfiguration<ElevenlabsInput, AudioOutput> {
   /**
    * Base URL used for the UI assets used in the plugin.
    *
@@ -31,7 +28,7 @@ type ProviderConfiguration = {
    * from the `/assets` folder to your own server and set the base URL to your server.
    */
   baseURL?: string;
-};
+}
 
 export function ElevenMultilingualV2(
   config: ProviderConfiguration
@@ -216,7 +213,8 @@ export async function generateSpeech(
     method: 'POST',
     headers: {
       Accept: 'audio/mpeg',
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      ...(config.headers ?? {})
     },
     body: JSON.stringify({
       text,

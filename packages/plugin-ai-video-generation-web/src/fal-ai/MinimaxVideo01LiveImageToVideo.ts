@@ -1,23 +1,23 @@
 import { type MinimaxVideo01LiveImageToVideoInput } from '@fal-ai/client/endpoints';
 import {
-  Middleware,
   VideoOutput,
   QuickAction,
   type Provider,
   QuickActionBaseButton,
   enableQuickActionForImageFill,
-  getQuickActionMenu
+  getQuickActionMenu,
+  CommonProviderConfiguration
 } from '@imgly/plugin-ai-generation-web';
 import { getImageDimensionsFromURL, getImageUri } from '@imgly/plugin-utils';
 import schema from './MinimaxVideo01LiveImageToVideo.json';
 import CreativeEditorSDK from '@cesdk/cesdk-js';
 import createVideoProvider from './createVideoProvider';
 
-type ProviderConfiguration = {
-  proxyUrl: string;
-  debug?: boolean;
-  middleware?: Middleware<MinimaxVideo01LiveImageToVideoInput, VideoOutput>[];
-};
+interface ProviderConfiguration
+  extends CommonProviderConfiguration<
+    MinimaxVideo01LiveImageToVideoInput,
+    VideoOutput
+  > {}
 
 export function MinimaxVideo01LiveImageToVideo(
   config: ProviderConfiguration
@@ -56,6 +56,7 @@ function getProvider(
       inputReference:
         '#/components/schemas/MinimaxVideo01LiveImageToVideoInput',
       cesdk,
+      headers: config.headers,
       middleware: config.middleware,
       quickActions,
       getBlockInput: async (input) => {

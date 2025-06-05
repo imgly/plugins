@@ -13,14 +13,14 @@ import {
   QuickActionSwapImageBackground,
   CommonProperties,
   getQuickActionMenu,
-  Middleware,
   QuickActionBasePrompt,
   QuickAction,
   type Provider,
   QuickActionBaseSelect,
   QuickActionBaseLibrary,
   enableQuickActionForImageFill,
-  QuickActionBaseButton
+  QuickActionBaseButton,
+  CommonProviderConfiguration
 } from '@imgly/plugin-ai-generation-web';
 import GptImage1Schema from './GptImage1.image2image.json';
 import CreativeEditorSDK, { MimeType } from '@cesdk/cesdk-js';
@@ -42,11 +42,8 @@ type GptImage1Output = {
   url: string;
 };
 
-type ProviderConfiguration = {
-  proxyUrl: string;
-  debug?: boolean;
-  middleware?: Middleware<GptImage1Input, GptImage1Output>[];
-};
+interface ProviderConfiguration
+  extends CommonProviderConfiguration<GptImage1Input, GptImage1Output> {}
 
 export function GptImage1(
   config: ProviderConfiguration
@@ -237,9 +234,12 @@ function getProvider(
             ? {
                 Authorization: `Bearer ${cesdk.ui.experimental.getGlobalStateValue(
                   'OPENAI_API_KEY'
-                )}`
+                )}`,
+                ...(config.headers ?? {})
               }
-            : {},
+            : {
+                ...(config.headers ?? {})
+              },
           body: formData
         });
 

@@ -1,5 +1,5 @@
 import {
-  Middleware,
+  CommonProviderConfiguration,
   VideoOutput,
   type Provider
 } from '@imgly/plugin-ai-generation-web';
@@ -7,11 +7,11 @@ import schema from './PixverseV35TextToVideo.json';
 import CreativeEditorSDK from '@cesdk/cesdk-js';
 import createVideoProvider from './createVideoProvider';
 
-type ProviderConfiguration = {
-  proxyUrl: string;
-  debug?: boolean;
-  middleware?: Middleware<PixverseV35TextToVideoInput, VideoOutput>[];
-};
+interface ProviderConfiguration
+  extends CommonProviderConfiguration<
+    PixverseV35TextToVideoInput,
+    VideoOutput
+  > {}
 
 type PixverseV35TextToVideoInput = {
   prompt: string;
@@ -46,6 +46,7 @@ function getProvider(
       inputReference: '#/components/schemas/PixverseV35TextToVideoInput',
       cesdk,
 
+      headers: config.headers,
       middleware: config.middleware,
       getBlockInput: (input) => {
         if (input.aspect_ratio != null && input.resolution != null) {
