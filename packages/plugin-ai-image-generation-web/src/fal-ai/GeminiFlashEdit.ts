@@ -1,14 +1,14 @@
 import {
   getQuickActionMenu,
   ImageOutput,
-  Middleware,
   QuickAction,
   QuickActionBaseSelect,
   QuickActionSwapImageBackground,
   QuickActionChangeImage,
   QuickActionImageVariant,
   enableQuickActionForImageFill,
-  type Provider
+  type Provider,
+  type CommonProviderConfiguration
 } from '@imgly/plugin-ai-generation-web';
 import schema from './GeminiFlashEdit.json';
 import { getImageDimensionsFromURL } from '@imgly/plugin-utils';
@@ -20,14 +20,8 @@ type GeminiFlashEditInput = {
   image_url: string;
 };
 
-type ProviderConfiguration = {
-  proxyUrl: string;
-  debug?: boolean;
-  middleware?: Middleware<GeminiFlashEditInput, ImageOutput>[];
-};
-
 export function GeminiFlashEdit(
-  config: ProviderConfiguration
+  config: CommonProviderConfiguration<GeminiFlashEditInput, ImageOutput>
 ): (context: {
   cesdk: CreativeEditorSDK;
 }) => Promise<Provider<'image', GeminiFlashEditInput, ImageOutput>> {
@@ -38,7 +32,7 @@ export function GeminiFlashEdit(
 
 function getProvider(
   cesdk: CreativeEditorSDK,
-  config: ProviderConfiguration
+  config: CommonProviderConfiguration<GeminiFlashEditInput, ImageOutput>
 ): Provider<'image', GeminiFlashEditInput, ImageOutput> {
   const modelKey = 'fal-ai/gemini-flash-edit';
 
@@ -65,6 +59,7 @@ function getProvider(
       cesdk,
       quickActions,
       middleware: config.middleware,
+      headers: config.headers,
       getBlockInput: async (input) => {
         const { width, height } = await getImageDimensionsFromURL(
           input.image_url,

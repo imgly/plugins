@@ -26,11 +26,20 @@ import {
     Provider,
     ImageOutput,
     initProvider,
-    loggingMiddleware
+    loggingMiddleware,
+    CommonProviderConfiguration
 } from '@imgly/plugin-ai-generation-web';
 
-// Create your image generation provider
-const myImageProvider: Provider<'image', MyInputType, ImageOutput> = {
+// Define your provider configuration interface
+interface MyProviderConfiguration 
+    extends CommonProviderConfiguration<MyInputType, ImageOutput> {
+    // Add any provider-specific configuration here
+    baseURL?: string;
+}
+
+// Create a provider factory function
+function createMyImageProvider(config: MyProviderConfiguration): Provider<'image', MyInputType, ImageOutput> {
+  return {
     // Unique identifier for this provider
     id: 'my-image-provider',
 
@@ -40,7 +49,10 @@ const myImageProvider: Provider<'image', MyInputType, ImageOutput> = {
     // Initialize the provider
     initialize: async ({ engine, cesdk }) => {
         // Setup APIs, register further components, etc.
-        myAIApi.configure({ apiKey: 'YOUR_API_KEY' });
+        myAIApi.configure({ 
+            apiKey: 'YOUR_API_KEY',
+            headers: config.headers  // Use custom headers if provided
+        });
     },
 
     // Define input panel and UI components
@@ -97,7 +109,9 @@ const myImageProvider: Provider<'image', MyInputType, ImageOutput> = {
         // Core generation function
         generate: async (input, { abortSignal, engine }) => {
             // Call your AI API and return result
-            const response = await myAIApi.generateImage(input);
+            const response = await myAIApi.generateImage(input, {
+                headers: config.headers  // Pass custom headers to API
+            });
 
             return {
                 kind: 'image',
@@ -105,7 +119,20 @@ const myImageProvider: Provider<'image', MyInputType, ImageOutput> = {
             };
         }
     }
-};
+  };
+}
+
+// Usage example
+const myImageProvider = createMyImageProvider({
+    proxyUrl: 'https://your-api-proxy.example.com',
+    headers: {
+        'x-client-version': '1.0.0',
+        'x-request-source': 'cesdk-plugin'
+    },
+    debug: false,
+    middleware: [loggingMiddleware()],
+    baseURL: 'https://assets.example.com'
+});
 ```
 
 ## Provider Interface
@@ -118,6 +145,61 @@ The Provider interface is generic and type-safe, supporting four output kinds:
 // O: Output type (ImageOutput, VideoOutput, AudioOutput, TextOutput)
 // C: Chunk type for streaming (optional, defaults to O)
 interface Provider<K extends OutputKind, I, O extends Output, C = O> { ... }
+```
+
+## Common Provider Configuration
+
+All providers should extend the `CommonProviderConfiguration` interface, which provides standardized configuration options:
+
+```typescript
+interface CommonProviderConfiguration<I, O extends Output> {
+    // The proxy URL to use for the provider
+    proxyUrl: string;
+    
+    // Enable debug mode for additional logging
+    debug?: boolean;
+    
+    // Middleware for request/response processing
+    middleware?: Middleware<I, O>[];
+    
+    // Custom headers to include in all API requests
+    headers?: Record<string, string>;
+}
+```
+
+The `headers` property allows you to include custom HTTP headers in all API requests made by your provider. This is useful for:
+- Adding custom client identification headers
+- Including version information
+- Passing through metadata required by your API
+- Adding correlation IDs for request tracing
+
+**Implementation Note:** When implementing your provider's `generate` function, ensure you merge the custom headers with any required headers for your API. For example:
+
+```typescript
+// In your generate function
+const response = await fetch(apiUrl, {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`,
+        ...config.headers  // Spread custom headers
+    },
+    body: JSON.stringify(requestData)
+});
+```
+
+Example provider configuration:
+
+```typescript
+const myProvider = createMyProvider({
+    proxyUrl: 'https://api.example.com',
+    headers: {
+        'x-client-version': '1.0.0',
+        'x-request-source': 'cesdk-plugin'
+    },
+    debug: false,
+    middleware: [loggingMiddleware()]
+});
 ```
 
 ### Key Provider Options
@@ -759,9 +841,13 @@ The most basic way is to use the `initProvider` function to register your provid
 ```typescript
 import { initProvider } from '@imgly/plugin-ai-generation-web';
 
-// Create your provider
+// Create your provider with custom headers
 const myProvider = createMyProvider({
-    proxyUrl: 'https://your-api-proxy.example.com'
+    proxyUrl: 'https://your-api-proxy.example.com',
+    headers: {
+        'x-custom-header': 'value',
+        'x-client-version': '1.0.0'
+    }
 });
 
 // Initialize the provider with CreativeEditor SDK

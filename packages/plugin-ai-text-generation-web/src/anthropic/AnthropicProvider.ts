@@ -1,8 +1,8 @@
 import CreativeEditorSDK from '@cesdk/cesdk-js';
 import {
-  Middleware,
   Provider,
-  QuickAction
+  QuickAction,
+  type CommonProviderConfiguration
 } from '@imgly/plugin-ai-generation-web';
 import Anthropic from '@anthropic-ai/sdk';
 import sendPrompt from './sendPrompt';
@@ -14,12 +14,6 @@ import generateTextForSpeech from './prompts/generateTextForSpeech';
 import translate, { LANGUAGES, LOCALES } from './prompts/translate';
 import changeTone from './prompts/changeTone';
 import changeTextTo from './prompts/changeTextTo';
-
-type ProviderConfiguration = {
-  proxyUrl: string;
-  debug?: boolean;
-  middleware?: Middleware<AnthropicInput, AnthropicOutput>[];
-};
 
 type AnthropicInput = {
   prompt: string;
@@ -36,7 +30,7 @@ type AnthropicOutput = {
 };
 
 export function AnthropicProvider(
-  config: ProviderConfiguration
+  config: CommonProviderConfiguration<AnthropicInput, AnthropicOutput>
 ): (context: {
   cesdk: CreativeEditorSDK;
 }) => Promise<Provider<'text', AnthropicInput, AnthropicOutput>> {
@@ -108,7 +102,8 @@ export function AnthropicProvider(
           const stream = await sendPrompt(
             anthropic,
             {
-              proxyUrl: config.proxyUrl
+              proxyUrl: config.proxyUrl,
+              headers: config.headers
             },
             prompt,
             abortSignal

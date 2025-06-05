@@ -41,6 +41,7 @@ function createVideoProvider<I extends Record<string, any>>(
 
     quickActions?: QuickAction<I, VideoOutput>[];
     middleware?: Middleware<I, VideoOutput>[];
+    headers?: Record<string, string>;
 
     cesdk?: CreativeEditorSDK;
   },
@@ -56,7 +57,16 @@ function createVideoProvider<I extends Record<string, any>>(
     kind: 'video',
     initialize: async (context) => {
       fal.config({
-        proxyUrl: config.proxyUrl
+        proxyUrl: config.proxyUrl,
+        requestMiddleware: async (request) => {
+          return {
+            ...request,
+            headers: {
+              ...request.headers,
+              ...(options.headers ?? {})
+            }
+          };
+        }
       });
 
       options.initialize?.(context);

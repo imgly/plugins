@@ -18,6 +18,7 @@ async function sendPrompt(
   anthropic: Anthropic,
   config: {
     proxyUrl: string;
+    headers?: Record<string, string | null | undefined>;
 
     model?: string;
     maxTokens?: number;
@@ -50,7 +51,11 @@ async function sendPrompt(
     },
     {
       signal,
-      ...DEFAULT_ANTHROPIC_OPTIONS
+      ...DEFAULT_ANTHROPIC_OPTIONS,
+      headers: {
+        ...(DEFAULT_ANTHROPIC_OPTIONS.headers ?? {}),
+        ...config.headers
+      }
     }
   );
 

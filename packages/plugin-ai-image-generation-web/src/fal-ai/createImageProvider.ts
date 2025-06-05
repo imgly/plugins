@@ -42,6 +42,7 @@ function createImageProvider<I extends Record<string, any>>(
     getImageSize?: (input: I) => { width: number; height: number };
 
     middleware?: Middleware<I, ImageOutput>[];
+    headers?: Record<string, string>;
 
     cesdk?: CreativeEditorSDK;
   },
@@ -51,14 +52,22 @@ function createImageProvider<I extends Record<string, any>>(
   if (config.debug) {
     middleware.unshift(loggingMiddleware<I, ImageOutput>());
   }
-
   const provider: Provider<'image', I, ImageOutput> = {
     id: options.modelKey,
     kind: 'image',
     name: options.name,
     initialize: async (context) => {
       fal.config({
-        proxyUrl: config.proxyUrl
+        proxyUrl: config.proxyUrl,
+        requestMiddleware: async (request) => {
+          return {
+            ...request,
+            headers: {
+              ...request.headers,
+              ...(options.headers ?? {})
+            }
+          };
+        }
       });
 
       options.initialize?.(context);
