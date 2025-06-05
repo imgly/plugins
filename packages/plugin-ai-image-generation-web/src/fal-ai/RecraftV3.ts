@@ -1,6 +1,6 @@
 import { Icons, CustomAssetSource } from '@imgly/plugin-utils';
 import {
-  Middleware,
+  CommonProviderConfiguration,
   type Provider,
   getPanelId
 } from '@imgly/plugin-ai-generation-web';
@@ -30,11 +30,8 @@ type StyleSelectionPayload = {
   generationType: GenerationType;
 };
 
-type ProviderConfiguration = {
-  proxyUrl: string;
-  debug?: boolean;
-  middleware?: Middleware<RecraftV3Input, RecraftV3Output>[];
-
+interface ProviderConfiguration
+  extends CommonProviderConfiguration<RecraftV3Input, RecraftV3Output> {
   /**
    * Base URL used for the UI assets used in the plugin.
    *
@@ -42,7 +39,7 @@ type ProviderConfiguration = {
    * from the `/assets` folder to your own server and set the base URL to your server.
    */
   baseURL?: string;
-};
+}
 
 let imageStyleAssetSource: CustomAssetSource;
 let vectorStyleAssetSource: CustomAssetSource;
@@ -148,6 +145,7 @@ function getProvider(
       schema: RecraftV3Schema,
       inputReference: '#/components/schemas/RecraftV3Input',
       middleware: config.middleware ?? [],
+      headers: config.headers,
       userFlow: 'placeholder',
       renderCustomProperty: {
         style: ({ builder, state }, property) => {

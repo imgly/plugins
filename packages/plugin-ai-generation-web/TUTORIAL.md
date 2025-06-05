@@ -101,7 +101,33 @@ For schema-based input, you need an OpenAPI schema that defines your input param
 }
 ```
 
-## 4. Creating a Schema-Based Image Provider
+## 4. Understanding CommonProviderConfiguration
+
+Before creating your provider, it's important to understand the `CommonProviderConfiguration` interface. This interface provides standardized configuration options that all providers should extend:
+
+```typescript
+interface CommonProviderConfiguration<I, O extends Output> {
+    // The proxy URL to use for the provider
+    proxyUrl: string;
+    
+    // Enable debug mode for additional logging
+    debug?: boolean;
+    
+    // Middleware for request/response processing
+    middleware?: Middleware<I, O>[];
+    
+    // Custom headers to include in all API requests
+    headers?: Record<string, string>;
+}
+```
+
+The `headers` property is particularly useful for:
+- Adding custom client identification headers
+- Including version information
+- Passing through metadata required by your API
+- Adding correlation IDs for request tracing
+
+## 5. Creating a Schema-Based Image Provider
 
 Let's create a simple provider that generates images by calling your API. Create a file called `MyImageProvider.ts`:
 
@@ -111,6 +137,7 @@ import {
     ImageOutput,
     loggingMiddleware,
     uploadMiddleware,
+    CommonProviderConfiguration,
     // Quick action helper components
     QuickActionChangeImage,
     QuickActionSwapImageBackground,
@@ -128,14 +155,14 @@ interface MyProviderInput {
     image_url?: string; // For image-to-image operations
 }
 
-// Create a function that returns your provider
-export function MyImageProvider({
-    apiKey,
-    apiUrl = 'https://your-api-url.com'
-}: {
+// Define provider configuration interface extending CommonProviderConfiguration
+interface MyProviderConfiguration extends CommonProviderConfiguration<MyProviderInput, ImageOutput> {
     apiKey: string;
     apiUrl?: string;
-}): (context: {
+}
+
+// Create a function that returns your provider
+export function MyImageProvider(config: MyProviderConfiguration): (context: {
     cesdk: CreativeEditorSDK;
 }) => Promise<Provider<'image', MyProviderInput, ImageOutput>> {
     // Return a function that returns the provider
@@ -286,11 +313,12 @@ export function MyImageProvider({
                         }
                         
                         // Call your API to generate an image
-                        const response = await fetch(apiUrl, {
+                        const response = await fetch(config.apiUrl || 'https://your-api-url.com', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
-                                Authorization: `Bearer ${apiKey}`
+                                Authorization: `Bearer ${config.apiKey}`,
+                                ...config.headers  // Include custom headers
                             },
                             body: JSON.stringify(requestBody),
                             signal: abortSignal
@@ -322,7 +350,7 @@ export function MyImageProvider({
 }
 ```
 
-## 5. Integrating with CE.SDK
+## 6. Integrating with CE.SDK
 
 Now let's integrate your provider with CE.SDK using the `@imgly/plugin-ai-image-generation-web` package.
 
@@ -347,7 +375,12 @@ async function initializeEditor(container: HTMLElement) {
         ImageGeneration({
             text2image: MyImageProvider({
                 apiKey: 'your-api-key',
-                apiUrl: 'https://your-api-url.com'
+                apiUrl: 'https://your-api-url.com',
+                proxyUrl: 'https://your-proxy-url.com',
+                headers: {
+                    'x-client-version': '1.0.0',
+                    'x-request-source': 'cesdk-tutorial'
+                }
             }),
             debug: true
         })
@@ -374,7 +407,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 ```
 
-## 6. Create an HTML Page
+## 7. Create an HTML Page
 
 Create an `index.html` file to host your editor:
 
@@ -407,7 +440,7 @@ Create an `index.html` file to host your editor:
 </html>
 ```
 
-## 7. Build and Run the Example
+## 8. Build and Run the Example
 
 Let's set up a complete build and run process using esbuild. Note that you're free to use whatever build setup you're most comfortable with (webpack, Vite, Parcel, etc.) - the following is just an example to get you started quickly.
 

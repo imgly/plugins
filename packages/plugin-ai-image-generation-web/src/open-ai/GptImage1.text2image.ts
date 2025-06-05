@@ -1,7 +1,7 @@
 import { Icons } from '@imgly/plugin-utils';
 import {
+  CommonProviderConfiguration,
   getPanelId,
-  Middleware,
   type Provider
 } from '@imgly/plugin-ai-generation-web';
 import GptImage1Schema from './GptImage1.text2image.json';
@@ -29,11 +29,8 @@ type GptImage1Output = {
   url: string;
 };
 
-type ProviderConfiguration = {
-  proxyUrl: string;
-  debug?: boolean;
-  middleware?: Middleware<GptImage1Input, GptImage1Output>[];
-};
+interface ProviderConfiguration
+  extends CommonProviderConfiguration<GptImage1Input, GptImage1Output> {}
 
 export function GptImage1(
   config: ProviderConfiguration
@@ -197,10 +194,12 @@ function getProvider(
                 Authorization: `Bearer ${cesdk.ui.experimental.getGlobalStateValue(
                   'OPENAI_API_KEY'
                 )}`,
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                ...(config.headers ?? {})
               }
             : {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                ...(config.headers ?? {})
               },
           body: JSON.stringify({
             model: 'gpt-image-1',

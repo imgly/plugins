@@ -1,6 +1,6 @@
 import { type MinimaxVideo01LiveInput } from '@fal-ai/client/endpoints';
 import {
-  Middleware,
+  CommonProviderConfiguration,
   VideoOutput,
   type Provider
 } from '@imgly/plugin-ai-generation-web';
@@ -8,11 +8,8 @@ import schema from './MinimaxVideo01Live.json';
 import CreativeEditorSDK from '@cesdk/cesdk-js';
 import createVideoProvider from './createVideoProvider';
 
-type ProviderConfiguration = {
-  proxyUrl: string;
-  debug?: boolean;
-  middleware?: Middleware<MinimaxVideo01LiveInput, VideoOutput>[];
-};
+interface ProviderConfiguration
+  extends CommonProviderConfiguration<MinimaxVideo01LiveInput, VideoOutput> {}
 
 export function MinimaxVideo01Live(
   config: ProviderConfiguration
@@ -35,6 +32,7 @@ function getProvider(
       schema,
       inputReference: '#/components/schemas/MinimaxVideo01LiveInput',
 
+      headers: config.headers,
       middleware: config.middleware,
       cesdk,
       getBlockInput: () => {

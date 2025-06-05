@@ -1,7 +1,7 @@
 import {
   type Provider,
   type AudioOutput,
-  Middleware
+  CommonProviderConfiguration
 } from '@imgly/plugin-ai-generation-web';
 import CreativeEditorSDK from '@cesdk/cesdk-js';
 import schema from './ElevenSoundEffects.json';
@@ -12,11 +12,8 @@ type ElevenlabsInput = {
   duration_seconds: number;
 };
 
-type ProviderConfiguration = {
-  proxyUrl: string;
-  debug?: boolean;
-  middleware?: Middleware<ElevenlabsInput, AudioOutput>[];
-};
+interface ProviderConfiguration
+  extends CommonProviderConfiguration<ElevenlabsInput, AudioOutput> {}
 
 export function ElevenSoundEffects(
   config: ProviderConfiguration
@@ -116,7 +113,8 @@ export async function generateSound(
     method: 'POST',
     headers: {
       Accept: 'audio/mpeg',
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      ...(config.headers ?? {})
     },
     body: JSON.stringify({
       text,
