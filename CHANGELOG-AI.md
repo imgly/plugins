@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [0.1.9] - 2025-06-05
+
 -   [all] Add support for custom headers
 
 ## [0.1.8] - 2025-05-26
