@@ -81,12 +81,11 @@ function App() {
                             ...instance.ui.getDockOrder()
                         ]);
 
-                        // Add AI options to canvas menu
-                        instance.ui.setCanvasMenuOrder([
-                            'ly.img.ai.text.canvasMenu',
-                            'ly.img.ai.image.canvasMenu',
-                            ...instance.ui.getCanvasMenuOrder()
-                        ]);
+                        // Note: Canvas menu quick actions are automatically added by the providers
+                        // You can access them via provider canvasMenu properties if needed:
+                        // - AnthropicProvider.canvasMenu.text.id
+                        // - FalAiImage.RecraftV3.canvasMenu.image.id
+                        // - FalAiVideo.MinimaxVideo01LiveImageToVideo.canvasMenu.image.id
 
                         // Create a video scene to utilize all capabilities
                         await instance.createVideoScene();
@@ -275,12 +274,114 @@ cesdk.ui.setDockOrder(currentOrder);
 
 ### Canvas Menu Options
 
-AI text and image transformations are available in the canvas context menu:
+AI text and image transformations are automatically added to the canvas context menu by the enhanced providers. You can access canvas menu component IDs from the providers:
 
 ```typescript
+// Canvas menu components are automatically registered
+// Access them via enhanced provider properties:
+const textCanvasMenu = AnthropicProvider.canvasMenu.text.id; // 'ly.img.ai.text.canvasMenu'
+const imageCanvasMenu = FalAiImage.RecraftV3.canvasMenu.image.id; // 'ly.img.ai.image.canvasMenu'
+
+// Manual ordering (if needed):
 cesdk.ui.setCanvasMenuOrder([
-    'ly.img.ai.text.canvasMenu',
-    'ly.img.ai.image.canvasMenu',
+    AnthropicProvider.canvasMenu.text.id,
+    FalAiImage.RecraftV3.canvasMenu.image.id,
+    ...cesdk.ui.getCanvasMenuOrder()
+]);
+```
+
+### Customizing Quick Actions
+
+If you need to customize which quick actions appear or their order, you can disable automatic canvas menu registration and configure manually:
+
+#### Disabling Automatic Registration
+
+```typescript
+// Configure providers without automatic canvas menu registration
+instance.addPlugin(
+    AiApps({
+        providers: {
+            text2text: AnthropicProvider({
+                proxyUrl: 'https://your-server.com/api/anthropic-proxy',
+                addToCanvasMenu: false // Disable automatic registration
+            }),
+            text2image: FalAiImage.RecraftV3({
+                proxyUrl: 'https://your-server.com/api/fal-ai-proxy',
+                addToCanvasMenu: false
+            }),
+            image2image: FalAiImage.GeminiFlashEdit({
+                proxyUrl: 'https://your-server.com/api/fal-ai-proxy',
+                addToCanvasMenu: false
+            })
+        }
+    })
+);
+```
+
+#### Manual Canvas Menu Configuration
+
+```typescript
+// Manually configure canvas menu with custom quick action selection and order
+instance.ui.setCanvasMenuOrder([
+    {
+        id: 'ly.img.ai.text.canvasMenu',
+        children: [
+            'anthropic.improve',      // Most commonly used
+            'anthropic.fix',
+            'ly.img.separator',
+            'anthropic.translate',    // Prioritized for international users
+            'anthropic.changeTextTo'  // Custom transformations
+            // Removed: shorter, longer, changeTone for simplified menu
+        ]
+    },
+    {
+        id: 'ly.img.ai.image.canvasMenu',
+        children: [
+            'fal-ai/gemini-flash-edit.changeImage',     // Primary image editing
+            'fal-ai/gemini-flash-edit.swapBackground',  // Popular feature
+            'ly.img.separator',
+            'fal-ai/gemini-flash-edit.createVariant',   // Creative options
+            'fal-ai/minimax/video-01-live/image-to-video.createVideo' // Video creation
+            // Removed: styleTransfer, artistStyles for focused experience
+        ]
+    },
+    ...instance.ui.getCanvasMenuOrder()
+]);
+```
+
+#### Quick Action Customization Strategies
+
+**For Simplified User Experience:**
+- Remove advanced features like style transfer and tone changing
+- Keep only the most commonly used actions
+- Focus on core editing capabilities
+
+**For Power Users:**
+- Include all available quick actions
+- Organize by frequency of use
+- Group related actions with separators
+
+**For Specific Use Cases:**
+- **Content Creation**: Prioritize `improve`, `changeTextTo`, `createVariant`
+- **International Apps**: Prioritize `translate`, `changeTone`
+- **Quick Edits**: Focus on `fix`, `changeImage`, `swapBackground`
+
+#### Accessing Provider Quick Action Lists
+
+```typescript
+// Get the full list of available quick actions from each provider
+const textQuickActions = AnthropicProvider.canvasMenu.text.children;
+// ['anthropic.improve', 'anthropic.fix', 'anthropic.shorter', ...]
+
+const imageQuickActions = FalAiImage.GeminiFlashEdit.canvasMenu.image.children;
+// ['fal-ai/gemini-flash-edit.changeImage', 'fal-ai/gemini-flash-edit.swapBackground', ...]
+
+// Use these arrays as a base for your custom configuration
+cesdk.ui.setCanvasMenuOrder([
+    {
+        id: 'ly.img.ai.text.canvasMenu',
+        children: textQuickActions.slice(0, 4) // Take only first 4 actions
+    },
     ...cesdk.ui.getCanvasMenuOrder()
 ]);
 ```
@@ -464,6 +565,16 @@ When implementing your proxy:
 - Implement proper error handling without leaking sensitive information
 
 This approach ensures your API keys remain secure while still allowing your application to utilize AI services. For a complete example of a proxy implementation, you can find various proxy templates online that can be adapted for your specific needs.
+
+## Quick Actions Reference
+
+For a complete reference of all available quick actions and their IDs, see the individual plugin documentation:
+
+- **Text Quick Actions** (Anthropic): `anthropic.improve`, `anthropic.fix`, `anthropic.shorter`, `anthropic.longer`, `anthropic.changeTone`, `anthropic.translate`, `anthropic.changeTextTo`
+- **Image Quick Actions** (GeminiFlashEdit): `fal-ai/gemini-flash-edit.changeImage`, `fal-ai/gemini-flash-edit.swapBackground`, `fal-ai/gemini-flash-edit.styleTransfer`, `fal-ai/gemini-flash-edit.artistStyles`, `fal-ai/gemini-flash-edit.createVariant`
+- **Video Quick Actions**: `fal-ai/minimax/video-01-live/image-to-video.createVideo`
+
+Each quick action ID follows the pattern `{provider-model-key}.{action-name}` to ensure uniqueness across providers.
 
 ## Conclusion
 
