@@ -419,12 +419,27 @@ Your proxy should implement specific requirements for each AI service:
 - **Target URL**: `https://api.elevenlabs.io/`
 - **Authentication Header**: Add `xi-api-key` header with your ElevenLabs API key
 - **Headers**: Add an `Accept: audio/mpeg` header for audio requests.
-- **Response Streaming**: Enable streaming to handle large responses efficiently. Common approaches include:
-  - Axios: `responseType: 'stream'`
-  - Fetch API: Access `response.body` as a ReadableStream
-  - Node.js native HTTP clients: Use stream-based responses
-  - Other HTTP clients: Check documentation for streaming support
 - **Response Handling**: Remove `content-encoding` headers to handle compressed responses correctly
+
+#### 4. OpenAI Proxy
+
+- **Target URL**: `https://api.openai.com/v1/`
+- **Authentication Header**: Add `Authorization: Bearer YOUR_OPENAI_API_KEY` header
+- **Response Handling**: Remove `content-encoding` headers to handle compressed responses correctly
+- **Rate Limiting**: Implement rate limiting based on your OpenAI plan tier (recommended)
+- For more information on the requirements, refer to OpenAI's [documentation](https://platform.openai.com/docs/api-reference/debugging-requests)
+
+### Important Information for All Proxies
+
+**Response Streaming**
+
+To handle large responses efficiently, response streaming should be enabled for all proxies. Common approaches include:
+
+-   **Axios**: `responseType: 'stream'`
+-   **Fetch API**: Access `response.body` as a `ReadableStream`
+-   **Node.js native HTTP clients**: Use stream-based responses
+-   **Other HTTP clients**: Check documentation for streaming support
+
 
 ### General Proxy Design
 
