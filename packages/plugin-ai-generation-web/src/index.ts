@@ -1,9 +1,7 @@
 import renderImageUrlProperty from './common/renderImageUrlProperty';
-import renderStyleTransferProperty from './common/renderStyleTransferProperty';
 
 const CommonProperties = {
-  ImageUrl: renderImageUrlProperty,
-  StyleTransfer: renderStyleTransferProperty
+  ImageUrl: renderImageUrlProperty
 };
 
 export { CommonProperties };
@@ -29,9 +27,10 @@ export {
   type Property
 } from './generation/openapi/types';
 export { default as initProvider } from './generation/initProvider';
+export { default as enhanceProvider } from './generation/enhanceProvider';
 export {
   type GenerationMiddleware,
-  type CommonProviderConfiguration
+  type GetProvider
 } from './generation/types';
 
 // Export middleware
@@ -50,14 +49,14 @@ export {
   getPanelId,
   getDurationForVideo,
   getThumbnailForVideo,
-  getLabelFromId,
-  isAsyncGenerator
+  getLabelFromId
 } from './utils';
 
 export { default as registerDockComponent } from './registerDockComponent';
 
-export { default as getQuickActionMenu } from './generation/quickAction/getQuickActionMenu';
-export { default as registerQuickActionMenuComponent } from './generation/quickAction/registerQuickActionMenuComponent';
+export { type QuickActionCanvasMenuComponents } from './generation/quickAction/types';
+
+export { default as getQuickActionRegistry } from './generation/quickAction/getQuickActionRegistry';
 
 export { default as QuickActionBasePrompt } from './generation/quickAction/common/QuickActionBasePrompt';
 export { default as QuickActionBaseButton } from './generation/quickAction/common/QuickActionBaseButton';

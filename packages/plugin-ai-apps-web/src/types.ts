@@ -1,11 +1,4 @@
-import CreativeEditorSDK from '@cesdk/cesdk-js';
-import { Provider, OutputKind } from '@imgly/plugin-ai-generation-web';
-
-export type GetProvider<K extends OutputKind> = ({
-  cesdk
-}: {
-  cesdk: CreativeEditorSDK;
-}) => Promise<Provider<K, any, any>>;
+import { GetProvider } from '@imgly/plugin-ai-generation-web';
 
 /**
  * The provider configuration that maps capabilities

@@ -1,8 +1,16 @@
 import type CreativeEditorSDK from '@cesdk/cesdk-js';
 import { type CreativeEngine } from '@cesdk/cesdk-js';
 import type Provider from './provider';
-import { Output } from './provider';
-import { Middleware } from './middleware/middleware';
+import { Output, OutputKind } from './provider';
+
+/**
+ * Getting a provider instance for the given CE.SDK instance.
+ */
+export type GetProvider<
+  K extends OutputKind,
+  I = any,
+  O extends Output = any
+> = ({ cesdk }: { cesdk: CreativeEditorSDK }) => Promise<Provider<K, I, O>>;
 
 /**
  * Configuration options for provider initialization
@@ -37,31 +45,6 @@ export type InitProviderConfiguration = {
    */
   middleware?: GenerationMiddleware;
 };
-
-/**
- * Common provider configuration that all providers should provide.
- */
-export interface CommonProviderConfiguration<I, O extends Output> {
-  /**
-   * The proxy URL to use for the provider.
-   */
-  proxyUrl: string;
-
-  /**
-   * Indicates whether the provider is in debug mode and should log additional information.
-   */
-  debug?: boolean;
-
-  /**
-   * Middleware that shall be executed during the generation process.
-   */
-  middleware?: Middleware<I, O>[];
-
-  /**
-   * Headers that shall be sent with the request of the provider.
-   */
-  headers?: Record<string, string>;
-}
 
 export type GenerationMiddleware = (
   generate: () => Promise<void>,
