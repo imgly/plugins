@@ -34,7 +34,7 @@ import CreativeEditorSDK from '@cesdk/cesdk-js';
 import AiApps from '@imgly/plugin-ai-apps-web';
 
 // Import providers from individual AI generation packages
-import AnthropicProvider from '@imgly/plugin-ai-text-generation-web/anthropic';
+import Anthropic from '@imgly/plugin-ai-text-generation-web/anthropic';
 import FalAiImage from '@imgly/plugin-ai-image-generation-web/fal-ai';
 import FalAiVideo from '@imgly/plugin-ai-video-generation-web/fal-ai';
 import Elevenlabs from '@imgly/plugin-ai-audio-generation-web/elevenlabs';
@@ -88,12 +88,15 @@ function App() {
                             ...instance.ui.getCanvasMenuOrder()
                         ]);
 
+                        // Create a video scene to utilize all capabilities
+                        await instance.createVideoScene();
+
                         // Add the AI Apps plugin with all providers
                         instance.addPlugin(
                             AiApps({
                                 providers: {
                                     // Text generation and transformation
-                                    text2text: AnthropicProvider({
+                                    text2text: Anthropic.AnthropicProvider({
                                         proxyUrl:
                                             'https://your-server.com/api/anthropic-proxy'
                                     }),
@@ -155,9 +158,6 @@ function App() {
                                 }
                             })
                         );
-
-                        // Create a video scene to utilize all capabilities
-                        await instance.createVideoScene();
                     });
                 } else if (cesdk.current != null) {
                     cesdk.current.dispose();
@@ -418,6 +418,12 @@ Your proxy should implement specific requirements for each AI service:
 
 - **Target URL**: `https://api.elevenlabs.io/`
 - **Authentication Header**: Add `xi-api-key` header with your ElevenLabs API key
+- **Headers**: Add an `Accept: audio/mpeg` header for audio requests.
+- **Response Streaming**: Enable streaming to handle large responses efficiently. Common approaches include:
+  - Axios: `responseType: 'stream'`
+  - Fetch API: Access `response.body` as a ReadableStream
+  - Node.js native HTTP clients: Use stream-based responses
+  - Other HTTP clients: Check documentation for streaming support
 - **Response Handling**: Remove `content-encoding` headers to handle compressed responses correctly
 
 ### General Proxy Design
