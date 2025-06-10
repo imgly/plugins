@@ -317,7 +317,7 @@ input: {
       imageUrl: (context, property) => {
         const valueState = context.state('imageUrl', '');
         context.builder.TextInput('imageUrl', {
-          label: 'Image URL',
+          inputLabel: 'Image URL',
           ...valueState
         });
 
@@ -376,7 +376,7 @@ input: {
 
 ### 2. Custom Input Panels
 
-The `custom` type gives you complete control over UI components.
+The `custom` type gives you complete control over UI components. For more details on how to build custom panels and see all available builder components, refer to the [Create a Custom Panel](https://img.ly/docs/cesdk/js/user-interface/ui-extensions/create-custom-panel-d87b83/) guide.
 
 ```typescript
 input: {
@@ -386,14 +386,14 @@ input: {
       // Use the builder pattern to create UI components
       const promptState = context.state('prompt', '');
       context.builder.TextArea('prompt', {
-        label: 'Prompt',
+        inputLabel: 'Prompt',
         ...promptState
       });
 
       // Set up width selection
       const widthState = context.state('width', 1024);
       context.builder.Select('width', {
-        label: 'Width',
+        inputLabel: 'Width',
         options: [
           { value: 512, label: '512px' },
           { value: 1024, label: '1024px' },
@@ -765,7 +765,7 @@ This example shows how to create a quick action that expands into a more complex
     const promptState = state('prompt', '');
 
     builder.TextArea('prompt', {
-      label: 'Prompt',
+      inputLabel: 'Prompt',
       placeholder: 'Describe the changes you want...',
       ...promptState
     });
