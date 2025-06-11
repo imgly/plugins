@@ -15,9 +15,6 @@ type Veo3Input = {
   aspect_ratio?: '16:9' | '9:16' | '1:1';
   duration?: '8s';
   generate_audio?: boolean;
-  seed?: number;
-  negative_prompt?: string;
-  enhance_prompt?: boolean;
 };
 
 export function Veo3TextToVideo(
