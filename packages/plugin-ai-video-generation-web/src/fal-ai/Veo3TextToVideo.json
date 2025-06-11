@@ -87,25 +87,6 @@
             "description": "Whether to generate audio for the video. If false, %33 less credits will be used.",
             "default": true,
             "x-imgly-builder": { "component": "Switch" }
-          },
-          "seed": {
-            "title": "Seed",
-            "type": "integer",
-            "description": "A seed to use for the video generation",
-            "x-imgly-builder": { "component": "NumberInput" }
-          },
-          "negative_prompt": {
-            "title": "Negative Prompt",
-            "type": "string",
-            "description": "A negative prompt to guide the video generation",
-            "x-imgly-builder": { "component": "TextArea" }
-          },
-          "enhance_prompt": {
-            "title": "Enhance Prompt",
-            "type": "boolean",
-            "description": "Whether to enhance the video generation",
-            "default": true,
-            "x-imgly-builder": { "component": "Switch" }
           }
         },
         "x-fal-order-properties": ["prompt", "aspect_ratio", "duration", "negative_prompt", "enhance_prompt", "seed", "generate_audio"],
