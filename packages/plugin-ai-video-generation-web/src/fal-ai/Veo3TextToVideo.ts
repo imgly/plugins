@@ -30,11 +30,7 @@ export function Veo3TextToVideo(
 function getProvider(
   cesdk: CreativeEditorSDK,
   config: ProviderConfiguration
-): Provider<
-  'video',
-  Veo3Input,
-  { kind: 'video'; url: string }
-> {
+): Provider<'video', Veo3Input, { kind: 'video'; url: string }> {
   return createVideoProvider(
     {
       modelKey: 'fal-ai/veo3',
@@ -50,7 +46,7 @@ function getProvider(
           const [widthRatio, heightRatio] = input.aspect_ratio
             .split(':')
             .map(Number);
-          
+
           // Veo3 outputs 720p videos
           const resolutionHeight = 720;
           const width = Math.round(
@@ -80,4 +76,4 @@ function getProvider(
   );
 }
 
-export default getProvider; 
+export default getProvider;
