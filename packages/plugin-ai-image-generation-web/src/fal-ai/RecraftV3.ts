@@ -141,6 +141,7 @@ function getProvider(
   return createImageProvider(
     {
       modelKey,
+      name: 'Recraft V3',
       // @ts-ignore
       schema: RecraftV3Schema,
       inputReference: '#/components/schemas/RecraftV3Input',

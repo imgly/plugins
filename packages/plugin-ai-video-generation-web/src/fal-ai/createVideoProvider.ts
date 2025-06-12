@@ -25,6 +25,7 @@ type VideoProviderConfiguration = {
 function createVideoProvider<I extends Record<string, any>>(
   options: {
     modelKey: string;
+    name?: string;
     schema: OpenAPIV3.Document;
     inputReference: string;
 
@@ -54,6 +55,7 @@ function createVideoProvider<I extends Record<string, any>>(
 
   const provider: Provider<'video', I, VideoOutput> = {
     id: options.modelKey,
+    name: options.name ?? options.modelKey,
     kind: 'video',
     initialize: async (context) => {
       fal.config({

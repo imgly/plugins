@@ -51,6 +51,7 @@ function getProvider(
   return createVideoProvider(
     {
       modelKey: 'fal-ai/minimax/video-01-live/image-to-video',
+      name: 'Minimax Video 01 Live',
       // @ts-ignore
       schema,
       inputReference:

@@ -51,6 +51,7 @@ export function AnthropicProvider(
     const provider: Provider<'text', AnthropicInput, AnthropicOutput> = {
       kind: 'text',
       id: 'anthropic',
+      name: 'Anthropic',
       initialize: async () => {
         anthropic = new Anthropic({
           dangerouslyAllowBrowser: true,

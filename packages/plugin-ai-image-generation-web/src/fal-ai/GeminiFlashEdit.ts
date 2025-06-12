@@ -52,7 +52,7 @@ function getProvider(
   return createImageProvider(
     {
       modelKey,
-      name: 'Change Image',
+      name: 'Gemini Flash Edit',
       // @ts-ignore
       schema,
       inputReference: '#/components/schemas/GeminiFlashEditInput',

@@ -41,6 +41,7 @@ function getProvider(
   return createVideoProvider(
     {
       modelKey: 'fal-ai/pixverse/v3.5/text-to-video',
+      name: 'Pixverse V3.5',
       // @ts-ignore
       schema,
       inputReference: '#/components/schemas/PixverseV35TextToVideoInput',

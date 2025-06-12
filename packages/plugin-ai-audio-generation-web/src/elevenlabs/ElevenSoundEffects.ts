@@ -39,6 +39,7 @@ function getProvider(
 
   const provider: Provider<'audio', ElevenlabsInput, AudioOutput> = {
     id: modelKey,
+    name: 'Elevenlabs Sound Generation',
     kind: 'audio',
     initialize: async () => {},
     input: {

@@ -81,7 +81,7 @@ function getProvider(
   const provider: Provider<'image', GptImage1Input, GptImage1Output> = {
     id: 'open-ai/gpt-image-1/text2image',
     kind: 'image',
-    name: 'gpt-image-1',
+    name: 'GPT Image 1',
     input: {
       panel: {
         type: 'schema',

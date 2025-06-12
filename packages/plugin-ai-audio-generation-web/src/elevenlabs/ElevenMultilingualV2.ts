@@ -62,6 +62,7 @@ function getProvider(
 
   const provider: Provider<'audio', ElevenlabsInput, AudioOutput> = {
     id: modelKey,
+    name: 'Elevenlabs Multilingual V2',
     kind: 'audio',
     initialize: async () => {
       cesdk.ui.addAssetLibraryEntry({
