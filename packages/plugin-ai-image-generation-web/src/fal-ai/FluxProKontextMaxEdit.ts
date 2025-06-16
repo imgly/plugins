@@ -23,9 +23,9 @@ export type FluxProKontextMaxEditInput = {
 
 export function FluxProKontextMaxEdit(
   config: CommonProviderConfiguration<FluxProKontextMaxEditInput, ImageOutput>
-): (
-  context: { cesdk: CreativeEditorSDK }
-) => Promise<Provider<'image', FluxProKontextMaxEditInput, ImageOutput>> {
+): (context: {
+  cesdk: CreativeEditorSDK;
+}) => Promise<Provider<'image', FluxProKontextMaxEditInput, ImageOutput>> {
   return async ({ cesdk }: { cesdk: CreativeEditorSDK }) => {
     return getProvider(cesdk, config);
   };
@@ -127,10 +127,26 @@ function createFluxProKontextMaxEditQuickActions(
         blockId: input.blockId
       }),
       items: [
-        { id: 'water', label: 'Watercolor Painting', prompt: 'Convert to watercolor painting.' },
-        { id: 'oil', label: 'Oil Painting', prompt: 'Render in oil painting style.' },
-        { id: 'charcoal', label: 'Charcoal Sketch', prompt: 'Transform into a charcoal sketch.' },
-        { id: 'pencil', label: 'Pencil Drawing', prompt: 'Apply pencil drawing effect.' }
+        {
+          id: 'water',
+          label: 'Watercolor Painting',
+          prompt: 'Convert to watercolor painting.'
+        },
+        {
+          id: 'oil',
+          label: 'Oil Painting',
+          prompt: 'Render in oil painting style.'
+        },
+        {
+          id: 'charcoal',
+          label: 'Charcoal Sketch',
+          prompt: 'Transform into a charcoal sketch.'
+        },
+        {
+          id: 'pencil',
+          label: 'Pencil Drawing',
+          prompt: 'Apply pencil drawing effect.'
+        }
       ],
       cesdk
     }),
@@ -149,12 +165,21 @@ function createFluxProKontextMaxEditQuickActions(
         blockId: input.blockId
       }),
       items: [
-        { id: 'van-gogh', label: 'Van Gogh', prompt: 'Render this image in the style of Vincent van Gogh.' },
-        { id: 'monet', label: 'Monet', prompt: 'Transform this image into the soft, impressionistic style of Claude Monet.' }
+        {
+          id: 'van-gogh',
+          label: 'Van Gogh',
+          prompt: 'Render this image in the style of Vincent van Gogh.'
+        },
+        {
+          id: 'monet',
+          label: 'Monet',
+          prompt:
+            'Transform this image into the soft, impressionistic style of Claude Monet.'
+        }
       ],
       cesdk
     })
   ];
 }
 
-export default getProvider; 
+export default getProvider;
