@@ -1,0 +1,123 @@
+{
+  "openapi": "3.0.4",
+  "info": {
+    "title": "Queue OpenAPI for fal-ai/flux-pro/kontext/max",
+    "version": "1.0.0",
+    "description": "",
+    "x-fal-metadata": {
+      "endpointId": "fal-ai/flux-pro/kontext/max",
+      "category": "image-to-image",
+      "thumbnailUrl": "https://storage.googleapis.com/fal_cdn/fal/for%20videos-1.jpg",
+      "playgroundUrl": "https://fal.ai/models/fal-ai/flux-pro/kontext/max",
+      "documentationUrl": "https://fal.ai/models/fal-ai/flux-pro/kontext/max/api"
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "apiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization",
+        "description": "Fal Key"
+      }
+    },
+    "schemas": {
+      "QueueStatus": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["IN_QUEUE", "IN_PROGRESS", "COMPLETED"]
+          },
+          "request_id": { "type": "string", "description": "The request id." },
+          "response_url": { "type": "string", "description": "The response url." },
+          "status_url": { "type": "string", "description": "The status url." },
+          "cancel_url": { "type": "string", "description": "The cancel url." },
+          "logs": { "type": "object", "description": "The logs.", "additionalProperties": true },
+          "metrics": { "type": "object", "description": "The metrics.", "additionalProperties": true },
+          "queue_position": { "type": "integer", "description": "The queue position." }
+        },
+        "required": ["status", "request_id"]
+      },
+      "FluxProKontextMaxInput": {
+        "x-fal-order-properties": ["prompt", "image_url"],
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "examples": ["Put a donut next to the flour."],
+            "description": "The prompt to generate an image from.",
+            "type": "string",
+            "title": "Prompt",
+            "maxLength": 5000,
+            "minLength": 3,
+            "x-imgly-builder": { "component": "TextArea" }
+          },
+          "image_url": {
+            "examples": ["https://v3.fal.media/files/rabbit/rmgBxhwGYb2d3pl3x9sKf_output.png"],
+            "description": "Image prompt for the omni model.",
+            "type": "string",
+            "title": "Image URL"
+          },
+          "seed": { "type": "integer", "title": "Seed", "default": 0 },
+          "guidance_scale": { "type": "number", "title": "Guidance scale (CFG)", "default": 3.5 },
+          "sync_mode": { "type": "boolean", "title": "Sync Mode", "default": false },
+          "num_images": { "type": "integer", "title": "Num Images", "default": 1 },
+          "safety_tolerance": { "type": "string", "title": "Safety Tolerance", "default": "2" },
+          "output_format": { "type": "string", "title": "Output Format", "default": "jpeg" },
+          "aspect_ratio": { "type": "string", "title": "Aspect Ratio", "default": "1:1" }
+        },
+        "title": "FluxKontextMaxInput",
+        "required": ["prompt", "image_url"]
+      },
+      "FluxProKontextMaxOutput": {
+        "x-fal-order-properties": ["images", "timings", "seed", "has_nsfw_concepts", "prompt"],
+        "type": "object",
+        "properties": {
+          "prompt": { "description": "The prompt used for generating the image.", "type": "string", "title": "Prompt" },
+          "images": {
+            "type": "array",
+            "title": "Images",
+            "items": { "$ref": "#/components/schemas/fal__toolkit__image__image__Image" }
+          },
+          "timings": { "type": "object", "title": "Timings", "additionalProperties": { "type": "number" } },
+          "has_nsfw_concepts": { "type": "array", "title": "Has Nsfw Concepts", "items": { "type": "boolean" } },
+          "seed": { "type": "integer", "title": "Seed" }
+        },
+        "title": "FluxKontextMaxOutput",
+        "required": ["images", "timings", "seed", "has_nsfw_concepts", "prompt"]
+      },
+      "fal__toolkit__image__image__Image": {
+        "x-fal-order-properties": ["url", "content_type", "file_name", "file_size", "file_data", "width", "height"],
+        "type": "object",
+        "description": "Represents an image file.",
+        "title": "Image",
+        "properties": {
+          "file_size": { "type": "integer", "title": "File Size", "examples": [4404019] },
+          "height": { "type": "integer", "title": "Height", "examples": [1024] },
+          "url": { "type": "string", "title": "Url" },
+          "width": { "type": "integer", "title": "Width", "examples": [1024] },
+          "file_name": { "type": "string", "title": "File Name", "examples": ["z9RV14K95DvU.png"] },
+          "content_type": { "type": "string", "title": "Content Type", "examples": ["image/png"] },
+          "file_data": { "type": "string", "format": "binary", "title": "File Data" }
+        },
+        "required": ["url"]
+      },
+      "FluxProKontextMaxEditInput": { "$ref": "#/components/schemas/FluxProKontextMaxInput" }
+    }
+  },
+  "paths": {
+    "/fal-ai/flux-pro/kontext/max": {
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/FluxProKontextMaxInput" } } }
+        },
+        "responses": {
+          "200": { "description": "The request status.", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/QueueStatus" } } } }
+        }
+      }
+    }
+  },
+  "servers": [{ "url": "https://queue.fal.run" }],
+  "security": [{ "apiKeyAuth": [] }]
+} 
