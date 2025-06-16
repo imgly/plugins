@@ -185,6 +185,57 @@ Key features:
 -   Alternative text-to-video generation
 -   Custom headers support for API requests
 
+#### 4. KlingVideoV21MasterTextToVideo (Text-to-Video)
+
+A model based on KlingVideo V2.1 that generates videos from text prompts:
+
+```typescript
+text2video: FalAiVideo.KlingVideoV21MasterTextToVideo({
+    proxyUrl: 'https://your-fal-ai-proxy.example.com'
+});
+```
+
+Key features:
+
+-   Generate videos from text descriptions
+-   Adjustable aspect ratios (16:9, 9:16, 1:1)
+-   Selectable durations (5 s or 10 s)
+-   Adaptive resolution (height fixed at 720 px, width is calculated)
+
+#### 5. KlingVideoV21MasterImageToVideo (Image-to-Video)
+
+A model that converts still images into videos using KlingVideo V2.1:
+
+```typescript
+image2video: FalAiVideo.KlingVideoV21MasterImageToVideo({
+    proxyUrl: 'https://your-fal-ai-proxy.example.com'
+});
+```
+
+Key features:
+
+-   Transform existing images into videos
+-   Maintains original image aspect ratio (fallback to 1280 × 720)
+-   Canvas quick-action integration
+-   Selectable durations (5 s or 10 s)
+
+#### 6. Veo3TextToVideo (Text-to-Video)
+
+An advanced text-to-video model:
+
+```typescript
+text2video: FalAiVideo.Veo3TextToVideo({
+    proxyUrl: 'https://your-fal-ai-proxy.example.com'
+});
+```
+
+Key features:
+
+-   Generate videos from text descriptions
+-   Supports aspect ratios 16:9, 9:16 and 1:1 (defaults to 16:9)
+-   Fixed duration of 8 seconds
+-   Optional audio generation via `generate_audio`
+
 ### Configuration Options
 
 The plugin accepts the following configuration options:
@@ -339,6 +390,33 @@ FalAiVideo.PixverseV35TextToVideo(config: {
 }): AiVideoProvider
 ```
 
+#### KlingVideoV21MasterTextToVideo
+
+```typescript
+FalAiVideo.KlingVideoV21MasterTextToVideo(config: {
+  proxyUrl: string;
+  debug?: boolean;
+}): AiVideoProvider
+```
+
+#### KlingVideoV21MasterImageToVideo
+
+```typescript
+FalAiVideo.KlingVideoV21MasterImageToVideo(config: {
+  proxyUrl: string;
+  debug?: boolean;
+}): AiVideoProvider
+```
+
+#### Veo3TextToVideo
+
+```typescript
+FalAiVideo.Veo3TextToVideo(config: {
+  proxyUrl: string;
+  debug?: boolean;
+}): AiVideoProvider
+```
+
 ## UI Integration
 
 The plugin automatically registers the following UI components:
@@ -353,9 +431,12 @@ The plugin automatically registers the following UI components:
 -   Main panel: `ly.img.ai.video-generation`
 -   Canvas quick actions: `ly.img.ai.video.canvasMenu`
 -   Provider-specific panels:
-    -   MinimaxVideo01Live: `ly.img.ai.fal-ai/minimax/video-01-live`
-    -   MinimaxVideo01LiveImageToVideo: `ly.img.ai.fal-ai/minimax/video-01-live/image-to-video`
-    -   PixverseV35TextToVideo: `ly.img.ai.fal-ai/pixverse/v3.5/text-to-video`
+    -   MinimaxVideo01Live: `ly.img.ai/fal-ai/minimax/video-01-live`
+    -   MinimaxVideo01LiveImageToVideo: `ly.img.ai/fal-ai/minimax/video-01-live/image-to-video`
+    -   PixverseV35TextToVideo: `ly.img.ai/fal-ai/pixverse/v3.5/text-to-video`
+    -   KlingVideoV21MasterTextToVideo: `ly.img.ai/fal-ai/kling-video/v2.1/master/text-to-video`
+    -   KlingVideoV21MasterImageToVideo: `ly.img.ai/fal-ai/kling-video/v2.1/master/image-to-video`
+    -   Veo3TextToVideo: `ly.img.ai/fal-ai/veo3`
 
 ### Asset History
 
@@ -364,6 +445,9 @@ Generated videos are automatically stored in asset sources with the following ID
 -   MinimaxVideo01Live: `fal-ai/minimax/video-01-live.history`
 -   MinimaxVideo01LiveImageToVideo: `fal-ai/minimax/video-01-live/image-to-video.history`
 -   PixverseV35TextToVideo: `fal-ai/pixverse/v3.5/text-to-video.history`
+-   KlingVideoV21MasterTextToVideo: `fal-ai/kling-video/v2.1/master/text-to-video.history`
+-   KlingVideoV21MasterImageToVideo: `fal-ai/kling-video/v2.1/master/image-to-video.history`
+-   Veo3TextToVideo: `fal-ai/veo3.history`
 
 ### Dock Integration
 
