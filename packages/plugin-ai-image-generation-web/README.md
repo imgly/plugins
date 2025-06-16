@@ -147,6 +147,37 @@ Key features:
 - Maintains original image dimensions
 - Can be used as a direct alternative to GeminiFlashEdit
 
+#### 5. FluxProKontextEdit (Image-to-Image)
+
+A versatile image editing model that applies stylistic changes and transformations:
+
+```typescript
+image2image: FalAiImage.FluxProKontextEdit({
+  proxyUrl: 'https://your-fal-ai-proxy.example.com'
+})
+```
+
+Key features:
+- Change existing images with text prompts
+- Built-in quick actions for style transfer, artist styles, background swapping, and variants
+- Keeps original image dimensions
+
+#### 6. FluxProKontextMaxEdit (Image-to-Image)
+
+A high-quality variant of FluxProKontext offering more detailed results:
+
+```typescript
+image2image: FalAiImage.FluxProKontextMaxEdit({
+  proxyUrl: 'https://your-fal-ai-proxy.example.com'
+})
+```
+
+Key features:
+- All capabilities of FluxProKontextEdit with enhanced quality
+- Style transfer & artist presets
+- Maintains original dimensions
+- Canvas quick-action integration
+
 ### Configuration Options
 
 The plugin accepts the following configuration options:
@@ -302,6 +333,24 @@ FalAiImage.GeminiFlashEdit(config: {
 })
 ```
 
+#### FluxProKontextEdit
+
+```typescript
+FalAiImage.FluxProKontextEdit(config: {
+  proxyUrl: string;
+  debug?: boolean;
+})
+```
+
+#### FluxProKontextMaxEdit
+
+```typescript
+FalAiImage.FluxProKontextMaxEdit(config: {
+  proxyUrl: string;
+  debug?: boolean;
+})
+```
+
 ## UI Integration
 
 The plugin automatically registers the following UI components:
@@ -367,6 +416,8 @@ function createQuickActions(cesdk): QuickAction[] {
   - GeminiFlashEdit: `ly.img.ai/fal-ai/gemini-flash-edit`
   - GptImage1.Text2Image: `ly.img.ai/open-ai/gpt-image-1/text2image`
   - GptImage1.Image2Image: `ly.img.ai/open-ai/gpt-image-1/image2image`
+  - FluxProKontextEdit: `ly.img.ai/fal-ai/flux-pro/kontext`
+  - FluxProKontextMaxEdit: `ly.img.ai/fal-ai/flux-pro/kontext/max`
 
 ### Asset History
 
@@ -375,6 +426,8 @@ Generated images are automatically stored in asset sources with the following ID
 - GeminiFlashEdit: `fal-ai/gemini-flash-edit.history`
 - GptImage1.Text2Image: `open-ai/gpt-image-1/text2image.history`
 - GptImage1.Image2Image: `open-ai/gpt-image-1/image2image.history`
+- FluxProKontextEdit: `fal-ai/flux-pro/kontext.history`
+- FluxProKontextMaxEdit: `fal-ai/flux-pro/kontext/max.history`
 
 ### Dock Integration
 
