@@ -27,6 +27,10 @@
     "./elevenlabs": {
       "import": "./dist/elevenlabs/index.mjs",
       "types": "./dist/elevenlabs/index.d.ts"
+    },
+    "./gemini": {
+      "import": "./dist/gemini/index.mjs",
+      "types": "./dist/gemini/index.d.ts"
     }
   },
   "homepage": "https://img.ly/products/creative-sdk",
@@ -38,7 +42,7 @@
     "build": "pnpm run clean && pnpm _syncPnpm && pnpm exec node scripts/build.mjs",
     "test": "echo No tests",
     "dev": "pnpm --filter \"${npm_package_name}^...\" --parallel run dev:wait && pnpm exec concurrently 'node scripts/watch.mjs' 'pnpm _syncPnpm --watch' --names 'build,sync deps'",
-    "dev:wait": "pnpm exec wait-on ./dist/index.mjs ./dist/index.d.ts ./dist/elevenlabs/index.mjs ./dist/elevenlabs/index.d.ts --window 250 --timeout 30000",
+    "dev:wait": "pnpm exec wait-on ./dist/index.mjs ./dist/index.d.ts ./dist/elevenlabs/index.mjs ./dist/elevenlabs/index.d.ts ./dist/gemini/index.mjs ./dist/gemini/index.d.ts --window 250 --timeout 30000",
     "dev:types": "tsc --emitDeclarationOnly --watch --preserveWatchOutput",
     "publish:latest": "pnpm run build && npm publish --tag latest --access public",
     "publish:next": "pnpm run build && npm publish --tag next --access public",

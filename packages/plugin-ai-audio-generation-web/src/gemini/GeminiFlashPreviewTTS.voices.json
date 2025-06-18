@@ -1,0 +1,336 @@
+{
+  "version": "1.0.0",
+  "id": "ly.img.voices.gemini",
+  "assets": [
+    {
+      "id": "Zephyr",
+      "label": { "en": "Zephyr – Bright" },
+      "meta": {
+        "uri": "https://www.gstatic.com/aistudio/voices/samples/Zephyr.wav",
+        "thumbUri": "{{base_url}}zephyr.webp",
+        "blockType": "//ly.img.ubq/audio",
+        "mimeType": "audio/wav",
+        "duration": "3"
+      }
+    },
+    {
+      "id": "Puck",
+      "label": { "en": "Puck – Upbeat" },
+      "meta": {
+        "uri": "https://www.gstatic.com/aistudio/voices/samples/Puck.wav",
+        "thumbUri": "{{base_url}}puck.webp",
+        "blockType": "//ly.img.ubq/audio",
+        "mimeType": "audio/wav",
+        "duration": "3"
+      }
+    },
+    {
+      "id": "Charon",
+      "label": { "en": "Charon – Informative" },
+      "meta": {
+        "uri": "https://www.gstatic.com/aistudio/voices/samples/Charon.wav",
+        "thumbUri": "{{base_url}}charon.webp",
+        "blockType": "//ly.img.ubq/audio",
+        "mimeType": "audio/wav",
+        "duration": "3"
+      }
+    },
+    {
+      "id": "Kore",
+      "label": { "en": "Kore – Firm" },
+      "meta": {
+        "uri": "https://www.gstatic.com/aistudio/voices/samples/Kore.wav",
+        "thumbUri": "{{base_url}}kore.webp",
+        "blockType": "//ly.img.ubq/audio",
+        "mimeType": "audio/wav",
+        "duration": "3"
+      }
+    },
+    {
+      "id": "Fenrir",
+      "label": { "en": "Fenrir – Excitable" },
+      "meta": {
+        "uri": "https://www.gstatic.com/aistudio/voices/samples/Fenrir.wav",
+        "thumbUri": "{{base_url}}fenrir.webp",
+        "blockType": "//ly.img.ubq/audio",
+        "mimeType": "audio/wav",
+        "duration": "3"
+      }
+    },
+    {
+      "id": "Leda",
+      "label": { "en": "Leda – Youthful" },
+      "meta": {
+        "uri": "https://www.gstatic.com/aistudio/voices/samples/Leda.wav",
+        "thumbUri": "{{base_url}}leda.webp",
+        "blockType": "//ly.img.ubq/audio",
+        "mimeType": "audio/wav",
+        "duration": "3"
+      }
+    },
+    {
+      "id": "Orus",
+      "label": { "en": "Orus – Firm" },
+      "meta": {
+        "uri": "https://www.gstatic.com/aistudio/voices/samples/Orus.wav",
+        "thumbUri": "{{base_url}}orus.webp",
+        "blockType": "//ly.img.ubq/audio",
+        "mimeType": "audio/wav",
+        "duration": "3"
+      }
+    },
+    {
+      "id": "Aoede",
+      "label": { "en": "Aoede – Breezy" },
+      "meta": {
+        "uri": "https://www.gstatic.com/aistudio/voices/samples/Aoede.wav",
+        "thumbUri": "{{base_url}}aoede.webp",
+        "blockType": "//ly.img.ubq/audio",
+        "mimeType": "audio/wav",
+        "duration": "3"
+      }
+    },
+    {
+      "id": "Callirrhoe",
+      "label": { "en": "Callirrhoe – Easy-going" },
+      "meta": {
+        "uri": "https://www.gstatic.com/aistudio/voices/samples/Callirrhoe.wav",
+        "thumbUri": "{{base_url}}callirrhoe.webp",
+        "blockType": "//ly.img.ubq/audio",
+        "mimeType": "audio/wav",
+        "duration": "3"
+      }
+    },
+    {
+      "id": "Autonoe",
+      "label": { "en": "Autonoe – Bright" },
+      "meta": {
+        "uri": "https://www.gstatic.com/aistudio/voices/samples/Autonoe.wav",
+        "thumbUri": "{{base_url}}autonoe.webp",
+        "blockType": "//ly.img.ubq/audio",
+        "mimeType": "audio/wav",
+        "duration": "3"
+      }
+    },
+    {
+      "id": "Enceladus",
+      "label": { "en": "Enceladus – Breathy" },
+      "meta": {
+        "uri": "https://www.gstatic.com/aistudio/voices/samples/Enceladus.wav",
+        "thumbUri": "{{base_url}}enceladus.webp",
+        "blockType": "//ly.img.ubq/audio",
+        "mimeType": "audio/wav",
+        "duration": "3"
+      }
+    },
+    {
+      "id": "Iapetus",
+      "label": { "en": "Iapetus – Clear" },
+      "meta": {
+        "uri": "https://www.gstatic.com/aistudio/voices/samples/Iapetus.wav",
+        "thumbUri": "{{base_url}}iapetus.webp",
+        "blockType": "//ly.img.ubq/audio",
+        "mimeType": "audio/wav",
+        "duration": "3"
+      }
+    },
+    {
+      "id": "Umbriel",
+      "label": { "en": "Umbriel – Easy-going" },
+      "meta": {
+        "uri": "https://www.gstatic.com/aistudio/voices/samples/Umbriel.wav",
+        "thumbUri": "{{base_url}}umbriel.webp",
+        "blockType": "//ly.img.ubq/audio",
+        "mimeType": "audio/wav",
+        "duration": "3"
+      }
+    },
+    {
+      "id": "Algieba",
+      "label": { "en": "Algieba – Smooth" },
+      "meta": {
+        "uri": "https://www.gstatic.com/aistudio/voices/samples/Algieba.wav",
+        "thumbUri": "{{base_url}}algieba.webp",
+        "blockType": "//ly.img.ubq/audio",
+        "mimeType": "audio/wav",
+        "duration": "3"
+      }
+    },
+    {
+      "id": "Despina",
+      "label": { "en": "Despina – Smooth" },
+      "meta": {
+        "uri": "https://www.gstatic.com/aistudio/voices/samples/Despina.wav",
+        "thumbUri": "{{base_url}}despina.webp",
+        "blockType": "//ly.img.ubq/audio",
+        "mimeType": "audio/wav",
+        "duration": "3"
+      }
+    },
+    {
+      "id": "Erinome",
+      "label": { "en": "Erinome – Clear" },
+      "meta": {
+        "uri": "https://www.gstatic.com/aistudio/voices/samples/Erinome.wav",
+        "thumbUri": "{{base_url}}erinome.webp",
+        "blockType": "//ly.img.ubq/audio",
+        "mimeType": "audio/wav",
+        "duration": "3"
+      }
+    },
+    {
+      "id": "Algenib",
+      "label": { "en": "Algenib – Gravelly" },
+      "meta": {
+        "uri": "https://www.gstatic.com/aistudio/voices/samples/Algenib.wav",
+        "thumbUri": "{{base_url}}algenib.webp",
+        "blockType": "//ly.img.ubq/audio",
+        "mimeType": "audio/wav",
+        "duration": "3"
+      }
+    },
+    {
+      "id": "Rasalgethi",
+      "label": { "en": "Rasalgethi – Informative" },
+      "meta": {
+        "uri": "https://www.gstatic.com/aistudio/voices/samples/Rasalgethi.wav",
+        "thumbUri": "{{base_url}}rasalgethi.webp",
+        "blockType": "//ly.img.ubq/audio",
+        "mimeType": "audio/wav",
+        "duration": "3"
+      }
+    },
+    {
+      "id": "Laomedeia",
+      "label": { "en": "Laomedeia – Upbeat" },
+      "meta": {
+        "uri": "https://www.gstatic.com/aistudio/voices/samples/Laomedeia.wav",
+        "thumbUri": "{{base_url}}laomedeia.webp",
+        "blockType": "//ly.img.ubq/audio",
+        "mimeType": "audio/wav",
+        "duration": "3"
+      }
+    },
+    {
+      "id": "Achernar",
+      "label": { "en": "Achernar – Soft" },
+      "meta": {
+        "uri": "https://www.gstatic.com/aistudio/voices/samples/Achernar.wav",
+        "thumbUri": "{{base_url}}achernar.webp",
+        "blockType": "//ly.img.ubq/audio",
+        "mimeType": "audio/wav",
+        "duration": "3"
+      }
+    },
+    {
+      "id": "Alnilam",
+      "label": { "en": "Alnilam – Firm" },
+      "meta": {
+        "uri": "https://www.gstatic.com/aistudio/voices/samples/Alnilam.wav",
+        "thumbUri": "{{base_url}}alnilam.webp",
+        "blockType": "//ly.img.ubq/audio",
+        "mimeType": "audio/wav",
+        "duration": "3"
+      }
+    },
+    {
+      "id": "Schedar",
+      "label": { "en": "Schedar – Even" },
+      "meta": {
+        "uri": "https://www.gstatic.com/aistudio/voices/samples/Schedar.wav",
+        "thumbUri": "{{base_url}}schedar.webp",
+        "blockType": "//ly.img.ubq/audio",
+        "mimeType": "audio/wav",
+        "duration": "3"
+      }
+    },
+    {
+      "id": "Gacrux",
+      "label": { "en": "Gacrux – Mature" },
+      "meta": {
+        "uri": "https://www.gstatic.com/aistudio/voices/samples/Gacrux.wav",
+        "thumbUri": "{{base_url}}gacrux.webp",
+        "blockType": "//ly.img.ubq/audio",
+        "mimeType": "audio/wav",
+        "duration": "3"
+      }
+    },
+    {
+      "id": "Pulcherrima",
+      "label": { "en": "Pulcherrima – Forward" },
+      "meta": {
+        "uri": "https://www.gstatic.com/aistudio/voices/samples/Pulcherrima.wav",
+        "thumbUri": "{{base_url}}pulcherrima.webp",
+        "blockType": "//ly.img.ubq/audio",
+        "mimeType": "audio/wav",
+        "duration": "3"
+      }
+    },
+    {
+      "id": "Achird",
+      "label": { "en": "Achird – Friendly" },
+      "meta": {
+        "uri": "https://www.gstatic.com/aistudio/voices/samples/Achird.wav",
+        "thumbUri": "{{base_url}}achird.webp",
+        "blockType": "//ly.img.ubq/audio",
+        "mimeType": "audio/wav",
+        "duration": "3"
+      }
+    },
+    {
+      "id": "Zubenelgenubi",
+      "label": { "en": "Zubenelgenubi – Casual" },
+      "meta": {
+        "uri": "https://www.gstatic.com/aistudio/voices/samples/Zubenelgenubi.wav",
+        "thumbUri": "{{base_url}}zubenelgenubi.webp",
+        "blockType": "//ly.img.ubq/audio",
+        "mimeType": "audio/wav",
+        "duration": "3"
+      }
+    },
+    {
+      "id": "Vindemiatrix",
+      "label": { "en": "Vindemiatrix – Gentle" },
+      "meta": {
+        "uri": "https://www.gstatic.com/aistudio/voices/samples/Vindemiatrix.wav",
+        "thumbUri": "{{base_url}}vindemiatrix.webp",
+        "blockType": "//ly.img.ubq/audio",
+        "mimeType": "audio/wav",
+        "duration": "3"
+      }
+    },
+    {
+      "id": "Sadachbia",
+      "label": { "en": "Sadachbia – Lively" },
+      "meta": {
+        "uri": "https://www.gstatic.com/aistudio/voices/samples/Sadachbia.wav",
+        "thumbUri": "{{base_url}}sadachbia.webp",
+        "blockType": "//ly.img.ubq/audio",
+        "mimeType": "audio/wav",
+        "duration": "3"
+      }
+    },
+    {
+      "id": "Sadaltager",
+      "label": { "en": "Sadaltager – Knowledgeable" },
+      "meta": {
+        "uri": "https://www.gstatic.com/aistudio/voices/samples/Sadaltager.wav",
+        "thumbUri": "{{base_url}}sadaltager.webp",
+        "blockType": "//ly.img.ubq/audio",
+        "mimeType": "audio/wav",
+        "duration": "3"
+      }
+    },
+    {
+      "id": "Sulafat",
+      "label": { "en": "Sulafat – Warm" },
+      "meta": {
+        "uri": "https://www.gstatic.com/aistudio/voices/samples/Sulafat.wav",
+        "thumbUri": "{{base_url}}sulafat.webp",
+        "blockType": "//ly.img.ubq/audio",
+        "mimeType": "audio/wav",
+        "duration": "3"
+      }
+    }
+  ]
+} 

@@ -27,7 +27,11 @@ export default ({ isDevelopment }) => {
   const config = baseConfig(baseOptions);
   
   // Set entry points and output configuration
-  config.entryPoints = ['./src/index.ts', './src/elevenlabs/index.ts'];
+  config.entryPoints = [
+    './src/index.ts',
+    './src/elevenlabs/index.ts',
+    './src/gemini/index.ts'
+  ];
   config.outExtension = { '.js': '.mjs' };
   config.outdir = './dist';
   config.outbase = './src';
