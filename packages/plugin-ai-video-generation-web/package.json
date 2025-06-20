@@ -1,6 +1,6 @@
 {
   "name": "@imgly/plugin-ai-video-generation-web",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "description": "AI video generation plugin for the CE.SDK editor",
   "keywords": ["CE.SDK", "plugin", "AI", "video-generation"],
   "repository": {
