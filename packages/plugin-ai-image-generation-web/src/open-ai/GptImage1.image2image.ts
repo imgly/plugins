@@ -66,7 +66,6 @@ function getProvider(
 
   const quickActions = createQuickActions({ cesdk, modelKey });
   const quickActionMenu = getQuickActionMenu(cesdk, 'image');
-  const quickActionMenuForText = getQuickActionMenu(cesdk, 'text');
 
   const styleAssetSourceId = `${modelKey}/styles`;
   const styleAssetSource = createStyleAssetSource(styleAssetSourceId, {
@@ -100,12 +99,6 @@ function getProvider(
     'remixPage',
     'ly.img.separator',
     ...quickActionMenu.getQuickActionMenuOrder()
-  ]);
-
-  quickActionMenuForText.setQuickActionMenuOrder([
-    ...quickActionMenuForText.getQuickActionMenuOrder(),
-    'ly.img.separator',
-    'changeToImage'
   ]);
 
   const provider: Provider<'image', GptImage1Input, GptImage1Output> = {
@@ -322,21 +315,21 @@ function createQuickActions(options: {
         });
       }
     }),
-    QuickActionEditTextStyle<GptImage1Input, GptImage1Output>({
-      onApply: async ({ prompt, uri, duplicatedBlockId }, context) => {
-        // Generate a variant for the duplicated block
-        return context.generate(
-          {
-            prompt,
-            image_url: uri
-          },
-          {
-            blockIds: [duplicatedBlockId]
-          }
-        );
-      },
-      cesdk
-    }),
+    // QuickActionEditTextStyle<GptImage1Input, GptImage1Output>({
+    //   onApply: async ({ prompt, uri, duplicatedBlockId }, context) => {
+    //     // Generate a variant for the duplicated block
+    //     return context.generate(
+    //       {
+    //         prompt,
+    //         image_url: uri
+    //       },
+    //       {
+    //         blockIds: [duplicatedBlockId]
+    //       }
+    //     );
+    //   },
+    //   cesdk
+    // }),
     QuickActionSwapImageBackground<GptImage1Input, GptImage1Output>({
       mapInput: (input) => ({ ...input, image_url: input.uri }),
       cesdk
