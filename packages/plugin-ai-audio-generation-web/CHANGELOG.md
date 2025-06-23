@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+## [0.1.10] - 2025-06-20
+
+-   [all] Fix issue with GPT provider when using text provider
+
 ## [0.1.9] - 2025-06-05
 
 -   [all] Add support for custom headers
