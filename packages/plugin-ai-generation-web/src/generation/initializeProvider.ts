@@ -2,6 +2,7 @@ import CreativeEditorSDK, { BuilderRenderFunction } from '@cesdk/cesdk-js';
 import Provider, { GetInput, Output, OutputKind } from './provider';
 import { CommonProviderConfiguration } from './types';
 import createPanelRenderFunction from './createPanelRenderFunction';
+import { CommonPluginConfiguration } from '../types';
 
 type Result<O> = { status: 'success'; output: O } | { status: 'aborted' };
 
@@ -38,7 +39,7 @@ async function initializeProvider<K extends OutputKind, I, O extends Output>(
   options: {
     cesdk: CreativeEditorSDK;
   },
-  config: CommonProviderConfiguration<I, O>
+  config: CommonPluginConfiguration<K, I, O>
 ): Promise<ProviderInitializationResult<K, I, O>> {
   const builderRenderFunction: BuilderRenderFunction | undefined =
     await createPanelRenderFunction({
