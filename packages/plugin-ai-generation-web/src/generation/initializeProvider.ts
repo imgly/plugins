@@ -41,6 +41,8 @@ async function initializeProvider<K extends OutputKind, I, O extends Output>(
   },
   config: CommonPluginConfiguration<K, I, O>
 ): Promise<ProviderInitializationResult<K, I, O>> {
+  await provider.initialize?.({ ...options, engine: options.cesdk.engine });
+
   const builderRenderFunction: BuilderRenderFunction | undefined =
     await createPanelRenderFunction({
       provider,
