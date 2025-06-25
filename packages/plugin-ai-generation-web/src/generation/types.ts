@@ -1,7 +1,7 @@
 import type CreativeEditorSDK from '@cesdk/cesdk-js';
 import { type CreativeEngine } from '@cesdk/cesdk-js';
 import type Provider from './provider';
-import { Output, OutputKind } from './provider';
+import { Output, OutputKind, PanelInput } from './provider';
 import { Middleware } from './middleware/middleware';
 
 /**
@@ -79,6 +79,22 @@ export type GenerationMiddleware = (
     abort: () => void;
   }
 ) => Promise<void>;
+
+/**
+ * Context for provider initialization, including the provider, panel input schema,
+ * options, and configuration.
+ */
+export type InitializationContext<
+  K extends OutputKind,
+  I,
+  O extends Output,
+  P extends PanelInput<K, I> = PanelInput<K, I>
+> = {
+  provider: Provider<K, I, O>;
+  panelInput?: P;
+  options: UIOptions;
+  config: CommonProviderConfiguration<I, O>;
+};
 
 /**
  * Options for UI interactions
