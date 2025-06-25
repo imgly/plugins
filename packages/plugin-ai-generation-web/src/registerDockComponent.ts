@@ -9,7 +9,7 @@ function registerDockComponent(options: {
   panelId: string;
 }) {
   const { cesdk, panelId } = options;
-  if (panelId.startsWith('ly.img.ai/')) {
+  if (!panelId.startsWith('ly.img.ai/')) {
     // eslint-disable-next-line no-console
     console.warn(
       `Dock components for AI generation should open a panel with an id starting with "ly.img.ai/" – "${panelId}" was provided.`
