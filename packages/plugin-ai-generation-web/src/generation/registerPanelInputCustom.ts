@@ -4,7 +4,7 @@ import { OutputKind, PanelInputCustom, type Output } from './provider';
 import renderGenerationComponents, {
   isGeneratingStateKey
 } from './renderGenerationComponents';
-import { InitProviderConfiguration, UIOptions } from './types';
+import { CommonProviderConfiguration, UIOptions } from './types';
 import { getPanelId } from '../utils';
 
 async function registerPanelInputCustom<
@@ -15,7 +15,7 @@ async function registerPanelInputCustom<
   provider: Provider<K, I, O>,
   panelInput: PanelInputCustom<K, I>,
   options: UIOptions,
-  config: InitProviderConfiguration
+  config: CommonProviderConfiguration<I, O>
 ): Promise<BuilderRenderFunction<any>> {
   const { cesdk } = options;
   const { id: providerId } = provider;

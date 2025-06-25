@@ -8,7 +8,7 @@ import {
 import { Metadata } from '@imgly/plugin-utils';
 import Provider, { Output, OutputKind } from '../provider';
 import { isAbortError } from '../../utils';
-import { InitProviderConfiguration } from '../types';
+import { CommonProviderConfiguration } from '../types';
 import handleGenerationError from '../handleGenerationError';
 import generate from './generate';
 
@@ -22,7 +22,7 @@ function registerQuickActionMenuComponent<
     quickActionMenu: QuickActionMenu;
     provider: Provider<K, I, O>;
   },
-  config: InitProviderConfiguration
+  config: CommonProviderConfiguration<I, O>
 ) {
   const { cesdk, quickActionMenu, provider } = options;
 
@@ -253,14 +253,10 @@ function registerQuickActionMenuComponent<
                     toggleExpandedState.setValue(undefined);
                   },
                   handleGenerationError: (error) => {
-                    handleGenerationError(
-                      error,
-                      {
-                        cesdk,
-                        provider
-                      },
-                      config
-                    );
+                    handleGenerationError(error, {
+                      cesdk,
+                      provider
+                    });
                   },
                   generate: async (input, generateOptions) => {
                     try {
@@ -285,14 +281,10 @@ function registerQuickActionMenuComponent<
                       return returnValue;
                     } catch (error) {
                       if (!isAbortError(error)) {
-                        handleGenerationError(
-                          error,
-                          {
-                            cesdk,
-                            provider
-                          },
-                          config
-                        );
+                        handleGenerationError(error, {
+                          cesdk,
+                          provider
+                        });
                       }
                       throw error;
                     }
@@ -315,14 +307,10 @@ function registerQuickActionMenuComponent<
                       blockIds,
                       closeMenu: close,
                       handleGenerationError: (error) => {
-                        handleGenerationError(
-                          error,
-                          {
-                            cesdk,
-                            provider
-                          },
-                          config
-                        );
+                        handleGenerationError(error, {
+                          cesdk,
+                          provider
+                        });
                       },
                       toggleExpand: () => {
                         toggleExpandedState.setValue(quickAction.id);
@@ -349,14 +337,10 @@ function registerQuickActionMenuComponent<
                           return returnValue;
                         } catch (error) {
                           if (!isAbortError(error)) {
-                            handleGenerationError(
-                              error,
-                              {
-                                cesdk,
-                                provider
-                              },
-                              config
-                            );
+                            handleGenerationError(error, {
+                              cesdk,
+                              provider
+                            });
                           }
                           throw error;
                         }

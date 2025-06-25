@@ -8,7 +8,7 @@ import {
   type PanelInputSchema
 } from './provider';
 import type Provider from './provider';
-import { InitProviderConfiguration, UIOptions } from './types';
+import { CommonProviderConfiguration, UIOptions } from './types';
 import { isOpenAPISchema } from './openapi/isOpenAPISchema';
 import { GetPropertyInput, PropertyInput } from './openapi/types';
 import renderProperty from './openapi/renderProperty';
@@ -28,7 +28,7 @@ async function registerPanelInputSchema<
   provider: Provider<K, I, O>,
   panelInput: PanelInputSchema<K, I>,
   options: UIOptions,
-  config: InitProviderConfiguration
+  config: CommonProviderConfiguration<I, O>
 ): Promise<BuilderRenderFunction<any>> {
   const { cesdk } = options;
   const { id: providerId } = provider;

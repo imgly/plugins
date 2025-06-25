@@ -15,7 +15,7 @@ import pendingMiddleware from '../middleware/pendingMiddleware';
 import lockMiddleware from '../middleware/lockMiddleware';
 import consumeGeneratedResult from './consumeGeneratedResult';
 import editModeMiddleware from '../middleware/editModeMiddleware';
-import { InitProviderConfiguration } from '../types';
+import { CommonProviderConfiguration } from '../types';
 import dryRunMiddleware from '../middleware/dryRunMiddleware';
 
 async function generate<K extends OutputKind, I, O extends Output>(
@@ -29,7 +29,7 @@ async function generate<K extends OutputKind, I, O extends Output>(
     abortSignal: AbortSignal;
     confirmationComponentId: string;
   },
-  config: InitProviderConfiguration
+  config: CommonProviderConfiguration<I, O>
 ): Promise<{
   dispose: () => void;
   returnValue: O;

@@ -14,40 +14,6 @@ export type GetProvider<K extends OutputKind> = ({
 }) => Promise<Provider<K, any, any>>;
 
 /**
- * Configuration options for provider initialization
- */
-export type InitProviderConfiguration = {
-  /**
-   * Whether to enable debug mode
-   */
-  debug?: boolean;
-
-  /**
-   * If true the generation process wll be replaced with a dummy generation.
-   * Useful for testing the UI without actually generating images.
-   */
-  dryRun?: boolean;
-
-  /**
-   * Is called after an error occurred during the generation process.
-   * Can be used to show an error message to the user, e.g. with the
-   * Dialog or Notification API
-   *
-   * The default implementation logs the error to the console and
-   * shows a notification to the user.
-   */
-  onError?: (error: unknown) => void;
-
-  /**
-   * Is called when the generation process is started. Can be used to
-   * extend the generation process with additional steps.
-   *
-   * @param generate A function that starts the actual generation process.
-   */
-  middleware?: GenerationMiddleware;
-};
-
-/**
  * Common provider configuration that all providers should provide.
  */
 export interface CommonProviderConfiguration<I, O extends Output> {
@@ -57,6 +23,12 @@ export interface CommonProviderConfiguration<I, O extends Output> {
   proxyUrl: string;
 
   /**
+   * If true the generation process wll be replaced with a dummy generation.
+   * Useful for testing the UI without actually generating images.
+   */
+  dryRun?: boolean;
+
+  /**
    * Indicates whether the provider is in debug mode and should log additional information.
    */
   debug?: boolean;
@@ -64,21 +36,13 @@ export interface CommonProviderConfiguration<I, O extends Output> {
   /**
    * Middleware that shall be executed during the generation process.
    */
-  middleware?: Middleware<I, O>[];
+  middlewares?: Middleware<I, O>[];
 
   /**
    * Headers that shall be sent with the request of the provider.
    */
   headers?: Record<string, string>;
 }
-
-export type GenerationMiddleware = (
-  generate: () => Promise<void>,
-  context: {
-    provider: Provider<any, any, any>;
-    abort: () => void;
-  }
-) => Promise<void>;
 
 /**
  * Context for provider initialization, including the provider, panel input schema,

@@ -7,7 +7,7 @@ import {
 } from './provider';
 import registerPanelInputSchema from './registerPanelInputSchema';
 import registerPanelInputCustom from './registerPanelInputCustom';
-import { InitProviderConfiguration, Options, UIOptions } from './types';
+import { CommonProviderConfiguration, Options, UIOptions } from './types';
 import { BuilderRenderFunction, type CreativeEngine } from '@cesdk/cesdk-js';
 import { IndexedDBAssetSource } from '@imgly/plugin-utils';
 import icons from '../icons';
@@ -32,7 +32,7 @@ type RenderBuilderFunctions = {
 async function initProvider<K extends OutputKind, I, O extends Output>(
   provider: Provider<K, I, O>,
   options: Options,
-  config: InitProviderConfiguration
+  config: CommonProviderConfiguration<I, O>
 ): Promise<{
   renderBuilderFunctions?: RenderBuilderFunctions;
 }> {
@@ -148,7 +148,7 @@ async function initHistory(
 async function initInputs<K extends OutputKind, I, O extends Output>(
   provider: Provider<K, I, O>,
   options: UIOptions,
-  config: InitProviderConfiguration
+  config: CommonProviderConfiguration<I, O>
 ): Promise<{
   panel?: BuilderRenderFunction<any>;
 }> {
@@ -183,7 +183,7 @@ async function initPanel<K extends OutputKind, I, O extends Output>(
   provider: Provider<K, I, O>,
   panelInput: PanelInput<K, I>,
   options: UIOptions,
-  config: InitProviderConfiguration
+  config: CommonProviderConfiguration<I, O>
 ): Promise<BuilderRenderFunction<any> | undefined> {
   switch (panelInput.type) {
     case 'custom': {
@@ -210,7 +210,7 @@ async function initQuickActions<K extends OutputKind, I, O extends Output>(
   provider: Provider<K, I, O>,
   quickActionsInput: QuickActionsInput<I, O>,
   options: UIOptions,
-  config: InitProviderConfiguration
+  config: CommonProviderConfiguration<I, O>
 ) {
   const { cesdk } = options;
 

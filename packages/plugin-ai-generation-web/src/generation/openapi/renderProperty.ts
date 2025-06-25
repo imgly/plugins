@@ -8,7 +8,7 @@ import {
   PropertyInput
 } from './types';
 import Provider, { Output, OutputKind, PanelInputSchema } from '../provider';
-import { InitProviderConfiguration, UIOptions } from '../types';
+import { CommonProviderConfiguration, UIOptions } from '../types';
 import { OpenAPIV3 } from 'openapi-types';
 import getProperties from './getProperties';
 import { getLabelFromId } from '../../utils';
@@ -19,7 +19,7 @@ function renderProperty<K extends OutputKind, I, O extends Output>(
   provider: Provider<K, I, O>,
   panelInput: PanelInputSchema<K, I>,
   options: UIOptions,
-  config: InitProviderConfiguration
+  config: CommonProviderConfiguration<I, O>
 ): GetPropertyInput | undefined {
   if (property.schema == null) {
     if (
@@ -133,7 +133,7 @@ function renderObjectProperty<K extends OutputKind, I, O extends Output>(
   provider: Provider<K, I, O>,
   panelInput: PanelInputSchema<K, I>,
   options: UIOptions,
-  config: InitProviderConfiguration
+  config: CommonProviderConfiguration<I, O>
 ): GetPropertyInput {
   const properties = getProperties(property.schema ?? {}, panelInput);
 
@@ -165,7 +165,7 @@ function renderStringProperty<K extends OutputKind, I, O extends Output>(
   provider: Provider<K, I, O>,
   panelInput: PanelInputSchema<K, I>,
   options: UIOptions,
-  config: InitProviderConfiguration
+  config: CommonProviderConfiguration<I, O>
 ): GetPropertyInput {
   const {
     builder,
@@ -203,7 +203,7 @@ function renderEnumProperty<K extends OutputKind, I, O extends Output>(
   provider: Provider<K, I, O>,
   panelInput: PanelInputSchema<K, I>,
   options: UIOptions,
-  config: InitProviderConfiguration
+  config: CommonProviderConfiguration<I, O>
 ): GetPropertyInput {
   const {
     builder,
@@ -261,7 +261,7 @@ function renderBooleanProperty<K extends OutputKind, I, O extends Output>(
   provider: Provider<K, I, O>,
   panelInput: PanelInputSchema<K, I>,
   options: UIOptions,
-  config: InitProviderConfiguration
+  config: CommonProviderConfiguration<I, O>
 ): GetPropertyInput {
   const {
     builder,
@@ -293,7 +293,7 @@ function renderIntegerProperty<K extends OutputKind, I, O extends Output>(
   provider: Provider<K, I, O>,
   panelInput: PanelInputSchema<K, I>,
   options: UIOptions,
-  config: InitProviderConfiguration
+  config: CommonProviderConfiguration<I, O>
 ): GetPropertyInput {
   const {
     builder,
@@ -358,7 +358,7 @@ function renderAnyOfProperty<K extends OutputKind, I, O extends Output>(
   provider: Provider<K, I, O>,
   panelInput: PanelInputSchema<K, I>,
   options: UIOptions,
-  config: InitProviderConfiguration
+  config: CommonProviderConfiguration<I, O>
 ): GetPropertyInput | undefined {
   const {
     builder,

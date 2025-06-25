@@ -31,7 +31,6 @@ export {
 export { default as initProvider } from './generation/initProvider';
 export {
   type GetProvider,
-  type GenerationMiddleware,
   type CommonProviderConfiguration
 } from './generation/types';
 

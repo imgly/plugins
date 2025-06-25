@@ -8,7 +8,7 @@ import {
   type Output,
   type GetBlockInput
 } from './provider';
-import { InitProviderConfiguration, UIOptions } from './types';
+import { CommonProviderConfiguration, UIOptions } from './types';
 import generate from './generate';
 import { isAbortError } from '../utils';
 import handleGenerationError from './handleGenerationError';
@@ -34,7 +34,7 @@ function renderGenerationComponents<K extends OutputKind, I, O extends Output>(
     includeHistoryLibrary?: boolean;
     requiredInputs?: string[];
   },
-  config: InitProviderConfiguration
+  config: CommonProviderConfiguration<I, O>
 ): void {
   const { builder, experimental } = context;
   const { cesdk, includeHistoryLibrary = true } = options;
@@ -155,15 +155,11 @@ function renderGenerationComponents<K extends OutputKind, I, O extends Output>(
                 return;
               }
 
-              handleGenerationError(
-                error,
-                {
-                  cesdk,
-                  provider,
-                  getInput
-                },
-                config
-              );
+              handleGenerationError(error, {
+                cesdk,
+                provider,
+                getInput
+              });
             } finally {
               abortController = undefined;
               generatingState.setValue(false);
@@ -176,14 +172,7 @@ function renderGenerationComponents<K extends OutputKind, I, O extends Output>(
             }
           };
 
-          if (config.middleware != null) {
-            await config.middleware(triggerGeneration, {
-              provider,
-              abort
-            });
-          } else {
-            await triggerGeneration();
-          }
+          await triggerGeneration();
         }
       });
       if (provider.output.generationHintText != null) {

@@ -4,7 +4,7 @@ import CreativeEditorSDK, {
   SelectValue
 } from '@cesdk/cesdk-js';
 import Provider, { Output, OutputKind } from './provider';
-import { InitProviderConfiguration } from './types';
+import { CommonProviderConfiguration } from './types';
 import initializeProvider, {
   ProviderInitializationResult
 } from './initializeProvider';
@@ -26,7 +26,7 @@ async function initializeProviders<K extends OutputKind, I, O extends Output>(
   options: {
     cesdk: CreativeEditorSDK;
   },
-  config: InitProviderConfiguration
+  config: CommonProviderConfiguration<I, O>
 ): Promise<{
   panel: {
     builderRenderFunction?: BuilderRenderFunction;
