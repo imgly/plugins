@@ -1,0 +1,241 @@
+import CreativeEditorSDK, {
+  BuilderRenderFunction,
+  BuilderRenderFunctionContext,
+  SelectValue
+} from '@cesdk/cesdk-js';
+import Provider, { Output, OutputKind } from './provider';
+import { InitProviderConfiguration } from './types';
+import initializeProvider, {
+  ProviderInitializationResult
+} from './initializeProvider';
+import { isGeneratingStateKey } from './renderGenerationComponents';
+
+/**
+ * Initializes the given providers for the specified output kind.
+ *
+ * - It will create a combined render function for all providers
+ *   that can be used in a panel
+ *
+ */
+async function initializeProviders<K extends OutputKind, I, O extends Output>(
+  kind: K,
+  providers: {
+    fromText: Provider<K, I, O>[];
+    fromImage: Provider<K, I, O>[];
+  },
+  options: {
+    cesdk: CreativeEditorSDK;
+  },
+  config: InitProviderConfiguration
+): Promise<{
+  panel: {
+    builderRenderFunction?: BuilderRenderFunction;
+  };
+  history?: {
+    assetSourceId: string;
+    assetLibraryEntryId: string;
+  };
+  quickActions?: {
+    registered: {
+      [kind: string]: string;
+    };
+    order: {
+      [kind: string]: string[];
+    };
+  };
+}> {
+  const initializedFromTextProviders = await Promise.all(
+    providers.fromText.map((provider) => {
+      return initializeProvider(kind, provider, options, config);
+    })
+  );
+
+  const initializedFromImageProviders = await Promise.all(
+    providers.fromImage.map((provider) => {
+      return initializeProvider(kind, provider, options, config);
+    })
+  );
+
+  const builderRenderFunction = getCombinedBuilderRenderFunction({
+    prefix: kind,
+    initializedFromTextProviders,
+    initializedFromImageProviders
+  });
+
+  return {
+    panel: {
+      builderRenderFunction
+    }
+  };
+}
+
+/**
+ * Combines the render functions of the initialized providers into a single
+ * render function that can be used in a panel. Will add select components
+ * to switch between the different providers and input types.
+ */
+function getCombinedBuilderRenderFunction<
+  K extends OutputKind,
+  I,
+  O extends Output
+>({
+  prefix,
+  initializedFromTextProviders,
+  initializedFromImageProviders
+}: {
+  prefix: string;
+  initializedFromTextProviders: ProviderInitializationResult<K, I, O>[];
+  initializedFromImageProviders: ProviderInitializationResult<K, I, O>[];
+}): BuilderRenderFunction<{}> {
+  const includeFromSwitch =
+    initializedFromTextProviders.length > 0 ||
+    initializedFromImageProviders.length > 0;
+
+  const builderRenderFunction: BuilderRenderFunction = (context) => {
+    const { builder, experimental } = context;
+    const inputTypeState = experimental.global<
+      'fromText' | 'fromImage' | undefined
+    >(`${prefix}.fromType`, includeFromSwitch ? 'fromText' : undefined);
+
+    const providerInitializationResults: ProviderInitializationResult<
+      K,
+      I,
+      O
+    >[] = [];
+    if (inputTypeState.value === 'fromText') {
+      providerInitializationResults.push(...initializedFromTextProviders);
+    } else if (inputTypeState.value === 'fromImage') {
+      providerInitializationResults.push(...initializedFromImageProviders);
+    } else {
+      providerInitializationResults.push(
+        ...initializedFromTextProviders,
+        ...initializedFromImageProviders
+      );
+    }
+
+    const providerValuesFromText: (SelectValue & {
+      builderRenderFunction?: BuilderRenderFunction;
+    })[] = initializedFromTextProviders.map(({ provider, panel }) => ({
+      id: provider.id,
+      label: provider.name ?? provider.id,
+      builderRenderFunction: panel?.builderRenderFunction
+    }));
+
+    const providerValuesFromImage: (SelectValue & {
+      builderRenderFunction?: BuilderRenderFunction;
+    })[] = initializedFromImageProviders.map(({ provider, panel }) => ({
+      id: provider.id,
+      label: provider.name ?? provider.id,
+      builderRenderFunction: panel?.builderRenderFunction
+    }));
+
+    const providerStateFromText = context.experimental.global(
+      `${prefix}.selectedProvider.fromText`,
+      providerValuesFromText[0]
+    );
+    const providerStateFromImage = context.experimental.global(
+      `${prefix}.selectedProvider.fromImage`,
+      providerValuesFromImage[0]
+    );
+
+    const providerState =
+      inputTypeState.value === 'fromText'
+        ? providerStateFromText
+        : inputTypeState.value === 'fromImage'
+        ? providerStateFromImage
+        : undefined;
+
+    if (includeFromSwitch || providerInitializationResults.length > 1) {
+      builder.Section(`${prefix}.providerSelection.section`, {
+        children: () => {
+          // RENDER FROM SELECTION
+          if (includeFromSwitch) {
+            builder.ButtonGroup(`${prefix}.fromType.buttonGroup`, {
+              inputLabel: 'Input',
+              children: () => {
+                builder.Button(`${prefix}.fromType.buttonGroup.fromText`, {
+                  label: 'Text',
+                  icon:
+                    inputTypeState.value !== 'fromText' &&
+                    isSomeProviderGenerating(
+                      initializedFromTextProviders,
+                      context
+                    )
+                      ? '@imgly/LoadingSpinner'
+                      : undefined,
+                  isActive: inputTypeState.value === 'fromText',
+                  onClick: () => {
+                    inputTypeState.setValue('fromText');
+                  }
+                });
+                builder.Button(`${prefix}.fromType.buttonGroup.fromImage`, {
+                  label: 'Image',
+                  icon:
+                    inputTypeState.value !== 'fromImage' &&
+                    isSomeProviderGenerating(
+                      initializedFromImageProviders,
+                      context
+                    )
+                      ? '@imgly/LoadingSpinner'
+                      : undefined,
+                  isActive: inputTypeState.value === 'fromImage',
+                  onClick: () => {
+                    inputTypeState.setValue('fromImage');
+                  }
+                });
+              }
+            });
+          }
+
+          // RENDER PROVIDER SELECT
+          if (providerInitializationResults.length > 1) {
+            const providerValues =
+              inputTypeState.value === 'fromText'
+                ? providerValuesFromText
+                : inputTypeState.value === 'fromImage'
+                ? providerValuesFromImage
+                : [...providerValuesFromText, ...providerValuesFromImage];
+
+            if (providerState != null) {
+              builder.Select(`${prefix}.providerSelect.select`, {
+                inputLabel: 'Provider',
+                values: providerValues,
+                ...providerState
+              });
+            }
+          }
+        }
+      });
+    }
+
+    // Render the provider content
+    if (providerInitializationResults.length > 1) {
+      providerState?.value.builderRenderFunction?.(context);
+    } else {
+      const providerInitializationResult = providerInitializationResults[0];
+      if (providerInitializationResult) {
+        providerInitializationResult.panel?.builderRenderFunction?.(context);
+      }
+    }
+  };
+
+  return builderRenderFunction;
+}
+
+/**
+ * Queries the global state to check if any provider from the given
+ * list is currently generating.
+ */
+function isSomeProviderGenerating<K extends OutputKind, I, O extends Output>(
+  providerInitializationResults: ProviderInitializationResult<K, I, O>[],
+  context: BuilderRenderFunctionContext<any>
+): boolean {
+  if (providerInitializationResults.length === 0) return false;
+  return providerInitializationResults.some(({ provider }) => {
+    if (provider.id == null) return false;
+    return context.experimental.global(isGeneratingStateKey(provider.id), false)
+      .value;
+  });
+}
+
+export default initializeProviders;
