@@ -35,6 +35,8 @@ export {
   type CommonProviderConfiguration
 } from './generation/types';
 
+export { type CommonPluginConfiguration } from './types';
+
 // Export middleware
 export {
   composeMiddlewares,
