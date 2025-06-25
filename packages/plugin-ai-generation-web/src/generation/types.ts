@@ -2,7 +2,7 @@ import type CreativeEditorSDK from '@cesdk/cesdk-js';
 import { type CreativeEngine } from '@cesdk/cesdk-js';
 import type Provider from './provider';
 import { Output, OutputKind, PanelInput } from './provider';
-import { CommonConfiguration } from '../types';
+import { CommonConfiguration, CommonPluginConfiguration } from '../types';
 import { Middleware } from './middleware/middleware';
 
 /**
@@ -49,7 +49,7 @@ export type InitializationContext<
   provider: Provider<K, I, O>;
   panelInput?: P;
   options: UIOptions;
-  config: CommonProviderConfiguration<I, O>;
+  config: CommonPluginConfiguration<K, I, O>;
 };
 
 /**
