@@ -9,6 +9,25 @@ import initializeProvider, {
   ProviderInitializationResult
 } from './initializeProvider';
 import { isGeneratingStateKey } from './renderGenerationComponents';
+import { CommonPluginConfiguration } from '../types';
+
+export type ProvidersInitializationResult = {
+  panel: {
+    builderRenderFunction?: BuilderRenderFunction;
+  };
+  history?: {
+    assetSourceId: string;
+    assetLibraryEntryId: string;
+  };
+  quickActions?: {
+    registered: {
+      [kind: string]: string;
+    };
+    order: {
+      [kind: string]: string[];
+    };
+  };
+};
 
 /**
  * Initializes the given providers for the specified output kind.
@@ -28,24 +47,8 @@ async function initializeProviders<K extends OutputKind, I, O extends Output>(
   options: {
     cesdk: CreativeEditorSDK;
   },
-  config: CommonProviderConfiguration<I, O>
-): Promise<{
-  panel: {
-    builderRenderFunction?: BuilderRenderFunction;
-  };
-  history?: {
-    assetSourceId: string;
-    assetLibraryEntryId: string;
-  };
-  quickActions?: {
-    registered: {
-      [kind: string]: string;
-    };
-    order: {
-      [kind: string]: string[];
-    };
-  };
-}> {
+  config: CommonPluginConfiguration<K, I, O>
+): Promise<ProvidersInitializationResult> {
   let builderRenderFunction: BuilderRenderFunction | undefined;
 
   if (!Array.isArray(providers)) {
@@ -273,13 +276,16 @@ function getBuilderRenderFunctionByProvider<
 
     if (providerInitializationResults.length > 1) {
       if (providerState != null) {
-        builder.Select(`${prefix}.providerSelect.select`, {
-          inputLabel: 'Provider',
-          values: providerValues,
-          ...providerState
+        builder.Section(`${prefix}.providerSelection.section`, {
+          children: () => {
+            builder.Select(`${prefix}.providerSelect.select`, {
+              inputLabel: 'Provider',
+              values: providerValues,
+              ...providerState
+            });
+          }
         });
       }
-    } else {
     }
 
     // Render the provider content
