@@ -3,10 +3,7 @@ import CreativeEditorSDK, {
   EditorPlugin
 } from '@cesdk/cesdk-js';
 import {
-  Middleware,
-  OutputKind,
-  getPanelId,
-  Output
+  getPanelId
 } from '@imgly/plugin-ai-generation-web';
 
 import ImageGeneration from '@imgly/plugin-ai-image-generation-web';
@@ -44,48 +41,25 @@ export default (
         debug: config.debug
       });
 
-      const text2text = await extendProvider(
-        cesdk,
-        activeAssetSource,
-        providers.text2text
-      );
-      const text2image = await extendProvider(
-        cesdk,
-        activeAssetSource,
-        providers.text2image
-      );
-      const image2image = await extendProvider(
-        cesdk,
-        activeAssetSource,
-        providers.image2image
-      );
-
-      let text2video: GetProvider<'video'> | undefined;
-      let image2video: GetProvider<'video'> | undefined;
-      let text2speech: GetProvider<'audio'> | undefined;
-      let text2sound: GetProvider<'audio'> | undefined;
+      const text2text = providers.text2text;
+      const text2image = providers.text2image;
+      const image2image = providers.image2image;
+      let text2video: GetProvider<'video'> | GetProvider<'video'>[] | undefined;
+      let image2video:
+        | GetProvider<'video'>
+        | GetProvider<'video'>[]
+        | undefined;
+      let text2speech:
+        | GetProvider<'audio'>
+        | GetProvider<'audio'>[]
+        | undefined;
+      let text2sound: GetProvider<'audio'> | GetProvider<'audio'>[] | undefined;
 
       if (isVideoMode) {
-        text2video = await extendProvider(
-          cesdk,
-          activeAssetSource,
-          providers.text2video
-        );
-        image2video = await extendProvider(
-          cesdk,
-          activeAssetSource,
-          providers.image2video
-        );
-        text2speech = await extendProvider(
-          cesdk,
-          activeAssetSource,
-          providers.text2speech
-        );
-        text2sound = await extendProvider(
-          cesdk,
-          activeAssetSource,
-          providers.text2sound
-        );
+        text2video = providers.text2video;
+        image2video = providers.image2video;
+        text2speech = providers.text2speech;
+        text2sound = providers.text2sound;
 
         cesdk.addPlugin(
           VideoGeneration({
@@ -137,61 +111,6 @@ export default (
     }
   };
 };
-
-async function extendProvider<K extends OutputKind, I, O extends Output>(
-  cesdk: CreativeEditorSDK,
-  activeAssetSource?: CustomAssetSource,
-  getProvider?: GetProvider<K>
-): Promise<undefined | GetProvider<K>> {
-  if (getProvider == null) return undefined;
-
-  const provider = await getProvider({ cesdk });
-
-  if (activeAssetSource != null) {
-    const markAiAppWithActiveStateMiddleware: Middleware<I, O> = async (
-      input,
-      options,
-      next
-    ) => {
-      let aiAppAssetId = `${provider.kind}-generation`;
-      if (provider.kind === 'audio') {
-        if (provider.id.includes('sound')) {
-          aiAppAssetId = 'audio-generation/sound';
-        } else if (provider.id.includes('speech')) {
-          aiAppAssetId = 'audio-generation/speech';
-        }
-      }
-
-      cesdk.ui.experimental.setGlobalStateValue(
-        `${AI_APP_ID}.isGenerating`,
-        true
-      );
-      // activeAssetSource.setAssetActive(appAssetId);
-      activeAssetSource.setAssetLoading(aiAppAssetId, true);
-      cesdk.engine.asset.assetSourceContentsChanged(AI_APP_ID);
-
-      try {
-        const result = await next(input, options);
-
-        return result;
-      } finally {
-        cesdk.engine.asset.assetSourceContentsChanged(AI_APP_ID);
-        activeAssetSource.setAssetLoading(aiAppAssetId, false);
-        // activeAssetSource.setAssetInactive(appAssetId);
-        cesdk.ui.experimental.setGlobalStateValue(
-          `${AI_APP_ID}.isGenerating`,
-          false
-        );
-      }
-    };
-
-    provider.output.middleware = [
-      ...(provider.output.middleware ?? []),
-      markAiAppWithActiveStateMiddleware
-    ];
-  }
-  return () => Promise.resolve(provider);
-}
 
 async function addAiAppDockMenu(
   cesdk: CreativeEditorSDK,
@@ -484,15 +403,15 @@ async function addAggregatedAssetSources(
   isVideoMode: boolean
 ) {
   // IMAGE
-  const text2image = await providers.text2image?.({ cesdk });
-  const image2image = await providers.image2image?.({ cesdk });
+  const text2image = undefined; // await providers.text2image?.({ cesdk });
+  const image2image = undefined; // await providers.image2image?.({ cesdk });
 
   const aggregatedImageAssetSource = new AggregatedAssetSource(
     'ly.img.ai/image-generation.history',
     cesdk,
     [
-      text2image != null ? `${text2image.id}.history` : undefined,
-      image2image != null ? `${image2image?.id}.history` : undefined
+      // text2image != null ? `${text2image.id}.history` : undefined,
+      // image2image != null ? `${image2image?.id}.history` : undefined
     ].filter(Boolean) as string[]
   );
   cesdk.engine.asset.addSource(aggregatedImageAssetSource);
@@ -506,15 +425,15 @@ async function addAggregatedAssetSources(
   if (!isVideoMode) return;
 
   // VIDEO
-  const text2video = await providers.text2video?.({ cesdk });
-  const image2video = await providers.image2video?.({ cesdk });
+  const text2video = undefined; // await providers.text2video?.({ cesdk });
+  const image2video = undefined; // await providers.image2video?.({ cesdk });
 
   const aggregatedVideoAssetSource = new AggregatedAssetSource(
     'ly.img.ai/video-generation.history',
     cesdk,
     [
-      text2video != null ? `${text2video.id}.history` : undefined,
-      image2video != null ? `${image2video?.id}.history` : undefined
+      // text2video != null ? `${text2video.id}.history` : undefined,
+      // image2video != null ? `${image2video?.id}.history` : undefined
     ].filter(Boolean) as string[]
   );
   cesdk.engine.asset.addSource(aggregatedVideoAssetSource);
@@ -527,13 +446,13 @@ async function addAggregatedAssetSources(
   }
 
   // AUDIO
-  const text2speech = await providers.text2speech?.({ cesdk });
-  const text2sound = await providers.text2sound?.({ cesdk });
+  const text2speech = undefined; // await providers.text2speech?.({ cesdk });
+  const text2sound = undefined; // await providers.text2sound?.({ cesdk });
 
   const audioEntry = cesdk.ui.getAssetLibraryEntry('ly.img.audio');
   const generatedAudioSources = [
-    text2speech != null ? `${text2speech.id}.history` : undefined,
-    text2sound != null ? `${text2sound.id}.history` : undefined
+    // text2speech != null ? `${text2speech.id}.history` : undefined,
+    // text2sound != null ? `${text2sound.id}.history` : undefined
   ].filter(Boolean) as string[];
   if (audioEntry != null) {
     cesdk.ui.updateAssetLibraryEntry('ly.img.audio', {
