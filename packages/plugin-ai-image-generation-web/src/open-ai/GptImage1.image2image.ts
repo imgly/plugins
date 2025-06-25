@@ -9,7 +9,6 @@ import {
   QuickActionImageVariant,
   QuickActionCombineImages,
   QuickActionChangeImage,
-  QuickActionEditTextStyle,
   QuickActionSwapImageBackground,
   CommonProperties,
   getQuickActionMenu,
