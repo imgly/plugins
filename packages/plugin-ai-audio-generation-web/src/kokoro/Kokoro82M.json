@@ -1,0 +1,49 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Kokoro-82M ONNX Text-to-Speech",
+    "version": "1.0.0",
+    "description": "Text-to-speech using Kokoro-82M ONNX model via Transformers.js"
+  },
+  "components": {
+    "schemas": {
+      "KokoroInput": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "title": "Text",
+            "description": "Text to convert to speech",
+            "minLength": 1,
+            "maxLength": 1000,
+            "default": "Life is like a box of chocolates. You never know what you're gonna get.",
+            "x-order": 0,
+            "x-imgly-builder": {
+              "component": "TextArea"
+            }
+          },
+          "voice": {
+            "type": "string",
+            "title": "Voice",
+            "description": "Voice to use for speech synthesis",
+            "enum": ["af_heart", "af_bella", "af_nicole", "af_sarah", "am_adam", "am_michael", "bf_emma", "bm_george"],
+            "enumNames": ["Heart (American Female)", "Bella (American Female)", "Nicole (American Female)", "Sarah (American Female)", "Adam (American Male)", "Michael (American Male)", "Emma (British Female)", "George (British Male)"],
+            "default": "af_heart",
+            "x-order": 1
+          },
+          "speed": {
+            "type": "number",
+            "title": "Speed",
+            "description": "Speech speed multiplier",
+            "minimum": 0.5,
+            "maximum": 2.0,
+            "default": 1.0,
+            "x-order": 2
+          }
+        },
+        "required": ["prompt", "voice"],
+        "additionalProperties": false
+      }
+    }
+  }
+} 
