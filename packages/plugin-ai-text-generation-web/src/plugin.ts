@@ -3,25 +3,22 @@ import iconSprite, { PLUGIN_ICON_SET_ID } from './iconSprite';
 import { PluginConfiguration } from './types';
 import {
   getQuickActionMenu,
-  initProvider
+  initProvider,
+  Output
 } from '@imgly/plugin-ai-generation-web';
 
 export { PLUGIN_ID } from './constants';
 
-export default (
-  config: PluginConfiguration
-): Omit<EditorPlugin, 'name' | 'version'> => {
+export function AudioGeneration<I, O extends Output>(
+  config: PluginConfiguration<I, O>
+): Omit<EditorPlugin, 'name' | 'version'> {
   return {
     async initialize({ cesdk }) {
       if (cesdk == null) return;
 
       const provider = await config.provider?.({ cesdk });
 
-      initProvider(
-        provider,
-        { cesdk, engine: cesdk.engine },
-        { debug: config.debug ?? false, dryRun: false }
-      );
+      initProvider(provider, { cesdk, engine: cesdk.engine }, config);
 
       const quickActionMenu = getQuickActionMenu(cesdk, 'text');
 
@@ -70,4 +67,6 @@ export default (
       });
     }
   };
-};
+}
+
+export default AudioGeneration;

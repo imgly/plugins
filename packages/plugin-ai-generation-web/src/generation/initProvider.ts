@@ -7,7 +7,7 @@ import {
 } from './provider';
 import registerPanelInputSchema from './registerPanelInputSchema';
 import registerPanelInputCustom from './registerPanelInputCustom';
-import { CommonProviderConfiguration, Options, UIOptions } from './types';
+import { Options, UIOptions } from './types';
 import { BuilderRenderFunction, type CreativeEngine } from '@cesdk/cesdk-js';
 import { IndexedDBAssetSource } from '@imgly/plugin-utils';
 import icons from '../icons';
@@ -15,6 +15,7 @@ import getQuickActionMenu from './quickAction/getQuickActionMenu';
 import { getFeatureIdForQuickAction } from './quickAction/utils';
 import registerQuickActionMenuComponent from './quickAction/registerQuickActionMenuComponent';
 import { QuickActionMenu } from './quickAction/types';
+import { CommonConfiguration } from '../types';
 
 type RenderBuilderFunctions = {
   panel?: BuilderRenderFunction<any>;
@@ -32,7 +33,7 @@ type RenderBuilderFunctions = {
 async function initProvider<K extends OutputKind, I, O extends Output>(
   provider: Provider<K, I, O>,
   options: Options,
-  config: CommonProviderConfiguration<I, O>
+  config: CommonConfiguration<I, O>
 ): Promise<{
   renderBuilderFunctions?: RenderBuilderFunctions;
 }> {
@@ -148,7 +149,7 @@ async function initHistory(
 async function initInputs<K extends OutputKind, I, O extends Output>(
   provider: Provider<K, I, O>,
   options: UIOptions,
-  config: CommonProviderConfiguration<I, O>
+  config: CommonConfiguration<I, O>
 ): Promise<{
   panel?: BuilderRenderFunction<any>;
 }> {
@@ -183,7 +184,7 @@ async function initPanel<K extends OutputKind, I, O extends Output>(
   provider: Provider<K, I, O>,
   panelInput: PanelInput<K, I>,
   options: UIOptions,
-  config: CommonProviderConfiguration<I, O>
+  config: CommonConfiguration<I, O>
 ): Promise<BuilderRenderFunction<any> | undefined> {
   switch (panelInput.type) {
     case 'custom': {
@@ -210,7 +211,7 @@ async function initQuickActions<K extends OutputKind, I, O extends Output>(
   provider: Provider<K, I, O>,
   quickActionsInput: QuickActionsInput<I, O>,
   options: UIOptions,
-  config: CommonProviderConfiguration<I, O>
+  config: CommonConfiguration<I, O>
 ) {
   const { cesdk } = options;
 

@@ -47,7 +47,7 @@ function getProvider(
       cesdk,
 
       headers: config.headers,
-      middleware: config.middleware,
+      middleware: config.middlewares,
       getBlockInput: (input) => {
         if (input.aspect_ratio != null && input.resolution != null) {
           const [widthRatio, heightRatio] = input.aspect_ratio

@@ -8,10 +8,11 @@ import {
   type Output,
   type GetBlockInput
 } from './provider';
-import { CommonProviderConfiguration, UIOptions } from './types';
+import { UIOptions } from './types';
 import generate from './generate';
 import { isAbortError } from '../utils';
 import handleGenerationError from './handleGenerationError';
+import { CommonConfiguration } from '../types';
 
 export function isGeneratingStateKey(providerId: string): string {
   return `${providerId}.generating`;
@@ -34,7 +35,7 @@ function renderGenerationComponents<K extends OutputKind, I, O extends Output>(
     includeHistoryLibrary?: boolean;
     requiredInputs?: string[];
   },
-  config: CommonProviderConfiguration<I, O>
+  config: CommonConfiguration<I, O>
 ): void {
   const { builder, experimental } = context;
   const { cesdk, includeHistoryLibrary = true } = options;

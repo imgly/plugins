@@ -8,7 +8,7 @@ import {
   type PanelInputSchema
 } from './provider';
 import type Provider from './provider';
-import { CommonProviderConfiguration, UIOptions } from './types';
+import { UIOptions } from './types';
 import { isOpenAPISchema } from './openapi/isOpenAPISchema';
 import { GetPropertyInput, PropertyInput } from './openapi/types';
 import renderProperty from './openapi/renderProperty';
@@ -16,6 +16,7 @@ import renderGenerationComponents from './renderGenerationComponents';
 import getProperties from './openapi/getProperties';
 import { BuilderRenderFunction } from '@cesdk/cesdk-js';
 import { getPanelId } from '../utils';
+import { CommonConfiguration } from '../types';
 
 /**
  * Registers a schema-based panel input for a provider
@@ -28,7 +29,7 @@ async function registerPanelInputSchema<
   provider: Provider<K, I, O>,
   panelInput: PanelInputSchema<K, I>,
   options: UIOptions,
-  config: CommonProviderConfiguration<I, O>
+  config: CommonConfiguration<I, O>
 ): Promise<BuilderRenderFunction<any>> {
   const { cesdk } = options;
   const { id: providerId } = provider;

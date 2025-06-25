@@ -57,7 +57,7 @@ function getProvider(
         '#/components/schemas/MinimaxVideo01LiveImageToVideoInput',
       cesdk,
       headers: config.headers,
-      middleware: config.middleware,
+      middleware: config.middlewares,
       quickActions,
       getBlockInput: async (input) => {
         const imageDimension = await getImageDimensionsFromURL(

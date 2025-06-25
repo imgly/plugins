@@ -2,7 +2,8 @@ import CreativeEditorSDK from '@cesdk/cesdk-js';
 import { NotificationDuration, type EditorPlugin } from '@cesdk/cesdk-js';
 import {
   initProvider,
-  getQuickActionMenu
+  getQuickActionMenu,
+  Output
 } from '@imgly/plugin-ai-generation-web';
 import { PluginConfiguration } from './types';
 
@@ -11,18 +12,13 @@ export { PLUGIN_ID } from './constants';
 const SPEECH_GENERATION_PANEL_ID = 'ly.img.ai/audio-generation/speech';
 const SOUND_GENERATION_PANEL_ID = 'ly.img.ai/audio-generation/sound';
 
-export function AudioGeneration(
-  options: PluginConfiguration
+export function AudioGeneration<I, O extends Output>(
+  config: PluginConfiguration<I, O>
 ): Omit<EditorPlugin, 'name' | 'version'> {
   return {
     async initialize({ cesdk }) {
       if (cesdk == null) return;
 
-      const config = {
-        debug: options.debug ?? false,
-        dryRun: options.dryRun ?? false,
-        middleware: options.middleware
-      };
       cesdk.setTranslations({
         en: {
           [`panel.${SPEECH_GENERATION_PANEL_ID}`]: 'AI Voice',
@@ -35,8 +31,8 @@ export function AudioGeneration(
         }
       });
 
-      const text2speechProvider = options?.text2speech;
-      const text2soundProvider = options?.text2sound;
+      const text2speechProvider = config?.text2speech;
+      const text2soundProvider = config?.text2sound;
 
       const text2speech = await text2speechProvider?.({ cesdk });
       const text2sound = await text2soundProvider?.({ cesdk });

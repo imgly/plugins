@@ -1,16 +1,16 @@
 import type CreativeEditorSDK from '@cesdk/cesdk-js';
-import { type Provider } from '@imgly/plugin-ai-generation-web';
+import {
+  CommonPluginConfiguration,
+  Output,
+  type Provider
+} from '@imgly/plugin-ai-generation-web';
 
-export interface PluginConfiguration {
+export interface PluginConfiguration<I, O extends Output>
+  extends CommonPluginConfiguration<'text', I, O> {
   /**
    * The provider to use for text2text AI generation.
    */
   provider: (context: {
     cesdk: CreativeEditorSDK;
-  }) => Promise<Provider<'text', any, any>>;
-
-  /**
-   * Render console logs for debugging purposes.
-   */
-  debug?: boolean;
+  }) => Promise<Provider<'text', I, O>>;
 }

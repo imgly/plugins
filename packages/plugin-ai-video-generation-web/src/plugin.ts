@@ -2,6 +2,7 @@ import { NotificationDuration, type EditorPlugin } from '@cesdk/cesdk-js';
 import {
   initProvider,
   isGeneratingStateKey,
+  Output,
   registerDockComponent
 } from '@imgly/plugin-ai-generation-web';
 import { PluginConfiguration } from './types';
@@ -13,18 +14,13 @@ const VIDEO_GENERATION_PANEL_ID = 'ly.img.ai/video-generation';
 const VIDEO_GENERATION_INPUT_TYPE_STATE_KEY =
   'ly.img.ai.video-generation.fromType';
 
-export function VideoGeneration(
-  options: PluginConfiguration
+export function VideoGeneration<I, O extends Output>(
+  config: PluginConfiguration<I, O>
 ): Omit<EditorPlugin, 'name' | 'version'> {
   return {
     async initialize({ cesdk }) {
       if (cesdk == null) return;
 
-      const config = {
-        debug: options.debug ?? false,
-        dryRun: options.dryRun ?? false,
-        middleware: options.middleware
-      };
       cesdk.setTranslations({
         en: {
           [`panel.${VIDEO_GENERATION_PANEL_ID}`]: 'Video Generation',
@@ -33,8 +29,8 @@ export function VideoGeneration(
         }
       });
 
-      const text2videoProvider = options?.text2video;
-      const image2videoProvider = options?.image2video;
+      const text2videoProvider = config?.text2video;
+      const image2videoProvider = config?.image2video;
 
       const text2video = await text2videoProvider?.({ cesdk });
       const image2video = await image2videoProvider?.({ cesdk });

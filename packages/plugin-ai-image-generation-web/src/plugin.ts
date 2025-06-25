@@ -2,6 +2,7 @@ import { NotificationDuration, type EditorPlugin } from '@cesdk/cesdk-js';
 import {
   initProvider,
   isGeneratingStateKey,
+  Output,
   registerDockComponent
 } from '@imgly/plugin-ai-generation-web';
 import { PluginConfiguration } from './types';
@@ -14,18 +15,12 @@ const IMAGE_GENERATION_PANEL_ID = 'ly.img.ai/image-generation';
 const IMAGE_GENERATION_INPUT_TYPE_STATE_KEY =
   'ly.img.ai.image-generation.fromType';
 
-export function ImageGeneration(
-  options: PluginConfiguration
+export function ImageGeneration<I, O extends Output>(
+  config: PluginConfiguration<I, O>
 ): Omit<EditorPlugin, 'name' | 'version'> {
   return {
     async initialize({ cesdk }) {
       if (cesdk == null) return;
-
-      const config = {
-        debug: options.debug ?? false,
-        dryRun: options.dryRun ?? false,
-        middleware: options.middleware
-      };
 
       cesdk.ui.addIconSet(PLUGIN_ICON_SET_ID, iconSprite);
       cesdk.setTranslations({
@@ -36,8 +31,8 @@ export function ImageGeneration(
         }
       });
 
-      const text2imageProvider = options?.text2image;
-      const image2imageProvider = options?.image2image;
+      const text2imageProvider = config?.text2image;
+      const image2imageProvider = config?.image2image;
 
       const text2image = await text2imageProvider?.({ cesdk });
       const image2image = await image2imageProvider?.({ cesdk });

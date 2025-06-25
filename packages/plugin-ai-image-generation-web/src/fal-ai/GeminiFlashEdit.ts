@@ -58,7 +58,7 @@ function getProvider(
       inputReference: '#/components/schemas/GeminiFlashEditInput',
       cesdk,
       quickActions,
-      middleware: config.middleware,
+      middleware: config.middlewares,
       headers: config.headers,
       getBlockInput: async (input) => {
         const { width, height } = await getImageDimensionsFromURL(

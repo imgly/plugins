@@ -8,9 +8,9 @@ import {
 import { Metadata } from '@imgly/plugin-utils';
 import Provider, { Output, OutputKind } from '../provider';
 import { isAbortError } from '../../utils';
-import { CommonProviderConfiguration } from '../types';
 import handleGenerationError from '../handleGenerationError';
 import generate from './generate';
+import { CommonConfiguration } from '../../types';
 
 function registerQuickActionMenuComponent<
   K extends OutputKind,
@@ -22,7 +22,7 @@ function registerQuickActionMenuComponent<
     quickActionMenu: QuickActionMenu;
     provider: Provider<K, I, O>;
   },
-  config: CommonProviderConfiguration<I, O>
+  config: CommonConfiguration<I, O>
 ) {
   const { cesdk, quickActionMenu, provider } = options;
 

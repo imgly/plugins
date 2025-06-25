@@ -13,13 +13,14 @@ import {
   OutputKind,
   type Output
 } from './provider';
-import { CommonProviderConfiguration, UIOptions } from './types';
+import { UIOptions } from './types';
 import CreativeEditorSDK from '@cesdk/cesdk-js';
 import getAssetResultForPlaceholder from './getAssetResultForPlaceholder';
 import getAssetResultForGenerated from './getAssetResultForGenerated';
 import { composeMiddlewares } from './middleware/middleware';
 import loggingMiddleware from './middleware/loggingMiddleware';
 import dryRunMiddleware from './middleware/dryRunMiddleware';
+import { CommonConfiguration } from '../types';
 
 type Result<O> = { status: 'success'; output: O } | { status: 'aborted' };
 
@@ -34,7 +35,7 @@ async function generate<K extends OutputKind, I, O extends Output>(
   options: UIOptions & {
     createPlaceholderBlock?: boolean;
   },
-  config: CommonProviderConfiguration<I, O>,
+  config: CommonConfiguration<I, O>,
   abortSignal: AbortSignal
 ): Promise<Result<O>> {
   const { cesdk, createPlaceholderBlock, historyAssetSourceId } = options;

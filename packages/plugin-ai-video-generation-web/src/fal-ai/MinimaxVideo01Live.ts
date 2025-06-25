@@ -33,7 +33,7 @@ function getProvider(
       inputReference: '#/components/schemas/MinimaxVideo01LiveInput',
 
       headers: config.headers,
-      middleware: config.middleware,
+      middleware: config.middlewares,
       cesdk,
       getBlockInput: () => {
         return Promise.resolve({

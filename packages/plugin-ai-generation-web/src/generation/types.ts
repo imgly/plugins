@@ -2,6 +2,7 @@ import type CreativeEditorSDK from '@cesdk/cesdk-js';
 import { type CreativeEngine } from '@cesdk/cesdk-js';
 import type Provider from './provider';
 import { Output, OutputKind, PanelInput } from './provider';
+import { CommonConfiguration } from '../types';
 import { Middleware } from './middleware/middleware';
 
 /**
@@ -16,32 +17,23 @@ export type GetProvider<K extends OutputKind> = ({
 /**
  * Common provider configuration that all providers should provide.
  */
-export interface CommonProviderConfiguration<I, O extends Output> {
+export interface CommonProviderConfiguration<I, O extends Output>
+  extends CommonConfiguration<I, O> {
   /**
    * The proxy URL to use for the provider.
    */
   proxyUrl: string;
 
   /**
-   * If true the generation process wll be replaced with a dummy generation.
-   * Useful for testing the UI without actually generating images.
-   */
-  dryRun?: boolean;
-
-  /**
-   * Indicates whether the provider is in debug mode and should log additional information.
-   */
-  debug?: boolean;
-
-  /**
-   * Middleware that shall be executed during the generation process.
-   */
-  middlewares?: Middleware<I, O>[];
-
-  /**
    * Headers that shall be sent with the request of the provider.
    */
   headers?: Record<string, string>;
+
+  /**
+   * Middlewares to add to the provider generation
+   * @deprecated Use `middlewares` instead.
+   */
+  middleware?: Middleware<I, O>[];
 }
 
 /**
