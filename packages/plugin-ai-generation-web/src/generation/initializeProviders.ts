@@ -19,10 +19,12 @@ import { isGeneratingStateKey } from './renderGenerationComponents';
  */
 async function initializeProviders<K extends OutputKind, I, O extends Output>(
   kind: K,
-  providers: {
-    fromText: Provider<K, I, O>[];
-    fromImage: Provider<K, I, O>[];
-  },
+  providers:
+    | {
+        fromText: Provider<K, I, O>[];
+        fromImage: Provider<K, I, O>[];
+      }
+    | Provider<K, I, O>[],
   options: {
     cesdk: CreativeEditorSDK;
   },
@@ -44,23 +46,37 @@ async function initializeProviders<K extends OutputKind, I, O extends Output>(
     };
   };
 }> {
-  const initializedFromTextProviders = await Promise.all(
-    providers.fromText.map((provider) => {
-      return initializeProvider(kind, provider, options, config);
-    })
-  );
+  let builderRenderFunction: BuilderRenderFunction | undefined;
 
-  const initializedFromImageProviders = await Promise.all(
-    providers.fromImage.map((provider) => {
-      return initializeProvider(kind, provider, options, config);
-    })
-  );
+  if (!Array.isArray(providers)) {
+    const initializedFromTextProviders = await Promise.all(
+      providers.fromText.map((provider) => {
+        return initializeProvider(kind, provider, options, config);
+      })
+    );
 
-  const builderRenderFunction = getCombinedBuilderRenderFunction({
-    prefix: kind,
-    initializedFromTextProviders,
-    initializedFromImageProviders
-  });
+    const initializedFromImageProviders = await Promise.all(
+      providers.fromImage.map((provider) => {
+        return initializeProvider(kind, provider, options, config);
+      })
+    );
+
+    builderRenderFunction = getBuilderRenderFunctionByFromType({
+      prefix: kind,
+      initializedFromTextProviders,
+      initializedFromImageProviders
+    });
+  } else {
+    const providerInitializationResults = await Promise.all(
+      providers.map((provider) => {
+        return initializeProvider(kind, provider, options, config);
+      })
+    );
+    builderRenderFunction = getBuilderRenderFunctionByProvider({
+      prefix: kind,
+      providerInitializationResults
+    });
+  }
 
   return {
     panel: {
@@ -74,7 +90,7 @@ async function initializeProviders<K extends OutputKind, I, O extends Output>(
  * render function that can be used in a panel. Will add select components
  * to switch between the different providers and input types.
  */
-function getCombinedBuilderRenderFunction<
+function getBuilderRenderFunctionByFromType<
   K extends OutputKind,
   I,
   O extends Output
@@ -217,6 +233,57 @@ function getCombinedBuilderRenderFunction<
         providerInitializationResult.panel?.builderRenderFunction?.(context);
       }
     }
+  };
+
+  return builderRenderFunction;
+}
+
+/**
+ * Combines the render functions of the initialized providers into a single
+ * render function that can be used in a panel. Will add select components
+ * to switch between the different providers and input types.
+ */
+function getBuilderRenderFunctionByProvider<
+  K extends OutputKind,
+  I,
+  O extends Output
+>({
+  prefix,
+  providerInitializationResults
+}: {
+  prefix: string;
+  providerInitializationResults: ProviderInitializationResult<K, I, O>[];
+}): BuilderRenderFunction<{}> {
+  const builderRenderFunction: BuilderRenderFunction = (context) => {
+    const { builder } = context;
+    if (providerInitializationResults.length === 0) return;
+
+    const providerValues: (SelectValue & {
+      builderRenderFunction?: BuilderRenderFunction;
+    })[] = providerInitializationResults.map(({ provider, panel }) => ({
+      id: provider.id,
+      label: provider.name ?? provider.id,
+      builderRenderFunction: panel?.builderRenderFunction
+    }));
+
+    const providerState = context.state(
+      `${prefix}.selectedProvider`,
+      providerValues[0]
+    );
+
+    if (providerInitializationResults.length > 1) {
+      if (providerState != null) {
+        builder.Select(`${prefix}.providerSelect.select`, {
+          inputLabel: 'Provider',
+          values: providerValues,
+          ...providerState
+        });
+      }
+    } else {
+    }
+
+    // Render the provider content
+    providerState.value.builderRenderFunction?.(context);
   };
 
   return builderRenderFunction;
