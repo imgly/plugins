@@ -76,3 +76,6 @@ export {
   isGeneratingStateKey,
   abortGenerationStateKey
 } from './generation/renderGenerationComponents';
+
+export { default as initializeProviders } from './generation/initializeProviders';
+export { default as initializeProvider } from './generation/initializeProvider';
