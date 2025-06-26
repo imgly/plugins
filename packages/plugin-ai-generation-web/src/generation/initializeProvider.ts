@@ -1,6 +1,5 @@
 import CreativeEditorSDK, { BuilderRenderFunction } from '@cesdk/cesdk-js';
 import Provider, { GetInput, Output, OutputKind } from './provider';
-import { CommonProviderConfiguration } from './types';
 import createPanelRenderFunction from './createPanelRenderFunction';
 import { CommonPluginConfiguration } from '../types';
 

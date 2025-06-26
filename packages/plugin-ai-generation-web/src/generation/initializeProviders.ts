@@ -4,7 +4,6 @@ import CreativeEditorSDK, {
   SelectValue
 } from '@cesdk/cesdk-js';
 import Provider, { Output, OutputKind } from './provider';
-import { CommonProviderConfiguration } from './types';
 import initializeProvider, {
   ProviderInitializationResult
 } from './initializeProvider';
