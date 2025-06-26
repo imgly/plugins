@@ -35,6 +35,15 @@ export {
 } from './generation/types';
 
 export { type CommonPluginConfiguration } from './types';
+export {
+  ActionRegistry,
+  type PluginActionDefinition,
+  type QuickActionDefinition,
+  type ActionDefinition,
+  type ActionRegistryEventType,
+  type ActionRegistrySubscriberCallback,
+  type ActionRegistryFilters
+} from './ActionRegistry';
 
 // Export middleware
 export {
