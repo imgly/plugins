@@ -25,11 +25,16 @@ export function VideoGeneration<I, O extends Output>(
         }
       });
 
+      printConfigWarnings(config);
+
+      const text2video = config.providers?.text2video ?? config.text2video;
+      const image2video = config.providers?.image2video ?? config.image2video;
+
       const text2videoProviders = await Promise.all(
-        toArray(config.text2video).map((getProvider) => getProvider({ cesdk }))
+        toArray(text2video).map((getProvider) => getProvider({ cesdk }))
       );
       const image2videoProviders = await Promise.all(
-        toArray(config.image2video).map((getProvider) => getProvider({ cesdk }))
+        toArray(image2video).map((getProvider) => getProvider({ cesdk }))
       );
 
       const initializedResult = await initializeProviders(
@@ -55,6 +60,25 @@ export function VideoGeneration<I, O extends Output>(
       }
     }
   };
+}
+
+function printConfigWarnings<I, O extends Output>(
+  config: PluginConfiguration<I, O>
+) {
+  if (!config.debug) return;
+
+  if (config.providers?.text2video != null && config.text2video != null) {
+    // eslint-disable-next-line no-console
+    console.warn(
+      '[VideoGeneration]: Both `providers.text2video` and `text2video` configuration is provided. Since `text2video` is deprecated, only `providers.text2video` will be used.'
+    );
+  }
+  if (config.providers?.image2video != null && config.image2video != null) {
+    // eslint-disable-next-line no-console
+    console.warn(
+      '[VideoGeneration]: Both `providers.image2video` and `image2video` configuration is provided. Since `image2video` is deprecated, only `providers.image2video` will be used.'
+    );
+  }
 }
 
 export default VideoGeneration;

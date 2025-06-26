@@ -30,13 +30,4 @@ export interface CommonPluginConfiguration<
   I,
   O extends Output
 > extends CommonConfiguration<I, O> {
-  /**
-   * Provider of a model for image generation just from a (prompt) text.
-   */
-  fromText?: GetProvider<K>[] | GetProvider<K>;
-
-  /**
-   * Provider of a model for image generation from a given image.
-   */
-  fromImage?: GetProvider<K>[] | GetProvider<K>;
 }

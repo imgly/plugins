@@ -9,14 +9,27 @@ import {
 
 export { PLUGIN_ID } from './constants';
 
-export function AudioGeneration<I, O extends Output>(
+export function TextGeneration<I, O extends Output>(
   config: PluginConfiguration<I, O>
 ): Omit<EditorPlugin, 'name' | 'version'> {
   return {
     async initialize({ cesdk }) {
       if (cesdk == null) return;
 
-      const provider = await config.provider?.({ cesdk });
+      printConfigWarnings(config);
+
+      const text2text = config.providers?.text2text ?? config.provider;
+      const provider = await text2text?.({ cesdk });
+
+      if (provider == null) {
+        if (config.debug) {
+          // eslint-disable-next-line no-console
+          console.warn(
+            '[AudioGeneration]: No provider found. Please provide a valid `text2text` provider or remove the text generation plugin.'
+          );
+        }
+        return;
+      }
 
       initProvider(provider, { cesdk, engine: cesdk.engine }, config);
 
@@ -69,4 +82,17 @@ export function AudioGeneration<I, O extends Output>(
   };
 }
 
-export default AudioGeneration;
+function printConfigWarnings<I, O extends Output>(
+  config: PluginConfiguration<I, O>
+) {
+  if (!config.debug) return;
+
+  if (config.providers?.text2text != null && config.provider != null) {
+    // eslint-disable-next-line no-console
+    console.warn(
+      '[VideoGeneration]: Both `providers.text2text` and `provider` configuration is provided. Since `provider` is deprecated, only `providers.text2text` will be used.'
+    );
+  }
+}
+
+export default TextGeneration;

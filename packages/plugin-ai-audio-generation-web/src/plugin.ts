@@ -26,11 +26,15 @@ export function AudioGeneration<I, O extends Output>(
         }
       });
 
+      printConfigWarnings(config);
+      const text2speech = config.providers?.text2speech ?? config.text2speech;
+      const text2sound = config.providers?.text2sound ?? config.text2sound;
+
       const text2speechProviders = await Promise.all(
-        toArray(config.text2speech).map((getProvider) => getProvider({ cesdk }))
+        toArray(text2speech).map((getProvider) => getProvider({ cesdk }))
       );
       const text2soundProviders = await Promise.all(
-        toArray(config.text2sound).map((getProvider) => getProvider({ cesdk }))
+        toArray(text2sound).map((getProvider) => getProvider({ cesdk }))
       );
 
       const text2SpeechInitializedResult = await initializeProviders(
@@ -71,6 +75,25 @@ export function AudioGeneration<I, O extends Output>(
       }
     }
   };
+}
+
+function printConfigWarnings<I, O extends Output>(
+  config: PluginConfiguration<I, O>
+) {
+  if (!config.debug) return;
+
+  if (config.providers?.text2speech != null && config.text2speech != null) {
+    // eslint-disable-next-line no-console
+    console.warn(
+      '[AudioGeneration]: Both `providers.text2speech` and `text2speech` configuration is provided. Since `text2speech` is deprecated, only `providers.text2speech` will be used.'
+    );
+  }
+  if (config.providers?.text2sound != null && config.text2sound != null) {
+    // eslint-disable-next-line no-console
+    console.warn(
+      '[AudioGeneration]: Both `providers.text2sound` and `text2sound` configuration is provided. Since `text2sound` is deprecated, only `providers.text2sound` will be used.'
+    );
+  }
 }
 
 export default AudioGeneration;

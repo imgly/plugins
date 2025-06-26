@@ -27,11 +27,16 @@ export function ImageGeneration<I, O extends Output>(
         }
       });
 
+      printConfigWarnings(config);
+
+      const text2image = config.providers?.text2image ?? config.text2image;
+      const image2image = config.providers?.image2image ?? config.image2image;
+
       const text2imageProviders = await Promise.all(
-        toArray(config.text2image).map((getProvider) => getProvider({ cesdk }))
+        toArray(text2image).map((getProvider) => getProvider({ cesdk }))
       );
       const image2imageProviders = await Promise.all(
-        toArray(config.image2image).map((getProvider) => getProvider({ cesdk }))
+        toArray(image2image).map((getProvider) => getProvider({ cesdk }))
       );
       const initializedResult = await initializeProviders(
         'image',
@@ -56,6 +61,25 @@ export function ImageGeneration<I, O extends Output>(
       }
     }
   };
+}
+
+function printConfigWarnings<I, O extends Output>(
+  config: PluginConfiguration<I, O>
+) {
+  if (!config.debug) return;
+
+  if (config.providers?.text2image != null && config.text2image != null) {
+    // eslint-disable-next-line no-console
+    console.warn(
+      '[ImageGeneration]: Both `providers.text2image` and `text2image` configuration is provided. Since `text2image` is deprecated, only `providers.text2image` will be used.'
+    );
+  }
+  if (config.providers?.image2image != null && config.image2image != null) {
+    // eslint-disable-next-line no-console
+    console.warn(
+      '[ImageGeneration]: Both `providers.image2image` and `image2image` configuration is provided. Since `image2image` is deprecated, only `providers.image2image` will be used.'
+    );
+  }
 }
 
 export default ImageGeneration;

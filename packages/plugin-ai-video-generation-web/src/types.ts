@@ -9,13 +9,27 @@ import {
  */
 export interface PluginConfiguration<I, O extends Output>
   extends CommonPluginConfiguration<'video', I, O> {
+  providers?: {
+    /**
+     * Provider of a model for video generation just from a (prompt) text.
+     */
+    text2video?: GetProvider<'video'>[] | GetProvider<'video'>;
+
+    /**
+     * Provider of a model for video generation from a given image.
+     */
+    image2video?: GetProvider<'video'>[] | GetProvider<'video'>;
+  };
+
   /**
    * Provider of a model for video generation just from a (prompt) text.
+   * @deprecated Use `providers.text2video` instead.
    */
   text2video?: GetProvider<'video'>[] | GetProvider<'video'>;
 
   /**
    * Provider of a model for video generation from a given image.
+   * @deprecated Use `providers.image2video` instead.
    */
   image2video?: GetProvider<'video'>[] | GetProvider<'video'>;
 }
