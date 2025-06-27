@@ -71,7 +71,7 @@ interface Provider<K extends OutputKind, I, O extends Output, C = O> {
      * - '@imgly/indexedDB': The asset is stored in the browser's indexed db. On reload, the generated assets are still available, but only in the same browser.
      * - string: Any other string is used as the asset source ID. The user has to add the asset source during initialization. This can be used for instance to store generated assets in a outside database.
      */
-    history?: false | '@imgly/local' | '@imgly/indexedDB' | string;
+    history?: false | '@imgly/local' | '@imgly/indexedDB' | (string & {});
 
     /**
      * Configure if and what notification is shown after success and error.

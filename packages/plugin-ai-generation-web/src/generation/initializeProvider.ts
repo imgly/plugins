@@ -2,6 +2,9 @@ import CreativeEditorSDK, { BuilderRenderFunction } from '@cesdk/cesdk-js';
 import Provider, { GetInput, Output, OutputKind } from './provider';
 import createPanelRenderFunction from './createPanelRenderFunction';
 import { CommonPluginConfiguration } from '../types';
+import initializeHistoryAssetSource from './initializeHistoryAssetSource';
+import initializeHistoryAssetLibraryEntry from './initializeHistoryAssetLibraryEntry';
+import { InitializationContext } from './types';
 
 type Result<O> = { status: 'success'; output: O } | { status: 'aborted' };
 
@@ -15,9 +18,9 @@ export type ProviderInitializationResult<
   panel: {
     builderRenderFunction?: BuilderRenderFunction;
   };
-  history?: {
-    assetSourceId: string;
-    assetLibraryEntryId: string;
+  history: {
+    assetSourceId?: string;
+    assetLibraryEntryId?: string;
   };
   quickActions?: {
     registered: {
@@ -40,23 +43,46 @@ async function initializeProvider<K extends OutputKind, I, O extends Output>(
   },
   config: CommonPluginConfiguration<K, I, O>
 ): Promise<ProviderInitializationResult<K, I, O>> {
+  const context: InitializationContext<K, I, O> = {
+    provider,
+    panelInput: provider.input?.panel,
+    options: {
+      cesdk: options.cesdk,
+      engine: options.cesdk.engine
+    },
+    config
+  };
+
   await provider.initialize?.({ ...options, engine: options.cesdk.engine });
+  const historyAssetSourceId = initializeHistoryAssetSource(context);
+  const historyAssetLibraryEntryId = initializeHistoryAssetLibraryEntry(
+    context,
+    historyAssetSourceId
+  );
+
+  if (kind === 'audio') {
+    console.log({
+      provider: context.provider,
+      kind,
+      historyAssetSourceId,
+      historyAssetLibraryEntryId
+    });
+  }
+
+  context.options.historyAssetSourceId = historyAssetSourceId;
+  context.options.historyAssetLibraryEntryId = historyAssetLibraryEntryId;
 
   const builderRenderFunction: BuilderRenderFunction | undefined =
-    await createPanelRenderFunction({
-      provider,
-      panelInput: provider.input?.panel,
-      options: {
-        cesdk: options.cesdk,
-        engine: options.cesdk.engine
-      },
-      config
-    });
+    await createPanelRenderFunction(context);
 
   return {
     provider,
     panel: {
       builderRenderFunction
+    },
+    history: {
+      assetSourceId: historyAssetSourceId,
+      assetLibraryEntryId: historyAssetLibraryEntryId
     }
   };
 }
