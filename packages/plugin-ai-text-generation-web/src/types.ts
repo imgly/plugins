@@ -10,7 +10,7 @@ export interface PluginConfiguration<I, O extends Output>
     /**
      * The provider to use for text2text AI generation.
      */
-    text2text: GetProvider<'text'>;
+    text2text?: GetProvider<'text'>;
   };
   /**
    * The provider to use for text2text AI generation.

@@ -9,6 +9,7 @@ import {
  */
 export interface PluginConfiguration<I, O extends Output>
   extends CommonPluginConfiguration<'image', I, O> {
+
   providers: {
     /**
      * Provider of a model for image generation just from a (prompt) text.

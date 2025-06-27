@@ -1,11 +1,13 @@
 import { type EditorPlugin } from '@cesdk/cesdk-js';
 import {
+  ActionRegistry,
   initializeProviders,
   Output,
   registerDockComponent
 } from '@imgly/plugin-ai-generation-web';
 import { PluginConfiguration } from './types';
 import { toArray } from '@imgly/plugin-utils';
+import { PLUGIN_ID } from './constants';
 
 export { PLUGIN_ID } from './constants';
 
@@ -56,6 +58,24 @@ export function VideoGeneration<I, O extends Output>(
         registerDockComponent({
           cesdk,
           panelId: VIDEO_GENERATION_PANEL_ID
+        });
+
+        ActionRegistry.get().register({
+          type: 'plugin',
+          sceneMode: 'Video',
+
+          id: PLUGIN_ID,
+
+          label: 'Generate Video',
+          meta: { panelId: VIDEO_GENERATION_PANEL_ID },
+
+          execute: () => {
+            if (cesdk.ui.isPanelOpen(VIDEO_GENERATION_PANEL_ID)) {
+              cesdk.ui.closePanel(VIDEO_GENERATION_PANEL_ID);
+            } else {
+              cesdk.ui.openPanel(VIDEO_GENERATION_PANEL_ID);
+            }
+          }
         });
       }
     }

@@ -2,11 +2,13 @@ import { type EditorPlugin } from '@cesdk/cesdk-js';
 import {
   initializeProviders,
   Output,
-  registerDockComponent
+  registerDockComponent,
+  ActionRegistry
 } from '@imgly/plugin-ai-generation-web';
 import { PluginConfiguration } from './types';
 import iconSprite, { PLUGIN_ICON_SET_ID } from './iconSprite';
 import { toArray } from '@imgly/plugin-utils';
+import { PLUGIN_ID } from './constants';
 
 export { PLUGIN_ID } from './constants';
 
@@ -58,10 +60,29 @@ export function ImageGeneration<I, O extends Output>(
           cesdk,
           panelId: IMAGE_GENERATION_PANEL_ID
         });
+
+        ActionRegistry.get().register({
+          type: 'plugin',
+
+          id: PLUGIN_ID,
+
+          label: 'Generate Image',
+          meta: { panelId: IMAGE_GENERATION_PANEL_ID },
+
+          execute: () => {
+            if (cesdk.ui.isPanelOpen(IMAGE_GENERATION_PANEL_ID)) {
+              cesdk.ui.closePanel(IMAGE_GENERATION_PANEL_ID);
+            } else {
+              cesdk.ui.openPanel(IMAGE_GENERATION_PANEL_ID);
+            }
+          }
+        });
       }
     }
   };
 }
+
+ImageGeneration.apps = ['ly.img.ai/image-generation'];
 
 function printConfigWarnings<I, O extends Output>(
   config: PluginConfiguration<I, O>

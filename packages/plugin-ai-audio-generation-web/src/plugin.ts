@@ -1,11 +1,13 @@
 import { type EditorPlugin } from '@cesdk/cesdk-js';
 import {
+  ActionRegistry,
   Output,
   initializeProviders,
   registerDockComponent
 } from '@imgly/plugin-ai-generation-web';
 import { PluginConfiguration } from './types';
 import { toArray } from '@imgly/plugin-utils';
+import { PLUGIN_ID } from './constants';
 
 export { PLUGIN_ID } from './constants';
 
@@ -50,6 +52,36 @@ export function AudioGeneration<I, O extends Output>(
         config
       );
 
+      if (text2SoundInitializedResult.panel.builderRenderFunction != null) {
+        cesdk.ui.registerPanel(
+          SOUND_GENERATION_PANEL_ID,
+          text2SoundInitializedResult.panel.builderRenderFunction
+        );
+
+        registerDockComponent({
+          cesdk,
+          panelId: SOUND_GENERATION_PANEL_ID
+        });
+
+        ActionRegistry.get().register({
+          type: 'plugin',
+          sceneMode: 'Video',
+
+          id: `${PLUGIN_ID}/sound`,
+
+          label: 'Generate Sound',
+          meta: { panelId: SOUND_GENERATION_PANEL_ID },
+
+          execute: () => {
+            if (cesdk.ui.isPanelOpen(SOUND_GENERATION_PANEL_ID)) {
+              cesdk.ui.closePanel(SOUND_GENERATION_PANEL_ID);
+            } else {
+              cesdk.ui.openPanel(SOUND_GENERATION_PANEL_ID);
+            }
+          }
+        });
+      }
+
       if (text2SpeechInitializedResult.panel.builderRenderFunction != null) {
         cesdk.ui.registerPanel(
           SPEECH_GENERATION_PANEL_ID,
@@ -60,17 +92,23 @@ export function AudioGeneration<I, O extends Output>(
           cesdk,
           panelId: SPEECH_GENERATION_PANEL_ID
         });
-      }
 
-      if (text2SoundInitializedResult.panel.builderRenderFunction != null) {
-        cesdk.ui.registerPanel(
-          SOUND_GENERATION_PANEL_ID,
-          text2SoundInitializedResult.panel.builderRenderFunction
-        );
+        ActionRegistry.get().register({
+          type: 'plugin',
+          sceneMode: 'Video',
 
-        registerDockComponent({
-          cesdk,
-          panelId: SOUND_GENERATION_PANEL_ID
+          id: `${PLUGIN_ID}/speech`,
+
+          label: 'AI Voice',
+          meta: { panelId: SPEECH_GENERATION_PANEL_ID },
+
+          execute: () => {
+            if (cesdk.ui.isPanelOpen(SPEECH_GENERATION_PANEL_ID)) {
+              cesdk.ui.closePanel(SPEECH_GENERATION_PANEL_ID);
+            } else {
+              cesdk.ui.openPanel(SPEECH_GENERATION_PANEL_ID);
+            }
+          }
         });
       }
     }

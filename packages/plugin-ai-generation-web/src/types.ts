@@ -1,6 +1,5 @@
 import { Output, OutputKind } from './generation/provider';
 import { Middleware } from './generation/middleware/middleware';
-import { GetProvider } from './generation/types';
 
 /**
  * A common configuration used by the plugins and the provider.
@@ -26,8 +25,16 @@ export interface CommonConfiguration<I, O extends Output> {
  * Configuration to set provider and models for image generation.
  */
 export interface CommonPluginConfiguration<
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   K extends OutputKind,
   I,
   O extends Output
 > extends CommonConfiguration<I, O> {
+  /**
+   * Base URL used for the UI assets used in the plugin.
+   *
+   * By default, we load the assets from the IMG.LY CDN. You can copy the assets.
+   * from the `/assets` folder to your own server and set the base URL to your server.
+   */
+  baseURL?: string;
 }
