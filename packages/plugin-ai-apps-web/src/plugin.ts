@@ -1,20 +1,19 @@
 import CreativeEditorSDK, {
+  AssetDefinition,
   AssetLibraryDockComponent,
   EditorPlugin
 } from '@cesdk/cesdk-js';
-import {
-  getPanelId
-} from '@imgly/plugin-ai-generation-web';
+import { getPanelId, ActionRegistry } from '@imgly/plugin-ai-generation-web';
 
 import ImageGeneration from '@imgly/plugin-ai-image-generation-web';
 import VideoGeneration from '@imgly/plugin-ai-video-generation-web';
 import AudioGeneration from '@imgly/plugin-ai-audio-generation-web';
 import TextGeneration from '@imgly/plugin-ai-text-generation-web';
 import { AggregatedAssetSource } from '@imgly/plugin-utils';
-import CustomAssetSource, {
+import {
   createCustomAssetSource
 } from './ActiveAssetSource';
-import { GetProvider, PluginConfiguration, Providers } from './types';
+import { PluginConfiguration, Providers } from './types';
 
 export { PLUGIN_ID } from './constants';
 
@@ -28,244 +27,201 @@ export default (
   return {
     async initialize({ cesdk }) {
       if (cesdk == null) return;
-      const isVideoMode = cesdk.engine.scene.getMode() === 'Video';
 
-      const {
-        providers,
-        baseURL = 'https://cdn.img.ly/assets/plugins/plugin-ai-apps-web/v1/'
-      } = config;
-
-      const { activeAssetSource } = await addAiAppDockMenu(cesdk, {
-        isVideoMode,
-        baseURL,
-        debug: config.debug
-      });
-
-      const text2text = providers.text2text;
-      const text2image = providers.text2image;
-      const image2image = providers.image2image;
-      let text2video: GetProvider<'video'> | GetProvider<'video'>[] | undefined;
-      let image2video:
-        | GetProvider<'video'>
-        | GetProvider<'video'>[]
-        | undefined;
-      let text2speech:
-        | GetProvider<'audio'>
-        | GetProvider<'audio'>[]
-        | undefined;
-      let text2sound: GetProvider<'audio'> | GetProvider<'audio'>[] | undefined;
-
-      if (isVideoMode) {
-        text2video = providers.text2video;
-        image2video = providers.image2video;
-        text2speech = providers.text2speech;
-        text2sound = providers.text2sound;
-
-        cesdk.addPlugin(
-          VideoGeneration({
-            text2video,
-            image2video,
-            debug: config.debug,
-            dryRun: config.dryRun
-          })
-        );
-        cesdk.addPlugin(
-          AudioGeneration({
-            text2speech,
-            text2sound,
-            debug: config.debug,
-            dryRun: config.dryRun
-          })
-        );
-      }
-
-      if (text2text != null)
-        cesdk.addPlugin(
-          TextGeneration({ provider: text2text, debug: config.debug })
-        );
+      const { providers } = config;
 
       cesdk.addPlugin(
-        ImageGeneration({
-          text2image,
-          image2image,
+        TextGeneration({
+          providers: {
+            text2text: providers.text2text
+          },
           debug: config.debug,
           dryRun: config.dryRun
         })
       );
 
-      addAggregatedAssetSources(
-        cesdk,
-        {
-          text2text,
-          text2image,
-          image2image,
-          text2video,
-          image2video,
-          text2speech,
-          text2sound
-        },
-        isVideoMode
+      cesdk.addPlugin(
+        ImageGeneration({
+          providers: {
+            text2image: providers.text2image,
+            image2image: providers.image2image
+          },
+          debug: config.debug,
+          dryRun: config.dryRun
+        })
+      );
+
+      cesdk.addPlugin(
+        VideoGeneration({
+          providers: {
+            text2video: providers.text2video,
+            image2video: providers.image2video
+          },
+          debug: config.debug,
+          dryRun: config.dryRun
+        })
+      );
+
+      cesdk.addPlugin(
+        AudioGeneration({
+          providers: {
+            text2speech: providers.text2speech,
+            text2sound: providers.text2sound
+          },
+          debug: config.debug,
+          dryRun: config.dryRun
+        })
       );
 
       addTranslations(cesdk);
+      initializeAppLibrary(cesdk, {
+        ...config,
+        baseURL:
+          config.baseURL ??
+          'https://cdn.img.ly/assets/plugins/plugin-ai-apps-web/v1/'
+      });
     }
   };
 };
 
-async function addAiAppDockMenu(
+function initializeAppLibrary(
   cesdk: CreativeEditorSDK,
-  options: {
-    isVideoMode: boolean;
-    baseURL: string;
-    debug?: boolean;
-  }
-): Promise<{
-  activeAssetSource?: CustomAssetSource;
-}> {
-  const { isVideoMode, debug, baseURL } = options;
+  config: PluginConfiguration
+) {
   overrideAssetLibraryDockComponent(cesdk);
 
-  let activeAssetSource: CustomAssetSource | undefined;
-  if (isVideoMode) {
-    activeAssetSource = createCustomAssetSource(AI_APP_ID, cesdk, [
-      {
-        id: 'image-generation',
-        label: {
-          en: 'Generate Image'
-        },
-        meta: {
-          label: 'Generate Image',
-          thumbUri: `${baseURL}GenerateImage.png`,
-          width: AI_APP_THUMBNAIL_WIDTH,
-          height: AI_APP_THUMBNAIL_HEIGHT
-        }
-      },
-      {
-        id: 'video-generation',
-        label: {
-          en: 'Generate Video'
-        },
-        meta: {
-          label: 'Generate Video',
-          thumbUri: `${baseURL}GenerateVideo.png`,
-          width: AI_APP_THUMBNAIL_WIDTH,
-          height: AI_APP_THUMBNAIL_HEIGHT
-        }
-      },
-      {
-        id: 'audio-generation/sound',
-        label: {
-          en: 'Generate Sound'
-        },
-        meta: {
-          label: 'Generate Sound',
-          thumbUri: `${baseURL}GenerateSound.png`,
-          width: AI_APP_THUMBNAIL_WIDTH,
-          height: AI_APP_THUMBNAIL_HEIGHT
-        }
-      },
-      {
-        id: 'audio-generation/speech',
-        label: {
-          en: 'AI Voice'
-        },
-        meta: {
-          label: 'AI Voice',
-          thumbUri: `${baseURL}AIVoice.png`,
-          width: AI_APP_THUMBNAIL_WIDTH,
-          height: AI_APP_THUMBNAIL_HEIGHT
-        }
+  const appAssetSource = registerAppAssetSource(cesdk, config);
+  cesdk.engine.asset.addSource(appAssetSource);
+
+  cesdk.ui.registerPanel(AI_APP_ID, ({ builder }) => {
+    builder.Library(AI_APP_ID, {
+      entries: [AI_APP_ID],
+      onSelect: async (asset) => {
+        ActionRegistry.get()
+          .getBy({ id: asset.id })
+          .forEach((action) => {
+            action.execute();
+          });
       }
-    ]);
-
-    cesdk.engine.asset.addSource(activeAssetSource);
-
-    cesdk.ui.registerPanel(AI_APP_ID, ({ builder }) => {
-      builder.Library(AI_APP_ID, {
-        entries: [AI_APP_ID],
-        onSelect: async (asset) => {
-          cesdk.ui.openPanel(getPanelId(asset.id));
-          // activeAssetSource.setAssetActive(asset.id, true);
-        }
-      });
     });
+  });
 
-    cesdk.ui.addAssetLibraryEntry({
-      id: AI_APP_ID,
-      sourceIds: [AI_APP_ID],
-      gridColumns: 1,
-      gridItemHeight: 'auto',
-      gridBackgroundType: 'cover',
-      cardLabel: ({ label }) => label,
-      cardLabelPosition: () => 'inside'
-    });
-  }
+  cesdk.ui.addAssetLibraryEntry({
+    id: AI_APP_ID,
+    sourceIds: [AI_APP_ID],
+    gridColumns: 1,
+    gridItemHeight: 'auto',
+    gridBackgroundType: 'cover',
+    cardLabel: ({ label }) => label,
+    cardLabelPosition: () => 'inside'
+  });
 
   const componentId = `${AI_APP_ID}.dock`;
-  if (isVideoMode) {
-    // eslint-disable-next-line no-console
-    if (debug) console.log('Registering AI App Dock Button', componentId);
+  cesdk.ui.registerComponent(componentId, ({ builder, engine, experimental }) => {
+    const sceneMode = engine.scene.getMode();
+    const apps = appAssetSource.getCurrentAssets().filter((asset) => {
+      if (asset?.meta?.sceneMode == null) return true;
+      return asset?.meta?.sceneMode === sceneMode;
+    });
+    if (apps.length === 0) return;
+    const singleAction =
+      apps.length === 1
+        ? ActionRegistry.get().getBy({ id: apps[0].id, type: 'plugin' })[0]
+        : undefined;
 
-    cesdk.ui.registerComponent(componentId, ({ builder, experimental }) => {
-      const isOpen = cesdk.ui.isPanelOpen(AI_APP_ID);
-      const isGeneratingState = experimental.global<boolean>(
-        `${AI_APP_ID}.isGenerating`,
-        false
-      );
+    const panelId = singleAction?.meta?.panelId ?? AI_APP_ID;
+    const isOpen = cesdk.ui.isPanelOpen(panelId);
+    const isGeneratingState = experimental.global<boolean>(
+      `${AI_APP_ID}.isGenerating`,
+      false
+    );
 
-      builder.Button(`${AI_APP_ID}.dock.button`, {
-        label: 'AI',
-        isSelected: isOpen,
-        icon: isGeneratingState.value
-          ? '@imgly/LoadingSpinner'
-          : '@imgly/Sparkle',
-        onClick: () => {
-          cesdk.ui.findAllPanels().forEach((panel) => {
-            if (panel.startsWith('ly.img.ai/')) {
-              cesdk.ui.closePanel(panel);
-            }
-            if (!isOpen && panel === '//ly.img.panel/assetLibrary') {
-              cesdk.ui.closePanel(panel);
-            }
-          });
+    builder.Button(`${AI_APP_ID}.dock.button`, {
+      label: 'AI',
+      isSelected: isOpen,
+      icon: isGeneratingState.value
+        ? '@imgly/LoadingSpinner'
+        : '@imgly/Sparkle',
+      onClick: () => {
+        cesdk.ui.findAllPanels().forEach((panel) => {
+          if (panel.startsWith('ly.img.ai/') && panel !== panelId) {
+            cesdk.ui.closePanel(panel);
+          }
+          if (!isOpen && panel === '//ly.img.panel/assetLibrary') {
+            cesdk.ui.closePanel(panel);
+          }
+        });
 
+        if (singleAction != null) {
+          singleAction.execute();
+        } else {
           if (!isOpen) {
             cesdk.ui.openPanel(AI_APP_ID);
           } else {
             cesdk.ui.closePanel(AI_APP_ID);
           }
         }
-      });
+      }
     });
-  } else {
-    cesdk.ui.registerComponent(componentId, ({ builder, experimental }) => {
-      const panelId = getPanelId('image-generation');
+  });
+}
 
-      const isGeneratingState = experimental.global<boolean>(
-        `${AI_APP_ID}.isGenerating`,
-        false
-      );
-      const isOpen = cesdk.ui.isPanelOpen(panelId);
+function registerAppAssetSource(
+  cesdk: CreativeEditorSDK,
+  config: PluginConfiguration
+) {
+  const registry = ActionRegistry.get();
 
-      builder.Button(`${AI_APP_ID}.dock.button`, {
-        label: 'AI',
-        isSelected: isOpen,
-        icon: isGeneratingState.value
-          ? '@imgly/LoadingSpinner'
-          : '@imgly/Sparkle',
-        onClick: () => {
-          if (!isOpen) {
-            cesdk.ui.openPanel(panelId);
-          } else {
-            cesdk.ui.closePanel(panelId);
-          }
+  const activeAssetSource = createCustomAssetSource(AI_APP_ID, cesdk, () => {
+    return registry.getBy({ type: 'plugin' }).map(({ id, label, sceneMode }) => {
+      const assetDefinition: AssetDefinition = {
+        id,
+        label: {
+          en: label ?? id
+        },
+        meta: {
+          sceneMode,
+          thumbUri:
+            config.baseURL != null
+              ? getAppThumbnail(config.baseURL, id)
+              : undefined,
+          width: AI_APP_THUMBNAIL_WIDTH,
+          height: AI_APP_THUMBNAIL_HEIGHT
         }
-      });
+      };
+      return assetDefinition;
     });
+  });
+
+  const dispose = registry.subscribeBy({ type: 'plugin' }, () => {
+    if (cesdk?.engine?.asset?.assetSourceContentsChanged == null) {
+      dispose();
+      return;
+    }
+    cesdk.engine.asset.assetSourceContentsChanged(AI_APP_ID);
+  });
+
+  return activeAssetSource;
+}
+
+function getAppThumbnail(baseURL: string, appId: string): string {
+  switch (appId) {
+    case '@imgly/plugin-ai-image-generation-web': {
+      return `${baseURL}GenerateImage.png`;
+    }
+    case '@imgly/plugin-ai-video-generation-web': {
+      return `${baseURL}GenerateVideo.png`;
+    }
+    case '@imgly/plugin-ai-audio-generation-web/sound': {
+      return `${baseURL}GenerateSound.png`;
+    }
+    case '@imgly/plugin-ai-audio-generation-web/speech': {
+      return `${baseURL}AIVoice.png`;
+    }
+    default: {
+      return `${baseURL}GenerateImage.png`;
+    }
   }
-  return {
-    activeAssetSource
-  };
 }
 
 /**
