@@ -8,15 +8,15 @@ import type {
 } from '@cesdk/engine';
 
 /**
- * A custom AssetSource implementation that manages assets from an array
+ * A custom AssetSource implementation that manages assets from an array or dynamic function
  * and provides functionality to mark assets as active.
  */
 export class CustomAssetSource implements AssetSource {
   /** The unique id of the asset source */
   id: string;
 
-  /** Array of assets to be served by this source */
-  private assets: AssetDefinition[];
+  /** Array of assets or function that returns assets */
+  private assetsOrProvider: AssetDefinition[] | (() => AssetDefinition[]);
 
   /** Set of IDs for active assets */
   private activeAssetIds: Set<string>;
@@ -29,18 +29,27 @@ export class CustomAssetSource implements AssetSource {
    * Creates a new instance of CustomAssetSource
    *
    * @param id - The unique identifier for this asset source
-   * @param assets - Array of asset definitions to include in this source
+   * @param assetsOrProvider - Array of asset definitions or function that returns asset definitions
    */
   constructor(
     id: string,
     cesdk: CreativeEditorSDK,
-    assets: AssetDefinition[] = []
+    assetsOrProvider: AssetDefinition[] | (() => AssetDefinition[]) = []
   ) {
     this.id = id;
-    this.assets = [...assets];
+    this.assetsOrProvider = assetsOrProvider;
     this.activeAssetIds = new Set<string>();
     this.loaderDisposer = {};
     this.cesdk = cesdk;
+  }
+
+  /**
+   * Get all current assets definitions used by this asset source
+   */
+  public getCurrentAssets(): AssetDefinition[] {
+    return typeof this.assetsOrProvider === 'function' 
+      ? this.assetsOrProvider() 
+      : this.assetsOrProvider;
   }
 
   /**
@@ -67,7 +76,7 @@ export class CustomAssetSource implements AssetSource {
     } = queryData;
 
     // Start with all assets
-    let filteredAssets = [...this.assets];
+    let filteredAssets = [...this.getCurrentAssets()];
 
     // Filter by groups if provided
     if (groups && groups.length > 0) {
@@ -190,7 +199,11 @@ export class CustomAssetSource implements AssetSource {
     label: (currentLabel: string) => string,
     locale: string
   ): void {
-    this.assets.forEach((asset) => {
+    if (typeof this.assetsOrProvider === 'function') {
+      console.warn('Cannot update label on dynamic asset provider');
+      return;
+    }
+    this.assetsOrProvider.forEach((asset) => {
       if (asset.id === assetId) {
         asset.label = asset.label || {};
         asset.label[locale] = label(asset.label[locale]);
@@ -199,7 +212,7 @@ export class CustomAssetSource implements AssetSource {
   }
 
   getLabel(assetId: string, locale: string): string | undefined {
-    const foundAsset = this.assets.find((asset) => {
+    const foundAsset = this.getCurrentAssets().find((asset) => {
       return asset.id === assetId;
     });
     if (foundAsset == null) return undefined;
@@ -273,14 +286,18 @@ export class CustomAssetSource implements AssetSource {
    * @param asset - The asset definition to add
    */
   addAsset(asset: AssetDefinition): void {
+    if (typeof this.assetsOrProvider === 'function') {
+      console.warn('Cannot add asset to dynamic asset provider');
+      return;
+    }
     // Check if asset with this ID already exists
-    const existingIndex = this.assets.findIndex((a) => a.id === asset.id);
+    const existingIndex = this.assetsOrProvider.findIndex((a) => a.id === asset.id);
     if (existingIndex >= 0) {
       // Replace existing asset
-      this.assets[existingIndex] = asset;
+      this.assetsOrProvider[existingIndex] = asset;
     } else {
       // Add new asset
-      this.assets.push(asset);
+      this.assetsOrProvider.push(asset);
     }
   }
 
@@ -290,9 +307,13 @@ export class CustomAssetSource implements AssetSource {
    * @param assetId - The ID of the asset to remove
    */
   removeAsset(assetId: string): void {
-    const index = this.assets.findIndex((asset) => asset.id === assetId);
+    if (typeof this.assetsOrProvider === 'function') {
+      console.warn('Cannot remove asset from dynamic asset provider');
+      return;
+    }
+    const index = this.assetsOrProvider.findIndex((asset) => asset.id === assetId);
     if (index !== -1) {
-      this.assets.splice(index, 1);
+      this.assetsOrProvider.splice(index, 1);
       this.activeAssetIds.delete(assetId);
     }
   }
@@ -304,7 +325,7 @@ export class CustomAssetSource implements AssetSource {
    */
   async getGroups(): Promise<string[]> {
     const groups = new Set<string>();
-    this.assets.forEach((asset) => {
+    this.getCurrentAssets().forEach((asset) => {
       if (asset.groups) {
         asset.groups.forEach((group) => groups.add(group));
       }
@@ -333,15 +354,15 @@ export class CustomAssetSource implements AssetSource {
  * Helper function to create a CustomAssetSource instance
  *
  * @param id - The unique identifier for this asset source
- * @param assets - Array of asset definitions to include in this source
+ * @param assetsOrProvider - Array of asset definitions or function that returns asset definitions
  * @returns A new CustomAssetSource instance
  */
 export function createCustomAssetSource(
   id: string,
   cesdk: CreativeEditorSDK,
-  assets: AssetDefinition[] = []
+  assetsOrProvider: AssetDefinition[] | (() => AssetDefinition[]) = []
 ): CustomAssetSource {
-  return new CustomAssetSource(id, cesdk, assets);
+  return new CustomAssetSource(id, cesdk, assetsOrProvider);
 }
 
 /**
