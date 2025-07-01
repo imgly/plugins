@@ -12,7 +12,7 @@ const config: Config = {
     '^.+\\.(ts|tsx)$': 'ts-jest'
   },
   moduleNameMapper: {
-    // Add any module name mappings here if needed
+    '^@imgly/plugin-utils$': '<rootDir>/../plugin-utils/src/index.ts'
   },
   setupFiles: [],
   // Ensure we don't test dist files
