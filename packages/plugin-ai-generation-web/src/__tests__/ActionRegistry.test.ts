@@ -69,7 +69,10 @@ describe('ActionRegistry', () => {
         label: 'Test Quick Action',
         description: 'A test quick action',
         pluginId: 'test-plugin',
-        execute: jest.fn()
+        kind: 'image',
+        enable: true,
+        execute: jest.fn(),
+        render: jest.fn()
       };
 
       const dispose = registry.register(action);
@@ -181,7 +184,10 @@ describe('ActionRegistry', () => {
         label: 'Quick Action',
         description: 'A quick action',
         pluginId: 'test-plugin',
-        execute: jest.fn()
+        kind: 'image',
+        enable: true,
+        execute: jest.fn(),
+        render: jest.fn()
       };
 
       registry.register(pluginAction);
@@ -225,7 +231,10 @@ describe('ActionRegistry', () => {
         label: 'Quick Action 1',
         description: 'First quick action',
         pluginId: 'plugin-a',
-        execute: jest.fn()
+        kind: 'image',
+        enable: true,
+        execute: jest.fn(),
+        render: jest.fn()
       };
 
       quickAction2 = {
@@ -234,7 +243,10 @@ describe('ActionRegistry', () => {
         label: 'Quick Action 2',
         description: 'Second quick action',
         pluginId: 'plugin-b',
-        execute: jest.fn()
+        kind: 'text',
+        enable: true,
+        execute: jest.fn(),
+        render: jest.fn()
       };
 
       registry.register(pluginAction1);
@@ -320,6 +332,60 @@ describe('ActionRegistry', () => {
       expect(complexFilter).toHaveLength(1);
       expect(complexFilter[0]).toBe(quickAction2);
     });
+
+    it('should filter by kind for quick actions', () => {
+      const imageActions = registry.getBy({ kind: 'image' });
+      const textActions = registry.getBy({ kind: 'text' });
+
+      expect(imageActions).toHaveLength(1);
+      expect(imageActions[0]).toBe(quickAction1);
+      expect((imageActions[0] as QuickActionDefinition).kind).toBe('image');
+
+      expect(textActions).toHaveLength(1);
+      expect(textActions[0]).toBe(quickAction2);
+      expect((textActions[0] as QuickActionDefinition).kind).toBe('text');
+    });
+
+    it('should combine type and kind filters', () => {
+      const quickImageActions = registry.getBy({
+        type: 'quick',
+        kind: 'image'
+      });
+
+      expect(quickImageActions).toHaveLength(1);
+      expect(quickImageActions[0]).toBe(quickAction1);
+      expect(quickImageActions[0].type).toBe('quick');
+      expect(quickImageActions[0].kind).toBe('image');
+    });
+
+    it('should return empty array for non-existent kind', () => {
+      const videoActions = registry.getBy({ kind: 'video' });
+      expect(videoActions).toEqual([]);
+    });
+
+    it('should filter out plugin actions when kind filter is specified', () => {
+      // Kind filter should exclude plugin actions since they don't have a kind property
+      const pluginActionsWithKind = registry.getBy({
+        type: 'plugin',
+        kind: 'image'
+      });
+
+      expect(pluginActionsWithKind).toHaveLength(0);
+    });
+
+    it('should combine all filters including kind', () => {
+      const specificQuickAction = registry.getBy({
+        type: 'quick',
+        pluginId: 'plugin-a',
+        kind: 'image'
+      });
+
+      expect(specificQuickAction).toHaveLength(1);
+      expect(specificQuickAction[0]).toBe(quickAction1);
+      expect(specificQuickAction[0].type).toBe('quick');
+      expect(specificQuickAction[0].pluginId).toBe('plugin-a');
+      expect(specificQuickAction[0].kind).toBe('image');
+    });
   });
 
   describe('subscriptions', () => {
@@ -343,7 +409,10 @@ describe('ActionRegistry', () => {
         label: 'Test Quick Action',
         description: 'A test quick action',
         pluginId: 'test-plugin',
-        execute: jest.fn()
+        kind: 'image',
+        enable: true,
+        execute: jest.fn(),
+        render: jest.fn()
       };
     });
 

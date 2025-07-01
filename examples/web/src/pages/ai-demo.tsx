@@ -62,19 +62,25 @@ function App() {
 
             instance.ui.setCanvasMenuOrder([
               'ly.img.ai.text.canvasMenu',
-              `ly.img.ai.image.canvasMenu`,
+              { id: `ly.img.ai.image.canvasMenu` ,
+                children: [
+                  'test-quick-action',
+                  'ly.img.separator',
+                  'test-quick-action-second'
+                ]
+              },
               ...instance.ui.getCanvasMenuOrder()
             ]);
 
             instance.feature.enable('ly.img.preview', false);
             instance.feature.enable('ly.img.placeholder', false);
 
-            await instance.engine.scene.loadFromArchiveURL(
-              `https://img.ly/showcases/cesdk/cases/ai-editor/ai_editor_video.archive`
-            );
             // await instance.engine.scene.loadFromArchiveURL(
-            //   `https://img.ly/showcases/cesdk/cases/ai-editor/ai_editor_design.archive`
+            //   `https://img.ly/showcases/cesdk/cases/ai-editor/ai_editor_video.archive`
             // );
+            await instance.engine.scene.loadFromArchiveURL(
+              `https://img.ly/showcases/cesdk/cases/ai-editor/ai_editor_design.archive`
+            );
 
             const onRateLimitExceeded: RateLimitOptions<any>['onRateLimitExceeded'] =
               () => {
@@ -137,7 +143,7 @@ function App() {
 
             instance.addPlugin(
               AiApps({
-                debug: true,
+                debug: false,
                 dryRun: false,
                 providers: {
                   text2text: Anthropic.AnthropicProvider({
@@ -200,10 +206,6 @@ function App() {
                     proxyUrl: import.meta.env.VITE_ELEVENLABS_PROXY_URL
                   }),
                   text2sound: [
-                    Elevenlabs.ElevenSoundEffects({
-                      middleware: [soundRateLimitMiddleware, errorMiddleware],
-                      proxyUrl: import.meta.env.VITE_ELEVENLABS_PROXY_URL
-                    }),
                     Elevenlabs.ElevenSoundEffects({
                       middleware: [soundRateLimitMiddleware, errorMiddleware],
                       proxyUrl: import.meta.env.VITE_ELEVENLABS_PROXY_URL

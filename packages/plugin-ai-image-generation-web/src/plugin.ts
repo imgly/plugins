@@ -3,12 +3,14 @@ import {
   initializeProviders,
   Output,
   registerDockComponent,
-  ActionRegistry
+  ActionRegistry,
+  initializeQuickActionComponents
 } from '@imgly/plugin-ai-generation-web';
 import { PluginConfiguration } from './types';
 import iconSprite, { PLUGIN_ICON_SET_ID } from './iconSprite';
 import { toArray } from '@imgly/plugin-utils';
 import { PLUGIN_ID } from './constants';
+import quickActions from './quickActions';
 
 export { PLUGIN_ID } from './constants';
 
@@ -31,6 +33,12 @@ export function ImageGeneration<I, O extends Output>(
 
       printConfigWarnings(config);
 
+      const registry = ActionRegistry.get();
+      quickActions().forEach((quickAction) => {
+        console.log('register quick action', quickAction);
+        registry.register(quickAction);
+      });
+
       const text2image = config.providers?.text2image ?? config.text2image;
       const image2image = config.providers?.image2image ?? config.image2image;
 
@@ -40,6 +48,7 @@ export function ImageGeneration<I, O extends Output>(
       const image2imageProviders = await Promise.all(
         toArray(image2image).map((getProvider) => getProvider({ cesdk }))
       );
+
       const initializedResult = await initializeProviders(
         'image',
         {
@@ -49,6 +58,23 @@ export function ImageGeneration<I, O extends Output>(
         { cesdk },
         config
       );
+
+      const initializedQuickActions = await initializeQuickActionComponents({
+        kind: 'image',
+        cesdk,
+        engine: cesdk.engine
+      });
+
+      if (initializedResult.history?.assetSourceId != null) {
+        // Add combined asset source for this kind
+      }
+
+      if (initializedQuickActions.renderFunction != null) {
+        cesdk.ui.registerComponent(
+          `ly.img.ai.image.canvasMenu`,
+          initializedQuickActions.renderFunction
+        );
+      }
 
       if (initializedResult.panel.builderRenderFunction != null) {
         cesdk.ui.registerPanel(
@@ -61,10 +87,11 @@ export function ImageGeneration<I, O extends Output>(
           panelId: IMAGE_GENERATION_PANEL_ID
         });
 
-        ActionRegistry.get().register({
+        registry.register({
           type: 'plugin',
 
           id: PLUGIN_ID,
+          pluginId: PLUGIN_ID,
 
           label: 'Generate Image',
           meta: { panelId: IMAGE_GENERATION_PANEL_ID },

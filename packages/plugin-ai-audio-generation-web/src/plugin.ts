@@ -68,6 +68,7 @@ export function AudioGeneration<I, O extends Output>(
           sceneMode: 'Video',
 
           id: `${PLUGIN_ID}/sound`,
+          pluginId: PLUGIN_ID,
 
           label: 'Generate Sound',
           meta: { panelId: SOUND_GENERATION_PANEL_ID },
@@ -98,6 +99,7 @@ export function AudioGeneration<I, O extends Output>(
           sceneMode: 'Video',
 
           id: `${PLUGIN_ID}/speech`,
+          pluginId: PLUGIN_ID,
 
           label: 'AI Voice',
           meta: { panelId: SPEECH_GENERATION_PANEL_ID },

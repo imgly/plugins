@@ -34,6 +34,7 @@ export {
   type CommonProviderConfiguration
 } from './generation/types';
 
+export { default as integrateIntoDefaultAssetLibraryEntry } from './generation/integrateIntoDefaultAssetLibraryEntry';
 export { type CommonPluginConfiguration } from './types';
 export {
   ActionRegistry,
@@ -90,3 +91,4 @@ export {
 
 export { default as initializeProviders } from './generation/initializeProviders';
 export { default as initializeProvider } from './generation/initializeProvider';
+export { default as initializeQuickActionComponents } from './generation/initializeQuickActionComponents';

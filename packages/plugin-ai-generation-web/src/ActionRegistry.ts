@@ -1,4 +1,10 @@
-import { SceneMode } from "@cesdk/cesdk-js";
+import {
+  BuilderRenderFunctionContext,
+  CreativeEngine,
+  SceneMode,
+  Scope
+} from '@cesdk/cesdk-js';
+import { OutputKind } from './generation/provider';
 
 /**
  * Base properties shared by all action definitions.
@@ -6,6 +12,8 @@ import { SceneMode } from "@cesdk/cesdk-js";
 interface BaseActionDefinition {
   /** Unique identifier for the action */
   id: string;
+  /** ID of the plugin that registered this action */
+  pluginId: string;
   /** Human-readable label for the action */
   label?: string;
   /** Detailed description of what the action does */
@@ -32,8 +40,28 @@ export interface PluginActionDefinition extends BaseActionDefinition {
 export interface QuickActionDefinition extends BaseActionDefinition {
   /** Action type discriminator */
   type: 'quick';
+  /** The kind of block this action operates on */
+  kind: OutputKind;
+  /**
+   * Defines if the quick action is enabled or not by using the
+   * feature api.
+   */
+  enable: boolean | ((contxt: { engine: CreativeEngine }) => boolean);
+  /**
+   * Define the necessary scopes for this quick action.
+   */
+  scopes?: Scope[];
   /** Function to execute the action */
   execute: () => void;
+
+  render: (
+    context: BuilderRenderFunctionContext<any> & {
+      toggleExpand: () => void;
+      isExpanded: boolean;
+      execute: () => void;
+      close: () => void;
+    }
+  ) => void;
 }
 
 /**
@@ -65,6 +93,8 @@ export interface ActionRegistryFilters {
   pluginId?: string;
   /** Filter by action ID */
   id?: string;
+  /** Filter by kind (only applicable for quick actions) */
+  kind?: OutputKind;
 }
 
 /**
@@ -142,6 +172,9 @@ export class ActionRegistry {
    *
    * // Combine filters
    * registry.getBy({ type: 'quick', pluginId: 'ai-text' }) // Returns QuickActionDefinition[]
+   *
+   * // Filter quick actions by kind
+   * registry.getBy({ type: 'quick', kind: 'image' }) // Returns QuickActionDefinition[]
    */
   public getBy<
     T extends ActionDefinition['type'] | undefined = undefined
@@ -152,6 +185,8 @@ export class ActionRegistry {
     pluginId?: string;
     /** Filter by action ID */
     id?: string;
+    /** Filter by kind (only applicable for quick actions) */
+    kind?: OutputKind;
   }): T extends ActionDefinition['type']
     ? Extract<ActionDefinition, { type: T }>[]
     : ActionDefinition[] {
@@ -239,6 +274,11 @@ export class ActionRegistry {
     if (filters.type && action.type !== filters.type) return false;
     if (filters.pluginId && action.pluginId !== filters.pluginId) return false;
     if (filters.id && action.id !== filters.id) return false;
+    if (filters.kind) {
+      // Kind filter only applies to quick actions
+      if (action.type !== 'quick') return false;
+      if (action.kind !== filters.kind) return false;
+    }
     return true;
   }
 }

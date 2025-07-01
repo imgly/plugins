@@ -65,6 +65,7 @@ export function VideoGeneration<I, O extends Output>(
           sceneMode: 'Video',
 
           id: PLUGIN_ID,
+          pluginId: PLUGIN_ID,
 
           label: 'Generate Video',
           meta: { panelId: VIDEO_GENERATION_PANEL_ID },
