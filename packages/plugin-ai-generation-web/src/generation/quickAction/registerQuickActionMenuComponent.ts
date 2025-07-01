@@ -1,16 +1,13 @@
 import CreativeEditorSDK from '@cesdk/cesdk-js';
 import { InferenceMetadata, QuickActionMenu, ApplyCallbacks } from './types';
-import {
-  getFeatureIdForQuickAction,
-  INFERENCE_AI_METADATA_KEY,
-  removeDuplicatedSeparators
-} from './utils';
+import { getFeatureIdForQuickAction, INFERENCE_AI_METADATA_KEY } from './utils';
 import { Metadata } from '@imgly/plugin-utils';
 import Provider, { Output, OutputKind } from '../provider';
 import { isAbortError } from '../../utils';
 import handleGenerationError from '../handleGenerationError';
 import generate from './generate';
 import { CommonConfiguration } from '../../types';
+import compactSeparators from '../../compactSeparators';
 
 function registerQuickActionMenuComponent<
   K extends OutputKind,
@@ -216,7 +213,7 @@ function registerQuickActionMenuComponent<
       })
       .filter((entry) => entry != null);
 
-    quickActions = removeDuplicatedSeparators(quickActions);
+    quickActions = compactSeparators(quickActions);
 
     if (
       quickActions.length === 0 ||
