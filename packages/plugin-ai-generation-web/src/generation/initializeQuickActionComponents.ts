@@ -20,6 +20,7 @@ async function initializeQuickActionComponents<
 }) {
   const menuRenderFunction = await createQuickActionMenuRenderFunction({
     kind: context.kind,
+    providers: context.providers,
 
     cesdk: context.cesdk,
     engine: context.engine

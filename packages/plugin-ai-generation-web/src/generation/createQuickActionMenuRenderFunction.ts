@@ -1,6 +1,7 @@
 import CreativeEditorSDK, {
   BuilderRenderFunction,
-  CreativeEngine
+  CreativeEngine,
+  SelectValue
 } from '@cesdk/cesdk-js';
 import { ActionRegistry, QuickActionDefinition } from '../ActionRegistry';
 import Provider, { Output, OutputKind } from './provider';
@@ -15,6 +16,7 @@ function createQuickActionMenuRenderFunction<
   O extends Output
 >(context: {
   kind: K;
+  providers?: Provider<K, I, O>[];
 
   cesdk: CreativeEditorSDK;
   engine: CreativeEngine;
@@ -42,11 +44,25 @@ function createQuickActionMenuRenderFunction<
     const blockIds = builderContext.engine.block.findAllSelected();
     if (blockIds.length === 0) return;
 
+    const providerValues: SelectValue[] = context.providers.map((provider) => ({
+      id: provider.id,
+      label: provider.name ?? provider.id
+    }));
+
+    const currentProviderState = builderContext.state(
+      `${prefix}.currentProvider`,
+      providerValues[0]
+    );
+    const currentProvider = context.providers.find(
+      ({ id }) => id === currentProviderState.value?.id
+    );
+
     let quickActions: (QuickActionDefinition | 'ly.img.separator')[] =
       quickActionOrder
         .map((quickActionId) => {
           if (quickActionId === 'ly.img.separator')
             return quickActionId as 'ly.img.separator';
+
           const quickAction = registry.getBy({
             id: quickActionId,
             type: 'quick',
@@ -54,6 +70,13 @@ function createQuickActionMenuRenderFunction<
           })[0];
 
           if (quickAction == null) return undefined;
+
+          if (
+            currentProvider?.input?.quickActions?.supported?.[quickActionId] ==
+            null
+          ) {
+            return undefined;
+          }
 
           const scopes = quickAction.scopes;
           if (scopes != null && scopes.length > 0) {
@@ -97,6 +120,14 @@ function createQuickActionMenuRenderFunction<
       children: ({ close }) => {
         builder.Section(`${prefix}.popover.section`, {
           children: () => {
+            if (context.providers.length > 1) {
+              builder.Select(`${prefix}.providerSelect.select`, {
+                inputLabel: 'Provider',
+                values: providerValues,
+                ...currentProviderState
+              });
+            }
+
             if (toggleExpandedState.value !== undefined) {
               const expandedQuickAction = quickActions.find(
                 (quickAction) =>

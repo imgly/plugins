@@ -61,6 +61,7 @@ export function ImageGeneration<I, O extends Output>(
 
       const initializedQuickActions = await initializeQuickActionComponents({
         kind: 'image',
+        providers: [...text2imageProviders, ...image2imageProviders],
         cesdk,
         engine: cesdk.engine
       });
