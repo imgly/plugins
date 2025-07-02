@@ -12,8 +12,6 @@ import { OutputKind, Output } from './generation/provider';
 interface BaseActionDefinition {
   /** Unique identifier for the action */
   id: string;
-  /** ID of the plugin that registered this action */
-  pluginId: string;
   /** Human-readable label for the action */
   label?: string;
   /** Detailed description of what the action does */
@@ -30,6 +28,8 @@ interface BaseActionDefinition {
 export interface PluginActionDefinition extends BaseActionDefinition {
   /** Action type discriminator */
   type: 'plugin';
+  /** ID of the plugin that registered this action */
+  pluginId: string;
   /** Function to execute the action */
   execute: () => void;
 }
@@ -37,7 +37,7 @@ export interface PluginActionDefinition extends BaseActionDefinition {
 /**
  * Render context for quick actions with generation capability.
  */
-export interface QuickActionRenderContext<Q = any> {
+export interface QuickActionRenderContext<Q = Record<string, any>> {
   /** Toggle between collapsed and expanded state */
   toggleExpand: () => void;
   /** Whether the quick action is currently expanded */
@@ -51,7 +51,8 @@ export interface QuickActionRenderContext<Q = any> {
 /**
  * Definition for a quick action - a context-sensitive action that operates on selected blocks.
  */
-export interface QuickActionDefinition<Q = any> extends BaseActionDefinition {
+export interface QuickActionDefinition<Q extends Record<string, any>>
+  extends BaseActionDefinition {
   /** Action type discriminator */
   type: 'quick';
   /** The kind of block this action operates on */
@@ -75,7 +76,9 @@ export interface QuickActionDefinition<Q = any> extends BaseActionDefinition {
 /**
  * Union type of all supported action definitions.
  */
-export type ActionDefinition = PluginActionDefinition | QuickActionDefinition;
+export type ActionDefinition =
+  | PluginActionDefinition
+  | QuickActionDefinition<Record<string, any>>;
 
 /**
  * Event types for ActionRegistry subscriptions.
@@ -280,7 +283,12 @@ export class ActionRegistry {
     filters: ActionRegistryFilters
   ): boolean {
     if (filters.type && action.type !== filters.type) return false;
-    if (filters.pluginId && action.pluginId !== filters.pluginId) return false;
+    if (
+      filters.pluginId &&
+      action.type === 'plugin' &&
+      action.pluginId !== filters.pluginId
+    )
+      return false;
     if (filters.id && action.id !== filters.id) return false;
     if (filters.kind) {
       // Kind filter only applies to quick actions

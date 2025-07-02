@@ -377,8 +377,32 @@ export type QuickActionContext<I, O extends Output> = {
   handleGenerationError: (error: unknown) => void;
 };
 
+/**
+ * Support mapping for a specific quick action.
+ * Maps quick action input to provider input.
+ */
+export interface QuickActionSupport<I> {
+  /**
+   * Map quick action input to provider input.
+   * @param quickActionInput The input from the quick action
+   * @returns The mapped input for the provider
+   */
+  mapInput: <Q>(quickActionInput: Q) => Promise<I>;
+}
+
 export type QuickActionsInput<I, O extends Output> = {
-  actions: QuickAction<I, O>[];
+  /**
+   * Provider-defined quick actions (legacy).
+   */
+  actions?: QuickAction<I, O>[];
+  
+  /**
+   * Supported global quick actions with input transformations.
+   * Key is the quick action ID, value is the transformation mapping.
+   */
+  supported?: {
+    [quickActionId: string]: QuickActionSupport<I>;
+  };
 };
 
 export type QuickAction<I, O extends Output> = {
