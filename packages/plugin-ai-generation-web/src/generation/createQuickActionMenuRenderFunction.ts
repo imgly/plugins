@@ -114,8 +114,11 @@ function createQuickActionMenuRenderFunction<
                     toggleExpandedState.setValue(undefined);
                   },
                   isExpanded: true,
-                  execute: () => {
-                    expandedQuickAction.execute();
+                  generate: async (input: any) => {
+                    // TODO: Implement provider capability matching
+                    throw new Error(
+                      'Generate function not yet implemented for global quick actions'
+                    );
                   },
                   close
                 });
@@ -138,8 +141,11 @@ function createQuickActionMenuRenderFunction<
                       toggleExpandedState.setValue(quickAction.id);
                     },
                     isExpanded: false,
-                    execute: () => {
-                      quickAction.execute();
+                    generate: async (input: any) => {
+                      // TODO: Implement provider capability matching
+                      throw new Error(
+                        'Generate function not yet implemented for global quick actions'
+                      );
                     },
                     close
                   });

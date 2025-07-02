@@ -71,7 +71,6 @@ describe('ActionRegistry', () => {
         pluginId: 'test-plugin',
         kind: 'image',
         enable: true,
-        execute: jest.fn(),
         render: jest.fn()
       };
 
@@ -186,7 +185,6 @@ describe('ActionRegistry', () => {
         pluginId: 'test-plugin',
         kind: 'image',
         enable: true,
-        execute: jest.fn(),
         render: jest.fn()
       };
 
@@ -233,7 +231,6 @@ describe('ActionRegistry', () => {
         pluginId: 'plugin-a',
         kind: 'image',
         enable: true,
-        execute: jest.fn(),
         render: jest.fn()
       };
 
@@ -245,7 +242,6 @@ describe('ActionRegistry', () => {
         pluginId: 'plugin-b',
         kind: 'text',
         enable: true,
-        execute: jest.fn(),
         render: jest.fn()
       };
 
@@ -272,7 +268,7 @@ describe('ActionRegistry', () => {
       quickActions.forEach((action) => {
         expect(action.type).toBe('quick');
         // This should compile without TypeScript errors
-        action.execute();
+        expect(typeof action.render).toBe('function');
       });
     });
 
@@ -411,7 +407,6 @@ describe('ActionRegistry', () => {
         pluginId: 'test-plugin',
         kind: 'image',
         enable: true,
-        execute: jest.fn(),
         render: jest.fn()
       };
     });

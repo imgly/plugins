@@ -4,7 +4,7 @@ import {
   SceneMode,
   Scope
 } from '@cesdk/cesdk-js';
-import { OutputKind } from './generation/provider';
+import { OutputKind, Output } from './generation/provider';
 
 /**
  * Base properties shared by all action definitions.
@@ -35,9 +35,23 @@ export interface PluginActionDefinition extends BaseActionDefinition {
 }
 
 /**
+ * Render context for quick actions with generation capability.
+ */
+export interface QuickActionRenderContext<Q = any> {
+  /** Toggle between collapsed and expanded state */
+  toggleExpand: () => void;
+  /** Whether the quick action is currently expanded */
+  isExpanded: boolean;
+  /** Close the entire quick action popover */
+  close: () => void;
+  /** Generate output using the quick action input */
+  generate: (input: Q) => Promise<Output>;
+}
+
+/**
  * Definition for a quick action - a context-sensitive action that operates on selected blocks.
  */
-export interface QuickActionDefinition extends BaseActionDefinition {
+export interface QuickActionDefinition<Q = any> extends BaseActionDefinition {
   /** Action type discriminator */
   type: 'quick';
   /** The kind of block this action operates on */
@@ -46,21 +60,15 @@ export interface QuickActionDefinition extends BaseActionDefinition {
    * Defines if the quick action is enabled or not by using the
    * feature api.
    */
-  enable: boolean | ((contxt: { engine: CreativeEngine }) => boolean);
+  enable: boolean | ((context: { engine: CreativeEngine }) => boolean);
   /**
    * Define the necessary scopes for this quick action.
    */
   scopes?: Scope[];
-  /** Function to execute the action */
-  execute: () => void;
 
+  /** Render function for the quick action UI */
   render: (
-    context: BuilderRenderFunctionContext<any> & {
-      toggleExpand: () => void;
-      isExpanded: boolean;
-      execute: () => void;
-      close: () => void;
-    }
+    context: BuilderRenderFunctionContext<any> & QuickActionRenderContext<Q>
   ) => void;
 }
 
