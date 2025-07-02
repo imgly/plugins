@@ -98,7 +98,7 @@ function initializeAppLibrary(
       entries: [AI_APP_ID],
       onSelect: async (asset) => {
         ActionRegistry.get()
-          .getBy({ id: asset.id })
+          .getBy({ id: asset.id, type: 'plugin' })
           .forEach((action) => {
             action.execute();
           });
