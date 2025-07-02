@@ -10,22 +10,31 @@ import initializeProvider, {
 import { isGeneratingStateKey } from './renderGenerationComponents';
 import { CommonPluginConfiguration } from '../types';
 
-export type ProvidersInitializationResult = {
+export type ProvidersInitializationResult<
+  K extends OutputKind,
+  I,
+  O extends Output
+> = {
+  /**
+   * Combined panel render function for all providers.
+   */
   panel: {
     builderRenderFunction?: BuilderRenderFunction;
   };
+
+  /**
+   * Combined history asset source and library entry IDs for the providers.
+   */
   history?: {
     assetSourceId: string;
     assetLibraryEntryId: string;
   };
-  quickActions?: {
-    registered: {
-      [kind: string]: string;
-    };
-    order: {
-      [kind: string]: string[];
-    };
-  };
+
+  /**
+   * All individual initialization results of the providers, i.e.
+   * the result of `initializeProvider` for every provider.
+   */
+  providerInitializationResults: ProviderInitializationResult<K, I, O>[];
 };
 
 /**
@@ -47,21 +56,24 @@ async function initializeProviders<K extends OutputKind, I, O extends Output>(
     cesdk: CreativeEditorSDK;
   },
   config: CommonPluginConfiguration<K, I, O>
-): Promise<ProvidersInitializationResult> {
+): Promise<ProvidersInitializationResult<K, I, O>> {
   let builderRenderFunction: BuilderRenderFunction | undefined;
 
+  const providerResults: ProviderInitializationResult<K, I, O>[] = [];
   if (!Array.isArray(providers)) {
     const initializedFromTextProviders = await Promise.all(
       providers.fromText.map((provider) => {
         return initializeProvider(kind, provider, options, config);
       })
     );
+    providerResults.push(...initializedFromTextProviders);
 
     const initializedFromImageProviders = await Promise.all(
       providers.fromImage.map((provider) => {
         return initializeProvider(kind, provider, options, config);
       })
     );
+    providerResults.push(...initializedFromImageProviders);
 
     builderRenderFunction = getBuilderRenderFunctionByFromType({
       prefix: kind,
@@ -69,21 +81,24 @@ async function initializeProviders<K extends OutputKind, I, O extends Output>(
       initializedFromImageProviders
     });
   } else {
-    const providerInitializationResults = await Promise.all(
+    const results = await Promise.all(
       providers.map((provider) => {
         return initializeProvider(kind, provider, options, config);
       })
     );
+    providerResults.push(...results);
+
     builderRenderFunction = getBuilderRenderFunctionByProvider({
       prefix: kind,
-      providerInitializationResults
+      providerInitializationResults: providerResults
     });
   }
 
   return {
     panel: {
       builderRenderFunction
-    }
+    },
+    providerInitializationResults: providerResults
   };
 }
 

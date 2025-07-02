@@ -138,7 +138,21 @@ function getProvider(
         userFlow: 'placeholder'
       },
       quickActions: {
-        actions: quickActions ?? []
+        actions: quickActions ?? [],
+        supported: {
+          'ly.img.editImage': {
+            mapInput: (input) => ({
+              prompt: input.prompt,
+              image_url: input.uri
+            })
+          },
+          'ly.img.swapBackground': {
+            mapInput: (input) => ({
+              prompt: input.prompt,
+              image_url: input.uri
+            })
+          }
+        }
       }
     },
     output: {

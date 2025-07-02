@@ -1,21 +1,9 @@
-import { BuilderRenderFunction } from '@cesdk/cesdk-js';
+import CreativeEditorSDK, { BuilderRenderFunction } from '@cesdk/cesdk-js';
 import { InferenceMetadata } from './quickAction/types';
 import { Metadata } from '@imgly/plugin-utils';
 import { INFERENCE_AI_METADATA_KEY } from './quickAction/utils';
 import { OutputKind } from './provider';
-
-export type ApplyCallbacks = {
-  onBefore?: () => void;
-  onAfter?: () => void;
-  onCancel?: () => void;
-  onApply: () => void;
-};
-
-export interface ConfirmationCallbacks {
-  unlock: () => void;
-  abort: () => void;
-  applyCallbacks: ApplyCallbacks | undefined;
-}
+import { Callbacks } from './CallbacksRegistry';
 
 /**
  * Creates a render function for the AI inference confirmation component.
@@ -27,9 +15,20 @@ export interface ConfirmationCallbacks {
  */
 async function createConfirmationRenderFunction<K extends OutputKind>(context: {
   kind: K;
-}): Promise<BuilderRenderFunction<ConfirmationCallbacks>> {
+
+  cesdk: CreativeEditorSDK;
+}): Promise<BuilderRenderFunction<Callbacks>> {
   const prefix = `ly.img.ai.${context.kind}.confirmation`;
-  const builderRenderFunction: BuilderRenderFunction<ConfirmationCallbacks> = (
+  context.cesdk?.i18n.setTranslations({
+    en: {
+      'ly.img.ai.processing': 'Generating...',
+      [`${prefix}.cancel`]: 'Cancel Generation',
+      [`${prefix}.apply`]: 'Apply Generation',
+      [`${prefix}.before`]: 'Before',
+      [`${prefix}.after`]: 'After'
+    }
+  });
+  const builderRenderFunction: BuilderRenderFunction<Callbacks> = (
     builderContext
   ) => {
     const { engine, builder, state, payload } = builderContext;
@@ -57,8 +56,8 @@ async function createConfirmationRenderFunction<K extends OutputKind>(context: {
       case 'processing': {
         builder.Button(`${prefix}.spinner`, {
           label: [
-            `ly.img.ai.inference.${metadata.quickActionId}.processing`,
-            `${prefix}.cancel`
+            `ly.img.ai.${metadata.quickActionId}.processing`,
+            `ly.img.ai.processing`
           ],
           isLoading: true
         });
@@ -67,7 +66,7 @@ async function createConfirmationRenderFunction<K extends OutputKind>(context: {
           icon: '@imgly/Cross',
           tooltip: `${prefix}.cancel`,
           onClick: () => {
-            payload.abort();
+            payload.onCancelGeneration?.();
             clearMetadata();
           }
         });
@@ -87,7 +86,6 @@ async function createConfirmationRenderFunction<K extends OutputKind>(context: {
             icon: '@imgly/Cross',
             tooltip: `${prefix}.cancel`,
             onClick: () => {
-              payload.unlock();
               onCancel();
               clearMetadata();
             }
@@ -130,12 +128,11 @@ async function createConfirmationRenderFunction<K extends OutputKind>(context: {
             color: 'accent',
             isDisabled: comparingState.value !== 'after',
             onClick: () => {
-              payload.unlock();
               clearMetadata();
 
               // Activating the old history happens in the next update lop.
               // @ts-ignore
-              cesdk.engine.editor._update();
+              cesdk?.engine.editor._update();
 
               onApply();
             }

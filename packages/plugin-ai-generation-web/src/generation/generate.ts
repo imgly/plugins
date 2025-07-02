@@ -96,7 +96,7 @@ async function generate<K extends OutputKind, I, O extends Output>(
     // Trigger the generation
     const composedMiddlewares = composeMiddlewares<I, O>([
       ...(provider.output.middleware ?? []),
-      config.debug ? loggingMiddleware() : undefined,
+      loggingMiddleware({ enable: config.debug }),
       ...(config.middlewares ?? []),
       config.dryRun
         ? dryRunMiddleware({ kind: provider.kind, blockInputs })

@@ -117,7 +117,7 @@ export function AnthropicProvider(
           > {
             let inferredText: string = '';
             for await (const chunk of stream) {
-              if (abortSignal.aborted) {
+              if (abortSignal?.aborted) {
                 break;
               }
               inferredText += chunk;

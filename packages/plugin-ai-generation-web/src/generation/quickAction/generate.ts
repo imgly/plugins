@@ -70,7 +70,7 @@ async function generate<K extends OutputKind, I, O extends Output>(
   const composedMiddlewares = composeMiddlewares<I, O>([
     ...(provider.output.middleware ?? []),
     ...(config.middlewares ?? []),
-    config.debug ? loggingMiddleware() : undefined,
+    loggingMiddleware({ enable: config.debug }),
     pendingMiddleware({}),
     ...(quickAction.confirmation
       ? [

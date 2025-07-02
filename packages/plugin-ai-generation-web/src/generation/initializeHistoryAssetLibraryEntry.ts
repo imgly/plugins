@@ -1,4 +1,3 @@
-import { IndexedDBAssetSource } from '@imgly/plugin-utils';
 import { OutputKind, Output } from './provider';
 import { InitializationContext } from './types';
 

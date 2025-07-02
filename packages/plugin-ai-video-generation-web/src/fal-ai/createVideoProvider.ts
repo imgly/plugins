@@ -49,9 +49,9 @@ function createVideoProvider<I extends Record<string, any>>(
   config: VideoProviderConfiguration
 ): Provider<'video', I, { kind: 'video'; url: string }> {
   const middleware = options.middleware ?? [];
-  if (config.debug) {
-    middleware.unshift(loggingMiddleware<I, VideoOutput>());
-  }
+  middleware.unshift(
+    loggingMiddleware<I, VideoOutput>({ enable: config.debug })
+  );
 
   const provider: Provider<'video', I, VideoOutput> = {
     id: options.modelKey,

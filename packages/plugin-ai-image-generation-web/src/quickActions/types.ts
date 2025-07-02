@@ -5,6 +5,6 @@ export type GetQuickActionDefinitionContext = {
   cesdk: CreativeEditorSDK;
 };
 
-export type GetQuickActionDefinition = (
+export type GetQuickActionDefinition<Q extends Record<string, any>> = (
   context: GetQuickActionDefinitionContext
-) => QuickActionDefinition;
+) => QuickActionDefinition<Q>;

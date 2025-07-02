@@ -2,10 +2,12 @@ import CreativeEditorSDK, {
   BuilderRenderFunction,
   CreativeEngine
 } from '@cesdk/cesdk-js';
-import Provider, { Output, OutputKind } from './provider';
+import { Output, OutputKind } from './provider';
 import createConfirmationRenderFunction from './createConfirmationRenderFunction';
 import createQuickActionMenuRenderFunction from './createQuickActionMenuRenderFunction';
 import { INFERENCE_AI_EDIT_MODE } from './quickAction/utils';
+import { ProviderInitializationResult } from './initializeProvider';
+import CallbacksRegistry from './CallbacksRegistry';
 
 async function initializeQuickActionComponents<
   K extends OutputKind,
@@ -13,20 +15,22 @@ async function initializeQuickActionComponents<
   O extends Output
 >(context: {
   kind: K;
-  providers: Provider<K, I, O>[];
+  providerInitializationResults: ProviderInitializationResult<K, I, O>[];
 
   cesdk: CreativeEditorSDK;
   engine: CreativeEngine;
 }) {
   const menuRenderFunction = await createQuickActionMenuRenderFunction({
     kind: context.kind,
-    providers: context.providers,
+    providerInitializationResults: context.providerInitializationResults,
 
     cesdk: context.cesdk,
     engine: context.engine
   });
   const confirmationRenderFunction = await createConfirmationRenderFunction({
-    kind: context.kind
+    kind: context.kind,
+
+    cesdk: context.cesdk
   });
 
   const builderRenderFunction: BuilderRenderFunction<any> = (
@@ -34,29 +38,46 @@ async function initializeQuickActionComponents<
   ) => {
     const { engine } = builderContext;
     if (engine.editor.getEditMode() === INFERENCE_AI_EDIT_MODE) {
+      // TODO: Get apply callbacks that is defined in `handleGenerateFromQuickAction`... how?
+      const blockIds = builderContext.engine.block.findAllSelected();
       confirmationRenderFunction({
         ...builderContext,
         payload: {
           ...(builderContext.payload ?? {}),
           applyCallbacks: {
             onBefore: () => {
-              // This is a placeholder for any logic that should run before applying
+              blockIds.forEach((blockId) => {
+                CallbacksRegistry.get()
+                  .get(blockId)
+                  .applyCallbacks?.onBefore?.();
+              });
             },
             onAfter: () => {
-              // This is a placeholder for any logic that should run after applying
+              blockIds.forEach((blockId) => {
+                CallbacksRegistry.get()
+                  .get(blockId)
+                  .applyCallbacks?.onAfter?.();
+              });
             },
             onCancel: () => {
-              // This is a placeholder for any logic that should run when canceling
+              blockIds.forEach((blockId) => {
+                CallbacksRegistry.get()
+                  .get(blockId)
+                  .applyCallbacks?.onCancel?.();
+              });
             },
             onApply: () => {
-              // This is a placeholder for any logic that should run when applying
+              blockIds.forEach((blockId) => {
+                CallbacksRegistry.get()
+                  .get(blockId)
+                  .applyCallbacks?.onApply?.();
+              });
             }
           },
-          unlock: () => {
-            // Logic to unlock the UI or state
-          },
-          abort: () => {
-            // Logic to abort the current operation
+          onCancelGeneration: () => {
+            blockIds.forEach((blockId) => {
+              CallbacksRegistry.get().get(blockId).onCancelGeneration?.();
+            });
           }
         }
       });

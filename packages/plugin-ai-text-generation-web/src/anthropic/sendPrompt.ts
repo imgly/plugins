@@ -25,7 +25,7 @@ async function sendPrompt(
     temperature?: number;
   },
   prompt: string,
-  signal: AbortSignal
+  signal?: AbortSignal
 ): Promise<AsyncGenerator<string, void, unknown>> {
   const customOptions: Partial<typeof DEFAULT_ANTHROPIC_PARAMS> = {};
   if (config.model) customOptions.model = config.model;

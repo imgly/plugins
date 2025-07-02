@@ -5,17 +5,17 @@ import { Output } from '../provider';
  * Sets the blocks to a pending state while the middleware is running.
  */
 function pendingMiddleware<I, O extends Output>({
-  pending = true
+  enable = true
 }: {
   /**
    * Should the blocks be set to a pending state?
    *
    * @default true
    */
-  pending?: boolean;
+  enable?: boolean;
 }): Middleware<I, O> {
   const middleware: Middleware<I, O> = async (input, options, next) => {
-    const blockIds = pending
+    const blockIds = enable
       ? options.blockIds ?? options.engine.block.findAllSelected()
       : [];
 

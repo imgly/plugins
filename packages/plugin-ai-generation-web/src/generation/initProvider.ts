@@ -217,7 +217,7 @@ async function initQuickActions<K extends OutputKind, I, O extends Output>(
 
   const quickActionMenus: { [kind: string]: QuickActionMenu } = {};
 
-  quickActionsInput.actions.forEach((quickAction) => {
+  quickActionsInput.actions?.forEach((quickAction) => {
     const quickActionMenuId = quickAction.kind ?? provider.kind;
     if (quickActionMenus[quickActionMenuId] == null) {
       quickActionMenus[quickActionMenuId] = getQuickActionMenu(

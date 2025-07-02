@@ -1,11 +1,10 @@
 import { describe, expect, it, jest, beforeEach } from '@jest/globals';
-import createConfirmationRenderFunction, {
-  ConfirmationCallbacks
-} from '../generation/createConfirmationRenderFunction';
+import createConfirmationRenderFunction from '../generation/createConfirmationRenderFunction';
 import { BuilderRenderFunctionContext } from '@cesdk/cesdk-js';
 import { InferenceMetadata } from '../generation/quickAction/types';
 import { INFERENCE_AI_METADATA_KEY } from '../generation/quickAction/utils';
 import { OutputKind } from '../generation/provider';
+import { Callbacks } from '../generation/CallbacksRegistry';
 
 // Mock the plugin-utils module
 jest.mock('@imgly/plugin-utils', () => {
@@ -29,6 +28,9 @@ const mockCesdk = {
     editor: {
       _update: jest.fn()
     }
+  },
+  i18n: {
+    setTranslations: jest.fn()
   }
 };
 (global as any).cesdk = mockCesdk;
@@ -37,7 +39,7 @@ describe('createConfirmationRenderFunction', () => {
   let mockEngine: any;
   let mockBuilder: any;
   let mockState: any;
-  let mockBuilderContext: BuilderRenderFunctionContext<ConfirmationCallbacks>;
+  let mockBuilderContext: BuilderRenderFunctionContext<Callbacks>;
   let mockMetadataInstance: any;
   let MockMetadata: any;
   let testKind: OutputKind;
@@ -74,6 +76,7 @@ describe('createConfirmationRenderFunction', () => {
       payload: {
         unlock: jest.fn(),
         abort: jest.fn(),
+        onCancelGeneration: jest.fn(),
         applyCallbacks: undefined
       },
       renderOptimizedSmallViewport: false,
@@ -81,13 +84,14 @@ describe('createConfirmationRenderFunction', () => {
         builder: mockBuilder,
         global: {}
       }
-    } as unknown as BuilderRenderFunctionContext<ConfirmationCallbacks>;
+    } as unknown as BuilderRenderFunctionContext<Callbacks>;
   });
 
   describe('factory function behavior', () => {
     it('should return a promise that resolves to a builder render function', async () => {
       const renderFunction = await createConfirmationRenderFunction({
-        kind: testKind
+        kind: testKind,
+        cesdk: mockCesdk as any
       });
 
       expect(typeof renderFunction).toBe('function');
@@ -95,10 +99,12 @@ describe('createConfirmationRenderFunction', () => {
 
     it('should create different prefixes for different kinds', async () => {
       const imageRenderFunction = await createConfirmationRenderFunction({
-        kind: 'image'
+        kind: 'image',
+        cesdk: mockCesdk as any
       });
       const videoRenderFunction = await createConfirmationRenderFunction({
-        kind: 'video'
+        kind: 'video',
+        cesdk: mockCesdk as any
       });
 
       expect(typeof imageRenderFunction).toBe('function');
@@ -113,7 +119,8 @@ describe('createConfirmationRenderFunction', () => {
 
     beforeEach(async () => {
       renderFunction = await createConfirmationRenderFunction({
-        kind: testKind
+        kind: testKind,
+        cesdk: mockCesdk as any
       });
       expectedPrefix = `ly.img.ai.${testKind}.confirmation`;
     });
@@ -163,10 +170,7 @@ describe('createConfirmationRenderFunction', () => {
         expect(mockBuilder.Button).toHaveBeenCalledWith(
           `${expectedPrefix}.spinner`,
           {
-            label: [
-              'ly.img.ai.inference.test-action.processing',
-              `${expectedPrefix}.cancel`
-            ],
+            label: ['ly.img.ai.test-action.processing', 'ly.img.ai.processing'],
             isLoading: true
           }
         );
@@ -195,7 +199,9 @@ describe('createConfirmationRenderFunction', () => {
 
         cancelOnClick();
 
-        expect(mockBuilderContext.payload!.abort).toHaveBeenCalled();
+        expect(
+          mockBuilderContext.payload!.onCancelGeneration
+        ).toHaveBeenCalled();
         expect(mockMetadataInstance.clear).toHaveBeenCalledWith('block1');
       });
 
@@ -247,7 +253,9 @@ describe('createConfirmationRenderFunction', () => {
           const onCancel = jest.fn();
           mockBuilderContext.payload!.applyCallbacks = {
             onCancel,
-            onApply: jest.fn()
+            onApply: jest.fn(),
+            onBefore: jest.fn(),
+            onAfter: jest.fn()
           };
 
           renderFunction(mockBuilderContext);
@@ -262,22 +270,13 @@ describe('createConfirmationRenderFunction', () => {
           );
         });
 
-        it('should not render cancel button when onCancel callback is not provided', () => {
-          mockBuilderContext.payload!.applyCallbacks = { onApply: jest.fn() };
-
-          renderFunction(mockBuilderContext);
-
-          const cancelButtonCalls = mockBuilder.Button.mock.calls.filter(
-            (call: any) => call[0] === `${expectedPrefix}.cancel`
-          );
-          expect(cancelButtonCalls).toHaveLength(0);
-        });
-
         it('should handle cancel button click correctly', () => {
           const onCancel = jest.fn();
           mockBuilderContext.payload!.applyCallbacks = {
             onCancel,
-            onApply: jest.fn()
+            onApply: jest.fn(),
+            onBefore: jest.fn(),
+            onAfter: jest.fn()
           };
 
           renderFunction(mockBuilderContext);
@@ -289,7 +288,7 @@ describe('createConfirmationRenderFunction', () => {
 
           cancelOnClick();
 
-          expect(mockBuilderContext.payload!.unlock).toHaveBeenCalled();
+          // In confirmation status, only onCancel is called, not onCancelGeneration
           expect(onCancel).toHaveBeenCalled();
           expect(mockMetadataInstance.clear).toHaveBeenCalledWith('block1');
         });
@@ -300,6 +299,7 @@ describe('createConfirmationRenderFunction', () => {
           const onBefore = jest.fn();
           const onAfter = jest.fn();
           mockBuilderContext.payload!.applyCallbacks = {
+            onCancel: jest.fn(),
             onBefore,
             onAfter,
             onApply: jest.fn()
@@ -340,34 +340,11 @@ describe('createConfirmationRenderFunction', () => {
           );
         });
 
-        it('should not render comparison buttons when onBefore is missing', () => {
-          const onAfter = jest.fn();
-          mockBuilderContext.payload!.applyCallbacks = {
-            onAfter,
-            onApply: jest.fn()
-          };
-
-          renderFunction(mockBuilderContext);
-
-          expect(mockBuilder.ButtonGroup).not.toHaveBeenCalled();
-        });
-
-        it('should not render comparison buttons when onAfter is missing', () => {
-          const onBefore = jest.fn();
-          mockBuilderContext.payload!.applyCallbacks = {
-            onBefore,
-            onApply: jest.fn()
-          };
-
-          renderFunction(mockBuilderContext);
-
-          expect(mockBuilder.ButtonGroup).not.toHaveBeenCalled();
-        });
-
         it('should handle before button click correctly', () => {
           const onBefore = jest.fn();
           const onAfter = jest.fn();
           mockBuilderContext.payload!.applyCallbacks = {
+            onCancel: jest.fn(),
             onBefore,
             onAfter,
             onApply: jest.fn()
@@ -394,6 +371,7 @@ describe('createConfirmationRenderFunction', () => {
           const onBefore = jest.fn();
           const onAfter = jest.fn();
           mockBuilderContext.payload!.applyCallbacks = {
+            onCancel: jest.fn(),
             onBefore,
             onAfter,
             onApply: jest.fn()
@@ -421,6 +399,7 @@ describe('createConfirmationRenderFunction', () => {
           const onBefore = jest.fn();
           const onAfter = jest.fn();
           mockBuilderContext.payload!.applyCallbacks = {
+            onCancel: jest.fn(),
             onBefore,
             onAfter,
             onApply: jest.fn()
@@ -447,7 +426,12 @@ describe('createConfirmationRenderFunction', () => {
       describe('apply button', () => {
         it('should render apply button when onApply callback is provided', () => {
           const onApply = jest.fn();
-          mockBuilderContext.payload!.applyCallbacks = { onApply };
+          mockBuilderContext.payload!.applyCallbacks = {
+            onCancel: jest.fn(),
+            onBefore: jest.fn(),
+            onAfter: jest.fn(),
+            onApply
+          };
 
           renderFunction(mockBuilderContext);
 
@@ -463,21 +447,15 @@ describe('createConfirmationRenderFunction', () => {
           );
         });
 
-        it('should not render apply button when onApply callback is not provided', () => {
-          mockBuilderContext.payload!.applyCallbacks = undefined;
-
-          renderFunction(mockBuilderContext);
-
-          const applyButtonCalls = mockBuilder.Button.mock.calls.filter(
-            (call: any) => call[0] === `${expectedPrefix}.apply`
-          );
-          expect(applyButtonCalls).toHaveLength(0);
-        });
-
         it('should disable apply button when comparing state is not "after"', () => {
           mockComparingState.value = 'before';
           const onApply = jest.fn();
-          mockBuilderContext.payload!.applyCallbacks = { onApply };
+          mockBuilderContext.payload!.applyCallbacks = {
+            onCancel: jest.fn(),
+            onBefore: jest.fn(),
+            onAfter: jest.fn(),
+            onApply
+          };
 
           renderFunction(mockBuilderContext);
 
@@ -491,7 +469,12 @@ describe('createConfirmationRenderFunction', () => {
         it('should enable apply button when comparing state is "after"', () => {
           mockComparingState.value = 'after';
           const onApply = jest.fn();
-          mockBuilderContext.payload!.applyCallbacks = { onApply };
+          mockBuilderContext.payload!.applyCallbacks = {
+            onCancel: jest.fn(),
+            onBefore: jest.fn(),
+            onAfter: jest.fn(),
+            onApply
+          };
 
           renderFunction(mockBuilderContext);
 
@@ -504,7 +487,12 @@ describe('createConfirmationRenderFunction', () => {
 
         it('should handle apply button click correctly', () => {
           const onApply = jest.fn();
-          mockBuilderContext.payload!.applyCallbacks = { onApply };
+          mockBuilderContext.payload!.applyCallbacks = {
+            onCancel: jest.fn(),
+            onBefore: jest.fn(),
+            onAfter: jest.fn(),
+            onApply
+          };
 
           renderFunction(mockBuilderContext);
 
@@ -515,7 +503,6 @@ describe('createConfirmationRenderFunction', () => {
 
           applyOnClick();
 
-          expect(mockBuilderContext.payload!.unlock).toHaveBeenCalled();
           expect(mockMetadataInstance.clear).toHaveBeenCalledWith('block1');
           expect(mockCesdk.engine.editor._update).toHaveBeenCalled();
           expect(onApply).toHaveBeenCalled();
@@ -575,7 +562,8 @@ describe('createConfirmationRenderFunction', () => {
   describe('different kinds', () => {
     it('should use correct prefix for video kind', async () => {
       const renderFunction = await createConfirmationRenderFunction({
-        kind: 'video'
+        kind: 'video',
+        cesdk: mockCesdk as any
       });
       mockEngine.block.findAllSelected.mockReturnValue(['block1']);
       mockMetadataInstance.get.mockReturnValue({
@@ -593,7 +581,8 @@ describe('createConfirmationRenderFunction', () => {
 
     it('should use correct prefix for text kind', async () => {
       const renderFunction = await createConfirmationRenderFunction({
-        kind: 'text'
+        kind: 'text',
+        cesdk: mockCesdk as any
       });
       mockEngine.block.findAllSelected.mockReturnValue(['block1']);
       mockMetadataInstance.get.mockReturnValue({

@@ -2,8 +2,14 @@
 import { GenerationResult, Output } from '../provider';
 import { Middleware } from './middleware';
 
-function loggingMiddleware<I, O extends Output>() {
+function loggingMiddleware<I, O extends Output>({
+  enable = true
+}: {
+  enable: boolean | undefined;
+}) {
   const middleware: Middleware<I, O> = async (input, options, next) => {
+    if (!enable) return next(input, options);
+
     console.group('[GENERATION]');
     console.log(`Generating with input:`, JSON.stringify(input, null, 2));
     let result: GenerationResult<O> | undefined;

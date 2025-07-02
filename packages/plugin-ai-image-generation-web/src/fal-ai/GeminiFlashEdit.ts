@@ -58,6 +58,20 @@ function getProvider(
       inputReference: '#/components/schemas/GeminiFlashEditInput',
       cesdk,
       quickActions,
+      supportedQuickActions: {
+        'ly.img.editImage': {
+          mapInput: (input) => ({
+            prompt: input.prompt,
+            image_url: input.uri
+          })
+        },
+        'ly.img.swapBackground': {
+          mapInput: (input) => ({
+            prompt: input.prompt,
+            image_url: input.uri
+          })
+        }
+      },
       middleware: config.middlewares,
       headers: config.headers,
       getBlockInput: async (input) => {

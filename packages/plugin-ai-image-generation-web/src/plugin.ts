@@ -10,7 +10,9 @@ import { PluginConfiguration } from './types';
 import iconSprite, { PLUGIN_ICON_SET_ID } from './iconSprite';
 import { toArray } from '@imgly/plugin-utils';
 import { PLUGIN_ID } from './constants';
-import quickActions from './quickActions';
+import EditImageQuickAction from './quickActions/EditImage';
+import SwapBackgroundQuickAction from './quickActions/SwapBackground';
+// import quickActions from './quickActions';
 
 export { PLUGIN_ID } from './constants';
 
@@ -34,10 +36,12 @@ export function ImageGeneration<I, O extends Output>(
       printConfigWarnings(config);
 
       const registry = ActionRegistry.get();
-      quickActions().forEach((quickAction) => {
-        console.log('register quick action', quickAction);
-        registry.register(quickAction);
-      });
+      registry.register(EditImageQuickAction({ cesdk }));
+      registry.register(SwapBackgroundQuickAction({ cesdk }));
+      // quickActions().forEach((quickAction) => {
+      //   console.log('register quick action', quickAction);
+      //   registry.register(quickAction);
+      // });
 
       const text2image = config.providers?.text2image ?? config.text2image;
       const image2image = config.providers?.image2image ?? config.image2image;
@@ -61,13 +65,14 @@ export function ImageGeneration<I, O extends Output>(
 
       const initializedQuickActions = await initializeQuickActionComponents({
         kind: 'image',
-        providers: [...text2imageProviders, ...image2imageProviders],
+        providerInitializationResults:
+          initializedResult.providerInitializationResults,
         cesdk,
         engine: cesdk.engine
       });
 
       if (initializedResult.history?.assetSourceId != null) {
-        // Add combined asset source for this kind
+        // TODO: Add combined asset source for this kind
       }
 
       if (initializedQuickActions.renderFunction != null) {
@@ -75,6 +80,9 @@ export function ImageGeneration<I, O extends Output>(
           `ly.img.ai.image.canvasMenu`,
           initializedQuickActions.renderFunction
         );
+        cesdk.ui.setCanvasMenuOrder([`ly.img.ai.image.canvasMenu`], {
+          editMode: 'ly.img.ai.inference.editMode'
+        });
       }
 
       if (initializedResult.panel.builderRenderFunction != null) {

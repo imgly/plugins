@@ -1,12 +1,13 @@
 import CreativeEditorSDK, { BuilderRenderFunction } from '@cesdk/cesdk-js';
-import Provider, { GetInput, Output, OutputKind } from './provider';
+import Provider, { Output, OutputKind } from './provider';
 import createPanelRenderFunction from './createPanelRenderFunction';
 import { CommonPluginConfiguration } from '../types';
 import initializeHistoryAssetSource from './initializeHistoryAssetSource';
 import initializeHistoryAssetLibraryEntry from './initializeHistoryAssetLibraryEntry';
 import { InitializationContext } from './types';
-
-type Result<O> = { status: 'success'; output: O } | { status: 'aborted' };
+import createGenerateFunction, {
+  type Generate
+} from './createGenerateFunction';
 
 export type ProviderInitializationResult<
   K extends OutputKind,
@@ -18,25 +19,20 @@ export type ProviderInitializationResult<
   panel: {
     builderRenderFunction?: BuilderRenderFunction;
   };
+
   history: {
     assetSourceId?: string;
     assetLibraryEntryId?: string;
   };
-  quickActions?: {
-    registered: {
-      [kind: string]: string;
-    };
-    order: {
-      [kind: string]: string[];
-    };
-  };
 
-  // TODO: Expose generate function in the provider interface
-  generate?: (getInput: GetInput<I>) => Promise<Result<O>>;
+  generate: Generate<I, O>;
 };
 
+/**
+ * Initializes a provider with the given configuration and options.
+ */
 async function initializeProvider<K extends OutputKind, I, O extends Output>(
-  kind: K,
+  _kind: K,
   provider: Provider<K, I, O>,
   options: {
     cesdk: CreativeEditorSDK;
@@ -60,20 +56,17 @@ async function initializeProvider<K extends OutputKind, I, O extends Output>(
     historyAssetSourceId
   );
 
-  if (kind === 'audio') {
-    console.log({
-      provider: context.provider,
-      kind,
-      historyAssetSourceId,
-      historyAssetLibraryEntryId
-    });
-  }
-
   context.options.historyAssetSourceId = historyAssetSourceId;
   context.options.historyAssetLibraryEntryId = historyAssetLibraryEntryId;
 
   const builderRenderFunction: BuilderRenderFunction | undefined =
     await createPanelRenderFunction(context);
+
+  const generate = createGenerateFunction({
+    provider,
+    cesdk: options.cesdk,
+    engine: options.cesdk.engine
+  });
 
   return {
     provider,
@@ -83,7 +76,8 @@ async function initializeProvider<K extends OutputKind, I, O extends Output>(
     history: {
       assetSourceId: historyAssetSourceId,
       assetLibraryEntryId: historyAssetLibraryEntryId
-    }
+    },
+    generate
   };
 }
 

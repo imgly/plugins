@@ -5,6 +5,7 @@ import {
   Scope
 } from '@cesdk/cesdk-js';
 import { OutputKind, Output } from './generation/provider';
+import { Result } from './generation/createGenerateFunction';
 
 /**
  * Base properties shared by all action definitions.
@@ -45,7 +46,7 @@ export interface QuickActionRenderContext<Q = Record<string, any>> {
   /** Close the entire quick action popover */
   close: () => void;
   /** Generate output using the quick action input */
-  generate: (input: Q) => Promise<Output>;
+  generate: (input: Q) => Promise<Result<Output>>;
 }
 
 /**

@@ -47,8 +47,8 @@ export class CustomAssetSource implements AssetSource {
    * Get all current assets definitions used by this asset source
    */
   public getCurrentAssets(): AssetDefinition[] {
-    return typeof this.assetsOrProvider === 'function' 
-      ? this.assetsOrProvider() 
+    return typeof this.assetsOrProvider === 'function'
+      ? this.assetsOrProvider()
       : this.assetsOrProvider;
   }
 
@@ -200,6 +200,7 @@ export class CustomAssetSource implements AssetSource {
     locale: string
   ): void {
     if (typeof this.assetsOrProvider === 'function') {
+      // eslint-disable-next-line no-console
       console.warn('Cannot update label on dynamic asset provider');
       return;
     }
@@ -287,11 +288,14 @@ export class CustomAssetSource implements AssetSource {
    */
   addAsset(asset: AssetDefinition): void {
     if (typeof this.assetsOrProvider === 'function') {
+      // eslint-disable-next-line no-console
       console.warn('Cannot add asset to dynamic asset provider');
       return;
     }
     // Check if asset with this ID already exists
-    const existingIndex = this.assetsOrProvider.findIndex((a) => a.id === asset.id);
+    const existingIndex = this.assetsOrProvider.findIndex(
+      (a) => a.id === asset.id
+    );
     if (existingIndex >= 0) {
       // Replace existing asset
       this.assetsOrProvider[existingIndex] = asset;
@@ -308,10 +312,13 @@ export class CustomAssetSource implements AssetSource {
    */
   removeAsset(assetId: string): void {
     if (typeof this.assetsOrProvider === 'function') {
+      // eslint-disable-next-line no-console
       console.warn('Cannot remove asset from dynamic asset provider');
       return;
     }
-    const index = this.assetsOrProvider.findIndex((asset) => asset.id === assetId);
+    const index = this.assetsOrProvider.findIndex(
+      (asset) => asset.id === assetId
+    );
     if (index !== -1) {
       this.assetsOrProvider.splice(index, 1);
       this.activeAssetIds.delete(assetId);

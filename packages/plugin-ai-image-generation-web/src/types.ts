@@ -11,7 +11,6 @@ import {
  */
 export interface PluginConfiguration<I, O extends Output>
   extends CommonPluginConfiguration<'image', I, O> {
-
   providers: {
     /**
      * Provider of a model for image generation just from a (prompt) text.
@@ -38,31 +37,41 @@ export interface PluginConfiguration<I, O extends Output>
 
 /**
  * Input types for image-specific quick actions
+ * This interface is extended by individual quick action files using module augmentation
  */
 export interface ImageQuickActionInputs {
-  'changeImage': {
-    prompt: string;
-    uri: string;
-  };
+  // Individual quick action files will extend this interface using module augmentation
 }
 
 /**
  * Type-safe support mapping for image quick actions
  */
-export interface ImageQuickActionSupport<I, K extends keyof ImageQuickActionInputs> {
+export interface ImageQuickActionSupport<
+  I,
+  K extends keyof ImageQuickActionInputs
+> {
   mapInput: (input: ImageQuickActionInputs[K]) => I;
 }
+
+/**
+ * Type-safe mapping for image quick action support
+ */
+export type ImageQuickActionSupportMap<I> = {
+  [K in keyof ImageQuickActionInputs]?: ImageQuickActionSupport<I, K>;
+} & {
+  [key: string]: {
+    mapInput: (input: any) => I;
+  };
+};
 
 /**
  * Image provider extension with type-safe quick action support
  * Only parameterized by K (the quick action key), O is fixed to ImageOutput
  */
 export interface ImageProvider<I> extends Provider<'image', I, ImageOutput> {
-  input: Provider<'image', I, ImageOutput>['input'] & {
-    quickActions?: Provider<'image', I, ImageOutput>['input']['quickActions'] & {
-      supported?: {
-        [K in keyof ImageQuickActionInputs]?: ImageQuickActionSupport<I, K>;
-      };
+  input: Omit<Provider<'image', I, ImageOutput>['input'], 'quickActions'> & {
+    quickActions?: {
+      supported?: ImageQuickActionSupportMap<I>;
     };
   };
 }

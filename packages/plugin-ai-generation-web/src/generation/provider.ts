@@ -174,7 +174,7 @@ export type GenerationResult<O extends Output, C = O> =
  * The options for the generation function.
  */
 export type GenerationOptions = {
-  abortSignal: AbortSignal;
+  abortSignal?: AbortSignal;
   engine: CreativeEngine;
   cesdk?: CreativeEditorSDK;
 };
@@ -387,7 +387,7 @@ export interface QuickActionSupport<I> {
    * @param quickActionInput The input from the quick action
    * @returns The mapped input for the provider
    */
-  mapInput: <Q>(quickActionInput: Q) => Promise<I>;
+  mapInput: (quickActionInput: any) => I;
 }
 
 export type QuickActionsInput<I, O extends Output> = {
@@ -395,7 +395,7 @@ export type QuickActionsInput<I, O extends Output> = {
    * Provider-defined quick actions (legacy).
    */
   actions?: QuickAction<I, O>[];
-  
+
   /**
    * Supported global quick actions with input transformations.
    * Key is the quick action ID, value is the transformation mapping.
