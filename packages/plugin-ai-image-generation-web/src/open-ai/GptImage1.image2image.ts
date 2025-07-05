@@ -151,6 +151,12 @@ function getProvider(
               prompt: input.prompt,
               image_url: input.uri
             })
+          },
+          'ly.img.styleTransfer': {
+            mapInput: (input) => ({
+              prompt: input.style,
+              image_url: input.uri
+            })
           }
         }
       }
