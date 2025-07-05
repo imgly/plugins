@@ -73,8 +73,12 @@ function handleGenerateFromQuickAction<
   K extends OutputKind,
   I,
   O extends Output
->(options: GenerationOptions<Q, K, I, O>): (input: Q) => Promise<Result<O>> {
-  return async (input: Q) => {
+>(
+  options: GenerationOptions<Q, K, I, O>
+): (input: Q, generateOptions?: { blockIds?: number[] }) => Promise<Result<O>> {
+  return async (input: Q, generateOptions?: { blockIds?: number[] }) => {
+    // Use provided blockIds or fall back to default selection
+    const targetBlockIds = generateOptions?.blockIds ?? options.blockIds;
     if (options.providerInitializationResult == null) {
       if (options.debug) {
         // eslint-disable-next-line no-console
@@ -115,6 +119,7 @@ function handleGenerateFromQuickAction<
       blockIdsToLock: options.blockIds
     });
     options.blockIds.forEach((blockId) => {
+    targetBlockIds.forEach((blockId) => {
       CallbacksRegistry.get().register(blockId, {
         onCancelGeneration: () => {
           abortController.abort(ABORT_REASON_USER_CANCEL);
@@ -126,13 +131,13 @@ function handleGenerateFromQuickAction<
       });
     });
 
-    options?.blockIds?.forEach((blockId) => {
+    targetBlockIds?.forEach((blockId) => {
       metadata.set(blockId, {
         status: 'processing',
         quickActionId: options.quickAction.id
       });
     });
-    options?.blockIds.forEach((blockId) => {
+    targetBlockIds.forEach((blockId) => {
       if (options.cesdk.engine.block.isValid(blockId))
         options.cesdk.engine.block.setState(blockId, {
           type: 'Pending',
@@ -159,7 +164,7 @@ function handleGenerateFromQuickAction<
           const { applyCallbacks: initialApplyCallbacks } =
             await getApplyCallbacks(result, {
               kind: options.providerInitializationResult.provider.kind,
-              blockIds: options.blockIds,
+              blockIds: targetBlockIds,
               cesdk: options.cesdk,
               abortSignal
             });
@@ -167,14 +172,14 @@ function handleGenerateFromQuickAction<
           // Set the blocks to a ready state AFTER `getApplyCallbacks` was called since
           // it will set the block to the "after" image and until then we still want
           // the spinner spinning.
-          options?.blockIds.forEach((blockId) => {
+          targetBlockIds.forEach((blockId) => {
             if (options.cesdk.engine.block.isValid(blockId))
               options.cesdk.engine.block.setState(blockId, { type: 'Ready' });
           });
 
           if (options.confirmation) {
             // For the same as the Ready state, we do this AFTER `getApplyCallbacks` was called
-            options.blockIds.forEach((blockId) => {
+            targetBlockIds.forEach((blockId) => {
               // Metadata will be cleared in the confirmation component
               // see createConfirmationRenderFunction.ts
               metadata.set(blockId, {
@@ -195,12 +200,14 @@ function handleGenerateFromQuickAction<
               }
             };
 
-            options.blockIds.forEach((blockId) => {
+            targetBlockIds.forEach((blockId) => {
               CallbacksRegistry.get().register(blockId, { applyCallbacks });
             });
           } else {
-            options.blockIds.forEach((blockId) => {
-              metadata.clear(blockId);
+            targetBlockIds.forEach((blockId) => {
+              if (options.cesdk.engine.block.isValid(blockId)) {
+                metadata.clear(blockId);
+              }
             });
             // Apply the result directly
             initialApplyCallbacks.onApply();
@@ -216,8 +223,10 @@ function handleGenerateFromQuickAction<
             console.log('Generation was aborted');
           }
           unlockFromEditMode();
-          options.blockIds.forEach((blockId) => {
-            metadata.clear(blockId);
+          targetBlockIds.forEach((blockId) => {
+            if (options.cesdk.engine.block.isValid(blockId)) {
+              metadata.clear(blockId);
+            }
           });
           return result;
         }
@@ -231,8 +240,10 @@ function handleGenerateFromQuickAction<
           });
 
           unlockFromEditMode();
-          options.blockIds.forEach((blockId) => {
-            metadata.clear(blockId);
+          targetBlockIds.forEach((blockId) => {
+            if (options.cesdk.engine.block.isValid(blockId)) {
+              metadata.clear(blockId);
+            }
           });
           // eslint-disable-next-line no-console
           console.error(`[Generate]: ${result.message}`);
@@ -244,12 +255,14 @@ function handleGenerateFromQuickAction<
         }
       }
     } catch (error) {
-      options.blockIds.forEach((blockId) => {
-        metadata.clear(blockId);
+      targetBlockIds.forEach((blockId) => {
+        if (options.cesdk.engine.block.isValid(blockId)) {
+          metadata.clear(blockId);
+        }
       });
       throw error;
     } finally {
-      options?.blockIds.forEach((blockId) => {
+      targetBlockIds.forEach((blockId) => {
         if (options.cesdk.engine.block.isValid(blockId))
           options.cesdk.engine.block.setState(blockId, { type: 'Ready' });
       });

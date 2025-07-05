@@ -46,7 +46,10 @@ export interface QuickActionRenderContext<Q = Record<string, any>> {
   /** Close the entire quick action popover */
   close: () => void;
   /** Generate output using the quick action input */
-  generate: (input: Q) => Promise<Result<Output>>;
+  generate: (
+    input: Q,
+    options?: { blockIds?: number[] }
+  ) => Promise<Result<Output>>;
 }
 
 /**
