@@ -13,6 +13,7 @@ import { PLUGIN_ID } from './constants';
 import EditImageQuickAction from './quickActions/EditImage';
 import SwapBackgroundQuickAction from './quickActions/SwapBackground';
 import StyleTransferQuickAction from './quickActions/StyleTransfer';
+import ArtistTransferQuickAction from './quickActions/ArtistTransfer';
 // import quickActions from './quickActions';
 
 export { PLUGIN_ID } from './constants';
@@ -40,6 +41,7 @@ export function ImageGeneration<I, O extends Output>(
       registry.register(EditImageQuickAction({ cesdk }));
       registry.register(SwapBackgroundQuickAction({ cesdk }));
       registry.register(StyleTransferQuickAction({ cesdk }));
+      registry.register(ArtistTransferQuickAction({ cesdk }));
       // quickActions().forEach((quickAction) => {
       //   console.log('register quick action', quickAction);
       //   registry.register(quickAction);

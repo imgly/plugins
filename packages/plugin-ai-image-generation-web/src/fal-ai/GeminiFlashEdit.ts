@@ -76,6 +76,12 @@ function getProvider(
             prompt: input.style,
             image_url: input.uri
           })
+        },
+        'ly.img.artistTransfer': {
+          mapInput: (input) => ({
+            prompt: input.artist,
+            image_url: input.uri
+          })
         }
       },
       middleware: config.middlewares,
