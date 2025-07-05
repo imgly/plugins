@@ -181,19 +181,19 @@ function createQuickActionMenuRenderFunction<
       isLoading: isGeneratingState.value,
       trailingIcon: null,
       children: ({ close }) => {
-        builder.Section(`${prefix}.popover.section`, {
-          children: () => {
-            if (
-              toggleExpandedState.value == null &&
-              providerValues.length > 1
-            ) {
+        if (toggleExpandedState.value == null && providerValues.length > 1) {
+          builder.Section('${prefix}.popover.section.providerSelect', {
+            children: () => {
               builder.Select(`${prefix}.providerSelect.select`, {
                 inputLabel: 'Provider',
                 values: providerValues,
                 ...currentProviderState
               });
             }
-
+          });
+        }
+        builder.Section(`${prefix}.popover.section`, {
+          children: () => {
             if (toggleExpandedState.value !== undefined) {
               const expandedQuickAction =
                 currentSupportedQuickActions?.quickActions.find(
