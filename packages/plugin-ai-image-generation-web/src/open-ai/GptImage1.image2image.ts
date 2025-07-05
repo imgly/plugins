@@ -163,6 +163,12 @@ function getProvider(
               prompt: input.artist,
               image_url: input.uri
             })
+          },
+          'ly.img.createVariant': {
+            mapInput: (input) => ({
+              prompt: input.prompt,
+              image_url: input.uri
+            })
           }
         }
       }
