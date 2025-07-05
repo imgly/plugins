@@ -43,6 +43,11 @@ type GenerationOptions<
   confirmation?: boolean;
 
   /**
+   * Should the blocks be locked to edit mode while the generation is running?
+   */
+  lock?: boolean;
+
+  /**
    * Additional middlewares added to the generation process.
    */
   middlewares?: Middleware<I, O>[];
@@ -113,20 +118,27 @@ function handleGenerateFromQuickAction<
     );
 
     // Continue locking to edit mode
-    const unlockFromEditMode = lockSelectionToEditMode({
-      engine: options.cesdk.engine,
-      editModeToLockTo: INFERENCE_AI_EDIT_MODE,
-      blockIdsToLock: options.blockIds
-    });
-    options.blockIds.forEach((blockId) => {
+    const unlockFromEditMode =
+      options.lock ?? false
+        ? lockSelectionToEditMode({
+            engine: options.cesdk.engine,
+            editModeToLockTo: INFERENCE_AI_EDIT_MODE,
+            blockIdsToLock: targetBlockIds
+          })
+        : () => {
+            /* No-op if not locking to edit mode */
+          };
     targetBlockIds.forEach((blockId) => {
       CallbacksRegistry.get().register(blockId, {
         onCancelGeneration: () => {
           abortController.abort(ABORT_REASON_USER_CANCEL);
-          if (options.cesdk.engine.block.isValid(blockId))
-            options.cesdk.engine.block.setState(blockId, { type: 'Ready' });
-          metadata.clear(blockId);
           unlockFromEditMode();
+
+          if (options.cesdk.engine.block.isValid(blockId)) {
+            if (options.cesdk.engine.block.isValid(blockId))
+              options.cesdk.engine.block.setState(blockId, { type: 'Ready' });
+            metadata.clear(blockId);
+          }
         }
       });
     });

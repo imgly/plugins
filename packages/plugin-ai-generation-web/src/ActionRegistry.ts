@@ -71,6 +71,16 @@ export interface QuickActionDefinition<Q extends Record<string, any>>
    */
   scopes?: Scope[];
 
+  /**
+   * Overrides the defaults for this quick action.
+   */
+  defaults?: {
+    /** Should the generation be directly applied or does it need confirmation */
+    confirmation?: boolean;
+    /** Whether the block should be locked */
+    lock?: boolean;
+  };
+
   /** Render function for the quick action UI */
   render: (
     context: BuilderRenderFunctionContext<any> & QuickActionRenderContext<Q>

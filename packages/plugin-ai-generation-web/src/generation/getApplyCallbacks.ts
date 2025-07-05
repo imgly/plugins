@@ -41,6 +41,16 @@ function getApplyCallbacks<O extends Output>(
   result: ResultSuccess<O>,
   options: GetApplyCallbacksOptions
 ): Promise<ReturnValue> {
+  if (options.blockIds.some((id) => !options.cesdk.engine.block.isValid(id))) {
+    return Promise.resolve({
+      applyCallbacks: {
+        onBefore: () => {},
+        onAfter: () => {},
+        onCancel: () => {},
+        onApply: () => {}
+      }
+    });
+  }
   switch (options.kind) {
     case 'text':
       return getApplyCallbacksForText(result, options);

@@ -182,7 +182,7 @@ function createQuickActionMenuRenderFunction<
       trailingIcon: null,
       children: ({ close }) => {
         if (toggleExpandedState.value == null && providerValues.length > 1) {
-          builder.Section('${prefix}.popover.section.providerSelect', {
+          builder.Section(`${prefix}.popover.section.providerSelect`, {
             children: () => {
               builder.Select(`${prefix}.providerSelect.select`, {
                 inputLabel: 'Provider',
@@ -219,7 +219,8 @@ function createQuickActionMenuRenderFunction<
                     quickAction: expandedQuickAction,
                     middlewares: [isGeneratingMiddleware],
 
-                    confirmation: true,
+                    confirmation:
+                      expandedQuickAction.defaults?.confirmation ?? true,
 
                     close,
                     cesdk: context.cesdk,
@@ -254,7 +255,8 @@ function createQuickActionMenuRenderFunction<
                         quickAction,
                         middlewares: [isGeneratingMiddleware],
 
-                        confirmation: true,
+                        confirmation:
+                          quickAction.defaults?.confirmation ?? true,
 
                         close,
                         cesdk: context.cesdk,
