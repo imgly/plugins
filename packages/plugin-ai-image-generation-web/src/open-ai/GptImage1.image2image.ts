@@ -96,6 +96,7 @@ function getProvider(
     'combineImages',
     'ly.img.separator',
     'remixPage',
+    'remixPageWithPrompt',
     'ly.img.separator',
     ...quickActionMenu.getQuickActionMenuOrder()
   ]);
@@ -165,6 +166,25 @@ function getProvider(
             })
           },
           'ly.img.createVariant': {
+            mapInput: (input) => ({
+              prompt: input.prompt,
+              image_url: input.uri
+            })
+          },
+          'ly.img.combineImages': {
+            mapInput: (input) => ({
+              prompt: input.prompt,
+              image_url: input.uris,
+              exportFromBlockIds: input.exportFromBlockIds
+            })
+          },
+          'ly.img.remixPage': {
+            mapInput: (input) => ({
+              prompt: input.prompt,
+              image_url: input.uri
+            })
+          },
+          'ly.img.remixPageWithPrompt': {
             mapInput: (input) => ({
               prompt: input.prompt,
               image_url: input.uri

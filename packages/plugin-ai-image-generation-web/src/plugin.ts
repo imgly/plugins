@@ -16,6 +16,9 @@ import SwapBackgroundQuickAction from './quickActions/SwapBackground';
 import StyleTransferQuickAction from './quickActions/StyleTransfer';
 import ArtistTransferQuickAction from './quickActions/ArtistTransfer';
 import CreateVariantQuickAction from './quickActions/CreateVariant';
+import CombineImages from './quickActions/CombineImages';
+import RemixPage from './quickActions/RemixPage';
+import RemixPageWithPrompt from './quickActions/RemixPageWithPrompt';
 // import quickActions from './quickActions';
 
 export { PLUGIN_ID } from './constants';
@@ -45,10 +48,9 @@ export function ImageGeneration<I, O extends Output>(
       registry.register(StyleTransferQuickAction({ cesdk }));
       registry.register(ArtistTransferQuickAction({ cesdk }));
       registry.register(CreateVariantQuickAction({ cesdk }));
-      // quickActions().forEach((quickAction) => {
-      //   console.log('register quick action', quickAction);
-      //   registry.register(quickAction);
-      // });
+      registry.register(CombineImages({ cesdk }));
+      registry.register(RemixPage({ cesdk }));
+      registry.register(RemixPageWithPrompt({ cesdk }));
 
       const text2image = config.providers?.text2image ?? config.text2image;
       const image2image = config.providers?.image2image ?? config.image2image;
