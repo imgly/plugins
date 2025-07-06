@@ -91,16 +91,23 @@ function handleGenerateFromQuickAction<
       return { status: 'aborted' };
     }
 
-    const mapInput =
+    const supportValue =
       options.providerInitializationResult?.provider.input?.quickActions
-        ?.supported?.[options.quickAction.id]?.mapInput;
+        ?.supported?.[options.quickAction.id];
 
-    if (mapInput == null) {
-      // TODO: Handle a default mapping instead of throwing an error
+    if (supportValue == null) {
       throw new Error(
-        '[Generate] Quick action input mapping failed. Ensure the provider supports this quick action & has a valid `mapInput` function defined.'
+        '[Generate] Quick action input mapping failed. Ensure the provider supports this quick action.'
       );
     }
+
+    // Handle both `true` and `{ mapInput: ... }` cases
+    const mapInput =
+      typeof supportValue === 'object' &&
+      supportValue !== null &&
+      'mapInput' in supportValue
+        ? supportValue.mapInput
+        : (i: Q) => i as unknown as I; // Identity function when types are compatible
 
     options.close();
 

@@ -380,15 +380,23 @@ export type QuickActionContext<I, O extends Output> = {
 /**
  * Support mapping for a specific quick action.
  * Maps quick action input to provider input.
+ * Allows `true` or empty object `{}` as shorthand when quick action input is compatible with provider input.
  */
-export interface QuickActionSupport<I> {
-  /**
-   * Map quick action input to provider input.
-   * @param quickActionInput The input from the quick action
-   * @returns The mapped input for the provider
-   */
-  mapInput: (quickActionInput: any) => I;
-}
+export type QuickActionSupport<I> =
+  | true
+  | {
+      /**
+       * Map quick action input to provider input.
+       * @param quickActionInput The input from the quick action
+       * @returns The mapped input for the provider
+       */
+      mapInput: (quickActionInput: any) => I;
+    }
+  | {
+      // Allow objects without mapInput for future extensibility
+      // Type safety will be enforced at the plugin level
+      [key: string]: any;
+    };
 
 export type QuickActionsInput<I, O extends Output> = {
   /**

@@ -54,39 +54,13 @@ export function AnthropicProvider(
       input: {
         quickActions: {
           supported: {
-            'ly.img.improve': {
-              mapInput: (input) => ({ prompt: input.prompt })
-            },
-            'ly.img.fix': {
-              mapInput: (input) => ({
-                prompt: input.prompt
-              })
-            },
-            'ly.img.shorter': {
-              mapInput: (input) => ({
-                prompt: input.prompt
-              })
-            },
-            'ly.img.longer': {
-              mapInput: (input) => ({
-                prompt: input.prompt
-              })
-            },
-            'ly.img.changeTone': {
-              mapInput: (input) => ({
-                prompt: input.prompt
-              })
-            },
-            'ly.img.translate': {
-              mapInput: (input) => ({
-                prompt: input.prompt
-              })
-            },
-            'ly.img.changeTextTo': {
-              mapInput: (input) => ({
-                prompt: input.prompt
-              })
-            }
+            'ly.img.improve': true,
+            'ly.img.fix': {}, // Test new empty object syntax
+            'ly.img.shorter': true,
+            'ly.img.longer': {}, // Test new empty object syntax
+            'ly.img.changeTone': true,
+            'ly.img.translate': true,
+            'ly.img.changeTextTo': {} // Test new empty object syntax
           }
         }
       },

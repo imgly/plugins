@@ -31,13 +31,17 @@ export interface TextQuickActionInputs {
 
 /**
  * Type-safe support mapping for text quick actions
+ * Allows `true` or `{}` when the quick action input type extends the provider input type
  */
-export interface TextQuickActionSupport<
+export type TextQuickActionSupport<
   I,
   K extends keyof TextQuickActionInputs
-> {
-  mapInput: (input: TextQuickActionInputs[K]) => I;
-}
+> = TextQuickActionInputs[K] extends I
+  ?
+      | true
+      | { mapInput: (input: TextQuickActionInputs[K]) => I }
+      | { [key: string]: any } // Allow objects without mapInput when types are compatible
+  : { mapInput: (input: TextQuickActionInputs[K]) => I };
 
 /**
  * Type-safe mapping for text quick action support
@@ -45,9 +49,10 @@ export interface TextQuickActionSupport<
 export type TextQuickActionSupportMap<I> = {
   [K in keyof TextQuickActionInputs]?: TextQuickActionSupport<I, K>;
 } & {
-  [key: string]: {
-    mapInput: (input: any) => I;
-  };
+  [key: string]:
+    | true
+    | { mapInput: (input: any) => I }
+    | { [key: string]: any };
 };
 
 /**

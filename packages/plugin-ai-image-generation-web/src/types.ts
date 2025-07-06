@@ -45,13 +45,17 @@ export interface ImageQuickActionInputs {
 
 /**
  * Type-safe support mapping for image quick actions
+ * Allows `true` or `{}` when the quick action input type extends the provider input type
  */
-export interface ImageQuickActionSupport<
+export type ImageQuickActionSupport<
   I,
   K extends keyof ImageQuickActionInputs
-> {
-  mapInput: (input: ImageQuickActionInputs[K]) => I;
-}
+> = ImageQuickActionInputs[K] extends I
+  ?
+      | true
+      | { mapInput: (input: ImageQuickActionInputs[K]) => I }
+      | { [key: string]: any } // Allow objects without mapInput when types are compatible
+  : { mapInput: (input: ImageQuickActionInputs[K]) => I };
 
 /**
  * Type-safe mapping for image quick action support
@@ -59,9 +63,10 @@ export interface ImageQuickActionSupport<
 export type ImageQuickActionSupportMap<I> = {
   [K in keyof ImageQuickActionInputs]?: ImageQuickActionSupport<I, K>;
 } & {
-  [key: string]: {
-    mapInput: (input: any) => I;
-  };
+  [key: string]:
+    | true
+    | { mapInput: (input: any) => I }
+    | { [key: string]: any };
 };
 
 /**
