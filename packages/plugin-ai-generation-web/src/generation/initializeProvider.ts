@@ -5,6 +5,7 @@ import { CommonPluginConfiguration } from '../types';
 import initializeHistoryAssetSource from './initializeHistoryAssetSource';
 import initializeHistoryAssetLibraryEntry from './initializeHistoryAssetLibraryEntry';
 import { InitializationContext } from './types';
+import icons from '../icons';
 import createGenerateFunction, {
   type Generate
 } from './createGenerateFunction';
@@ -67,6 +68,20 @@ async function initializeProvider<K extends OutputKind, I, O extends Output>(
     cesdk: options.cesdk,
     engine: options.cesdk.engine
   });
+  //
+  // Avoid adding the icon set multiple times for different providers
+  const globalStateIconSetAddedId = `@imgly/plugin-ai-generation.iconSetAdded`;
+  if (
+    !options.cesdk.ui.experimental.hasGlobalStateValue(
+      globalStateIconSetAddedId
+    )
+  ) {
+    options.cesdk.ui.addIconSet('@imgly/plugin-ai-generation', icons);
+    options.cesdk.ui.experimental.setGlobalStateValue(
+      globalStateIconSetAddedId,
+      true
+    );
+  }
 
   return {
     provider,

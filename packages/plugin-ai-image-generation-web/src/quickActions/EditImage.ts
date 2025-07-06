@@ -114,7 +114,7 @@ const EditImage: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
       } else {
         builder.Button(`${ID}.button`, {
           label: `${I18N_PREFIX}.label`,
-          icon: '@imgly/Sparkle',
+          icon: '@imgly/plugin-ai-generation/image',
           labelAlignment: 'left',
           variant: 'plain',
           onClick: toggleExpand

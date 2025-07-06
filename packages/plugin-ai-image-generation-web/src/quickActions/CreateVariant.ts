@@ -194,7 +194,7 @@ const CreateVariant: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
       } else {
         builder.Button(`${ID}.button`, {
           label: `${I18N_PREFIX}.label`,
-          icon: '@imgly/Sparkle',
+          icon: '@imgly/ImageVariation',
           labelAlignment: 'left',
           variant: 'plain',
           onClick: toggleExpand
