@@ -114,9 +114,8 @@ function handleGenerateFromQuickAction<
       AI_METADATA_KEY
     );
 
-    // Continue locking to edit mode
     const unlockFromEditMode =
-      options.lock ?? false
+      options.lock ?? true
         ? lockSelectionToEditMode({
             engine: options.cesdk.engine,
             editModeToLockTo: AI_EDIT_MODE,
