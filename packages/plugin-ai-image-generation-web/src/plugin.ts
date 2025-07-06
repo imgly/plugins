@@ -4,7 +4,8 @@ import {
   Output,
   registerDockComponent,
   ActionRegistry,
-  initializeQuickActionComponents
+  initializeQuickActionComponents,
+  AI_EDIT_MODE
 } from '@imgly/plugin-ai-generation-web';
 import { PluginConfiguration } from './types';
 import iconSprite, { PLUGIN_ICON_SET_ID } from './iconSprite';
@@ -87,7 +88,7 @@ export function ImageGeneration<I, O extends Output>(
           initializedQuickActions.renderFunction
         );
         cesdk.ui.setCanvasMenuOrder([`ly.img.ai.image.canvasMenu`], {
-          editMode: 'ly.img.ai.inference.editMode'
+          editMode: AI_EDIT_MODE
         });
       }
 
@@ -123,8 +124,6 @@ export function ImageGeneration<I, O extends Output>(
     }
   };
 }
-
-ImageGeneration.apps = ['ly.img.ai/image-generation'];
 
 function printConfigWarnings<I, O extends Output>(
   config: PluginConfiguration<I, O>

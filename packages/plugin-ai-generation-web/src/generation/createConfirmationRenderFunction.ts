@@ -1,7 +1,7 @@
 import CreativeEditorSDK, { BuilderRenderFunction } from '@cesdk/cesdk-js';
 import { InferenceMetadata } from './quickAction/types';
 import { Metadata } from '@imgly/plugin-utils';
-import { INFERENCE_AI_METADATA_KEY } from './quickAction/utils';
+import { AI_METADATA_KEY } from './quickAction/utils';
 import { OutputKind } from './provider';
 import { Callbacks } from './CallbacksRegistry';
 
@@ -37,10 +37,7 @@ async function createConfirmationRenderFunction<K extends OutputKind>(context: {
     const blockIds = engine.block.findAllSelected();
     if (blockIds.length === 0) return null;
 
-    const md = new Metadata<InferenceMetadata>(
-      engine,
-      INFERENCE_AI_METADATA_KEY
-    );
+    const md = new Metadata<InferenceMetadata>(engine, AI_METADATA_KEY);
 
     // All blocks must have the same metadata
     const metadata = md.get(blockIds[0]);

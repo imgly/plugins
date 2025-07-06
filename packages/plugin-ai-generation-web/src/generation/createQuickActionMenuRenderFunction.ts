@@ -6,7 +6,7 @@ import CreativeEditorSDK, {
 import { ActionRegistry, QuickActionDefinition } from '../ActionRegistry';
 import { Output, OutputKind } from './provider';
 import { isDefined } from '@imgly/plugin-utils';
-import { INFERENCE_AI_EDIT_MODE } from './quickAction/utils';
+import { AI_EDIT_MODE } from './quickAction/utils';
 import compactSeparators from '../compactSeparators';
 import getQuickActionOrder from './getQuickActionOrder';
 import { ProviderInitializationResult } from './initializeProvider';
@@ -40,7 +40,7 @@ function createQuickActionMenuRenderFunction<
   const builderRenderFunction: BuilderRenderFunction<{
     children: ('ly.img.separator' | (string & {}))[];
   }> = (builderContext) => {
-    if (builderContext.engine.editor.getEditMode() === INFERENCE_AI_EDIT_MODE) {
+    if (builderContext.engine.editor.getEditMode() === AI_EDIT_MODE) {
       return;
     }
 

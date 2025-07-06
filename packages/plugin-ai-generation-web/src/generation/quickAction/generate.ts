@@ -1,6 +1,6 @@
 import CreativeEditorSDK from '@cesdk/cesdk-js';
 import { InferenceMetadata, QuickActionMenu, ApplyCallbacks } from './types';
-import { INFERENCE_AI_EDIT_MODE, INFERENCE_AI_METADATA_KEY } from './utils';
+import { AI_EDIT_MODE, AI_METADATA_KEY } from './utils';
 import { Metadata } from '@imgly/plugin-utils';
 import Provider, {
   GenerationOptions,
@@ -46,13 +46,13 @@ async function generate<K extends OutputKind, I, O extends Output>(
   } = options;
   if (quickAction.confirmation) {
     cesdk.ui.setCanvasMenuOrder([confirmationComponentId], {
-      editMode: INFERENCE_AI_EDIT_MODE
+      editMode: AI_EDIT_MODE
     });
   }
 
   const metadata = new Metadata<InferenceMetadata>(
     cesdk.engine,
-    INFERENCE_AI_METADATA_KEY
+    AI_METADATA_KEY
   );
   blockIds.forEach((blockId) => {
     metadata.set(blockId, {
@@ -76,10 +76,10 @@ async function generate<K extends OutputKind, I, O extends Output>(
       ? [
           quickAction.lockDuringConfirmation
             ? lockMiddleware<I, O>({
-                editMode: INFERENCE_AI_EDIT_MODE
+                editMode: AI_EDIT_MODE
               })
             : editModeMiddleware<I, O>({
-                editMode: INFERENCE_AI_EDIT_MODE
+                editMode: AI_EDIT_MODE
               }),
           quickAction.confirmation && highlightBlocksMiddleware<I, O>({})
         ]

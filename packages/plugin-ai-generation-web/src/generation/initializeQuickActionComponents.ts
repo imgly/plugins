@@ -5,7 +5,7 @@ import CreativeEditorSDK, {
 import { Output, OutputKind } from './provider';
 import createConfirmationRenderFunction from './createConfirmationRenderFunction';
 import createQuickActionMenuRenderFunction from './createQuickActionMenuRenderFunction';
-import { INFERENCE_AI_EDIT_MODE } from './quickAction/utils';
+import { AI_EDIT_MODE } from './quickAction/utils';
 import { ProviderInitializationResult } from './initializeProvider';
 import CallbacksRegistry from './CallbacksRegistry';
 
@@ -37,7 +37,7 @@ async function initializeQuickActionComponents<
     builderContext
   ) => {
     const { engine } = builderContext;
-    if (engine.editor.getEditMode() === INFERENCE_AI_EDIT_MODE) {
+    if (engine.editor.getEditMode() === AI_EDIT_MODE) {
       // TODO: Get apply callbacks that is defined in `handleGenerateFromQuickAction`... how?
       const blockIds = builderContext.engine.block.findAllSelected();
       confirmationRenderFunction({

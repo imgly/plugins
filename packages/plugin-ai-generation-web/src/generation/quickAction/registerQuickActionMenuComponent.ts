@@ -1,6 +1,6 @@
 import CreativeEditorSDK from '@cesdk/cesdk-js';
 import { InferenceMetadata, QuickActionMenu, ApplyCallbacks } from './types';
-import { getFeatureIdForQuickAction, INFERENCE_AI_METADATA_KEY } from './utils';
+import { getFeatureIdForQuickAction, AI_METADATA_KEY } from './utils';
 import { Metadata } from '@imgly/plugin-utils';
 import Provider, { Output, OutputKind } from '../provider';
 import { isAbortError } from '../../utils';
@@ -61,10 +61,7 @@ function registerQuickActionMenuComponent<
       const blockIds = engine.block.findAllSelected();
       if (blockIds.length === 0) return null;
 
-      const md = new Metadata<InferenceMetadata>(
-        cesdk.engine,
-        INFERENCE_AI_METADATA_KEY
-      );
+      const md = new Metadata<InferenceMetadata>(cesdk.engine, AI_METADATA_KEY);
 
       // All blocks must have the same metadata
       const metadata = md.get(blockIds[0]);

@@ -92,3 +92,5 @@ export {
 export { default as initializeProviders } from './generation/initializeProviders';
 export { default as initializeProvider } from './generation/initializeProvider';
 export { default as initializeQuickActionComponents } from './generation/initializeQuickActionComponents';
+
+export { AI_EDIT_MODE, AI_METADATA_KEY } from './generation/quickAction/utils';

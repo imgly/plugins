@@ -4,10 +4,7 @@ import { Result } from './createGenerateFunction';
 import { ProviderInitializationResult } from './initializeProvider';
 import { Middleware } from './middleware/middleware';
 import { Output, OutputKind } from './provider';
-import {
-  INFERENCE_AI_EDIT_MODE,
-  INFERENCE_AI_METADATA_KEY
-} from './quickAction/utils';
+import { AI_EDIT_MODE, AI_METADATA_KEY } from './quickAction/utils';
 import { InferenceMetadata } from './quickAction/types';
 import CreativeEditorSDK from '@cesdk/cesdk-js';
 import getApplyCallbacks from './getApplyCallbacks';
@@ -114,7 +111,7 @@ function handleGenerateFromQuickAction<
 
     const metadata = new Metadata<InferenceMetadata>(
       options.cesdk.engine,
-      INFERENCE_AI_METADATA_KEY
+      AI_METADATA_KEY
     );
 
     // Continue locking to edit mode
@@ -122,7 +119,7 @@ function handleGenerateFromQuickAction<
       options.lock ?? false
         ? lockSelectionToEditMode({
             engine: options.cesdk.engine,
-            editModeToLockTo: INFERENCE_AI_EDIT_MODE,
+            editModeToLockTo: AI_EDIT_MODE,
             blockIdsToLock: targetBlockIds
           })
         : () => {

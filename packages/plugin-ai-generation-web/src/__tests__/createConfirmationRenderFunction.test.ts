@@ -2,7 +2,7 @@ import { describe, expect, it, jest, beforeEach } from '@jest/globals';
 import createConfirmationRenderFunction from '../generation/createConfirmationRenderFunction';
 import { BuilderRenderFunctionContext } from '@cesdk/cesdk-js';
 import { InferenceMetadata } from '../generation/quickAction/types';
-import { INFERENCE_AI_METADATA_KEY } from '../generation/quickAction/utils';
+import { AI_METADATA_KEY } from '../generation/quickAction/utils';
 import { OutputKind } from '../generation/provider';
 import { Callbacks } from '../generation/CallbacksRegistry';
 
@@ -520,10 +520,7 @@ describe('createConfirmationRenderFunction', () => {
 
         renderFunction(mockBuilderContext);
 
-        expect(MockMetadata).toHaveBeenCalledWith(
-          mockEngine,
-          INFERENCE_AI_METADATA_KEY
-        );
+        expect(MockMetadata).toHaveBeenCalledWith(mockEngine, AI_METADATA_KEY);
       });
 
       it('should get metadata from first selected block', () => {
