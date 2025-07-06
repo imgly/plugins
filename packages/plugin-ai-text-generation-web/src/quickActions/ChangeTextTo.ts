@@ -41,6 +41,8 @@ const ChangeTextTo: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
     type: 'quick',
     kind: 'text',
 
+    scopes: ['text/edit'],
+
     label: `${I18N_PREFIX}.label`,
     description: `${I18N_PREFIX}.label`,
     enable: ({ engine }) => {
