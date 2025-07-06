@@ -7,14 +7,19 @@ import { getImageUri } from '@imgly/plugin-utils';
 import { GetQuickActionDefinition } from './types';
 
 /**
+ * The action name.
+ */
+const ACTION_NAME = 'createVariant';
+
+/**
  * The ID of the quick action.
  */
-export const ID = 'ly.img.createVariant';
+export const ID = `ly.img.${ACTION_NAME}`;
 
 /**
  * The i18n prefix for the quick action.
  */
-export const I18N_PREFIX = `ly.img.ai.quickAction.${ID}`;
+export const I18N_PREFIX = `ly.img.ai.quickAction.image.${ACTION_NAME}`;
 
 /**
  * The input generated from this quick action which needs
