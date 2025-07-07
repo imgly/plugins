@@ -1,7 +1,7 @@
 import CreativeEditorSDK, { EditorPlugin } from '@cesdk/cesdk-js';
 import {
   ImageOutput,
-  initProvider,
+  initializeProvider,
   Middleware,
   OutputKind,
   Provider,
@@ -94,14 +94,16 @@ const PhotoEditorPlugin: (options: {
       ...(output.middleware ?? [])
     ];
 
-    const { renderBuilderFunctions } = await initProvider(
+    const {
+      panel: { builderRenderFunction }
+    } = await initializeProvider(
+      'image',
       provider,
-      { cesdk, engine: cesdk.engine },
+      { cesdk },
       { dryRun: false, debug: true }
     );
 
-    const panelRenderFunction = renderBuilderFunctions?.panel;
-    if (panelRenderFunction == null) return;
+    if (builderRenderFunction == null) return;
 
     cesdk.i18n.setTranslations({
       en: {
@@ -128,7 +130,7 @@ const PhotoEditorPlugin: (options: {
     });
 
     cesdk.ui.registerPanel(PANEL_ID, (context) => {
-      panelRenderFunction(context);
+      builderRenderFunction(context);
     });
   }
 });
