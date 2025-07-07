@@ -28,7 +28,6 @@ export {
   type GetPropertyInput,
   type Property
 } from './generation/openapi/types';
-export { default as initProvider } from './generation/initProvider';
 export {
   type GetProvider,
   type CommonProviderConfiguration
