@@ -13,13 +13,30 @@ import { ProviderInitializationResult } from './initializeProvider';
 import handleGenerateFromQuickAction from './handleGenerateFromQuickAction';
 import { Middleware } from './middleware/middleware';
 
+type SupportedQuickAction<K extends OutputKind, I, O extends Output> = {
+  definition: QuickActionDefinition<any>;
+  /**
+   * If defined this provider is used to render the quick action.
+   * Otherwise the quick action is rendered with the main provider
+   * defined one level up.
+   *
+   * Used for quick actions that have been defined from a provider
+   * that is not the main kind/provider, e.g. a video plugin
+   * that defines a quick action for the image provider.
+   */
+  providerInitializationResult?: ProviderInitializationResult<K, I, O>;
+};
+
 type SupportedProviderQuickActions<
   K extends OutputKind,
   I,
   O extends Output
 > = {
+  /**
+   * The main provider from the provider selection
+   */
   providerInitializationResult: ProviderInitializationResult<K, I, O>;
-  quickActions: (QuickActionDefinition<any> | 'ly.img.separator')[];
+  quickActions: (SupportedQuickAction<K, I, O> | 'ly.img.separator')[];
 }[];
 
 function createQuickActionMenuRenderFunction<
@@ -102,16 +119,26 @@ function createQuickActionMenuRenderFunction<
           if (providerInitializationResult.provider.kind !== context.kind)
             return acc;
 
-          let quickActions = orderedQuickActions.filter((quickAction) => {
-            if (quickAction === 'ly.img.separator') return true;
+          let quickActions = orderedQuickActions
+            .map((quickAction) => {
+              if (quickAction === 'ly.img.separator') return quickAction;
 
-            // Check if the provider supports this quick action
-            return (
-              providerInitializationResult.provider.input?.quickActions
-                ?.supported?.[quickAction.id] != null
-            );
-          });
+              // Check if the main provider supports this quick action
+              if (
+                providerInitializationResult.provider.input?.quickActions
+                  ?.supported?.[quickAction.id] != null
+              ) {
+                return {
+                  definition: quickAction
+                };
+              } else {
+                // TODO: Look for other providers and return object with this found provider
+                return undefined;
+              }
+            })
+            .filter(isDefined);
 
+          // Clean up the quick action list so we can render it directly
           quickActions = compactSeparators(quickActions);
 
           if (
@@ -194,14 +221,14 @@ function createQuickActionMenuRenderFunction<
                 currentSupportedQuickActions?.quickActions.find(
                   (quickAction) =>
                     quickAction !== 'ly.img.separator' &&
-                    quickAction.id === toggleExpandedState.value
-                ) as QuickActionDefinition<any> | undefined;
+                    quickAction.definition.id === toggleExpandedState.value
+                ) as SupportedQuickAction<K, I, O> | undefined;
 
               if (
                 expandedQuickAction != null &&
-                expandedQuickAction.render != null
+                expandedQuickAction.definition.render != null
               ) {
-                return expandedQuickAction.render({
+                return expandedQuickAction.definition.render({
                   ...builderContext,
                   toggleExpand: () => {
                     toggleExpandedState.setValue(undefined);
@@ -210,12 +237,14 @@ function createQuickActionMenuRenderFunction<
                   generate: handleGenerateFromQuickAction({
                     blockIds,
                     providerInitializationResult:
+                      expandedQuickAction.providerInitializationResult ??
                       currentSupportedQuickActions?.providerInitializationResult,
-                    quickAction: expandedQuickAction,
+                    quickAction: expandedQuickAction.definition,
                     middlewares: [isGeneratingMiddleware],
 
                     confirmation:
-                      expandedQuickAction.defaults?.confirmation ?? true,
+                      expandedQuickAction.definition.defaults?.confirmation ??
+                      true,
 
                     close,
                     cesdk: context.cesdk,
@@ -247,22 +276,23 @@ function createQuickActionMenuRenderFunction<
                       );
                       return;
                     }
-                    if (quickAction.render == null) return;
-                    quickAction.render({
+                    if (quickAction.definition.render == null) return;
+                    quickAction.definition.render({
                       ...builderContext,
                       toggleExpand: () => {
-                        toggleExpandedState.setValue(quickAction.id);
+                        toggleExpandedState.setValue(quickAction.definition.id);
                       },
                       isExpanded: false,
                       generate: handleGenerateFromQuickAction({
                         blockIds,
                         providerInitializationResult:
+                          quickAction.providerInitializationResult ??
                           currentSupportedQuickActions?.providerInitializationResult,
-                        quickAction,
+                        quickAction: quickAction.definition,
                         middlewares: [isGeneratingMiddleware],
 
                         confirmation:
-                          quickAction.defaults?.confirmation ?? true,
+                          quickAction.definition.defaults?.confirmation ?? true,
 
                         close,
                         cesdk: context.cesdk,
