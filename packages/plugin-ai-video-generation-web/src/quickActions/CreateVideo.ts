@@ -47,7 +47,7 @@ const CreateVideo: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
     enable: enableQuickActionForImageFill(),
     scopes: [],
 
-    render: ({ builder, engine }) => {
+    render: ({ builder, engine, close }) => {
       builder.Button(`${ID}.button`, {
         label: `${I18N_PREFIX}.label`,
         icon: '@imgly/plugin-ai-generation/video',
@@ -66,9 +66,11 @@ const CreateVideo: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
               'fromImage'
             );
             cesdk.ui.experimental.setGlobalStateValue(
+              // TODO: This needs to be generic
               'fal-ai/minimax/video-01-live/image-to-video.image_url',
               uri
             );
+            close();
           } catch (error) {
             // eslint-disable-next-line no-console
             console.error('Error opening video generation panel:', error);

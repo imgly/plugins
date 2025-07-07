@@ -76,7 +76,7 @@ async function initializeProviders<K extends OutputKind, I, O extends Output>(
     providerResults.push(...initializedFromImageProviders);
 
     builderRenderFunction = getBuilderRenderFunctionByFromType({
-      prefix: kind,
+      prefix: `ly.img.ai.${kind}-generation`,
       initializedFromTextProviders,
       initializedFromImageProviders
     });

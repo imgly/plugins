@@ -82,10 +82,7 @@ function renderGenerationComponents<K extends OutputKind, I, O extends Output>(
   builder.Section(`${providerId}.generate.section`, {
     children: () => {
       builder.Button(`${providerId}.generate`, {
-        label: [
-          'common.ai-generation.generate',
-          `panel.${providerId}.generate`
-        ],
+        label: ['common.generate', `panel.${providerId}.generate`],
         isLoading: generatingState.value,
         color: 'accent',
         isDisabled,

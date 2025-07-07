@@ -359,6 +359,7 @@ function addTranslations(cesdk: CreativeEditorSDK) {
   cesdk.i18n.setTranslations({
     en: {
       // TODO: Use keys based on the used providers
+      'common.generate': 'Generate',
       'panel.ly.img.ai.generation.confirmCancel.content':
         'Are you sure you want to cancel the generation?',
       'panel.ly.img.ai.generation.confirmCancel.confirm': 'Cancel Generation',
