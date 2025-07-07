@@ -44,6 +44,7 @@ export {
   type ActionRegistrySubscriberCallback,
   type ActionRegistryFilters
 } from './ActionRegistry';
+export { ProviderRegistry } from './ProviderRegistry';
 
 // Export middleware
 export {
