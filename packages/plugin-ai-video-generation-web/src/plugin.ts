@@ -8,6 +8,7 @@ import {
 import { PluginConfiguration } from './types';
 import { toArray } from '@imgly/plugin-utils';
 import { PLUGIN_ID } from './constants';
+import CreateVideo from './quickActions/CreateVideo';
 
 export { PLUGIN_ID } from './constants';
 
@@ -48,6 +49,9 @@ export function VideoGeneration<I, O extends Output>(
         { cesdk },
         config
       );
+
+      // Register video quick actions
+      ActionRegistry.get().register(CreateVideo({ cesdk }));
 
       if (initializedResult.panel.builderRenderFunction != null) {
         cesdk.ui.registerPanel(

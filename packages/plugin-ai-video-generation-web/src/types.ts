@@ -33,3 +33,11 @@ export interface PluginConfiguration<I, O extends Output>
    */
   image2video?: GetProvider<'video'>[] | GetProvider<'video'>;
 }
+
+/**
+ * Input types for video-specific quick actions
+ * This interface is extended by individual quick action files using module augmentation
+ */
+export interface VideoQuickActionInputs {
+  // Individual quick action files will extend this interface using module augmentation
+}
