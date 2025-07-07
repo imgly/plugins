@@ -12,6 +12,7 @@ import getQuickActionOrder from './getQuickActionOrder';
 import { ProviderInitializationResult } from './initializeProvider';
 import handleGenerateFromQuickAction from './handleGenerateFromQuickAction';
 import { Middleware } from './middleware/middleware';
+import { ProviderRegistry } from '../ProviderRegistry';
 
 type SupportedQuickAction<K extends OutputKind, I, O extends Output> = {
   definition: QuickActionDefinition<any>;
@@ -109,6 +110,11 @@ function createQuickActionMenuRenderFunction<
       }
     );
 
+    // Collect quick actions that are defined by the main provider
+    // in case the main provider does not support any quick actions
+    // and we just want to render these.
+    const quickActionsFromOtherProviders: SupportedQuickAction<K, I, O>[] = [];
+
     // Collect all provider with their supported quick actions
     const supportedProviderQuickActions =
       context.providerInitializationResults.reduce(
@@ -132,12 +138,40 @@ function createQuickActionMenuRenderFunction<
                   definition: quickAction
                 };
               } else {
-                // TODO: Look for other providers and return object with this found provider
-                return undefined;
+                // Check if this quick action comes from another provider that
+                // is not the main provider.
+                const otherProviderInitializationResult = ProviderRegistry.get()
+                  .getAll()
+                  .filter((registeredProvider) => {
+                    return (
+                      // We are looking for provider from another kind
+                      // and assume that all provider from the same kind
+                      // have been passed as main provider
+                      registeredProvider.provider.kind !== context.kind &&
+                      registeredProvider.provider.id !==
+                        providerInitializationResult.provider.id
+                    );
+                  })
+                  .find((registeredProvider) => {
+                    return (
+                      registeredProvider.provider.input?.quickActions
+                        ?.supported?.[quickAction.id] != null
+                    );
+                  });
+                if (otherProviderInitializationResult != null) {
+                  const quickActionSupport: SupportedQuickAction<K, I, O> = {
+                    definition: quickAction,
+                    providerInitializationResult:
+                      otherProviderInitializationResult
+                  };
+                  quickActionsFromOtherProviders.push(quickActionSupport);
+                  return quickActionSupport;
+                } else {
+                  return undefined;
+                }
               }
             })
             .filter(isDefined);
-
           // Clean up the quick action list so we can render it directly
           quickActions = compactSeparators(quickActions);
 
@@ -146,6 +180,19 @@ function createQuickActionMenuRenderFunction<
             quickActions.every((entry) => entry === 'ly.img.separator')
           )
             return acc;
+
+          if (
+            quickActions.every(
+              (quickAction) =>
+                quickAction === 'ly.img.separator' ||
+                quickAction.providerInitializationResult != null
+            )
+          ) {
+            // This provider has no quick actions from the current main provider.
+            // We do not want to add the main provider to the selection
+            // list with just actions from other providers.
+            return acc;
+          }
 
           acc.push({
             providerInitializationResult,
@@ -157,7 +204,33 @@ function createQuickActionMenuRenderFunction<
         []
       );
 
-    if (supportedProviderQuickActions.length === 0) return;
+    if (supportedProviderQuickActions.length === 0) {
+      if (quickActionsFromOtherProviders.length > 0) {
+        // Remove duplicates from quickActionsFromOtherProviders
+        const seen = new Map<string, SupportedQuickAction<K, I, O>>();
+        quickActionsFromOtherProviders.forEach((quickAction) => {
+          const id = quickAction.definition.id;
+          if (!seen.has(id)) {
+            seen.set(id, quickAction);
+          }
+        });
+        const uniqueQuickActions = Array.from(seen.values());
+
+        // If we have quick actions from other providers, we can render them
+        supportedProviderQuickActions.push({
+          // Use the first provider as main but since we do not want to
+          // render the provider selection, we do not care what provider it is.
+          // The actual provider used is the one defined in the object.
+          providerInitializationResult:
+            uniqueQuickActions[0].providerInitializationResult ??
+            context.providerInitializationResults[0],
+          quickActions: uniqueQuickActions
+        });
+      } else {
+        // Noting to do
+        return;
+      }
+    }
 
     const providerValues: SelectValue[] = supportedProviderQuickActions.map(
       ({ providerInitializationResult }) => ({
