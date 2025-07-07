@@ -9,6 +9,7 @@ import icons from '../icons';
 import createGenerateFunction, {
   type Generate
 } from './createGenerateFunction';
+import { ProviderRegistry } from '../ProviderRegistry';
 
 export type ProviderInitializationResult<
   K extends OutputKind,
@@ -51,6 +52,7 @@ async function initializeProvider<K extends OutputKind, I, O extends Output>(
   };
 
   await provider.initialize?.({ ...options, engine: options.cesdk.engine });
+
   const historyAssetSourceId = initializeHistoryAssetSource(context);
   const historyAssetLibraryEntryId = initializeHistoryAssetLibraryEntry(
     context,
@@ -83,7 +85,7 @@ async function initializeProvider<K extends OutputKind, I, O extends Output>(
     );
   }
 
-  return {
+  const providerInitializationResult: ProviderInitializationResult<K, I, O> = {
     provider,
     panel: {
       builderRenderFunction
@@ -94,6 +96,10 @@ async function initializeProvider<K extends OutputKind, I, O extends Output>(
     },
     generate
   };
+
+  ProviderRegistry.get().register(providerInitializationResult);
+
+  return providerInitializationResult;
 }
 
 export default initializeProvider;
