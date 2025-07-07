@@ -45,7 +45,7 @@ const CreateVideo: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
     label: `${I18N_PREFIX}.label`,
     description: `${I18N_PREFIX}.description`,
     enable: enableQuickActionForImageFill(),
-    scopes: ['fill/change'],
+    scopes: [],
 
     render: ({ builder, engine }) => {
       builder.Button(`${ID}.button`, {

@@ -1,7 +1,9 @@
 import {
   CommonPluginConfiguration,
   GetProvider,
-  Output
+  Output,
+  Provider,
+  VideoOutput
 } from '@imgly/plugin-ai-generation-web';
 
 /**
@@ -40,4 +42,42 @@ export interface PluginConfiguration<I, O extends Output>
  */
 export interface VideoQuickActionInputs {
   // Individual quick action files will extend this interface using module augmentation
+}
+
+/**
+ * Type-safe support mapping for image quick actions
+ * Allows `true` or `{}` when the quick action input type extends the provider input type
+ */
+export type VideoQuickActionSupport<
+  I,
+  K extends keyof VideoQuickActionInputs
+> = VideoQuickActionInputs[K] extends I
+  ?
+      | true
+      | { mapInput: (input: VideoQuickActionInputs[K]) => I }
+      | { [key: string]: any } // Allow objects without mapInput when types are compatible
+  : { mapInput: (input: VideoQuickActionInputs[K]) => I };
+
+/**
+ * Type-safe mapping for video quick action support
+ */
+export type VideoQuickActionSupportMap<I> = {
+  [K in keyof VideoQuickActionInputs]?: VideoQuickActionSupport<I, K>;
+} & {
+  [key: string]:
+    | true
+    | { mapInput: (input: any) => I }
+    | { [key: string]: any };
+};
+
+/**
+ * Video provider extension with type-safe quick action support
+ * Only parameterized by K (the quick action key), O is fixed to VideoOutput
+ */
+export interface VideoProvider<I> extends Provider<'video', I, VideoOutput> {
+  input: Omit<Provider<'video', I, VideoOutput>['input'], 'quickActions'> & {
+    quickActions?: {
+      supported?: VideoQuickActionSupportMap<I>;
+    };
+  };
 }

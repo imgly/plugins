@@ -12,6 +12,7 @@ import {
   QuickAction
 } from '@imgly/plugin-ai-generation-web';
 import { fal } from '@fal-ai/client';
+import { VideoQuickActionSupportMap } from '../types';
 
 type VideoProviderConfiguration = {
   proxyUrl: string;
@@ -41,6 +42,8 @@ function createVideoProvider<I extends Record<string, any>>(
     getBlockInput: GetBlockInput<'video', I>;
 
     quickActions?: QuickAction<I, VideoOutput>[];
+    supportedQuickActions?: VideoQuickActionSupportMap<I>;
+
     middleware?: Middleware<I, VideoOutput>[];
     headers?: Record<string, string>;
 
@@ -75,7 +78,8 @@ function createVideoProvider<I extends Record<string, any>>(
     },
     input: {
       quickActions: {
-        actions: options.quickActions ?? []
+        actions: options.quickActions ?? [],
+        supported: options.supportedQuickActions ?? {}
       },
       panel: {
         type: 'schema',

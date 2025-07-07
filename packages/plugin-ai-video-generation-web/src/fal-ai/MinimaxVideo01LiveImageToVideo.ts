@@ -46,6 +46,15 @@ function getProvider(
       cesdk,
       headers: config.headers,
       middleware: config.middlewares,
+      supportedQuickActions: {
+        'ly.img.createVideo': {
+          mapInput: () => {
+            throw new Error(
+              'This generation should not be triggered by this quick action'
+            );
+          }
+        }
+      },
       getBlockInput: async (input) => {
         const imageDimension = await getImageDimensionsFromURL(
           input.image_url as string,
