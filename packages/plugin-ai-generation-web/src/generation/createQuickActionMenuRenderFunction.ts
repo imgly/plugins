@@ -37,6 +37,12 @@ function createQuickActionMenuRenderFunction<
 }): Promise<BuilderRenderFunction<any>> {
   const prefix = `ly.img.ai.${context.kind}}`;
 
+  context.cesdk.i18n.setTranslations({
+    en: {
+      [`${prefix}.quickActionMenu.providerSelect.label`]: 'Provider'
+    }
+  });
+
   const builderRenderFunction: BuilderRenderFunction<{
     children: ('ly.img.separator' | (string & {}))[];
   }> = (builderContext) => {
@@ -181,17 +187,6 @@ function createQuickActionMenuRenderFunction<
       isLoading: isGeneratingState.value,
       trailingIcon: null,
       children: ({ close }) => {
-        if (toggleExpandedState.value == null && providerValues.length > 1) {
-          builder.Section(`${prefix}.popover.section.providerSelect`, {
-            children: () => {
-              builder.Select(`${prefix}.providerSelect.select`, {
-                inputLabel: 'Provider',
-                values: providerValues,
-                ...currentProviderState
-              });
-            }
-          });
-        }
         builder.Section(`${prefix}.popover.section`, {
           children: () => {
             if (toggleExpandedState.value !== undefined) {
@@ -230,6 +225,17 @@ function createQuickActionMenuRenderFunction<
                 });
               }
               return;
+            }
+            if (
+              toggleExpandedState.value == null &&
+              providerValues.length > 1
+            ) {
+              builder.Select(`${prefix}.providerSelect.select`, {
+                inputLabel: `${prefix}.quickActionMenu.providerSelect.label`,
+                values: providerValues,
+                ...currentProviderState
+              });
+              builder.Separator(`${prefix}.providerSelect.separator`);
             }
             experimental.builder.Menu(`${prefix}.menu`, {
               children: () => {
