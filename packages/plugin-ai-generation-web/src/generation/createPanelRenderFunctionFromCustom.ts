@@ -4,19 +4,22 @@ import renderGenerationComponents, {
   isGeneratingStateKey
 } from './renderGenerationComponents';
 import { InitializationContext } from './types';
+import { Generate } from './createGenerateFunction';
 
 async function createPanelRenderFunctionFromCustom<
   K extends OutputKind,
   I,
   O extends Output
->({
-  options,
-  provider,
-  panelInput,
-  config
-}: InitializationContext<K, I, O, PanelInputCustom<K, I>>): Promise<
-  BuilderRenderFunction<any> | undefined
-> {
+>(
+  {
+    options,
+    provider,
+    panelInput,
+    config
+  }: InitializationContext<K, I, O, PanelInputCustom<K, I>>,
+
+  generate: Generate<I, O>
+): Promise<BuilderRenderFunction<any> | undefined> {
   if (panelInput == null) {
     return undefined;
   }
@@ -41,6 +44,7 @@ async function createPanelRenderFunctionFromCustom<
     renderGenerationComponents(
       context,
       provider,
+      generate,
       getInput,
       getBlockInput,
       {

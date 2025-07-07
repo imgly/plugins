@@ -62,14 +62,15 @@ async function initializeProvider<K extends OutputKind, I, O extends Output>(
   context.options.historyAssetSourceId = historyAssetSourceId;
   context.options.historyAssetLibraryEntryId = historyAssetLibraryEntryId;
 
-  const builderRenderFunction: BuilderRenderFunction | undefined =
-    await createPanelRenderFunction(context);
-
   const generate = createGenerateFunction({
     provider,
     cesdk: options.cesdk,
     engine: options.cesdk.engine
   });
+
+  const builderRenderFunction: BuilderRenderFunction | undefined =
+    await createPanelRenderFunction(context, generate);
+
   //
   // Avoid adding the icon set multiple times for different providers
   const globalStateIconSetAddedId = `@imgly/plugin-ai-generation.iconSetAdded`;

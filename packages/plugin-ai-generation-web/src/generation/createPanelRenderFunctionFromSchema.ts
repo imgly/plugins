@@ -10,6 +10,7 @@ import { OpenAPIV3 } from 'openapi-types';
 import getProperties from './openapi/getProperties';
 import { GetPropertyInput, PropertyInput } from './openapi/types';
 import renderProperty from './openapi/renderProperty';
+import { Generate } from './createGenerateFunction';
 
 /**
  * Creates a panel render function based on the schema definition in the provider.
@@ -18,14 +19,15 @@ async function createPanelRenderFunctionFromSchema<
   K extends OutputKind,
   I,
   O extends Output
->({
-  options,
-  provider,
-  panelInput,
-  config
-}: InitializationContext<K, I, O, PanelInputSchema<K, I>>): Promise<
-  BuilderRenderFunction<any> | undefined
-> {
+>(
+  {
+    options,
+    provider,
+    panelInput,
+    config
+  }: InitializationContext<K, I, O, PanelInputSchema<K, I>>,
+  generate: Generate<I, O>
+): Promise<BuilderRenderFunction<any> | undefined> {
   const { id: providerId } = provider;
 
   if (panelInput == null) {
@@ -104,6 +106,7 @@ async function createPanelRenderFunctionFromSchema<
     renderGenerationComponents(
       context,
       provider,
+      generate,
       () => {
         return { input };
       },

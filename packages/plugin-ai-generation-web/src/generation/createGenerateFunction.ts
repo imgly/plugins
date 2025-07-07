@@ -42,6 +42,7 @@ function createGenerateFunction<
         ? loggingMiddleware({ enable: options?.debug })
         : undefined,
       ...(options?.middlewares ?? [])
+      // TODO: Add dryRunMiddleware if needed
     ]);
 
     // Trigger the generation

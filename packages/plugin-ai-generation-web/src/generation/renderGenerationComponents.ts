@@ -9,10 +9,11 @@ import {
   type GetBlockInput
 } from './provider';
 import { UIOptions } from './types';
-import generate from './generate';
 import { isAbortError } from '../utils';
 import handleGenerationError from './handleGenerationError';
 import { CommonConfiguration } from '../types';
+import handleGenerateFromPanel from './handleGenerateFromPanel';
+import { Generate } from './createGenerateFunction';
 
 export function isGeneratingStateKey(providerId: string): string {
   return `${providerId}.generating`;
@@ -28,6 +29,7 @@ export function abortGenerationStateKey(providerId: string): string {
 function renderGenerationComponents<K extends OutputKind, I, O extends Output>(
   context: BuilderRenderFunctionContext<any>,
   provider: Provider<K, I, O>,
+  generate: Generate<I, O>,
   getInput: GetInput<I>,
   getBlockInput: GetBlockInput<K, I>,
   options: UIOptions & {
@@ -131,25 +133,39 @@ function renderGenerationComponents<K extends OutputKind, I, O extends Output>(
                 abortController?.abort();
               });
 
-              const result = await generate(
-                provider.kind,
-                getInput,
+              const result = await handleGenerateFromPanel({
+                kind: provider.kind,
+                generate,
+                historyAssetSourceId: options.historyAssetSourceId,
+                // TODO: Replace with a merged configuration
+                userFlow: options.createPlaceholderBlock
+                  ? 'placeholder'
+                  : 'generation-only',
                 getBlockInput,
-                provider,
-                options,
-                config,
-                abortSignal
-              );
+                abortSignal,
+                cesdk
+              })(getInput().input);
 
               if (result.status === 'aborted') {
                 return;
               }
 
-              const notification = provider.output.notification;
-              showSuccessNotification(cesdk, notification, () => ({
-                input: getInput().input,
-                output: result.output
-              }));
+              if (result.status === 'error') {
+                handleGenerationError(result.message, {
+                  cesdk,
+                  provider,
+                  getInput
+                });
+                return;
+              }
+
+              if (result.status === 'success' && result.type === 'sync') {
+                const notification = provider.output.notification;
+                showSuccessNotification(cesdk, notification, () => ({
+                  input: getInput().input,
+                  output: result.output
+                }));
+              }
             } catch (error) {
               // Do not treat abort errors as errors
               if (isAbortError(error)) {
