@@ -3,6 +3,7 @@
 ## [Unreleased]
 
 -  [all] Breaking change: combined history asset source is now not added to the default asset libraries anymore. (TODO: STILL UNCLEAR IF THIS IS A GOOD IDEA)
+-  [all] Breaking change: `initProvider` is replaced with `initializeProviders` and `initializeProvider` with a different signature
 
 ## [0.1.10] - 2025-06-20
 
