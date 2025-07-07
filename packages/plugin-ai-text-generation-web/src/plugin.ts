@@ -9,13 +9,13 @@ import {
   AI_EDIT_MODE
 } from '@imgly/plugin-ai-generation-web';
 import { toArray } from '@imgly/plugin-utils';
-import ImproveQuickAction from './quickActions/Improve';
-import FixQuickAction from './quickActions/Fix';
-import ShorterQuickAction from './quickActions/Shorter';
-import LongerQuickAction from './quickActions/Longer';
-import ChangeToneQuickAction from './quickActions/ChangeTone';
-import TranslateQuickAction from './quickActions/Translate';
-import ChangeTextToQuickAction from './quickActions/ChangeTextTo';
+import Improve from './quickActions/Improve';
+import Fix from './quickActions/Fix';
+import Shorter from './quickActions/Shorter';
+import Longer from './quickActions/Longer';
+import ChangeTone from './quickActions/ChangeTone';
+import Translate from './quickActions/Translate';
+import ChangeTextTo from './quickActions/ChangeTextTo';
 
 export { PLUGIN_ID } from './constants';
 
@@ -37,13 +37,13 @@ export function TextGeneration<I, O extends Output>(
       printConfigWarnings(config);
 
       const registry = ActionRegistry.get();
-      registry.register(ImproveQuickAction({ cesdk }));
-      registry.register(FixQuickAction({ cesdk }));
-      registry.register(ShorterQuickAction({ cesdk }));
-      registry.register(LongerQuickAction({ cesdk }));
-      registry.register(ChangeToneQuickAction({ cesdk }));
-      registry.register(TranslateQuickAction({ cesdk }));
-      registry.register(ChangeTextToQuickAction({ cesdk }));
+      registry.register(Improve({ cesdk }));
+      registry.register(Fix({ cesdk }));
+      registry.register(Shorter({ cesdk }));
+      registry.register(Longer({ cesdk }));
+      registry.register(ChangeTone({ cesdk }));
+      registry.register(Translate({ cesdk }));
+      registry.register(ChangeTextTo({ cesdk }));
 
       const text2text = config.providers?.text2text ?? config.provider;
 

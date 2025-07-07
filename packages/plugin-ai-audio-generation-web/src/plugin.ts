@@ -29,6 +29,7 @@ export function AudioGeneration<I, O extends Output>(
       });
 
       printConfigWarnings(config);
+
       const text2speech = config.providers?.text2speech ?? config.text2speech;
       const text2sound = config.providers?.text2sound ?? config.text2sound;
 
