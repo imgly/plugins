@@ -55,6 +55,7 @@ function createQuickActionMenuRenderFunction<
   engine: CreativeEngine;
 
   debug?: boolean;
+  dryRun?: boolean;
 }): Promise<BuilderRenderFunction<any>> {
   const prefix = `ly.img.ai.${context.kind}}`;
 
@@ -324,7 +325,8 @@ function createQuickActionMenuRenderFunction<
 
                     close,
                     cesdk: context.cesdk,
-                    debug: context.debug
+                    debug: context.debug,
+                    dryRun: context.dryRun
                   }),
                   close
                 });
@@ -372,7 +374,8 @@ function createQuickActionMenuRenderFunction<
 
                         close,
                         cesdk: context.cesdk,
-                        debug: context.debug
+                        debug: context.debug,
+                        dryRun: context.dryRun
                       }),
                       close
                     });

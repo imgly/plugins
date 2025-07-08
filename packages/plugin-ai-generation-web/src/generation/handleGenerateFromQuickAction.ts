@@ -54,6 +54,11 @@ type GenerationOptions<
   debug?: boolean;
 
   /**
+   * Enable dry run mode for testing.
+   */
+  dryRun?: boolean;
+
+  /**
    * Signal to check if process was aborted
    */
   abortSignal?: AbortSignal;
@@ -165,6 +170,7 @@ function handleGenerateFromQuickAction<
         {
           middlewares: [...(options.middlewares ?? [])],
           debug: options.debug,
+          dryRun: options.dryRun,
           abortSignal
         }
       );

@@ -95,7 +95,9 @@ export function ImageGeneration<I, O extends Output>(
         providerInitializationResults:
           initializedResult.providerInitializationResults,
         cesdk,
-        engine: cesdk.engine
+        engine: cesdk.engine,
+        debug: config.debug,
+        dryRun: config.dryRun
       });
 
       if (initializedResult.history?.assetSourceId != null) {

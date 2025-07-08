@@ -140,7 +140,8 @@ function renderGenerationComponents<K extends OutputKind, I, O extends Output>(
                 getBlockInput,
                 abortSignal,
                 cesdk,
-                debug: config.debug
+                debug: config.debug,
+                dryRun: config.dryRun
               })(getInput().input);
 
               if (result.status === 'aborted') {

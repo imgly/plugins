@@ -19,13 +19,17 @@ async function initializeQuickActionComponents<
 
   cesdk: CreativeEditorSDK;
   engine: CreativeEngine;
+  debug?: boolean;
+  dryRun?: boolean;
 }) {
   const menuRenderFunction = await createQuickActionMenuRenderFunction({
     kind: context.kind,
     providerInitializationResults: context.providerInitializationResults,
 
     cesdk: context.cesdk,
-    engine: context.engine
+    engine: context.engine,
+    debug: context.debug,
+    dryRun: context.dryRun
   });
   const confirmationRenderFunction = await createConfirmationRenderFunction({
     kind: context.kind,

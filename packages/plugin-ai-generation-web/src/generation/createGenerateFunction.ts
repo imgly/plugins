@@ -1,6 +1,7 @@
 import Provider, { Output, OutputKind } from '../core/provider';
 import { composeMiddlewares, Middleware } from '../middleware/middleware';
 import loggingMiddleware from '../middleware/loggingMiddleware';
+import dryRunMiddleware from '../middleware/dryRunMiddleware';
 import CreativeEditorSDK, { CreativeEngine } from '@cesdk/cesdk-js';
 import { isAbortError, isAsyncGenerator } from '../utils/utils';
 import { ABORT_REASON_USER_CANCEL } from '../core/constants';
@@ -20,6 +21,7 @@ export type Generate<I, O extends Output> = (
     abortSignal?: AbortSignal;
     middlewares?: Middleware<I, O>[];
     debug?: boolean;
+    dryRun?: boolean;
   }
 ) => Promise<Result<O>>;
 
@@ -38,8 +40,11 @@ function createGenerateFunction<
     const composedMiddlewares = composeMiddlewares<I, O>([
       ...(context.provider.output.middleware ?? []),
       ...(options?.middlewares ?? []),
-      loggingMiddleware({ enable: options?.debug })
-      // TODO: Add dryRunMiddleware if needed
+      loggingMiddleware({ enable: options?.debug }),
+      dryRunMiddleware({
+        enable: options?.dryRun,
+        kind: context.provider.kind
+      })
     ]);
 
     // Trigger the generation

@@ -45,6 +45,11 @@ type PanelGenerationOptions<K extends OutputKind, I, O extends Output> = {
   debug?: boolean;
 
   /**
+   * Enable dry run mode for testing.
+   */
+  dryRun?: boolean;
+
+  /**
    * Signal to check if process was aborted.
    */
   abortSignal: AbortSignal;
@@ -88,6 +93,7 @@ function handleGenerateGenerationOnlyUserFlow<
       const result = await options.generate(input, {
         middlewares: [...(options.middlewares ?? [])],
         debug: options.debug,
+        dryRun: options.dryRun,
         abortSignal
       });
 
@@ -206,6 +212,7 @@ function handleGeneratePlaceholderUserFlow<
       const result = await options.generate(input, {
         middlewares: [...(options.middlewares ?? [])],
         debug: options.debug,
+        dryRun: options.dryRun,
         abortSignal
       });
 

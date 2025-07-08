@@ -66,7 +66,9 @@ export function TextGeneration<I, O extends Output>(
         providerInitializationResults:
           initializedResult.providerInitializationResults,
         cesdk,
-        engine: cesdk.engine
+        engine: cesdk.engine,
+        debug: config.debug,
+        dryRun: config.dryRun
       });
 
       if (initializedQuickActions.renderFunction != null) {

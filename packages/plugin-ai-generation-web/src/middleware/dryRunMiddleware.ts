@@ -11,6 +11,7 @@ import {
 import { Middleware } from './middleware';
 
 interface DryRunOptions<K extends OutputKind> {
+  enable?: boolean;
   kind: K;
 
   // Is only defined with generation from a panel where we create a complete new block
@@ -25,8 +26,12 @@ function dryRunMiddleware<I, K extends OutputKind, O extends Output>(
 ) {
   const middleware: Middleware<I, O> = async (
     generationInput,
-    generationOptions
+    generationOptions,
+    next
   ) => {
+    if (!options.enable) {
+      return next(generationInput, generationOptions);
+    }
     console.log(
       `[DRY RUN]: Requesting dummy AI generation for kind '${options.kind}' with inputs: `,
       JSON.stringify(generationInput, undefined, 2)
