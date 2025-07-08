@@ -38,7 +38,6 @@ async function initializeQuickActionComponents<
   ) => {
     const { engine } = builderContext;
     if (engine.editor.getEditMode() === AI_EDIT_MODE) {
-      // TODO: Get apply callbacks that is defined in `handleGenerateFromQuickAction`... how?
       const blockIds = builderContext.engine.block.findAllSelected();
       confirmationRenderFunction({
         ...builderContext,

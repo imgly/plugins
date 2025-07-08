@@ -244,7 +244,7 @@ function createQuickActionMenuRenderFunction<
       })
     );
 
-    const currentProviderState = builderContext.state(
+    const currentProviderState = builderContext.experimental.global(
       `${prefix}.currentProvider`,
       providerValues[0]
     );
