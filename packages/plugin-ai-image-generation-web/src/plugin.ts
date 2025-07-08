@@ -31,6 +31,25 @@ export function ImageGeneration<I, O extends Output>(
   return {
     async initialize({ cesdk }) {
       if (cesdk == null) return;
+      const registry = ActionRegistry.get();
+
+      const disposeApp = registry.register({
+        type: 'plugin',
+
+        id: PLUGIN_ID,
+        pluginId: PLUGIN_ID,
+
+        label: 'Generate Image',
+        meta: { panelId: IMAGE_GENERATION_PANEL_ID },
+
+        execute: () => {
+          if (cesdk.ui.isPanelOpen(IMAGE_GENERATION_PANEL_ID)) {
+            cesdk.ui.closePanel(IMAGE_GENERATION_PANEL_ID);
+          } else {
+            cesdk.ui.openPanel(IMAGE_GENERATION_PANEL_ID);
+          }
+        }
+      });
 
       cesdk.ui.addIconSet(PLUGIN_ICON_SET_ID, iconSprite);
       cesdk.i18n.setTranslations({
@@ -42,7 +61,6 @@ export function ImageGeneration<I, O extends Output>(
 
       printConfigWarnings(config);
 
-      const registry = ActionRegistry.get();
       registry.register(EditImage({ cesdk }));
       registry.register(SwapBackground({ cesdk }));
       registry.register(StyleTransfer({ cesdk }));
@@ -104,24 +122,8 @@ export function ImageGeneration<I, O extends Output>(
           cesdk,
           panelId: IMAGE_GENERATION_PANEL_ID
         });
-
-        registry.register({
-          type: 'plugin',
-
-          id: PLUGIN_ID,
-          pluginId: PLUGIN_ID,
-
-          label: 'Generate Image',
-          meta: { panelId: IMAGE_GENERATION_PANEL_ID },
-
-          execute: () => {
-            if (cesdk.ui.isPanelOpen(IMAGE_GENERATION_PANEL_ID)) {
-              cesdk.ui.closePanel(IMAGE_GENERATION_PANEL_ID);
-            } else {
-              cesdk.ui.openPanel(IMAGE_GENERATION_PANEL_ID);
-            }
-          }
-        });
+      } else {
+        disposeApp();
       }
     }
   };

@@ -30,6 +30,26 @@ export function VideoGeneration<I, O extends Output>(
 
       printConfigWarnings(config);
 
+      const registry = ActionRegistry.get();
+      const disposeApp = registry.register({
+        type: 'plugin',
+        sceneMode: 'Video',
+
+        id: PLUGIN_ID,
+        pluginId: PLUGIN_ID,
+
+        label: 'Generate Video',
+        meta: { panelId: VIDEO_GENERATION_PANEL_ID },
+
+        execute: () => {
+          if (cesdk.ui.isPanelOpen(VIDEO_GENERATION_PANEL_ID)) {
+            cesdk.ui.closePanel(VIDEO_GENERATION_PANEL_ID);
+          } else {
+            cesdk.ui.openPanel(VIDEO_GENERATION_PANEL_ID);
+          }
+        }
+      });
+
       const text2video = config.providers?.text2video ?? config.text2video;
       const image2video = config.providers?.image2video ?? config.image2video;
 
@@ -63,25 +83,8 @@ export function VideoGeneration<I, O extends Output>(
           cesdk,
           panelId: VIDEO_GENERATION_PANEL_ID
         });
-
-        ActionRegistry.get().register({
-          type: 'plugin',
-          sceneMode: 'Video',
-
-          id: PLUGIN_ID,
-          pluginId: PLUGIN_ID,
-
-          label: 'Generate Video',
-          meta: { panelId: VIDEO_GENERATION_PANEL_ID },
-
-          execute: () => {
-            if (cesdk.ui.isPanelOpen(VIDEO_GENERATION_PANEL_ID)) {
-              cesdk.ui.closePanel(VIDEO_GENERATION_PANEL_ID);
-            } else {
-              cesdk.ui.openPanel(VIDEO_GENERATION_PANEL_ID);
-            }
-          }
-        });
+      } else {
+        disposeApp();
       }
     }
   };

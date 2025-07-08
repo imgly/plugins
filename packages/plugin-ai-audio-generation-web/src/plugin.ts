@@ -30,6 +30,45 @@ export function AudioGeneration<I, O extends Output>(
 
       printConfigWarnings(config);
 
+      const registry = ActionRegistry.get();
+      const disposeSoundApp = registry.register({
+        type: 'plugin',
+        sceneMode: 'Video',
+
+        id: `${PLUGIN_ID}/sound`,
+        pluginId: PLUGIN_ID,
+
+        label: 'Generate Sound',
+        meta: { panelId: SOUND_GENERATION_PANEL_ID },
+
+        execute: () => {
+          if (cesdk.ui.isPanelOpen(SOUND_GENERATION_PANEL_ID)) {
+            cesdk.ui.closePanel(SOUND_GENERATION_PANEL_ID);
+          } else {
+            cesdk.ui.openPanel(SOUND_GENERATION_PANEL_ID);
+          }
+        }
+      });
+
+      const disposeSpeechApp = registry.register({
+        type: 'plugin',
+        sceneMode: 'Video',
+
+        id: `${PLUGIN_ID}/speech`,
+        pluginId: PLUGIN_ID,
+
+        label: 'AI Voice',
+        meta: { panelId: SPEECH_GENERATION_PANEL_ID },
+
+        execute: () => {
+          if (cesdk.ui.isPanelOpen(SPEECH_GENERATION_PANEL_ID)) {
+            cesdk.ui.closePanel(SPEECH_GENERATION_PANEL_ID);
+          } else {
+            cesdk.ui.openPanel(SPEECH_GENERATION_PANEL_ID);
+          }
+        }
+      });
+
       const text2speech = config.providers?.text2speech ?? config.text2speech;
       const text2sound = config.providers?.text2sound ?? config.text2sound;
 
@@ -63,25 +102,8 @@ export function AudioGeneration<I, O extends Output>(
           cesdk,
           panelId: SOUND_GENERATION_PANEL_ID
         });
-
-        ActionRegistry.get().register({
-          type: 'plugin',
-          sceneMode: 'Video',
-
-          id: `${PLUGIN_ID}/sound`,
-          pluginId: PLUGIN_ID,
-
-          label: 'Generate Sound',
-          meta: { panelId: SOUND_GENERATION_PANEL_ID },
-
-          execute: () => {
-            if (cesdk.ui.isPanelOpen(SOUND_GENERATION_PANEL_ID)) {
-              cesdk.ui.closePanel(SOUND_GENERATION_PANEL_ID);
-            } else {
-              cesdk.ui.openPanel(SOUND_GENERATION_PANEL_ID);
-            }
-          }
-        });
+      } else {
+        disposeSoundApp();
       }
 
       if (text2SpeechInitializedResult.panel.builderRenderFunction != null) {
@@ -94,25 +116,8 @@ export function AudioGeneration<I, O extends Output>(
           cesdk,
           panelId: SPEECH_GENERATION_PANEL_ID
         });
-
-        ActionRegistry.get().register({
-          type: 'plugin',
-          sceneMode: 'Video',
-
-          id: `${PLUGIN_ID}/speech`,
-          pluginId: PLUGIN_ID,
-
-          label: 'AI Voice',
-          meta: { panelId: SPEECH_GENERATION_PANEL_ID },
-
-          execute: () => {
-            if (cesdk.ui.isPanelOpen(SPEECH_GENERATION_PANEL_ID)) {
-              cesdk.ui.closePanel(SPEECH_GENERATION_PANEL_ID);
-            } else {
-              cesdk.ui.openPanel(SPEECH_GENERATION_PANEL_ID);
-            }
-          }
-        });
+      } else {
+        disposeSpeechApp();
       }
     }
   };
