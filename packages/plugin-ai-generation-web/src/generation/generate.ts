@@ -18,7 +18,6 @@ import CreativeEditorSDK from '@cesdk/cesdk-js';
 import getAssetResultForPlaceholder from '../assets/getAssetResultForPlaceholder';
 import getAssetResultForGenerated from '../assets/getAssetResultForGenerated';
 import { composeMiddlewares } from '../middleware/middleware';
-import loggingMiddleware from '../middleware/loggingMiddleware';
 import dryRunMiddleware from '../middleware/dryRunMiddleware';
 
 type Result<O> = { status: 'success'; output: O } | { status: 'aborted' };
@@ -95,7 +94,6 @@ async function generate<K extends OutputKind, I, O extends Output>(
     // Trigger the generation
     const composedMiddlewares = composeMiddlewares<I, O>([
       ...(provider.output.middleware ?? []),
-      loggingMiddleware({ enable: config.debug }),
       ...(config.middlewares ?? []),
       config.dryRun
         ? dryRunMiddleware({ kind: provider.kind, blockInputs })

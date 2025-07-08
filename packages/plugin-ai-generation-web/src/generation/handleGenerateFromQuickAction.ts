@@ -8,7 +8,6 @@ import { AI_EDIT_MODE, AI_METADATA_KEY } from '../ui/quickActions/utils';
 import { InferenceMetadata } from '../ui/quickActions/types';
 import CreativeEditorSDK from '@cesdk/cesdk-js';
 import getApplyCallbacks from '../providers/getApplyCallbacks';
-import loggingMiddleware from '../middleware/loggingMiddleware';
 import lockSelectionToEditMode from '../utils/lockSelectionToEditMode';
 import CallbacksRegistry from './CallbacksRegistry';
 import { ABORT_REASON_USER_CANCEL } from '../core/constants';
@@ -164,10 +163,7 @@ function handleGenerateFromQuickAction<
       const result = await options.providerInitializationResult.generate(
         mapInput(input),
         {
-          middlewares: [
-            loggingMiddleware({ enable: !!options.debug }),
-            ...(options.middlewares ?? [])
-          ],
+          middlewares: [...(options.middlewares ?? [])],
           debug: options.debug,
           abortSignal
         }

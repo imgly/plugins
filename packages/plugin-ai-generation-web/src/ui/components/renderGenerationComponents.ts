@@ -139,7 +139,8 @@ function renderGenerationComponents<K extends OutputKind, I, O extends Output>(
                   : 'generation-only',
                 getBlockInput,
                 abortSignal,
-                cesdk
+                cesdk,
+                debug: config.debug
               })(getInput().input);
 
               if (result.status === 'aborted') {

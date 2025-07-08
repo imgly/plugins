@@ -37,11 +37,8 @@ function createGenerateFunction<
 
     const composedMiddlewares = composeMiddlewares<I, O>([
       ...(context.provider.output.middleware ?? []),
-      // TODO: Who is in charge of adding the logging middleware. It seems we have three different places where it is added.
-      options?.debug
-        ? loggingMiddleware({ enable: options?.debug })
-        : undefined,
-      ...(options?.middlewares ?? [])
+      ...(options?.middlewares ?? []),
+      loggingMiddleware({ enable: options?.debug })
       // TODO: Add dryRunMiddleware if needed
     ]);
 

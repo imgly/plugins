@@ -6,7 +6,6 @@ import {
   GetBlockInput,
   CommonProperties,
   Provider,
-  loggingMiddleware,
   Middleware
 } from '@imgly/plugin-ai-generation-web';
 import { fal } from '@fal-ai/client';
@@ -49,11 +48,6 @@ function createImageProvider<I extends Record<string, any>>(
   config: ImageProviderConfiguration
 ): Provider<'image', I, { kind: 'image'; url: string }> {
   const middleware = options.middleware ?? [];
-  if (config.debug) {
-    middleware.unshift(
-      loggingMiddleware<I, ImageOutput>({ enable: config.debug })
-    );
-  }
   const provider: Provider<'image', I, ImageOutput> = {
     id: options.modelKey,
     kind: 'image',

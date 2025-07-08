@@ -372,7 +372,7 @@ function createQuickActionMenuRenderFunction<
 
                         close,
                         cesdk: context.cesdk,
-                        debug: true // context.debug
+                        debug: context.debug
                       }),
                       close
                     });

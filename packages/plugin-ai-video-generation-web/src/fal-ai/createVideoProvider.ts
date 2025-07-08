@@ -7,8 +7,7 @@ import {
   VideoOutput,
   GetBlockInput,
   CommonProperties,
-  Middleware,
-  loggingMiddleware
+  Middleware
 } from '@imgly/plugin-ai-generation-web';
 import { fal } from '@fal-ai/client';
 import { VideoQuickActionSupportMap } from '../types';
@@ -50,9 +49,6 @@ function createVideoProvider<I extends Record<string, any>>(
   config: VideoProviderConfiguration
 ): Provider<'video', I, { kind: 'video'; url: string }> {
   const middleware = options.middleware ?? [];
-  middleware.unshift(
-    loggingMiddleware<I, VideoOutput>({ enable: config.debug })
-  );
 
   const provider: Provider<'video', I, VideoOutput> = {
     id: options.modelKey,
