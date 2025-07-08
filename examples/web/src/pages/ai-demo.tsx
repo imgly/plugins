@@ -179,14 +179,6 @@ function App() {
                     ],
                     proxyUrl: import.meta.env.VITE_ANTHROPIC_PROXY_URL
                   }),
-                  // text2image: OpenAiImage.GptImage1.Text2Image({
-                  //   middleware: [imageRateLimitMiddleware, errorMiddleware],
-                  //   proxyUrl: import.meta.env.VITE_OPENAI_PROXY_URL
-                  // }),
-                  // image2image: OpenAiImage.GptImage1.Image2Image({
-                  //   middleware: [imageRateLimitMiddleware, errorMiddleware],
-                  //   proxyUrl: import.meta.env.VITE_OPENAI_PROXY_URL
-                  // }),
                   text2image: [
                     FalAiImage.RecraftV3({
                       middleware: [imageRateLimitMiddleware, errorMiddleware],
@@ -212,18 +204,12 @@ function App() {
                     FalAiVideo.MinimaxVideo01Live({
                       middleware: [videoRateLimitMiddleware, errorMiddleware],
                       proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
-                    }),
-                    FalAiVideo.MinimaxVideo01Live({
-                      middleware: [videoRateLimitMiddleware, errorMiddleware],
-                      proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
                     })
                   ],
-                  image2video: [
-                    FalAiVideo.MinimaxVideo01LiveImageToVideo({
-                      middleware: [videoRateLimitMiddleware, errorMiddleware],
-                      proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
-                    })
-                  ],
+                  image2video: FalAiVideo.MinimaxVideo01LiveImageToVideo({
+                    middleware: [videoRateLimitMiddleware, errorMiddleware],
+                    proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
+                  }),
                   text2speech: Elevenlabs.ElevenMultilingualV2({
                     middleware: [soundRateLimitMiddleware, errorMiddleware],
                     proxyUrl: import.meta.env.VITE_ELEVENLABS_PROXY_URL
