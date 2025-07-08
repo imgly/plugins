@@ -98,12 +98,25 @@ function App() {
             instance.feature.enable('ly.img.preview', false);
             instance.feature.enable('ly.img.placeholder', false);
 
-            // await instance.engine.scene.loadFromArchiveURL(
-            //   `https://img.ly/showcases/cesdk/cases/ai-editor/ai_editor_video.archive`
-            // );
-            await instance.engine.scene.loadFromArchiveURL(
-              `https://img.ly/showcases/cesdk/cases/ai-editor/ai_editor_design.archive`
-            );
+            const urlParams = new URLSearchParams(window.location.search);
+            let archiveType = urlParams.get('archive');
+
+            // If no archive parameter, add default to URL
+            if (!archiveType) {
+              archiveType = 'design';
+              urlParams.set('archive', 'design');
+              const newUrl = `${
+                window.location.pathname
+              }?${urlParams.toString()}`;
+              window.history.replaceState({}, '', newUrl);
+            }
+
+            const archiveUrl =
+              archiveType === 'video'
+                ? 'https://img.ly/showcases/cesdk/cases/ai-editor/ai_editor_video.archive'
+                : 'https://img.ly/showcases/cesdk/cases/ai-editor/ai_editor_design.archive';
+
+            await instance.engine.scene.loadFromArchiveURL(archiveUrl);
 
             const onRateLimitExceeded: RateLimitOptions<any>['onRateLimitExceeded'] =
               () => {
@@ -224,18 +237,25 @@ function App() {
               })
             );
 
-            // const page = instance.engine.scene.getCurrentPage();
-            // if (page != null) {
-            //   const pageFill = instance.engine.block.getFill(page);
-            //   instance.engine.block.setColorRGBA(
-            //     pageFill,
-            //     'fill/color/value',
-            //     1,
-            //     1,
-            //     1,
-            //     1
-            //   );
-            // }
+            instance.ui.setNavigationBarOrder([
+              'sceneModeToggle',
+              ...instance.ui.getNavigationBarOrder()
+            ]);
+
+            instance.ui.registerComponent('sceneModeToggle', ({ builder }) => {
+              builder.Button('sceneModeToggle', {
+                label: archiveType === 'video' ? 'Video Mode' : 'Design Mode',
+                icon: '@imgly/Replace',
+                variant: 'regular',
+                onClick: () => {
+                  if (archiveType === 'video') {
+                    window.location.search = '?archive=design';
+                  } else {
+                    window.location.search = '?archive=video';
+                  }
+                }
+              });
+            });
           });
         } else if (cesdk.current != null) {
           cesdk.current.dispose();
