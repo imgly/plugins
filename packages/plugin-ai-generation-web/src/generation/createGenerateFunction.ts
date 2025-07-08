@@ -1,9 +1,9 @@
-import Provider, { Output, OutputKind } from './provider';
-import { composeMiddlewares, Middleware } from './middleware/middleware';
-import loggingMiddleware from './middleware/loggingMiddleware';
+import Provider, { Output, OutputKind } from '../core/provider';
+import { composeMiddlewares, Middleware } from '../middleware/middleware';
+import loggingMiddleware from '../middleware/loggingMiddleware';
 import CreativeEditorSDK, { CreativeEngine } from '@cesdk/cesdk-js';
-import { isAbortError, isAsyncGenerator } from '../utils';
-import { ABORT_REASON_USER_CANCEL } from './constants';
+import { isAbortError, isAsyncGenerator } from '../utils/utils';
+import { ABORT_REASON_USER_CANCEL } from '../core/constants';
 
 export type ResultSuccess<O> =
   | { status: 'success'; type: 'async'; output: AsyncGenerator<O> }

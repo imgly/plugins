@@ -4,7 +4,7 @@ import {
   PluginActionDefinition,
   QuickActionDefinition,
   ActionRegistrySubscriberCallback
-} from '../ActionRegistry';
+} from '../core/ActionRegistry';
 
 describe('ActionRegistry', () => {
   let registry: ActionRegistry;

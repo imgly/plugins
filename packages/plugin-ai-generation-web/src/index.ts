@@ -1,5 +1,5 @@
-import renderImageUrlProperty from './common/renderImageUrlProperty';
-import renderStyleTransferProperty from './common/renderStyleTransferProperty';
+import renderImageUrlProperty from './ui/common/renderImageUrlProperty';
+import renderStyleTransferProperty from './ui/common/renderStyleTransferProperty';
 
 const CommonProperties = {
   ImageUrl: renderImageUrlProperty,
@@ -21,18 +21,17 @@ export {
   type GetBlockInput,
   type GetBlockInputResult,
   type GetInput
-} from './generation/provider';
-export {
-  type GetPropertyInput,
-  type Property
-} from './generation/openapi/types';
+} from './core/provider';
+export { type GetPropertyInput, type Property } from './openapi/types';
 export {
   type GetProvider,
-  type CommonProviderConfiguration
-} from './generation/types';
+  type CommonProviderConfiguration,
+  type CommonPluginConfiguration,
+  type CommonConfiguration,
+  type InternalPluginConfiguration
+} from './types';
 
-export { default as integrateIntoDefaultAssetLibraryEntry } from './generation/integrateIntoDefaultAssetLibraryEntry';
-export { type CommonPluginConfiguration } from './types';
+export { default as integrateIntoDefaultAssetLibraryEntry } from './assets/integrateIntoDefaultAssetLibraryEntry';
 export {
   ActionRegistry,
   type PluginActionDefinition,
@@ -41,20 +40,17 @@ export {
   type ActionRegistryEventType,
   type ActionRegistrySubscriberCallback,
   type ActionRegistryFilters
-} from './ActionRegistry';
-export { ProviderRegistry } from './ProviderRegistry';
+} from './core/ActionRegistry';
+export { ProviderRegistry } from './core/ProviderRegistry';
 
 // Export middleware
-export {
-  composeMiddlewares,
-  type Middleware
-} from './generation/middleware/middleware';
-export { default as loggingMiddleware } from './generation/middleware/loggingMiddleware';
-export { default as uploadMiddleware } from './generation/middleware/uploadMiddleware';
+export { composeMiddlewares, type Middleware } from './middleware/middleware';
+export { default as loggingMiddleware } from './middleware/loggingMiddleware';
+export { default as uploadMiddleware } from './middleware/uploadMiddleware';
 export {
   default as rateLimitMiddleware,
   type RateLimitOptions
-} from './generation/middleware/rateLimitMiddleware';
+} from './middleware/rateLimitMiddleware';
 
 export {
   getPanelId,
@@ -62,19 +58,19 @@ export {
   getThumbnailForVideo,
   getLabelFromId,
   isAsyncGenerator
-} from './utils';
+} from './utils/utils';
 
-export { default as registerDockComponent } from './registerDockComponent';
+export { default as registerDockComponent } from './ui/components/registerDockComponent';
 
-export { default as enableQuickActionForImageFill } from './generation/quickAction/common/enableImageFill';
+export { default as enableQuickActionForImageFill } from './ui/quick-actions/enableImageFill';
 
 export {
   isGeneratingStateKey,
   abortGenerationStateKey
-} from './generation/renderGenerationComponents';
+} from './ui/components/renderGenerationComponents';
 
-export { default as initializeProviders } from './generation/initializeProviders';
-export { default as initializeProvider } from './generation/initializeProvider';
-export { default as initializeQuickActionComponents } from './generation/initializeQuickActionComponents';
+export { default as initializeProviders } from './providers/initializeProviders';
+export { default as initializeProvider } from './providers/initializeProvider';
+export { default as initializeQuickActionComponents } from './ui/quick-actions/initializeQuickActionComponents';
 
-export { AI_EDIT_MODE, AI_METADATA_KEY } from './generation/quickAction/utils';
+export { AI_EDIT_MODE, AI_METADATA_KEY } from './ui/quick-actions/utils';

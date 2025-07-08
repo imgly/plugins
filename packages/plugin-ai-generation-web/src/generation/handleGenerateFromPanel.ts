@@ -1,11 +1,11 @@
 import type { AssetDefinition } from '@cesdk/cesdk-js';
-import { addAssetToScene, isAbortError, uuid4 } from '../utils';
-import { type GetBlockInput, OutputKind, type Output } from './provider';
+import { addAssetToScene, isAbortError, uuid4 } from '../utils/utils';
+import { type GetBlockInput, OutputKind, type Output } from '../core/provider';
 import { Generate, Result } from './createGenerateFunction';
-import getAssetResultForPlaceholder from './getAssetResultForPlaceholder';
+import getAssetResultForPlaceholder from '../assets/getAssetResultForPlaceholder';
 import CreativeEditorSDK from '@cesdk/cesdk-js';
-import { Middleware } from './middleware/middleware';
-import getAssetResultForGenerated from './getAssetResultForGenerated';
+import { Middleware } from '../middleware/middleware';
+import getAssetResultForGenerated from '../assets/getAssetResultForGenerated';
 
 type PanelGenerationOptions<K extends OutputKind, I, O extends Output> = {
   /**

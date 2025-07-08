@@ -1,5 +1,5 @@
 import { describe, expect, it } from '@jest/globals';
-import compactSeparators from '../compactSeparators';
+import compactSeparators from '../utils/compactSeparators';
 
 describe('compactSeparators', () => {
   it('should return empty array for empty input', () => {

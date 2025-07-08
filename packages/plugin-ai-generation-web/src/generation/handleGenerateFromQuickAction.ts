@@ -1,17 +1,17 @@
 import { isDefined, Metadata } from '@imgly/plugin-utils';
-import { QuickActionDefinition } from '../ActionRegistry';
+import { QuickActionDefinition } from '../core/ActionRegistry';
 import { Result } from './createGenerateFunction';
-import { ProviderInitializationResult } from './initializeProvider';
-import { Middleware } from './middleware/middleware';
-import { Output, OutputKind } from './provider';
-import { AI_EDIT_MODE, AI_METADATA_KEY } from './quickAction/utils';
-import { InferenceMetadata } from './quickAction/types';
+import { ProviderInitializationResult } from '../providers/initializeProvider';
+import { Middleware } from '../middleware/middleware';
+import { Output, OutputKind } from '../core/provider';
+import { AI_EDIT_MODE, AI_METADATA_KEY } from '../ui/quick-actions/utils';
+import { InferenceMetadata } from '../ui/quick-actions/types';
 import CreativeEditorSDK from '@cesdk/cesdk-js';
-import getApplyCallbacks from './getApplyCallbacks';
-import loggingMiddleware from './middleware/loggingMiddleware';
-import lockSelectionToEditMode from './lockSelectionToEditMode';
+import getApplyCallbacks from '../providers/getApplyCallbacks';
+import loggingMiddleware from '../middleware/loggingMiddleware';
+import lockSelectionToEditMode from '../utils/lockSelectionToEditMode';
 import CallbacksRegistry from './CallbacksRegistry';
-import { ABORT_REASON_USER_CANCEL } from './constants';
+import { ABORT_REASON_USER_CANCEL } from '../core/constants';
 
 type GenerationOptions<
   Q extends Record<string, any>,

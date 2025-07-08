@@ -1,15 +1,12 @@
 /* eslint-disable no-console */
 import { describe, expect, it, jest } from '@jest/globals';
-import {
-  composeMiddlewares,
-  Middleware
-} from '../generation/middleware/middleware';
+import { composeMiddlewares, Middleware } from '../middleware/middleware';
 import {
   GenerationOptions,
   GenerationResult,
   TextOutput
-} from '../generation/provider';
-import { isAsyncGenerator } from '../utils';
+} from '../core/provider';
+import { isAsyncGenerator } from '../utils/utils';
 
 // Define a simple input type for testing
 interface TextInput {

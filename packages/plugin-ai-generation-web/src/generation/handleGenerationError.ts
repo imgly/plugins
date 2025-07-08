@@ -1,6 +1,6 @@
 import CreativeEditorSDK from '@cesdk/cesdk-js';
-import Provider, { GetInput, Output, OutputKind } from './provider';
-import { extractErrorMessage } from '../utils';
+import Provider, { GetInput, Output, OutputKind } from '../core/provider';
+import { extractErrorMessage } from '../utils/utils';
 
 function handleGenerationError<K extends OutputKind, I, O extends Output>(
   error: unknown,

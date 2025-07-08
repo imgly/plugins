@@ -1,9 +1,9 @@
 import { describe, expect, it, jest, beforeEach } from '@jest/globals';
-import createConfirmationRenderFunction from '../generation/createConfirmationRenderFunction';
+import createConfirmationRenderFunction from '../ui/panels/createConfirmationRenderFunction';
 import { BuilderRenderFunctionContext } from '@cesdk/cesdk-js';
-import { InferenceMetadata } from '../generation/quickAction/types';
-import { AI_METADATA_KEY } from '../generation/quickAction/utils';
-import { OutputKind } from '../generation/provider';
+import { InferenceMetadata } from '../ui/quick-actions/types';
+import { AI_METADATA_KEY } from '../ui/quick-actions/utils';
+import { OutputKind } from '../core/provider';
 import { Callbacks } from '../generation/CallbacksRegistry';
 
 // Mock the plugin-utils module

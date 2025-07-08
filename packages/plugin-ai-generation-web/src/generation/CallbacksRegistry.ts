@@ -1,4 +1,4 @@
-import { ApplyCallbacks } from './getApplyCallbacks';
+import { ApplyCallbacks } from '../providers/getApplyCallbacks';
 
 export type Callbacks = {
   /**

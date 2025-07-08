@@ -5,22 +5,21 @@ import {
   isAbortError,
   isAsyncGenerator,
   uuid4
-} from '../utils';
-import type Provider from './provider';
+} from '../utils/utils';
+import type Provider from '../core/provider';
 import {
   type GetInput,
   type GetBlockInput,
   OutputKind,
   type Output
-} from './provider';
-import { UIOptions } from './types';
+} from '../core/provider';
+import { UIOptions, CommonConfiguration } from '../types';
 import CreativeEditorSDK from '@cesdk/cesdk-js';
-import getAssetResultForPlaceholder from './getAssetResultForPlaceholder';
-import getAssetResultForGenerated from './getAssetResultForGenerated';
-import { composeMiddlewares } from './middleware/middleware';
-import loggingMiddleware from './middleware/loggingMiddleware';
-import dryRunMiddleware from './middleware/dryRunMiddleware';
-import { CommonConfiguration } from '../types';
+import getAssetResultForPlaceholder from '../assets/getAssetResultForPlaceholder';
+import getAssetResultForGenerated from '../assets/getAssetResultForGenerated';
+import { composeMiddlewares } from '../middleware/middleware';
+import loggingMiddleware from '../middleware/loggingMiddleware';
+import dryRunMiddleware from '../middleware/dryRunMiddleware';
 
 type Result<O> = { status: 'success'; output: O } | { status: 'aborted' };
 

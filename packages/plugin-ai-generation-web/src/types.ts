@@ -1,5 +1,8 @@
-import { Output, OutputKind } from './generation/provider';
-import { Middleware } from './generation/middleware/middleware';
+import type CreativeEditorSDK from '@cesdk/cesdk-js';
+import { type CreativeEngine } from '@cesdk/cesdk-js';
+import type Provider from './core/provider';
+import { Output, OutputKind, PanelInput } from './core/provider';
+import { Middleware } from './middleware/middleware';
 
 /**
  * A common configuration used by the plugins and the provider.
@@ -38,3 +41,91 @@ export interface CommonPluginConfiguration<
    */
   baseURL?: string;
 }
+
+/**
+ * Returns a provider for a given cesdk instance.
+ */
+export type GetProvider<K extends OutputKind> = ({
+  cesdk
+}: {
+  cesdk: CreativeEditorSDK;
+}) => Promise<Provider<K, any, any>>;
+
+/**
+ * Common provider configuration that all providers should provide.
+ */
+export interface CommonProviderConfiguration<I, O extends Output>
+  extends CommonConfiguration<I, O> {
+  /**
+   * The proxy URL to use for the provider.
+   */
+  proxyUrl: string;
+
+  /**
+   * Headers that shall be sent with the request of the provider.
+   */
+  headers?: Record<string, string>;
+
+  /**
+   * Middlewares to add to the provider generation
+   * @deprecated Use `middlewares` instead.
+   */
+  middleware?: Middleware<I, O>[];
+}
+
+/**
+ * Internal configuration interface for provider initialization.
+ * This extends the public CommonPluginConfiguration with required provider field.
+ */
+export interface InternalPluginConfiguration<
+  K extends OutputKind,
+  I,
+  O extends Output
+> extends CommonConfiguration<I, O> {
+  /**
+   * The provider to use for generation.
+   */
+  provider: Provider<K, I, O>;
+
+  /**
+   * The panel input schema to use for the provider.
+   */
+  panelInput?: PanelInput<K, I>;
+}
+
+/**
+ * Context for provider initialization, including the provider, panel input schema,
+ * options, and configuration.
+ */
+export type InitializationContext<
+  K extends OutputKind,
+  I,
+  O extends Output,
+  P extends PanelInput<K, I> = PanelInput<K, I>
+> = {
+  provider: Provider<K, I, O>;
+  panelInput?: P;
+  options: UIOptions;
+  config: InternalPluginConfiguration<K, I, O>;
+};
+
+/**
+ * Options for UI interactions
+ */
+export type UIOptions = {
+  cesdk: CreativeEditorSDK;
+  engine: CreativeEngine;
+  historyAssetSourceId?: string;
+  historyAssetLibraryEntryId?: string;
+  i18n?: {
+    prompt?: string;
+  };
+};
+
+/**
+ * Basic context for provider initialization
+ */
+export type Options = {
+  cesdk?: CreativeEditorSDK;
+  engine: CreativeEngine;
+};
