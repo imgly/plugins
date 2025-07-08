@@ -1,8 +1,8 @@
 import { describe, expect, it, jest, beforeEach } from '@jest/globals';
 import createConfirmationRenderFunction from '../ui/panels/createConfirmationRenderFunction';
 import { BuilderRenderFunctionContext } from '@cesdk/cesdk-js';
-import { InferenceMetadata } from '../ui/quick-actions/types';
-import { AI_METADATA_KEY } from '../ui/quick-actions/utils';
+import { InferenceMetadata } from '../ui/quickActions/types';
+import { AI_METADATA_KEY } from '../ui/quickActions/utils';
 import { OutputKind } from '../core/provider';
 import { Callbacks } from '../generation/CallbacksRegistry';
 

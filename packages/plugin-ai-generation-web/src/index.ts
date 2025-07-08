@@ -62,7 +62,7 @@ export {
 
 export { default as registerDockComponent } from './ui/components/registerDockComponent';
 
-export { default as enableQuickActionForImageFill } from './ui/quick-actions/enableImageFill';
+export { default as enableQuickActionForImageFill } from './ui/quickActions/enableImageFill';
 
 export {
   isGeneratingStateKey,
@@ -71,6 +71,6 @@ export {
 
 export { default as initializeProviders } from './providers/initializeProviders';
 export { default as initializeProvider } from './providers/initializeProvider';
-export { default as initializeQuickActionComponents } from './ui/quick-actions/initializeQuickActionComponents';
+export { default as initializeQuickActionComponents } from './ui/quickActions/initializeQuickActionComponents';
 
-export { AI_EDIT_MODE, AI_METADATA_KEY } from './ui/quick-actions/utils';
+export { AI_EDIT_MODE, AI_METADATA_KEY } from './ui/quickActions/utils';

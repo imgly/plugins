@@ -1,7 +1,7 @@
 import CreativeEditorSDK, { BuilderRenderFunction } from '@cesdk/cesdk-js';
-import { InferenceMetadata } from '../quick-actions/types';
+import { InferenceMetadata } from '../quickActions/types';
 import { Metadata } from '@imgly/plugin-utils';
-import { AI_METADATA_KEY } from '../quick-actions/utils';
+import { AI_METADATA_KEY } from '../quickActions/utils';
 import { OutputKind } from '../../core/provider';
 import { Callbacks } from '../../generation/CallbacksRegistry';
 
