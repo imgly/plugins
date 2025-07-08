@@ -6,7 +6,6 @@ import {
   GetBlockInput,
   CommonProperties,
   Provider,
-  QuickAction,
   loggingMiddleware,
   Middleware
 } from '@imgly/plugin-ai-generation-web';
@@ -38,7 +37,6 @@ function createImageProvider<I extends Record<string, any>>(
 
     renderCustomProperty?: RenderCustomProperty;
 
-    quickActions?: QuickAction<I, ImageOutput>[];
     supportedQuickActions?: ImageQuickActionSupportMap<I>;
     getBlockInput?: GetBlockInput<'image', I>;
     getImageSize?: (input: I) => { width: number; height: number };
@@ -78,7 +76,6 @@ function createImageProvider<I extends Record<string, any>>(
     },
     input: {
       quickActions: {
-        actions: options.quickActions ?? [],
         supported: options.supportedQuickActions ?? {}
       },
       panel: {

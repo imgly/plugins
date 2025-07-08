@@ -8,8 +8,7 @@ import {
   GetBlockInput,
   CommonProperties,
   Middleware,
-  loggingMiddleware,
-  QuickAction
+  loggingMiddleware
 } from '@imgly/plugin-ai-generation-web';
 import { fal } from '@fal-ai/client';
 import { VideoQuickActionSupportMap } from '../types';
@@ -41,7 +40,6 @@ function createVideoProvider<I extends Record<string, any>>(
 
     getBlockInput: GetBlockInput<'video', I>;
 
-    quickActions?: QuickAction<I, VideoOutput>[];
     supportedQuickActions?: VideoQuickActionSupportMap<I>;
 
     middleware?: Middleware<I, VideoOutput>[];
@@ -78,7 +76,6 @@ function createVideoProvider<I extends Record<string, any>>(
     },
     input: {
       quickActions: {
-        actions: options.quickActions ?? [],
         supported: options.supportedQuickActions ?? {}
       },
       panel: {

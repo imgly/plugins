@@ -3,8 +3,7 @@ import type CreativeEditorSDK from '@cesdk/cesdk-js';
 import {
   type NotificationDuration,
   type BuilderRenderFunctionContext,
-  type CreativeEngine,
-  Scope
+  type CreativeEngine
 } from '@cesdk/cesdk-js';
 import { GetPropertyInput, Property } from './openapi/types';
 import { Middleware } from './middleware/middleware';
@@ -51,7 +50,10 @@ interface Provider<K extends OutputKind, I, O extends Output, C = O> {
      */
     panel?: PanelInput<K, I>;
 
-    quickActions?: QuickActionsInput<I, O>;
+    /**
+     * Defines the input for the generation.
+     */
+    quickActions?: QuickActionsInput<I>;
   };
 
   /**
@@ -398,12 +400,7 @@ export type QuickActionSupport<I> =
       [key: string]: any;
     };
 
-export type QuickActionsInput<I, O extends Output> = {
-  /**
-   * Provider-defined quick actions (legacy).
-   */
-  actions?: QuickAction<I, O>[];
-
+export type QuickActionsInput<I> = {
   /**
    * Supported global quick actions with input transformations.
    * Key is the quick action ID, value is the transformation mapping.
@@ -411,53 +408,6 @@ export type QuickActionsInput<I, O extends Output> = {
   supported?: {
     [quickActionId: string]: QuickActionSupport<I>;
   };
-};
-
-export type QuickAction<I, O extends Output> = {
-  id: string;
-
-  /**
-   * If set, the quick action is shown in the menu for this kind, instead
-   * of the kind of the provider. E.g. a video provider can add a quick action,
-   * to add a button in the image menu to generate a video from.
-   */
-  kind?: OutputKind;
-
-  // Can be used to distinguish between different quick action
-  // versions used by different plugins.
-  version: '1';
-
-  /**
-   * Defines if the quick action is enabled or not by using the
-   * feature api.
-   */
-  enable: boolean | ((contxt: { engine: CreativeEngine }) => boolean);
-
-  /**
-   * Define the necessary scopes for this quick action.
-   */
-  scopes?: Scope[];
-
-  /**
-   * If set to `true`, after the generation, the canvas menu
-   * will show a confirmation UI to confirm the generation.
-   */
-  confirmation?: boolean;
-
-  /**
-   * If set to `true`, the selection is locked during the confirmation.
-   * The user cannot change the selection until the confirmation is done.
-   */
-  lockDuringConfirmation?: boolean;
-
-  render: (
-    context: BuilderRenderFunctionContext<any>,
-    quickActionContext: QuickActionContext<I, O>
-  ) => void;
-  renderExpanded?: (
-    context: BuilderRenderFunctionContext<any>,
-    quickActionContext: QuickActionContext<I, O>
-  ) => void;
 };
 
 export default Provider;

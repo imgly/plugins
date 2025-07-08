@@ -20,9 +20,7 @@ export {
   type RenderCustomProperty,
   type GetBlockInput,
   type GetBlockInputResult,
-  type GetInput,
-  type QuickAction,
-  type QuickActionsInput
+  type GetInput
 } from './generation/provider';
 export {
   type GetPropertyInput,
@@ -67,9 +65,6 @@ export {
 } from './utils';
 
 export { default as registerDockComponent } from './registerDockComponent';
-
-export { default as getQuickActionMenu } from './generation/quickAction/getQuickActionMenu';
-export { default as registerQuickActionMenuComponent } from './generation/quickAction/registerQuickActionMenuComponent';
 
 export { default as enableQuickActionForImageFill } from './generation/quickAction/common/enableImageFill';
 
