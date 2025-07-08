@@ -6,13 +6,14 @@ A plugin for orchestrating all AI generation capabilities in CreativeEditor SDK.
 
 The `@imgly/plugin-ai-apps-web` package provides a unified interface for accessing and organizing all AI generation features within the CreativeEditor SDK. It combines image, video, audio, and text generation capabilities into a single cohesive user experience.
 
-Features include:
+### Key Features
 
--   Central AI dock component with loading indicators
--   AI apps menu for quick access to all AI features
--   Integrated history management for generated assets
--   Automatic integration with asset libraries
--   Support for both Design and Video modes
+- **Unified AI Experience**: Centralized access to all AI generation capabilities
+- **AI Dock Component**: Single entry point for all AI features with loading indicators
+- **Smart Provider Management**: Automatically organizes providers based on editor mode
+- **Integrated History**: Seamless integration with asset libraries for generated content
+- **Mode-Aware Interface**: Different UI layouts for Design and Video modes
+- **Cross-Plugin Support**: Works with all IMG.LY AI generation plugins
 
 ## Installation
 
@@ -20,7 +21,7 @@ Features include:
 npm install @imgly/plugin-ai-apps-web
 ```
 
-## Usage
+## Basic Usage
 
 To use the plugin, import it and configure it with your preferred providers:
 
@@ -36,47 +37,47 @@ import ElevenLabs from '@imgly/plugin-ai-audio-generation-web/elevenlabs';
 
 // Initialize CreativeEditor SDK
 CreativeEditorSDK.create(domElement, {
-    license: 'your-license-key'
-    // Other configuration options...
+  license: 'your-license-key'
+  // Other configuration options...
 }).then(async (cesdk) => {
-    // Add the AI Apps plugin
-    cesdk.addPlugin(
-        AiApps({
-            providers: {
-                // Text generation
-                text2text: AnthropicProvider({
-                    proxyUrl: 'https://your-anthropic-proxy.example.com'
-                }),
+  // Add the AI Apps plugin
+  cesdk.addPlugin(
+    AiApps({
+      providers: {
+        // Text generation
+        text2text: AnthropicProvider({
+          proxyUrl: 'https://your-anthropic-proxy.example.com'
+        }),
 
-                // Image generation
-                text2image: FalAiImage.RecraftV3({
-                    proxyUrl: 'https://your-fal-ai-proxy.example.com'
-                }),
-                image2image: FalAiImage.GeminiFlashEdit({
-                    proxyUrl: 'https://your-fal-ai-proxy.example.com'
-                }),
+        // Image generation
+        text2image: FalAiImage.RecraftV3({
+          proxyUrl: 'https://your-fal-ai-proxy.example.com'
+        }),
+        image2image: FalAiImage.GeminiFlashEdit({
+          proxyUrl: 'https://your-fal-ai-proxy.example.com'
+        }),
 
-                // Video generation (used in video mode)
-                text2video: FalAiVideo.MinimaxVideo01Live({
-                    proxyUrl: 'https://your-fal-ai-proxy.example.com'
-                }),
-                image2video: FalAiVideo.MinimaxVideo01LiveImageToVideo({
-                    proxyUrl: 'https://your-fal-ai-proxy.example.com'
-                }),
+        // Video generation (used in video mode)
+        text2video: FalAiVideo.MinimaxVideo01Live({
+          proxyUrl: 'https://your-fal-ai-proxy.example.com'
+        }),
+        image2video: FalAiVideo.MinimaxVideo01LiveImageToVideo({
+          proxyUrl: 'https://your-fal-ai-proxy.example.com'
+        }),
 
-                // Audio generation (used in video mode)
-                text2speech: ElevenLabs.MonolingualV1({
-                    proxyUrl: 'https://your-elevenlabs-proxy.example.com'
-                }),
-                text2sound: ElevenLabs.SoundEffects({
-                    proxyUrl: 'https://your-elevenlabs-proxy.example.com'
-                })
-            }
+        // Audio generation (used in video mode)
+        text2speech: ElevenLabs.MonolingualV1({
+          proxyUrl: 'https://your-elevenlabs-proxy.example.com'
+        }),
+        text2sound: ElevenLabs.SoundEffects({
+          proxyUrl: 'https://your-elevenlabs-proxy.example.com'
         })
-    );
+      }
+    })
+  );
 
-    // Position the AI dock button in the dock order
-    cesdk.ui.setDockOrder(['ly.img.ai/apps.dock', ...cesdk.ui.getDockOrder()]);
+  // Position the AI dock button in the dock order
+  cesdk.ui.setDockOrder(['ly.img.ai/apps.dock', ...cesdk.ui.getDockOrder()]);
 });
 ```
 
@@ -103,12 +104,93 @@ The `providers` object can include the following provider functions:
 | `text2speech` | `Provider<'audio'>` | Provider for text-to-speech generation (video mode only) |
 | `text2sound`  | `Provider<'audio'>` | Provider for sound effects generation (video mode only)  |
 
+### Provider Selection Strategy
+
+The plugin intelligently selects which providers to use based on the current editor mode:
+
+#### Design Mode
+- **Uses**: `text2text`, `text2image`, `image2image`
+- **Focus**: Image and text generation for design workflows
+- **UI**: Shows AI apps cards for different generation types
+
+#### Video Mode  
+- **Uses**: All providers including `text2video`, `image2video`, `text2speech`, `text2sound`
+- **Focus**: Comprehensive media generation for video production
+- **UI**: Shows AI apps cards for different generation types
+
+## Advanced Configuration
+
+### Multiple Providers per Type
+
+You can configure multiple providers for the same generation type by passing an array. When multiple providers are configured, a selection box will be rendered in the AI app interface allowing users to choose between different providers:
+
+```typescript
+import FalAiImage from '@imgly/plugin-ai-image-generation-web/fal-ai';
+import OpenAiImage from '@imgly/plugin-ai-image-generation-web/open-ai';
+
+cesdk.addPlugin(
+  AiApps({
+    providers: {
+      // Multiple image providers - selection box will be shown
+      text2image: [
+        FalAiImage.RecraftV3({
+          proxyUrl: 'https://fal-ai-proxy.example.com'
+        }),
+        OpenAiImage.GptImage1.Text2Image({
+          proxyUrl: 'https://openai-proxy.example.com'
+        })
+      ],
+      
+      // Other providers...
+    }
+  })
+);
+```
+
+### Custom Headers and Configuration
+
+Pass custom headers and configuration to providers:
+
+```typescript
+cesdk.addPlugin(
+  AiApps({
+    providers: {
+      text2image: FalAiImage.RecraftV3({
+        proxyUrl: 'https://your-proxy.example.com',
+        headers: {
+          'x-client-version': '1.0.0',
+          'x-request-source': 'cesdk-plugin',
+          'x-user-id': 'user-123'
+        },
+        debug: true
+      })
+    },
+    debug: true
+  })
+);
+```
+
 ## UI Integration
 
-The plugin adds the following UI components:
+The plugin adds the following UI components to CreativeEditor SDK:
 
-1. **AI Dock Button**: Access point for all AI features
-2. **AI Apps Menu**: In video mode, shows cards for all available AI generation types
+### AI Dock Button
+
+The main entry point for all AI features, accessible from the dock:
+
+- **ID**: `ly.img.ai/apps.dock`
+- **Functionality**: Opens AI generation interface
+- **Loading States**: Shows progress indicators during generation
+- **Mode Awareness**: Adapts interface based on current editor mode
+
+### AI Apps Menu
+
+The plugin shows a card-based interface for different AI capabilities:
+
+- **Generate Image**: Access to image generation providers
+- **Generate Video**: Access to video generation providers  
+- **Generate Audio**: Access to audio generation providers
+- **Edit Text**: Access to text generation providers
 
 ### Dock Integration
 
@@ -126,21 +208,282 @@ cesdk.ui.setDockOrder(currentOrder);
 
 ## Asset History Integration
 
-The plugin automatically integrates generated assets into the appropriate asset libraries:
+The plugin automatically integrates generated assets into the appropriate asset libraries using the following history source IDs:
 
--   AI-generated images appear in the standard image library
--   AI-generated videos appear in the standard video library
--   AI-generated audio appears in the standard audio library
+- **Image Generation History**: `ly.img.ai/image-generation.history`
+- **Video Generation History**: `ly.img.ai/video-generation.history`
+- **Audio Generation History**: `ly.img.ai/audio-generation.history`
 
-This integration creates a seamless experience where users can easily find and reuse their AI-generated assets.
+To add these history sources to existing asset library entries, use the following approach:
+
+```typescript
+// Add AI image history to the default image asset library
+const imageEntry = cesdk.ui.getAssetLibraryEntry('ly.img.image');
+if (imageEntry != null) {
+  cesdk.ui.updateAssetLibraryEntry('ly.img.image', {
+    sourceIds: [...imageEntry.sourceIds, 'ly.img.ai/image-generation.history']
+  });
+}
+
+// Add AI video history to the default video asset library
+const videoEntry = cesdk.ui.getAssetLibraryEntry('ly.img.video');
+if (videoEntry != null) {
+  cesdk.ui.updateAssetLibraryEntry('ly.img.video', {
+    sourceIds: [...videoEntry.sourceIds, 'ly.img.ai/video-generation.history']
+  });
+}
+
+// Add AI audio history to the default audio asset library
+const audioEntry = cesdk.ui.getAssetLibraryEntry('ly.img.audio');
+if (audioEntry != null) {
+  cesdk.ui.updateAssetLibraryEntry('ly.img.audio', {
+    sourceIds: [...audioEntry.sourceIds, 'ly.img.ai/audio-generation.history']
+  });
+}
+```
+
+This integration creates a seamless experience where users can easily find and reuse their AI-generated assets alongside other content.
+
+## Quick Actions Integration
+
+The plugin automatically integrates with the quick actions system, providing context-sensitive AI operations directly in the canvas menu. You need to specify the children with the quick action order:
+
+```typescript
+// Quick actions are automatically registered and will appear in canvas menus
+cesdk.ui.setCanvasMenuOrder([
+  {
+    id: 'ly.img.ai.text.canvasMenu',
+    children: [
+      'ly.img.improve',
+      'ly.img.fix',
+      'ly.img.shorter',
+      'ly.img.longer',
+      'ly.img.separator',
+      'ly.img.changeTone',
+      'ly.img.translate',
+      'ly.img.separator',
+      'ly.img.changeTextTo'
+    ]
+  },
+  {
+    id: 'ly.img.ai.image.canvasMenu',
+    children: [
+      'ly.img.styleTransfer',
+      'ly.img.artistTransfer',
+      'ly.img.separator',
+      'ly.img.editImage',
+      'ly.img.swapBackground',
+      'ly.img.createVariant',
+      'ly.img.combineImages',
+      'ly.img.separator',
+      'ly.img.remixPage',
+      'ly.img.separator',
+      'ly.img.createVideo'
+    ]
+  },
+  ...cesdk.ui.getCanvasMenuOrder()
+]);
+```
+
+Quick actions provide:
+- **Context-aware operations**: Work with currently selected blocks
+- **One-click transformations**: Apply AI operations without opening panels
+- **Cross-plugin functionality**: Actions from one plugin can work with providers from another
+
+## Error Handling and Debugging
+
+### Debug Mode
+
+Enable debug mode to get detailed logging information:
+
+```typescript
+cesdk.addPlugin(
+  AiApps({
+    providers: {
+      text2image: FalAiImage.RecraftV3({
+        proxyUrl: 'https://your-proxy.example.com',
+        debug: true // Provider-level debugging
+      })
+    },
+    debug: true // Plugin-level debugging
+  })
+);
+```
+
+### Common Issues and Solutions
+
+#### Provider Not Loading
+- **Check proxy URLs**: Ensure all proxy URLs are correctly configured and accessible
+- **Verify licenses**: Make sure your CreativeEditor SDK license includes AI features
+- **Check browser console**: Look for network errors or API issues
+
+#### Quick Actions Not Appearing
+- **Verify canvas menu order**: Ensure quick action menus are added to canvas menu order with proper children configuration
+- **Check provider support**: Verify that providers declare support for the quick actions
+- **Scope permissions**: Ensure blocks have the required scopes for quick actions
+
+#### Generation Failures
+- **API connectivity**: Check that your proxy endpoints are working
+- **Rate limiting**: Verify you're not exceeding API rate limits
+- **Input validation**: Ensure inputs meet provider requirements
+
+## Plugin Architecture
+
+### How It Works
+
+The AI Apps plugin acts as an orchestrator that:
+
+1. **Initializes Providers**: Sets up all configured AI providers
+2. **Manages UI**: Creates appropriate interface based on editor mode
+3. **Coordinates Actions**: Integrates quick actions across different plugins
+4. **Handles Assets**: Manages generated content and asset library integration
+
+### Provider Lifecycle
+
+1. **Registration**: Providers are registered with the global ProviderRegistry
+2. **Initialization**: Provider `initialize` methods are called
+3. **UI Setup**: Panels and quick actions are registered
+4. **Event Handling**: The plugin coordinates between providers and UI
+
+## TypeScript Support
+
+The plugin is fully typed with TypeScript, providing excellent development experience:
+
+```typescript
+import AiApps, { Providers } from '@imgly/plugin-ai-apps-web';
+
+// Strongly typed provider configuration
+const providers: Providers = {
+  text2image: FalAiImage.RecraftV3({
+    proxyUrl: 'https://example.com'
+  }),
+  // TypeScript will enforce correct provider types
+};
+
+cesdk.addPlugin(AiApps({ providers }));
+```
 
 ## Related Packages
 
--   [@imgly/plugin-ai-generation-web](https://github.com/imgly/plugin-ai-generation-web) - Core utilities for AI generation
--   [@imgly/plugin-ai-image-generation-web](https://github.com/imgly/plugin-ai-image-generation-web) - AI image generation
--   [@imgly/plugin-ai-video-generation-web](https://github.com/imgly/plugin-ai-video-generation-web) - AI video generation
--   [@imgly/plugin-ai-audio-generation-web](https://github.com/imgly/plugin-ai-audio-generation-web) - AI audio generation
--   [@imgly/plugin-ai-text-generation-web](https://github.com/imgly/plugin-ai-text-generation-web) - AI text generation
+This plugin works with the following IMG.LY AI generation packages:
+
+- **[@imgly/plugin-ai-generation-web](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-generation-web)** - Core utilities for AI generation
+- **[@imgly/plugin-ai-image-generation-web](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-image-generation-web)** - AI image generation
+- **[@imgly/plugin-ai-video-generation-web](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-video-generation-web)** - AI video generation
+- **[@imgly/plugin-ai-audio-generation-web](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-audio-generation-web)** - AI audio generation
+- **[@imgly/plugin-ai-text-generation-web](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-text-generation-web)** - AI text generation
+
+## Examples
+
+### Simple Setup for Design Mode
+
+```typescript
+import CreativeEditorSDK from '@cesdk/cesdk-js';
+import AiApps from '@imgly/plugin-ai-apps-web';
+import FalAiImage from '@imgly/plugin-ai-image-generation-web/fal-ai';
+
+CreativeEditorSDK.create(domElement, {
+  license: 'your-license-key'
+}).then(async (cesdk) => {
+  cesdk.addPlugin(
+    AiApps({
+      providers: {
+        text2image: FalAiImage.RecraftV3({
+          proxyUrl: 'https://your-proxy.example.com'
+        })
+      }
+    })
+  );
+
+  cesdk.ui.setDockOrder(['ly.img.ai/apps.dock', ...cesdk.ui.getDockOrder()]);
+});
+```
+
+### Complete Setup for Video Mode
+
+```typescript
+import CreativeEditorSDK from '@cesdk/cesdk-js';
+import AiApps from '@imgly/plugin-ai-apps-web';
+import FalAiImage from '@imgly/plugin-ai-image-generation-web/fal-ai';
+import FalAiVideo from '@imgly/plugin-ai-video-generation-web/fal-ai';
+import ElevenLabs from '@imgly/plugin-ai-audio-generation-web/elevenlabs';
+import { AnthropicProvider } from '@imgly/plugin-ai-text-generation-web/anthropic';
+
+CreativeEditorSDK.create(domElement, {
+  license: 'your-license-key',
+  ui: {
+    elements: {
+      panels: {
+        settings: true
+      }
+    }
+  }
+}).then(async (cesdk) => {
+  cesdk.addPlugin(
+    AiApps({
+      providers: {
+        text2text: AnthropicProvider({
+          proxyUrl: 'https://anthropic-proxy.example.com'
+        }),
+        text2image: FalAiImage.RecraftV3({
+          proxyUrl: 'https://fal-proxy.example.com'
+        }),
+        image2image: FalAiImage.GeminiFlashEdit({
+          proxyUrl: 'https://fal-proxy.example.com'
+        }),
+        text2video: FalAiVideo.MinimaxVideo01Live({
+          proxyUrl: 'https://fal-proxy.example.com'
+        }),
+        image2video: FalAiVideo.MinimaxVideo01LiveImageToVideo({
+          proxyUrl: 'https://fal-proxy.example.com'
+        }),
+        text2speech: ElevenLabs.MonolingualV1({
+          proxyUrl: 'https://elevenlabs-proxy.example.com'
+        }),
+        text2sound: ElevenLabs.SoundEffects({
+          proxyUrl: 'https://elevenlabs-proxy.example.com'
+        })
+      }
+    })
+  );
+
+  // Setup dock and canvas menus
+  cesdk.ui.setDockOrder(['ly.img.ai/apps.dock', ...cesdk.ui.getDockOrder()]);
+  cesdk.ui.setCanvasMenuOrder([
+    {
+      id: 'ly.img.ai.text.canvasMenu',
+      children: [
+        'ly.img.improve',
+        'ly.img.fix',
+        'ly.img.shorter',
+        'ly.img.longer',
+        'ly.img.separator',
+        'ly.img.changeTone',
+        'ly.img.translate',
+        'ly.img.separator',
+        'ly.img.changeTextTo'
+      ]
+    },
+    {
+      id: 'ly.img.ai.image.canvasMenu',
+      children: [
+        'ly.img.styleTransfer',
+        'ly.img.artistTransfer',
+        'ly.img.separator',
+        'ly.img.editImage',
+        'ly.img.swapBackground',
+        'ly.img.createVariant',
+        'ly.img.combineImages',
+        'ly.img.separator',
+        'ly.img.remixPage',
+        'ly.img.separator',
+        'ly.img.createVideo'
+      ]
+    },
+    ...cesdk.ui.getCanvasMenuOrder()
+  ]);
+});
+```
 
 ## License
 
