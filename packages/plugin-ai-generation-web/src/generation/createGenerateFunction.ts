@@ -56,12 +56,6 @@ function createGenerateFunction<
         return { status: 'error', message: output.message };
       if (output == null)
         return { status: 'error', message: 'No output generated' };
-      if (options?.debug)
-        // eslint-disable-next-line no-console
-        console.log(
-          '[Generaet] Generated output:',
-          JSON.stringify(output, undefined, 2)
-        );
 
       if (isAsyncGenerator(output)) {
         return { status: 'success', type: 'async', output };
