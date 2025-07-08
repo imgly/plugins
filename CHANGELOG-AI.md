@@ -2,9 +2,15 @@
 
 ## [Unreleased]
 
--   [all] Breaking change: combined history asset source is now not added to the default asset libraries anymore. (TODO: STILL UNCLEAR IF THIS IS A GOOD IDEA)
--   [all] Breaking change: `initProvider` is replaced with `initializeProviders` and `initializeProvider` with a different signature
--   [all] Breaking change: `provider.input.quickctions.actions` in favor of `provider.input.quickActions.supported`
+### Breaking Changes
+
+-   [all] **Provider Initialization**: `initProvider` is replaced with `initializeProviders` and `initializeProvider` with a different signature
+-   [all] **Quick Actions Structure**: `provider.input.quickctions.actions` replaced with `provider.input.quickActions.supported`
+-   [all] **History Asset Sources**: Combined history asset source is now not added to the default asset libraries anymore
+
+### New Features
+
+-   [all] **Multiple Providers Support**: All plugin packages now support arrays of providers with automatic selection UI
 
 ## [0.1.10] - 2025-06-20
 
