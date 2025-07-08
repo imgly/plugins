@@ -27,6 +27,8 @@ npm install @imgly/plugin-ai-video-generation-web
 
 To use the plugin, import it and configure it with your preferred providers:
 
+#### Single Provider Configuration
+
 ```typescript
 import CreativeEditorSDK from '@cesdk/cesdk-js';
 import VideoGeneration from '@imgly/plugin-ai-video-generation-web';
@@ -42,12 +44,72 @@ CreativeEditorSDK.create(domElement, {
         VideoGeneration({
             // Text-to-video provider
             text2video: FalAiVideo.MinimaxVideo01Live({
-                proxyUrl: 'https://your-fal-ai-proxy.example.com'
+                proxyUrl: 'https://your-fal-ai-proxy.example.com',
+                headers: {
+                    'x-custom-header': 'value',
+                    'x-client-version': '1.0.0'
+                }
             }),
 
             // Image-to-video provider (optional)
             image2video: FalAiVideo.MinimaxVideo01LiveImageToVideo({
-                proxyUrl: 'https://your-fal-ai-proxy.example.com'
+                proxyUrl: 'https://your-fal-ai-proxy.example.com',
+                headers: {
+                    'x-custom-header': 'value',
+                    'x-client-version': '1.0.0'
+                }
+            }),
+
+            // Optional configuration
+            debug: false,
+            dryRun: false
+        })
+    );
+});
+```
+
+#### Multiple Providers Configuration
+
+You can configure multiple providers for each generation type, and users will see a selection box to choose between them:
+
+```typescript
+import CreativeEditorSDK from '@cesdk/cesdk-js';
+import VideoGeneration from '@imgly/plugin-ai-video-generation-web';
+import FalAiVideo from '@imgly/plugin-ai-video-generation-web/fal-ai';
+
+// Initialize CreativeEditor SDK
+CreativeEditorSDK.create(domElement, {
+    license: 'your-license-key'
+    // Other configuration options...
+}).then(async (cesdk) => {
+    // Add the video generation plugin with multiple providers
+    cesdk.addPlugin(
+        VideoGeneration({
+            // Multiple text-to-video providers
+            text2video: [
+                FalAiVideo.MinimaxVideo01Live({
+                    proxyUrl: 'https://your-fal-ai-proxy.example.com',
+                    headers: {
+                        'x-custom-header': 'value',
+                        'x-client-version': '1.0.0'
+                    }
+                }),
+                FalAiVideo.PixverseV35TextToVideo({
+                    proxyUrl: 'https://your-fal-ai-proxy.example.com',
+                    headers: {
+                        'x-custom-header': 'value',
+                        'x-client-version': '1.0.0'
+                    }
+                })
+            ],
+
+            // Image-to-video provider (optional)
+            image2video: FalAiVideo.MinimaxVideo01LiveImageToVideo({
+                proxyUrl: 'https://your-fal-ai-proxy.example.com',
+                headers: {
+                    'x-custom-header': 'value',
+                    'x-client-version': '1.0.0'
+                }
             }),
 
             // Optional configuration
@@ -68,7 +130,11 @@ A model that generates videos based on text prompts:
 
 ```typescript
 text2video: FalAiVideo.MinimaxVideo01Live({
-    proxyUrl: 'https://your-fal-ai-proxy.example.com'
+    proxyUrl: 'https://your-fal-ai-proxy.example.com',
+    headers: {
+        'x-custom-header': 'value',
+        'x-client-version': '1.0.0'
+    }
 });
 ```
 
@@ -77,6 +143,7 @@ Key features:
 -   Generate videos from text descriptions
 -   Fixed output dimensions (1280×720)
 -   5-second video duration
+-   Custom headers support for API requests
 
 #### 2. MinimaxVideo01LiveImageToVideo (Image-to-Video)
 
@@ -84,7 +151,11 @@ A model that transforms still images into videos:
 
 ```typescript
 image2video: FalAiVideo.MinimaxVideo01LiveImageToVideo({
-    proxyUrl: 'https://your-fal-ai-proxy.example.com'
+    proxyUrl: 'https://your-fal-ai-proxy.example.com',
+    headers: {
+        'x-custom-header': 'value',
+        'x-client-version': '1.0.0'
+    }
 });
 ```
 
@@ -93,6 +164,7 @@ Key features:
 -   Transform existing images into videos
 -   Available through canvas quick actions
 -   Maintains original image aspect ratio
+-   Custom headers support for API requests
 
 #### 3. PixverseV35TextToVideo (Text-to-Video)
 
@@ -100,21 +172,30 @@ An alternative text-to-video model:
 
 ```typescript
 text2video: FalAiVideo.PixverseV35TextToVideo({
-    proxyUrl: 'https://your-fal-ai-proxy.example.com'
+    proxyUrl: 'https://your-fal-ai-proxy.example.com',
+    headers: {
+        'x-custom-header': 'value',
+        'x-client-version': '1.0.0'
+    }
 });
 ```
+
+Key features:
+
+-   Alternative text-to-video generation
+-   Custom headers support for API requests
 
 ### Configuration Options
 
 The plugin accepts the following configuration options:
 
-| Option        | Type      | Description                                     | Default   |
-| ------------- | --------- | ----------------------------------------------- | --------- |
-| `text2video`  | Provider  | Provider for text-to-video generation           | undefined |
-| `image2video` | Provider  | Provider for image-to-video transformation      | undefined |
-| `debug`       | boolean   | Enable debug logging                            | false     |
-| `dryRun`      | boolean   | Simulate generation without API calls           | false     |
-| `middleware`  | Function[] | Array of middleware functions for the generation | undefined |
+| Option        | Type                 | Description                                     | Default   |
+| ------------- | -------------------- | ----------------------------------------------- | --------- |
+| `text2video`  | Provider \| Provider[] | Provider(s) for text-to-video generation. When multiple providers are provided, users can select between them | undefined |
+| `image2video` | Provider \| Provider[] | Provider(s) for image-to-video transformation. When multiple providers are provided, users can select between them | undefined |
+| `debug`       | boolean              | Enable debug logging                            | false     |
+| `dryRun`      | boolean              | Simulate generation without API calls           | false     |
+| `middleware`  | Function[]           | Array of middleware functions for the generation | undefined |
 
 ### Middleware Configuration
 
@@ -179,9 +260,19 @@ For security reasons, it's recommended to use a proxy server to handle API reque
 
 ```typescript
 text2video: FalAiVideo.MinimaxVideo01Live({
-    proxyUrl: 'https://your-fal-ai-proxy.example.com'
+    proxyUrl: 'https://your-fal-ai-proxy.example.com',
+    headers: {
+        'x-custom-header': 'value',
+        'x-client-version': '1.0.0'
+    }
 });
 ```
+
+The `headers` option allows you to include custom HTTP headers in all API requests. This is useful for:
+- Adding custom client identification headers
+- Including version information
+- Passing through metadata required by your API
+- Adding correlation IDs for request tracing
 
 You'll need to implement a proxy server that forwards requests to fal.ai and handles authentication.
 
@@ -199,11 +290,11 @@ Creates and returns a plugin that can be added to CreativeEditor SDK.
 
 ```typescript
 interface PluginConfiguration {
-    // Provider for text-to-video generation
-    text2video?: AiVideoProvider;
+    // Provider(s) for text-to-video generation
+    text2video?: AiVideoProvider | AiVideoProvider[];
 
-    // Provider for image-to-video generation
-    image2video?: AiVideoProvider;
+    // Provider(s) for image-to-video generation
+    image2video?: AiVideoProvider | AiVideoProvider[];
 
     // Enable debug logging
     debug?: boolean;
@@ -223,6 +314,7 @@ interface PluginConfiguration {
 ```typescript
 FalAiVideo.MinimaxVideo01Live(config: {
   proxyUrl: string;
+  headers?: Record<string, string>;
   debug?: boolean;
 }): AiVideoProvider
 ```
@@ -232,6 +324,7 @@ FalAiVideo.MinimaxVideo01Live(config: {
 ```typescript
 FalAiVideo.MinimaxVideo01LiveImageToVideo(config: {
   proxyUrl: string;
+  headers?: Record<string, string>;
   debug?: boolean;
 }): AiVideoProvider
 ```
@@ -241,6 +334,7 @@ FalAiVideo.MinimaxVideo01LiveImageToVideo(config: {
 ```typescript
 FalAiVideo.PixverseV35TextToVideo(config: {
   proxyUrl: string;
+  headers?: Record<string, string>;
   debug?: boolean;
 }): AiVideoProvider
 ```
@@ -290,9 +384,9 @@ cesdk.ui.setDockOrder(currentOrder);
 
 ## Related Packages
 
--   [@imgly/plugin-ai-generation-web](https://github.com/imgly/plugin-ai-generation-web) - Core utilities for AI generation
--   [@imgly/plugin-ai-image-generation-web](https://github.com/imgly/plugin-ai-image-generation-web) - AI image generation
--   [@imgly/plugin-ai-audio-generation-web](https://github.com/imgly/plugin-ai-audio-generation-web) - AI audio generation
+-   [@imgly/plugin-ai-generation-web](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-generation-web) - Core utilities for AI generation
+-   [@imgly/plugin-ai-image-generation-web](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-image-generation-web) - AI image generation
+-   [@imgly/plugin-ai-audio-generation-web](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-audio-generation-web) - AI audio generation
 
 ## License
 

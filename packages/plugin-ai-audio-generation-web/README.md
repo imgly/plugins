@@ -27,6 +27,8 @@ npm install @imgly/plugin-ai-audio-generation-web
 
 To use the plugin, import it and configure it with your preferred providers:
 
+#### Single Provider Configuration
+
 ```typescript
 import CreativeEditorSDK from '@cesdk/cesdk-js';
 import AudioGeneration from '@imgly/plugin-ai-audio-generation-web';
@@ -42,12 +44,73 @@ CreativeEditorSDK.create(domElement, {
         AudioGeneration({
             // Text-to-speech provider
             text2speech: Elevenlabs.ElevenMultilingualV2({
-                proxyUrl: 'https://your-elevenlabs-proxy.example.com'
+                proxyUrl: 'https://your-elevenlabs-proxy.example.com',
+                headers: {
+                    'x-custom-header': 'value',
+                    'x-client-version': '1.0.0'
+                }
             }),
 
             // Sound effects provider (optional)
             text2sound: Elevenlabs.ElevenSoundEffects({
-                proxyUrl: 'https://your-elevenlabs-proxy.example.com'
+                proxyUrl: 'https://your-elevenlabs-proxy.example.com',
+                headers: {
+                    'x-custom-header': 'value',
+                    'x-client-version': '1.0.0'
+                }
+            }),
+
+            // Optional configuration
+            debug: false,
+            dryRun: false
+        })
+    );
+});
+```
+
+#### Multiple Providers Configuration
+
+You can configure multiple providers for each generation type, and users will see a selection box to choose between them:
+
+```typescript
+import CreativeEditorSDK from '@cesdk/cesdk-js';
+import AudioGeneration from '@imgly/plugin-ai-audio-generation-web';
+import Elevenlabs from '@imgly/plugin-ai-audio-generation-web/elevenlabs';
+
+// Initialize CreativeEditor SDK
+CreativeEditorSDK.create(domElement, {
+    license: 'your-license-key'
+    // Other configuration options...
+}).then(async (cesdk) => {
+    // Add the audio generation plugin with multiple providers
+    cesdk.addPlugin(
+        AudioGeneration({
+            // Multiple text-to-speech providers
+            text2speech: [
+                Elevenlabs.ElevenMultilingualV2({
+                    proxyUrl: 'https://your-elevenlabs-proxy.example.com',
+                    headers: {
+                        'x-custom-header': 'value',
+                        'x-client-version': '1.0.0'
+                    }
+                }),
+                // Add more providers here as they become available
+                // OtherProvider.SomeModel({
+                //     proxyUrl: 'https://your-other-proxy.example.com',
+                //     headers: {
+                //         'x-api-key': 'your-key',
+                //         'x-source': 'cesdk'
+                //     }
+                // })
+            ],
+
+            // Sound effects provider (optional)
+            text2sound: Elevenlabs.ElevenSoundEffects({
+                proxyUrl: 'https://your-elevenlabs-proxy.example.com',
+                headers: {
+                    'x-custom-header': 'value',
+                    'x-client-version': '1.0.0'
+                }
             }),
 
             // Optional configuration
@@ -68,7 +131,11 @@ A versatile text-to-speech engine that supports multiple languages and voices:
 
 ```typescript
 text2speech: Elevenlabs.ElevenMultilingualV2({
-    proxyUrl: 'https://your-elevenlabs-proxy.example.com'
+    proxyUrl: 'https://your-elevenlabs-proxy.example.com',
+    headers: {
+        'x-custom-header': 'value',
+        'x-client-version': '1.0.0'
+    }
 });
 ```
 
@@ -78,6 +145,7 @@ Key features:
 -   Multilingual support
 -   Adjustable speaking speed
 -   Natural-sounding speech
+-   Custom headers support for API requests
 
 #### 2. ElevenSoundEffects (Text-to-Sound)
 
@@ -85,7 +153,11 @@ A sound effect generator that creates audio from text descriptions:
 
 ```typescript
 text2sound: Elevenlabs.ElevenSoundEffects({
-    proxyUrl: 'https://your-elevenlabs-proxy.example.com'
+    proxyUrl: 'https://your-elevenlabs-proxy.example.com',
+    headers: {
+        'x-custom-header': 'value',
+        'x-client-version': '1.0.0'
+    }
 });
 ```
 
@@ -95,18 +167,19 @@ Key features:
 -   Create ambient sounds, effects, and music
 -   Seamless integration with CreativeEditor SDK
 -   Automatic thumbnails and duration detection
+-   Custom headers support for API requests
 
 ### Configuration Options
 
 The plugin accepts the following configuration options:
 
-| Option        | Type      | Description                                     | Default   |
-| ------------- | --------- | ----------------------------------------------- | --------- |
-| `text2speech` | Provider  | Provider for text-to-speech generation          | undefined |
-| `text2sound`  | Provider  | Provider for sound effect generation            | undefined |
-| `debug`       | boolean   | Enable debug logging                            | false     |
-| `dryRun`      | boolean   | Simulate generation without API calls           | false     |
-| `middleware`  | Function[] | Array of middleware functions for the generation | undefined |
+| Option        | Type                 | Description                                     | Default   |
+| ------------- | -------------------- | ----------------------------------------------- | --------- |
+| `text2speech` | Provider \| Provider[] | Provider(s) for text-to-speech generation. When multiple providers are provided, users can select between them | undefined |
+| `text2sound`  | Provider \| Provider[] | Provider(s) for sound effect generation. When multiple providers are provided, users can select between them | undefined |
+| `debug`       | boolean              | Enable debug logging                            | false     |
+| `dryRun`      | boolean              | Simulate generation without API calls           | false     |
+| `middleware`  | Function[]           | Array of middleware functions for the generation | undefined |
 
 ### Middleware Configuration
 
@@ -171,9 +244,19 @@ For security reasons, it's recommended to use a proxy server to handle API reque
 
 ```typescript
 text2speech: Elevenlabs.ElevenMultilingualV2({
-    proxyUrl: 'https://your-elevenlabs-proxy.example.com'
+    proxyUrl: 'https://your-elevenlabs-proxy.example.com',
+    headers: {
+        'x-custom-header': 'value',
+        'x-client-version': '1.0.0'
+    }
 });
 ```
+
+The `headers` option allows you to include custom HTTP headers in all API requests. This is useful for:
+- Adding custom client identification headers
+- Including version information
+- Passing through metadata required by your API
+- Adding correlation IDs for request tracing
 
 You'll need to implement a proxy server that forwards requests to ElevenLabs and handles authentication.
 
@@ -191,11 +274,11 @@ Creates and returns a plugin that can be added to CreativeEditor SDK.
 
 ```typescript
 interface PluginConfiguration {
-    // Provider for text-to-speech generation
-    text2speech?: AiAudioProvider;
+    // Provider(s) for text-to-speech generation
+    text2speech?: AiAudioProvider | AiAudioProvider[];
 
-    // Provider for sound effect generation
-    text2sound?: AiAudioProvider;
+    // Provider(s) for sound effect generation
+    text2sound?: AiAudioProvider | AiAudioProvider[];
 
     // Enable debug logging
     debug?: boolean;
@@ -215,6 +298,7 @@ interface PluginConfiguration {
 ```typescript
 Elevenlabs.ElevenMultilingualV2(config: {
   proxyUrl: string;
+  headers?: Record<string, string>;
   debug?: boolean;
 }): AiAudioProvider
 ```
@@ -224,6 +308,7 @@ Elevenlabs.ElevenMultilingualV2(config: {
 ```typescript
 Elevenlabs.ElevenSoundEffects(config: {
   proxyUrl: string;
+  headers?: Record<string, string>;
   debug?: boolean;
 }): AiAudioProvider
 ```
@@ -252,9 +337,9 @@ Generated audio files are automatically stored in asset sources with the followi
 
 ## Related Packages
 
--   [@imgly/plugin-ai-generation-web](https://github.com/imgly/plugin-ai-generation-web) - Core utilities for AI generation
--   [@imgly/plugin-ai-image-generation-web](https://github.com/imgly/plugin-ai-image-generation-web) - AI image generation
--   [@imgly/plugin-ai-video-generation-web](https://github.com/imgly/plugin-ai-video-generation-web) - AI video generation
+-   [@imgly/plugin-ai-generation-web](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-generation-web) - Core utilities for AI generation
+-   [@imgly/plugin-ai-image-generation-web](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-image-generation-web) - AI image generation
+-   [@imgly/plugin-ai-video-generation-web](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-video-generation-web) - AI video generation
 
 ## License
 
