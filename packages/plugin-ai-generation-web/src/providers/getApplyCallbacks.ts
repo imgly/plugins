@@ -109,6 +109,13 @@ async function getApplyCallbacksForText<O extends Output>(
     throw new Error('Output kind from generation is not text');
   }
 
+  // For sync results, apply the text immediately (like streaming does)
+  if (result.type === 'sync') {
+    blockIds.forEach((blockId) => {
+      cesdk.engine.block.setString(blockId, 'text/text', output.text);
+    });
+  }
+
   const onAfter = () => {
     options.blockIds.forEach((blockId) => {
       options.cesdk.engine.block.setString(blockId, 'text/text', output.text);
