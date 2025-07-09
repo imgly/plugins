@@ -1,14 +1,11 @@
 import { type MinimaxVideo01LiveImageToVideoInput } from '@fal-ai/client/endpoints';
 import {
   VideoOutput,
-  QuickAction,
   type Provider,
-  QuickActionBaseButton,
-  enableQuickActionForImageFill,
-  getQuickActionMenu,
-  CommonProviderConfiguration
+  CommonProviderConfiguration,
+  getPanelId
 } from '@imgly/plugin-ai-generation-web';
-import { getImageDimensionsFromURL, getImageUri } from '@imgly/plugin-utils';
+import { getImageDimensionsFromURL } from '@imgly/plugin-utils';
 import schema from './MinimaxVideo01LiveImageToVideo.json';
 import CreativeEditorSDK from '@cesdk/cesdk-js';
 import createVideoProvider from './createVideoProvider';
@@ -27,6 +24,19 @@ export function MinimaxVideo01LiveImageToVideo(
   Provider<'video', MinimaxVideo01LiveImageToVideoInput, VideoOutput>
 > {
   return async ({ cesdk }: { cesdk: CreativeEditorSDK }) => {
+    const modelKey = 'fal-ai/minimax/video-01-live/image-to-video';
+
+    // Set translations
+    cesdk.i18n.setTranslations({
+      en: {
+        [`panel.${getPanelId(modelKey)}.imageSelection`]:
+          'Select Image To Generate',
+        [`panel.${modelKey}.imageSelection`]: 'Select Image To Generate',
+        [`libraries.${getPanelId(modelKey)}.history.label`]:
+          'Generated From Image'
+      }
+    });
+
     return getProvider(cesdk, config);
   };
 }
@@ -39,26 +49,26 @@ function getProvider(
   MinimaxVideo01LiveImageToVideoInput,
   { kind: 'video'; url: string }
 > {
-  const quickActions = getQuickActions(cesdk);
-  const quickActionMenu = getQuickActionMenu(cesdk, 'image');
-
-  quickActionMenu.setQuickActionMenuOrder([
-    ...quickActionMenu.getQuickActionMenuOrder(),
-    'ly.img.separator',
-    'createVideo'
-  ]);
-
   return createVideoProvider(
     {
       modelKey: 'fal-ai/minimax/video-01-live/image-to-video',
+      name: 'Minimax Video 01 Live',
       // @ts-ignore
       schema,
       inputReference:
         '#/components/schemas/MinimaxVideo01LiveImageToVideoInput',
       cesdk,
       headers: config.headers,
-      middleware: config.middleware,
-      quickActions,
+      middleware: config.middlewares,
+      supportedQuickActions: {
+        'ly.img.createVideo': {
+          mapInput: () => {
+            throw new Error(
+              'This generation should not be triggered by this quick action'
+            );
+          }
+        }
+      },
       getBlockInput: async (input) => {
         const imageDimension = await getImageDimensionsFromURL(
           input.image_url as string,
@@ -76,46 +86,6 @@ function getProvider(
     },
     config
   );
-}
-
-function getQuickActions(
-  cesdk: CreativeEditorSDK
-): QuickAction<MinimaxVideo01LiveImageToVideoInput, VideoOutput>[] {
-  cesdk.i18n.setTranslations({
-    en: {
-      'ly.img.ai.quickAction.createVideo': 'Create Video...'
-    }
-  });
-
-  return [
-    QuickActionBaseButton<MinimaxVideo01LiveImageToVideoInput, VideoOutput>({
-      quickAction: {
-        id: 'createVideo',
-        kind: 'image',
-        version: '1',
-        enable: enableQuickActionForImageFill()
-      },
-      buttonOptions: {
-        icon: '@imgly/plugin-ai-generation/video'
-      },
-      onClick: async () => {
-        const [blockId] = cesdk.engine.block.findAllSelected();
-        const uri = await getImageUri(blockId, cesdk.engine, {
-          throwErrorIfSvg: true
-        });
-
-        cesdk.ui.openPanel('ly.img.ai/video-generation');
-        cesdk.ui.experimental.setGlobalStateValue(
-          'ly.img.ai.video-generation.fromType',
-          'fromImage'
-        );
-        cesdk.ui.experimental.setGlobalStateValue(
-          'fal-ai/minimax/video-01-live/image-to-video.image_url',
-          uri
-        );
-      }
-    })
-  ];
 }
 
 export default getProvider;

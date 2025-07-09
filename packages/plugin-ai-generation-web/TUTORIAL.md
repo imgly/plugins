@@ -129,6 +129,8 @@ The `headers` property is particularly useful for:
 
 ## 5. Creating a Schema-Based Image Provider
 
+**Important Note**: The tutorial below shows the legacy quick action structure using `actions` array. The current architecture uses the `supported` object with quick action IDs. The example has been updated to reflect the new structure.
+
 Let's create a simple provider that generates images by calling your API. Create a file called `MyImageProvider.ts`:
 
 ```typescript
@@ -137,11 +139,7 @@ import {
     ImageOutput,
     loggingMiddleware,
     uploadMiddleware,
-    CommonProviderConfiguration,
-    // Quick action helper components
-    QuickActionChangeImage,
-    QuickActionSwapImageBackground,
-    QuickActionImageVariant
+    CommonProviderConfiguration
 } from '@imgly/plugin-ai-generation-web';
 import type CreativeEditorSDK from '@cesdk/cesdk-js';
 import apiSchema from './myApiSchema.json';
@@ -157,8 +155,8 @@ interface MyProviderInput {
 
 // Define provider configuration interface extending CommonProviderConfiguration
 interface MyProviderConfiguration extends CommonProviderConfiguration<MyProviderInput, ImageOutput> {
-    apiKey: string;
-    apiUrl?: string;
+    // Add any provider-specific configuration here
+    customApiKey?: string;
 }
 
 // Create a function that returns your provider
@@ -202,50 +200,45 @@ export function MyImageProvider(config: MyProviderConfiguration): (context: {
                 
                 // Add quick actions for canvas menu
                 quickActions: {
-                    actions: [
-                        // Use helper components for common quick actions
-                        QuickActionChangeImage<MyProviderInput, ImageOutput>({
-                            cesdk,
-                            // Map input from quick action to your provider's input format
-                            mapInput: (input) => ({
-                                prompt: input.prompt,
-                                image_url: input.uri,
+                    supported: {
+                        // Map quick action IDs to provider input transformations
+                        'ly.img.editImage': {
+                            mapInput: (quickActionInput) => ({
+                                prompt: quickActionInput.prompt,
+                                image_url: quickActionInput.uri,
                                 width: 512,
                                 height: 512,
                                 style: 'photorealistic'
                             })
-                        }),
-                        
-                        QuickActionSwapImageBackground<MyProviderInput, ImageOutput>({
-                            cesdk,
-                            mapInput: (input) => ({
-                                prompt: input.prompt,
-                                image_url: input.uri,
+                        },
+                        'ly.img.swapBackground': {
+                            mapInput: (quickActionInput) => ({
+                                prompt: quickActionInput.prompt,
+                                image_url: quickActionInput.uri,
                                 width: 512,
                                 height: 512,
                                 style: 'photorealistic'
                             })
-                        }),
-                        
-                        QuickActionImageVariant<MyProviderInput, ImageOutput>({
-                            cesdk,
-                            onApply: async ({ prompt, uri, duplicatedBlockId }, context) => {
-                                // Generate a variant for the duplicated block
-                                return context.generate(
-                                    {
-                                        prompt,
-                                        image_url: uri,
-                                        width: 512,
-                                        height: 512,
-                                        style: 'photorealistic'
-                                    },
-                                    {
-                                        blockIds: [duplicatedBlockId]
-                                    }
-                                );
-                            }
-                        })
-                    ]
+                        },
+                        'ly.img.createVariant': {
+                            mapInput: (quickActionInput) => ({
+                                prompt: quickActionInput.prompt,
+                                image_url: quickActionInput.uri,
+                                width: 512,
+                                height: 512,
+                                style: 'photorealistic'
+                            })
+                        },
+                        'ly.img.styleTransfer': {
+                            mapInput: (quickActionInput) => ({
+                                prompt: quickActionInput.style,
+                                image_url: quickActionInput.uri,
+                                width: 512,
+                                height: 512,
+                                style: 'photorealistic'
+                            })
+                        }
+                    }
                 }
             },
 
@@ -313,11 +306,10 @@ export function MyImageProvider(config: MyProviderConfiguration): (context: {
                         }
                         
                         // Call your API to generate an image
-                        const response = await fetch(config.apiUrl || 'https://your-api-url.com', {
+                        const response = await fetch(config.proxyUrl, {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
-                                Authorization: `Bearer ${config.apiKey}`,
                                 ...config.headers  // Include custom headers
                             },
                             body: JSON.stringify(requestBody),
@@ -374,13 +366,13 @@ async function initializeEditor(container: HTMLElement) {
     cesdk.addPlugin(
         ImageGeneration({
             text2image: MyImageProvider({
-                apiKey: 'your-api-key',
-                apiUrl: 'https://your-api-url.com',
-                proxyUrl: 'https://your-proxy-url.com',
+                proxyUrl: 'http://your-proxy-server.com/api/proxy',
                 headers: {
                     'x-client-version': '1.0.0',
-                    'x-request-source': 'cesdk-tutorial'
-                }
+                    'x-request-source': 'cesdk-tutorial',
+                    'x-api-key': 'your-api-key'
+                },
+                customApiKey: 'your-custom-key'
             }),
             debug: true
         })
@@ -391,7 +383,7 @@ async function initializeEditor(container: HTMLElement) {
 
     // Add the dock component to open the AI image generation panel
     cesdk.ui.setDockOrder([
-      'ly.img.ai/image-generation.dock',
+      'ly.img.ai.image-generation.dock',
       ...cesdk.ui.getDockOrder()
     ]);
 
@@ -571,12 +563,22 @@ The schema-based approach offers several advantages:
 -   Consistent UI experience that matches the CE.SDK style
 -   Easy ordering of properties using the `x-order-properties` extension
 
+### Updated Architecture Features
+
+The new architecture includes:
+
+-   **Quick Action Registry**: Uses `supported` object with action IDs instead of action arrays
+-   **Custom Headers**: All providers support headers configuration for API requests
+-   **Enhanced Type Safety**: Improved TypeScript support with better provider interfaces
+-   **Cross-plugin Support**: Actions can work across different AI generation plugins
+
 Next steps:
 
-1. Customize specific property renderers using the `renderCustomProperty` option
-2. Add more advanced validation in your schema
-3. Implement proper error handling and retry logic
-4. Add custom asset sources for generated images
+1. Explore more quick action IDs from the available list (editImage, swapBackground, createVariant, styleTransfer, etc.)
+2. Implement multiple providers with selection UI using provider arrays
+3. Add custom middleware for request/response processing
+4. Implement proper error handling and retry logic
+5. Add custom asset sources for generated images
 
 ## Additional Resources
 

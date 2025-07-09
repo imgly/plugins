@@ -74,14 +74,15 @@ function getProvider(
   cesdk.i18n.setTranslations({
     en: {
       [`panel.${getPanelId(modelKey)}.styleSelection`]: 'Style Selection',
-      [`${modelKey}.style`]: 'Style'
+      [`${modelKey}.style`]: 'Style',
+      [`panel.gpt-image-1.imageSelection`]: 'Select Image To Change'
     }
   });
 
   const provider: Provider<'image', GptImage1Input, GptImage1Output> = {
     id: 'open-ai/gpt-image-1/text2image',
     kind: 'image',
-    name: 'gpt-image-1',
+    name: 'GPT Image 1',
     input: {
       panel: {
         type: 'schema',
@@ -164,7 +165,7 @@ function getProvider(
     output: {
       abortable: true,
       history: '@imgly/indexedDB',
-      middleware: config.middleware ?? [],
+      middleware: config.middlewares ?? [],
       generate: async (
         input: GptImage1Input,
         { abortSignal }: { abortSignal?: AbortSignal }

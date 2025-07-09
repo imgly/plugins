@@ -43,3 +43,5 @@ export { default as uuid } from './utils/uuid';
 export { getImageDimensionsFromURL, getImageUri } from './utils/images';
 
 export { default as isDefined } from './utils/isDefined';
+
+export { default as toArray } from './utils/toArray';

@@ -1,43 +1,82 @@
-import type CreativeEditorSDK from '@cesdk/cesdk-js';
 import {
-  type Provider,
-  type GenerationMiddleware
+  CommonPluginConfiguration,
+  GetProvider,
+  Output,
+  Provider,
+  ImageOutput
 } from '@imgly/plugin-ai-generation-web';
-
-type AiImageProvider = (context: {
-  cesdk: CreativeEditorSDK;
-}) => Promise<Provider<'image', any, any>>;
 
 /**
  * Configuration to set provider and models for image generation.
  */
-export interface PluginConfiguration {
+export interface PluginConfiguration<I, O extends Output>
+  extends CommonPluginConfiguration<'image', I, O> {
+  providers: {
+    /**
+     * Provider of a model for image generation just from a (prompt) text.
+     */
+    text2image?: GetProvider<'image'>[] | GetProvider<'image'>;
+
+    /**
+     * Provider of a model for image generation from a given image.
+     */
+    image2image?: GetProvider<'image'>[] | GetProvider<'image'>;
+  };
   /**
    * Provider of a model for image generation just from a (prompt) text.
+   * @deprecated Use `providers.text2image` instead.
    */
-  text2image?: AiImageProvider;
+  text2image?: GetProvider<'image'>[] | GetProvider<'image'>;
 
   /**
    * Provider of a model for image generation from a given image.
+   * @deprecated Use `providers.image2image` instead.
    */
-  image2image?: AiImageProvider;
+  image2image?: GetProvider<'image'>[] | GetProvider<'image'>;
+}
 
-  /**
-   * Render console logs for debugging purposes.
-   */
-  debug?: boolean;
+/**
+ * Input types for image-specific quick actions
+ * This interface is extended by individual quick action files using module augmentation
+ */
+export interface ImageQuickActionInputs {
+  // Individual quick action files will extend this interface using module augmentation
+}
 
-  /**
-   * Dry run mode. If set to true, the plugin will not make any API calls.
-   */
-  dryRun?: boolean;
+/**
+ * Type-safe support mapping for image quick actions
+ * Allows `true` or `{}` when the quick action input type extends the provider input type
+ */
+export type ImageQuickActionSupport<
+  I,
+  K extends keyof ImageQuickActionInputs
+> = ImageQuickActionInputs[K] extends I
+  ?
+      | true
+      | { mapInput: (input: ImageQuickActionInputs[K]) => I }
+      | { [key: string]: any } // Allow objects without mapInput when types are compatible
+  : { mapInput: (input: ImageQuickActionInputs[K]) => I };
 
-  /**
-   * Is called when the generation process is started. Can be used to
-   * extend the generation process with additional steps.
-   *
-   * @param generate A function that starts the actual generation process.
-   * @param context The context of the generation process.
-   */
-  middleware?: GenerationMiddleware;
+/**
+ * Type-safe mapping for image quick action support
+ */
+export type ImageQuickActionSupportMap<I> = {
+  [K in keyof ImageQuickActionInputs]?: ImageQuickActionSupport<I, K>;
+} & {
+  [key: string]:
+    | true
+    | { mapInput: (input: any) => I }
+    | { [key: string]: any };
+};
+
+/**
+ * Image provider extension with type-safe quick action support
+ * Only parameterized by K (the quick action key), O is fixed to ImageOutput
+ */
+export interface ImageProvider<I> extends Provider<'image', I, ImageOutput> {
+  input: Omit<Provider<'image', I, ImageOutput>['input'], 'quickActions'> & {
+    quickActions?: {
+      supported?: ImageQuickActionSupportMap<I>;
+    };
+  };
 }

@@ -7,11 +7,10 @@ import {
   VideoOutput,
   GetBlockInput,
   CommonProperties,
-  Middleware,
-  loggingMiddleware,
-  QuickAction
+  Middleware
 } from '@imgly/plugin-ai-generation-web';
 import { fal } from '@fal-ai/client';
+import { VideoQuickActionSupportMap } from '../types';
 
 type VideoProviderConfiguration = {
   proxyUrl: string;
@@ -25,6 +24,7 @@ type VideoProviderConfiguration = {
 function createVideoProvider<I extends Record<string, any>>(
   options: {
     modelKey: string;
+    name?: string;
     schema: OpenAPIV3.Document;
     inputReference: string;
 
@@ -39,7 +39,8 @@ function createVideoProvider<I extends Record<string, any>>(
 
     getBlockInput: GetBlockInput<'video', I>;
 
-    quickActions?: QuickAction<I, VideoOutput>[];
+    supportedQuickActions?: VideoQuickActionSupportMap<I>;
+
     middleware?: Middleware<I, VideoOutput>[];
     headers?: Record<string, string>;
 
@@ -48,12 +49,10 @@ function createVideoProvider<I extends Record<string, any>>(
   config: VideoProviderConfiguration
 ): Provider<'video', I, { kind: 'video'; url: string }> {
   const middleware = options.middleware ?? [];
-  if (config.debug) {
-    middleware.unshift(loggingMiddleware<I, VideoOutput>());
-  }
 
   const provider: Provider<'video', I, VideoOutput> = {
     id: options.modelKey,
+    name: options.name ?? options.modelKey,
     kind: 'video',
     initialize: async (context) => {
       fal.config({
@@ -73,7 +72,7 @@ function createVideoProvider<I extends Record<string, any>>(
     },
     input: {
       quickActions: {
-        actions: options.quickActions ?? []
+        supported: options.supportedQuickActions ?? {}
       },
       panel: {
         type: 'schema',

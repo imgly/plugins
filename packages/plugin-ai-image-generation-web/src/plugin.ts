@@ -1,222 +1,153 @@
-import { NotificationDuration, type EditorPlugin } from '@cesdk/cesdk-js';
+import { type EditorPlugin } from '@cesdk/cesdk-js';
 import {
-  initProvider,
-  isGeneratingStateKey,
-  registerDockComponent
+  initializeProviders,
+  Output,
+  registerDockComponent,
+  ActionRegistry,
+  initializeQuickActionComponents,
+  AI_EDIT_MODE
 } from '@imgly/plugin-ai-generation-web';
 import { PluginConfiguration } from './types';
 import iconSprite, { PLUGIN_ICON_SET_ID } from './iconSprite';
+import { toArray } from '@imgly/plugin-utils';
+import { PLUGIN_ID } from './constants';
+import EditImage from './quickActions/EditImage';
+import SwapBackground from './quickActions/SwapBackground';
+import StyleTransfer from './quickActions/StyleTransfer';
+import ArtistTransfer from './quickActions/ArtistTransfer';
+import CreateVariant from './quickActions/CreateVariant';
+import CombineImages from './quickActions/CombineImages';
+import RemixPage from './quickActions/RemixPage';
+import RemixPageWithPrompt from './quickActions/RemixPageWithPrompt';
+// import quickActions from './quickActions';
 
 export { PLUGIN_ID } from './constants';
 
-const IMAGE_GENERATION_PANEL_ID = 'ly.img.ai/image-generation';
+const IMAGE_GENERATION_PANEL_ID = 'ly.img.ai.image-generation';
 
-const IMAGE_GENERATION_INPUT_TYPE_STATE_KEY =
-  'ly.img.ai.image-generation.fromType';
-
-export function ImageGeneration(
-  options: PluginConfiguration
+export function ImageGeneration<I, O extends Output>(
+  config: PluginConfiguration<I, O>
 ): Omit<EditorPlugin, 'name' | 'version'> {
   return {
     async initialize({ cesdk }) {
       if (cesdk == null) return;
+      const registry = ActionRegistry.get();
 
-      const config = {
-        debug: options.debug ?? false,
-        dryRun: options.dryRun ?? false,
-        middleware: options.middleware
-      };
+      const disposeApp = registry.register({
+        type: 'plugin',
 
-      cesdk.ui.addIconSet(PLUGIN_ICON_SET_ID, iconSprite);
-      cesdk.setTranslations({
-        en: {
-          [`panel.${IMAGE_GENERATION_PANEL_ID}`]: 'Image Generation',
-          'ly.img.ai.image-generation.success': 'Image Generation Successful',
-          'ly.img.ai.image-generation.success.action': 'Show'
+        id: PLUGIN_ID,
+        pluginId: PLUGIN_ID,
+
+        label: 'Generate Image',
+        meta: { panelId: IMAGE_GENERATION_PANEL_ID },
+
+        execute: () => {
+          if (cesdk.ui.isPanelOpen(IMAGE_GENERATION_PANEL_ID)) {
+            cesdk.ui.closePanel(IMAGE_GENERATION_PANEL_ID);
+          } else {
+            cesdk.ui.openPanel(IMAGE_GENERATION_PANEL_ID);
+          }
         }
       });
 
-      const text2imageProvider = options?.text2image;
-      const image2imageProvider = options?.image2image;
-
-      const text2image = await text2imageProvider?.({ cesdk });
-      const image2image = await image2imageProvider?.({ cesdk });
-
-      function createNotificationConfiguration(type: 'fromText' | 'fromImage') {
-        if (cesdk == null) return;
-        return {
-          success: {
-            show: () => {
-              // Check if panel open – we only show the notification
-              // if the panel is not visible
-              const panelOpen = cesdk?.ui.isPanelOpen(
-                IMAGE_GENERATION_PANEL_ID
-              );
-              const fromTypeOpen =
-                cesdk.ui.experimental.getGlobalStateValue(
-                  IMAGE_GENERATION_INPUT_TYPE_STATE_KEY,
-                  'fromText'
-                ) === type;
-
-              return !panelOpen || !fromTypeOpen;
-            },
-            message: 'ly.img.ai.image-generation.success',
-            action: {
-              label: 'ly.img.ai.image-generation.success.action',
-              onClick: () => {
-                cesdk.ui.experimental.setGlobalStateValue(
-                  IMAGE_GENERATION_INPUT_TYPE_STATE_KEY,
-                  type
-                );
-                cesdk.ui.openPanel(IMAGE_GENERATION_PANEL_ID);
-              }
-            },
-            duration: 'long' as NotificationDuration
-          }
-        };
-      }
-
-      if (text2image != null) {
-        text2image.output.notification =
-          createNotificationConfiguration('fromText');
-      }
-      if (image2image != null) {
-        image2image.output.notification =
-          createNotificationConfiguration('fromImage');
-      }
-
-      const text2imageInitialized =
-        text2image != null
-          ? await initProvider(
-              text2image,
-              { cesdk, engine: cesdk.engine },
-              config
-            )
-          : undefined;
-
-      const image2imageInitialized =
-        image2image != null
-          ? await initProvider(
-              image2image,
-              { cesdk, engine: cesdk.engine },
-              config
-            )
-          : undefined;
-
-      if (
-        text2imageInitialized?.renderBuilderFunctions?.panel == null &&
-        image2imageInitialized?.renderBuilderFunctions?.panel == null
-      ) {
-        if (config.debug)
-          // eslint-disable-next-line no-console
-          console.log('No providers are initialized – doing nothing');
-        return;
-      }
-
-      const combinedPanelMode =
-        text2imageInitialized?.renderBuilderFunctions?.panel != null &&
-        image2imageInitialized?.renderBuilderFunctions?.panel != null;
-
-      if (combinedPanelMode) {
-        cesdk.ui.registerPanel(IMAGE_GENERATION_PANEL_ID, (context) => {
-          const { builder, experimental } = context;
-          const inputTypeState = experimental.global(
-            IMAGE_GENERATION_INPUT_TYPE_STATE_KEY,
-            'fromText'
-          );
-
-          builder.Section(`${IMAGE_GENERATION_PANEL_ID}.fromType.section`, {
-            children: () => {
-              builder.ButtonGroup(
-                `${IMAGE_GENERATION_PANEL_ID}.fromType.buttonGroup`,
-                {
-                  inputLabel: 'Input',
-                  children: () => {
-                    builder.Button(
-                      `${IMAGE_GENERATION_PANEL_ID}.fromType.buttonGroup.fromText`,
-                      {
-                        label: 'Text',
-                        icon:
-                          inputTypeState.value !== 'fromText' &&
-                          text2image != null &&
-                          experimental.global(
-                            isGeneratingStateKey(text2image.id),
-                            false
-                          ).value
-                            ? '@imgly/LoadingSpinner'
-                            : undefined,
-                        isActive: inputTypeState.value === 'fromText',
-                        onClick: () => {
-                          inputTypeState.setValue('fromText');
-                        }
-                      }
-                    );
-                    builder.Button(
-                      `${IMAGE_GENERATION_PANEL_ID}.fromType.buttonGroup.fromImage`,
-                      {
-                        label: 'Image',
-                        icon:
-                          inputTypeState.value !== 'fromImage' &&
-                          image2image != null &&
-                          experimental.global(
-                            isGeneratingStateKey(image2image.id),
-                            false
-                          ).value
-                            ? '@imgly/LoadingSpinner'
-                            : undefined,
-                        isActive: inputTypeState.value === 'fromImage',
-                        onClick: () => {
-                          inputTypeState.setValue('fromImage');
-                        }
-                      }
-                    );
-                  }
-                }
-              );
-            }
-          });
-
-          switch (inputTypeState.value) {
-            case 'fromText': {
-              text2imageInitialized?.renderBuilderFunctions?.panel?.(context);
-              break;
-            }
-            case 'fromImage': {
-              image2imageInitialized?.renderBuilderFunctions?.panel?.(context);
-              break;
-            }
-            default: {
-              // noop
-            }
-          }
-        });
-      } else {
-        // one of the provider is null
-        const renderBuilderFunction =
-          text2imageInitialized?.renderBuilderFunctions?.panel ??
-          image2imageInitialized?.renderBuilderFunctions?.panel;
-
-        if (renderBuilderFunction == null) {
-          return;
+      cesdk.ui.addIconSet(PLUGIN_ICON_SET_ID, iconSprite);
+      cesdk.i18n.setTranslations({
+        en: {
+          [`panel.${IMAGE_GENERATION_PANEL_ID}`]: 'Image Generation',
+          [`${IMAGE_GENERATION_PANEL_ID}.dock.label`]: 'AI Image'
         }
+      });
 
+      printConfigWarnings(config);
+
+      registry.register(EditImage({ cesdk }));
+      registry.register(SwapBackground({ cesdk }));
+      registry.register(StyleTransfer({ cesdk }));
+      registry.register(ArtistTransfer({ cesdk }));
+      registry.register(CreateVariant({ cesdk }));
+      registry.register(CombineImages({ cesdk }));
+      registry.register(RemixPage({ cesdk }));
+      registry.register(RemixPageWithPrompt({ cesdk }));
+
+      const text2image = config.providers?.text2image ?? config.text2image;
+      const image2image = config.providers?.image2image ?? config.image2image;
+
+      const text2imageProviders = await Promise.all(
+        toArray(text2image).map((getProvider) => getProvider({ cesdk }))
+      );
+      const image2imageProviders = await Promise.all(
+        toArray(image2image).map((getProvider) => getProvider({ cesdk }))
+      );
+
+      const initializedResult = await initializeProviders(
+        'image',
+        {
+          fromText: text2imageProviders,
+          fromImage: image2imageProviders
+        },
+        { cesdk },
+        config
+      );
+
+      const initializedQuickActions = await initializeQuickActionComponents({
+        kind: 'image',
+        providerInitializationResults:
+          initializedResult.providerInitializationResults,
+        cesdk,
+        engine: cesdk.engine,
+        debug: config.debug,
+        dryRun: config.dryRun
+      });
+
+      if (initializedResult.history?.assetSourceId != null) {
+        // TODO: Add combined asset source for this kind
+      }
+
+      if (initializedQuickActions.renderFunction != null) {
+        cesdk.ui.registerComponent(
+          `ly.img.ai.image.canvasMenu`,
+          initializedQuickActions.renderFunction
+        );
+        cesdk.ui.setCanvasMenuOrder([`ly.img.ai.image.canvasMenu`], {
+          editMode: AI_EDIT_MODE
+        });
+      }
+
+      if (initializedResult.panel.builderRenderFunction != null) {
         cesdk.ui.registerPanel(
           IMAGE_GENERATION_PANEL_ID,
-          renderBuilderFunction
+          initializedResult.panel.builderRenderFunction
         );
 
-        cesdk.i18n.setTranslations({
-          en: {
-            [`${IMAGE_GENERATION_PANEL_ID}.dock.label`]: 'AI Image'
-          }
-        });
         registerDockComponent({
           cesdk,
           panelId: IMAGE_GENERATION_PANEL_ID
         });
+      } else {
+        disposeApp();
       }
     }
   };
+}
+
+function printConfigWarnings<I, O extends Output>(
+  config: PluginConfiguration<I, O>
+) {
+  if (!config.debug) return;
+
+  if (config.providers?.text2image != null && config.text2image != null) {
+    // eslint-disable-next-line no-console
+    console.warn(
+      '[ImageGeneration]: Both `providers.text2image` and `text2image` configuration is provided. Since `text2image` is deprecated, only `providers.text2image` will be used.'
+    );
+  }
+  if (config.providers?.image2image != null && config.image2image != null) {
+    // eslint-disable-next-line no-console
+    console.warn(
+      '[ImageGeneration]: Both `providers.image2image` and `image2image` configuration is provided. Since `image2image` is deprecated, only `providers.image2image` will be used.'
+    );
+  }
 }
 
 export default ImageGeneration;

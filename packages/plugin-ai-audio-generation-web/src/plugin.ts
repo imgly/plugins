@@ -1,176 +1,145 @@
-import CreativeEditorSDK from '@cesdk/cesdk-js';
-import { NotificationDuration, type EditorPlugin } from '@cesdk/cesdk-js';
+import { type EditorPlugin } from '@cesdk/cesdk-js';
 import {
-  initProvider,
-  getQuickActionMenu
+  ActionRegistry,
+  Output,
+  initializeProviders,
+  registerDockComponent
 } from '@imgly/plugin-ai-generation-web';
 import { PluginConfiguration } from './types';
+import { toArray } from '@imgly/plugin-utils';
+import { PLUGIN_ID } from './constants';
 
 export { PLUGIN_ID } from './constants';
 
-const SPEECH_GENERATION_PANEL_ID = 'ly.img.ai/audio-generation/speech';
-const SOUND_GENERATION_PANEL_ID = 'ly.img.ai/audio-generation/sound';
+const SPEECH_GENERATION_PANEL_ID = 'ly.img.ai.audio-generation.speech';
+const SOUND_GENERATION_PANEL_ID = 'ly.img.ai.audio-generation.sound';
 
-export function AudioGeneration(
-  options: PluginConfiguration
+export function AudioGeneration<I, O extends Output>(
+  config: PluginConfiguration<I, O>
 ): Omit<EditorPlugin, 'name' | 'version'> {
   return {
     async initialize({ cesdk }) {
       if (cesdk == null) return;
 
-      const config = {
-        debug: options.debug ?? false,
-        dryRun: options.dryRun ?? false,
-        middleware: options.middleware
-      };
       cesdk.setTranslations({
         en: {
           [`panel.${SPEECH_GENERATION_PANEL_ID}`]: 'AI Voice',
-          [`panel.${SOUND_GENERATION_PANEL_ID}`]: 'Sound Generation',
-          'ly.img.ai.audio-generation.speech.success': 'Generation Successful',
-          'ly.img.ai.audio-generation.speech.success.action': 'Show',
-          'ly.img.ai.audio-generation.sound.success':
-            'Sound Generation Successful',
-          'ly.img.ai.audio-generation.sound.success.action': 'Show'
+          [`panel.${SOUND_GENERATION_PANEL_ID}`]: 'Sound Generation'
         }
       });
 
-      const text2speechProvider = options?.text2speech;
-      const text2soundProvider = options?.text2sound;
+      printConfigWarnings(config);
 
-      const text2speech = await text2speechProvider?.({ cesdk });
-      const text2sound = await text2soundProvider?.({ cesdk });
+      const registry = ActionRegistry.get();
+      const disposeSoundApp = registry.register({
+        type: 'plugin',
+        sceneMode: 'Video',
 
-      if (text2speech != null) {
-        text2speech.output.notification = {
-          success: {
-            show: () => {
-              // Check if panel open – we only show the notification
-              // if the panel is not visible
-              const panelOpen = cesdk?.ui.isPanelOpen(
-                SPEECH_GENERATION_PANEL_ID
-              );
-              return !panelOpen;
-            },
-            message: 'ly.img.ai.audio-generation.speech.success',
-            action: {
-              label: 'ly.img.ai.audio-generation.speech.success.action',
-              onClick: () => {
-                cesdk.ui.openPanel(SPEECH_GENERATION_PANEL_ID);
-              }
-            },
-            duration: 'long' as NotificationDuration
+        id: `${PLUGIN_ID}/sound`,
+        pluginId: PLUGIN_ID,
+
+        label: 'Generate Sound',
+        meta: { panelId: SOUND_GENERATION_PANEL_ID },
+
+        execute: () => {
+          if (cesdk.ui.isPanelOpen(SOUND_GENERATION_PANEL_ID)) {
+            cesdk.ui.closePanel(SOUND_GENERATION_PANEL_ID);
+          } else {
+            cesdk.ui.openPanel(SOUND_GENERATION_PANEL_ID);
           }
-        };
-      }
-      if (text2sound != null) {
-        text2sound.output.notification = {
-          success: {
-            show: () => {
-              // Check if panel open – we only show the notification
-              // if the panel is not visible
-              const panelOpen = cesdk?.ui.isPanelOpen(
-                SOUND_GENERATION_PANEL_ID
-              );
-              return !panelOpen;
-            },
-            message: 'ly.img.ai.audio-generation.sound.success',
-            action: {
-              label: 'ly.img.ai.audio-generation.sound.success.action',
-              onClick: () => {
-                cesdk.ui.openPanel(SOUND_GENERATION_PANEL_ID);
-              }
-            }
+        }
+      });
+
+      const disposeSpeechApp = registry.register({
+        type: 'plugin',
+        sceneMode: 'Video',
+
+        id: `${PLUGIN_ID}/speech`,
+        pluginId: PLUGIN_ID,
+
+        label: 'AI Voice',
+        meta: { panelId: SPEECH_GENERATION_PANEL_ID },
+
+        execute: () => {
+          if (cesdk.ui.isPanelOpen(SPEECH_GENERATION_PANEL_ID)) {
+            cesdk.ui.closePanel(SPEECH_GENERATION_PANEL_ID);
+          } else {
+            cesdk.ui.openPanel(SPEECH_GENERATION_PANEL_ID);
           }
-        };
-      }
+        }
+      });
 
-      const text2speechInitialized =
-        text2speech != null
-          ? await initProvider(
-              text2speech,
-              { cesdk, engine: cesdk.engine },
-              config
-            )
-          : undefined;
+      const text2speech = config.providers?.text2speech ?? config.text2speech;
+      const text2sound = config.providers?.text2sound ?? config.text2sound;
 
-      const text2soundInitialized =
-        text2sound != null
-          ? await initProvider(
-              text2sound,
-              { cesdk, engine: cesdk.engine },
-              config
-            )
-          : undefined;
+      const text2speechProviders = await Promise.all(
+        toArray(text2speech).map((getProvider) => getProvider({ cesdk }))
+      );
+      const text2soundProviders = await Promise.all(
+        toArray(text2sound).map((getProvider) => getProvider({ cesdk }))
+      );
 
-      if (text2soundInitialized?.renderBuilderFunctions?.panel != null) {
+      const text2SpeechInitializedResult = await initializeProviders(
+        'audio',
+        text2speechProviders,
+        { cesdk },
+        config
+      );
+      const text2SoundInitializedResult = await initializeProviders(
+        'audio',
+        text2soundProviders,
+        { cesdk },
+        config
+      );
+
+      if (text2SoundInitializedResult.panel.builderRenderFunction != null) {
         cesdk.ui.registerPanel(
           SOUND_GENERATION_PANEL_ID,
-          text2soundInitialized.renderBuilderFunctions.panel
+          text2SoundInitializedResult.panel.builderRenderFunction
         );
+
+        registerDockComponent({
+          cesdk,
+          panelId: SOUND_GENERATION_PANEL_ID
+        });
+      } else {
+        disposeSoundApp();
       }
 
-      if (text2speechInitialized?.renderBuilderFunctions?.panel != null) {
-        addQuickActionEntryForText2Speech(cesdk, (text) => {
-          cesdk.ui.openPanel(SPEECH_GENERATION_PANEL_ID);
-          cesdk.ui.experimental.setGlobalStateValue(
-            `${text2speech?.id}.prompt`,
-            text
-          );
-        });
+      if (text2SpeechInitializedResult.panel.builderRenderFunction != null) {
         cesdk.ui.registerPanel(
           SPEECH_GENERATION_PANEL_ID,
-          text2speechInitialized.renderBuilderFunctions.panel
+          text2SpeechInitializedResult.panel.builderRenderFunction
         );
+
+        registerDockComponent({
+          cesdk,
+          panelId: SPEECH_GENERATION_PANEL_ID
+        });
+      } else {
+        disposeSpeechApp();
       }
     }
   };
 }
 
-function addQuickActionEntryForText2Speech(
-  cesdk: CreativeEditorSDK,
-  onClick: (text: string) => void
+function printConfigWarnings<I, O extends Output>(
+  config: PluginConfiguration<I, O>
 ) {
-  const quickActionMenu = getQuickActionMenu(cesdk, 'text');
-  const generateSpeechId = 'generateSpeech';
-  quickActionMenu.registerQuickAction({
-    id: generateSpeechId,
-    version: '1',
-    confirmation: false,
-    enable: ({ engine }) => {
-      const blockIds = engine.block.findAllSelected();
-      if (blockIds.length !== 1) {
-        return false;
-      }
+  if (!config.debug) return;
 
-      const [blockId] = blockIds;
-      if (engine.block.getType(blockId) !== '//ly.img.ubq/text') {
-        return false;
-      }
-
-      return true;
-    },
-    render: ({ builder }, context) => {
-      builder.Button(generateSpeechId, {
-        icon: '@imgly/Audio',
-        variant: 'plain',
-        labelAlignment: 'left',
-        label: 'AI Voice...',
-        onClick: () => {
-          const [blockId] = cesdk.engine.block.findAllSelected();
-          const text = cesdk.engine.block.getString(blockId, 'text/text');
-          onClick(text);
-          context.closeMenu();
-        }
-      });
-    }
-  });
-
-  quickActionMenu.setQuickActionMenuOrder([
-    ...quickActionMenu.getQuickActionMenuOrder(),
-    'ly.img.separator',
-    generateSpeechId
-  ]);
+  if (config.providers?.text2speech != null && config.text2speech != null) {
+    // eslint-disable-next-line no-console
+    console.warn(
+      '[AudioGeneration]: Both `providers.text2speech` and `text2speech` configuration is provided. Since `text2speech` is deprecated, only `providers.text2speech` will be used.'
+    );
+  }
+  if (config.providers?.text2sound != null && config.text2sound != null) {
+    // eslint-disable-next-line no-console
+    console.warn(
+      '[AudioGeneration]: Both `providers.text2sound` and `text2sound` configuration is provided. Since `text2sound` is deprecated, only `providers.text2sound` will be used.'
+    );
+  }
 }
 
 export default AudioGeneration;

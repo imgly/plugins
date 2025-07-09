@@ -36,6 +36,7 @@ import AiApps from '@imgly/plugin-ai-apps-web';
 // Import providers from individual AI generation packages
 import Anthropic from '@imgly/plugin-ai-text-generation-web/anthropic';
 import FalAiImage from '@imgly/plugin-ai-image-generation-web/fal-ai';
+import OpenAiImage from '@imgly/plugin-ai-image-generation-web/open-ai';
 import FalAiVideo from '@imgly/plugin-ai-video-generation-web/fal-ai';
 import Elevenlabs from '@imgly/plugin-ai-audio-generation-web/elevenlabs';
 
@@ -77,7 +78,7 @@ function App() {
 
                         // Configure AI Apps dock position
                         instance.ui.setDockOrder([
-                            'ly.img.ai/apps.dock',
+                            'ly.img.ai.apps.dock',
                             ...instance.ui.getDockOrder()
                         ]);
 
@@ -98,50 +99,100 @@ function App() {
                                     // Text generation and transformation
                                     text2text: Anthropic.AnthropicProvider({
                                         proxyUrl:
-                                            'https://your-server.com/api/anthropic-proxy'
+                                            'http://your-proxy-server.com/api/proxy',
+                                        headers: {
+                                            'x-client-version': '1.0.0',
+                                            'x-request-source': 'cesdk-tutorial'
+                                        }
                                     }),
 
-                                    // Image generation
-                                    text2image: FalAiImage.RecraftV3({
-                                        proxyUrl: 'https://your-server.com/api/fal-ai-proxy',
-                                        // Add upload middleware to store generated images on your server
-                                        middleware: [
-                                            uploadMiddleware(async (output) => {
-                                                // Upload the generated image to your server
-                                                const response = await fetch('https://your-server.com/api/store-image', {
-                                                    method: 'POST',
-                                                    headers: { 'Content-Type': 'application/json' },
-                                                    body: JSON.stringify({ 
-                                                        imageUrl: output.url,
-                                                        metadata: { source: 'ai-generation' }
-                                                    })
-                                                });
-                                                
-                                                const result = await response.json();
-                                                
-                                                // Return the output with your server's URL
-                                                return {
-                                                    ...output,
-                                                    url: result.permanentUrl
-                                                };
-                                            })
-                                        ]
-                                    }),
+                                    // Image generation - Multiple providers with selection UI
+                                    text2image: [
+                                        FalAiImage.RecraftV3({
+                                            proxyUrl: 'http://your-proxy-server.com/api/proxy',
+                                            headers: {
+                                                'x-client-version': '1.0.0',
+                                                'x-request-source': 'cesdk-tutorial'
+                                            },
+                                            // Add upload middleware to store generated images on your server
+                                            middleware: [
+                                                uploadMiddleware(async (output) => {
+                                                    // Upload the generated image to your server
+                                                    const response = await fetch('https://your-server.com/api/store-image', {
+                                                        method: 'POST',
+                                                        headers: { 'Content-Type': 'application/json' },
+                                                        body: JSON.stringify({ 
+                                                            imageUrl: output.url,
+                                                            metadata: { source: 'ai-generation' }
+                                                        })
+                                                    });
+                                                    
+                                                    const result = await response.json();
+                                                    
+                                                    // Return the output with your server's URL
+                                                    return {
+                                                        ...output,
+                                                        url: result.permanentUrl
+                                                    };
+                                                })
+                                            ]
+                                        }),
+                                        // Alternative with icon style support
+                                        FalAiImage.Recraft20b({
+                                            proxyUrl: 'http://your-proxy-server.com/api/proxy',
+                                            headers: {
+                                                'x-client-version': '1.0.0',
+                                                'x-request-source': 'cesdk-tutorial'
+                                            }
+                                        }),
+                                        // Additional image provider for user selection
+                                        OpenAiImage.GptImage1.Text2Image({
+                                            proxyUrl: 'http://your-proxy-server.com/api/proxy',
+                                            headers: {
+                                                'x-api-key': 'your-key',
+                                                'x-request-source': 'cesdk-tutorial'
+                                            }
+                                        })
+                                    ],
+                                    
+                                    // Image-to-image transformation
                                     image2image: FalAiImage.GeminiFlashEdit({
                                         proxyUrl:
-                                            'https://your-server.com/api/fal-ai-proxy'
+                                            'https://your-server.com/api/fal-ai-proxy',
+                                        headers: {
+                                            'x-client-version': '1.0.0',
+                                            'x-request-source': 'cesdk-tutorial'
+                                        }
                                     }),
 
-                                    // Video generation
-                                    text2video: FalAiVideo.MinimaxVideo01Live({
-                                        proxyUrl:
-                                            'https://your-server.com/api/fal-ai-proxy'
-                                    }),
+                                    // Video generation - Multiple providers
+                                    text2video: [
+                                        FalAiVideo.MinimaxVideo01Live({
+                                            proxyUrl:
+                                                'https://your-server.com/api/fal-ai-proxy',
+                                            headers: {
+                                                'x-client-version': '1.0.0',
+                                                'x-request-source': 'cesdk-tutorial'
+                                            }
+                                        }),
+                                        FalAiVideo.PixverseV35TextToVideo({
+                                            proxyUrl:
+                                                'https://your-server.com/api/fal-ai-proxy',
+                                            headers: {
+                                                'x-client-version': '1.0.0',
+                                                'x-request-source': 'cesdk-tutorial'
+                                            }
+                                        })
+                                    ],
                                     image2video:
                                         FalAiVideo.MinimaxVideo01LiveImageToVideo(
                                             {
                                                 proxyUrl:
-                                                    'https://your-server.com/api/fal-ai-proxy'
+                                                    'https://your-server.com/api/fal-ai-proxy',
+                                                headers: {
+                                                    'x-client-version': '1.0.0',
+                                                    'x-request-source': 'cesdk-tutorial'
+                                                }
                                             }
                                         ),
 
@@ -149,11 +200,19 @@ function App() {
                                     text2speech:
                                         Elevenlabs.ElevenMultilingualV2({
                                             proxyUrl:
-                                                'https://your-server.com/api/elevenlabs-proxy'
+                                                'https://your-server.com/api/elevenlabs-proxy',
+                                            headers: {
+                                                'x-client-version': '1.0.0',
+                                                'x-request-source': 'cesdk-tutorial'
+                                            }
                                         }),
                                     text2sound: Elevenlabs.ElevenSoundEffects({
                                         proxyUrl:
-                                            'https://your-server.com/api/elevenlabs-proxy'
+                                            'https://your-server.com/api/elevenlabs-proxy',
+                                        headers: {
+                                            'x-client-version': '1.0.0',
+                                            'x-request-source': 'cesdk-tutorial'
+                                        }
                                     })
                                 }
                             })
@@ -178,7 +237,11 @@ Each AI provider type serves a specific purpose and creates different types of c
 
 ```typescript
 text2text: AnthropicProvider({
-    proxyUrl: 'https://your-server.com/api/anthropic-proxy'
+    proxyUrl: 'http://your-proxy-server.com/api/proxy',
+    headers: {
+        'x-client-version': '1.0.0',
+        'x-request-source': 'cesdk-tutorial'
+    }
 });
 ```
 
@@ -191,19 +254,48 @@ The text provider enables capabilities like:
 -   Translating to different languages
 -   Custom text transformations
 
-### Image Generation (fal.ai)
+### Image Generation
+
+#### Multiple Providers Configuration
 
 ```typescript
-// Text-to-image generation
-text2image: FalAiImage.RecraftV3({
-  proxyUrl: 'https://your-server.com/api/fal-ai-proxy'
-}),
+// Text-to-image generation with multiple providers for user selection
+text2image: [
+    FalAiImage.RecraftV3({
+        proxyUrl: 'http://your-proxy-server.com/api/proxy',
+        headers: {
+            'x-client-version': '1.0.0',
+            'x-request-source': 'cesdk-tutorial'
+        }
+    }),
+    // Alternative with icon style support
+    FalAiImage.Recraft20b({
+        proxyUrl: 'http://your-proxy-server.com/api/proxy',
+        headers: {
+            'x-client-version': '1.0.0',
+            'x-request-source': 'cesdk-tutorial'
+        }
+    }),
+    OpenAiImage.GptImage1.Text2Image({
+        proxyUrl: 'http://your-proxy-server.com/api/proxy',
+        headers: {
+            'x-api-key': 'your-key',
+            'x-request-source': 'cesdk-tutorial'
+        }
+    })
+],
 
 // Image-to-image transformation
 image2image: FalAiImage.GeminiFlashEdit({
-  proxyUrl: 'https://your-server.com/api/fal-ai-proxy'
+    proxyUrl: 'http://your-proxy-server.com/api/proxy',
+    headers: {
+        'x-client-version': '1.0.0',
+        'x-request-source': 'cesdk-tutorial'
+    }
 })
 ```
+
+When multiple providers are configured, users will see a selection box to choose between them.
 
 Image generation features include:
 
@@ -212,17 +304,36 @@ Image generation features include:
 -   Various size presets and custom dimensions
 -   Transforming existing images based on text prompts
 
-### Video Generation (fal.ai)
+### Video Generation
+
+#### Multiple Providers Configuration
 
 ```typescript
-// Text-to-video generation
-text2video: FalAiVideo.MinimaxVideo01Live({
-  proxyUrl: 'https://your-server.com/api/fal-ai-proxy'
-}),
+// Text-to-video generation with multiple providers for user selection
+text2video: [
+    FalAiVideo.MinimaxVideo01Live({
+        proxyUrl: 'http://your-proxy-server.com/api/proxy',
+        headers: {
+            'x-client-version': '1.0.0',
+            'x-request-source': 'cesdk-tutorial'
+        }
+    }),
+    FalAiVideo.PixverseV35TextToVideo({
+        proxyUrl: 'http://your-proxy-server.com/api/proxy',
+        headers: {
+            'x-client-version': '1.0.0',
+            'x-request-source': 'cesdk-tutorial'
+        }
+    })
+],
 
 // Image-to-video transformation
 image2video: FalAiVideo.MinimaxVideo01LiveImageToVideo({
-  proxyUrl: 'https://your-server.com/api/fal-ai-proxy'
+    proxyUrl: 'http://your-proxy-server.com/api/proxy',
+    headers: {
+        'x-client-version': '1.0.0',
+        'x-request-source': 'cesdk-tutorial'
+    }
 })
 ```
 
@@ -238,12 +349,20 @@ Video generation capabilities include:
 ```typescript
 // Text-to-speech generation
 text2speech: Elevenlabs.ElevenMultilingualV2({
-  proxyUrl: 'https://your-server.com/api/elevenlabs-proxy'
+    proxyUrl: 'http://your-proxy-server.com/api/proxy',
+    headers: {
+        'x-client-version': '1.0.0',
+        'x-request-source': 'cesdk-tutorial'
+    }
 }),
 
 // Sound effect generation
 text2sound: Elevenlabs.ElevenSoundEffects({
-  proxyUrl: 'https://your-server.com/api/elevenlabs-proxy'
+    proxyUrl: 'http://your-proxy-server.com/api/proxy',
+    headers: {
+        'x-client-version': '1.0.0',
+        'x-request-source': 'cesdk-tutorial'
+    }
 })
 ```
 
@@ -265,11 +384,11 @@ The main entry point for AI features is the AI dock button, which you can positi
 
 ```typescript
 // Add the AI dock component to the beginning of the dock
-cesdk.ui.setDockOrder(['ly.img.ai/apps.dock', ...cesdk.ui.getDockOrder()]);
+cesdk.ui.setDockOrder(['ly.img.ai.apps.dock', ...cesdk.ui.getDockOrder()]);
 
 // Or add it at a specific position
 const currentOrder = cesdk.ui.getDockOrder();
-currentOrder.splice(2, 0, 'ly.img.ai/apps.dock');
+currentOrder.splice(2, 0, 'ly.img.ai.apps.dock');
 cesdk.ui.setDockOrder(currentOrder);
 ```
 
@@ -392,8 +511,13 @@ Each AI provider configuration requires a `proxyUrl` parameter, which should poi
 
 ```typescript
 text2image: FalAiImage.RecraftV3({
-    proxyUrl: 'https://your-server.com/api/falai'
+    proxyUrl: 'http://your-proxy-server.com/api/proxy'
 });
+
+// Or use Recraft20b with icon style support:
+// text2image: FalAiImage.Recraft20b({
+//     proxyUrl: 'http://your-proxy-server.com/api/proxy'
+// });
 ```
 
 ### Proxy Implementation Requirements
@@ -478,8 +602,8 @@ This integration enables your users to create impressive content with AI assista
 
 For more details about each AI provider, refer to the individual package documentation:
 
--   [@imgly/plugin-ai-generation-web](https://github.com/imgly/plugin-ai-generation-web)
--   [@imgly/plugin-ai-image-generation-web](https://github.com/imgly/plugin-ai-image-generation-web)
--   [@imgly/plugin-ai-video-generation-web](https://github.com/imgly/plugin-ai-video-generation-web)
--   [@imgly/plugin-ai-audio-generation-web](https://github.com/imgly/plugin-ai-audio-generation-web)
--   [@imgly/plugin-ai-text-generation-web](https://github.com/imgly/plugin-ai-text-generation-web)
+-   [@imgly/plugin-ai-generation-web](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-generation-web)
+-   [@imgly/plugin-ai-image-generation-web](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-image-generation-web)
+-   [@imgly/plugin-ai-video-generation-web](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-video-generation-web)
+-   [@imgly/plugin-ai-audio-generation-web](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-audio-generation-web)
+-   [@imgly/plugin-ai-text-generation-web](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-text-generation-web)

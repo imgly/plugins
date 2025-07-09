@@ -51,7 +51,7 @@ function initialize(
         ]);
 
         instance.ui.setDockOrder([
-          'ly.img.ai/apps.dock',
+          'ly.img.ai.apps.dock',
           ...instance.ui.getDockOrder().filter(({ key }) => {
             return key !== 'ly.img.video.template' && key !== 'ly.img.template';
           }),

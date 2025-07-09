@@ -1,7 +1,6 @@
 import CreativeEditorSDK from '@cesdk/cesdk-js';
-import Provider, { GetInput, Output, OutputKind } from './provider';
-import { InitProviderConfiguration } from './types';
-import { extractErrorMessage } from '../utils';
+import Provider, { GetInput, Output, OutputKind } from '../core/provider';
+import { extractErrorMessage } from '../utils/utils';
 
 function handleGenerationError<K extends OutputKind, I, O extends Output>(
   error: unknown,
@@ -9,30 +8,25 @@ function handleGenerationError<K extends OutputKind, I, O extends Output>(
     cesdk: CreativeEditorSDK;
     provider: Provider<K, I, O>;
     getInput?: GetInput<I>;
-  },
-  config: InitProviderConfiguration
+  }
 ) {
   const { cesdk, provider, getInput } = options;
 
-  if (config.onError != null && typeof config.onError === 'function') {
-    config.onError(error);
-  } else {
-    // eslint-disable-next-line no-console
-    console.error('Generation failed:', error);
-    const shown = showErrorNotification(
-      cesdk,
-      provider.output.notification,
-      () => ({
-        input: getInput?.().input,
-        error
-      })
-    );
-    if (!shown) {
-      cesdk.ui.showNotification({
-        type: 'error',
-        message: extractErrorMessage(error)
-      });
-    }
+  // eslint-disable-next-line no-console
+  console.error('Generation failed:', error);
+  const shown = showErrorNotification(
+    cesdk,
+    provider.output.notification,
+    () => ({
+      input: getInput?.().input,
+      error
+    })
+  );
+  if (!shown) {
+    cesdk.ui.showNotification({
+      type: 'error',
+      message: extractErrorMessage(error)
+    });
   }
 }
 

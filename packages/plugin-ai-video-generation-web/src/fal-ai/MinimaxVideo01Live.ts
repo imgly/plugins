@@ -28,12 +28,13 @@ function getProvider(
   return createVideoProvider(
     {
       modelKey: 'fal-ai/minimax/video-01-live',
+      name: 'Minimax Video 01 Live',
       // @ts-ignore
       schema,
       inputReference: '#/components/schemas/MinimaxVideo01LiveInput',
 
       headers: config.headers,
-      middleware: config.middleware,
+      middleware: config.middlewares,
       cesdk,
       getBlockInput: () => {
         return Promise.resolve({

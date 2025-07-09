@@ -39,6 +39,7 @@ function getProvider(
 
   const provider: Provider<'audio', ElevenlabsInput, AudioOutput> = {
     id: modelKey,
+    name: 'Elevenlabs Sound Generation',
     kind: 'audio',
     initialize: async () => {},
     input: {
@@ -63,7 +64,7 @@ function getProvider(
     output: {
       abortable: true,
       history: '@imgly/indexedDB',
-      middleware: config.middleware,
+      middleware: config.middlewares,
       generate: async (
         input: ElevenlabsInput,
         { abortSignal }: { abortSignal?: AbortSignal }

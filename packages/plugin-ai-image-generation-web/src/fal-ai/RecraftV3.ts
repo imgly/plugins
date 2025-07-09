@@ -134,17 +134,19 @@ function getProvider(
       [`${modelKey}.style`]: 'Style',
       [`${modelKey}.style.type`]: 'Type',
       [`${modelKey}.style.type.image`]: 'Image',
-      [`${modelKey}.style.type.vector`]: 'Vector'
+      [`${modelKey}.style.type.vector`]: 'Vector',
+      [`libraries.${getPanelId(modelKey)}.history.label`]: 'Generated From Text'
     }
   });
 
   return createImageProvider(
     {
       modelKey,
+      name: 'Recraft V3',
       // @ts-ignore
       schema: RecraftV3Schema,
       inputReference: '#/components/schemas/RecraftV3Input',
-      middleware: config.middleware ?? [],
+      middleware: config.middlewares ?? [],
       headers: config.headers,
       userFlow: 'placeholder',
       renderCustomProperty: {

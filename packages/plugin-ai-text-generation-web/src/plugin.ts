@@ -2,72 +2,99 @@ import { type EditorPlugin } from '@cesdk/cesdk-js';
 import iconSprite, { PLUGIN_ICON_SET_ID } from './iconSprite';
 import { PluginConfiguration } from './types';
 import {
-  getQuickActionMenu,
-  initProvider
+  initializeProviders,
+  Output,
+  ActionRegistry,
+  initializeQuickActionComponents,
+  AI_EDIT_MODE
 } from '@imgly/plugin-ai-generation-web';
+import { toArray } from '@imgly/plugin-utils';
+import Improve from './quickActions/Improve';
+import Fix from './quickActions/Fix';
+import Shorter from './quickActions/Shorter';
+import Longer from './quickActions/Longer';
+import ChangeTone from './quickActions/ChangeTone';
+import Translate from './quickActions/Translate';
+import ChangeTextTo from './quickActions/ChangeTextTo';
 
 export { PLUGIN_ID } from './constants';
 
-export default (
-  config: PluginConfiguration
-): Omit<EditorPlugin, 'name' | 'version'> => {
+export function TextGeneration<I, O extends Output>(
+  config: PluginConfiguration<I, O>
+): Omit<EditorPlugin, 'name' | 'version'> {
   return {
     async initialize({ cesdk }) {
       if (cesdk == null) return;
 
-      const provider = await config.provider?.({ cesdk });
-
-      initProvider(
-        provider,
-        { cesdk, engine: cesdk.engine },
-        { debug: config.debug ?? false, dryRun: false }
-      );
-
-      const quickActionMenu = getQuickActionMenu(cesdk, 'text');
-
-      quickActionMenu.setQuickActionMenuOrder([
-        'improve',
-        'fix',
-        'shorter',
-        'longer',
-        'ly.img.separator',
-        'changeTone',
-        'translate',
-        'ly.img.separator',
-        'changeTextTo',
-        ...quickActionMenu.getQuickActionMenuOrder()
-      ]);
-
       cesdk.ui.addIconSet(PLUGIN_ICON_SET_ID, iconSprite);
-      cesdk.setTranslations({
+      cesdk.i18n.setTranslations({
         en: {
-          'ly.img.ai.inference.apply': 'Apply',
-          'ly.img.ai.inference.cancel': 'Cancel',
-          'ly.img.ai.inference.improve': 'Improve Writing',
-          'ly.img.ai.inference.improve.processing': 'Improving Writing...',
-          'ly.img.ai.inference.fix': 'Fix Spelling & Grammar',
-          'ly.img.ai.inference.fix.processing': 'Fixing spelling & grammar...',
-          'ly.img.ai.inference.longer': 'Make Longer',
-          'ly.img.ai.inference.longer.processing': 'Making longer...',
-          'ly.img.ai.inference.shorter': 'Make Shorter',
-          'ly.img.ai.inference.shorter.processing': 'Making shorter...',
-          'ly.img.ai.inference.changeTone': 'Change Tone',
-          'ly.img.ai.inference.changeTone.processing': 'Changing tone...',
-
-          'ly.img.ai.inference.changeTone.type.professional': 'Professional',
-          'ly.img.ai.inference.changeTone.type.casual': 'Casual',
-          'ly.img.ai.inference.changeTone.type.friendly': 'Friendly',
-          'ly.img.ai.inference.changeTone.type.serious': 'Serious',
-          'ly.img.ai.inference.changeTone.type.humorous': 'Humorous',
-          'ly.img.ai.inference.changeTone.type.optimistic': 'Optimistic',
-
-          'ly.img.ai.inference.translate': 'Translate',
-          'ly.img.ai.inference.translate.processing': 'Translating...',
-
-          'ly.img.ai.inference.changeTextTo': 'Change Text to...',
-          'ly.img.ai.inference.changeTextTo.processing': 'Changing text...'
+          'common.apply': 'Apply',
+          'common.back': 'Back'
         }
       });
+
+      printConfigWarnings(config);
+
+      const registry = ActionRegistry.get();
+      registry.register(Improve({ cesdk }));
+      registry.register(Fix({ cesdk }));
+      registry.register(Shorter({ cesdk }));
+      registry.register(Longer({ cesdk }));
+      registry.register(ChangeTone({ cesdk }));
+      registry.register(Translate({ cesdk }));
+      registry.register(ChangeTextTo({ cesdk }));
+
+      const text2text = config.providers?.text2text ?? config.provider;
+
+      const text2textProviders = await Promise.all(
+        toArray(text2text).map((getProvider) => getProvider({ cesdk }))
+      );
+
+      const initializedResult = await initializeProviders(
+        'text',
+        {
+          fromText: text2textProviders,
+          fromImage: []
+        },
+        { cesdk },
+        config
+      );
+
+      const initializedQuickActions = await initializeQuickActionComponents({
+        kind: 'text',
+        providerInitializationResults:
+          initializedResult.providerInitializationResults,
+        cesdk,
+        engine: cesdk.engine,
+        debug: config.debug,
+        dryRun: config.dryRun
+      });
+
+      if (initializedQuickActions.renderFunction != null) {
+        cesdk.ui.registerComponent(
+          `ly.img.ai.text.canvasMenu`,
+          initializedQuickActions.renderFunction
+        );
+        cesdk.ui.setCanvasMenuOrder([`ly.img.ai.text.canvasMenu`], {
+          editMode: AI_EDIT_MODE
+        });
+      }
     }
   };
-};
+}
+
+function printConfigWarnings<I, O extends Output>(
+  config: PluginConfiguration<I, O>
+) {
+  if (!config.debug) return;
+
+  if (config.providers?.text2text != null && config.provider != null) {
+    // eslint-disable-next-line no-console
+    console.warn(
+      '[TextGeneration]: Both `providers.text2text` and `provider` configuration is provided. Since `provider` is deprecated, only `providers.text2text` will be used.'
+    );
+  }
+}
+
+export default TextGeneration;

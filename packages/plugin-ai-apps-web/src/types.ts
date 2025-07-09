@@ -20,29 +20,29 @@ export interface Providers {
   /**
    * Provider for image generation based on a prompt alone.
    */
-  text2image?: GetProvider<'image'>;
+  text2image?: GetProvider<'image'> | GetProvider<'image'>[];
   /**
    * Provider for image generation based on a prompt and an image.
    */
-  image2image?: GetProvider<'image'>;
+  image2image?: GetProvider<'image'> | GetProvider<'image'>[];
 
   /**
    * Provider for video generation based on a prompt alone.
    */
-  text2video?: GetProvider<'video'>;
+  text2video?: GetProvider<'video'> | GetProvider<'video'>[];
   /**
    * Provider for video generation based on a prompt and an image.
    */
-  image2video?: GetProvider<'video'>;
+  image2video?: GetProvider<'video'> | GetProvider<'video'>[];
 
   /**
    * Provider for speech generation based on a prompt alone.
    */
-  text2speech?: GetProvider<'audio'>;
+  text2speech?: GetProvider<'audio'> | GetProvider<'audio'>[];
   /**
    * Provider for sound effect generation based on a prompt alone.
    */
-  text2sound?: GetProvider<'audio'>;
+  text2sound?: GetProvider<'audio'> | GetProvider<'audio'>[];
 }
 
 export interface PluginConfiguration {

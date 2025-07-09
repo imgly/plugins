@@ -6,11 +6,11 @@ import {
   beforeEach,
   beforeAll
 } from '@jest/globals';
-import { GenerationOptions, TextOutput } from '../generation/provider';
+import { GenerationOptions, TextOutput } from '../core/provider';
 import rateLimitMiddleware, {
   inMemoryStores
-} from '../generation/middleware/rateLimitMiddleware';
-import { Middleware } from '../generation/middleware/middleware';
+} from '../middleware/rateLimitMiddleware';
+import { Middleware } from '../middleware/middleware';
 
 // Mock for timing functions
 jest.useFakeTimers();

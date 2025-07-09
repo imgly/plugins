@@ -1,7 +1,7 @@
 import { describe, expect, it } from '@jest/globals';
 import { OpenAPIV3 } from 'openapi-types';
-import getProperties from '../generation/openapi/getProperties';
-import { PanelInputSchema } from '../generation/provider';
+import getProperties from '../openapi/getProperties';
+import { PanelInputSchema } from '../core/provider';
 
 describe('getProperties', () => {
   const mockInputSchema: OpenAPIV3.SchemaObject = {

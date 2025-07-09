@@ -27,6 +27,8 @@ npm install @imgly/plugin-ai-image-generation-web
 
 To use the plugin, import it and configure it with your preferred providers:
 
+#### Single Provider Configuration
+
 ```typescript
 import CreativeEditorSDK from '@cesdk/cesdk-js';
 import ImageGeneration from '@imgly/plugin-ai-image-generation-web';
@@ -44,12 +46,29 @@ CreativeEditorSDK.create(domElement, {
     ImageGeneration({
       // Text-to-image provider
       text2image: FalAiImage.RecraftV3({
-        proxyUrl: 'https://your-fal-ai-proxy.example.com'
+        proxyUrl: 'http://your-proxy-server.com/api/proxy',
+        headers: {
+          'x-custom-header': 'value',
+          'x-client-version': '1.0.0'
+        }
       }),
+      
+      // Alternative: Use Recraft20b with icon style support
+      // text2image: FalAiImage.Recraft20b({
+      //   proxyUrl: 'http://your-proxy-server.com/api/proxy',
+      //   headers: {
+      //     'x-custom-header': 'value',
+      //     'x-client-version': '1.0.0'
+      //   }
+      // }),
       
       // Image-to-image provider (optional)
       image2image: FalAiImage.GeminiFlashEdit({
-        proxyUrl: 'https://your-fal-ai-proxy.example.com'
+        proxyUrl: 'http://your-proxy-server.com/api/proxy',
+        headers: {
+          'x-custom-header': 'value',
+          'x-client-version': '1.0.0'
+        }
       }),
       
       // Optional configuration
@@ -57,25 +76,75 @@ CreativeEditorSDK.create(domElement, {
       dryRun: false
     })
   );
-  
-  // Alternatively, use OpenAI providers
-  // cesdk.addPlugin(
-  //   ImageGeneration({
-  //     // Text-to-image provider
-  //     text2image: OpenAiImage.GptImage1.Text2Image({
-  //       proxyUrl: 'https://your-openai-proxy.example.com'
-  //     }),
-  //     
-  //     // Image-to-image provider (optional)
-  //     image2image: OpenAiImage.GptImage1.Image2Image({
-  //       proxyUrl: 'https://your-openai-proxy.example.com'
-  //     }),
-  //     
-  //     // Optional configuration
-  //     debug: false,
-  //     dryRun: false
-  //   })
-  // );
+});
+```
+
+#### Multiple Providers Configuration
+
+You can configure multiple providers for each generation type, and users will see a selection box to choose between them:
+
+```typescript
+import CreativeEditorSDK from '@cesdk/cesdk-js';
+import ImageGeneration from '@imgly/plugin-ai-image-generation-web';
+import FalAiImage from '@imgly/plugin-ai-image-generation-web/fal-ai';
+import OpenAiImage from '@imgly/plugin-ai-image-generation-web/open-ai';
+
+// Initialize CreativeEditor SDK
+CreativeEditorSDK.create(domElement, {
+  license: 'your-license-key',
+  // Other configuration options...
+}).then(async (cesdk) => {
+  // Add the image generation plugin with multiple providers
+  cesdk.addPlugin(
+    ImageGeneration({
+      // Multiple text-to-image providers
+      text2image: [
+        FalAiImage.RecraftV3({
+          proxyUrl: 'http://your-proxy-server.com/api/proxy',
+          headers: {
+            'x-custom-header': 'value',
+            'x-client-version': '1.0.0'
+          }
+        }),
+        FalAiImage.Recraft20b({
+          proxyUrl: 'http://your-proxy-server.com/api/proxy',
+          headers: {
+            'x-custom-header': 'value',
+            'x-client-version': '1.0.0'
+          }
+        }),
+        OpenAiImage.GptImage1.Text2Image({
+          proxyUrl: 'http://your-proxy-server.com/api/proxy',
+          headers: {
+            'x-api-key': 'your-key',
+            'x-request-source': 'cesdk-plugin'
+          }
+        })
+      ],
+      
+      // Multiple image-to-image providers (optional)
+      image2image: [
+        FalAiImage.GeminiFlashEdit({
+          proxyUrl: 'http://your-proxy-server.com/api/proxy',
+          headers: {
+            'x-custom-header': 'value',
+            'x-client-version': '1.0.0'
+          }
+        }),
+        OpenAiImage.GptImage1.Image2Image({
+          proxyUrl: 'http://your-proxy-server.com/api/proxy',
+          headers: {
+            'x-api-key': 'your-key',
+            'x-request-source': 'cesdk-plugin'
+          }
+        })
+      ],
+      
+      // Optional configuration
+      debug: false,
+      dryRun: false
+    })
+  );
 });
 ```
 
@@ -89,7 +158,11 @@ A versatile text-to-image model from fal.ai that generates images based on text 
 
 ```typescript
 text2image: FalAiImage.RecraftV3({
-  proxyUrl: 'https://your-fal-ai-proxy.example.com'
+  proxyUrl: 'http://your-proxy-server.com/api/proxy',
+  headers: {
+    'x-custom-header': 'value',
+    'x-client-version': '1.0.0'
+  }
 })
 ```
 
@@ -98,14 +171,41 @@ Key features:
 - Various image size presets
 - Custom dimensions support
 - Adjustable quality settings
+- Custom headers support for API requests
 
-#### 2. GptImage1.Text2Image (Text-to-Image)
+#### 2. Recraft20b (Text-to-Image)
+
+An enhanced text-to-image model from fal.ai with additional icon style support:
+
+```typescript
+text2image: FalAiImage.Recraft20b({
+  proxyUrl: 'http://your-proxy-server.com/api/proxy',
+  headers: {
+    'x-custom-header': 'value',
+    'x-client-version': '1.0.0'
+  }
+})
+```
+
+Key features:
+- All RecraftV3 features (realistic, illustration, vector styles)
+- **New icon styles**: broken_line, colored_outline, colored_shapes, doodle_fill, and more
+- Three-way style selection (image/vector/icon)
+- Same image size presets and custom dimensions support
+- Cost-effective alternative to RecraftV3
+- Custom headers support for API requests
+
+#### 3. GptImage1.Text2Image (Text-to-Image)
 
 OpenAI's GPT-4 Vision based text-to-image model that generates high-quality images:
 
 ```typescript
 text2image: OpenAiImage.GptImage1.Text2Image({
-  proxyUrl: 'https://your-openai-proxy.example.com'
+  proxyUrl: 'http://your-proxy-server.com/api/proxy',
+  headers: {
+    'x-api-key': 'your-key',
+    'x-request-source': 'cesdk-plugin'
+  }
 })
 ```
 
@@ -114,14 +214,19 @@ Key features:
 - Multiple size options (1024×1024, 1536×1024, 1024×1536)
 - Background transparency options
 - Automatic prompt optimization
+- Custom headers support for API requests
 
-#### 3. GeminiFlashEdit (Image-to-Image)
+#### 4. GeminiFlashEdit (Image-to-Image)
 
 An image modification model from fal.ai that transforms existing images:
 
 ```typescript
 image2image: FalAiImage.GeminiFlashEdit({
-  proxyUrl: 'https://your-fal-ai-proxy.example.com'
+  proxyUrl: 'http://your-proxy-server.com/api/proxy',
+  headers: {
+    'x-custom-header': 'value',
+    'x-client-version': '1.0.0'
+  }
 })
 ```
 
@@ -130,14 +235,19 @@ Key features:
 - Available directly through canvas quick actions
 - Maintains original image dimensions
 - Includes style presets and artist-specific transformations
+- Custom headers support for API requests
 
-#### 4. GptImage1.Image2Image (Image-to-Image)
+#### 5. GptImage1.Image2Image (Image-to-Image)
 
 OpenAI's GPT-4 Vision based image editing model that can transform existing images:
 
 ```typescript
 image2image: OpenAiImage.GptImage1.Image2Image({
-  proxyUrl: 'https://your-openai-proxy.example.com'
+  proxyUrl: 'http://your-proxy-server.com/api/proxy',
+  headers: {
+    'x-api-key': 'your-key',
+    'x-request-source': 'cesdk-plugin'
+  }
 })
 ```
 
@@ -146,6 +256,7 @@ Key features:
 - Supports the same quick actions as GeminiFlashEdit
 - Maintains original image dimensions
 - Can be used as a direct alternative to GeminiFlashEdit
+- Custom headers support for API requests
 
 ### Configuration Options
 
@@ -153,8 +264,8 @@ The plugin accepts the following configuration options:
 
 | Option | Type | Description | Default |
 |--------|------|-------------|---------|
-| `text2image` | Provider | Provider for text-to-image generation | undefined |
-| `image2image` | Provider | Provider for image-to-image transformation | undefined |
+| `text2image` | Provider \| Provider[] | Provider(s) for text-to-image generation. When multiple providers are provided, users can select between them | undefined |
+| `image2image` | Provider \| Provider[] | Provider(s) for image-to-image transformation. When multiple providers are provided, users can select between them | undefined |
 | `debug` | boolean | Enable debug logging | false |
 | `dryRun` | boolean | Simulate generation without API calls | false |
 | `middleware` | Function[] | Array of middleware functions to extend the generation process | undefined |
@@ -183,8 +294,9 @@ const rateLimit = rateLimitMiddleware({
 cesdk.addPlugin(
   ImageGeneration({
     text2image: FalAiImage.RecraftV3({
-      proxyUrl: 'https://your-fal-ai-proxy.example.com'
+      proxyUrl: 'http://your-proxy-server.com/api/proxy'
     }),
+    // Or use: FalAiImage.Recraft20b({ proxyUrl: 'http://your-proxy-server.com/api/proxy' }),
     middleware: [logging, rateLimit] // Apply middleware in order
   })
 );
@@ -245,9 +357,28 @@ For security reasons, it's recommended to use a proxy server to handle API reque
 
 ```typescript
 text2image: FalAiImage.RecraftV3({
-  proxyUrl: 'https://your-fal-ai-proxy.example.com'
+  proxyUrl: 'http://your-proxy-server.com/api/proxy',
+  headers: {
+    'x-custom-header': 'value',
+    'x-client-version': '1.0.0'
+  }
 })
+
+// Or use Recraft20b with icon style support:
+// text2image: FalAiImage.Recraft20b({
+//   proxyUrl: 'http://your-proxy-server.com/api/proxy',
+//   headers: {
+//     'x-custom-header': 'value',
+//     'x-client-version': '1.0.0'
+//   }
+// })
 ```
+
+The `headers` option allows you to include custom HTTP headers in all API requests. This is useful for:
+- Adding custom client identification headers
+- Including version information
+- Passing through metadata required by your API
+- Adding correlation IDs for request tracing
 
 You'll need to implement a proxy server that forwards requests to fal.ai and handles authentication.
 
@@ -265,11 +396,11 @@ Creates and returns a plugin that can be added to CreativeEditor SDK.
 
 ```typescript
 interface PluginConfiguration {
-  // Provider for text-to-image generation
-  text2image?: AiImageProvider;
+  // Provider(s) for text-to-image generation
+  text2image?: AiImageProvider | AiImageProvider[];
   
-  // Provider for image-to-image generation
-  image2image?: AiImageProvider;
+  // Provider(s) for image-to-image generation
+  image2image?: AiImageProvider | AiImageProvider[];
   
   // Enable debug logging
   debug?: boolean;
@@ -289,6 +420,17 @@ interface PluginConfiguration {
 ```typescript
 FalAiImage.RecraftV3(config: {
   proxyUrl: string;
+  headers?: Record<string, string>;
+  debug?: boolean;
+})
+```
+
+#### Recraft20b
+
+```typescript
+FalAiImage.Recraft20b(config: {
+  proxyUrl: string;
+  headers?: Record<string, string>;
   debug?: boolean;
 })
 ```
@@ -298,6 +440,29 @@ FalAiImage.RecraftV3(config: {
 ```typescript
 FalAiImage.GeminiFlashEdit(config: {
   proxyUrl: string;
+  headers?: Record<string, string>;
+  debug?: boolean;
+})
+```
+
+### OpenAI Providers
+
+#### GptImage1.Text2Image
+
+```typescript
+OpenAiImage.GptImage1.Text2Image(config: {
+  proxyUrl: string;
+  headers?: Record<string, string>;
+  debug?: boolean;
+})
+```
+
+#### GptImage1.Image2Image
+
+```typescript
+OpenAiImage.GptImage1.Image2Image(config: {
+  proxyUrl: string;
+  headers?: Record<string, string>;
   debug?: boolean;
 })
 ```
@@ -313,65 +478,89 @@ The plugin automatically registers the following UI components:
 
 ### Quick Action Features
 
-The plugin includes several pre-configured quick actions for both providers, built using helper components from the core generation library:
+The plugin includes several pre-configured quick actions for image generation providers:
 
-1. **Change Image**: Edit the currently selected image using a text prompt
-2. **Swap Background**: Change only the background of the selected image
-3. **Create Variant**: Duplicate the selected image and generate a variant
-4. **Style Transfer**: Apply different artistic styles to the selected image (GeminiFlashEdit only)
-5. **Artist Painting Styles**: Transform the image in the style of famous artists (GeminiFlashEdit only)
+#### Available Quick Actions
 
-These quick actions are implemented using helper components from `@imgly/plugin-ai-generation-web`:
+- **`ly.img.editImage`**: Change image based on description
+  - Input: `{ prompt: string, uri: string }`
+
+- **`ly.img.swapBackground`**: Change the background of the image
+  - Input: `{ prompt: string, uri: string }`
+
+- **`ly.img.createVariant`**: Create a variation of the image
+  - Input: `{ prompt: string, uri: string }`
+
+- **`ly.img.styleTransfer`**: Transform image into different art styles
+  - Input: `{ style: string, uri: string }`
+
+- **`ly.img.artistTransfer`**: Transform image in the style of famous artists
+  - Input: `{ artist: string, uri: string }`
+
+- **`ly.img.combineImages`**: Combine multiple images with instructions
+  - Input: `{ prompt: string, uris: string[], exportFromBlockIds: number[] }`
+
+- **`ly.img.remixPage`**: Convert the page into a single image
+  - Input: `{ prompt: string, uri: string }`
+
+- **`ly.img.remixPageWithPrompt`**: Remix the page with custom instructions
+  - Input: `{ prompt: string, uri: string }`
+
+- **`ly.img.gpt-image-1.changeStyleLibrary`**: Apply different art styles (GPT-specific)
+  - Input: `{ prompt: string, uri: string }`
+
+#### Provider Quick Action Support
+
+Providers declare which quick actions they support through their configuration:
 
 ```typescript
-// Example of how the GptImage1 provider implements quick actions
-function createQuickActions(cesdk): QuickAction[] {
-  return [
-    // Swap background quick action
-    QuickActionSwapImageBackground({
-      mapInput: (input) => ({ ...input, image_url: input.uri }),
-      cesdk
-    }),
-    
-    // Change image quick action
-    QuickActionChangeImage({
-      mapInput: (input) => ({ ...input, image_url: input.uri }),
-      cesdk
-    }),
-    
-    // Create variant quick action
-    QuickActionImageVariant({
-      onApply: async ({ prompt, uri, duplicatedBlockId }, context) => {
-        return context.generate(
-          {
-            prompt,
-            image_url: uri
-          },
-          {
-            blockIds: [duplicatedBlockId]
-          }
-        );
-      },
-      cesdk
-    })
-  ];
-}
+const myImageProvider = {
+    // ... other provider config
+    input: {
+        // ... panel config
+        quickActions: {
+            supported: {
+                'ly.img.editImage': {
+                    mapInput: (quickActionInput) => ({
+                        prompt: quickActionInput.prompt,
+                        image_url: quickActionInput.uri
+                    })
+                },
+                'ly.img.swapBackground': {
+                    mapInput: (quickActionInput) => ({
+                        prompt: quickActionInput.prompt,
+                        image_url: quickActionInput.uri
+                    })
+                },
+                'ly.img.styleTransfer': {
+                    mapInput: (quickActionInput) => ({
+                        style: quickActionInput.style,
+                        image_url: quickActionInput.uri
+                    })
+                }
+                // Add more supported quick actions as needed
+            }
+        }
+    }
+};
 ```
 
 ### Panel IDs
 
-- Main panel: `ly.img.ai/image-generation`
+- Main panel: `ly.img.ai.image-generation`
 - Canvas quick actions: `ly.img.ai.image.canvasMenu`
 - Provider-specific panels:
-  - RecraftV3: `ly.img.ai/fal-ai/recraft-v3`
-  - GeminiFlashEdit: `ly.img.ai/fal-ai/gemini-flash-edit`
-  - GptImage1.Text2Image: `ly.img.ai/open-ai/gpt-image-1/text2image`
-  - GptImage1.Image2Image: `ly.img.ai/open-ai/gpt-image-1/image2image`
+  - RecraftV3: `ly.img.ai.fal-ai/recraft-v3`
+  - Recraft20b: `ly.img.ai.fal-ai/recraft/v2/text-to-image`
+  - GeminiFlashEdit: `ly.img.ai.fal-ai/gemini-flash-edit`
+  - GptImage1.Text2Image: `ly.img.ai.open-ai/gpt-image-1/text2image`
+  - GptImage1.Image2Image: `ly.img.ai.open-ai/gpt-image-1/image2image`
 
 ### Asset History
 
 Generated images are automatically stored in asset sources with the following IDs:
 - RecraftV3: `fal-ai/recraft-v3.history`
+- Recraft20b: `fal-ai/recraft/v2/text-to-image.history`
 - GeminiFlashEdit: `fal-ai/gemini-flash-edit.history`
 - GptImage1.Text2Image: `open-ai/gpt-image-1/text2image.history`
 - GptImage1.Image2Image: `open-ai/gpt-image-1/image2image.history`
@@ -383,21 +572,21 @@ The plugin automatically registers a dock component with a sparkle icon that ope
 ```typescript
 // Add the AI Image component to the beginning of the dock
 cesdk.ui.setDockOrder([
-  'ly.img.ai/image-generation.dock',
+  'ly.img.ai.image-generation.dock',
   ...cesdk.ui.getDockOrder()
 ]);
 
 // Or add it at a specific position
 const currentOrder = cesdk.ui.getDockOrder();
-currentOrder.splice(2, 0, 'ly.img.ai/image-generation.dock');
+currentOrder.splice(2, 0, 'ly.img.ai.image-generation.dock');
 cesdk.ui.setDockOrder(currentOrder);
 ```
 
 ## Related Packages
 
-- [@imgly/plugin-ai-generation-web](https://github.com/imgly/plugin-ai-generation-web) - Core utilities for AI generation
-- [@imgly/plugin-ai-video-generation-web](https://github.com/imgly/plugin-ai-video-generation-web) - AI video generation
-- [@imgly/plugin-ai-audio-generation-web](https://github.com/imgly/plugin-ai-audio-generation-web) - AI audio generation
+- [@imgly/plugin-ai-generation-web](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-generation-web) - Core utilities for AI generation
+- [@imgly/plugin-ai-video-generation-web](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-video-generation-web) - AI video generation
+- [@imgly/plugin-ai-audio-generation-web](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-audio-generation-web) - AI audio generation
 
 ## License
 

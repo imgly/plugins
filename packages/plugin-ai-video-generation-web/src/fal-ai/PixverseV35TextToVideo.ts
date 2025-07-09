@@ -1,7 +1,8 @@
 import {
   CommonProviderConfiguration,
   VideoOutput,
-  type Provider
+  type Provider,
+  getPanelId
 } from '@imgly/plugin-ai-generation-web';
 import schema from './PixverseV35TextToVideo.json';
 import CreativeEditorSDK from '@cesdk/cesdk-js';
@@ -26,6 +27,16 @@ export function PixverseV35TextToVideo(
   cesdk: CreativeEditorSDK;
 }) => Promise<Provider<'video', PixverseV35TextToVideoInput, VideoOutput>> {
   return async ({ cesdk }: { cesdk: CreativeEditorSDK }) => {
+    const modelKey = 'fal-ai/pixverse/v3.5/text-to-video';
+
+    // Set translations
+    cesdk.i18n.setTranslations({
+      en: {
+        [`libraries.${getPanelId(modelKey)}.history.label`]:
+          'Generated From Text'
+      }
+    });
+
     return getProvider(cesdk, config);
   };
 }
@@ -41,13 +52,14 @@ function getProvider(
   return createVideoProvider(
     {
       modelKey: 'fal-ai/pixverse/v3.5/text-to-video',
+      name: 'Pixverse V3.5',
       // @ts-ignore
       schema,
       inputReference: '#/components/schemas/PixverseV35TextToVideoInput',
       cesdk,
 
       headers: config.headers,
-      middleware: config.middleware,
+      middleware: config.middlewares,
       getBlockInput: (input) => {
         if (input.aspect_ratio != null && input.resolution != null) {
           const [widthRatio, heightRatio] = input.aspect_ratio

@@ -1,7 +1,8 @@
 import {
   type Provider,
   type AudioOutput,
-  CommonProviderConfiguration
+  CommonProviderConfiguration,
+  getPanelId
 } from '@imgly/plugin-ai-generation-web';
 import CreativeEditorSDK from '@cesdk/cesdk-js';
 import schema from './ElevenMultilingualV2.json';
@@ -48,7 +49,7 @@ function getProvider(
     config.baseURL ??
     'https://cdn.img.ly/assets/plugins/plugin-ai-audio-generation-web/v1/elevenlabs/';
 
-  const prefix = 'ly.img.ai/audio-generation/speech/elevenlabs';
+  const prefix = 'ly.img.ai.audio-generation.speech.elevenlabs';
   const voiceSelectionPanelId = `${prefix}.voiceSelection`;
   const voiceAssetSourceId = createVoicesAssetSource(cesdk, baseURL);
   const modelKey = 'elevenlabs/monolingual/v1';
@@ -56,12 +57,16 @@ function getProvider(
   cesdk.setTranslations({
     en: {
       [`panel.${modelKey}`]: 'AI Voice',
-      [`panel.${voiceSelectionPanelId}`]: 'Select a Voice'
+      [`panel.${voiceSelectionPanelId}`]: 'Select a Voice',
+      [`panel.${getPanelId('elevenlabs')}`]: 'AI Voice',
+      [`libraries.${modelKey}.history.label`]: 'AI Voice',
+      [`libraries.elevenlabs/sound-generation.history.label`]: 'Generated Sound'
     }
   });
 
   const provider: Provider<'audio', ElevenlabsInput, AudioOutput> = {
     id: modelKey,
+    name: 'Elevenlabs Multilingual V2',
     kind: 'audio',
     initialize: async () => {
       cesdk.ui.addAssetLibraryEntry({
@@ -155,7 +160,7 @@ function getProvider(
     output: {
       abortable: true,
       history: '@imgly/indexedDB',
-      middleware: config.middleware,
+      middleware: config.middlewares,
       generate: async (
         input: ElevenlabsInput,
         { abortSignal }: { abortSignal?: AbortSignal }

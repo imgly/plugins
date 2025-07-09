@@ -3,9 +3,9 @@ import {
   GenerationOptions,
   ImageOutput,
   GenerationResult
-} from '../generation/provider';
-import uploadMiddleware from '../generation/middleware/uploadMiddleware';
-import { isAsyncGenerator } from '../utils';
+} from '../core/provider';
+import uploadMiddleware from '../middleware/uploadMiddleware';
+import { isAsyncGenerator } from '../utils/utils';
 
 // Define test types
 interface TestInput {
@@ -30,7 +30,7 @@ type NextFn = (
 
 // Mock the isAsyncGenerator import
 // Note: We need to use inline mock implementation here since jest.mock() is hoisted
-jest.mock('../utils', () => ({
+jest.mock('../utils/utils', () => ({
   isAsyncGenerator: jest.fn()
 }));
 

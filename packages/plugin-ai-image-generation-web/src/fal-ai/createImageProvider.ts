@@ -6,13 +6,12 @@ import {
   GetBlockInput,
   CommonProperties,
   Provider,
-  QuickAction,
-  loggingMiddleware,
   Middleware
 } from '@imgly/plugin-ai-generation-web';
 import { fal } from '@fal-ai/client';
 import { isCustomImageSize, uploadImageInputToFalIfNeeded } from './utils';
 import { getImageDimensions } from './RecraftV3.constants';
+import { ImageQuickActionSupportMap } from '../types';
 
 type ImageProviderConfiguration = {
   proxyUrl: string;
@@ -37,7 +36,7 @@ function createImageProvider<I extends Record<string, any>>(
 
     renderCustomProperty?: RenderCustomProperty;
 
-    quickActions?: QuickAction<I, ImageOutput>[];
+    supportedQuickActions?: ImageQuickActionSupportMap<I>;
     getBlockInput?: GetBlockInput<'image', I>;
     getImageSize?: (input: I) => { width: number; height: number };
 
@@ -49,9 +48,6 @@ function createImageProvider<I extends Record<string, any>>(
   config: ImageProviderConfiguration
 ): Provider<'image', I, { kind: 'image'; url: string }> {
   const middleware = options.middleware ?? [];
-  if (config.debug) {
-    middleware.unshift(loggingMiddleware<I, ImageOutput>());
-  }
   const provider: Provider<'image', I, ImageOutput> = {
     id: options.modelKey,
     kind: 'image',
@@ -74,7 +70,7 @@ function createImageProvider<I extends Record<string, any>>(
     },
     input: {
       quickActions: {
-        actions: options.quickActions ?? []
+        supported: options.supportedQuickActions ?? {}
       },
       panel: {
         type: 'schema',

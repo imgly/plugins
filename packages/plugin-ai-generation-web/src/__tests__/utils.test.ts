@@ -1,5 +1,5 @@
 import { describe, expect, it } from '@jest/globals';
-import { getLabelFromId } from '../utils';
+import { getLabelFromId } from '../utils/utils';
 
 describe('getLabelFromId', () => {
   it('should handle empty strings', () => {
