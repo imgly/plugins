@@ -3,6 +3,7 @@ import CreativeEditorSDK, {
   AssetLibraryDockComponent,
   EditorPlugin
 } from '@cesdk/cesdk-js';
+import { isDefined } from '@imgly/plugin-utils';
 import {
   getPanelId,
   ActionRegistry,
@@ -133,56 +134,49 @@ function initializeAppLibrary(
   });
 
   const componentId = `${AI_APP_ID}.dock`;
-  cesdk.ui.registerComponent(
-    componentId,
-    ({ builder, engine, experimental }) => {
-      const sceneMode = engine.scene.getMode();
-      const apps = appAssetSource.getCurrentAssets().filter((asset) => {
-        if (asset?.meta?.sceneMode == null) return true;
-        return asset?.meta?.sceneMode === sceneMode;
-      });
-      if (apps.length === 0) return;
-      const singleAction =
-        apps.length === 1
-          ? ActionRegistry.get().getBy({ id: apps[0].id, type: 'plugin' })[0]
-          : undefined;
+  cesdk.ui.registerComponent(componentId, ({ builder, experimental }) => {
+    const apps = appAssetSource.getCurrentAssets();
+    if (apps.length === 0) return;
+    const singleAction =
+      apps.length === 1
+        ? ActionRegistry.get().getBy({ id: apps[0].id, type: 'plugin' })[0]
+        : undefined;
 
-      const panelId = singleAction?.meta?.panelId ?? AI_APP_ID;
-      const isOpen = cesdk.ui.isPanelOpen(panelId);
-      const isGeneratingState = experimental.global<boolean>(
-        `${AI_APP_ID}.isGenerating`,
-        false
-      );
+    const panelId = singleAction?.meta?.panelId ?? AI_APP_ID;
+    const isOpen = cesdk.ui.isPanelOpen(panelId);
+    const isGeneratingState = experimental.global<boolean>(
+      `${AI_APP_ID}.isGenerating`,
+      false
+    );
 
-      builder.Button(`${AI_APP_ID}.dock.button`, {
-        label: 'AI',
-        isSelected: isOpen,
-        icon: isGeneratingState.value
-          ? '@imgly/LoadingSpinner'
-          : '@imgly/Sparkle',
-        onClick: () => {
-          cesdk.ui.findAllPanels().forEach((panel) => {
-            if (panel.startsWith('ly.img.ai.') && panel !== panelId) {
-              cesdk.ui.closePanel(panel);
-            }
-            if (!isOpen && panel === '//ly.img.panel/assetLibrary') {
-              cesdk.ui.closePanel(panel);
-            }
-          });
+    builder.Button(`${AI_APP_ID}.dock.button`, {
+      label: 'AI',
+      isSelected: isOpen,
+      icon: isGeneratingState.value
+        ? '@imgly/LoadingSpinner'
+        : '@imgly/Sparkle',
+      onClick: () => {
+        cesdk.ui.findAllPanels().forEach((panel) => {
+          if (panel.startsWith('ly.img.ai.') && panel !== panelId) {
+            cesdk.ui.closePanel(panel);
+          }
+          if (!isOpen && panel === '//ly.img.panel/assetLibrary') {
+            cesdk.ui.closePanel(panel);
+          }
+        });
 
-          if (singleAction != null) {
-            singleAction.execute();
+        if (singleAction != null) {
+          singleAction.execute();
+        } else {
+          if (!isOpen) {
+            cesdk.ui.openPanel(AI_APP_ID);
           } else {
-            if (!isOpen) {
-              cesdk.ui.openPanel(AI_APP_ID);
-            } else {
-              cesdk.ui.closePanel(AI_APP_ID);
-            }
+            cesdk.ui.closePanel(AI_APP_ID);
           }
         }
-      });
-    }
-  );
+      }
+    });
+  });
 }
 
 function registerAppAssetSource(
@@ -192,9 +186,13 @@ function registerAppAssetSource(
   const registry = ActionRegistry.get();
 
   const activeAssetSource = createCustomAssetSource(AI_APP_ID, cesdk, () => {
+    const currentSceneMode = cesdk.engine.scene.getMode();
     return registry
       .getBy({ type: 'plugin' })
       .map(({ id, label, sceneMode }) => {
+        if (currentSceneMode === 'Design' && sceneMode === 'Video') {
+          return undefined;
+        }
         const assetDefinition: AssetDefinition = {
           id,
           label: {
@@ -211,7 +209,8 @@ function registerAppAssetSource(
           }
         };
         return assetDefinition;
-      });
+      })
+      .filter(isDefined);
   });
 
   const dispose = registry.subscribeBy({ type: 'plugin' }, () => {
