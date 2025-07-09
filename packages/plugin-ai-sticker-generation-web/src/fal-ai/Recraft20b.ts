@@ -57,8 +57,9 @@ function getProvider(
   cesdk: CreativeEditorSDK,
   config: ProviderConfiguration
 ): any {
-  const modelKey = 'fal-ai/recraft/v2/text-to-image';
-  const styleIconAssetSourceId = `${modelKey}/sticker/styles/icon`;
+  const falKey = 'fal-ai/recraft/v2/text-to-image';
+  const modelKey = 'fal-ai/recraft/v2/text-to-sticker';
+  const styleIconAssetSourceId = `${modelKey}/styles/icon`;
   const baseURL =
     config.baseURL ??
     'https://cdn.img.ly/assets/plugins/plugin-ai-image-generation-web/v1/recraft-v3/';
@@ -114,6 +115,7 @@ function getProvider(
 
   return createStickerProvider(
     {
+      falKey,
       modelKey,
       name: 'Recraft 20b',
       // @ts-ignore

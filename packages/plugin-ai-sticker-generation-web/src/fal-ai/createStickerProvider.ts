@@ -20,6 +20,7 @@ type StickerProviderConfiguration = {
  */
 function createStickerProvider<I extends Record<string, any>>(
   options: {
+    falKey: string;
     modelKey: string;
     name?: string;
     schema: OpenAPIV3.Document;
@@ -131,11 +132,14 @@ function createStickerProvider<I extends Record<string, any>>(
           options.cesdk
         );
 
-        const response = await fal.subscribe(options.modelKey, {
-          abortSignal,
-          input: image_url != null ? { ...input, image_url } : input,
-          logs: true
-        });
+        const response = await fal.subscribe(
+          options.falKey ?? options.modelKey,
+          {
+            abortSignal,
+            input: image_url != null ? { ...input, image_url } : input,
+            logs: true
+          }
+        );
 
         const images = response?.data?.images;
         if (images != null && Array.isArray(images)) {
