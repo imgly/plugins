@@ -366,7 +366,7 @@ async function initializeEditor(container: HTMLElement) {
     cesdk.addPlugin(
         ImageGeneration({
             text2image: MyImageProvider({
-                proxyUrl: 'https://your-proxy-url.com',
+                proxyUrl: 'http://your-proxy-server.com/api/proxy',
                 headers: {
                     'x-client-version': '1.0.0',
                     'x-request-source': 'cesdk-tutorial',

@@ -44,7 +44,7 @@ CreativeEditorSDK.create(domElement, {
         AudioGeneration({
             // Text-to-speech provider
             text2speech: Elevenlabs.ElevenMultilingualV2({
-                proxyUrl: 'https://your-elevenlabs-proxy.example.com',
+                proxyUrl: 'http://your-proxy-server.com/api/proxy',
                 headers: {
                     'x-custom-header': 'value',
                     'x-client-version': '1.0.0'
@@ -53,7 +53,7 @@ CreativeEditorSDK.create(domElement, {
 
             // Sound effects provider (optional)
             text2sound: Elevenlabs.ElevenSoundEffects({
-                proxyUrl: 'https://your-elevenlabs-proxy.example.com',
+                proxyUrl: 'http://your-proxy-server.com/api/proxy',
                 headers: {
                     'x-custom-header': 'value',
                     'x-client-version': '1.0.0'
@@ -88,7 +88,7 @@ CreativeEditorSDK.create(domElement, {
             // Multiple text-to-speech providers
             text2speech: [
                 Elevenlabs.ElevenMultilingualV2({
-                    proxyUrl: 'https://your-elevenlabs-proxy.example.com',
+                    proxyUrl: 'http://your-proxy-server.com/api/proxy',
                     headers: {
                         'x-custom-header': 'value',
                         'x-client-version': '1.0.0'
@@ -96,7 +96,7 @@ CreativeEditorSDK.create(domElement, {
                 }),
                 // Add more providers here as they become available
                 // OtherProvider.SomeModel({
-                //     proxyUrl: 'https://your-other-proxy.example.com',
+                //     proxyUrl: 'http://your-proxy-server.com/api/proxy',
                 //     headers: {
                 //         'x-api-key': 'your-key',
                 //         'x-source': 'cesdk'
@@ -106,7 +106,7 @@ CreativeEditorSDK.create(domElement, {
 
             // Sound effects provider (optional)
             text2sound: Elevenlabs.ElevenSoundEffects({
-                proxyUrl: 'https://your-elevenlabs-proxy.example.com',
+                proxyUrl: 'http://your-proxy-server.com/api/proxy',
                 headers: {
                     'x-custom-header': 'value',
                     'x-client-version': '1.0.0'
@@ -131,7 +131,7 @@ A versatile text-to-speech engine that supports multiple languages and voices:
 
 ```typescript
 text2speech: Elevenlabs.ElevenMultilingualV2({
-    proxyUrl: 'https://your-elevenlabs-proxy.example.com',
+    proxyUrl: 'http://your-proxy-server.com/api/proxy',
     headers: {
         'x-custom-header': 'value',
         'x-client-version': '1.0.0'
@@ -153,7 +153,7 @@ A sound effect generator that creates audio from text descriptions:
 
 ```typescript
 text2sound: Elevenlabs.ElevenSoundEffects({
-    proxyUrl: 'https://your-elevenlabs-proxy.example.com',
+    proxyUrl: 'http://your-proxy-server.com/api/proxy',
     headers: {
         'x-custom-header': 'value',
         'x-client-version': '1.0.0'
@@ -224,7 +224,7 @@ const customMiddleware = async (input, options, next) => {
 cesdk.addPlugin(
   AudioGeneration({
     text2speech: Elevenlabs.ElevenMultilingualV2({
-      proxyUrl: 'https://your-elevenlabs-proxy.example.com'
+      proxyUrl: 'http://your-proxy-server.com/api/proxy'
     }),
     middleware: [logging, rateLimit, customMiddleware] // Apply middleware in order
   })
@@ -244,7 +244,7 @@ For security reasons, it's recommended to use a proxy server to handle API reque
 
 ```typescript
 text2speech: Elevenlabs.ElevenMultilingualV2({
-    proxyUrl: 'https://your-elevenlabs-proxy.example.com',
+    proxyUrl: 'http://your-proxy-server.com/api/proxy',
     headers: {
         'x-custom-header': 'value',
         'x-client-version': '1.0.0'

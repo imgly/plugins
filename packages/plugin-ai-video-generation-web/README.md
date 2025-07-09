@@ -44,7 +44,7 @@ CreativeEditorSDK.create(domElement, {
         VideoGeneration({
             // Text-to-video provider
             text2video: FalAiVideo.MinimaxVideo01Live({
-                proxyUrl: 'https://your-fal-ai-proxy.example.com',
+                proxyUrl: 'http://your-proxy-server.com/api/proxy',
                 headers: {
                     'x-custom-header': 'value',
                     'x-client-version': '1.0.0'
@@ -53,7 +53,7 @@ CreativeEditorSDK.create(domElement, {
 
             // Image-to-video provider (optional)
             image2video: FalAiVideo.MinimaxVideo01LiveImageToVideo({
-                proxyUrl: 'https://your-fal-ai-proxy.example.com',
+                proxyUrl: 'http://your-proxy-server.com/api/proxy',
                 headers: {
                     'x-custom-header': 'value',
                     'x-client-version': '1.0.0'
@@ -88,14 +88,14 @@ CreativeEditorSDK.create(domElement, {
             // Multiple text-to-video providers
             text2video: [
                 FalAiVideo.MinimaxVideo01Live({
-                    proxyUrl: 'https://your-fal-ai-proxy.example.com',
+                    proxyUrl: 'http://your-proxy-server.com/api/proxy',
                     headers: {
                         'x-custom-header': 'value',
                         'x-client-version': '1.0.0'
                     }
                 }),
                 FalAiVideo.PixverseV35TextToVideo({
-                    proxyUrl: 'https://your-fal-ai-proxy.example.com',
+                    proxyUrl: 'http://your-proxy-server.com/api/proxy',
                     headers: {
                         'x-custom-header': 'value',
                         'x-client-version': '1.0.0'
@@ -105,7 +105,7 @@ CreativeEditorSDK.create(domElement, {
 
             // Image-to-video provider (optional)
             image2video: FalAiVideo.MinimaxVideo01LiveImageToVideo({
-                proxyUrl: 'https://your-fal-ai-proxy.example.com',
+                proxyUrl: 'http://your-proxy-server.com/api/proxy',
                 headers: {
                     'x-custom-header': 'value',
                     'x-client-version': '1.0.0'
@@ -130,7 +130,7 @@ A model that generates videos based on text prompts:
 
 ```typescript
 text2video: FalAiVideo.MinimaxVideo01Live({
-    proxyUrl: 'https://your-fal-ai-proxy.example.com',
+    proxyUrl: 'http://your-proxy-server.com/api/proxy',
     headers: {
         'x-custom-header': 'value',
         'x-client-version': '1.0.0'
@@ -151,7 +151,7 @@ A model that transforms still images into videos:
 
 ```typescript
 image2video: FalAiVideo.MinimaxVideo01LiveImageToVideo({
-    proxyUrl: 'https://your-fal-ai-proxy.example.com',
+    proxyUrl: 'http://your-proxy-server.com/api/proxy',
     headers: {
         'x-custom-header': 'value',
         'x-client-version': '1.0.0'
@@ -172,7 +172,7 @@ An alternative text-to-video model:
 
 ```typescript
 text2video: FalAiVideo.PixverseV35TextToVideo({
-    proxyUrl: 'https://your-fal-ai-proxy.example.com',
+    proxyUrl: 'http://your-proxy-server.com/api/proxy',
     headers: {
         'x-custom-header': 'value',
         'x-client-version': '1.0.0'
@@ -240,7 +240,7 @@ const customMiddleware = async (input, options, next) => {
 cesdk.addPlugin(
   VideoGeneration({
     text2video: FalAiVideo.MinimaxVideo01Live({
-      proxyUrl: 'https://your-fal-ai-proxy.example.com'
+      proxyUrl: 'http://your-proxy-server.com/api/proxy'
     }),
     middleware: [logging, rateLimit, customMiddleware] // Apply middleware in order
   })
@@ -260,7 +260,7 @@ For security reasons, it's recommended to use a proxy server to handle API reque
 
 ```typescript
 text2video: FalAiVideo.MinimaxVideo01Live({
-    proxyUrl: 'https://your-fal-ai-proxy.example.com',
+    proxyUrl: 'http://your-proxy-server.com/api/proxy',
     headers: {
         'x-custom-header': 'value',
         'x-client-version': '1.0.0'

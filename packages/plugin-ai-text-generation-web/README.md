@@ -47,7 +47,7 @@ CreativeEditorSDK.create(domElement, {
     cesdk.addPlugin(
         TextGeneration({
             provider: Anthropic.AnthropicProvider({
-                proxyUrl: 'https://your-anthropic-proxy.example.com',
+                proxyUrl: 'http://your-proxy-server.com/api/proxy',
                 headers: {
                     'x-custom-header': 'value',
                     'x-client-version': '1.0.0'
@@ -86,7 +86,7 @@ CreativeEditorSDK.create(domElement, {
         TextGeneration({
             provider: [
                 Anthropic.AnthropicProvider({
-                    proxyUrl: 'https://your-anthropic-proxy.example.com',
+                    proxyUrl: 'http://your-proxy-server.com/api/proxy',
                     headers: {
                         'x-custom-header': 'value',
                         'x-client-version': '1.0.0'
@@ -94,7 +94,7 @@ CreativeEditorSDK.create(domElement, {
                 }),
                 // Add more providers here as they become available
                 // OtherProvider.SomeModel({
-                //     proxyUrl: 'https://your-other-proxy.example.com',
+                //     proxyUrl: 'http://your-proxy-server.com/api/proxy',
                 //     headers: {
                 //         'x-api-key': 'your-key',
                 //         'x-source': 'cesdk'
@@ -125,7 +125,7 @@ A versatile text generation model that handles various text transformations:
 
 ```typescript
 provider: Anthropic.AnthropicProvider({
-    proxyUrl: 'https://your-anthropic-proxy.example.com',
+    proxyUrl: 'http://your-proxy-server.com/api/proxy',
     
     // Optional custom headers for API requests
     headers: {
@@ -200,7 +200,7 @@ const customMiddleware = async (input, options, next) => {
 cesdk.addPlugin(
   TextGeneration({
     provider: Anthropic.AnthropicProvider({
-      proxyUrl: 'https://your-anthropic-proxy.example.com'
+      proxyUrl: 'http://your-proxy-server.com/api/proxy'
     }),
     middleware: [logging, rateLimit, customMiddleware] // Apply middleware in order
   })
@@ -220,7 +220,7 @@ For security reasons, you must use a proxy server to handle API requests to Anth
 
 ```typescript
 provider: Anthropic.AnthropicProvider({
-    proxyUrl: 'https://your-anthropic-proxy.example.com',
+    proxyUrl: 'http://your-proxy-server.com/api/proxy',
     headers: {
         'x-custom-header': 'value',
         'x-client-version': '1.0.0'

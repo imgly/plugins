@@ -99,7 +99,7 @@ function App() {
                                     // Text generation and transformation
                                     text2text: Anthropic.AnthropicProvider({
                                         proxyUrl:
-                                            'https://your-server.com/api/anthropic-proxy',
+                                            'http://your-proxy-server.com/api/proxy',
                                         headers: {
                                             'x-client-version': '1.0.0',
                                             'x-request-source': 'cesdk-tutorial'
@@ -109,7 +109,7 @@ function App() {
                                     // Image generation - Multiple providers with selection UI
                                     text2image: [
                                         FalAiImage.RecraftV3({
-                                            proxyUrl: 'https://your-server.com/api/fal-ai-proxy',
+                                            proxyUrl: 'http://your-proxy-server.com/api/proxy',
                                             headers: {
                                                 'x-client-version': '1.0.0',
                                                 'x-request-source': 'cesdk-tutorial'
@@ -139,7 +139,7 @@ function App() {
                                         }),
                                         // Alternative with icon style support
                                         FalAiImage.Recraft20b({
-                                            proxyUrl: 'https://your-server.com/api/fal-ai-proxy',
+                                            proxyUrl: 'http://your-proxy-server.com/api/proxy',
                                             headers: {
                                                 'x-client-version': '1.0.0',
                                                 'x-request-source': 'cesdk-tutorial'
@@ -147,7 +147,7 @@ function App() {
                                         }),
                                         // Additional image provider for user selection
                                         OpenAiImage.GptImage1.Text2Image({
-                                            proxyUrl: 'https://your-server.com/api/openai-proxy',
+                                            proxyUrl: 'http://your-proxy-server.com/api/proxy',
                                             headers: {
                                                 'x-api-key': 'your-key',
                                                 'x-request-source': 'cesdk-tutorial'
@@ -237,7 +237,7 @@ Each AI provider type serves a specific purpose and creates different types of c
 
 ```typescript
 text2text: AnthropicProvider({
-    proxyUrl: 'https://your-server.com/api/anthropic-proxy',
+    proxyUrl: 'http://your-proxy-server.com/api/proxy',
     headers: {
         'x-client-version': '1.0.0',
         'x-request-source': 'cesdk-tutorial'
@@ -262,7 +262,7 @@ The text provider enables capabilities like:
 // Text-to-image generation with multiple providers for user selection
 text2image: [
     FalAiImage.RecraftV3({
-        proxyUrl: 'https://your-server.com/api/fal-ai-proxy',
+        proxyUrl: 'http://your-proxy-server.com/api/proxy',
         headers: {
             'x-client-version': '1.0.0',
             'x-request-source': 'cesdk-tutorial'
@@ -270,14 +270,14 @@ text2image: [
     }),
     // Alternative with icon style support
     FalAiImage.Recraft20b({
-        proxyUrl: 'https://your-server.com/api/fal-ai-proxy',
+        proxyUrl: 'http://your-proxy-server.com/api/proxy',
         headers: {
             'x-client-version': '1.0.0',
             'x-request-source': 'cesdk-tutorial'
         }
     }),
     OpenAiImage.GptImage1.Text2Image({
-        proxyUrl: 'https://your-server.com/api/openai-proxy',
+        proxyUrl: 'http://your-proxy-server.com/api/proxy',
         headers: {
             'x-api-key': 'your-key',
             'x-request-source': 'cesdk-tutorial'
@@ -287,7 +287,7 @@ text2image: [
 
 // Image-to-image transformation
 image2image: FalAiImage.GeminiFlashEdit({
-    proxyUrl: 'https://your-server.com/api/fal-ai-proxy',
+    proxyUrl: 'http://your-proxy-server.com/api/proxy',
     headers: {
         'x-client-version': '1.0.0',
         'x-request-source': 'cesdk-tutorial'
@@ -312,14 +312,14 @@ Image generation features include:
 // Text-to-video generation with multiple providers for user selection
 text2video: [
     FalAiVideo.MinimaxVideo01Live({
-        proxyUrl: 'https://your-server.com/api/fal-ai-proxy',
+        proxyUrl: 'http://your-proxy-server.com/api/proxy',
         headers: {
             'x-client-version': '1.0.0',
             'x-request-source': 'cesdk-tutorial'
         }
     }),
     FalAiVideo.PixverseV35TextToVideo({
-        proxyUrl: 'https://your-server.com/api/fal-ai-proxy',
+        proxyUrl: 'http://your-proxy-server.com/api/proxy',
         headers: {
             'x-client-version': '1.0.0',
             'x-request-source': 'cesdk-tutorial'
@@ -329,7 +329,7 @@ text2video: [
 
 // Image-to-video transformation
 image2video: FalAiVideo.MinimaxVideo01LiveImageToVideo({
-    proxyUrl: 'https://your-server.com/api/fal-ai-proxy',
+    proxyUrl: 'http://your-proxy-server.com/api/proxy',
     headers: {
         'x-client-version': '1.0.0',
         'x-request-source': 'cesdk-tutorial'
@@ -349,7 +349,7 @@ Video generation capabilities include:
 ```typescript
 // Text-to-speech generation
 text2speech: Elevenlabs.ElevenMultilingualV2({
-    proxyUrl: 'https://your-server.com/api/elevenlabs-proxy',
+    proxyUrl: 'http://your-proxy-server.com/api/proxy',
     headers: {
         'x-client-version': '1.0.0',
         'x-request-source': 'cesdk-tutorial'
@@ -358,7 +358,7 @@ text2speech: Elevenlabs.ElevenMultilingualV2({
 
 // Sound effect generation
 text2sound: Elevenlabs.ElevenSoundEffects({
-    proxyUrl: 'https://your-server.com/api/elevenlabs-proxy',
+    proxyUrl: 'http://your-proxy-server.com/api/proxy',
     headers: {
         'x-client-version': '1.0.0',
         'x-request-source': 'cesdk-tutorial'
@@ -511,12 +511,12 @@ Each AI provider configuration requires a `proxyUrl` parameter, which should poi
 
 ```typescript
 text2image: FalAiImage.RecraftV3({
-    proxyUrl: 'https://your-server.com/api/falai'
+    proxyUrl: 'http://your-proxy-server.com/api/proxy'
 });
 
 // Or use Recraft20b with icon style support:
 // text2image: FalAiImage.Recraft20b({
-//     proxyUrl: 'https://your-server.com/api/falai'
+//     proxyUrl: 'http://your-proxy-server.com/api/proxy'
 // });
 ```
 

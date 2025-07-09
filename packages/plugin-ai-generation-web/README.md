@@ -133,7 +133,7 @@ function createMyImageProvider(config: MyProviderConfiguration): Provider<'image
 
 // Usage example
 const myImageProvider = createMyImageProvider({
-    proxyUrl: 'https://your-api-proxy.example.com',
+    proxyUrl: 'http://your-proxy-server.com/api/proxy',
     headers: {
         'x-client-version': '1.0.0',
         'x-request-source': 'cesdk-plugin'
@@ -670,7 +670,7 @@ import { initializeProvider } from '@imgly/plugin-ai-generation-web';
 
 // Create your provider
 const myProvider = createMyProvider({
-    proxyUrl: 'https://your-api-proxy.example.com',
+    proxyUrl: 'http://your-proxy-server.com/api/proxy',
     headers: {
         'x-custom-header': 'value',
         'x-client-version': '1.0.0'
@@ -757,11 +757,11 @@ CreativeEditorSDK.create(domElement, {
     cesdk.addPlugin(
         ImageGeneration({
             text2image: FalAiImage.RecraftV3({
-                proxyUrl: 'https://your-falai-proxy.example.com'
+                proxyUrl: 'http://your-proxy-server.com/api/proxy'
             }),
-            // Alternative: FalAiImage.Recraft20b({ proxyUrl: 'https://your-falai-proxy.example.com' }),
+            // Alternative: FalAiImage.Recraft20b({ proxyUrl: 'http://your-proxy-server.com/api/proxy' }),
             image2image: FalAiImage.GeminiFlashEdit({
-                proxyUrl: 'https://your-falai-proxy.example.com'
+                proxyUrl: 'http://your-proxy-server.com/api/proxy'
             })
         })
     );
@@ -770,7 +770,7 @@ CreativeEditorSDK.create(domElement, {
     cesdk.addPlugin(
         VideoGeneration({
             text2video: FalAiVideo.MinimaxVideo01Live({
-                proxyUrl: 'https://your-falai-proxy.example.com'
+                proxyUrl: 'http://your-proxy-server.com/api/proxy'
             })
         })
     );

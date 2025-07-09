@@ -46,31 +46,31 @@ CreativeEditorSDK.create(domElement, {
       providers: {
         // Text generation
         text2text: AnthropicProvider({
-          proxyUrl: 'https://your-anthropic-proxy.example.com'
+          proxyUrl: 'http://your-proxy-server.com/api/proxy'
         }),
 
         // Image generation
         text2image: FalAiImage.RecraftV3({
-          proxyUrl: 'https://your-fal-ai-proxy.example.com'
+          proxyUrl: 'http://your-proxy-server.com/api/proxy'
         }),
         image2image: FalAiImage.GeminiFlashEdit({
-          proxyUrl: 'https://your-fal-ai-proxy.example.com'
+          proxyUrl: 'http://your-proxy-server.com/api/proxy'
         }),
 
         // Video generation (used in video mode)
         text2video: FalAiVideo.MinimaxVideo01Live({
-          proxyUrl: 'https://your-fal-ai-proxy.example.com'
+          proxyUrl: 'http://your-proxy-server.com/api/proxy'
         }),
         image2video: FalAiVideo.MinimaxVideo01LiveImageToVideo({
-          proxyUrl: 'https://your-fal-ai-proxy.example.com'
+          proxyUrl: 'http://your-proxy-server.com/api/proxy'
         }),
 
         // Audio generation (used in video mode)
         text2speech: ElevenLabs.MonolingualV1({
-          proxyUrl: 'https://your-elevenlabs-proxy.example.com'
+          proxyUrl: 'http://your-proxy-server.com/api/proxy'
         }),
         text2sound: ElevenLabs.SoundEffects({
-          proxyUrl: 'https://your-elevenlabs-proxy.example.com'
+          proxyUrl: 'http://your-proxy-server.com/api/proxy'
         })
       }
     })
@@ -134,13 +134,13 @@ cesdk.addPlugin(
       // Multiple image providers - selection box will be shown
       text2image: [
         FalAiImage.RecraftV3({
-          proxyUrl: 'https://fal-ai-proxy.example.com'
+          proxyUrl: 'http://your-proxy-server.com/api/proxy'
         }),
         FalAiImage.Recraft20b({
-          proxyUrl: 'https://fal-ai-proxy.example.com'
+          proxyUrl: 'http://your-proxy-server.com/api/proxy'
         }),
         OpenAiImage.GptImage1.Text2Image({
-          proxyUrl: 'https://openai-proxy.example.com'
+          proxyUrl: 'http://your-proxy-server.com/api/proxy'
         })
       ],
       
@@ -159,7 +159,7 @@ cesdk.addPlugin(
   AiApps({
     providers: {
       text2image: FalAiImage.RecraftV3({
-        proxyUrl: 'https://your-proxy.example.com',
+        proxyUrl: 'http://your-proxy-server.com/api/proxy',
         headers: {
           'x-client-version': '1.0.0',
           'x-request-source': 'cesdk-plugin',
@@ -304,7 +304,7 @@ cesdk.addPlugin(
   AiApps({
     providers: {
       text2image: FalAiImage.RecraftV3({
-        proxyUrl: 'https://your-proxy.example.com',
+        proxyUrl: 'http://your-proxy-server.com/api/proxy',
         debug: true // Provider-level debugging
       })
     },
@@ -358,7 +358,7 @@ import AiApps, { Providers } from '@imgly/plugin-ai-apps-web';
 // Strongly typed provider configuration
 const providers: Providers = {
   text2image: FalAiImage.RecraftV3({
-    proxyUrl: 'https://example.com'
+    proxyUrl: 'http://your-proxy-server.com/api/proxy'
   }),
   // TypeScript will enforce correct provider types
 };
@@ -392,7 +392,7 @@ CreativeEditorSDK.create(domElement, {
     AiApps({
       providers: {
         text2image: FalAiImage.RecraftV3({
-          proxyUrl: 'https://your-proxy.example.com'
+          proxyUrl: 'http://your-proxy-server.com/api/proxy'
         })
       }
     })
@@ -426,25 +426,25 @@ CreativeEditorSDK.create(domElement, {
     AiApps({
       providers: {
         text2text: AnthropicProvider({
-          proxyUrl: 'https://anthropic-proxy.example.com'
+          proxyUrl: 'http://your-proxy-server.com/api/proxy'
         }),
         text2image: FalAiImage.RecraftV3({
-          proxyUrl: 'https://fal-proxy.example.com'
+          proxyUrl: 'http://your-proxy-server.com/api/proxy'
         }),
         image2image: FalAiImage.GeminiFlashEdit({
-          proxyUrl: 'https://fal-proxy.example.com'
+          proxyUrl: 'http://your-proxy-server.com/api/proxy'
         }),
         text2video: FalAiVideo.MinimaxVideo01Live({
-          proxyUrl: 'https://fal-proxy.example.com'
+          proxyUrl: 'http://your-proxy-server.com/api/proxy'
         }),
         image2video: FalAiVideo.MinimaxVideo01LiveImageToVideo({
-          proxyUrl: 'https://fal-proxy.example.com'
+          proxyUrl: 'http://your-proxy-server.com/api/proxy'
         }),
         text2speech: ElevenLabs.MonolingualV1({
-          proxyUrl: 'https://elevenlabs-proxy.example.com'
+          proxyUrl: 'http://your-proxy-server.com/api/proxy'
         }),
         text2sound: ElevenLabs.SoundEffects({
-          proxyUrl: 'https://elevenlabs-proxy.example.com'
+          proxyUrl: 'http://your-proxy-server.com/api/proxy'
         })
       }
     })

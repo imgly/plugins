@@ -46,7 +46,7 @@ CreativeEditorSDK.create(domElement, {
     ImageGeneration({
       // Text-to-image provider
       text2image: FalAiImage.RecraftV3({
-        proxyUrl: 'https://your-fal-ai-proxy.example.com',
+        proxyUrl: 'http://your-proxy-server.com/api/proxy',
         headers: {
           'x-custom-header': 'value',
           'x-client-version': '1.0.0'
@@ -55,7 +55,7 @@ CreativeEditorSDK.create(domElement, {
       
       // Alternative: Use Recraft20b with icon style support
       // text2image: FalAiImage.Recraft20b({
-      //   proxyUrl: 'https://your-fal-ai-proxy.example.com',
+      //   proxyUrl: 'http://your-proxy-server.com/api/proxy',
       //   headers: {
       //     'x-custom-header': 'value',
       //     'x-client-version': '1.0.0'
@@ -64,7 +64,7 @@ CreativeEditorSDK.create(domElement, {
       
       // Image-to-image provider (optional)
       image2image: FalAiImage.GeminiFlashEdit({
-        proxyUrl: 'https://your-fal-ai-proxy.example.com',
+        proxyUrl: 'http://your-proxy-server.com/api/proxy',
         headers: {
           'x-custom-header': 'value',
           'x-client-version': '1.0.0'
@@ -100,21 +100,21 @@ CreativeEditorSDK.create(domElement, {
       // Multiple text-to-image providers
       text2image: [
         FalAiImage.RecraftV3({
-          proxyUrl: 'https://your-fal-ai-proxy.example.com',
+          proxyUrl: 'http://your-proxy-server.com/api/proxy',
           headers: {
             'x-custom-header': 'value',
             'x-client-version': '1.0.0'
           }
         }),
         FalAiImage.Recraft20b({
-          proxyUrl: 'https://your-fal-ai-proxy.example.com',
+          proxyUrl: 'http://your-proxy-server.com/api/proxy',
           headers: {
             'x-custom-header': 'value',
             'x-client-version': '1.0.0'
           }
         }),
         OpenAiImage.GptImage1.Text2Image({
-          proxyUrl: 'https://your-openai-proxy.example.com',
+          proxyUrl: 'http://your-proxy-server.com/api/proxy',
           headers: {
             'x-api-key': 'your-key',
             'x-request-source': 'cesdk-plugin'
@@ -125,14 +125,14 @@ CreativeEditorSDK.create(domElement, {
       // Multiple image-to-image providers (optional)
       image2image: [
         FalAiImage.GeminiFlashEdit({
-          proxyUrl: 'https://your-fal-ai-proxy.example.com',
+          proxyUrl: 'http://your-proxy-server.com/api/proxy',
           headers: {
             'x-custom-header': 'value',
             'x-client-version': '1.0.0'
           }
         }),
         OpenAiImage.GptImage1.Image2Image({
-          proxyUrl: 'https://your-openai-proxy.example.com',
+          proxyUrl: 'http://your-proxy-server.com/api/proxy',
           headers: {
             'x-api-key': 'your-key',
             'x-request-source': 'cesdk-plugin'
@@ -158,7 +158,7 @@ A versatile text-to-image model from fal.ai that generates images based on text 
 
 ```typescript
 text2image: FalAiImage.RecraftV3({
-  proxyUrl: 'https://your-fal-ai-proxy.example.com',
+  proxyUrl: 'http://your-proxy-server.com/api/proxy',
   headers: {
     'x-custom-header': 'value',
     'x-client-version': '1.0.0'
@@ -179,7 +179,7 @@ An enhanced text-to-image model from fal.ai with additional icon style support:
 
 ```typescript
 text2image: FalAiImage.Recraft20b({
-  proxyUrl: 'https://your-fal-ai-proxy.example.com',
+  proxyUrl: 'http://your-proxy-server.com/api/proxy',
   headers: {
     'x-custom-header': 'value',
     'x-client-version': '1.0.0'
@@ -201,7 +201,7 @@ OpenAI's GPT-4 Vision based text-to-image model that generates high-quality imag
 
 ```typescript
 text2image: OpenAiImage.GptImage1.Text2Image({
-  proxyUrl: 'https://your-openai-proxy.example.com',
+  proxyUrl: 'http://your-proxy-server.com/api/proxy',
   headers: {
     'x-api-key': 'your-key',
     'x-request-source': 'cesdk-plugin'
@@ -222,7 +222,7 @@ An image modification model from fal.ai that transforms existing images:
 
 ```typescript
 image2image: FalAiImage.GeminiFlashEdit({
-  proxyUrl: 'https://your-fal-ai-proxy.example.com',
+  proxyUrl: 'http://your-proxy-server.com/api/proxy',
   headers: {
     'x-custom-header': 'value',
     'x-client-version': '1.0.0'
@@ -243,7 +243,7 @@ OpenAI's GPT-4 Vision based image editing model that can transform existing imag
 
 ```typescript
 image2image: OpenAiImage.GptImage1.Image2Image({
-  proxyUrl: 'https://your-openai-proxy.example.com',
+  proxyUrl: 'http://your-proxy-server.com/api/proxy',
   headers: {
     'x-api-key': 'your-key',
     'x-request-source': 'cesdk-plugin'
@@ -294,9 +294,9 @@ const rateLimit = rateLimitMiddleware({
 cesdk.addPlugin(
   ImageGeneration({
     text2image: FalAiImage.RecraftV3({
-      proxyUrl: 'https://your-fal-ai-proxy.example.com'
+      proxyUrl: 'http://your-proxy-server.com/api/proxy'
     }),
-    // Or use: FalAiImage.Recraft20b({ proxyUrl: 'https://your-fal-ai-proxy.example.com' }),
+    // Or use: FalAiImage.Recraft20b({ proxyUrl: 'http://your-proxy-server.com/api/proxy' }),
     middleware: [logging, rateLimit] // Apply middleware in order
   })
 );
@@ -357,7 +357,7 @@ For security reasons, it's recommended to use a proxy server to handle API reque
 
 ```typescript
 text2image: FalAiImage.RecraftV3({
-  proxyUrl: 'https://your-fal-ai-proxy.example.com',
+  proxyUrl: 'http://your-proxy-server.com/api/proxy',
   headers: {
     'x-custom-header': 'value',
     'x-client-version': '1.0.0'
@@ -366,7 +366,7 @@ text2image: FalAiImage.RecraftV3({
 
 // Or use Recraft20b with icon style support:
 // text2image: FalAiImage.Recraft20b({
-//   proxyUrl: 'https://your-fal-ai-proxy.example.com',
+//   proxyUrl: 'http://your-proxy-server.com/api/proxy',
 //   headers: {
 //     'x-custom-header': 'value',
 //     'x-client-version': '1.0.0'
