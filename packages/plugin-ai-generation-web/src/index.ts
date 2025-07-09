@@ -57,7 +57,8 @@ export {
   getDurationForVideo,
   getThumbnailForVideo,
   getLabelFromId,
-  isAsyncGenerator
+  isAsyncGenerator,
+  addIconSetOnce
 } from './utils/utils';
 
 export { default as registerDockComponent } from './ui/components/registerDockComponent';

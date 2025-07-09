@@ -13,6 +13,7 @@ import createGenerateFunction, {
   type Generate
 } from '../generation/createGenerateFunction';
 import { ProviderRegistry } from '../core/ProviderRegistry';
+import { addIconSetOnce } from '../utils/utils';
 
 export type ProviderInitializationResult<
   K extends OutputKind,
@@ -80,20 +81,7 @@ async function initializeProvider<K extends OutputKind, I, O extends Output>(
   const builderRenderFunction: BuilderRenderFunction | undefined =
     await createPanelRenderFunction(context, generate);
 
-  //
-  // Avoid adding the icon set multiple times for different providers
-  const globalStateIconSetAddedId = `@imgly/plugin-ai-generation.iconSetAdded`;
-  if (
-    !options.cesdk.ui.experimental.hasGlobalStateValue(
-      globalStateIconSetAddedId
-    )
-  ) {
-    options.cesdk.ui.addIconSet('@imgly/plugin-ai-generation', icons);
-    options.cesdk.ui.experimental.setGlobalStateValue(
-      globalStateIconSetAddedId,
-      true
-    );
-  }
+  addIconSetOnce(options.cesdk, '@imgly/plugin-ai-generation', icons);
 
   const providerInitializationResult: ProviderInitializationResult<K, I, O> = {
     provider,

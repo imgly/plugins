@@ -296,3 +296,19 @@ export function isAsyncGenerator<O extends Output, C>(
 export function isAbortError(error: unknown): error is Error {
   return error instanceof Error && error.name === 'AbortError';
 }
+
+/**
+ * Adds an icon set to the CreativeEditorSDK UI only once. Marks
+ * it as added in the global state to prevent multiple additions.
+ */
+export function addIconSetOnce(
+  cesdk: CreativeEditorSDK,
+  id: string,
+  icons: string
+): void {
+  const globalStateIconSetAddedId = `${id}.iconSetAdded`;
+  if (!cesdk.ui.experimental.hasGlobalStateValue(globalStateIconSetAddedId)) {
+    cesdk.ui.addIconSet(id, icons);
+    cesdk.ui.experimental.setGlobalStateValue(globalStateIconSetAddedId, true);
+  }
+}
