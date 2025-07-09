@@ -191,7 +191,7 @@ A model based on KlingVideo V2.1 that generates videos from text prompts:
 
 ```typescript
 text2video: FalAiVideo.KlingVideoV21MasterTextToVideo({
-    proxyUrl: 'https://your-fal-ai-proxy.example.com'
+    proxyUrl: 'http://your-proxy-server.com/api/proxy'
 });
 ```
 
@@ -208,7 +208,7 @@ A model that converts still images into videos using KlingVideo V2.1:
 
 ```typescript
 image2video: FalAiVideo.KlingVideoV21MasterImageToVideo({
-    proxyUrl: 'https://your-fal-ai-proxy.example.com'
+    proxyUrl: 'http://your-proxy-server.com/api/proxy'
 });
 ```
 
@@ -225,7 +225,7 @@ An advanced text-to-video model:
 
 ```typescript
 text2video: FalAiVideo.Veo3TextToVideo({
-    proxyUrl: 'https://your-fal-ai-proxy.example.com'
+    proxyUrl: 'http://your-proxy-server.com/api/proxy'
 });
 ```
 
@@ -431,12 +431,12 @@ The plugin automatically registers the following UI components:
 -   Main panel: `ly.img.ai.video-generation`
 -   Canvas quick actions: `ly.img.ai.video.canvasMenu`
 -   Provider-specific panels:
-    -   MinimaxVideo01Live: `ly.img.ai/fal-ai/minimax/video-01-live`
-    -   MinimaxVideo01LiveImageToVideo: `ly.img.ai/fal-ai/minimax/video-01-live/image-to-video`
-    -   PixverseV35TextToVideo: `ly.img.ai/fal-ai/pixverse/v3.5/text-to-video`
-    -   KlingVideoV21MasterTextToVideo: `ly.img.ai/fal-ai/kling-video/v2.1/master/text-to-video`
-    -   KlingVideoV21MasterImageToVideo: `ly.img.ai/fal-ai/kling-video/v2.1/master/image-to-video`
-    -   Veo3TextToVideo: `ly.img.ai/fal-ai/veo3`
+    -   MinimaxVideo01Live: `ly.img.ai.fal-ai/minimax/video-01-live`
+    -   MinimaxVideo01LiveImageToVideo: `ly.img.ai.fal-ai/minimax/video-01-live/image-to-video`
+    -   PixverseV35TextToVideo: `ly.img.ai.fal-ai/pixverse/v3.5/text-to-video`
+    -   KlingVideoV21MasterTextToVideo: `ly.img.ai.fal-ai/kling-video/v2.1/master/text-to-video`
+    -   KlingVideoV21MasterImageToVideo: `ly.img.ai.fal-ai/kling-video/v2.1/master/image-to-video`
+    -   Veo3TextToVideo: `ly.img.ai.fal-ai/veo3`
 
 ### Asset History
 
