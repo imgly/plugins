@@ -264,7 +264,7 @@ A versatile image editing model that applies stylistic changes and transformatio
 
 ```typescript
 image2image: FalAiImage.FluxProKontextEdit({
-  proxyUrl: 'https://your-fal-ai-proxy.example.com'
+  proxyUrl: 'http://your-proxy-server.com/api/proxy'
 })
 ```
 
@@ -279,7 +279,7 @@ A high-quality variant of FluxProKontext offering more detailed results:
 
 ```typescript
 image2image: FalAiImage.FluxProKontextMaxEdit({
-  proxyUrl: 'https://your-fal-ai-proxy.example.com'
+  proxyUrl: 'http://your-proxy-server.com/api/proxy'
 })
 ```
 
@@ -599,13 +599,13 @@ const myImageProvider = {
 - Main panel: `ly.img.ai.image-generation`
 - Canvas quick actions: `ly.img.ai.image.canvasMenu`
 - Provider-specific panels:
-  - RecraftV3: `ly.img.ai/fal-ai/recraft-v3`
-  - Recraft20b: `ly.img.ai/fal-ai/recraft/v2/text-to-image`
-  - GeminiFlashEdit: `ly.img.ai/fal-ai/gemini-flash-edit`
-  - GptImage1.Text2Image: `ly.img.ai/open-ai/gpt-image-1/text2image`
-  - GptImage1.Image2Image: `ly.img.ai/open-ai/gpt-image-1/image2image`
-  - FluxProKontextEdit: `ly.img.ai/fal-ai/flux-pro/kontext`
-  - FluxProKontextMaxEdit: `ly.img.ai/fal-ai/flux-pro/kontext/max`
+  - RecraftV3: `ly.img.ai.fal-ai/recraft-v3`
+  - Recraft20b: `ly.img.ai.fal-ai/recraft/v2/text-to-image`
+  - GeminiFlashEdit: `ly.img.ai.fal-ai/gemini-flash-edit`
+  - GptImage1.Text2Image: `ly.img.ai.open-ai/gpt-image-1/text2image`
+  - GptImage1.Image2Image: `ly.img.ai.open-ai/gpt-image-1/image2image`
+  - FluxProKontextEdit: `ly.img.ai.fal-ai/flux-pro/kontext`
+  - FluxProKontextMaxEdit: `ly.img.ai.fal-ai/flux-pro/kontext/max`
 
 ### Asset History
 
