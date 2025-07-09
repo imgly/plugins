@@ -1,5 +1,5 @@
 import { QuickActionDefinition } from '@imgly/plugin-ai-generation-web';
-import improve from '../anthropic/prompts/improve';
+import improve from '../prompts/improve';
 import { GetQuickActionDefinition } from './types';
 
 /**
