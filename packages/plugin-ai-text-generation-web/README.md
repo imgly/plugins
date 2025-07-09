@@ -48,6 +48,7 @@ CreativeEditorSDK.create(domElement, {
         TextGeneration({
             provider: Anthropic.AnthropicProvider({
                 proxyUrl: 'http://your-proxy-server.com/api/proxy',
+                model: 'claude-3-7-sonnet-20250219', // Optional model selection (this is also the default)
                 headers: {
                     'x-custom-header': 'value',
                     'x-client-version': '1.0.0'
