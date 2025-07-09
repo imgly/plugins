@@ -43,6 +43,11 @@ export interface Providers {
    * Provider for sound effect generation based on a prompt alone.
    */
   text2sound?: GetProvider<'audio'> | GetProvider<'audio'>[];
+
+  /**
+   * Provider for sticker generation based on a prompt alone.
+   */
+  text2sticker?: any | any[];
 }
 
 export interface PluginConfiguration {

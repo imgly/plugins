@@ -24,6 +24,12 @@ function getAssetResultForPlaceholder<K extends OutputKind>(
         blockInput[kind] as InputByKind['video']
       );
     }
+    case 'sticker': {
+      return getStickerAssetResultForPlaceholder(
+        id,
+        blockInput[kind] as InputByKind['sticker']
+      );
+    }
 
     default: {
       throw new Error(
@@ -68,6 +74,25 @@ function getVideoAssetResultForPlaceholder(
       fillType: '//ly.img.ubq/fill/video',
 
       duration: input.duration.toString(),
+
+      width,
+      height
+    }
+  };
+}
+
+function getStickerAssetResultForPlaceholder(
+  id: string,
+  input: InputByKind['sticker']
+): AssetResult {
+  const width = input.width;
+  const height = input.height;
+  return {
+    id,
+    meta: {
+      previewUri,
+      fillType: '//ly.img.ubq/fill/image',
+      kind: 'sticker',
 
       width,
       height

@@ -13,6 +13,7 @@ import ImageGeneration from '@imgly/plugin-ai-image-generation-web';
 import VideoGeneration from '@imgly/plugin-ai-video-generation-web';
 import AudioGeneration from '@imgly/plugin-ai-audio-generation-web';
 import TextGeneration from '@imgly/plugin-ai-text-generation-web';
+import StickerGeneration from '@imgly/plugin-ai-sticker-generation-web';
 import { createCustomAssetSource } from './ActiveAssetSource';
 import { PluginConfiguration } from './types';
 import { PLUGIN_ID } from './constants';
@@ -72,6 +73,16 @@ export default (
           providers: {
             text2speech: providers.text2speech,
             text2sound: providers.text2sound
+          },
+          debug: config.debug,
+          dryRun: config.dryRun
+        })
+      );
+
+      cesdk.addPlugin(
+        StickerGeneration({
+          providers: {
+            text2sticker: providers.text2sticker
           },
           debug: config.debug,
           dryRun: config.dryRun
@@ -228,6 +239,9 @@ function getAppThumbnail(baseURL: string, appId: string): string {
     case '@imgly/plugin-ai-audio-generation-web/speech': {
       return `${baseURL}AIVoice.png`;
     }
+    case '@imgly/plugin-ai-sticker-generation-web': {
+      return `${baseURL}GenerateImage.png`;
+    }
     default: {
       return `${baseURL}GenerateImage.png`;
     }
@@ -377,7 +391,9 @@ function addTranslations(cesdk: CreativeEditorSDK) {
       'libraries.ly.img.ai.image-generation.history.label':
         'AI Generated Images',
       'libraries.ly.img.ai.video-generation.history.label':
-        'AI Generated Videos'
+        'AI Generated Videos',
+      'libraries.ly.img.ai.sticker-generation.history.label':
+        'AI Generated Stickers'
     }
   });
 }

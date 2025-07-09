@@ -20,7 +20,6 @@ import CreateVariant from './quickActions/CreateVariant';
 import CombineImages from './quickActions/CombineImages';
 import RemixPage from './quickActions/RemixPage';
 import RemixPageWithPrompt from './quickActions/RemixPageWithPrompt';
-// import quickActions from './quickActions';
 
 export { PLUGIN_ID } from './constants';
 
