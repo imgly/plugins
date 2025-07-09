@@ -1,7 +1,8 @@
 import {
   ImageOutput,
   type Provider,
-  type CommonProviderConfiguration
+  type CommonProviderConfiguration,
+  getPanelId
 } from '@imgly/plugin-ai-generation-web';
 import schema from './GeminiFlashEdit.json';
 import { getImageDimensionsFromURL } from '@imgly/plugin-utils';
@@ -19,6 +20,19 @@ export function GeminiFlashEdit(
   cesdk: CreativeEditorSDK;
 }) => Promise<Provider<'image', GeminiFlashEditInput, ImageOutput>> {
   return async ({ cesdk }: { cesdk: CreativeEditorSDK }) => {
+    const modelKey = 'fal-ai/gemini-flash-edit';
+
+    // Set translations
+    cesdk.i18n.setTranslations({
+      en: {
+        [`panel.${getPanelId(modelKey)}.imageSelection`]:
+          'Select Image To Change',
+        [`panel.${modelKey}.imageSelection`]: 'Select Image To Generate',
+        [`libraries.${getPanelId(modelKey)}.history.label`]:
+          'Generated From Image'
+      }
+    });
+
     return getProvider(cesdk, config);
   };
 }

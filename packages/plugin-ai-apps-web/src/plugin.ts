@@ -358,34 +358,13 @@ function overrideAssetLibraryDockComponent(cesdk: CreativeEditorSDK) {
 function addTranslations(cesdk: CreativeEditorSDK) {
   cesdk.i18n.setTranslations({
     en: {
-      // TODO: Use keys based on the used providers
       'common.generate': 'Generate',
       'panel.ly.img.ai.generation.confirmCancel.content':
         'Are you sure you want to cancel the generation?',
       'panel.ly.img.ai.generation.confirmCancel.confirm': 'Cancel Generation',
       'panel.ly.img.ai.apps': 'AI',
-      'panel.ly.img.ai.fal-ai/gemini-flash-edit.imageSelection':
-        'Select Image To Change',
-      'panel.gpt-image-1.imageSelection': 'Select Image To Change',
-      'panel.ly.img.ai.elevenlabs': 'AI Voice',
       'panel.ly.img.ai.demo.video': 'Generate Video',
       'panel.ly.img.ai.demo.image': 'Generate Image',
-      'panel.fal-ai/minimax/video-01-live/image-to-video.imageSelection':
-        'Select Image To Generate',
-      'panel.ly.img.ai.fal-ai/minimax/video-01-live/image-to-video.imageSelection':
-        'Select Image To Generate',
-      'panel.fal-ai/gemini-flash-edit.imageSelection':
-        'Select Image To Generate',
-      'libraries.ly.img.ai.fal-ai/recraft-v3.history.label':
-        'Generated From Text',
-      'libraries.ly.img.ai.fal-ai/gemini-flash-edit.history.label':
-        'Generated From Image',
-      'libraries.ly.img.ai.fal-ai/pixverse/v3.5/text-to-video.history.label':
-        'Generated From Text',
-      'libraries.ly.img.ai.fal-ai/minimax/video-01-live/image-to-video.history.label':
-        'Generated From Image',
-      'libraries.elevenlabs/monolingual/v1.history.label': 'AI Voice',
-      'libraries.elevenlabs/sound-generation.history.label': 'Generated Sound',
 
       'libraries.ly.img.ai.image-generation.history.label':
         'AI Generated Images',

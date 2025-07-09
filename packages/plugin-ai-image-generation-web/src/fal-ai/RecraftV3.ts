@@ -134,7 +134,8 @@ function getProvider(
       [`${modelKey}.style`]: 'Style',
       [`${modelKey}.style.type`]: 'Type',
       [`${modelKey}.style.type.image`]: 'Image',
-      [`${modelKey}.style.type.vector`]: 'Vector'
+      [`${modelKey}.style.type.vector`]: 'Vector',
+      [`libraries.${getPanelId(modelKey)}.history.label`]: 'Generated From Text'
     }
   });
 

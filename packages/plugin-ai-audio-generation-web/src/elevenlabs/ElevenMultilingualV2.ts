@@ -1,7 +1,8 @@
 import {
   type Provider,
   type AudioOutput,
-  CommonProviderConfiguration
+  CommonProviderConfiguration,
+  getPanelId
 } from '@imgly/plugin-ai-generation-web';
 import CreativeEditorSDK from '@cesdk/cesdk-js';
 import schema from './ElevenMultilingualV2.json';
@@ -56,7 +57,10 @@ function getProvider(
   cesdk.setTranslations({
     en: {
       [`panel.${modelKey}`]: 'AI Voice',
-      [`panel.${voiceSelectionPanelId}`]: 'Select a Voice'
+      [`panel.${voiceSelectionPanelId}`]: 'Select a Voice',
+      [`panel.${getPanelId('elevenlabs')}`]: 'AI Voice',
+      [`libraries.${modelKey}.history.label`]: 'AI Voice',
+      [`libraries.elevenlabs/sound-generation.history.label`]: 'Generated Sound'
     }
   });
 

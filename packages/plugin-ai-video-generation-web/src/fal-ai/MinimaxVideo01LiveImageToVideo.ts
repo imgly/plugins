@@ -2,7 +2,8 @@ import { type MinimaxVideo01LiveImageToVideoInput } from '@fal-ai/client/endpoin
 import {
   VideoOutput,
   type Provider,
-  CommonProviderConfiguration
+  CommonProviderConfiguration,
+  getPanelId
 } from '@imgly/plugin-ai-generation-web';
 import { getImageDimensionsFromURL } from '@imgly/plugin-utils';
 import schema from './MinimaxVideo01LiveImageToVideo.json';
@@ -23,6 +24,19 @@ export function MinimaxVideo01LiveImageToVideo(
   Provider<'video', MinimaxVideo01LiveImageToVideoInput, VideoOutput>
 > {
   return async ({ cesdk }: { cesdk: CreativeEditorSDK }) => {
+    const modelKey = 'fal-ai/minimax/video-01-live/image-to-video';
+
+    // Set translations
+    cesdk.i18n.setTranslations({
+      en: {
+        [`panel.${getPanelId(modelKey)}.imageSelection`]:
+          'Select Image To Generate',
+        [`panel.${modelKey}.imageSelection`]: 'Select Image To Generate',
+        [`libraries.${getPanelId(modelKey)}.history.label`]:
+          'Generated From Image'
+      }
+    });
+
     return getProvider(cesdk, config);
   };
 }
