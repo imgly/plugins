@@ -173,12 +173,10 @@ function App() {
                       middleware: [imageRateLimitMiddleware, errorMiddleware],
                       proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
                     }),
-
                     FalAiImage.Recraft20b({
                       middleware: [imageRateLimitMiddleware, errorMiddleware],
                       proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
                     }),
-
                     OpenAiImage.GptImage1.Text2Image({
                       middleware: [imageRateLimitMiddleware, errorMiddleware],
                       proxyUrl: import.meta.env.VITE_OPENAI_PROXY_URL
@@ -192,18 +190,40 @@ function App() {
                     OpenAiImage.GptImage1.Image2Image({
                       middleware: [imageRateLimitMiddleware, errorMiddleware],
                       proxyUrl: import.meta.env.VITE_OPENAI_PROXY_URL
+                    }),
+                    FalAiImage.FluxProKontextEdit({
+                      middleware: [imageRateLimitMiddleware, errorMiddleware],
+                      proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
+                    }),
+                    FalAiImage.FluxProKontextMaxEdit({
+                      middleware: [imageRateLimitMiddleware, errorMiddleware],
+                      proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
                     })
                   ],
                   text2video: [
                     FalAiVideo.MinimaxVideo01Live({
                       middleware: [videoRateLimitMiddleware, errorMiddleware],
                       proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
+                    }),
+                    FalAiVideo.Veo3TextToVideo({
+                      middleware: [videoRateLimitMiddleware, errorMiddleware],
+                      proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
+                    }),
+                    FalAiVideo.KlingVideoV21MasterTextToVideo({
+                      middleware: [videoRateLimitMiddleware, errorMiddleware],
+                      proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
                     })
                   ],
-                  image2video: FalAiVideo.MinimaxVideo01LiveImageToVideo({
-                    middleware: [videoRateLimitMiddleware, errorMiddleware],
-                    proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
-                  }),
+                  image2video: [
+                    FalAiVideo.MinimaxVideo01LiveImageToVideo({
+                      middleware: [videoRateLimitMiddleware, errorMiddleware],
+                      proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
+                    }),
+                    FalAiVideo.KlingVideoV21MasterImageToVideo({
+                      middleware: [videoRateLimitMiddleware, errorMiddleware],
+                      proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
+                    })
+                  ],
                   text2speech: Elevenlabs.ElevenMultilingualV2({
                     middleware: [soundRateLimitMiddleware, errorMiddleware],
                     proxyUrl: import.meta.env.VITE_ELEVENLABS_PROXY_URL

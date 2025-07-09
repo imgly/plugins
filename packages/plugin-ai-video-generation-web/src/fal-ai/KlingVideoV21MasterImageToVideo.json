@@ -101,8 +101,8 @@
           }
         },
         "x-fal-order-properties": [
-          "prompt",
           "image_url",
+          "prompt",
           "duration"
         ],
         "required": ["prompt", "image_url"]

@@ -40,7 +40,7 @@
         "required": ["status", "request_id"]
       },
       "FluxProKontextMaxInput": {
-        "x-fal-order-properties": ["prompt", "image_url"],
+        "x-fal-order-properties": ["image_url", "prompt"],
         "type": "object",
         "properties": {
           "prompt": {

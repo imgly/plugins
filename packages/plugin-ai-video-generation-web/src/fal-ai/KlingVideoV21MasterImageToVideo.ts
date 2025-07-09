@@ -1,11 +1,8 @@
 import {
   VideoOutput,
-  QuickAction,
   type Provider,
-  QuickActionBaseButton,
-  enableQuickActionForImageFill,
-  getQuickActionMenu,
-  CommonProviderConfiguration
+  CommonProviderConfiguration,
+  getPanelId
 } from '@imgly/plugin-ai-generation-web';
 import { getImageDimensionsFromURL, getImageUri } from '@imgly/plugin-utils';
 import schema from './KlingVideoV21MasterImageToVideo.json';
@@ -34,6 +31,20 @@ export function KlingVideoV21MasterImageToVideo(
   Provider<'video', KlingVideoV21MasterImageToVideoInput, VideoOutput>
 > {
   return async ({ cesdk }: { cesdk: CreativeEditorSDK }) => {
+    const modelKey = 'fal-ai/kling-video/v2.1/master/image-to-video';
+
+    // Set translations
+    cesdk.i18n.setTranslations({
+      en: {
+        'ly.img.ai.quickAction.createVideoKling': 'Create Video (Kling)...',
+        [`panel.${getPanelId(modelKey)}.imageSelection`]:
+          'Select Image To Generate',
+        [`panel.${modelKey}.imageSelection`]: 'Select Image To Generate',
+        [`libraries.${getPanelId(modelKey)}.history.label`]:
+          'Generated From Image'
+      }
+    });
+
     return getProvider(cesdk, config);
   };
 }
@@ -46,26 +57,45 @@ function getProvider(
   KlingVideoV21MasterImageToVideoInput,
   { kind: 'video'; url: string }
 > {
-  const quickActions = getQuickActions(cesdk);
-  const quickActionMenu = getQuickActionMenu(cesdk, 'image');
-
-  quickActionMenu.setQuickActionMenuOrder([
-    ...quickActionMenu.getQuickActionMenuOrder(),
-    'ly.img.separator',
-    'createVideoKling'
-  ]);
-
   return createVideoProvider(
     {
       modelKey: 'fal-ai/kling-video/v2.1/master/image-to-video',
+      name: 'Kling Video V2.1 Master',
       // @ts-ignore
       schema,
       inputReference:
         '#/components/schemas/KlingVideoV21MasterImageToVideoInput',
       cesdk,
       headers: config.headers,
-      middleware: config.middleware,
-      quickActions,
+      middlewares: config.middlewares,
+      supportedQuickActions: {
+        createVideoKling: {
+          mapInput: async (input) => {
+            const [blockId] = cesdk.engine.block.findAllSelected();
+            const uri = await getImageUri(blockId, cesdk.engine, {
+              throwErrorIfSvg: true
+            });
+
+            cesdk.ui.openPanel('ly.img.ai/video-generation');
+            cesdk.ui.experimental.setGlobalStateValue(
+              'ly.img.ai.video-generation.fromType',
+              'fromImage'
+            );
+            cesdk.ui.experimental.setGlobalStateValue(
+              'fal-ai/kling-video/v2.1/master/image-to-video.image_url',
+              uri
+            );
+
+            return {
+              prompt: input.prompt,
+              image_url: uri,
+              duration: input.duration,
+              negative_prompt: input.negative_prompt,
+              cfg_scale: input.cfg_scale
+            };
+          }
+        }
+      },
       getBlockInput: async (input) => {
         const imageDimension = await getImageDimensionsFromURL(
           input.image_url as string,
@@ -83,46 +113,6 @@ function getProvider(
     },
     config
   );
-}
-
-function getQuickActions(
-  cesdk: CreativeEditorSDK
-): QuickAction<KlingVideoV21MasterImageToVideoInput, VideoOutput>[] {
-  cesdk.i18n.setTranslations({
-    en: {
-      'ly.img.ai.quickAction.createVideoKling': 'Create Video (Kling)...'
-    }
-  });
-
-  return [
-    QuickActionBaseButton<KlingVideoV21MasterImageToVideoInput, VideoOutput>({
-      quickAction: {
-        id: 'createVideoKling',
-        kind: 'image',
-        version: '1',
-        enable: enableQuickActionForImageFill()
-      },
-      buttonOptions: {
-        icon: '@imgly/plugin-ai-generation/video'
-      },
-      onClick: async () => {
-        const [blockId] = cesdk.engine.block.findAllSelected();
-        const uri = await getImageUri(blockId, cesdk.engine, {
-          throwErrorIfSvg: true
-        });
-
-        cesdk.ui.openPanel('ly.img.ai/video-generation');
-        cesdk.ui.experimental.setGlobalStateValue(
-          'ly.img.ai.video-generation.fromType',
-          'fromImage'
-        );
-        cesdk.ui.experimental.setGlobalStateValue(
-          'fal-ai/kling-video/v2.1/master/image-to-video.image_url',
-          uri
-        );
-      }
-    })
-  ];
 }
 
 export default getProvider;
