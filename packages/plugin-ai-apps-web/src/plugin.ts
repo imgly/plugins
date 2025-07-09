@@ -3,7 +3,11 @@ import CreativeEditorSDK, {
   AssetLibraryDockComponent,
   EditorPlugin
 } from '@cesdk/cesdk-js';
-import { getPanelId, ActionRegistry } from '@imgly/plugin-ai-generation-web';
+import {
+  getPanelId,
+  ActionRegistry,
+  checkAiPluginVersion
+} from '@imgly/plugin-ai-generation-web';
 
 import ImageGeneration from '@imgly/plugin-ai-image-generation-web';
 import VideoGeneration from '@imgly/plugin-ai-video-generation-web';
@@ -11,6 +15,7 @@ import AudioGeneration from '@imgly/plugin-ai-audio-generation-web';
 import TextGeneration from '@imgly/plugin-ai-text-generation-web';
 import { createCustomAssetSource } from './ActiveAssetSource';
 import { PluginConfiguration } from './types';
+import { PLUGIN_ID } from './constants';
 
 export { PLUGIN_ID } from './constants';
 
@@ -24,6 +29,9 @@ export default (
   return {
     async initialize({ cesdk }) {
       if (cesdk == null) return;
+
+      // Check AI plugin version consistency
+      checkAiPluginVersion(cesdk, PLUGIN_ID, PLUGIN_VERSION);
 
       const { providers } = config;
 
