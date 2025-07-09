@@ -27,6 +27,10 @@
     "./anthropic": {
       "import": "./dist/anthropic/index.mjs",
       "types": "./dist/anthropic/index.d.ts"
+    },
+    "./open-ai": {
+      "import": "./dist/open-ai/index.mjs",
+      "types": "./dist/open-ai/index.d.ts"
     }
   },
   "homepage": "https://img.ly/products/creative-sdk",
@@ -38,7 +42,7 @@
     "build": "pnpm run clean && pnpm _syncPnpm && pnpm exec node scripts/build.mjs",
     "test": "echo No tests",
     "dev": "pnpm --filter \"${npm_package_name}^...\" --parallel run dev:wait && pnpm exec concurrently 'node scripts/watch.mjs' 'pnpm _syncPnpm --watch' --names 'build,sync deps'",
-    "dev:wait": "pnpm exec wait-on ./dist/index.mjs ./dist/index.d.ts ./dist/anthropic/index.mjs ./dist/anthropic/index.d.ts --window 250 --timeout 60000",
+    "dev:wait": "pnpm exec wait-on ./dist/index.mjs ./dist/index.d.ts ./dist/anthropic/index.mjs ./dist/anthropic/index.d.ts ./dist/open-ai/index.mjs ./dist/open-ai/index.d.ts --window 250 --timeout 60000",
     "dev:types": "tsc --emitDeclarationOnly --watch --preserveWatchOutput",
     "publish:latest": "pnpm run build && npm publish --tag latest --access public",
     "publish:next": "pnpm run build && npm publish --tag next --access public",
@@ -73,6 +77,7 @@
     "@cesdk/cesdk-js": "^1.49.1"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.39.0"
+    "@anthropic-ai/sdk": "^0.39.0",
+    "openai": "^4.68.4"
   }
 }

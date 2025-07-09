@@ -1,5 +1,5 @@
 import { QuickActionDefinition } from '@imgly/plugin-ai-generation-web';
-import changeTextTo from '../anthropic/prompts/changeTextTo';
+import changeTextTo from '../prompts/changeTextTo';
 import { GetQuickActionDefinition } from './types';
 
 /**

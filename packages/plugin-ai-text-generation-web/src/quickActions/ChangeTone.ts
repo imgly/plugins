@@ -1,5 +1,5 @@
 import { QuickActionDefinition } from '@imgly/plugin-ai-generation-web';
-import changeTone from '../anthropic/prompts/changeTone';
+import changeTone from '../prompts/changeTone';
 import { GetQuickActionDefinition } from './types';
 
 /**

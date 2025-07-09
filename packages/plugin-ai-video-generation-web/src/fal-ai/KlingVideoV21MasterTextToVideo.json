@@ -1,0 +1,112 @@
+{
+  "openapi": "3.0.4",
+  "info": {
+    "title": "Queue OpenAPI for fal-ai/kling-video/v2.1/master/text-to-video",
+    "version": "1.0.0",
+    "description": "Automatically generated schema for Kling 2.1 Master – Text to Video model"
+  },
+  "components": {
+    "securitySchemes": {
+      "apiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization",
+        "description": "Fal Key"
+      }
+    },
+    "schemas": {
+      "QueueStatus": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["IN_QUEUE", "IN_PROGRESS", "COMPLETED"]
+          },
+          "request_id": { "type": "string", "description": "The request id." },
+          "response_url": { "type": "string", "description": "The response url." },
+          "status_url": { "type": "string", "description": "The status url." },
+          "cancel_url": { "type": "string", "description": "The cancel url." },
+          "logs": { "type": "object", "description": "The logs.", "additionalProperties": true },
+          "metrics": { "type": "object", "description": "The metrics.", "additionalProperties": true },
+          "queue_position": { "type": "integer", "description": "The queue position." }
+        },
+        "required": ["status", "request_id"]
+      },
+      "KlingVideoV21MasterTextToVideoInput": {
+        "title": "TextToVideoV21MasterRequest",
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "maxLength": 2500,
+            "title": "Prompt",
+            "x-imgly-builder": { "component": "TextArea" }
+          },
+          "duration": {
+            "type": "string",
+            "enum": ["5", "10"],
+            "title": "Duration",
+            "description": "The duration of the generated video in seconds",
+            "default": "5"
+          },
+          "aspect_ratio": {
+            "type": "string",
+            "enum": ["16:9", "9:16", "1:1"],
+            "title": "Aspect Ratio",
+            "description": "The aspect ratio of the generated video frame",
+            "default": "16:9"
+          },
+          "negative_prompt": {
+            "type": "string",
+            "maxLength": 2500,
+            "title": "Negative Prompt",
+            "default": "blur, distort, and low quality"
+          },
+          "cfg_scale": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "title": "Cfg Scale",
+            "description": "The CFG scale determines adherence to the prompt",
+            "default": 0.5
+          }
+        },
+        "x-fal-order-properties": [
+          "prompt",
+          "duration",
+          "aspect_ratio"
+        ],
+        "required": ["prompt"]
+      },
+      "KlingVideoV21MasterTextToVideoOutput": {
+        "title": "TextToVideoV21MasterOutput",
+        "type": "object",
+        "properties": {
+          "video": {
+            "title": "Video",
+            "description": "The generated video",
+            "allOf": [ { "$ref": "#/components/schemas/File" } ]
+          }
+        },
+        "x-fal-order-properties": ["video"],
+        "required": ["video"]
+      },
+      "File": {
+        "title": "File",
+        "type": "object",
+        "properties": {
+          "file_size": { "type": "integer", "title": "File Size", "description": "The size of the file in bytes." },
+          "file_name": { "type": "string", "title": "File Name", "description": "The name of the file." },
+          "content_type": { "type": "string", "title": "Content Type", "description": "The mime type of the file." },
+          "url": { "type": "string", "title": "Url", "description": "The URL where the file can be downloaded from." },
+          "file_data": { "type": "string", "format": "binary", "title": "File Data", "description": "File data" }
+        },
+        "x-fal-order-properties": ["url", "content_type", "file_name", "file_size", "file_data"],
+        "required": ["url"]
+      }
+    }
+  },
+  "paths": {},
+  "servers": [ { "url": "https://queue.fal.run" } ],
+  "security": [ { "apiKeyAuth": [] } ]
+} 
