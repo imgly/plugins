@@ -3,7 +3,8 @@ import {
   ActionRegistry,
   initializeProviders,
   Output,
-  registerDockComponent
+  registerDockComponent,
+  checkAiPluginVersion
 } from '@imgly/plugin-ai-generation-web';
 import { PluginConfiguration } from './types';
 import { toArray } from '@imgly/plugin-utils';
@@ -20,6 +21,9 @@ export function VideoGeneration<I, O extends Output>(
   return {
     async initialize({ cesdk }) {
       if (cesdk == null) return;
+
+      // Check AI plugin version consistency
+      checkAiPluginVersion(cesdk, PLUGIN_ID, PLUGIN_VERSION);
 
       cesdk.setTranslations({
         en: {

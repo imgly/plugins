@@ -61,6 +61,8 @@ export {
   addIconSetOnce
 } from './utils/utils';
 
+export { checkAiPluginVersion } from './utils/checkAiPluginVersion';
+
 export { default as registerDockComponent } from './ui/components/registerDockComponent';
 
 export { default as enableQuickActionForImageFill } from './ui/quickActions/enableImageFill';

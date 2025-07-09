@@ -6,7 +6,8 @@ import {
   Output,
   ActionRegistry,
   initializeQuickActionComponents,
-  AI_EDIT_MODE
+  AI_EDIT_MODE,
+  checkAiPluginVersion
 } from '@imgly/plugin-ai-generation-web';
 import { toArray } from '@imgly/plugin-utils';
 import Improve from './quickActions/Improve';
@@ -16,6 +17,7 @@ import Longer from './quickActions/Longer';
 import ChangeTone from './quickActions/ChangeTone';
 import Translate from './quickActions/Translate';
 import ChangeTextTo from './quickActions/ChangeTextTo';
+import { PLUGIN_ID } from './constants';
 
 export { PLUGIN_ID } from './constants';
 
@@ -25,6 +27,9 @@ export function TextGeneration<I, O extends Output>(
   return {
     async initialize({ cesdk }) {
       if (cesdk == null) return;
+
+      // Check AI plugin version consistency
+      checkAiPluginVersion(cesdk, PLUGIN_ID, PLUGIN_VERSION);
 
       cesdk.ui.addIconSet(PLUGIN_ICON_SET_ID, iconSprite);
       cesdk.i18n.setTranslations({

@@ -5,7 +5,8 @@ import {
   registerDockComponent,
   ActionRegistry,
   initializeQuickActionComponents,
-  AI_EDIT_MODE
+  AI_EDIT_MODE,
+  checkAiPluginVersion
 } from '@imgly/plugin-ai-generation-web';
 import { PluginConfiguration } from './types';
 import iconSprite, { PLUGIN_ICON_SET_ID } from './iconSprite';
@@ -31,6 +32,10 @@ export function ImageGeneration<I, O extends Output>(
   return {
     async initialize({ cesdk }) {
       if (cesdk == null) return;
+
+      // Check AI plugin version consistency
+      checkAiPluginVersion(cesdk, PLUGIN_ID, PLUGIN_VERSION);
+
       const registry = ActionRegistry.get();
 
       const disposeApp = registry.register({
