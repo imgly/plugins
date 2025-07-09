@@ -137,6 +137,14 @@ function App() {
                                                 })
                                             ]
                                         }),
+                                        // Alternative with icon style support
+                                        FalAiImage.Recraft20b({
+                                            proxyUrl: 'https://your-server.com/api/fal-ai-proxy',
+                                            headers: {
+                                                'x-client-version': '1.0.0',
+                                                'x-request-source': 'cesdk-tutorial'
+                                            }
+                                        }),
                                         // Additional image provider for user selection
                                         OpenAiImage.GptImage1.Text2Image({
                                             proxyUrl: 'https://your-server.com/api/openai-proxy',
@@ -254,6 +262,14 @@ The text provider enables capabilities like:
 // Text-to-image generation with multiple providers for user selection
 text2image: [
     FalAiImage.RecraftV3({
+        proxyUrl: 'https://your-server.com/api/fal-ai-proxy',
+        headers: {
+            'x-client-version': '1.0.0',
+            'x-request-source': 'cesdk-tutorial'
+        }
+    }),
+    // Alternative with icon style support
+    FalAiImage.Recraft20b({
         proxyUrl: 'https://your-server.com/api/fal-ai-proxy',
         headers: {
             'x-client-version': '1.0.0',
@@ -497,6 +513,11 @@ Each AI provider configuration requires a `proxyUrl` parameter, which should poi
 text2image: FalAiImage.RecraftV3({
     proxyUrl: 'https://your-server.com/api/falai'
 });
+
+// Or use Recraft20b with icon style support:
+// text2image: FalAiImage.Recraft20b({
+//     proxyUrl: 'https://your-server.com/api/falai'
+// });
 ```
 
 ### Proxy Implementation Requirements

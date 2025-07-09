@@ -53,6 +53,15 @@ CreativeEditorSDK.create(domElement, {
         }
       }),
       
+      // Alternative: Use Recraft20b with icon style support
+      // text2image: FalAiImage.Recraft20b({
+      //   proxyUrl: 'https://your-fal-ai-proxy.example.com',
+      //   headers: {
+      //     'x-custom-header': 'value',
+      //     'x-client-version': '1.0.0'
+      //   }
+      // }),
+      
       // Image-to-image provider (optional)
       image2image: FalAiImage.GeminiFlashEdit({
         proxyUrl: 'https://your-fal-ai-proxy.example.com',
@@ -91,6 +100,13 @@ CreativeEditorSDK.create(domElement, {
       // Multiple text-to-image providers
       text2image: [
         FalAiImage.RecraftV3({
+          proxyUrl: 'https://your-fal-ai-proxy.example.com',
+          headers: {
+            'x-custom-header': 'value',
+            'x-client-version': '1.0.0'
+          }
+        }),
+        FalAiImage.Recraft20b({
           proxyUrl: 'https://your-fal-ai-proxy.example.com',
           headers: {
             'x-custom-header': 'value',
@@ -157,7 +173,29 @@ Key features:
 - Adjustable quality settings
 - Custom headers support for API requests
 
-#### 2. GptImage1.Text2Image (Text-to-Image)
+#### 2. Recraft20b (Text-to-Image)
+
+An enhanced text-to-image model from fal.ai with additional icon style support:
+
+```typescript
+text2image: FalAiImage.Recraft20b({
+  proxyUrl: 'https://your-fal-ai-proxy.example.com',
+  headers: {
+    'x-custom-header': 'value',
+    'x-client-version': '1.0.0'
+  }
+})
+```
+
+Key features:
+- All RecraftV3 features (realistic, illustration, vector styles)
+- **New icon styles**: broken_line, colored_outline, colored_shapes, doodle_fill, and more
+- Three-way style selection (image/vector/icon)
+- Same image size presets and custom dimensions support
+- Cost-effective alternative to RecraftV3
+- Custom headers support for API requests
+
+#### 3. GptImage1.Text2Image (Text-to-Image)
 
 OpenAI's GPT-4 Vision based text-to-image model that generates high-quality images:
 
@@ -178,7 +216,7 @@ Key features:
 - Automatic prompt optimization
 - Custom headers support for API requests
 
-#### 3. GeminiFlashEdit (Image-to-Image)
+#### 4. GeminiFlashEdit (Image-to-Image)
 
 An image modification model from fal.ai that transforms existing images:
 
@@ -199,7 +237,7 @@ Key features:
 - Includes style presets and artist-specific transformations
 - Custom headers support for API requests
 
-#### 4. GptImage1.Image2Image (Image-to-Image)
+#### 5. GptImage1.Image2Image (Image-to-Image)
 
 OpenAI's GPT-4 Vision based image editing model that can transform existing images:
 
@@ -258,6 +296,7 @@ cesdk.addPlugin(
     text2image: FalAiImage.RecraftV3({
       proxyUrl: 'https://your-fal-ai-proxy.example.com'
     }),
+    // Or use: FalAiImage.Recraft20b({ proxyUrl: 'https://your-fal-ai-proxy.example.com' }),
     middleware: [logging, rateLimit] // Apply middleware in order
   })
 );
@@ -324,6 +363,15 @@ text2image: FalAiImage.RecraftV3({
     'x-client-version': '1.0.0'
   }
 })
+
+// Or use Recraft20b with icon style support:
+// text2image: FalAiImage.Recraft20b({
+//   proxyUrl: 'https://your-fal-ai-proxy.example.com',
+//   headers: {
+//     'x-custom-header': 'value',
+//     'x-client-version': '1.0.0'
+//   }
+// })
 ```
 
 The `headers` option allows you to include custom HTTP headers in all API requests. This is useful for:
@@ -371,6 +419,16 @@ interface PluginConfiguration {
 
 ```typescript
 FalAiImage.RecraftV3(config: {
+  proxyUrl: string;
+  headers?: Record<string, string>;
+  debug?: boolean;
+})
+```
+
+#### Recraft20b
+
+```typescript
+FalAiImage.Recraft20b(config: {
   proxyUrl: string;
   headers?: Record<string, string>;
   debug?: boolean;
@@ -493,6 +551,7 @@ const myImageProvider = {
 - Canvas quick actions: `ly.img.ai.image.canvasMenu`
 - Provider-specific panels:
   - RecraftV3: `ly.img.ai.fal-ai/recraft-v3`
+  - Recraft20b: `ly.img.ai.fal-ai/recraft/v2/text-to-image`
   - GeminiFlashEdit: `ly.img.ai.fal-ai/gemini-flash-edit`
   - GptImage1.Text2Image: `ly.img.ai.open-ai/gpt-image-1/text2image`
   - GptImage1.Image2Image: `ly.img.ai.open-ai/gpt-image-1/image2image`
@@ -501,6 +560,7 @@ const myImageProvider = {
 
 Generated images are automatically stored in asset sources with the following IDs:
 - RecraftV3: `fal-ai/recraft-v3.history`
+- Recraft20b: `fal-ai/recraft/v2/text-to-image.history`
 - GeminiFlashEdit: `fal-ai/gemini-flash-edit.history`
 - GptImage1.Text2Image: `open-ai/gpt-image-1/text2image.history`
 - GptImage1.Image2Image: `open-ai/gpt-image-1/image2image.history`

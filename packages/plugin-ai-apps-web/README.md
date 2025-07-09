@@ -136,6 +136,9 @@ cesdk.addPlugin(
         FalAiImage.RecraftV3({
           proxyUrl: 'https://fal-ai-proxy.example.com'
         }),
+        FalAiImage.Recraft20b({
+          proxyUrl: 'https://fal-ai-proxy.example.com'
+        }),
         OpenAiImage.GptImage1.Text2Image({
           proxyUrl: 'https://openai-proxy.example.com'
         })

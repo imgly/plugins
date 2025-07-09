@@ -759,6 +759,7 @@ CreativeEditorSDK.create(domElement, {
             text2image: FalAiImage.RecraftV3({
                 proxyUrl: 'https://your-falai-proxy.example.com'
             }),
+            // Alternative: FalAiImage.Recraft20b({ proxyUrl: 'https://your-falai-proxy.example.com' }),
             image2image: FalAiImage.GeminiFlashEdit({
                 proxyUrl: 'https://your-falai-proxy.example.com'
             })
