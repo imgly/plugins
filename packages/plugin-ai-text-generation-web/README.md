@@ -37,7 +37,6 @@ To use the plugin, import it and configure it with your preferred provider(s):
 import CreativeEditorSDK from '@cesdk/cesdk-js';
 import TextGeneration from '@imgly/plugin-ai-text-generation-web';
 import Anthropic from '@imgly/plugin-ai-text-generation-web/anthropic';
-import OpenAIText from '@imgly/plugin-ai-text-generation-web/open-ai';
 
 // Initialize CreativeEditor SDK
 CreativeEditorSDK.create(domElement, {
@@ -76,7 +75,6 @@ You can configure multiple providers, and users will see a selection box to choo
 import CreativeEditorSDK from '@cesdk/cesdk-js';
 import TextGeneration from '@imgly/plugin-ai-text-generation-web';
 import Anthropic from '@imgly/plugin-ai-text-generation-web/anthropic';
-import OpenAIText from '@imgly/plugin-ai-text-generation-web/open-ai';
 
 // Initialize CreativeEditor SDK
 CreativeEditorSDK.create(domElement, {
@@ -95,14 +93,14 @@ CreativeEditorSDK.create(domElement, {
                         'x-client-version': '1.0.0'
                     }
                 }),
-                OpenAIText.OpenAIProvider({
-                    proxyUrl: 'http://your-proxy-server.com/api/proxy',
-                    model: 'gpt-4o-mini', // Optional model selection (this is also the default)
-                    headers: {
-                        'x-custom-header': 'value',
-                        'x-client-version': '1.0.0'
-                    }
-                })
+                // Add more providers here as they become available
+                // OtherProvider.SomeModel({
+                //     proxyUrl: 'http://your-proxy-server.com/api/proxy',
+                //     headers: {
+                //         'x-api-key': 'your-key',
+                //         'x-source': 'cesdk'
+                //     }
+                // })
             ],
 
             // Optional configuration
@@ -245,16 +243,9 @@ const customMiddleware = async (input, options, next) => {
 // Apply middleware to plugin
 cesdk.addPlugin(
   TextGeneration({
-    provider: [
-      Anthropic.AnthropicProvider({
-        proxyUrl: 'http://your-proxy-server.com/api/proxy',
-        model: 'claude-3-7-sonnet-20250219' // Optional model selection (this is also the default)
-      }),
-      OpenAIText.OpenAIProvider({
-        proxyUrl: 'http://your-proxy-server.com/api/proxy',
-        model: 'gpt-4o-mini' // Optional model selection (this is also the default)
-      })
-    ],
+    provider: Anthropic.AnthropicProvider({
+      proxyUrl: 'http://your-proxy-server.com/api/proxy'
+    }),
     middleware: [logging, rateLimit, customMiddleware] // Apply middleware in order
   })
 );
