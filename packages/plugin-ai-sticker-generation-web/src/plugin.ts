@@ -29,6 +29,7 @@ export function StickerGeneration<I, O extends Output>(
 
       const disposeApp = registry.register({
         type: 'plugin',
+        sceneMode: 'Design',
 
         id: PLUGIN_ID,
         pluginId: PLUGIN_ID,
