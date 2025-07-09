@@ -166,6 +166,7 @@ function App() {
                         ...rateLimitMiddlewareConfig
                       })
                     ],
+                    model: 'claude-3-5-sonnet-20240620',
                     proxyUrl: import.meta.env.VITE_ANTHROPIC_PROXY_URL
                   }),
                   text2image: [

@@ -19,8 +19,13 @@ type AnthropicOutput = {
   text: string;
 };
 
+export interface AnthropicProviderConfig
+  extends CommonProviderConfiguration<AnthropicInput, AnthropicOutput> {
+  model?: string;
+}
+
 export function AnthropicProvider(
-  config: CommonProviderConfiguration<AnthropicInput, AnthropicOutput>
+  config: AnthropicProviderConfig
 ): (context: {
   cesdk: CreativeEditorSDK;
 }) => Promise<TextProvider<AnthropicInput>> {
@@ -93,7 +98,8 @@ export function AnthropicProvider(
             anthropic,
             {
               proxyUrl: config.proxyUrl,
-              headers: config.headers
+              headers: config.headers,
+              model: config.model || 'claude-3-7-sonnet-20250219' // Default
             },
             prompt,
             abortSignal
