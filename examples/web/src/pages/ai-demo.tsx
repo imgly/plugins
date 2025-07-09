@@ -6,6 +6,7 @@ import FalAiImage from '@imgly/plugin-ai-image-generation-web/fal-ai';
 import FalAiVideo from '@imgly/plugin-ai-video-generation-web/fal-ai';
 import Elevenlabs from '@imgly/plugin-ai-audio-generation-web/elevenlabs';
 import Anthropic from '@imgly/plugin-ai-text-generation-web/anthropic';
+import OpenAIText from '@imgly/plugin-ai-text-generation-web/open-ai';
 import FalAiSticker from '@imgly/plugin-ai-sticker-generation-web/fal-ai';
 
 import { useRef } from 'react';
@@ -158,17 +159,24 @@ function App() {
                 debug: true,
                 dryRun: false,
                 providers: {
-                  text2text: Anthropic.AnthropicProvider({
-                    middleware: [
-                      errorMiddleware,
-                      rateLimitMiddleware({
-                        maxRequests: 50,
-                        ...rateLimitMiddlewareConfig
-                      })
-                    ],
-                    model: 'claude-3-5-sonnet-20240620',
-                    proxyUrl: import.meta.env.VITE_ANTHROPIC_PROXY_URL
-                  }),
+                  text2text: [
+                    Anthropic.AnthropicProvider({
+                      middlewares: [
+                        errorMiddleware,
+                        rateLimitMiddleware({
+                          maxRequests: 50,
+                          ...rateLimitMiddlewareConfig
+                        })
+                      ],
+                      model: 'claude-3-5-sonnet-20240620',
+                      proxyUrl: import.meta.env.VITE_ANTHROPIC_PROXY_URL
+                    }),
+                    OpenAIText.OpenAIProvider({
+                      middlewares: [errorMiddleware],
+                      model: 'gpt-4.1-nano-2025-04-14',
+                      proxyUrl: import.meta.env.VITE_OPENAI_PROXY_URL
+                    })
+                  ],
                   text2image: [
                     FalAiImage.RecraftV3({
                       middleware: [imageRateLimitMiddleware, errorMiddleware],

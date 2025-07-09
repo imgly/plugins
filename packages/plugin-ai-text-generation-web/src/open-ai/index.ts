@@ -1,7 +1,7 @@
 import { OpenAIProvider } from './OpenAIProvider';
 
-const OpenAI = {
+const OpenAIText = {
   OpenAIProvider
 };
 
-export default OpenAI;
+export default OpenAIText;
