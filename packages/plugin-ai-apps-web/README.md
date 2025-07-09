@@ -77,7 +77,7 @@ CreativeEditorSDK.create(domElement, {
   );
 
   // Position the AI dock button in the dock order
-  cesdk.ui.setDockOrder(['ly.img.ai/apps.dock', ...cesdk.ui.getDockOrder()]);
+  cesdk.ui.setDockOrder(['ly.img.ai.apps.dock', ...cesdk.ui.getDockOrder()]);
 });
 ```
 
@@ -178,7 +178,7 @@ The plugin adds the following UI components to CreativeEditor SDK:
 
 The main entry point for all AI features, accessible from the dock:
 
-- **ID**: `ly.img.ai/apps.dock`
+- **ID**: `ly.img.ai.apps.dock`
 - **Functionality**: Opens AI generation interface
 - **Loading States**: Shows progress indicators during generation
 - **Mode Awareness**: Adapts interface based on current editor mode
@@ -198,11 +198,11 @@ To position the AI dock button in your editor's dock, use the `setDockOrder` met
 
 ```typescript
 // Add the AI dock component to the beginning of the dock
-cesdk.ui.setDockOrder(['ly.img.ai/apps.dock', ...cesdk.ui.getDockOrder()]);
+cesdk.ui.setDockOrder(['ly.img.ai.apps.dock', ...cesdk.ui.getDockOrder()]);
 
 // Or add it at a specific position
 const currentOrder = cesdk.ui.getDockOrder();
-currentOrder.splice(2, 0, 'ly.img.ai/apps.dock');
+currentOrder.splice(2, 0, 'ly.img.ai.apps.dock');
 cesdk.ui.setDockOrder(currentOrder);
 ```
 
@@ -210,9 +210,9 @@ cesdk.ui.setDockOrder(currentOrder);
 
 The plugin automatically integrates generated assets into the appropriate asset libraries using the following history source IDs:
 
-- **Image Generation History**: `ly.img.ai/image-generation.history`
-- **Video Generation History**: `ly.img.ai/video-generation.history`
-- **Audio Generation History**: `ly.img.ai/audio-generation.history`
+- **Image Generation History**: `ly.img.ai.image-generation.history`
+- **Video Generation History**: `ly.img.ai.video-generation.history`
+- **Audio Generation History**: `ly.img.ai.audio-generation.history`
 
 To add these history sources to existing asset library entries, use the following approach:
 
@@ -221,7 +221,7 @@ To add these history sources to existing asset library entries, use the followin
 const imageEntry = cesdk.ui.getAssetLibraryEntry('ly.img.image');
 if (imageEntry != null) {
   cesdk.ui.updateAssetLibraryEntry('ly.img.image', {
-    sourceIds: [...imageEntry.sourceIds, 'ly.img.ai/image-generation.history']
+    sourceIds: [...imageEntry.sourceIds, 'ly.img.ai.image-generation.history']
   });
 }
 
@@ -229,7 +229,7 @@ if (imageEntry != null) {
 const videoEntry = cesdk.ui.getAssetLibraryEntry('ly.img.video');
 if (videoEntry != null) {
   cesdk.ui.updateAssetLibraryEntry('ly.img.video', {
-    sourceIds: [...videoEntry.sourceIds, 'ly.img.ai/video-generation.history']
+    sourceIds: [...videoEntry.sourceIds, 'ly.img.ai.video-generation.history']
   });
 }
 
@@ -237,7 +237,7 @@ if (videoEntry != null) {
 const audioEntry = cesdk.ui.getAssetLibraryEntry('ly.img.audio');
 if (audioEntry != null) {
   cesdk.ui.updateAssetLibraryEntry('ly.img.audio', {
-    sourceIds: [...audioEntry.sourceIds, 'ly.img.ai/audio-generation.history']
+    sourceIds: [...audioEntry.sourceIds, 'ly.img.ai.audio-generation.history']
   });
 }
 ```
@@ -395,7 +395,7 @@ CreativeEditorSDK.create(domElement, {
     })
   );
 
-  cesdk.ui.setDockOrder(['ly.img.ai/apps.dock', ...cesdk.ui.getDockOrder()]);
+  cesdk.ui.setDockOrder(['ly.img.ai.apps.dock', ...cesdk.ui.getDockOrder()]);
 });
 ```
 
@@ -448,7 +448,7 @@ CreativeEditorSDK.create(domElement, {
   );
 
   // Setup dock and canvas menus
-  cesdk.ui.setDockOrder(['ly.img.ai/apps.dock', ...cesdk.ui.getDockOrder()]);
+  cesdk.ui.setDockOrder(['ly.img.ai.apps.dock', ...cesdk.ui.getDockOrder()]);
   cesdk.ui.setCanvasMenuOrder([
     {
       id: 'ly.img.ai.text.canvasMenu',

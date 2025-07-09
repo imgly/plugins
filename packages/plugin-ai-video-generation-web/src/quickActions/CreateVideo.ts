@@ -60,7 +60,7 @@ const CreateVideo: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
               throwErrorIfSvg: true
             });
 
-            cesdk.ui.openPanel('ly.img.ai/video-generation');
+            cesdk.ui.openPanel('ly.img.ai.video-generation');
             cesdk.ui.experimental.setGlobalStateValue(
               'ly.img.ai.video-generation.fromType',
               'fromImage'

@@ -9,10 +9,10 @@ function registerDockComponent(options: {
   panelId: string;
 }) {
   const { cesdk, panelId } = options;
-  if (!panelId.startsWith('ly.img.ai/')) {
+  if (!panelId.startsWith('ly.img.ai.')) {
     // eslint-disable-next-line no-console
     console.warn(
-      `Dock components for AI generation should open a panel with an id starting with "ly.img.ai/" – "${panelId}" was provided.`
+      `Dock components for AI generation should open a panel with an id starting with "ly.img.ai." – "${panelId}" was provided.`
     );
   }
 
@@ -26,7 +26,7 @@ function registerDockComponent(options: {
       icon: '@imgly/Sparkle',
       onClick: () => {
         cesdk.ui.findAllPanels().forEach((panel) => {
-          if (panel.startsWith('ly.img.ai/')) {
+          if (panel.startsWith('ly.img.ai.')) {
             cesdk.ui.closePanel(panel);
           }
           if (!isOpen && panel === '//ly.img.panel/assetLibrary') {

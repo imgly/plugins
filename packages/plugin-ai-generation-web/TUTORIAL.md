@@ -383,7 +383,7 @@ async function initializeEditor(container: HTMLElement) {
 
     // Add the dock component to open the AI image generation panel
     cesdk.ui.setDockOrder([
-      'ly.img.ai/image-generation.dock',
+      'ly.img.ai.image-generation.dock',
       ...cesdk.ui.getDockOrder()
     ]);
 

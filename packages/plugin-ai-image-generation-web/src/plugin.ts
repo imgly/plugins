@@ -23,7 +23,7 @@ import RemixPageWithPrompt from './quickActions/RemixPageWithPrompt';
 
 export { PLUGIN_ID } from './constants';
 
-const IMAGE_GENERATION_PANEL_ID = 'ly.img.ai/image-generation';
+const IMAGE_GENERATION_PANEL_ID = 'ly.img.ai.image-generation';
 
 export function ImageGeneration<I, O extends Output>(
   config: PluginConfiguration<I, O>

@@ -48,7 +48,7 @@ function getProvider(
     config.baseURL ??
     'https://cdn.img.ly/assets/plugins/plugin-ai-audio-generation-web/v1/elevenlabs/';
 
-  const prefix = 'ly.img.ai/audio-generation/speech/elevenlabs';
+  const prefix = 'ly.img.ai.audio-generation.speech.elevenlabs';
   const voiceSelectionPanelId = `${prefix}.voiceSelection`;
   const voiceAssetSourceId = createVoicesAssetSource(cesdk, baseURL);
   const modelKey = 'elevenlabs/monolingual/v1';

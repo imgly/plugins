@@ -324,9 +324,9 @@ The plugin automatically registers the following UI components:
 
 ### Panel IDs
 
--   Main speech panel: `ly.img.ai/elevenlabs/monolingual/v1`
--   Main sound panel: `ly.img.ai/elevenlabs/sound-generation`
--   Voice selection panel: `ly.img.ai/audio-generation/speech/elevenlabs.voiceSelection`
+-   Main speech panel: `ly.img.ai.elevenlabs/monolingual/v1`
+-   Main sound panel: `ly.img.ai.elevenlabs/sound-generation`
+-   Voice selection panel: `ly.img.ai.audio-generation/speech/elevenlabs.voiceSelection`
 
 ### Asset History
 

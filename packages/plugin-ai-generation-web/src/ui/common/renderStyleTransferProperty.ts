@@ -214,7 +214,7 @@ function createPanels(options: {
 }
 
 function getStyleSelectionPanelId(providerId: string) {
-  return `ly.img.ai/${providerId}.styleSelection`;
+  return `ly.img.ai.${providerId}.styleSelection`;
 }
 
 const STYLES: Omit<Style, 'thumbUri'>[] = [

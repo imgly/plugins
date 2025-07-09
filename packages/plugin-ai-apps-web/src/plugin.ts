@@ -143,7 +143,7 @@ function initializeAppLibrary(
           : '@imgly/Sparkle',
         onClick: () => {
           cesdk.ui.findAllPanels().forEach((panel) => {
-            if (panel.startsWith('ly.img.ai/') && panel !== panelId) {
+            if (panel.startsWith('ly.img.ai.') && panel !== panelId) {
               cesdk.ui.closePanel(panel);
             }
             if (!isOpen && panel === '//ly.img.panel/assetLibrary') {
@@ -338,7 +338,7 @@ function overrideAssetLibraryDockComponent(cesdk: CreativeEditorSDK) {
             cesdk.ui.closePanel('//ly.img.panel/assetLibrary');
           } else {
             cesdk.ui.findAllPanels().forEach((panel) => {
-              if (panel === AI_APP_ID || panel.startsWith('ly.img.ai/')) {
+              if (panel === AI_APP_ID || panel.startsWith('ly.img.ai.')) {
                 cesdk.ui.closePanel(panel);
               }
             });
@@ -363,33 +363,33 @@ function addTranslations(cesdk: CreativeEditorSDK) {
       'panel.ly.img.ai.generation.confirmCancel.content':
         'Are you sure you want to cancel the generation?',
       'panel.ly.img.ai.generation.confirmCancel.confirm': 'Cancel Generation',
-      'panel.ly.img.ai/apps': 'AI',
-      'panel.ly.img.ai/fal-ai/gemini-flash-edit.imageSelection':
+      'panel.ly.img.ai.apps': 'AI',
+      'panel.ly.img.ai.fal-ai/gemini-flash-edit.imageSelection':
         'Select Image To Change',
       'panel.gpt-image-1.imageSelection': 'Select Image To Change',
-      'panel.ly.img.ai/elevenlabs': 'AI Voice',
-      'panel.ly.img.ai/demo.video': 'Generate Video',
-      'panel.ly.img.ai/demo.image': 'Generate Image',
+      'panel.ly.img.ai.elevenlabs': 'AI Voice',
+      'panel.ly.img.ai.demo.video': 'Generate Video',
+      'panel.ly.img.ai.demo.image': 'Generate Image',
       'panel.fal-ai/minimax/video-01-live/image-to-video.imageSelection':
         'Select Image To Generate',
-      'panel.ly.img.ai/fal-ai/minimax/video-01-live/image-to-video.imageSelection':
+      'panel.ly.img.ai.fal-ai/minimax/video-01-live/image-to-video.imageSelection':
         'Select Image To Generate',
       'panel.fal-ai/gemini-flash-edit.imageSelection':
         'Select Image To Generate',
-      'libraries.ly.img.ai/fal-ai/recraft-v3.history.label':
+      'libraries.ly.img.ai.fal-ai/recraft-v3.history.label':
         'Generated From Text',
-      'libraries.ly.img.ai/fal-ai/gemini-flash-edit.history.label':
+      'libraries.ly.img.ai.fal-ai/gemini-flash-edit.history.label':
         'Generated From Image',
-      'libraries.ly.img.ai/fal-ai/pixverse/v3.5/text-to-video.history.label':
+      'libraries.ly.img.ai.fal-ai/pixverse/v3.5/text-to-video.history.label':
         'Generated From Text',
-      'libraries.ly.img.ai/fal-ai/minimax/video-01-live/image-to-video.history.label':
+      'libraries.ly.img.ai.fal-ai/minimax/video-01-live/image-to-video.history.label':
         'Generated From Image',
       'libraries.elevenlabs/monolingual/v1.history.label': 'AI Voice',
       'libraries.elevenlabs/sound-generation.history.label': 'Generated Sound',
 
-      'libraries.ly.img.ai/image-generation.history.label':
+      'libraries.ly.img.ai.image-generation.history.label':
         'AI Generated Images',
-      'libraries.ly.img.ai/video-generation.history.label':
+      'libraries.ly.img.ai.video-generation.history.label':
         'AI Generated Videos'
     }
   });

@@ -18,7 +18,7 @@ function initializeHistoryCompositeAssetSource<
   } = context;
 
   const aggregatedImageAssetSource = new AggregatedAssetSource(
-    'ly.img.ai/image-generation.history',
+    'ly.img.ai.image-generation.history',
     cesdk,
     historAssetSourceIds
   );

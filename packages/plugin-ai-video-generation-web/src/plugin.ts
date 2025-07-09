@@ -12,7 +12,7 @@ import CreateVideo from './quickActions/CreateVideo';
 
 export { PLUGIN_ID } from './constants';
 
-const VIDEO_GENERATION_PANEL_ID = 'ly.img.ai/video-generation';
+const VIDEO_GENERATION_PANEL_ID = 'ly.img.ai.video-generation';
 
 export function VideoGeneration<I, O extends Output>(
   config: PluginConfiguration<I, O>

@@ -489,13 +489,13 @@ const myImageProvider = {
 
 ### Panel IDs
 
-- Main panel: `ly.img.ai/image-generation`
+- Main panel: `ly.img.ai.image-generation`
 - Canvas quick actions: `ly.img.ai.image.canvasMenu`
 - Provider-specific panels:
-  - RecraftV3: `ly.img.ai/fal-ai/recraft-v3`
-  - GeminiFlashEdit: `ly.img.ai/fal-ai/gemini-flash-edit`
-  - GptImage1.Text2Image: `ly.img.ai/open-ai/gpt-image-1/text2image`
-  - GptImage1.Image2Image: `ly.img.ai/open-ai/gpt-image-1/image2image`
+  - RecraftV3: `ly.img.ai.fal-ai/recraft-v3`
+  - GeminiFlashEdit: `ly.img.ai.fal-ai/gemini-flash-edit`
+  - GptImage1.Text2Image: `ly.img.ai.open-ai/gpt-image-1/text2image`
+  - GptImage1.Image2Image: `ly.img.ai.open-ai/gpt-image-1/image2image`
 
 ### Asset History
 
@@ -512,13 +512,13 @@ The plugin automatically registers a dock component with a sparkle icon that ope
 ```typescript
 // Add the AI Image component to the beginning of the dock
 cesdk.ui.setDockOrder([
-  'ly.img.ai/image-generation.dock',
+  'ly.img.ai.image-generation.dock',
   ...cesdk.ui.getDockOrder()
 ]);
 
 // Or add it at a specific position
 const currentOrder = cesdk.ui.getDockOrder();
-currentOrder.splice(2, 0, 'ly.img.ai/image-generation.dock');
+currentOrder.splice(2, 0, 'ly.img.ai.image-generation.dock');
 cesdk.ui.setDockOrder(currentOrder);
 ```
 

@@ -78,7 +78,7 @@ function App() {
 
                         // Configure AI Apps dock position
                         instance.ui.setDockOrder([
-                            'ly.img.ai/apps.dock',
+                            'ly.img.ai.apps.dock',
                             ...instance.ui.getDockOrder()
                         ]);
 
@@ -368,11 +368,11 @@ The main entry point for AI features is the AI dock button, which you can positi
 
 ```typescript
 // Add the AI dock component to the beginning of the dock
-cesdk.ui.setDockOrder(['ly.img.ai/apps.dock', ...cesdk.ui.getDockOrder()]);
+cesdk.ui.setDockOrder(['ly.img.ai.apps.dock', ...cesdk.ui.getDockOrder()]);
 
 // Or add it at a specific position
 const currentOrder = cesdk.ui.getDockOrder();
-currentOrder.splice(2, 0, 'ly.img.ai/apps.dock');
+currentOrder.splice(2, 0, 'ly.img.ai.apps.dock');
 cesdk.ui.setDockOrder(currentOrder);
 ```
 

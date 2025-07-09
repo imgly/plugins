@@ -350,12 +350,12 @@ The plugin automatically registers the following UI components:
 
 ### Panel IDs
 
--   Main panel: `ly.img.ai/video-generation`
+-   Main panel: `ly.img.ai.video-generation`
 -   Canvas quick actions: `ly.img.ai.video.canvasMenu`
 -   Provider-specific panels:
-    -   MinimaxVideo01Live: `ly.img.ai/fal-ai/minimax/video-01-live`
-    -   MinimaxVideo01LiveImageToVideo: `ly.img.ai/fal-ai/minimax/video-01-live/image-to-video`
-    -   PixverseV35TextToVideo: `ly.img.ai/fal-ai/pixverse/v3.5/text-to-video`
+    -   MinimaxVideo01Live: `ly.img.ai.fal-ai/minimax/video-01-live`
+    -   MinimaxVideo01LiveImageToVideo: `ly.img.ai.fal-ai/minimax/video-01-live/image-to-video`
+    -   PixverseV35TextToVideo: `ly.img.ai.fal-ai/pixverse/v3.5/text-to-video`
 
 ### Asset History
 
@@ -372,13 +372,13 @@ The plugin automatically registers a dock component with a sparkle icon that ope
 ```typescript
 // Add the AI Video component to the beginning of the dock
 cesdk.ui.setDockOrder([
-  'ly.img.ai/video-generation.dock',
+  'ly.img.ai.video-generation.dock',
   ...cesdk.ui.getDockOrder()
 ]);
 
 // Or add it at a specific position
 const currentOrder = cesdk.ui.getDockOrder();
-currentOrder.splice(2, 0, 'ly.img.ai/video-generation.dock');
+currentOrder.splice(2, 0, 'ly.img.ai.video-generation.dock');
 cesdk.ui.setDockOrder(currentOrder);
 ```
 

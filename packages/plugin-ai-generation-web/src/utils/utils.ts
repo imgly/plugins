@@ -3,7 +3,7 @@ import { GenerationResult, Output } from '../core/provider';
 
 export const AI_PANEL_ID_PREFIX = 'ly.img.ai';
 
-const TEMP_ASSET_SOURCE_ID = 'ly.img.ai/temp';
+const TEMP_ASSET_SOURCE_ID = 'ly.img.ai.temp';
 
 /**
  * Adding asset to the scene.
@@ -30,7 +30,7 @@ export async function addAssetToScene(
  * Returns a consistent panel ID for a provider ID
  */
 export function getPanelId(providerId: string): string {
-  return `${AI_PANEL_ID_PREFIX}/${providerId}`;
+  return `${AI_PANEL_ID_PREFIX}.${providerId}`;
 }
 
 export default getPanelId;

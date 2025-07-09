@@ -110,7 +110,7 @@ function createPanels(providerId: string, cesdk?: CreativeEditorSDK) {
 }
 
 function getImageSelectionPanelId(providerId: string) {
-  return `ly.img.ai/${providerId}.imageSelection`;
+  return `ly.img.ai.${providerId}.imageSelection`;
 }
 
 export default renderImageUrlProperty;

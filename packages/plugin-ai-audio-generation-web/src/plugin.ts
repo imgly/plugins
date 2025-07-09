@@ -11,8 +11,8 @@ import { PLUGIN_ID } from './constants';
 
 export { PLUGIN_ID } from './constants';
 
-const SPEECH_GENERATION_PANEL_ID = 'ly.img.ai/audio-generation/speech';
-const SOUND_GENERATION_PANEL_ID = 'ly.img.ai/audio-generation/sound';
+const SPEECH_GENERATION_PANEL_ID = 'ly.img.ai.audio-generation.speech';
+const SOUND_GENERATION_PANEL_ID = 'ly.img.ai.audio-generation.sound';
 
 export function AudioGeneration<I, O extends Output>(
   config: PluginConfiguration<I, O>

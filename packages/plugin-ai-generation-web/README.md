@@ -700,12 +700,12 @@ function setupMyProvider(cesdk) {
 When a provider is initialized, it automatically registers panels with specific IDs:
 
 ```
-ly.img.ai/{provider-id}
+ly.img.ai.{provider-id}
 ```
 
 For example:
-- A provider with ID `my-image-provider` registers a panel with ID `ly.img.ai/my-image-provider`
-- A provider with ID `fal-ai/recraft-v3` registers a panel with ID `ly.img.ai/fal-ai/recraft-v3`
+- A provider with ID `my-image-provider` registers a panel with ID `ly.img.ai.my-image-provider`
+- A provider with ID `fal-ai/recraft-v3` registers a panel with ID `ly.img.ai.fal-ai/recraft-v3`
 
 You can programmatically get a panel ID using the `getPanelId` function:
 
