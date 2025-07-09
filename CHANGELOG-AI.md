@@ -11,6 +11,7 @@
 ### New Features
 
 -   [all] **Multiple Providers Support**: All plugin packages now support arrays of providers with automatic selection UI
+-   [image-generation] **Recraft20b Provider**: Added new Recraft20b (v2) provider via fal.ai with support for icon styles including `broken_line`, `colored_outline`, `colored_shapes`, and more
 
 ## [0.1.10] - 2025-06-20
 
