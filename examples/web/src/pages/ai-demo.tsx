@@ -179,7 +179,7 @@ function App() {
 
             instance.addPlugin(
               AiApps({
-                debug: false,
+                debug: true,
                 dryRun: false,
                 providers: {
                   text2text: Anthropic.AnthropicProvider({
