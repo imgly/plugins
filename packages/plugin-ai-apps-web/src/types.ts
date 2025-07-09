@@ -15,7 +15,7 @@ export interface Providers {
   /**
    * Provider for text generation on text blocks.
    */
-  text2text?: GetProvider<'text'>;
+  text2text?: GetProvider<'text'> | GetProvider<'text'>[];
 
   /**
    * Provider for image generation based on a prompt alone.
