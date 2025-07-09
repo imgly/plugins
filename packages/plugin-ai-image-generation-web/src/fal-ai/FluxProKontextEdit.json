@@ -71,8 +71,8 @@
       },
       "FluxProKontextInput": {
         "x-fal-order-properties": [
-          "prompt",
-          "image_url"
+          "image_url",
+          "prompt"
         ],
         "type": "object",
         "properties": {

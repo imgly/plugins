@@ -44,6 +44,7 @@ function getProvider(
   return createVideoProvider(
     {
       modelKey: 'fal-ai/kling-video/v2.1/master/text-to-video',
+      name: 'Kling Video V2.1 Master',
       // @ts-ignore
       schema,
       inputReference:

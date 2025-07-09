@@ -1,14 +1,8 @@
 import {
-  getQuickActionMenu,
   ImageOutput,
-  QuickAction,
-  QuickActionBaseSelect,
-  QuickActionSwapImageBackground,
-  QuickActionChangeImage,
-  QuickActionImageVariant,
-  enableQuickActionForImageFill,
   type Provider,
-  type CommonProviderConfiguration
+  type CommonProviderConfiguration,
+  getPanelId
 } from '@imgly/plugin-ai-generation-web';
 import schema from './FluxProKontextMaxEdit.json';
 import { getImageDimensionsFromURL } from '@imgly/plugin-utils';
@@ -27,6 +21,21 @@ export function FluxProKontextMaxEdit(
   cesdk: CreativeEditorSDK;
 }) => Promise<Provider<'image', FluxProKontextMaxEditInput, ImageOutput>> {
   return async ({ cesdk }: { cesdk: CreativeEditorSDK }) => {
+    const modelKey = 'fal-ai/flux-pro/kontext/max';
+
+    // Set translations
+    cesdk.i18n.setTranslations({
+      en: {
+        'ly.img.ai.quickAction.styleTransfer': 'Change Art Style',
+        'ly.img.ai.quickAction.artists': 'Painted By',
+        [`panel.${getPanelId(modelKey)}.imageSelection`]:
+          'Select Image To Change',
+        [`panel.${modelKey}.imageSelection`]: 'Select Image To Change',
+        [`libraries.${getPanelId(modelKey)}.history.label`]:
+          'Generated From Image'
+      }
+    });
+
     return getProvider(cesdk, config);
   };
 }
@@ -37,30 +46,90 @@ function getProvider(
 ): Provider<'image', FluxProKontextMaxEditInput, ImageOutput> {
   const modelKey = 'fal-ai/flux-pro/kontext/max';
 
-  const quickActions = createFluxProKontextMaxEditQuickActions(cesdk);
-  const quickActionMenu = getQuickActionMenu(cesdk, 'image');
-
-  quickActionMenu.setQuickActionMenuOrder([
-    ...quickActionMenu.getQuickActionMenuOrder(),
-    'ly.img.separator',
-    'styleTransfer',
-    'artists',
-    'ly.img.separator',
-    'changeImage',
-    'createVariant'
-  ]);
-
   return createImageProvider(
     {
       modelKey,
-      name: 'Change Image (MAX)',
+      name: 'Flux Pro Kontext (Max)',
       // @ts-ignore
       schema,
       inputReference: '#/components/schemas/FluxProKontextMaxEditInput',
       cesdk,
-      quickActions,
-      middleware: config.middleware,
+      middlewares: config.middlewares,
       headers: config.headers,
+      supportedQuickActions: {
+        'ly.img.swapBackground': {
+          mapInput: (input: any) => ({ ...input, image_url: input.uri })
+        },
+        'ly.img.editImage': {
+          mapInput: (input: any) => ({ ...input, image_url: input.uri })
+        },
+        'ly.img.createVariant': {
+          mapInput: (input: any) => ({ ...input, image_url: input.uri }),
+          onApply: async (
+            { prompt, uri, duplicatedBlockId }: any,
+            context: any
+          ) => {
+            return context.generate(
+              {
+                prompt,
+                image_url: uri
+              },
+              {
+                blockIds: [duplicatedBlockId]
+              }
+            );
+          }
+        },
+        'ly.img.styleTransfer': {
+          mapInput: (input: any) => ({
+            prompt: input.item.prompt,
+            image_url: input.uri,
+            blockId: input.blockId
+          }),
+          items: [
+            {
+              id: 'water',
+              label: 'Watercolor Painting',
+              prompt: 'Convert to watercolor painting.'
+            },
+            {
+              id: 'oil',
+              label: 'Oil Painting',
+              prompt: 'Render in oil painting style.'
+            },
+            {
+              id: 'charcoal',
+              label: 'Charcoal Sketch',
+              prompt: 'Transform into a charcoal sketch.'
+            },
+            {
+              id: 'pencil',
+              label: 'Pencil Drawing',
+              prompt: 'Apply pencil drawing effect.'
+            }
+          ]
+        },
+        'ly.img.artistTransfer': {
+          mapInput: (input: any) => ({
+            prompt: input.item.prompt,
+            image_url: input.uri,
+            blockId: input.blockId
+          }),
+          items: [
+            {
+              id: 'van-gogh',
+              label: 'Van Gogh',
+              prompt: 'Render this image in the style of Vincent van Gogh.'
+            },
+            {
+              id: 'monet',
+              label: 'Monet',
+              prompt:
+                'Transform this image into the soft, impressionistic style of Claude Monet.'
+            }
+          ]
+        }
+      },
       getBlockInput: async (input) => {
         const { width, height } = await getImageDimensionsFromURL(
           input.image_url,
@@ -76,110 +145,6 @@ function getProvider(
     },
     config
   );
-}
-
-function createFluxProKontextMaxEditQuickActions(
-  cesdk: CreativeEditorSDK
-): QuickAction<FluxProKontextMaxEditInput, ImageOutput>[] {
-  cesdk.i18n.setTranslations({
-    en: {
-      'ly.img.ai.quickAction.styleTransfer': 'Change Art Style',
-      'ly.img.ai.quickAction.artists': 'Painted By'
-    }
-  });
-
-  return [
-    QuickActionSwapImageBackground<FluxProKontextMaxEditInput, ImageOutput>({
-      mapInput: (input) => ({ ...input, image_url: input.uri }),
-      cesdk
-    }),
-    QuickActionChangeImage<FluxProKontextMaxEditInput, ImageOutput>({
-      mapInput: (input) => ({ ...input, image_url: input.uri }),
-      cesdk
-    }),
-    QuickActionImageVariant<FluxProKontextMaxEditInput, ImageOutput>({
-      onApply: async ({ prompt, uri, duplicatedBlockId }, context) => {
-        return context.generate(
-          {
-            prompt,
-            image_url: uri
-          },
-          {
-            blockIds: [duplicatedBlockId]
-          }
-        );
-      },
-      cesdk
-    }),
-    // Keep same base selects as original (reuse constants)
-    QuickActionBaseSelect<FluxProKontextMaxEditInput, ImageOutput>({
-      quickAction: {
-        id: 'styleTransfer',
-        version: '1',
-        enable: enableQuickActionForImageFill(),
-        scopes: ['fill/change'],
-        confirmation: true,
-        lockDuringConfirmation: false
-      },
-      mapInput: (input) => ({
-        prompt: input.item.prompt,
-        image_url: input.uri,
-        blockId: input.blockId
-      }),
-      items: [
-        {
-          id: 'water',
-          label: 'Watercolor Painting',
-          prompt: 'Convert to watercolor painting.'
-        },
-        {
-          id: 'oil',
-          label: 'Oil Painting',
-          prompt: 'Render in oil painting style.'
-        },
-        {
-          id: 'charcoal',
-          label: 'Charcoal Sketch',
-          prompt: 'Transform into a charcoal sketch.'
-        },
-        {
-          id: 'pencil',
-          label: 'Pencil Drawing',
-          prompt: 'Apply pencil drawing effect.'
-        }
-      ],
-      cesdk
-    }),
-    QuickActionBaseSelect<FluxProKontextMaxEditInput, ImageOutput>({
-      quickAction: {
-        id: 'artists',
-        version: '1',
-        enable: enableQuickActionForImageFill(),
-        scopes: ['fill/change'],
-        confirmation: true,
-        lockDuringConfirmation: false
-      },
-      mapInput: (input) => ({
-        prompt: input.item.prompt,
-        image_url: input.uri,
-        blockId: input.blockId
-      }),
-      items: [
-        {
-          id: 'van-gogh',
-          label: 'Van Gogh',
-          prompt: 'Render this image in the style of Vincent van Gogh.'
-        },
-        {
-          id: 'monet',
-          label: 'Monet',
-          prompt:
-            'Transform this image into the soft, impressionistic style of Claude Monet.'
-        }
-      ],
-      cesdk
-    })
-  ];
 }
 
 export default getProvider;

@@ -1,7 +1,8 @@
 import {
   CommonProviderConfiguration,
   VideoOutput,
-  type Provider
+  type Provider,
+  getPanelId
 } from '@imgly/plugin-ai-generation-web';
 import schema from './Veo3TextToVideo.json';
 import CreativeEditorSDK from '@cesdk/cesdk-js';
@@ -23,6 +24,17 @@ export function Veo3TextToVideo(
   cesdk: CreativeEditorSDK;
 }) => Promise<Provider<'video', Veo3Input, VideoOutput>> {
   return async ({ cesdk }: { cesdk: CreativeEditorSDK }) => {
+    const modelKey = 'fal-ai/veo3';
+
+    // Set translations
+    cesdk.i18n.setTranslations({
+      en: {
+        [`panel.${getPanelId(modelKey)}.prompt`]: 'Enter your prompt',
+        [`panel.${modelKey}.prompt`]: 'Enter your prompt',
+        [`libraries.${getPanelId(modelKey)}.history.label`]: 'Generated Videos'
+      }
+    });
+
     return getProvider(cesdk, config);
   };
 }
@@ -34,13 +46,13 @@ function getProvider(
   return createVideoProvider(
     {
       modelKey: 'fal-ai/veo3',
+      name: 'Veo3',
       // @ts-ignore
       schema,
       inputReference: '#/components/schemas/Veo3Input',
       cesdk,
-
       headers: config.headers,
-      middleware: config.middleware,
+      middlewares: config.middlewares,
       getBlockInput: (input) => {
         if (input.aspect_ratio != null) {
           const [widthRatio, heightRatio] = input.aspect_ratio
