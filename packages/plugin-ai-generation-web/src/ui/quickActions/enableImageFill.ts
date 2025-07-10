@@ -12,6 +12,8 @@ function enableImageFill() {
 
     if (!engine.block.supportsFill(blockId)) return false;
 
+    if (engine.block.getKind(blockId) === 'sticker') return false;
+
     if (
       !['//ly.img.ubq/graphic', '//ly.img.ubq/page'].includes(
         engine.block.getType(blockId)
