@@ -34,6 +34,7 @@ import { AnthropicProvider } from '@imgly/plugin-ai-text-generation-web/anthropi
 import FalAiImage from '@imgly/plugin-ai-image-generation-web/fal-ai';
 import FalAiVideo from '@imgly/plugin-ai-video-generation-web/fal-ai';
 import ElevenLabs from '@imgly/plugin-ai-audio-generation-web/elevenlabs';
+import FalAiSticker from '@imgly/plugin-ai-sticker-generation-web/fal-ai';
 
 // Initialize CreativeEditor SDK
 CreativeEditorSDK.create(domElement, {
@@ -71,6 +72,11 @@ CreativeEditorSDK.create(domElement, {
         }),
         text2sound: ElevenLabs.SoundEffects({
           proxyUrl: 'http://your-proxy-server.com/api/proxy'
+        }),
+
+        // Sticker generation
+        text2sticker: FalAiSticker.Recraft20b({
+          proxyUrl: 'http://your-proxy-server.com/api/proxy'
         })
       }
     })
@@ -103,18 +109,19 @@ The `providers` object can include the following provider functions:
 | `image2video` | `Provider<'video'>` | Provider for image-to-video generation (video mode only) |
 | `text2speech` | `Provider<'audio'>` | Provider for text-to-speech generation (video mode only) |
 | `text2sound`  | `Provider<'audio'>` | Provider for sound effects generation (video mode only)  |
+| `text2sticker` | `Provider<'sticker'>` | Provider for sticker generation                          |
 
 ### Provider Selection Strategy
 
 The plugin intelligently selects which providers to use based on the current editor mode:
 
 #### Design Mode
-- **Uses**: `text2text`, `text2image`, `image2image`
-- **Focus**: Image and text generation for design workflows
+- **Uses**: `text2text`, `text2image`, `image2image`, `text2sticker`
+- **Focus**: Image, text, and sticker generation for design workflows
 - **UI**: Shows AI apps cards for different generation types
 
 #### Video Mode  
-- **Uses**: All providers including `text2video`, `image2video`, `text2speech`, `text2sound`
+- **Uses**: All providers including `text2video`, `image2video`, `text2speech`, `text2sound`, `text2sticker`
 - **Focus**: Comprehensive media generation for video production
 - **UI**: Shows AI apps cards for different generation types
 

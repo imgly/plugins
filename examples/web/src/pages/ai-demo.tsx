@@ -6,6 +6,7 @@ import FalAiImage from '@imgly/plugin-ai-image-generation-web/fal-ai';
 import FalAiVideo from '@imgly/plugin-ai-video-generation-web/fal-ai';
 import Elevenlabs from '@imgly/plugin-ai-audio-generation-web/elevenlabs';
 import Anthropic from '@imgly/plugin-ai-text-generation-web/anthropic';
+import FalAiSticker from '@imgly/plugin-ai-sticker-generation-web/fal-ai';
 
 import { useRef } from 'react';
 import { rateLimitMiddleware } from '@imgly/plugin-ai-generation-web';
@@ -237,7 +238,11 @@ function App() {
                       middleware: [soundRateLimitMiddleware, errorMiddleware],
                       proxyUrl: import.meta.env.VITE_ELEVENLABS_PROXY_URL
                     })
-                  ]
+                  ],
+                  text2sticker: FalAiSticker.Recraft20b({
+                    middleware: [imageRateLimitMiddleware, errorMiddleware],
+                    proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
+                  })
                 }
               })
             );

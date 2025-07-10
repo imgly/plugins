@@ -315,7 +315,7 @@ export type GetBlockInputResult<K extends OutputKind> = Record<
 /**
  * All possible output kinds.
  */
-export type OutputKind = 'image' | 'video' | 'audio' | 'text';
+export type OutputKind = 'image' | 'video' | 'audio' | 'text' | 'sticker';
 
 /**
  * Mandatory kind-specific input needed for the generation.
@@ -325,12 +325,18 @@ export type InputByKind = {
   video: { label?: string; width: number; height: number; duration: number };
   audio: { label?: string; thumbnailUrl?: string; duration?: number };
   text: { label?: string; length: number };
+  sticker: { label?: string; width: number; height: number };
 };
 
 /**
  * The generated output of the provider.
  */
-export type Output = ImageOutput | VideoOutput | AudioOutput | TextOutput;
+export type Output =
+  | ImageOutput
+  | VideoOutput
+  | AudioOutput
+  | TextOutput
+  | StickerOutput;
 
 type OutputBase<K extends OutputKind> = {
   kind: K;
@@ -356,6 +362,11 @@ export interface AudioOutput extends OutputBase<'audio'> {
 export interface TextOutput extends OutputBase<'text'> {
   kind: 'text';
   text: string;
+}
+
+export interface StickerOutput extends OutputBase<'sticker'> {
+  kind: 'sticker';
+  url: string;
 }
 
 export type QuickActionContext<I, O extends Output> = {

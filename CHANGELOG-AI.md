@@ -15,6 +15,7 @@
 
 -   [all] **Multiple Providers Support**: All plugin packages now support arrays of providers with automatic selection UI
 -   [image-generation] **Recraft20b Provider**: Added new Recraft20b (v2) provider via fal.ai with support for icon styles including `broken_line`, `colored_outline`, `colored_shapes`, and more
+-   [sticker-generation] **New Sticker Generation Plugin**: Added `@imgly/plugin-ai-sticker-generation-web` plugin for AI-powered sticker generation with support for text-to-sticker generation using Recraft20b provider with icon styles
 
 ## [0.1.10] - 2025-06-20
 

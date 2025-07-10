@@ -14,6 +14,7 @@ export {
   type VideoOutput,
   type TextOutput,
   type AudioOutput,
+  type StickerOutput,
   type Output,
   type OutputKind,
   type PanelInputSchema,

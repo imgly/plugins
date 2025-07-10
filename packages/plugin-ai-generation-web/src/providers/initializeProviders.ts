@@ -121,7 +121,7 @@ function getBuilderRenderFunctionByFromType<
   initializedFromImageProviders: ProviderInitializationResult<K, I, O>[];
 }): BuilderRenderFunction<{}> {
   const includeFromSwitch =
-    initializedFromTextProviders.length > 0 ||
+    initializedFromTextProviders.length > 0 &&
     initializedFromImageProviders.length > 0;
 
   const builderRenderFunction: BuilderRenderFunction = (context) => {

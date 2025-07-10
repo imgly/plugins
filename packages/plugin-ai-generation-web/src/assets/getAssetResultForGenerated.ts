@@ -6,6 +6,7 @@ import {
   ImageOutput,
   InputByKind,
   Output,
+  StickerOutput,
   VideoOutput
 } from '../core/provider';
 import { getThumbnailForVideo } from '../utils/utils';
@@ -55,6 +56,20 @@ async function getAssetResultForGenerated<K extends OutputKind>(
       return getAudioAssetResultForGenerated(
         id,
         blockInputs[kind] as InputByKind['audio'],
+        output
+      );
+    }
+
+    case 'sticker': {
+      if (output.kind !== 'sticker') {
+        throw new Error(
+          `Output kind does not match the expected type: ${output.kind} (expected: sticker)`
+        );
+      }
+
+      return getStickerAssetResultForGenerated(
+        id,
+        blockInputs[kind] as InputByKind['sticker'],
         output
       );
     }
@@ -141,6 +156,37 @@ function getAudioAssetResultForGenerated(
       blockType: '//ly.img.ubq/audio',
       mimeType: 'audio/x-m4a',
       duration: output.duration.toString()
+    }
+  };
+}
+
+function getStickerAssetResultForGenerated(
+  id: string,
+  input: InputByKind['sticker'],
+  output: StickerOutput
+): AssetResult {
+  const width = input.width;
+  const height = input.height;
+  return {
+    id,
+    label: input.label,
+    meta: {
+      uri: output.url,
+      thumbUri: output.url,
+      fillType: '//ly.img.ubq/fill/image',
+      kind: 'sticker',
+
+      width,
+      height
+    },
+    payload: {
+      sourceSet: [
+        {
+          uri: output.url,
+          width,
+          height
+        }
+      ]
     }
   };
 }
