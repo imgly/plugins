@@ -106,6 +106,13 @@ const EditImage: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
                 } catch (error) {
                   // eslint-disable-next-line no-console
                   console.error('Generation error:', error);
+                  cesdk.ui.showNotification({
+                    type: 'error',
+                    message:
+                      (error as Error).message ||
+                      'Failed to edit image. Please try again.',
+                    duration: 'medium'
+                  });
                 }
               }
             });
