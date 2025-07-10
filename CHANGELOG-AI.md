@@ -6,7 +6,11 @@
 
 -   [all] **Provider Initialization**: `initProvider` is replaced with `initializeProviders` and `initializeProvider` with a different signature
 -   [all] **Quick Actions Structure**: `provider.input.quickctions.actions` replaced with `provider.input.quickActions.supported`
--   [all] **History Asset Sources**: Combined history asset source is now not added to the default asset libraries anymore
+-   [all] **History Asset Sources**: Combined history asset source is now not added to the default asset libraries anymore. Add the following sources to any library entry (default or not):
+    -   Image Generation History: `ly.img.ai.image-generation.history`
+    -   Video Generation History: `ly.img.ai.video-generation.history`
+    -   Audio Generation History: `ly.img.ai.audio-generation.history`
+    -   Sticker Generation History: `ly.img.ai.sticker-generation.history`
 -   [all] **ID Format Standardization**: All `ly.img.ai/` prefixed IDs changed to use dot notation `ly.img.ai.` for consistency
     -   Panel IDs: `ly.img.ai/apps` → `ly.img.ai.apps`, `ly.img.ai/image-generation` → `ly.img.ai.image-generation`
     -   Dock IDs: `ly.img.ai/apps.dock` → `ly.img.ai.apps.dock`
