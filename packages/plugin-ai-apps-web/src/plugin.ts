@@ -239,7 +239,7 @@ function getAppThumbnail(baseURL: string, appId: string): string {
       return `${baseURL}AIVoice.png`;
     }
     case '@imgly/plugin-ai-sticker-generation-web': {
-      return `${baseURL}GenerateImage.png`;
+      return `${baseURL}GenerateSticker.png`;
     }
     default: {
       return `${baseURL}GenerateImage.png`;
