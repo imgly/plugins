@@ -1,5 +1,4 @@
 import CreativeEditorSDK from '@cesdk/cesdk-js';
-import CutoutLibraryPlugin from '@imgly/plugin-cutout-library-web';
 
 import AiApps from '@imgly/plugin-ai-apps-web';
 import OpenAiImage from '@imgly/plugin-ai-image-generation-web/open-ai';
@@ -53,24 +52,8 @@ function App() {
               instance.addDemoAssetSources({ sceneMode: 'Video' })
             ]);
 
-            instance.addPlugin(
-              CutoutLibraryPlugin({
-                ui: { locations: ['canvasMenu'] }
-              })
-            );
-            const cutoutAssetEntry = instance.ui.getAssetLibraryEntry(
-              'ly.img.cutout.entry'
-            );
-
             instance.ui.setDockOrder([
               'ly.img.ai.apps.dock',
-              {
-                id: 'ly.img.assetLibrary.dock',
-                label: 'Cutout',
-                key: 'ly.img.assetLibrary.dock',
-                icon: cutoutAssetEntry?.icon,
-                entries: ['ly.img.cutout.entry']
-              },
               ...instance.ui.getDockOrder().filter(({ key }) => {
                 return (
                   key !== 'ly.img.video.template' && key !== 'ly.img.template'
