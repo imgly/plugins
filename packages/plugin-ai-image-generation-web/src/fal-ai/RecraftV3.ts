@@ -146,7 +146,7 @@ function getProvider(
       // @ts-ignore
       schema: RecraftV3Schema,
       inputReference: '#/components/schemas/RecraftV3Input',
-      middleware: config.middlewares ?? [],
+      middleware: config.middlewares ?? config.middleware ?? [],
       headers: config.headers,
       userFlow: 'placeholder',
       renderCustomProperty: {

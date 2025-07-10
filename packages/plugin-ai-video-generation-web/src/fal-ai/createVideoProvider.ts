@@ -15,6 +15,11 @@ import { VideoQuickActionSupportMap } from '../types';
 type VideoProviderConfiguration = {
   proxyUrl: string;
   debug?: boolean;
+  middlewares?: Middleware<any, any>[];
+  /**
+   * @deprecated Use `middlewares` instead.
+   */
+  middleware?: Middleware<any, any>[];
 };
 
 /**
@@ -48,7 +53,8 @@ function createVideoProvider<I extends Record<string, any>>(
   },
   config: VideoProviderConfiguration
 ): Provider<'video', I, { kind: 'video'; url: string }> {
-  const middleware = options.middleware ?? [];
+  const middleware =
+    options.middleware ?? config.middlewares ?? config.middleware ?? [];
 
   const provider: Provider<'video', I, VideoOutput> = {
     id: options.modelKey,

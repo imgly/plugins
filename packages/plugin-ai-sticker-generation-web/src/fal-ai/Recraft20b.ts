@@ -121,7 +121,7 @@ function getProvider(
       // @ts-ignore
       schema: Recraft20bSchema,
       inputReference: '#/components/schemas/Recraft20bInput',
-      middleware: config.middlewares ?? [],
+      middleware: config.middlewares ?? config.middleware ?? [],
       headers: config.headers,
       userFlow: 'placeholder',
       renderCustomProperty: {

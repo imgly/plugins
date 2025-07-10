@@ -2,7 +2,8 @@ import { type OpenAPIV3 } from 'openapi-types';
 import CreativeEditorSDK, { CreativeEngine } from '@cesdk/cesdk-js';
 import {
   RenderCustomProperty,
-  CommonProperties
+  CommonProperties,
+  Middleware
 } from '@imgly/plugin-ai-generation-web';
 import { fal } from '@fal-ai/client';
 import { isCustomImageSize, uploadImageInputToFalIfNeeded } from './utils';
@@ -12,6 +13,11 @@ import { StickerQuickActionSupportMap } from '../types';
 type StickerProviderConfiguration = {
   proxyUrl: string;
   debug?: boolean;
+  middlewares?: Middleware<any, any>[];
+  /**
+   * @deprecated Use `middlewares` instead.
+   */
+  middleware?: Middleware<any, any>[];
 };
 
 /**
@@ -44,7 +50,8 @@ function createStickerProvider<I extends Record<string, any>>(
   },
   config: StickerProviderConfiguration
 ): any {
-  const middleware = options.middleware ?? [];
+  const middleware =
+    options.middleware ?? config.middlewares ?? config.middleware ?? [];
   const provider: any = {
     id: options.modelKey,
     kind: 'sticker',
