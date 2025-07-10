@@ -391,6 +391,8 @@ function addTranslations(cesdk: CreativeEditorSDK) {
         'AI Generated Images',
       'libraries.ly.img.ai.video-generation.history.label':
         'AI Generated Videos',
+      'libraries.ly.img.ai.audio-generation.history.label':
+        'AI Generated Audio',
       'libraries.ly.img.ai.sticker-generation.history.label':
         'AI Generated Stickers'
     }
