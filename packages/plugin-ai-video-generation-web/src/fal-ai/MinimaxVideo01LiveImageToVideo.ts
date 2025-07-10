@@ -59,7 +59,7 @@ function getProvider(
         '#/components/schemas/MinimaxVideo01LiveImageToVideoInput',
       cesdk,
       headers: config.headers,
-      middleware: config.middlewares,
+      middleware: config.middlewares ?? config.middleware ?? [],
       supportedQuickActions: {
         'ly.img.createVideo': {
           mapInput: () => {

@@ -65,7 +65,7 @@ export function AnthropicProvider(
         }
       },
       output: {
-        middleware: config.middlewares,
+        middleware: config.middlewares ?? config.middleware ?? [],
         generate: async (
           { prompt, blockId },
           { engine, abortSignal }

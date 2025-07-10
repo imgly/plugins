@@ -16,6 +16,11 @@ import { ImageQuickActionSupportMap } from '../types';
 type ImageProviderConfiguration = {
   proxyUrl: string;
   debug?: boolean;
+  middlewares?: Middleware<any, any>[];
+  /**
+   * @deprecated Use `middlewares` instead.
+   */
+  middleware?: Middleware<any, any>[];
 };
 
 /**
@@ -47,7 +52,8 @@ function createImageProvider<I extends Record<string, any>>(
   },
   config: ImageProviderConfiguration
 ): Provider<'image', I, { kind: 'image'; url: string }> {
-  const middleware = options.middleware ?? [];
+  const middleware =
+    options.middleware ?? config.middlewares ?? config.middleware ?? [];
   const provider: Provider<'image', I, ImageOutput> = {
     id: options.modelKey,
     kind: 'image',

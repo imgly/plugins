@@ -83,7 +83,7 @@ function getProvider(
           })
         }
       },
-      middleware: config.middlewares,
+      middleware: config.middlewares ?? config.middleware ?? [],
       headers: config.headers,
       getBlockInput: async (input) => {
         const { width, height } = await getImageDimensionsFromURL(
