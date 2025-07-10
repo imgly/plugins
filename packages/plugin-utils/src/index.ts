@@ -40,7 +40,11 @@ export {
 
 export { default as uuid } from './utils/uuid';
 
-export { getImageDimensionsFromURL, getImageUri } from './utils/images';
+export {
+  getImageDimensionsFromURL,
+  getImageUri,
+  isSvgFill
+} from './utils/images';
 
 export { default as isDefined } from './utils/isDefined';
 

@@ -369,27 +369,6 @@ export interface StickerOutput extends OutputBase<'sticker'> {
   url: string;
 }
 
-export type QuickActionContext<I, O extends Output> = {
-  blockIds: number[];
-  closeMenu: () => void;
-  toggleExpand: () => void;
-
-  /**
-   * Trigger generation with the given input.
-   *
-   * @param input The input for the generation.
-   * @param options The options for the generation.
-   * @param options.blockIds Use these blocks ids for the generation instead of the currently selected blocks.
-   */
-  generate: (input: I, options?: { blockIds?: number[] }) => Promise<O>;
-
-  /**
-   * Can be called to show a notification after the generation as it is
-   * configured for the provider.
-   */
-  handleGenerationError: (error: unknown) => void;
-};
-
 /**
  * Support mapping for a specific quick action.
  * Maps quick action input to provider input.

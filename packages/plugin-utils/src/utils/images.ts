@@ -55,3 +55,31 @@ export async function getImageUri(
 
   return bufferURIToObjectURL(uri, engine);
 }
+
+/**
+ * Returns if the given fill block is an SVG image fill.
+ */
+export async function isSvgFill(
+  fillBlock: number,
+  engine: CreativeEngine
+): Promise<boolean> {
+  if (engine.block.getType(fillBlock) !== '//ly.img.ubq/fill/image') {
+    return false;
+  }
+
+  let uri;
+  const sourceSet = engine.block.getSourceSet(
+    fillBlock,
+    'fill/image/sourceSet'
+  );
+  const [source] = sourceSet;
+  if (source == null) {
+    uri = engine.block.getString(fillBlock, 'fill/image/imageFileURI');
+    if (uri == null) return false;
+  } else {
+    uri = source.uri;
+  }
+
+  const mimeType = await engine.editor.getMimeType(uri);
+  return mimeType === 'image/svg+xml';
+}
