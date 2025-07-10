@@ -249,13 +249,6 @@ function handleGenerateFromQuickAction<
         }
 
         case 'error': {
-          // TODO: Confgurable? If shown at all and what kind of message.
-          // We should provide a middleware to show notifications.
-          options.cesdk.ui.showNotification({
-            type: 'error',
-            message: result.message
-          });
-
           unlockFromEditMode();
           targetBlockIds.forEach((blockId) => {
             if (options.cesdk.engine.block.isValid(blockId)) {
@@ -272,6 +265,12 @@ function handleGenerateFromQuickAction<
         }
       }
     } catch (error) {
+      options.cesdk.ui.showNotification({
+        type: 'error',
+        message: 'A technical issue has occurred.'
+      });
+
+      unlockFromEditMode();
       targetBlockIds.forEach((blockId) => {
         if (options.cesdk.engine.block.isValid(blockId)) {
           metadata.clear(blockId);
