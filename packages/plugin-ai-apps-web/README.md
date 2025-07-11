@@ -223,6 +223,7 @@ The plugin automatically integrates generated assets into the appropriate asset 
 - **Image Generation History**: `ly.img.ai.image-generation.history`
 - **Video Generation History**: `ly.img.ai.video-generation.history`
 - **Audio Generation History**: `ly.img.ai.audio-generation.history`
+- **Sticker Generation History**: `ly.img.ai.sticker-generation.history`
 
 To add these history sources to existing asset library entries, use the following approach:
 
@@ -248,6 +249,14 @@ const audioEntry = cesdk.ui.getAssetLibraryEntry('ly.img.audio');
 if (audioEntry != null) {
   cesdk.ui.updateAssetLibraryEntry('ly.img.audio', {
     sourceIds: [...audioEntry.sourceIds, 'ly.img.ai.audio-generation.history']
+  });
+}
+
+// Add AI sticker history to the default sticker asset library
+const stickerEntry = instance.ui.getAssetLibraryEntry('ly.img.sticker');
+if (stickerEntry != null) {
+  instance.ui.updateAssetLibraryEntry('ly.img.sticker', {
+    sourceIds: [...stickerEntry.sourceIds, 'ly.img.ai.sticker-generation.history']
   });
 }
 ```

@@ -9,6 +9,8 @@ import initializeProvider, {
 } from './initializeProvider';
 import { isGeneratingStateKey } from '../ui/components/renderGenerationComponents';
 import { CommonPluginConfiguration } from '../types';
+import initializeHistoryCompositeAssetSource from '../assets/initializeHistoryCompositeAssetSource';
+import { isDefined } from '@imgly/plugin-utils';
 
 export type ProvidersInitializationResult<
   K extends OutputKind,
@@ -26,8 +28,8 @@ export type ProvidersInitializationResult<
    * Combined history asset source and library entry IDs for the providers.
    */
   history?: {
-    assetSourceId: string;
-    assetLibraryEntryId: string;
+    assetSourceId?: string;
+    assetLibraryEntryId?: string;
   };
 
   /**
@@ -94,9 +96,20 @@ async function initializeProviders<K extends OutputKind, I, O extends Output>(
     });
   }
 
+  const compositeHistoryAssetSourceId = initializeHistoryCompositeAssetSource({
+    kind,
+    cesdk: options.cesdk,
+    historAssetSourceIds: providerResults
+      .map((result) => result.history?.assetSourceId)
+      .filter(isDefined)
+  });
+
   return {
     panel: {
       builderRenderFunction
+    },
+    history: {
+      assetSourceId: compositeHistoryAssetSourceId
     },
     providerInitializationResults: providerResults
   };

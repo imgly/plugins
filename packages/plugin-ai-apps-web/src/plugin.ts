@@ -239,7 +239,7 @@ function getAppThumbnail(baseURL: string, appId: string): string {
       return `${baseURL}AIVoice.png`;
     }
     case '@imgly/plugin-ai-sticker-generation-web': {
-      return `${baseURL}GenerateImage.png`;
+      return `${baseURL}GenerateSticker.png`;
     }
     default: {
       return `${baseURL}GenerateImage.png`;
@@ -391,6 +391,8 @@ function addTranslations(cesdk: CreativeEditorSDK) {
         'AI Generated Images',
       'libraries.ly.img.ai.video-generation.history.label':
         'AI Generated Videos',
+      'libraries.ly.img.ai.audio-generation.history.label':
+        'AI Generated Audio',
       'libraries.ly.img.ai.sticker-generation.history.label':
         'AI Generated Stickers'
     }
