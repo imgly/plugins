@@ -3,7 +3,6 @@ import { type CommonProviderConfiguration } from '@imgly/plugin-ai-generation-we
 import { TextProvider } from '../types';
 import OpenAI from 'openai';
 import sendPrompt from './sendPrompt';
-import { LANGUAGES } from '../prompts/translate';
 
 type OpenAIInput = {
   prompt: string;
@@ -30,19 +29,6 @@ export function OpenAIProvider(
   cesdk: CreativeEditorSDK;
 }) => Promise<TextProvider<OpenAIInput>> {
   return (context: { cesdk: CreativeEditorSDK }) => {
-    context.cesdk.i18n.setTranslations({
-      en: {
-        ...Object.entries(LANGUAGES).reduce(
-          (acc: Record<string, string>, [locale, language]) => {
-            acc[`ly.img.ai.inference.translate.type.${locale}`] =
-              language as string;
-            return acc;
-          },
-          {}
-        )
-      }
-    });
-
     let openai: OpenAI | null = null;
     const provider: TextProvider<OpenAIInput> = {
       kind: 'text',
@@ -98,7 +84,7 @@ export function OpenAIProvider(
             {
               proxyUrl: config.proxyUrl,
               headers: config.headers,
-              model: config.model || 'gpt-4o-mini' // Default
+              model: config.model ?? 'gpt-4o-mini' // Default
             },
             input.prompt,
             abortSignal

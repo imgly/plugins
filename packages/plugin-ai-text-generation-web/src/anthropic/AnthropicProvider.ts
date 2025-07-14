@@ -3,7 +3,6 @@ import { type CommonProviderConfiguration } from '@imgly/plugin-ai-generation-we
 import { TextProvider } from '../types';
 import Anthropic from '@anthropic-ai/sdk';
 import sendPrompt from './sendPrompt';
-import { LANGUAGES } from '../prompts/translate';
 
 type AnthropicInput = {
   prompt: string;
@@ -30,18 +29,6 @@ export function AnthropicProvider(
   cesdk: CreativeEditorSDK;
 }) => Promise<TextProvider<AnthropicInput>> {
   return (context: { cesdk: CreativeEditorSDK }) => {
-    context.cesdk.i18n.setTranslations({
-      en: {
-        ...Object.entries(LANGUAGES).reduce(
-          (acc: Record<string, string>, [locale, langauge]) => {
-            acc[`ly.img.ai.inference.translate.type.${locale}`] = langauge;
-            return acc;
-          },
-          {}
-        )
-      }
-    });
-
     let anthropic: Anthropic | null = null;
     const provider: TextProvider<AnthropicInput> = {
       kind: 'text',
@@ -99,7 +86,7 @@ export function AnthropicProvider(
             {
               proxyUrl: config.proxyUrl,
               headers: config.headers,
-              model: config.model || 'claude-3-7-sonnet-20250219' // Default
+              model: config.model ?? 'claude-3-7-sonnet-20250219' // Default
             },
             prompt,
             abortSignal

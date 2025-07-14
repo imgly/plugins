@@ -64,27 +64,11 @@ function getProvider(
         },
         'ly.img.createVariant': {
           mapInput: (input: any) => ({ ...input, image_url: input.uri }),
-          onApply: async (
-            { prompt, uri, duplicatedBlockId }: any,
-            context: any
-          ) => {
-            // Generate a variant for the duplicated block
-            return context.generate(
-              {
-                prompt,
-                image_url: uri
-              },
-              {
-                blockIds: [duplicatedBlockId]
-              }
-            );
-          }
         },
         'ly.img.styleTransfer': {
           mapInput: (input: any) => ({
             prompt: input.style || input.item?.prompt,
-            image_url: input.uri,
-            blockId: input.blockId
+            image_url: input.uri
           }),
           items: [
             {
@@ -132,8 +116,7 @@ function getProvider(
         'ly.img.artistTransfer': {
           mapInput: (input: any) => ({
             prompt: input.artist || input.item?.prompt,
-            image_url: input.uri,
-            blockId: input.blockId
+            image_url: input.uri
           }),
           items: [
             {

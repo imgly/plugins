@@ -20,6 +20,11 @@
 -   [all] **Multiple Providers Support**: All plugin packages now support arrays of providers with automatic selection UI
 -   [image-generation] **Recraft20b Provider**: Added new Recraft20b (v2) provider via fal.ai with support for icon styles including `broken_line`, `colored_outline`, `colored_shapes`, and more
 -   [sticker-generation] **New Sticker Generation Plugin**: Added `@imgly/plugin-ai-sticker-generation-web` plugin for AI-powered sticker generation with support for text-to-sticker generation using Recraft20b provider with icon styles
+-   [image-generation] **Flux Pro Kontext Provider**: Added Flux Pro Kontext provider for image editing with style transfer and artist style options
+-   [image-generation] **Flux Pro Kontext Max Provider**: Added Flux Pro Kontext Max provider for enhanced image editing capabilities
+-   [video-generation] **Veo3 Provider**: Added Veo3 text-to-video provider via fal.ai with support for 16:9, 9:16, and 1:1 aspect ratios and 8-second duration
+-   [video-generation] **Kling Video V2.1 Master Providers**: Added Kling Video V2.1 Master providers for both text-to-video and image-to-video generation with configurable duration (5s/10s) and aspect ratios
+-   [text-generation] **Model Selection**: OpenAI and Anthropic providers now support configurable model selection through the `model` parameter
 
 ### Deprecated Features
 
