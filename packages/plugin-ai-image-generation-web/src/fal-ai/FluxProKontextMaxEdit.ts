@@ -64,7 +64,7 @@ function getProvider(
           mapInput: (input: any) => ({ ...input, image_url: input.uri })
         },
         'ly.img.createVariant': {
-          mapInput: (input: any) => ({ ...input, image_url: input.uri }),
+          mapInput: (input: any) => ({ ...input, image_url: input.uri })
         },
         'ly.img.styleTransfer': {
           mapInput: (input: any) => ({

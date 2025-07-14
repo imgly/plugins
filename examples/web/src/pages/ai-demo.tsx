@@ -64,10 +64,10 @@ function App() {
 
             instance.ui.setCanvasMenuOrder([
               {
-                id: 'ly.img.ai.text.canvasMenu',
+                id: 'ly.img.ai.text.canvasMenu'
               },
               {
-                id: `ly.img.ai.image.canvasMenu`,
+                id: `ly.img.ai.image.canvasMenu`
               },
               ...instance.ui.getCanvasMenuOrder()
             ]);
