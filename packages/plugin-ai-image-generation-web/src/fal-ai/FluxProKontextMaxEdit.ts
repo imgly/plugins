@@ -82,7 +82,7 @@ function getProvider(
         },
         'ly.img.styleTransfer': {
           mapInput: (input: any) => ({
-            prompt: input.item.prompt,
+            prompt: input.style || input.item?.prompt,
             image_url: input.uri,
             blockId: input.blockId
           }),
@@ -111,7 +111,7 @@ function getProvider(
         },
         'ly.img.artistTransfer': {
           mapInput: (input: any) => ({
-            prompt: input.item.prompt,
+            prompt: input.artist || input.item?.prompt,
             image_url: input.uri,
             blockId: input.blockId
           }),
