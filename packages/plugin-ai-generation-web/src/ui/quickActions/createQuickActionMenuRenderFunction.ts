@@ -330,7 +330,8 @@ function createQuickActionMenuRenderFunction<
                     debug: context.debug,
                     dryRun: context.dryRun
                   }),
-                  close
+                  close,
+                  providerId: currentProviderState.value.id
                 });
               }
               return;
@@ -379,7 +380,8 @@ function createQuickActionMenuRenderFunction<
                         debug: context.debug,
                         dryRun: context.dryRun
                       }),
-                      close
+                      close,
+                      providerId: currentProviderState.value.id
                     });
                   }
                 );

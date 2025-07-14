@@ -50,6 +50,8 @@ export interface QuickActionRenderContext<Q = Record<string, any>> {
     input: Q,
     options?: { blockIds?: number[] }
   ) => Promise<Result<Output>>;
+  /** The ID of the provider used for this quick action */
+  providerId: string;
 }
 
 /**
