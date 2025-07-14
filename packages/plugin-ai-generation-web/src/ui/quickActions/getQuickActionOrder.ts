@@ -9,8 +9,9 @@ function getQuickActionOrder<K extends OutputKind>(context: {
   kind: K;
   cesdk: CreativeEditorSDK;
   payload?: ComponentPayload;
+  defaultOrder?: string[];
 }): string[] {
-  const { kind, cesdk, payload } = context;
+  const { kind, cesdk, payload, defaultOrder } = context;
   const canvasMenuComponentId = getQuickActionCanvasMenuComponentId(kind);
 
   if (payload == null || !Array.isArray(payload.children)) {
@@ -25,7 +26,8 @@ function getQuickActionOrder<K extends OutputKind>(context: {
     if (component != null && Array.isArray(component.children)) {
       return component.children;
     } else {
-      return [];
+      // Use provided default order or empty array for backwards compatibility
+      return defaultOrder ?? [];
     }
   }
   return payload.children.filter(
