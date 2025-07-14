@@ -47,7 +47,7 @@ const CreateVideo: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
     enable: enableQuickActionForImageFill(),
     scopes: [],
 
-    render: ({ builder, engine, close }) => {
+    render: ({ builder, engine, close, providerId }) => {
       builder.Button(`${ID}.button`, {
         label: `${I18N_PREFIX}.label`,
         icon: '@imgly/plugin-ai-generation/video',
@@ -66,8 +66,8 @@ const CreateVideo: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
               'fromImage'
             );
             cesdk.ui.experimental.setGlobalStateValue(
-              // TODO: This needs to be generic
-              'fal-ai/minimax/video-01-live/image-to-video.image_url',
+              // TODO: This needs to be generic and work with other property names
+              `${providerId}.image_url`,
               uri
             );
             close();
