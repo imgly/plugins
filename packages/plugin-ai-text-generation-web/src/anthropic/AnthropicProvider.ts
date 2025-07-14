@@ -28,7 +28,7 @@ export function AnthropicProvider(
 ): (context: {
   cesdk: CreativeEditorSDK;
 }) => Promise<TextProvider<AnthropicInput>> {
-  return (context: { cesdk: CreativeEditorSDK }) => {
+  return (_context: { cesdk: CreativeEditorSDK }) => {
     let anthropic: Anthropic | null = null;
     const provider: TextProvider<AnthropicInput> = {
       kind: 'text',

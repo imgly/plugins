@@ -28,7 +28,7 @@ export function OpenAIProvider(
 ): (context: {
   cesdk: CreativeEditorSDK;
 }) => Promise<TextProvider<OpenAIInput>> {
-  return (context: { cesdk: CreativeEditorSDK }) => {
+  return (_context: { cesdk: CreativeEditorSDK }) => {
     let openai: OpenAI | null = null;
     const provider: TextProvider<OpenAIInput> = {
       kind: 'text',
