@@ -56,6 +56,7 @@ function createQuickActionMenuRenderFunction<
 
   debug?: boolean;
   dryRun?: boolean;
+  defaultOrder?: string[];
 }): Promise<BuilderRenderFunction<any>> {
   const prefix = `ly.img.ai.${context.kind}}`;
 
@@ -80,7 +81,8 @@ function createQuickActionMenuRenderFunction<
       getQuickActionOrder({
         kind: context.kind,
         cesdk: context.cesdk,
-        payload
+        payload,
+        defaultOrder: context.defaultOrder
       }) ?? [];
 
     if (order.length === 0) return;

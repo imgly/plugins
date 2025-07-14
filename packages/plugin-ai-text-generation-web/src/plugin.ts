@@ -17,9 +17,9 @@ import Longer from './quickActions/Longer';
 import ChangeTone from './quickActions/ChangeTone';
 import Translate from './quickActions/Translate';
 import ChangeTextTo from './quickActions/ChangeTextTo';
-import { PLUGIN_ID } from './constants';
+import { PLUGIN_ID, DEFAULT_TEXT_QUICK_ACTION_ORDER } from './constants';
 
-export { PLUGIN_ID } from './constants';
+export { PLUGIN_ID, DEFAULT_TEXT_QUICK_ACTION_ORDER } from './constants';
 
 export function TextGeneration<I, O extends Output>(
   config: PluginConfiguration<I, O>
@@ -73,7 +73,8 @@ export function TextGeneration<I, O extends Output>(
         cesdk,
         engine: cesdk.engine,
         debug: config.debug,
-        dryRun: config.dryRun
+        dryRun: config.dryRun,
+        defaultOrder: DEFAULT_TEXT_QUICK_ACTION_ORDER
       });
 
       if (initializedQuickActions.renderFunction != null) {

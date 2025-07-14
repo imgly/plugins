@@ -21,6 +21,7 @@ async function initializeQuickActionComponents<
   engine: CreativeEngine;
   debug?: boolean;
   dryRun?: boolean;
+  defaultOrder?: string[];
 }) {
   const menuRenderFunction = await createQuickActionMenuRenderFunction({
     kind: context.kind,
@@ -29,7 +30,8 @@ async function initializeQuickActionComponents<
     cesdk: context.cesdk,
     engine: context.engine,
     debug: context.debug,
-    dryRun: context.dryRun
+    dryRun: context.dryRun,
+    defaultOrder: context.defaultOrder
   });
   const confirmationRenderFunction = await createConfirmationRenderFunction({
     kind: context.kind,

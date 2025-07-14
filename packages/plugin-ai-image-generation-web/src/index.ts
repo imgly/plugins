@@ -1,5 +1,5 @@
 import { Output } from '@imgly/plugin-ai-generation-web';
-import plugin, { PLUGIN_ID } from './plugin';
+import plugin, { PLUGIN_ID, DEFAULT_IMAGE_QUICK_ACTION_ORDER } from './plugin';
 import { type PluginConfiguration } from './types';
 
 const Plugin = <I, O extends Output>(
@@ -11,3 +11,4 @@ const Plugin = <I, O extends Output>(
 });
 
 export default Plugin;
+export { DEFAULT_IMAGE_QUICK_ACTION_ORDER };

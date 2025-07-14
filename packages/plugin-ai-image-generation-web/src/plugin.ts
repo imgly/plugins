@@ -11,7 +11,7 @@ import {
 import { PluginConfiguration } from './types';
 import iconSprite, { PLUGIN_ICON_SET_ID } from './iconSprite';
 import { toArray } from '@imgly/plugin-utils';
-import { PLUGIN_ID } from './constants';
+import { PLUGIN_ID, DEFAULT_IMAGE_QUICK_ACTION_ORDER } from './constants';
 import EditImage from './quickActions/EditImage';
 import SwapBackground from './quickActions/SwapBackground';
 import StyleTransfer from './quickActions/StyleTransfer';
@@ -21,7 +21,7 @@ import CombineImages from './quickActions/CombineImages';
 import RemixPage from './quickActions/RemixPage';
 import RemixPageWithPrompt from './quickActions/RemixPageWithPrompt';
 
-export { PLUGIN_ID } from './constants';
+export { PLUGIN_ID, DEFAULT_IMAGE_QUICK_ACTION_ORDER } from './constants';
 
 const IMAGE_GENERATION_PANEL_ID = 'ly.img.ai.image-generation';
 
@@ -102,7 +102,8 @@ export function ImageGeneration<I, O extends Output>(
         cesdk,
         engine: cesdk.engine,
         debug: config.debug,
-        dryRun: config.dryRun
+        dryRun: config.dryRun,
+        defaultOrder: DEFAULT_IMAGE_QUICK_ACTION_ORDER
       });
 
       if (initializedResult.history?.assetSourceId != null) {
