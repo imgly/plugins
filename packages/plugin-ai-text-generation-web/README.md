@@ -48,6 +48,7 @@ CreativeEditorSDK.create(domElement, {
         TextGeneration({
             provider: Anthropic.AnthropicProvider({
                 proxyUrl: 'http://your-proxy-server.com/api/proxy',
+                model: 'claude-3-7-sonnet-20250219', // Optional model selection (this is also the default)
                 headers: {
                     'x-custom-header': 'value',
                     'x-client-version': '1.0.0'
@@ -87,6 +88,7 @@ CreativeEditorSDK.create(domElement, {
             provider: [
                 Anthropic.AnthropicProvider({
                     proxyUrl: 'http://your-proxy-server.com/api/proxy',
+                    model: 'claude-3-7-sonnet-20250219', // Optional model selection (this is also the default)
                     headers: {
                         'x-custom-header': 'value',
                         'x-client-version': '1.0.0'
@@ -117,7 +119,7 @@ CreativeEditorSDK.create(domElement, {
 
 ### Providers
 
-The plugin currently includes the following provider:
+The plugin currently includes the following providers:
 
 #### Anthropic Claude
 
@@ -126,6 +128,9 @@ A versatile text generation model that handles various text transformations:
 ```typescript
 provider: Anthropic.AnthropicProvider({
     proxyUrl: 'http://your-proxy-server.com/api/proxy',
+    
+    // Optional model selection (this is also the default)
+    model: 'claude-3-7-sonnet-20250219',
     
     // Optional custom headers for API requests
     headers: {
@@ -139,6 +144,8 @@ provider: Anthropic.AnthropicProvider({
 });
 ```
 
+**Default Model**: If no model is specified, the provider uses `'claude-3-7-sonnet-20250219'` by default.
+
 Key features:
 
 -   High-quality text transformations
@@ -146,6 +153,43 @@ Key features:
 -   Supports various languages
 -   Natural, human-like outputs
 -   Custom headers support for API requests
+-   Configurable model selection (Claude 3.5 Sonnet, Claude 3.7 Sonnet, etc.)
+-   Default model: Claude 3.7 Sonnet (2025-02-19)
+
+#### OpenAI GPT
+
+A powerful text generation model that handles various text transformations:
+
+```typescript
+provider: OpenAIText.OpenAIProvider({
+    proxyUrl: 'http://your-proxy-server.com/api/proxy',
+    
+    // Optional model selection (this is also the default)
+    model: 'gpt-4o-mini',
+    
+    // Optional custom headers for API requests
+    headers: {
+        'x-custom-header': 'value',
+        'x-client-version': '1.0.0',
+        'x-request-source': 'cesdk-plugin'
+    },
+    
+    // Optional debug mode
+    debug: false
+});
+```
+
+**Default Model**: If no model is specified, the provider uses `'gpt-4o-mini'` by default.
+
+Key features:
+
+-   High-quality text transformations
+-   Multiple transformation types
+-   Supports various languages
+-   Natural, human-like outputs
+-   Custom headers support for API requests
+-   Configurable model selection (GPT-4o, GPT-4o-mini, GPT-3.5-turbo, etc.)
+-   Default model: GPT-4o-mini
 
 ### Configuration Options
 
@@ -164,6 +208,7 @@ The `middleware` option allows you to add pre-processing and post-processing cap
 ```typescript
 import TextGeneration from '@imgly/plugin-ai-text-generation-web';
 import Anthropic from '@imgly/plugin-ai-text-generation-web/anthropic';
+import OpenAIText from '@imgly/plugin-ai-text-generation-web/open-ai';
 import { loggingMiddleware, rateLimitMiddleware } from '@imgly/plugin-ai-generation-web';
 
 // Create middleware functions
@@ -232,7 +277,7 @@ Your proxy server should:
 
 1. Receive requests from the client
 2. Add the necessary authentication (API key) to the requests
-3. Forward requests to the Anthropic API
+3. Forward requests to the AI provider API (Anthropic, OpenAI, etc.)
 4. Return responses to the client
 
 The `headers` option allows you to include custom HTTP headers in all API requests. This is useful for:
@@ -241,7 +286,7 @@ The `headers` option allows you to include custom HTTP headers in all API reques
 - Passing through metadata required by your API
 - Adding correlation IDs for request tracing
 
-Never expose your Anthropic API key in client-side code.
+Never expose your API keys in client-side code.
 
 ## API Reference
 
@@ -272,6 +317,18 @@ interface PluginConfiguration {
 ```typescript
 Anthropic.AnthropicProvider(config: {
   proxyUrl: string;
+  model?: string;
+  headers?: Record<string, string>;
+  debug?: boolean;
+})
+```
+
+### OpenAI Provider Configuration
+
+```typescript
+OpenAIText.OpenAIProvider(config: {
+  proxyUrl: string;
+  model?: string;
   headers?: Record<string, string>;
   debug?: boolean;
 })

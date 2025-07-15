@@ -1,10 +1,10 @@
 import CreativeEditorSDK from '@cesdk/cesdk-js';
 import { type CommonProviderConfiguration } from '@imgly/plugin-ai-generation-web';
 import { TextProvider } from '../types';
-import Anthropic from '@anthropic-ai/sdk';
+import OpenAI from 'openai';
 import sendPrompt from './sendPrompt';
 
-type AnthropicInput = {
+type OpenAIInput = {
   prompt: string;
   temperature?: number;
   maxTokens?: number;
@@ -13,89 +13,87 @@ type AnthropicInput = {
   initialText?: string;
 };
 
-type AnthropicOutput = {
+type OpenAIOutput = {
   kind: 'text';
   text: string;
 };
 
-export interface AnthropicProviderConfig
-  extends CommonProviderConfiguration<AnthropicInput, AnthropicOutput> {
+export interface OpenAIProviderConfig
+  extends CommonProviderConfiguration<OpenAIInput, OpenAIOutput> {
   model?: string;
 }
 
-export function AnthropicProvider(
-  config: AnthropicProviderConfig
+export function OpenAIProvider(
+  config: OpenAIProviderConfig
 ): (context: {
   cesdk: CreativeEditorSDK;
-}) => Promise<TextProvider<AnthropicInput>> {
+}) => Promise<TextProvider<OpenAIInput>> {
   return () => {
-    let anthropic: Anthropic | null = null;
-    const provider: TextProvider<AnthropicInput> = {
+    let openai: OpenAI | null = null;
+    const provider: TextProvider<OpenAIInput> = {
       kind: 'text',
-      id: 'anthropic',
-      name: 'Anthropic',
+      id: 'openai',
+      name: 'OpenAI',
       initialize: async () => {
-        anthropic = new Anthropic({
+        openai = new OpenAI({
           dangerouslyAllowBrowser: true,
           baseURL: config.proxyUrl,
           // Will be injected by the proxy
-          apiKey: null,
-          authToken: null
+          apiKey: 'dummy-key'
         });
       },
       input: {
         quickActions: {
           supported: {
             'ly.img.improve': true,
-            'ly.img.fix': {}, // Test new empty object syntax
+            'ly.img.fix': true,
             'ly.img.shorter': true,
-            'ly.img.longer': {}, // Test new empty object syntax
+            'ly.img.longer': true,
             'ly.img.changeTone': true,
             'ly.img.translate': true,
-            'ly.img.changeTextTo': {} // Test new empty object syntax
+            'ly.img.changeTextTo': true
           }
         }
       },
       output: {
-        middleware: config.middlewares ?? config.middleware ?? [],
+        middleware: config.middlewares,
         generate: async (
-          { prompt, blockId },
-          { engine, abortSignal }
-        ): Promise<AsyncGenerator<AnthropicOutput, AnthropicOutput>> => {
-          if (anthropic == null)
-            throw new Error('Anthropic SDK is not initialized');
+          input: OpenAIInput,
+          { engine, abortSignal }: { engine: any; abortSignal?: AbortSignal }
+        ): Promise<AsyncGenerator<OpenAIOutput, OpenAIOutput>> => {
+          if (openai == null) throw new Error('OpenAI SDK is not initialized');
 
           if (
-            blockId != null &&
-            engine.block.getType(blockId) !== '//ly.img.ubq/text'
+            input.blockId != null &&
+            engine.block.getType(input.blockId) !== '//ly.img.ubq/text'
           ) {
             throw new Error(
-              'If a block is provided to this generation, it most be a text block'
+              'If a block is provided to this generation, it must be a text block'
             );
           }
 
           if (config.debug)
             // eslint-disable-next-line no-console
             console.log(
-              'Sending prompt to Anthropic:',
-              JSON.stringify(prompt, undefined, 2)
+              'Sending prompt to OpenAI:',
+              JSON.stringify(input.prompt, undefined, 2)
             );
 
           const stream = await sendPrompt(
-            anthropic,
+            openai,
             {
               proxyUrl: config.proxyUrl,
               headers: config.headers,
-              model: config.model ?? 'claude-3-7-sonnet-20250219' // Default
+              model: config.model ?? 'gpt-4o-mini' // Default
             },
-            prompt,
+            input.prompt,
             abortSignal
           );
 
-          // Create a new AsyncGenerator that yields AnthropicOutput objects
+          // Create a new AsyncGenerator that yields OpenAIOutput objects
           async function* outputGenerator(): AsyncGenerator<
-            AnthropicOutput,
-            AnthropicOutput
+            OpenAIOutput,
+            OpenAIOutput
           > {
             let inferredText: string = '';
             for await (const chunk of stream) {

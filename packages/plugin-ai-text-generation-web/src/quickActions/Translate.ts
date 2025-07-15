@@ -1,5 +1,5 @@
 import { QuickActionDefinition } from '@imgly/plugin-ai-generation-web';
-import translate, { LANGUAGES, LOCALES } from '../anthropic/prompts/translate';
+import translate, { LANGUAGES, LOCALES } from '../prompts/translate';
 import { GetQuickActionDefinition } from './types';
 
 /**

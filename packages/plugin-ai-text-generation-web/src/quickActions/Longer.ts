@@ -1,5 +1,5 @@
 import { QuickActionDefinition } from '@imgly/plugin-ai-generation-web';
-import longer from '../anthropic/prompts/longer';
+import longer from '../prompts/longer';
 import { GetQuickActionDefinition } from './types';
 
 /**

@@ -59,7 +59,8 @@
     "@imgly/plugin-ai-image-generation-web": "workspace:*",
     "@imgly/plugin-ai-video-generation-web": "workspace:*",
     "@imgly/plugin-ai-audio-generation-web": "workspace:*",
-    "@imgly/plugin-ai-text-generation-web": "workspace:*"
+    "@imgly/plugin-ai-text-generation-web": "workspace:*",
+    "@imgly/plugin-ai-sticker-generation-web": "workspace:*"
   },
   "dependencies": {},
   "dependenciesMeta": {
@@ -79,6 +80,9 @@
       "injected": true
     },
     "@imgly/plugin-ai-text-generation-web": {
+      "injected": true
+    },
+    "@imgly/plugin-ai-sticker-generation-web": {
       "injected": true
     }
   },
