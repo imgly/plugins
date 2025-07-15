@@ -68,50 +68,15 @@ function getProvider(
         },
         'ly.img.styleTransfer': {
           mapInput: (input: any) => ({
-            prompt: input.style || input.item?.prompt,
+            prompt: input.style,
             image_url: input.uri
-          }),
-          items: [
-            {
-              id: 'water',
-              label: 'Watercolor Painting',
-              prompt: 'Convert to watercolor painting.'
-            },
-            {
-              id: 'oil',
-              label: 'Oil Painting',
-              prompt: 'Render in oil painting style.'
-            },
-            {
-              id: 'charcoal',
-              label: 'Charcoal Sketch',
-              prompt: 'Transform into a charcoal sketch.'
-            },
-            {
-              id: 'pencil',
-              label: 'Pencil Drawing',
-              prompt: 'Apply pencil drawing effect.'
-            }
-          ]
+          })
         },
         'ly.img.artistTransfer': {
           mapInput: (input: any) => ({
-            prompt: input.artist || input.item?.prompt,
+            prompt: input.artist,
             image_url: input.uri
-          }),
-          items: [
-            {
-              id: 'van-gogh',
-              label: 'Van Gogh',
-              prompt: 'Render this image in the style of Vincent van Gogh.'
-            },
-            {
-              id: 'monet',
-              label: 'Monet',
-              prompt:
-                'Transform this image into the soft, impressionistic style of Claude Monet.'
-            }
-          ]
+          })
         }
       },
       getBlockInput: async (input) => {
