@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [0.2.0] - 2025-07-15
+
 ### Breaking Changes
 
 -   [all] **Provider Initialization**: `initProvider` is replaced with `initializeProviders` and `initializeProvider` with a different signature
