@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [0.2.1] - 2025-07-15
+
 -   [ai-apps] Fix issue where AI apps panel displayed empty content when no provider app was available
 -   [ai-apps] Maintain backwards compatibility by registering legacy AI apps ID, alongside new `ly.img.ai.apps` panel ID
 
