@@ -56,6 +56,12 @@ export function TextGeneration<I, O extends Output>(
         toArray(text2text).map((getProvider) => getProvider({ cesdk }))
       );
 
+      // Check if any providers are configured
+      const hasProviders = text2textProviders.length > 0;
+      if (!hasProviders) {
+        return; // Don't initialize providers if no providers are configured
+      }
+
       const initializedResult = await initializeProviders(
         'text',
         {
