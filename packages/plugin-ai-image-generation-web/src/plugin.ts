@@ -85,6 +85,14 @@ export function ImageGeneration<I, O extends Output>(
         toArray(image2image).map((getProvider) => getProvider({ cesdk }))
       );
 
+      // Check if any providers are configured
+      const hasProviders =
+        text2imageProviders.length > 0 || image2imageProviders.length > 0;
+      if (!hasProviders) {
+        disposeApp();
+        return; // Don't continue if no providers are configured
+      }
+
       const initializedResult = await initializeProviders(
         'image',
         {

@@ -60,6 +60,13 @@ export function StickerGeneration<I, O extends Output>(
         toArray(text2sticker).map((getProvider) => getProvider({ cesdk }))
       );
 
+      // Check if any providers are configured
+      const hasProviders = text2stickerProviders.length > 0;
+      if (!hasProviders) {
+        disposeApp();
+        return; // Don't continue if no providers are configured
+      }
+
       const initializedResult = await initializeProviders(
         'sticker',
         {
