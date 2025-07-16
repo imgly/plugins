@@ -127,9 +127,11 @@ async function createConfirmationRenderFunction<K extends OutputKind>(context: {
             onClick: () => {
               clearMetadata();
 
-              // Activating the old history happens in the next update lop.
-              // @ts-ignore
-              cesdk?.engine.editor._update();
+              const editor = context.cesdk.engine.editor as any;
+              if (typeof editor._update === 'function') {
+                // Activating the old history happens in the next update lop.
+                editor._update();
+              }
 
               onApply();
             }
