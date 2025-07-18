@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## Version v1.2.0
+
+- Updates dependency `@imgly/background-removal` to 1.7.0
+
 ## Version v0.3.0
 
 - Adds background removal provider configuration
