@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### New Features
+
+-   [all] **Automatic History Asset Library Entries**: Composite history asset sources now automatically have corresponding asset library entries created with the same IDs (e.g., `ly.img.ai.image-generation.history`)
+
 ## [0.2.2] - 2025-07-16
 
 -   [ai-apps] Fix issue with undefined `cesdk` instance

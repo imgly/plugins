@@ -907,6 +907,41 @@ export { loggingMiddleware, rateLimitMiddleware, uploadMiddleware } from './midd
 export { getPanelId, enableQuickActionForImageFill } from './utils/';
 ```
 
+### Initialization Functions
+
+#### initializeProviders
+
+The `initializeProviders` function is used to initialize multiple providers at once. It creates a composite history asset source and library entry for all providers of the same kind.
+
+```typescript
+const result = await initializeProviders(
+    providers,
+    { engine, cesdk },
+    config
+);
+
+// Return value structure:
+{
+    panel: {
+        builderRenderFunction: Function // UI builder function for provider selection
+    },
+    history: {
+        assetSourceId: string,         // ID of the composite history asset source
+        assetLibraryEntryId: string    // ID of the automatically created asset library entry
+    },
+    providerInitializationResults: Array<{
+        provider: Provider,
+        result: ProviderInitializationResult
+    }>
+}
+```
+
+**Key Points:**
+- Creates a composite history asset source with ID format: `ly.img.ai.{kind}-generation.history`
+- Automatically creates an asset library entry with the same ID as the asset source
+- The library entry is configured with appropriate settings (sortBy: insertedAt descending, canRemove: true, etc.)
+- Returns both the asset source ID and library entry ID for reference
+
 ### Common Types
 
 ```typescript
