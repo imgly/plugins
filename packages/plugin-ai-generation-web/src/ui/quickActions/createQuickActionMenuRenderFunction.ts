@@ -312,8 +312,22 @@ function createQuickActionMenuRenderFunction<
             return;
           }
 
-          // TODO: Create a reverse table of all providers that support `expandedQuickAction`
-          const providerValuesForExpandedQuickAction: SelectValue[] = [];
+          // Use only providers that support the current expanded quick action
+          const providerValuesForExpandedQuickAction: SelectValue[] =
+            supportedProviderQuickActions
+              .filter(({ quickActions }) =>
+                quickActions.some(
+                  (qa) =>
+                    qa !== 'ly.img.separator' &&
+                    qa.definition.id === expandedQuickAction.definition.id
+                )
+              )
+              .map(({ providerInitializationResult }) => ({
+                id: providerInitializationResult.provider.id,
+                label:
+                  providerInitializationResult.provider.name ??
+                  providerInitializationResult.provider.id
+              }));
 
           if (providerValuesForExpandedQuickAction.length > 1) {
             builder.Section(`${prefix}.popover.expanded.header`, {
