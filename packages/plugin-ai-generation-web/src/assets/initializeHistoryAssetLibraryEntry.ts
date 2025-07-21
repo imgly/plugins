@@ -14,7 +14,7 @@ function initializeHistoryAssetLibraryEntry<
 ): string | undefined {
   if (historyAssetSourceId == null || !historyAssetSourceId) return;
 
-  const historyAssetLibraryEntryId = `${context.provider.id}.history.entry`;
+  const historyAssetLibraryEntryId = `${context.provider.id}.history`;
 
   context.options.cesdk.ui.addAssetLibraryEntry({
     id: historyAssetLibraryEntryId,

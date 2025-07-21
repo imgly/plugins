@@ -218,14 +218,22 @@ cesdk.ui.setDockOrder(currentOrder);
 
 ## Asset History Integration
 
-The plugin automatically integrates generated assets into the appropriate asset libraries using the following history source IDs:
+The plugin automatically integrates generated assets into the appropriate asset libraries. For each generation type, both a history asset source and a corresponding asset library entry are automatically created with the same ID:
 
 - **Image Generation History**: `ly.img.ai.image-generation.history`
 - **Video Generation History**: `ly.img.ai.video-generation.history`
 - **Audio Generation History**: `ly.img.ai.audio-generation.history`
 - **Sticker Generation History**: `ly.img.ai.sticker-generation.history`
 
-To add these history sources to existing asset library entries, use the following approach:
+These asset library entries are automatically configured with:
+- Sorted by insertion date (newest first)
+- Square grid item height
+- Cover background type
+- Removable items
+
+### Integrating with Default Asset Libraries
+
+To add these history sources to CE.SDK's default asset library entries, use the following approach:
 
 ```typescript
 // Add AI image history to the default image asset library
