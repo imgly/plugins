@@ -13,5 +13,7 @@ export const DEFAULT_TEXT_QUICK_ACTION_ORDER = [
   'ly.img.changeTone',
   'ly.img.translate',
   'ly.img.separator',
-  'ly.img.changeTextTo'
+  'ly.img.changeTextTo',
+  'ly.img.separator',
+  'ly.img.editTextStyle'
 ];

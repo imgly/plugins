@@ -17,6 +17,7 @@ import Longer from './quickActions/Longer';
 import ChangeTone from './quickActions/ChangeTone';
 import Translate from './quickActions/Translate';
 import ChangeTextTo from './quickActions/ChangeTextTo';
+import EditTextStyle from './quickActions/EditTextStyle';
 import { PLUGIN_ID, DEFAULT_TEXT_QUICK_ACTION_ORDER } from './constants';
 
 export { PLUGIN_ID, DEFAULT_TEXT_QUICK_ACTION_ORDER } from './constants';
@@ -49,11 +50,12 @@ export function TextGeneration<I, O extends Output>(
       registry.register(ChangeTone({ cesdk }));
       registry.register(Translate({ cesdk }));
       registry.register(ChangeTextTo({ cesdk }));
+      registry.register(EditTextStyle({ cesdk }));
 
       const text2text = config.providers?.text2text ?? config.provider;
 
       const text2textProviders = await Promise.all(
-        toArray(text2text).map((getProvider) => getProvider({ cesdk }))
+        toArray(text2text).map((getProvider: any) => getProvider({ cesdk }))
       );
 
       const initializedResult = await initializeProviders(

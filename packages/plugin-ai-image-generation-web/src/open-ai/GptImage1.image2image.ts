@@ -137,6 +137,12 @@ function getProvider(
               prompt: input.prompt,
               image_url: input.uri
             })
+          },
+          'ly.img.editTextStyle': {
+            mapInput: (input) => ({
+              prompt: input.prompt,
+              image_url: input.uri
+            })
           }
         }
       }
