@@ -293,102 +293,146 @@ function createQuickActionMenuRenderFunction<
       isLoading: isGeneratingState.value,
       trailingIcon: null,
       children: ({ close }) => {
-        builder.Section(`${prefix}.popover.section`, {
-          children: () => {
-            if (toggleExpandedState.value !== undefined) {
-              const expandedQuickAction =
-                currentSupportedQuickActions?.quickActions.find(
-                  (quickAction) =>
-                    quickAction !== 'ly.img.separator' &&
-                    quickAction.definition.id === toggleExpandedState.value
-                ) as SupportedQuickAction<K, I, O> | undefined;
+        if (toggleExpandedState.value !== undefined) {
+          // ==========================================
+          // === RENDER EXPANDED QUICK ACTION STATE ===
+          // ==========================================
 
-              if (
-                expandedQuickAction != null &&
-                expandedQuickAction.definition.render != null
-              ) {
-                return expandedQuickAction.definition.render({
-                  ...builderContext,
-                  toggleExpand: () => {
-                    toggleExpandedState.setValue(undefined);
-                  },
-                  isExpanded: true,
-                  generate: handleGenerateFromQuickAction({
-                    blockIds,
-                    providerInitializationResult:
-                      expandedQuickAction.providerInitializationResult ??
-                      currentSupportedQuickActions?.providerInitializationResult,
-                    quickAction: expandedQuickAction.definition,
-                    middlewares: [isGeneratingMiddleware],
+          const expandedQuickAction =
+            currentSupportedQuickActions?.quickActions.find(
+              (quickAction) =>
+                quickAction !== 'ly.img.separator' &&
+                quickAction.definition.id === toggleExpandedState.value
+            ) as SupportedQuickAction<K, I, O> | undefined;
 
-                    confirmation:
-                      expandedQuickAction.definition.defaults?.confirmation ??
-                      true,
+          if (
+            expandedQuickAction == null ||
+            expandedQuickAction.definition.render == null
+          ) {
+            return;
+          }
 
-                    close,
-                    cesdk: context.cesdk,
-                    debug: context.debug,
-                    dryRun: context.dryRun
-                  }),
-                  close,
-                  providerId: currentProviderState.value.id
-                });
-              }
-              return;
-            }
-            if (
-              toggleExpandedState.value == null &&
-              providerValues.length > 1
-            ) {
-              builder.Select(`${prefix}.providerSelect.select`, {
-                inputLabel: `${prefix}.quickActionMenu.providerSelect.label`,
-                values: providerValues,
-                ...currentProviderState
-              });
-              builder.Separator(`${prefix}.providerSelect.separator`);
-            }
-            experimental.builder.Menu(`${prefix}.menu`, {
+          // Use only providers that support the current expanded quick action
+          const providerValuesForExpandedQuickAction: SelectValue[] =
+            supportedProviderQuickActions
+              .filter(({ quickActions }) =>
+                quickActions.some(
+                  (qa) =>
+                    qa !== 'ly.img.separator' &&
+                    qa.definition.id === expandedQuickAction.definition.id
+                )
+              )
+              .map(({ providerInitializationResult }) => ({
+                id: providerInitializationResult.provider.id,
+                label:
+                  providerInitializationResult.provider.name ??
+                  providerInitializationResult.provider.id
+              }));
+
+          if (providerValuesForExpandedQuickAction.length > 1) {
+            builder.Section(`${prefix}.popover.expanded.header`, {
               children: () => {
-                currentSupportedQuickActions?.quickActions.forEach(
-                  (quickAction) => {
-                    if (quickAction === 'ly.img.separator') {
-                      builder.Separator(
-                        `${prefix}.separator.${Math.random().toString()}`
-                      );
-                      return;
-                    }
-                    if (quickAction.definition.render == null) return;
-                    quickAction.definition.render({
-                      ...builderContext,
-                      toggleExpand: () => {
-                        toggleExpandedState.setValue(quickAction.definition.id);
-                      },
-                      isExpanded: false,
-                      generate: handleGenerateFromQuickAction({
-                        blockIds,
-                        providerInitializationResult:
-                          quickAction.providerInitializationResult ??
-                          currentSupportedQuickActions?.providerInitializationResult,
-                        quickAction: quickAction.definition,
-                        middlewares: [isGeneratingMiddleware],
-
-                        confirmation:
-                          quickAction.definition.defaults?.confirmation ?? true,
-
-                        close,
-                        cesdk: context.cesdk,
-                        debug: context.debug,
-                        dryRun: context.dryRun
-                      }),
-                      close,
-                      providerId: currentProviderState.value.id
-                    });
-                  }
-                );
+                builder.Select(`${prefix}.expanded.providerSelect.select`, {
+                  inputLabel: `${prefix}.quickActionMenu.providerSelect.label`,
+                  values: providerValuesForExpandedQuickAction,
+                  ...currentProviderState
+                });
               }
             });
           }
-        });
+          builder.Section(`${prefix}.popover.expanded.section`, {
+            children: () => {
+              return expandedQuickAction.definition.render({
+                ...builderContext,
+                toggleExpand: () => {
+                  toggleExpandedState.setValue(undefined);
+                },
+                isExpanded: true,
+                generate: handleGenerateFromQuickAction({
+                  blockIds,
+                  providerInitializationResult:
+                    expandedQuickAction.providerInitializationResult ??
+                    currentSupportedQuickActions?.providerInitializationResult,
+                  quickAction: expandedQuickAction.definition,
+                  middlewares: [isGeneratingMiddleware],
+
+                  confirmation:
+                    expandedQuickAction.definition.defaults?.confirmation ??
+                    true,
+
+                  close,
+                  cesdk: context.cesdk,
+                  debug: context.debug,
+                  dryRun: context.dryRun
+                }),
+                close,
+                providerId: currentProviderState.value.id
+              });
+            }
+          });
+        } else {
+          // =========================================
+          // === RENDER REGULAR QUICK ACTIONS MENU ===
+          // =========================================
+          if (providerValues.length > 1) {
+            builder.Section(`${prefix}.popover.header`, {
+              children: () => {
+                builder.Select(`${prefix}.providerSelect.select`, {
+                  inputLabel: `${prefix}.quickActionMenu.providerSelect.label`,
+                  values: providerValues,
+                  ...currentProviderState
+                });
+              }
+            });
+          }
+          builder.Section(`${prefix}.popover.section`, {
+            children: () => {
+              experimental.builder.Menu(`${prefix}.menu`, {
+                children: () => {
+                  currentSupportedQuickActions?.quickActions.forEach(
+                    (quickAction) => {
+                      if (quickAction === 'ly.img.separator') {
+                        builder.Separator(
+                          `${prefix}.separator.${Math.random().toString()}`
+                        );
+                        return;
+                      }
+                      if (quickAction.definition.render == null) return;
+                      quickAction.definition.render({
+                        ...builderContext,
+                        toggleExpand: () => {
+                          toggleExpandedState.setValue(
+                            quickAction.definition.id
+                          );
+                        },
+                        isExpanded: false,
+                        generate: handleGenerateFromQuickAction({
+                          blockIds,
+                          providerInitializationResult:
+                            quickAction.providerInitializationResult ??
+                            currentSupportedQuickActions?.providerInitializationResult,
+                          quickAction: quickAction.definition,
+                          middlewares: [isGeneratingMiddleware],
+
+                          confirmation:
+                            quickAction.definition.defaults?.confirmation ??
+                            true,
+
+                          close,
+                          cesdk: context.cesdk,
+                          debug: context.debug,
+                          dryRun: context.dryRun
+                        }),
+                        close,
+                        providerId: currentProviderState.value.id
+                      });
+                    }
+                  );
+                }
+              });
+            }
+          });
+        }
       }
     });
   };
