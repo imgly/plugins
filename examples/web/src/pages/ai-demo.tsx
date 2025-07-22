@@ -178,6 +178,10 @@ function App() {
                     })
                   ],
                   text2image: [
+                    FalAiImage.IdeogramV3({
+                      middleware: [imageRateLimitMiddleware, errorMiddleware],
+                      proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
+                    }),
                     FalAiImage.RecraftV3({
                       middleware: [imageRateLimitMiddleware, errorMiddleware],
                       proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
