@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [0.2.3] - 2025-07-23
+
 -   [all] **Automatic History Asset Library Entries**: Composite history asset sources now automatically have corresponding asset library entries created with the same IDs (e.g., `ly.img.ai.image-generation.history`)
 -   [all] **Provider Selection in Expanded Quick Actions**: When a quick action is expanded, users can now switch between all providers that support that specific quick action, enhancing flexibility in provider selection
 -   [all] **Quick Action Can Disable Lock**: Some quick actions can now decide to not lock the block when operating on a block. Examples are `CreateVariant` and `CombineImages`.
