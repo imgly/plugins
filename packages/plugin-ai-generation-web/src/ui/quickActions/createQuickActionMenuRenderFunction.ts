@@ -360,6 +360,8 @@ function createQuickActionMenuRenderFunction<
                     expandedQuickAction.definition.defaults?.confirmation ??
                     true,
 
+                  lock: expandedQuickAction.definition.defaults?.lock ?? true,
+
                   close,
                   cesdk: context.cesdk,
                   debug: context.debug,
