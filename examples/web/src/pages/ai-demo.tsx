@@ -196,6 +196,10 @@ function App() {
                     })
                   ],
                   image2image: [
+                    FalAiImage.IdeogramV3Remix({
+                      middleware: [imageRateLimitMiddleware, errorMiddleware],
+                      proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
+                    }),
                     FalAiImage.GeminiFlashEdit({
                       middleware: [imageRateLimitMiddleware, errorMiddleware],
                       proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL

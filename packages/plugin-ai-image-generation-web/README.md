@@ -273,15 +273,37 @@ text2image: FalAiImage.IdeogramV3({
 ```
 
 Key features:
-- Four distinct style modes: AUTO, GENERAL, REALISTIC, and DESIGN
-- Multiple image size presets: square HD, square, portrait 4:3/16:9, landscape 4:3/16:9
-- Custom dimensions support (64x64 to 14142x14142 pixels)
-- Three rendering speed options: TURBO, BALANCED, and QUALITY
-- MagicPrompt integration for enhanced prompt expansion
-- Reproducible results with seed support
+- Four style modes (AUTO, GENERAL, REALISTIC, DESIGN)
+- Multiple image size presets and custom dimensions
+- Three rendering speeds (TURBO, BALANCED, QUALITY)
+- MagicPrompt integration for prompt enhancement
 - Custom headers support for API requests
 
-#### 6. FluxProKontextEdit (Image-to-Image)
+#### 6. IdeogramV3Remix (Image-to-Image)
+
+A powerful image remixing model from fal.ai that transforms existing images while preserving core elements:
+
+```typescript
+image2image: FalAiImage.IdeogramV3Remix({
+  proxyUrl: 'http://your-proxy-server.com/api/proxy',
+  headers: {
+    'x-custom-header': 'value',
+    'x-client-version': '1.0.0'
+  }
+})
+```
+
+Key features:
+- Transform existing images with text prompts while preserving core elements
+- Four style modes (AUTO, GENERAL, REALISTIC, DESIGN)
+- Strength control (0.01-1.0) for remix influence adjustment
+- Multiple image size presets and custom dimensions
+- Three rendering speeds (TURBO, BALANCED, QUALITY)
+- Available directly through canvas quick actions
+- Automatic image upload and processing
+- Custom headers support for API requests
+
+#### 7. FluxProKontextEdit (Image-to-Image)
 
 A versatile image editing model that applies stylistic changes and transformations:
 
@@ -296,7 +318,7 @@ Key features:
 - Built-in quick actions for style transfer, artist styles, background swapping, and variants
 - Keeps original image dimensions
 
-#### 7. FluxProKontextMaxEdit (Image-to-Image)
+#### 8. FluxProKontextMaxEdit (Image-to-Image)
 
 A high-quality variant of FluxProKontext offering more detailed results:
 
@@ -499,6 +521,16 @@ FalAiImage.IdeogramV3(config: {
 })
 ```
 
+#### IdeogramV3Remix
+
+```typescript
+FalAiImage.IdeogramV3Remix(config: {
+  proxyUrl: string;
+  headers?: Record<string, string>;
+  debug?: boolean;
+})
+```
+
 #### GeminiFlashEdit
 
 ```typescript
@@ -635,6 +667,7 @@ const myImageProvider = {
   - RecraftV3: `ly.img.ai.fal-ai/recraft-v3`
   - Recraft20b: `ly.img.ai.fal-ai/recraft/v2/text-to-image`
   - IdeogramV3: `ly.img.ai.fal-ai/ideogram/v3`
+  - IdeogramV3Remix: `ly.img.ai.fal-ai/ideogram/v3/remix`
   - GeminiFlashEdit: `ly.img.ai.fal-ai/gemini-flash-edit`
   - GptImage1.Text2Image: `ly.img.ai.open-ai/gpt-image-1/text2image`
   - GptImage1.Image2Image: `ly.img.ai.open-ai/gpt-image-1/image2image`
@@ -647,6 +680,7 @@ Generated images are automatically stored in asset sources with the following ID
 - RecraftV3: `fal-ai/recraft-v3.history`
 - Recraft20b: `fal-ai/recraft/v2/text-to-image.history`
 - IdeogramV3: `fal-ai/ideogram/v3.history`
+- IdeogramV3Remix: `fal-ai/ideogram/v3/remix.history`
 - GeminiFlashEdit: `fal-ai/gemini-flash-edit.history`
 - GptImage1.Text2Image: `open-ai/gpt-image-1/text2image.history`
 - GptImage1.Image2Image: `open-ai/gpt-image-1/image2image.history`

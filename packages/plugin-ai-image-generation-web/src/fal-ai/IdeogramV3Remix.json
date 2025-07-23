@@ -1,22 +1,30 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "Ideogram V3 API",
+    "title": "Ideogram V3 Remix API",
     "version": "1.0.0",
-    "description": "Ideogram V3 text-to-image generation API"
+    "description": "Ideogram V3 Remix image-to-image generation API"
   },
   "components": {
     "schemas": {
-      "IdeogramV3Input": {
-        "title": "IdeogramV3Input",
+      "IdeogramV3RemixInput": {
+        "title": "IdeogramV3RemixInput",
         "type": "object",
         "properties": {
           "prompt": {
             "title": "Prompt",
             "type": "string",
-            "description": "Text description for image generation",
+            "description": "Text description for image remix",
             "x-imgly-builder": {
               "component": "TextArea"
+            }
+          },
+          "image_url": {
+            "title": "Input Image",
+            "type": "string",
+            "description": "URL of image to remix",
+            "x-imgly-builder": {
+              "component": "ImageUrl"
             }
           },
           "style": {
@@ -72,7 +80,7 @@
             "title": "Rendering Speed",
             "type": "string",
             "enum": ["TURBO", "BALANCED", "QUALITY"],
-            "default": "QUALITY",
+            "default": "BALANCED",
             "description": "Speed vs quality tradeoff for generation",
             "x-imgly-enum-labels": {
               "TURBO": "Turbo",
@@ -80,36 +88,32 @@
               "QUALITY": "Quality"
             }
           },
-          "expand_prompt": {
-            "title": "Expand Prompt",
-            "type": "boolean",
-            "default": true,
-            "description": "Use MagicPrompt to enhance the prompt"
-          },
-          "seed": {
-            "title": "Seed",
-            "type": "integer",
-            "description": "Random seed for reproducible results",
-            "minimum": 0,
-            "maximum": 2147483647
+          "strength": {
+            "title": "Strength",
+            "type": "number",
+            "minimum": 0.01,
+            "maximum": 1.0,
+            "default": 0.8,
+            "description": "Controls how much the input image influences the remix",
+            "x-imgly-builder": {
+              "component": "Slider",
+              "min": 0.01,
+              "max": 1.0,
+              "step": 0.01
+            }
           }
         },
-        "x-fal-order-properties": ["prompt", "style", "image_size", "rendering_speed"],
-        "required": ["prompt"]
+        "x-fal-order-properties": ["prompt", "image_url", "style", "image_size", "rendering_speed", "strength"],
+        "required": ["prompt", "image_url"]
       },
-      "IdeogramV3Output": {
-        "title": "IdeogramV3Output",
+      "IdeogramV3RemixOutput": {
+        "title": "IdeogramV3RemixOutput",
         "type": "object", 
         "properties": {
           "images": {
             "title": "Images",
             "type": "array",
             "items": { "$ref": "#/components/schemas/File" }
-          },
-          "seed": {
-            "title": "Seed",
-            "type": "integer",
-            "description": "The seed used for generation"
           }
         },
         "required": ["images"]

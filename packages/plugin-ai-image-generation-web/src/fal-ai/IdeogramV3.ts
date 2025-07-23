@@ -13,8 +13,6 @@ type IdeogramV3Input = {
   style?: 'AUTO' | 'GENERAL' | 'REALISTIC' | 'DESIGN';
   image_size?: string | { width: number; height: number };
   rendering_speed?: 'TURBO' | 'BALANCED' | 'QUALITY';
-  expand_prompt?: boolean;
-  seed?: number;
 };
 
 type IdeogramV3Output = {
