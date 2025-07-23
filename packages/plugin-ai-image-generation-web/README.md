@@ -273,11 +273,10 @@ text2image: FalAiImage.IdeogramV3({
 ```
 
 Key features:
-- Four style modes (AUTO, GENERAL, REALISTIC, DESIGN)
-- Multiple image size presets and custom dimensions
-- Three rendering speeds (TURBO, BALANCED, QUALITY)
-- MagicPrompt integration for prompt enhancement
-- Custom headers support for API requests
+- Four distinct style modes: AUTO, GENERAL, REALISTIC, and DESIGN
+- Multiple image size presets: square HD, square, portrait 4:3/16:9, landscape 4:3/16:9
+- Custom dimensions support (64x64 to 14142x14142 pixels)
+- Three rendering speed options: TURBO, BALANCED, and QUALITY
 
 #### 6. IdeogramV3Remix (Image-to-Image)
 
@@ -294,14 +293,11 @@ image2image: FalAiImage.IdeogramV3Remix({
 ```
 
 Key features:
-- Transform existing images with text prompts while preserving core elements
-- Four style modes (AUTO, GENERAL, REALISTIC, DESIGN)
-- Strength control (0.01-1.0) for remix influence adjustment
-- Multiple image size presets and custom dimensions
-- Three rendering speeds (TURBO, BALANCED, QUALITY)
-- Available directly through canvas quick actions
-- Automatic image upload and processing
-- Custom headers support for API requests
+- **Remix existing images** with text prompts while maintaining core characteristics
+- Four distinct style modes: AUTO, GENERAL, REALISTIC, and DESIGN
+- Multiple image size presets: square HD, square, portrait 4:3/16:9, landscape 4:3/16:9
+- Custom dimensions support (64x64 to 14142x14142 pixels)
+- Three rendering speed options: TURBO, BALANCED, and QUALITY
 
 #### 7. FluxProKontextEdit (Image-to-Image)
 
