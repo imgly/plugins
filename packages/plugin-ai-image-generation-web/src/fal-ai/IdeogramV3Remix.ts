@@ -6,14 +6,14 @@ import IdeogramV3RemixSchema from './IdeogramV3Remix.json';
 import CreativeEditorSDK from '@cesdk/cesdk-js';
 import { getImageDimensions } from './IdeogramV3Remix.constants';
 import createImageProvider from './createImageProvider';
-import { isCustomImageSize, uploadImageInputToFalIfNeeded } from './utils';
+import { isCustomImageSize } from './utils';
 
 type IdeogramV3RemixUIInput = {
   prompt: string;
   image_url: string;
-  style?: 'auto' | 'general' | 'realistic' | 'design';
+  style?: 'AUTO' | 'GENERAL' | 'REALISTIC' | 'DESIGN';
   image_size?: string | { width: number; height: number };
-  rendering_speed?: 'turbo' | 'balanced' | 'quality';
+  rendering_speed?: 'TURBO' | 'BALANCED' | 'QUALITY';
   strength?: number;
 };
 
@@ -56,6 +56,28 @@ function getProvider(
       cesdk,
       middleware: config.middlewares ?? [],
       headers: config.headers,
+      supportedQuickActions: {
+        'ly.img.editImage': {
+          mapInput: (input: any) => ({
+            ...input,
+            image_url: input.uri,
+            style: input.style ?? 'AUTO',
+            rendering_speed: input.rendering_speed ?? 'BALANCED',
+            strength: input.strength ?? 0.8,
+            image_size: input.image_size ?? 'square_hd'
+          })
+        },
+        'ly.img.createVariant': {
+          mapInput: (input: any) => ({
+            ...input,
+            image_url: input.uri,
+            style: input.style ?? 'AUTO',
+            rendering_speed: input.rendering_speed ?? 'BALANCED',
+            strength: input.strength ?? 0.6,
+            image_size: input.image_size ?? 'square_hd'
+          })
+        }
+      },
       getImageSize: (input) => {
         if (typeof input.image_size === 'string') {
           return getImageDimensions(input.image_size);
@@ -66,9 +88,6 @@ function getProvider(
         return getImageDimensions('square_hd');
       },
       getBlockInput: async (input) => {
-        // Upload image to FAL for processing
-        await uploadImageInputToFalIfNeeded(input.image_url, cesdk);
-
         if (isCustomImageSize(input.image_size)) {
           return Promise.resolve({
             image: {
