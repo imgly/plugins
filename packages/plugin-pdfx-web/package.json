@@ -1,0 +1,81 @@
+{
+  "name": "@imgly/plugin-pdfx-web",
+  "version": "0.1.0",
+  "description": "PDFX plugin for CE.SDK editor - PDF conversion and export functionality",
+  "keywords": [
+    "CE.SDK",
+    "plugin",
+    "pdf",
+    "pdfx",
+    "export"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/imgly/plugins.git"
+  },
+  "license": "SEE LICENSE IN LICENSE.md",
+  "author": {
+    "name": "IMG.LY GmbH",
+    "email": "support@img.ly",
+    "url": "https://img.ly"
+  },
+  "bugs": {
+    "email": "support@img.ly"
+  },
+  "source": "./src/index.ts",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "homepage": "https://img.ly/products/creative-sdk",
+  "files": [
+    "LICENSE.md",
+    "README.md",
+    "CHANGELOG.md",
+    "dist/"
+  ],
+  "scripts": {
+    "start": "pnpm dev",
+    "clean": "pnpm exec rimraf dist",
+    "purge": "pnpm exec rimraf node_modules",
+    "build": "pnpm run clean && pnpm _syncPnpm && pnpm exec node scripts/build.mjs",
+    "dev": "pnpm --filter \"${npm_package_name}^...\" --parallel run dev:wait && pnpm exec concurrently 'node scripts/watch.mjs' 'pnpm _syncPnpm --watch' --names 'build,sync deps'",
+    "dev:wait": "pnpm exec wait-on ./dist/index.mjs ./dist/index.d.ts --window 250 --timeout 60000",
+    "dev:types": "tsc --emitDeclarationOnly --watch --preserveWatchOutput",
+    "publish:latest": "pnpm run build && pnpm publish --tag latest --access public",
+    "publish:next": "pnpm run build && pnpm publish --tag next --access public",
+    "check:all": "concurrently -n lint,type,pretty \"pnpm run check:lint\" \"pnpm run check:types\" \"pnpm run check:pretty\"",
+    "check:lint": "eslint --max-warnings 0 './src/**/*.{ts,tsx}'",
+    "check:pretty": "prettier --list-different './src/**/*.{ts,tsx}'",
+    "check:types": "tsc --noEmit",
+    "types:create": "tsc --emitDeclarationOnly",
+    "_syncPnpm": "pnpm sync-dependencies-meta-injected",
+    "test:generate": "node test/generate-sample.mjs",
+    "test:convert": "node test/convert-test.mjs",
+    "test": "pnpm run build && pnpm run test:generate && pnpm run test:convert"
+  },
+  "devDependencies": {
+    "@cesdk/cesdk-js": "~1.37.0",
+    "@cesdk/engine": "~1.37.0",
+    "@imgly/plugin-utils": "workspace:*",
+    "@types/node": "^20.11.0",
+    "chalk": "^5.4.1",
+    "concurrently": "^8.2.2",
+    "esbuild": "^0.19.12",
+    "eslint": "^8.57.1",
+    "pnpm-sync-dependencies-meta-injected": "^0.0.14",
+    "typescript": "^5.7.3"
+  },
+  "dependenciesMeta": {
+    "@imgly/plugin-utils": {
+      "injected": true
+    }
+  },
+  "peerDependencies": {
+    "@cesdk/cesdk-js": "^1.37.0"
+  }
+}
