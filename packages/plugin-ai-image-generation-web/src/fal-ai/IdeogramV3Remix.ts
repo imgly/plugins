@@ -76,6 +76,16 @@ function getProvider(
             strength: input.strength ?? 0.6,
             image_size: input.image_size ?? 'square_hd'
           })
+        },
+        'ly.img.swapBackground': {
+          mapInput: (input: any) => ({
+            ...input,
+            image_url: input.uri,
+            style: input.style ?? 'AUTO',
+            rendering_speed: input.rendering_speed ?? 'BALANCED',
+            strength: input.strength ?? 0.7,
+            image_size: input.image_size ?? 'square_hd'
+          })
         }
       },
       getImageSize: (input) => {

@@ -94,7 +94,7 @@
             "maximum": 2147483647
           }
         },
-        "x-fal-order-properties": ["prompt", "style", "image_size", "rendering_speed"],
+        "x-fal-order-properties": ["prompt", "style", "image_size"],
         "required": ["prompt"]
       },
       "IdeogramV3Output": {
