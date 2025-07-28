@@ -103,7 +103,7 @@
             }
           }
         },
-        "x-fal-order-properties": ["image_url", "prompt", "style", "image_size"],
+        "x-fal-order-properties": ["image_url", "prompt", "image_size"],
         "required": ["prompt", "image_url"]
       },
       "IdeogramV3RemixOutput": {
