@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDFX Plugin Browser Test</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .container {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .log {
+            background: #000;
+            color: #0f0;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Consolas', monospace;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+            margin: 10px 0;
+        }
+        button {
+            background: #007AFF;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 10px 10px 0;
+        }
+        button:hover {
+            background: #0051D0;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .status {
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .success { color: #28a745; }
+        .error { color: #dc3545; }
+        .info { color: #17a2b8; }
+    </style>
+</head>
+<body>
+    <h1>🎨 PDFX Plugin Browser Test</h1>
+    
+    <div class="container">
+        <h2>PDF/X-3 Conversion Test</h2>
+        <p>This test will:</p>
+        <ol>
+            <li>Load a sample RGB PDF</li>
+            <li>Create a mock ICC profile</li>
+            <li>Convert to PDF/X-3 using ghoulscript</li>
+            <li>Download the converted PDF</li>
+        </ol>
+        
+        <button id="runTest">🚀 Run PDF/X-3 Conversion Test</button>
+        <button id="clearLog">🧹 Clear Log</button>
+        
+        <div id="status" class="status info">Ready to test</div>
+    </div>
+    
+    <div class="container">
+        <h3>Console Output</h3>
+        <div id="log" class="log">Waiting for test to start...</div>
+    </div>
+
+    <script type="module">
+        // Import our plugin
+        import { convertToPDF } from '../dist/index.mjs';
+        
+        const logElement = document.getElementById('log');
+        const statusElement = document.getElementById('status');
+        const runButton = document.getElementById('runTest');
+        const clearButton = document.getElementById('clearLog');
+        
+        // Capture console output
+        const originalLog = console.log;
+        const originalError = console.error;
+        
+        function logToPage(message, type = 'log') {
+            const timestamp = new Date().toLocaleTimeString();
+            const prefix = type === 'error' ? '❌' : '📝';
+            logElement.textContent += `[${timestamp}] ${prefix} ${message}\n`;
+            logElement.scrollTop = logElement.scrollHeight;
+            
+            // Also log to real console
+            if (type === 'error') {
+                originalError(message);
+            } else {
+                originalLog(message);
+            }
+        }
+        
+        console.log = (...args) => logToPage(args.join(' '));
+        console.error = (...args) => logToPage(args.join(' '), 'error');
+        
+        clearButton.addEventListener('click', () => {
+            logElement.textContent = 'Log cleared.\n';
+        });
+        
+        runButton.addEventListener('click', async () => {
+            runButton.disabled = true;
+            statusElement.textContent = 'Running test...';
+            statusElement.className = 'status info';
+            
+            try {
+                logToPage('🚀 Starting PDF/X-3 browser test');
+                
+                // Step 1: Create a simple RGB PDF
+                logToPage('📄 Creating sample RGB PDF...');
+                const samplePDF = await createSamplePDF();
+                logToPage(`✅ Created sample PDF (${samplePDF.size} bytes)`);
+                
+                // Step 2: Create mock ICC profile
+                logToPage('🎨 Creating mock ICC profile...');
+                const mockICCProfile = new Blob(['mock-icc-profile-data-for-testing'], { 
+                    type: 'application/octet-stream' 
+                });
+                logToPage(`✅ Created ICC profile (${mockICCProfile.size} bytes)`);
+                
+                // Step 3: Convert using our plugin
+                logToPage('🔄 Converting to PDF/X-3 using ghoulscript...');
+                const startTime = Date.now();
+                
+                const convertedBlobs = await convertToPDF([samplePDF], {
+                    pdfx3: {
+                        iccProfile: mockICCProfile,
+                        renderingIntent: 'relative',
+                        preserveBlack: true,
+                        pdfxVersion: 'X-3',
+                        outputIntent: 'FOGRA39'
+                    }
+                });
+                
+                const endTime = Date.now();
+                logToPage(`✅ Conversion completed in ${endTime - startTime}ms`);
+                
+                // Step 4: Verify and download result
+                if (convertedBlobs && convertedBlobs.length > 0) {
+                    const convertedPDF = convertedBlobs[0];
+                    logToPage(`📊 Output size: ${(convertedPDF.size / 1024).toFixed(2)} KB`);
+                    
+                    // Create download link
+                    const url = URL.createObjectURL(convertedPDF);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'converted-pdfx3.pdf';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    
+                    logToPage('💾 Download started for converted PDF');
+                    
+                    setTimeout(() => URL.revokeObjectURL(url), 1000);
+                    
+                    statusElement.textContent = 'Test completed successfully!';
+                    statusElement.className = 'status success';
+                } else {
+                    throw new Error('No converted PDF returned');
+                }
+                
+            } catch (error) {
+                logToPage(`Failed: ${error.message}`, 'error');
+                statusElement.textContent = 'Test failed!';
+                statusElement.className = 'status error';
+            } finally {
+                runButton.disabled = false;
+            }
+        });
+        
+        // Create a simple RGB PDF for testing
+        async function createSamplePDF() {
+            // This creates a minimal PDF with RGB content
+            const pdfContent = `%PDF-1.4
+1 0 obj
+<<
+/Type /Catalog
+/Pages 2 0 R
+>>
+endobj
+
+2 0 obj
+<<
+/Type /Pages
+/Kids [3 0 R]
+/Count 1
+>>
+endobj
+
+3 0 obj
+<<
+/Type /Page
+/Parent 2 0 R
+/MediaBox [0 0 612 792]
+/Contents 4 0 R
+/Resources <<
+/ProcSet [/PDF /Text /ImageC]
+>>
+>>
+endobj
+
+4 0 obj
+<<
+/Length 200
+>>
+stream
+BT
+/F1 12 Tf
+100 700 Td
+(RGB Test Document) Tj
+ET
+1 0 0 rg
+100 600 100 50 re
+f
+0 1 0 rg
+250 600 100 50 re
+f
+0 0 1 rg
+400 600 100 50 re
+f
+endstream
+endobj
+
+xref
+0 5
+0000000000 65535 f 
+0000000015 00000 n 
+0000000074 00000 n 
+0000000131 00000 n 
+0000000273 00000 n 
+trailer
+<<
+/Size 5
+/Root 1 0 R
+>>
+startxref
+523
+%%EOF`;
+            
+            return new Blob([pdfContent], { type: 'application/pdf' });
+        }
+        
+        logToPage('🌐 Browser test page loaded and ready');
+    </script>
+</body>
+</html>

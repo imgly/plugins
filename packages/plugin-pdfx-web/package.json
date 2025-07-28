@@ -56,17 +56,20 @@
     "_syncPnpm": "pnpm sync-dependencies-meta-injected",
     "test:generate": "node test/generate-sample.mjs",
     "test:convert": "node test/convert-test.mjs",
-    "test": "pnpm run build && pnpm run test:generate && pnpm run test:convert"
+    "test:browser": "pnpm run build && playwright test test/browser-test.spec.ts",
+    "test": "pnpm run build && pnpm run test:generate && pnpm run test:browser"
   },
   "devDependencies": {
     "@cesdk/cesdk-js": "~1.37.0",
     "@cesdk/engine": "~1.37.0",
     "@imgly/plugin-utils": "workspace:*",
+    "@playwright/test": "^1.54.1",
     "@types/node": "^20.11.0",
     "chalk": "^5.4.1",
     "concurrently": "^8.2.2",
     "esbuild": "^0.19.12",
     "eslint": "^8.57.1",
+    "playwright": "^1.54.1",
     "pnpm-sync-dependencies-meta-injected": "^0.0.14",
     "typescript": "^5.7.3"
   },
@@ -77,5 +80,9 @@
   },
   "peerDependencies": {
     "@cesdk/cesdk-js": "^1.37.0"
+  },
+  "dependencies": {
+    "@privyid/ghoulscript": "0.1.0-alpha.4",
+    "ghostscript-wasm.git": "github:jerbob92/ghostscript-wasm"
   }
 }
