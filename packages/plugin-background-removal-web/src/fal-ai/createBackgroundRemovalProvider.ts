@@ -1,5 +1,4 @@
 import CreativeEditorSDK from '@cesdk/cesdk-js';
-import { Middleware } from '@imgly/plugin-ai-generation-web';
 import { fal } from '@fal-ai/client';
 import { BackgroundRemovalProvider } from '../processBackgroundRemoval';
 import { uploadImageInputToFalIfNeeded } from './utils';
@@ -9,11 +8,6 @@ type BackgroundRemovalProviderConfiguration = {
   debug?: boolean;
   headers?: Record<string, string>;
   timeout?: number;
-  middlewares?: Middleware<any, any>[];
-  /**
-   * @deprecated Use `middlewares` instead.
-   */
-  middleware?: Middleware<any, any>[];
 };
 
 export function createBackgroundRemovalProvider(
