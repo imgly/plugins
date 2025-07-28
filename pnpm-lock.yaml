@@ -158,7 +158,7 @@ importers:
         version: file:packages/plugin-ai-video-generation-web(@cesdk/cesdk-js@1.49.1(react@18.3.1))
       '@imgly/plugin-background-removal-web':
         specifier: workspace:*
-        version: file:packages/plugin-background-removal-web(@cesdk/cesdk-js@1.49.1(react@18.3.1))(onnxruntime-web@1.21.0)
+        version: file:packages/plugin-background-removal-web(@cesdk/cesdk-js@1.49.1(react@18.3.1))(@fal-ai/client@1.3.0)(onnxruntime-web@1.21.0)
       '@imgly/plugin-cutout-library-web':
         specifier: workspace:*
         version: file:packages/plugin-cutout-library-web(@cesdk/cesdk-js@1.49.1(react@18.3.1))
@@ -563,6 +563,9 @@ importers:
 
   packages/plugin-background-removal-web:
     dependencies:
+      '@fal-ai/client':
+        specifier: ^1.3.0
+        version: 1.3.0
       '@imgly/background-removal':
         specifier: 1.7.0
         version: 1.7.0(onnxruntime-web@1.21.0)
@@ -1361,6 +1364,7 @@ packages:
     resolution: {directory: packages/plugin-background-removal-web, type: directory}
     peerDependencies:
       '@cesdk/cesdk-js': ^1.32.0
+      '@fal-ai/client': ^1.3.0
       onnxruntime-web: 1.21.0
 
   '@imgly/plugin-cutout-library-web@file:packages/plugin-cutout-library-web':
@@ -5058,9 +5062,10 @@ snapshots:
     dependencies:
       '@cesdk/cesdk-js': 1.49.1(react@18.3.1)
 
-  '@imgly/plugin-background-removal-web@file:packages/plugin-background-removal-web(@cesdk/cesdk-js@1.49.1(react@18.3.1))(onnxruntime-web@1.21.0)':
+  '@imgly/plugin-background-removal-web@file:packages/plugin-background-removal-web(@cesdk/cesdk-js@1.49.1(react@18.3.1))(@fal-ai/client@1.3.0)(onnxruntime-web@1.21.0)':
     dependencies:
       '@cesdk/cesdk-js': 1.49.1(react@18.3.1)
+      '@fal-ai/client': 1.3.0
       '@imgly/background-removal': 1.7.0(onnxruntime-web@1.21.0)
       onnxruntime-web: 1.21.0
 

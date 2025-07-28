@@ -33,6 +33,7 @@ export default (
             cesdk,
             blockId,
             metadata,
+            // Use default client-side provider if no provider is specified
             pluginConfiguration.provider ?? {
               type: '@imgly/background-removal'
             }

@@ -17,8 +17,11 @@ npm install @imgly/plugin-background-removal-web onnxruntime-web@1.21.0
 
 ## Usage
 
-Adding the plugin to CE.SDK will automatically add a background removal
-canvas menu entry for every block with an image fill.
+This plugin supports both **client-side** and **server-side** background removal:
+
+### Client-Side Background Removal (Default)
+
+For client-side background removal using the `@imgly/background-removal-js` library (no external API required):
 
 ```typescript
 import CreativeEditorSDK from '@cesdk/cesdk-js';
@@ -38,6 +41,8 @@ const config = {
 const cesdk = await CreativeEditorSDK.create(container, config);
 await cesdk.addDefaultAssetSources();
 await cesdk.addDemoAssetSources({ sceneMode: 'Design' });
+
+// Client-side background removal (default behavior)
 await cesdk.addPlugin(BackgroundRemovalPlugin());
 
 // Add the canvas menu component for background removal
@@ -48,6 +53,39 @@ cesdk.ui.setCanvasMenuOrder([
 
 await cesdk.createDesignScene();
 ```
+
+### Server-Side Background Removal (Fal-AI)
+
+For server-side background removal using Fal-AI or other providers:
+
+```typescript
+import CreativeEditorSDK from '@cesdk/cesdk-js';
+import BackgroundRemovalPlugin, { FalAi } from '@imgly/plugin-background-removal-web';
+
+// ... CESDK setup ...
+
+// Server-side background removal with Fal-AI
+await cesdk.addPlugin(BackgroundRemovalPlugin({
+  provider: await FalAi.createProvider(
+    'fal-ai/birefnet/v2',
+    {
+      proxyUrl: 'your-proxy-url',
+      headers: {
+        'x-client-version': '1.0.0',
+        'User-Agent': 'CreativeEditor-AI-Demo/1.0'
+      },
+      timeout: 30000,
+      debug: true
+    }
+  )({ cesdk }),
+  ui: {
+    locations: ['canvasMenu', 'dock']
+  }
+}));
+```
+
+Adding the plugin to CE.SDK will automatically add a background removal
+canvas menu entry for every block with an image fill.
 
 ## Configuration
 
@@ -207,3 +245,8 @@ async function uploadBlob(
   return url;
 }
 ```
+
+## Performance Considerations
+
+- **Client-side**: Processes images locally, no network requests, but requires more client resources.
+- **Server-side**: Offloads processing to servers, requires network requests, but uses less client resources.

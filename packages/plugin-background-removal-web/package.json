@@ -32,6 +32,10 @@
     ".": {
       "import": "./dist/index.mjs",
       "types": "./dist/index.d.ts"
+    },
+    "./fal-ai": {
+      "import": "./dist/fal-ai/index.mjs",
+      "types": "./dist/fal-ai/index.d.ts"
     }
   },
   "homepage": "https://img.ly/products/creative-sdk",
@@ -77,11 +81,12 @@
       "injected": true
     }
   },
-  "peerDependencies": {
-    "@cesdk/cesdk-js": "^1.32.0",
-    "onnxruntime-web": "1.21.0"
-  },
   "dependencies": {
     "@imgly/background-removal": "1.7.0"
+  },
+  "peerDependencies": {
+    "@cesdk/cesdk-js": "^1.32.0",
+    "onnxruntime-web": "1.21.0",
+    "@fal-ai/client": "^1.3.0"
   }
 }
