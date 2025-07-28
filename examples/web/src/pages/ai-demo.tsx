@@ -8,6 +8,7 @@ import Elevenlabs from '@imgly/plugin-ai-audio-generation-web/elevenlabs';
 import Anthropic from '@imgly/plugin-ai-text-generation-web/anthropic';
 import OpenAIText from '@imgly/plugin-ai-text-generation-web/open-ai';
 import FalAiSticker from '@imgly/plugin-ai-sticker-generation-web/fal-ai';
+import BackgroundRemovalPlugin, { FalAi } from '@imgly/plugin-background-removal-web';
 
 import { useRef } from 'react';
 import { rateLimitMiddleware } from '@imgly/plugin-ai-generation-web';
@@ -153,6 +154,26 @@ function App() {
                 );
               });
             };
+
+
+
+            await instance.addPlugin(BackgroundRemovalPlugin({
+              provider: await FalAi.createProvider(
+                'fal-ai/birefnet/v2',
+                {
+                  proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL,
+                  headers: {
+                    'x-client-version': '1.0.0',
+                    'User-Agent': 'CreativeEditor-AI-Demo/1.0'
+                  },
+                  timeout: 30000,
+                  debug: true
+                }
+              )({ cesdk: instance }),
+              ui: {
+                locations: ['canvasMenu', 'dock']
+              }
+            }));
 
             instance.addPlugin(
               AiApps({
