@@ -73,6 +73,7 @@
     "eslint": "^8.57.1",
     "playwright": "^1.54.1",
     "pnpm-sync-dependencies-meta-injected": "^0.0.14",
+    "prettier": "^2.8.8",
     "rollup": "^4.46.1",
     "typescript": "^5.7.3",
     "vite": "^5.4.14"

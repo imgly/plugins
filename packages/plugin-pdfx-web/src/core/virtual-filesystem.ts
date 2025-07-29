@@ -32,8 +32,10 @@ export class VirtualFileSystem {
       this.createDirIfNotExists(`${this.workingDir}/output`);
       this.createDirIfNotExists(`${this.workingDir}/profiles`);
       this.createDirIfNotExists(`${this.workingDir}/temp`);
-      
-      this.logger.info('Virtual filesystem initialized', { workingDir: this.workingDir });
+
+      this.logger.info('Virtual filesystem initialized', {
+        workingDir: this.workingDir,
+      });
     } catch (error) {
       this.logger.error('Failed to initialize virtual filesystem', { error });
       throw new Error(`VFS initialization failed: ${error}`);
@@ -55,11 +57,11 @@ export class VirtualFileSystem {
     try {
       const data = await BlobUtils.toUint8Array(blob);
       this.fs.writeFile(path, data);
-      
+
       if (managed) {
         this.managedFiles.add(path);
       }
-      
+
       this.logger.debug('File written', { path, size: data.length });
     } catch (error) {
       this.logger.error('Failed to write blob', { path, error });
@@ -70,11 +72,11 @@ export class VirtualFileSystem {
   writeText(path: string, content: string, managed = true): void {
     try {
       this.fs.writeFile(path, content);
-      
+
       if (managed) {
         this.managedFiles.add(path);
       }
-      
+
       this.logger.debug('Text file written', { path, length: content.length });
     } catch (error) {
       this.logger.error('Failed to write text', { path, error });
@@ -96,7 +98,10 @@ export class VirtualFileSystem {
   readText(path: string): string {
     try {
       const data = this.fs.readFile(path, { encoding: 'utf8' });
-      this.logger.debug('Text file read', { path, length: (data as string).length });
+      this.logger.debug('Text file read', {
+        path,
+        length: (data as string).length,
+      });
       return data as string;
     } catch (error) {
       this.logger.error('Failed to read text file', { path, error });
@@ -131,7 +136,7 @@ export class VirtualFileSystem {
 
   cleanup(): void {
     let cleanedCount = 0;
-    
+
     for (const path of this.managedFiles) {
       try {
         this.fs.unlink(path);
@@ -140,7 +145,7 @@ export class VirtualFileSystem {
         this.logger.warn('Failed to cleanup file', { path, error });
       }
     }
-    
+
     this.managedFiles.clear();
     this.logger.info('Filesystem cleanup completed', { cleanedCount });
   }

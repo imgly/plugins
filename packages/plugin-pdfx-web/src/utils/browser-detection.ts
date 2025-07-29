@@ -1,8 +1,10 @@
 export class BrowserDetection {
   supportsWebAssembly(): boolean {
     try {
-      return typeof WebAssembly === 'object' && 
-             typeof WebAssembly.instantiate === 'function';
+      return (
+        typeof WebAssembly === 'object' &&
+        typeof WebAssembly.instantiate === 'function'
+      );
     } catch {
       return false;
     }
@@ -33,23 +35,23 @@ export class BrowserDetection {
 
     // Fallback estimates based on browser/platform
     const userAgent = navigator.userAgent.toLowerCase();
-    
+
     if (userAgent.includes('mobile')) {
       return 512 * 1024 * 1024; // 512MB for mobile
     }
-    
+
     if (userAgent.includes('chrome')) {
       return 4 * 1024 * 1024 * 1024; // 4GB for Chrome desktop
     }
-    
+
     if (userAgent.includes('firefox')) {
       return 2 * 1024 * 1024 * 1024; // 2GB for Firefox
     }
-    
+
     if (userAgent.includes('safari')) {
       return 1 * 1024 * 1024 * 1024; // 1GB for Safari
     }
-    
+
     return 1 * 1024 * 1024 * 1024; // 1GB default
   }
 
@@ -59,10 +61,10 @@ export class BrowserDetection {
     platform: string;
   } {
     const userAgent = navigator.userAgent;
-    
+
     let name = 'Unknown';
     let version = 'Unknown';
-    
+
     if (userAgent.includes('Chrome')) {
       name = 'Chrome';
       const match = userAgent.match(/Chrome\/(\d+\.\d+)/);
@@ -80,11 +82,11 @@ export class BrowserDetection {
       const match = userAgent.match(/Edge\/(\d+\.\d+)/);
       version = match ? match[1] : 'Unknown';
     }
-    
+
     return {
       name,
       version,
-      platform: navigator.platform
+      platform: navigator.platform,
     };
   }
 

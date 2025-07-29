@@ -3,11 +3,10 @@ import { readFileSync } from 'fs';
 import { join } from 'path';
 
 test.describe('PDF/X Conversion Browser Tests', () => {
-  
   test.beforeEach(async ({ page }) => {
     // Navigate to test page
     await page.goto(`file://${join(__dirname, 'index.html')}`);
-    
+
     // Wait for the page to load
     await page.waitForLoadState('networkidle');
   });
@@ -15,30 +14,33 @@ test.describe('PDF/X Conversion Browser Tests', () => {
   test('should load PDF/X plugin successfully', async ({ page }) => {
     // Check if the plugin loaded without errors
     const errors = [];
-    page.on('console', msg => {
+    page.on('console', (msg) => {
       if (msg.type() === 'error') {
         errors.push(msg.text());
       }
     });
-    
+
     // Wait a bit for any async loading
     await page.waitForTimeout(2000);
-    
+
     // Check that basic functions are available
     const isSupported = await page.evaluate(() => {
-      return typeof window.PDFXPlugin !== 'undefined' && 
-             typeof window.PDFXPlugin.convertToPDFX3 === 'function';
+      return (
+        typeof window.PDFXPlugin !== 'undefined' &&
+        typeof window.PDFXPlugin.convertToPDFX3 === 'function'
+      );
     });
-    
+
     expect(isSupported).toBe(true);
-    
+
     // Check for critical errors (some warnings are expected)
-    const criticalErrors = errors.filter(error => 
-      !error.includes('Warning') && 
-      !error.includes('Experimental') &&
-      !error.includes('deprecated')
+    const criticalErrors = errors.filter(
+      (error) =>
+        !error.includes('Warning') &&
+        !error.includes('Experimental') &&
+        !error.includes('deprecated')
     );
-    
+
     expect(criticalErrors.length).toBe(0);
   });
 
@@ -47,10 +49,10 @@ test.describe('PDF/X Conversion Browser Tests', () => {
       if (typeof window.PDFXPlugin === 'undefined') {
         throw new Error('PDF/X Plugin not loaded');
       }
-      
+
       return typeof window.PDFXPlugin.convertToPDFX3 === 'function';
     });
-    
+
     expect(hasFunction).toBe(true);
   });
 
@@ -58,7 +60,7 @@ test.describe('PDF/X Conversion Browser Tests', () => {
     // Test with invalid blob and no ICC profile
     const result = await page.evaluate(async () => {
       const invalidBlob = new Blob(['not a pdf'], { type: 'application/pdf' });
-      
+
       try {
         // Should fail because no ICC profile provided
         await window.PDFXPlugin.convertToPDFX3(invalidBlob, {});
@@ -67,7 +69,7 @@ test.describe('PDF/X Conversion Browser Tests', () => {
         return { success: false, error: error.message };
       }
     });
-    
+
     expect(result.success).toBe(false);
     expect(result.error).toContain('ICC profile');
   });
@@ -75,22 +77,26 @@ test.describe('PDF/X Conversion Browser Tests', () => {
   test('should handle missing ICC profile gracefully', async ({ page }) => {
     const result = await page.evaluate(async () => {
       try {
-        const testBlob = new Blob(['%PDF-1.4\n1 0 obj\n<</Type/Catalog>>\nendobj\nxref\ntrailer\n%%EOF'], 
-                                 { type: 'application/pdf' });
-        
+        const testBlob = new Blob(
+          [
+            '%PDF-1.4\n1 0 obj\n<</Type/Catalog>>\nendobj\nxref\ntrailer\n%%EOF',
+          ],
+          { type: 'application/pdf' }
+        );
+
         // Should fail without ICC profile
         await window.PDFXPlugin.convertToPDFX3(testBlob, {});
-        
+
         return { success: true, error: null };
       } catch (error) {
         return { success: false, error: error.message };
       }
     });
-    
+
     // Should fail gracefully when no ICC profile is provided
     expect(result.success).toBe(false);
     expect(result.error).toContain('ICC profile');
-    
+
     // At minimum, the attempt should not crash the page
     const pageError = await page.evaluate(() => window.lastError || null);
     expect(pageError).toBeNull();
@@ -98,9 +104,11 @@ test.describe('PDF/X Conversion Browser Tests', () => {
 
   test('should require ICC profile for conversion', async ({ page }) => {
     const result = await page.evaluate(async () => {
-      const testBlob = new Blob(['%PDF-1.4\n1 0 obj\n<</Type/Catalog>>\nendobj\nxref\ntrailer\n%%EOF'], 
-                               { type: 'application/pdf' });
-      
+      const testBlob = new Blob(
+        ['%PDF-1.4\n1 0 obj\n<</Type/Catalog>>\nendobj\nxref\ntrailer\n%%EOF'],
+        { type: 'application/pdf' }
+      );
+
       try {
         // Try conversion without ICC profile
         await window.PDFXPlugin.convertToPDFX3(testBlob, {});
@@ -109,7 +117,7 @@ test.describe('PDF/X Conversion Browser Tests', () => {
         return { success: false, error: error.message };
       }
     });
-    
+
     // Should fail without ICC profile
     expect(result.success).toBe(false);
     expect(result.error).toContain('ICC profile');
@@ -119,27 +127,27 @@ test.describe('PDF/X Conversion Browser Tests', () => {
     const batchResult = await page.evaluate(async () => {
       const testBlobs = [
         new Blob(['test1'], { type: 'application/pdf' }),
-        new Blob(['test2'], { type: 'application/pdf' })
+        new Blob(['test2'], { type: 'application/pdf' }),
       ];
-      
+
       try {
         // Test batch conversion without ICC profile (should return originals)
         const results = await window.PDFXPlugin.convertToPDF(testBlobs);
-        
-        return { 
-          success: true, 
+
+        return {
+          success: true,
           resultCount: results.length,
-          error: null 
+          error: null,
         };
       } catch (error) {
-        return { 
-          success: false, 
+        return {
+          success: false,
           resultCount: 0,
-          error: error.message 
+          error: error.message,
         };
       }
     });
-    
+
     // Should return same number of results as input
     expect(batchResult.success).toBe(true);
     expect(batchResult.resultCount).toBe(2);

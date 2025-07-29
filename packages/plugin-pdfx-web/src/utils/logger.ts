@@ -48,7 +48,7 @@ export class Logger {
       debug: 0,
       info: 1,
       warn: 2,
-      error: 3
+      error: 3,
     };
 
     if (levelOrder[level] < levelOrder[Logger.globalLogLevel]) {
@@ -60,7 +60,7 @@ export class Logger {
       level,
       component: this.component,
       message,
-      data
+      data,
     };
 
     Logger.logs.push(entry);
@@ -71,7 +71,9 @@ export class Logger {
     }
 
     // Console output
-    const prefix = `[${new Date().toISOString()}] [${level.toUpperCase()}] [${this.component}]`;
+    const prefix = `[${new Date().toISOString()}] [${level.toUpperCase()}] [${
+      this.component
+    }]`;
     const logMessage = data ? `${message} ${JSON.stringify(data)}` : message;
 
     switch (level) {

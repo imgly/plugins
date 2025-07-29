@@ -15,7 +15,7 @@ const mimeTypes = {
   '.json': 'application/json',
   '.wasm': 'application/wasm',
   '.ts': 'application/javascript', // For source maps
-  '.map': 'application/json'
+  '.map': 'application/json',
 };
 
 const server = createServer(async (req, res) => {
@@ -24,7 +24,7 @@ const server = createServer(async (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-    
+
     if (req.method === 'OPTIONS') {
       res.writeHead(200);
       res.end();
@@ -33,7 +33,7 @@ const server = createServer(async (req, res) => {
 
     let filePath;
     let url = req.url;
-    
+
     console.log(`Request: ${req.method} ${url}`);
 
     // Handle root
@@ -72,13 +72,12 @@ const server = createServer(async (req, res) => {
 
     res.setHeader('Content-Type', mimeType);
     res.setHeader('Content-Length', content.length);
-    
+
     // Cache control for development
     res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
-    
+
     res.writeHead(200);
     res.end(content);
-
   } catch (error) {
     console.error('Server error:', error);
     res.writeHead(404);

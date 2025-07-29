@@ -9,5 +9,5 @@ export const DEFAULT_PDF_OPTIONS = {
   orientation: 'portrait' as const,
   quality: 90,
   includeMetadata: true,
-  preserveEditability: false
+  preserveEditability: false,
 };

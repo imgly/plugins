@@ -2,7 +2,7 @@
 
 /**
  * Generate Sample PDF Test Script
- * 
+ *
  * This script generates a test PDF with colored rectangles for testing
  * RGB to CMYK conversion functionality.
  */
@@ -89,12 +89,12 @@ startxref
 
 try {
   console.log('🔧 Generating sample PDF for testing...');
-  
+
   const testPDF = generateTestPDF();
   const outputPath = join(__dirname, 'sample-rgb.pdf');
-  
+
   writeFileSync(outputPath, testPDF);
-  
+
   console.log('✅ Sample PDF generated successfully:', outputPath);
   console.log(`📄 Generated PDF size: ${testPDF.length} bytes`);
   console.log('📋 PDF contains:');
@@ -102,7 +102,6 @@ try {
   console.log('   - Red rectangle (RGB: 1,0,0)');
   console.log('   - Green rectangle (RGB: 0,1,0)');
   console.log('   - Blue rectangle (RGB: 0,0,1)');
-  
 } catch (error) {
   console.error('❌ Failed to generate sample PDF:', error.message);
   process.exit(1);

@@ -18,14 +18,14 @@ export default defineConfig({
           default:
             return `index.${format}.js`;
         }
-      }
+      },
     },
     rollupOptions: {
       external: ['@cesdk/cesdk-js', '@cesdk/engine'],
       output: {
         globals: {
           '@cesdk/cesdk-js': 'CESDK',
-          '@cesdk/engine': 'CESDKEngine'
+          '@cesdk/engine': 'CESDKEngine',
         },
         assetFileNames: (assetInfo) => {
           if (assetInfo.name?.endsWith('.wasm')) {
@@ -35,21 +35,23 @@ export default defineConfig({
             return 'assets/icc/[name][extname]';
           }
           return 'assets/[name]-[hash][extname]';
-        }
-      }
+        },
+      },
     },
     target: 'es2020',
-    sourcemap: true
+    sourcemap: true,
   },
   define: {
-    __PACKAGE_VERSION__: JSON.stringify(process.env.npm_package_version || '0.1.0')
+    __PACKAGE_VERSION__: JSON.stringify(
+      process.env.npm_package_version || '0.1.0'
+    ),
   },
   optimizeDeps: {
-    exclude: ['@privyid/ghostscript']
+    exclude: ['@privyid/ghostscript'],
   },
   server: {
     fs: {
-      allow: ['..']
-    }
-  }
+      allow: ['..'],
+    },
+  },
 });

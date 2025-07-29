@@ -24,7 +24,7 @@ const mimeTypes = {
   '.svg': 'image/svg+xml',
   '.ico': 'image/x-icon',
   '.pdf': 'application/pdf',
-  '.wasm': 'application/wasm'
+  '.wasm': 'application/wasm',
 };
 
 function getMimeType(filePath) {
@@ -36,12 +36,12 @@ async function serveFile(filePath, res) {
   try {
     const content = await readFile(filePath);
     const mimeType = getMimeType(filePath);
-    
-    res.writeHead(200, { 
+
+    res.writeHead(200, {
       'Content-Type': mimeType,
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type'
+      'Access-Control-Allow-Headers': 'Content-Type',
     });
     res.end(content);
   } catch (error) {
@@ -53,28 +53,28 @@ async function serveFile(filePath, res) {
 
 const server = createServer(async (req, res) => {
   console.log(`Request: ${req.method} ${req.url}`);
-  
+
   // Handle CORS preflight
   if (req.method === 'OPTIONS') {
     res.writeHead(200, {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type'
+      'Access-Control-Allow-Headers': 'Content-Type',
     });
     res.end();
     return;
   }
-  
+
   let requestPath = req.url;
-  
+
   // Default to cesdk-integration.html
   if (requestPath === '/') {
     requestPath = '/cesdk-integration.html';
   }
-  
+
   try {
     let filePath;
-    
+
     // Handle different file types
     if (requestPath.startsWith('/node_modules/')) {
       // Serve node_modules from project root
@@ -86,14 +86,15 @@ const server = createServer(async (req, res) => {
       // Serve test files from test directory
       filePath = join(__dirname, requestPath.substring(1));
     }
-    
+
     // Check if file exists
     await stat(filePath);
     await serveFile(filePath, res);
-    
   } catch (error) {
     if (error.code === 'ENOENT') {
-      console.error(`File not found: ${requestPath} (looking at ${requestPath})`);
+      console.error(
+        `File not found: ${requestPath} (looking at ${requestPath})`
+      );
       res.writeHead(404, { 'Content-Type': 'text/plain' });
       res.end('File not found');
     } else {
@@ -106,7 +107,9 @@ const server = createServer(async (req, res) => {
 
 server.listen(PORT, () => {
   console.log(`CE.SDK test server running at http://localhost:${PORT}`);
-  console.log(`Open http://localhost:${PORT} to view the CE.SDK integration test`);
+  console.log(
+    `Open http://localhost:${PORT} to view the CE.SDK integration test`
+  );
 });
 
 // Handle graceful shutdown

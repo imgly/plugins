@@ -1,6 +1,6 @@
 /**
  * @imgly/plugin-pdfx-web - PDF/X conversion plugin for CE.SDK
- * 
+ *
  * IMPORTANT: This package includes Ghostscript WASM binaries licensed under AGPL-3.0.
  * Commercial users must ensure license compliance. See README.md for details.
  */
@@ -11,17 +11,17 @@ import { PLUGIN_VERSION } from './constants';
 const Plugin = (pluginConfiguration?: PluginConfiguration) => ({
   name: PLUGIN_ID,
   version: PLUGIN_VERSION,
-  ...plugin(pluginConfiguration)
+  ...plugin(pluginConfiguration),
 });
 
 export default Plugin;
 
 // Export the helper functions directly for use in applications
 export { convertToPDF, convertToPDFX3 } from './pdfx';
-export type { 
-  PluginConfiguration, 
+export type {
+  PluginConfiguration,
   ConversionOptions as PDFXOptions,
-  PDFConversionResult
+  PDFConversionResult,
 } from './types';
 
 // Export core classes for advanced usage

@@ -26,41 +26,43 @@ export class CommandBuilder {
       '-dSAFER',
       '-dQUIET',
       '-dNOOUTERSAVE',
-      
+
       // PDF/X specific options
       '-dPDFX',
       '-dPDFXSetBleedBoxToMediaBox',
-      
+
       // Output device
       '-sDEVICE=pdfwrite',
       `-sOutputFile=${outputPath}`,
-      
+
       // Color management
       ...this.buildColorManagementArgs(options),
-      
+
       // PDF/X version specific args
       ...this.buildPDFXVersionArgs(options.version || 'PDF/X-3'),
-      
+
       // Quality settings
       '-dDetectDuplicateImages=true',
       '-dCompressFonts=true',
       '-dOptimize=true',
-      
+
       // Input files (order matters!)
-      pdfxDefPath,  // PDFX definition must come first
-      inputPath
+      pdfxDefPath, // PDFX definition must come first
+      inputPath,
     ];
 
-    const description = `Converting to ${options.version || 'PDF/X-3'} with ${options.colorSpace || 'CMYK'} color space`;
-    
+    const description = `Converting to ${options.version || 'PDF/X-3'} with ${
+      options.colorSpace || 'CMYK'
+    } color space`;
+
     this.logger.debug('Built conversion command', { args, description });
-    
+
     return { args, description };
   }
 
   private buildColorManagementArgs(options: PDFX3Options): string[] {
     const args: string[] = [];
-    
+
     // Color space conversion
     if (options.colorSpace === 'CMYK' || !options.colorSpace) {
       args.push('-sProcessColorModel=DeviceCMYK');
@@ -96,7 +98,7 @@ export class CommandBuilder {
 
   private buildPDFXVersionArgs(version: PDFXVersion): string[] {
     const args: string[] = [];
-    
+
     switch (version) {
       case 'PDF/X-1a':
         args.push('-dPDFX1a');
@@ -111,25 +113,25 @@ export class CommandBuilder {
       default:
         this.logger.warn('Unknown PDF/X version', { version });
     }
-    
+
     return args;
   }
 
   private mapRenderingIntent(intent?: RenderingIntent): number {
     const intentMap: Record<RenderingIntent, number> = {
-      'perceptual': 0,
+      perceptual: 0,
       'relative-colorimetric': 1,
-      'saturation': 2,
-      'absolute-colorimetric': 3
+      saturation: 2,
+      'absolute-colorimetric': 3,
     };
-    
+
     return intentMap[intent || 'perceptual'];
   }
 
   buildInfoCommand(): GhostscriptCommand {
     return {
       args: ['-dBATCH', '-dNOPAUSE', '-dQUIET', '--version'],
-      description: 'Getting Ghostscript version info'
+      description: 'Getting Ghostscript version info',
     };
   }
 }

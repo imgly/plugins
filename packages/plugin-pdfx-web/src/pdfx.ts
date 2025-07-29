@@ -21,7 +21,9 @@ export async function convertToPDFX3(
   }
 
   if (inputPDF.size > 100 * 1024 * 1024) {
-    throw new Error(`Input PDF too large (${inputPDF.size} bytes). Maximum: 100MB`);
+    throw new Error(
+      `Input PDF too large (${inputPDF.size} bytes). Maximum: 100MB`
+    );
   }
 
   if (!options.iccProfile || !(options.iccProfile instanceof Blob)) {
@@ -75,12 +77,14 @@ export async function convertToPDFX3(
       `-sOutputICCProfile=${profilePath}`,
       `-sOutputFile=${outputPath}`,
       pdfxDefPath,
-      inputPath
+      inputPath,
     ];
 
     const exitCode = await module.callMain(gsArgs);
     if (exitCode !== 0) {
-      throw new Error(`Ghostscript conversion failed with exit code ${exitCode}`);
+      throw new Error(
+        `Ghostscript conversion failed with exit code ${exitCode}`
+      );
     }
 
     // Read output
@@ -91,7 +95,6 @@ export async function convertToPDFX3(
     vfs.cleanup();
 
     return outputPDF;
-
   } catch (error) {
     vfs.cleanup();
     throw error;
@@ -139,8 +142,8 @@ export async function convertToPDF(
 
   // Convert all blobs concurrently
   const results = await Promise.all(
-    pdfBlobs.map(blob => convertToPDFX3(blob, options))
+    pdfBlobs.map((blob) => convertToPDFX3(blob, options))
   );
-  
+
   return results;
 }
