@@ -167,11 +167,10 @@
           window.cesdk = cesdk; // Make it globally accessible for debugging
 
           updateStatus('Adding PDFX plugin...', 'loading');
-          // Add our local PDFX plugin with default configuration
+          // Add our local PDFX plugin with PSOcoated_v3 as default profile
           cesdk.addPlugin(
             PDFXPlugin({
-              useDefaultProfile: true,
-              // iccProfilePath: 'https://example.com/custom-profile.icc', // Optional custom profile
+              iccProfilePath: '/src/assets/icc-profiles/PSOcoated_v3.icc',
             })
           );
 
