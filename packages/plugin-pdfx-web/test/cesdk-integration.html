@@ -167,8 +167,13 @@
           window.cesdk = cesdk; // Make it globally accessible for debugging
 
           updateStatus('Adding PDFX plugin...', 'loading');
-          // Add our local PDFX plugin
-          cesdk.addPlugin(PDFXPlugin());
+          // Add our local PDFX plugin with default configuration
+          cesdk.addPlugin(
+            PDFXPlugin({
+              useDefaultProfile: true,
+              // iccProfilePath: 'https://example.com/custom-profile.icc', // Optional custom profile
+            })
+          );
 
           updateStatus('Adding asset sources...', 'loading');
           cesdk.addDefaultAssetSources();

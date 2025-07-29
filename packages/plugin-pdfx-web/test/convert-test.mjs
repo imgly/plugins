@@ -18,13 +18,13 @@ async function testConversion() {
     console.log('🔧 Testing PDF/X conversion...');
 
     // Import the conversion function from the built module
-    const { convertToPDFX3 } = await import('../dist/index.mjs');
+    const { convertToPDFX3, getDefaultCMYKProfile } = await import('../dist/index.mjs');
 
     // Load test PDF
     const inputPath = process.argv[2] || join(__dirname, 'sample-rgb.pdf');
-    const profilePath = process.argv[3] || join(__dirname, 'CoatedFOGRA39.icc');
     const outputPath =
-      process.argv[4] || join(__dirname, 'converted-pdfx3.pdf');
+      process.argv[3] || join(__dirname, 'converted-pdfx3.pdf');
+    const useCustomProfile = process.argv[4]; // Optional custom profile path
 
     if (!existsSync(inputPath)) {
       console.error(`❌ Input PDF not found: ${inputPath}`);
@@ -34,22 +34,24 @@ async function testConversion() {
       process.exit(1);
     }
 
-    if (!existsSync(profilePath)) {
-      console.error(`❌ ICC profile not found: ${profilePath}`);
-      console.log('💡 Please provide a valid ICC profile file');
-      process.exit(1);
-    }
-
     console.log(`📄 Loading PDF: ${inputPath}`);
     const pdfData = readFileSync(inputPath);
     const pdfBlob = new Blob([pdfData], { type: 'application/pdf' });
 
-    console.log(`🎨 Loading ICC profile: ${profilePath}`);
-    const iccData = readFileSync(profilePath);
-    const iccBlob = new Blob([iccData]);
-
     console.log(`📊 Input PDF size: ${pdfData.length} bytes`);
-    console.log(`📊 ICC profile size: ${iccData.length} bytes`);
+
+    // Load ICC profile (default or custom)
+    let iccBlob;
+    if (useCustomProfile && existsSync(useCustomProfile)) {
+      console.log(`🎨 Loading custom ICC profile: ${useCustomProfile}`);
+      const iccData = readFileSync(useCustomProfile);
+      iccBlob = new Blob([iccData]);
+      console.log(`📊 ICC profile size: ${iccData.length} bytes`);
+    } else {
+      console.log('🎨 Using default CMYK profile');
+      iccBlob = getDefaultCMYKProfile();
+      console.log(`📊 Default profile size: ${iccBlob.size} bytes`);
+    }
 
     // Test conversion
     console.log('🔄 Starting conversion...');
@@ -97,9 +99,8 @@ if (typeof global !== 'undefined') {
     }
 
     arrayBuffer() {
-      return Promise.resolve(
-        Buffer.concat(this.parts.map((p) => Buffer.from(p))).buffer
-      );
+      const buffer = Buffer.concat(this.parts.map((p) => Buffer.from(p)));
+      return Promise.resolve(buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength));
     }
   };
 }

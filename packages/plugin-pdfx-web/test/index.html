@@ -159,21 +159,35 @@
     </div>
 
     <script type="module">
-      import { convertToPDFX3, convertToPDF } from '../dist/index.mjs';
+      try {
+        console.log('Attempting to load module from:', new URL('../dist/index.mjs', import.meta.url).href);
+        const module = await import('../dist/index.mjs');
+        
+        const {
+          convertToPDFX3,
+          convertToPDF,
+          getDefaultCMYKProfile,
+          GhostscriptLoader,
+          VirtualFileSystem,
+          CommandBuilder,
+          BrowserDetection,
+          Logger,
+        } = module;
 
-      // Import core classes (may not be directly exported)
-      import { GhostscriptLoader } from '../dist/index.mjs';
-      import { VirtualFileSystem } from '../dist/index.mjs';
-      import { CommandBuilder } from '../dist/index.mjs';
-      import { BrowserDetection } from '../dist/index.mjs';
-      import { Logger } from '../dist/index.mjs';
+        // Make functions available globally for Playwright tests
+        window.PDFXPlugin = {
+          convertToPDFX3,
+          convertToPDF,
+          loadGhostscript: () => GhostscriptLoader.load(),
+        };
 
-      // Make functions available globally for Playwright tests
-      window.PDFXPlugin = {
-        convertToPDFX3,
-        convertToPDF,
-        loadGhostscript: () => GhostscriptLoader.load(),
-      };
+        console.log('✅ PDFXPlugin loaded successfully:', Object.keys(window.PDFXPlugin));
+      } catch (error) {
+        console.error('❌ Failed to load PDFXPlugin:', error);
+        window.moduleErrors = error.message;
+        // Set a fallback object so tests can detect the error
+        window.PDFXPlugin = null;
+      }
 
       // Set debug logging (if Logger is available)
       if (typeof Logger !== 'undefined') {
@@ -393,20 +407,12 @@
         try {
           const cmdBuilder = new CommandBuilder();
 
-          // Test basic PDFX command
-          const options = {
-            version: 'PDF/X-3',
-            colorSpace: 'CMYK',
-            renderingIntent: 'perceptual',
-            preserveBlack: true,
-            iccProfilePath: '/tmp/profile.icc',
-          };
-
+          // Test basic PDFX command with simplified interface
           const cmd = cmdBuilder.buildPDFXConversionCommand(
             '/input.pdf',
-            '/output.pdf',
+            '/output.pdf', 
             '/pdfx.ps',
-            options
+            '/tmp/profile.icc'
           );
 
           const versionCmd = cmdBuilder.buildInfoCommand();
@@ -546,19 +552,17 @@
         convertedPDFBlob = null;
 
         progressDiv.innerHTML =
-          '<div class="test-result error">Note: This test requires an ICC profile to be configured for actual conversion. Currently it will fail.</div>';
+          '<div class="test-result loading">Converting with default CMYK profile...</div>';
 
         try {
           const startTime = Date.now();
 
-          // Create a dummy ICC profile blob for testing
-          const dummyICCProfile = new Blob(['dummy icc profile data'], {
-            type: 'application/octet-stream',
-          });
+          // Use the default CMYK profile
+          const defaultProfile = getDefaultCMYKProfile();
 
-          // Convert using the simplified API (will likely fail without valid ICC profile)
+          // Convert using the simplified API with default profile
           convertedPDFBlob = await convertToPDFX3(uploadedPDFBlob, {
-            iccProfile: dummyICCProfile,
+            iccProfile: defaultProfile,
           });
 
           const totalTime = Date.now() - startTime;
@@ -575,7 +579,7 @@
                           uploadedPDFBlob.size / convertedPDFBlob.size
                         ).toFixed(2)}x<br>
                         Total Time: ${totalTime}ms<br>
-                        Note: Used dummy ICC profile for testing
+                        ICC Profile: Default CMYK profile
                     </div>
                 `;
 
@@ -584,8 +588,7 @@
           progressDiv.innerHTML = '';
           resultDiv.innerHTML = `
                     <div class="test-result error">
-                        <strong>Conversion Failed:</strong> ${error.message}<br>
-                        <em>This is expected without a valid ICC profile</em>
+                        <strong>Conversion Failed:</strong> ${error.message}
                     </div>
                 `;
           console.error('Conversion error:', error);

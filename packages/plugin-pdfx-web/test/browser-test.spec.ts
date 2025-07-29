@@ -4,8 +4,8 @@ import { join } from 'path';
 
 test.describe('PDF/X Conversion Browser Tests', () => {
   test.beforeEach(async ({ page }) => {
-    // Navigate to test page
-    await page.goto(`file://${join(__dirname, 'index.html')}`);
+    // Navigate to test page via HTTP server
+    await page.goto('/test/index.html');
 
     // Wait for the page to load
     await page.waitForLoadState('networkidle');
@@ -14,7 +14,9 @@ test.describe('PDF/X Conversion Browser Tests', () => {
   test('should load PDF/X plugin successfully', async ({ page }) => {
     // Check if the plugin loaded without errors
     const errors = [];
+    const consoleMessages = [];
     page.on('console', (msg) => {
+      consoleMessages.push(`${msg.type()}: ${msg.text()}`);
       if (msg.type() === 'error') {
         errors.push(msg.text());
       }
@@ -22,6 +24,20 @@ test.describe('PDF/X Conversion Browser Tests', () => {
 
     // Wait a bit for any async loading
     await page.waitForTimeout(2000);
+
+    // Debug: Check what's available on window
+    const windowDebug = await page.evaluate(() => {
+      return {
+        hasPDFXPlugin: typeof window.PDFXPlugin !== 'undefined',
+        PDFXPluginKeys: window.PDFXPlugin ? Object.keys(window.PDFXPlugin) : null,
+        windowKeys: Object.keys(window).filter(k => k.includes('PDF') || k.includes('convert')),
+        moduleErrors: window.moduleErrors || null
+      };
+    });
+
+    console.log('Window Debug Info:', JSON.stringify(windowDebug, null, 2));
+    console.log('Console messages:', consoleMessages);
+    console.log('Errors:', errors);
 
     // Check that basic functions are available
     const isSupported = await page.evaluate(() => {
