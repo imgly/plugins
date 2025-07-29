@@ -1,3 +1,10 @@
+/**
+ * @imgly/plugin-pdfx-web - PDF/X conversion plugin for CE.SDK
+ * 
+ * IMPORTANT: This package includes Ghostscript WASM binaries licensed under AGPL-3.0.
+ * Commercial users must ensure license compliance. See README.md for details.
+ */
+
 import plugin, { PLUGIN_ID, type PluginConfiguration } from './plugin';
 import { PLUGIN_VERSION } from './constants';
 

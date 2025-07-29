@@ -1,7 +1,7 @@
 {
   "name": "@imgly/plugin-pdfx-web",
   "version": "0.1.0",
-  "description": "PDFX plugin for CE.SDK editor - PDF conversion and export functionality",
+  "description": "PDFX plugin for CE.SDK editor - PDF conversion and export functionality. Contains AGPL-3.0 licensed Ghostscript WASM.",
   "keywords": [
     "CE.SDK",
     "plugin",

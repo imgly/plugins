@@ -4,7 +4,7 @@ import { BrowserDetection } from '../utils/browser-detection';
 
 export interface LoaderOptions {
   cdnUrl?: string;
-  fallbackToLocal?: boolean;
+  allowCdnFallback?: boolean;
   timeout?: number;
 }
 
@@ -32,32 +32,32 @@ export class GhostscriptLoader {
     }
 
     const timeout = options.timeout || this.TIMEOUT_MS;
-    const cdnUrl = options.cdnUrl || this.DEFAULT_CDN;
 
+    // Strategy 1: Try bundled version first (preferred for production)
     try {
-      // Strategy 1: Try CDN first
-      logger.info('Attempting to load Ghostscript from CDN', { cdnUrl });
+      logger.info('Attempting to load bundled Ghostscript (AGPL-3.0 licensed)');
       return await this.loadWithTimeout(
-        () => this.loadFromCDN(cdnUrl),
+        () => this.loadFromBundle(),
         timeout
       );
-    } catch (cdnError) {
-      logger.warn('CDN loading failed', { error: (cdnError as Error).message });
+    } catch (bundleError) {
+      logger.warn('Bundled Ghostscript loading failed', { error: (bundleError as Error).message });
 
-      if (options.fallbackToLocal !== false) {
+      // Strategy 2: Fallback to CDN for development/testing
+      if (options.allowCdnFallback !== false) {
+        const cdnUrl = options.cdnUrl || this.DEFAULT_CDN;
         try {
-          // Strategy 2: Fallback to bundled version
-          logger.info('Falling back to bundled Ghostscript');
+          logger.info('Falling back to CDN Ghostscript for development', { cdnUrl });
           return await this.loadWithTimeout(
-            () => this.loadFromBundle(),
+            () => this.loadFromCDN(cdnUrl),
             timeout
           );
-        } catch (bundleError) {
-          logger.error('Bundle loading failed', { error: (bundleError as Error).message });
-          throw new Error(`Failed to load Ghostscript: CDN (${(cdnError as Error).message}), Bundle (${(bundleError as Error).message})`);
+        } catch (cdnError) {
+          logger.error('CDN loading failed', { error: (cdnError as Error).message });
+          throw new Error(`Failed to load Ghostscript: Bundle (${(bundleError as Error).message}), CDN (${(cdnError as Error).message})`);
         }
       } else {
-        throw cdnError;
+        throw bundleError;
       }
     }
   }
