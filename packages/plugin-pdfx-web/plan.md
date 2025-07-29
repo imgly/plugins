@@ -2,26 +2,26 @@
 
 ## Overview
 
-This document outlines the implementation strategy for integrating Ghostscript WebAssembly to enable PDF/X-3 conversion in the browser, starting with ps-wasm as the initial approach.
+This document outlines the implementation strategy for integrating Ghostscript WebAssembly to enable PDF/X-3 conversion in the browser, starting with privyid/ghoulscript as the initial approach.
 
-## Selected Approach: ps-wasm First
+## Selected Approach: privyid/ghoulscript First
 
-After evaluating multiple options, we're starting with ps-wasm for rapid prototyping and validation, with the flexibility to optimize or switch approaches based on real-world requirements.
+After evaluating multiple options, we're starting with privyid/ghoulscript for rapid prototyping and validation, with the flexibility to optimize or switch approaches based on real-world requirements.
 
 ## Implementation Phases
 
-### Phase 1: ps-wasm Proof of Concept (Week 1)
+### Phase 1: privyid/ghoulscript Proof of Concept (Week 1)
 
 **Goal**: Validate PDF/X-3 conversion capability with minimal complexity
 
 #### Day 1-2: Basic Integration
-1. **Setup ps-wasm**
+1. **Setup privyid/ghoulscript**
    ```bash
-   pnpm add ps-wasm
+   pnpm add @privyid/ghoulscript
    ```
 
 2. **Create Ghostscript wrapper** (`src/ghostscript.ts`)
-   - Initialize ps-wasm
+   - Initialize ghoulscript
    - Handle virtual filesystem
    - Execute Ghostscript commands
    - Return converted PDF
@@ -116,8 +116,8 @@ After evaluating multiple options, we're starting with ps-wasm for rapid prototy
    - Better memory isolation
    - Concurrent processing
 
-#### Alternative Approaches (if ps-wasm insufficient)
-1. **Option A: Fork ps-wasm**
+#### Alternative Approaches (if privyid/ghoulscript insufficient)
+1. **Option A: Fork privyid/ghoulscript**
    - Add missing features
    - Optimize for our use case
    - Maintain compatibility
@@ -283,7 +283,7 @@ export type { PDFConversionOptions, PDFX3Options } from './types';
 
 ## Risk Mitigation
 
-### ps-wasm Limitations
+### privyid/ghoulscript Limitations
 - **Risk**: Missing features or bugs
 - **Mitigation**: Early testing, fallback plan ready
 
@@ -306,9 +306,9 @@ export type { PDFConversionOptions, PDFX3Options } from './types';
    git checkout -b feature/ghostscript-integration
    ```
 
-2. **Install ps-wasm**
+2. **Install privyid/ghoulscript**
    ```bash
-   pnpm add ps-wasm
+   pnpm add @privyid/ghoulscript
    ```
 
 3. **Implement basic wrapper**
@@ -322,7 +322,7 @@ export type { PDFConversionOptions, PDFX3Options } from './types';
    - Size manageable?
 
 5. **Decide on optimization**
-   - Continue with ps-wasm?
+   - Continue with privyid/ghoulscript?
    - Need WebWorker?
    - Consider alternatives?
 
