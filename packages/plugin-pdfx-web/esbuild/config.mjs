@@ -16,7 +16,7 @@ export default ({ isDevelopment }) => {
 
   return baseConfig({
     isDevelopment,
-    external: ['@cesdk/cesdk-js'],
+    external: ['@cesdk/cesdk-js', '@privyid/ghostscript'],
     pluginVersion: packageJson.version
   });
 };

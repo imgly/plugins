@@ -1,4 +1,5 @@
 export const PLUGIN_ID = '@imgly/plugin-pdfx-web';
+export const PLUGIN_VERSION = '0.1.0';
 
 export const PDF_EXPORT_PANEL_ID = '//ly.img.panel/pdf-export';
 export const PDF_SETTINGS_PANEL_ID = '//ly.img.panel/pdf-settings';
