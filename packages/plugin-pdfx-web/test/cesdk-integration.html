@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CE.SDK + PDFX Plugin Integration Test</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: #f5f5f5;
+        }
+        
+        .header {
+            background: white;
+            border-bottom: 1px solid #e0e0e0;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 1.25rem;
+            color: #333;
+        }
+        
+        .export-controls {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+        
+        .btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        
+        .btn:hover {
+            background: #0056b3;
+        }
+        
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .status {
+            margin-left: 1rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .status.loading {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .status.ready {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        #cesdk_container {
+            width: 100%;
+            height: calc(100vh - 80px);
+        }
+        
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .loading-content {
+            text-align: center;
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #007bff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div>
+            <h1>CE.SDK + PDFX Plugin Integration Test</h1>
+        </div>
+        <div class="export-controls">
+            <div id="status" class="status loading">Loading CE.SDK...</div>
+        </div>
+    </div>
+    
+    <div id="cesdk_container"></div>
+    
+    <div id="loading" class="loading-overlay">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <p>Initializing CE.SDK Editor...</p>
+        </div>
+    </div>
+
+    <script type="module">
+        import CreativeEditorSDK from 'https://cdn.img.ly/packages/imgly/cesdk-js/1.37.0/index.js';
+        import PDFXPlugin from '/dist/index.mjs';
+
+        let cesdk = null;
+        const statusEl = document.getElementById('status');
+        const loadingEl = document.getElementById('loading');
+
+        function updateStatus(message, type = 'loading') {
+            statusEl.textContent = message;
+            statusEl.className = `status ${type}`;
+        }
+
+        async function initializeEditor() {
+            try {
+                updateStatus('Loading CE.SDK...', 'loading');
+                
+                const config = {
+                    license: 'yDDwCZO23aFG8Ag3i5j81fgUeVGOHNkgKUgW_uczN5p0bJaftF_5LzHd7DpMEAAF',
+                    baseURL: 'https://cdn.img.ly/packages/imgly/cesdk-js/1.37.0/assets',
+                    callbacks: { 
+                        onUpload: 'local'
+                    }
+                };
+
+                updateStatus('Creating editor instance...', 'loading');
+                cesdk = await CreativeEditorSDK.create('#cesdk_container', config);
+                window.cesdk = cesdk; // Make it globally accessible for debugging
+                
+                updateStatus('Adding PDFX plugin...', 'loading');
+                // Add our local PDFX plugin
+                cesdk.addPlugin(PDFXPlugin());
+                
+                updateStatus('Adding asset sources...', 'loading');
+                cesdk.addDefaultAssetSources();
+                cesdk.addDemoAssetSources({ sceneMode: 'Design' });
+                
+                updateStatus('Creating design scene...', 'loading');
+                await cesdk.createDesignScene();
+                
+                updateStatus('Configuring navigation bar...', 'loading');
+                
+                // Get current navigation bar order
+                const currentOrder = cesdk.ui.getNavigationBarOrder();
+                console.log('Current navigation order:', currentOrder);
+                
+                // Debug: Check each item to see what's actually there
+                currentOrder.forEach((item, index) => {
+                    console.log(`Navigation item ${index}:`, item, typeof item);
+                });
+                
+                // Try different approach: filter out actions and add our export
+                const actionsIndex = currentOrder.findIndex(item => {
+                    const itemStr = typeof item === 'string' ? item : String(item);
+                    return itemStr.includes('actions') || itemStr.includes('Actions');
+                });
+                
+                console.log('Actions component index:', actionsIndex);
+                
+                let newOrder;
+                if (actionsIndex !== -1) {
+                    // Replace the actions component with our export component
+                    newOrder = [...currentOrder];
+                    newOrder[actionsIndex] = 'pdfx.export';
+                } else {
+                    // If no actions found, just add our component at the end
+                    newOrder = [...currentOrder, 'pdfx.export'];
+                }
+                
+                console.log('Original order:', currentOrder);
+                console.log('New order:', newOrder);
+                
+                // Set the new navigation bar order
+                cesdk.ui.setNavigationBarOrder(newOrder);
+                console.log('Navigation bar updated');
+                
+                // Hide loading overlay
+                loadingEl.style.display = 'none';
+                
+                updateStatus('Ready', 'ready');
+                
+                console.log('CE.SDK initialized successfully');
+                
+            } catch (error) {
+                console.error('Failed to initialize CE.SDK:', error);
+                updateStatus(`Error: ${error.message}`, 'error');
+                loadingEl.style.display = 'none';
+            }
+        }
+
+
+        // Initialize on load
+        initializeEditor();
+    </script>
+</body>
+</html>

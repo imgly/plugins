@@ -120,10 +120,8 @@
 
     <script type="module">
         import { 
-          convertSingle,
-          isSupported,
-          getCapabilities,
-          PDFXService
+          convertToPDFX3,
+          convertToPDF
         } from '../dist/index.mjs';
         
         // Import core classes (may not be directly exported)
@@ -135,18 +133,15 @@
         
         // Make functions available globally for Playwright tests
         window.PDFXPlugin = {
-          convertSingle,
-          convertToPDF: async (blobs, options) => {
-            const service = new PDFXService();
-            return service.convertToPDF(blobs, options);
-          },
-          isSupported,
-          getCapabilities,
+          convertToPDFX3,
+          convertToPDF,
           loadGhostscript: () => GhostscriptLoader.load()
         };
 
-        // Set debug logging
-        Logger.setLogLevel('debug');
+        // Set debug logging (if Logger is available)
+        if (typeof Logger !== 'undefined') {
+            Logger.setLogLevel('debug');
+        }
 
         let ghostscriptModule = null;
         let uploadedPDFBlob = null;
@@ -160,30 +155,38 @@
         });
 
         function showBrowserInfo() {
-            const browser = new BrowserDetection();
-            const info = browser.getBrowserInfo();
-            const capabilities = {
-                webAssembly: browser.supportsWebAssembly(),
-                workers: browser.supportsWorkers(),
-                sharedArrayBuffer: browser.supportsSharedArrayBuffer(),
-                estimatedMemoryLimit: browser.getEstimatedMemoryLimit()
-            };
+            try {
+                const browser = new BrowserDetection();
+                const info = browser.getBrowserInfo();
+                const capabilities = {
+                    webAssembly: browser.supportsWebAssembly(),
+                    workers: browser.supportsWorkers(),
+                    sharedArrayBuffer: browser.supportsSharedArrayBuffer(),
+                    estimatedMemoryLimit: browser.getEstimatedMemoryLimit()
+                };
 
-            document.getElementById('browser-info').innerHTML = `
-                <div class="test-result ${capabilities.webAssembly && capabilities.workers ? 'success' : 'error'}">
-                    <strong>Browser:</strong> ${info.name} ${info.version} on ${info.platform}
-                </div>
-            `;
+                document.getElementById('browser-info').innerHTML = `
+                    <div class="test-result ${capabilities.webAssembly && capabilities.workers ? 'success' : 'error'}">
+                        <strong>Browser:</strong> ${info.name} ${info.version} on ${info.platform}
+                    </div>
+                `;
 
-            document.getElementById('browser-capabilities').innerHTML = `
-                <div class="test-result">
-                    <strong>Capabilities:</strong><br>
-                    WebAssembly: ${capabilities.webAssembly ? '✓' : '✗'}<br>
-                    Web Workers: ${capabilities.workers ? '✓' : '✗'}<br>
-                    SharedArrayBuffer: ${capabilities.sharedArrayBuffer ? '✓' : '✗'}<br>
-                    Estimated Memory Limit: ${formatBytes(capabilities.estimatedMemoryLimit)}
-                </div>
-            `;
+                document.getElementById('browser-capabilities').innerHTML = `
+                    <div class="test-result">
+                        <strong>Capabilities:</strong><br>
+                        WebAssembly: ${capabilities.webAssembly ? '✓' : '✗'}<br>
+                        Web Workers: ${capabilities.workers ? '✓' : '✗'}<br>
+                        SharedArrayBuffer: ${capabilities.sharedArrayBuffer ? '✓' : '✗'}<br>
+                        Estimated Memory Limit: ${formatBytes(capabilities.estimatedMemoryLimit)}
+                    </div>
+                `;
+            } catch (error) {
+                document.getElementById('browser-info').innerHTML = `
+                    <div class="test-result error">
+                        <strong>Error:</strong> Browser detection not available
+                    </div>
+                `;
+            }
         }
 
         window.testGhostscriptLoading = async function() {
@@ -374,11 +377,18 @@
         };
 
         window.clearLogs = function() {
-            Logger.clearLogs();
+            if (typeof Logger !== 'undefined') {
+                Logger.clearLogs();
+            }
             document.getElementById('log-output').textContent = '';
         };
 
         window.updateLogs = function() {
+            if (typeof Logger === 'undefined') {
+                document.getElementById('log-output').textContent = 'Logger not available';
+                return;
+            }
+            
             const logs = Logger.getLogs();
             const output = document.getElementById('log-output');
             
@@ -466,39 +476,30 @@
             downloadConvertedBtn.disabled = true;
             convertedPDFBlob = null;
 
-            progressDiv.innerHTML = '<div class="test-result loading">Preparing conversion...</div>';
+            progressDiv.innerHTML = '<div class="test-result error">Note: This test requires an ICC profile to be configured for actual conversion. Currently it will fail.</div>';
 
             try {
                 const startTime = Date.now();
                 
-                // Convert using the plugin with progress tracking
-                const result = await convertSingle(uploadedPDFBlob, {
-                    version: 'PDF/X-3',
-                    colorSpace: 'CMYK',
-                    renderingIntent: 'perceptual',
-                    preserveBlack: true
-                }, (progress) => {
-                    progressDiv.innerHTML = `
-                        <div class="test-result loading">
-                            <strong>${progress.stage}:</strong> ${progress.progress}% - ${progress.message}
-                        </div>
-                    `;
+                // Create a dummy ICC profile blob for testing
+                const dummyICCProfile = new Blob(['dummy icc profile data'], { type: 'application/octet-stream' });
+                
+                // Convert using the simplified API (will likely fail without valid ICC profile)
+                convertedPDFBlob = await convertToPDFX3(uploadedPDFBlob, {
+                    iccProfile: dummyICCProfile
                 });
 
                 const totalTime = Date.now() - startTime;
-                convertedPDFBlob = result.blob;
 
                 progressDiv.innerHTML = '';
                 resultDiv.innerHTML = `
                     <div class="test-result success">
-                        <strong>Conversion Successful!</strong><br>
-                        Original Size: ${formatBytes(result.metadata.originalSize)}<br>
-                        Converted Size: ${formatBytes(result.metadata.convertedSize)}<br>
-                        Compression Ratio: ${result.metadata.compressionRatio.toFixed(2)}x<br>
-                        Conversion Time: ${result.metadata.conversionTime}ms<br>
+                        <strong>Conversion Completed!</strong><br>
+                        Original Size: ${formatBytes(uploadedPDFBlob.size)}<br>
+                        Converted Size: ${formatBytes(convertedPDFBlob.size)}<br>
+                        Compression Ratio: ${(uploadedPDFBlob.size / convertedPDFBlob.size).toFixed(2)}x<br>
                         Total Time: ${totalTime}ms<br>
-                        PDF/X Version: ${result.metadata.pdfxVersion}<br>
-                        Compliant: ${result.metadata.isCompliant ? '✓' : '✗'}
+                        Note: Used dummy ICC profile for testing
                     </div>
                 `;
 
@@ -508,7 +509,8 @@
                 progressDiv.innerHTML = '';
                 resultDiv.innerHTML = `
                     <div class="test-result error">
-                        <strong>Conversion Failed:</strong> ${error.message}
+                        <strong>Conversion Failed:</strong> ${error.message}<br>
+                        <em>This is expected without a valid ICC profile</em>
                     </div>
                 `;
                 console.error('Conversion error:', error);

@@ -18,22 +18,12 @@ async function testConversion() {
     console.log('🔧 Testing PDF/X conversion...');
     
     // Import the conversion function from the built module
-    const { convertSingle, isSupported, getCapabilities } = await import('../dist/index.mjs');
-    
-    // Check browser/environment support
-    console.log('🔍 Checking environment support...');
-    const capabilities = getCapabilities();
-    console.log('📊 Capabilities:', capabilities);
-    
-    if (!isSupported()) {
-      console.log('⚠️  PDF/X conversion not supported in this environment');
-      console.log('   This is expected in Node.js - browser testing required');
-      return;
-    }
+    const { convertToPDFX3 } = await import('../dist/index.mjs');
     
     // Load test PDF
     const inputPath = process.argv[2] || join(__dirname, 'sample-rgb.pdf');
-    const outputPath = process.argv[3] || join(__dirname, 'converted-pdfx3.pdf');
+    const profilePath = process.argv[3] || join(__dirname, 'CoatedFOGRA39.icc');
+    const outputPath = process.argv[4] || join(__dirname, 'converted-pdfx3.pdf');
     
     if (!existsSync(inputPath)) {
       console.error(`❌ Input PDF not found: ${inputPath}`);
@@ -41,47 +31,42 @@ async function testConversion() {
       process.exit(1);
     }
     
+    if (!existsSync(profilePath)) {
+      console.error(`❌ ICC profile not found: ${profilePath}`);
+      console.log('💡 Please provide a valid ICC profile file');
+      process.exit(1);
+    }
+    
     console.log(`📄 Loading PDF: ${inputPath}`);
     const pdfData = readFileSync(inputPath);
     const pdfBlob = new Blob([pdfData], { type: 'application/pdf' });
     
+    console.log(`🎨 Loading ICC profile: ${profilePath}`);
+    const iccData = readFileSync(profilePath);
+    const iccBlob = new Blob([iccData]);
+    
     console.log(`📊 Input PDF size: ${pdfData.length} bytes`);
+    console.log(`📊 ICC profile size: ${iccData.length} bytes`);
     
     // Test conversion
     console.log('🔄 Starting conversion...');
     const startTime = Date.now();
     
-    const result = await convertSingle(
-      pdfBlob,
-      {
-        version: 'PDF/X-3',
-        colorSpace: 'CMYK',
-        renderingIntent: 'perceptual',
-        preserveBlack: true,
-        title: 'Test PDF Conversion',
-        creator: 'PDF/X Plugin Test Suite'
-      },
-      (progress) => {
-        console.log(`   ${progress.stage}: ${progress.progress}% - ${progress.message}`);
-      }
-    );
+    const resultBlob = await convertToPDFX3(pdfBlob, { iccProfile: iccBlob });
     
     const duration = Date.now() - startTime;
     
     // Save result
-    const resultBuffer = await result.blob.arrayBuffer();
+    const resultBuffer = await resultBlob.arrayBuffer();
     writeFileSync(outputPath, Buffer.from(resultBuffer));
     
     console.log('✅ Conversion completed successfully!');
     console.log(`⏱️  Duration: ${duration}ms`);
     console.log(`📄 Output: ${outputPath}`);
     console.log(`📊 Results:`);
-    console.log(`   Original size: ${result.metadata.originalSize} bytes`);
-    console.log(`   Converted size: ${result.metadata.convertedSize} bytes`);
-    console.log(`   Compression ratio: ${result.metadata.compressionRatio.toFixed(2)}x`);
-    console.log(`   PDF/X version: ${result.metadata.pdfxVersion}`);
-    console.log(`   Output condition: ${result.metadata.outputCondition}`);
-    console.log(`   Compliant: ${result.metadata.isCompliant ? '✅' : '❌'}`);
+    console.log(`   Original size: ${pdfData.length} bytes`);
+    console.log(`   Converted size: ${resultBlob.size} bytes`);
+    console.log(`   Compression ratio: ${(pdfData.length / resultBlob.size).toFixed(2)}x`);
     
   } catch (error) {
     console.error('❌ Conversion test failed:', error.message);
@@ -105,10 +90,6 @@ if (typeof global !== 'undefined') {
     arrayBuffer() {
       return Promise.resolve(Buffer.concat(this.parts.map(p => Buffer.from(p))).buffer);
     }
-  };
-  
-  global.performance = {
-    now: () => Date.now()
   };
 }
 
