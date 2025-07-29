@@ -211,44 +211,107 @@ class PDFXService {
     outputPath: string,
     options: PDFX3Options
   ): Promise<void> {
-    const commandBuilder = new CommandBuilder();
+    const vfs = new VirtualFileSystem(module);
     
-    // For Phase 1&2, we'll do a basic PDF processing command
-    const basicCommand = {
-      args: [
-        '-dBATCH',
-        '-dNOPAUSE',
-        '-dSAFER',
-        '-dQUIET',
-        '-sDEVICE=pdfwrite',
-        `-sOutputFile=${outputPath}`,
-        '-sProcessColorModel=DeviceCMYK',
-        '-dOverrideICC=true',
-        inputPath
-      ],
-      description: 'Basic PDF processing'
-    };
+    // Create PDF/X-3:2002 definition file (matching rgb2cmyk.sh approach)
+    const pdfxDefPath = vfs.generateTempPath('pdfx_def', 'ps');
+    const pdfxDefinition = this.generatePDFXDefinition(options);
+    
+    vfs.writeText(pdfxDefPath, pdfxDefinition);
+    this.logger.debug('Created PDF/X definition file', { path: pdfxDefPath });
 
-    this.logger.info('Executing Ghostscript command', { 
-      description: basicCommand.description,
-      args: basicCommand.args 
+    // Build comprehensive Ghostscript command matching rgb2cmyk.sh
+    const gsArgs = [
+      '-dSAFER',
+      '-dBATCH', 
+      '-dNOPAUSE',
+      '-dNOCACHE',
+      '-sDEVICE=pdfwrite',
+      '-sColorConversionStrategy=CMYK',
+      '-dProcessColorModel=/DeviceCMYK',
+      '-dOverrideICC=true',
+      '-dPDFSETTINGS=/prepress',
+      '-dCompatibilityLevel=1.4',
+      '-dPDFX', // Enable PDF/X standard compliance
+      '-dEmbedAllFonts=true',
+      '-dSubsetFonts=true',
+      '-dAutoRotatePages=/None',
+      '-dDownsampleColorImages=false',
+      '-dDownsampleGrayImages=false', 
+      '-dDownsampleMonoImages=false',
+      `-sOutputFile=${outputPath}`
+    ];
+
+    // Add ICC profile if provided
+    if (options.iccProfilePath) {
+      gsArgs.push(`-sOutputICCProfile=${options.iccProfilePath}`);
+      this.logger.debug('Added ICC profile to conversion', { 
+        profile: options.iccProfilePath 
+      });
+    }
+
+    // Add PDF/X definition and input file
+    gsArgs.push(pdfxDefPath, inputPath);
+
+    this.logger.info('Executing PDF/X-3:2002 conversion', { 
+      description: 'Full PDF/X-3 conversion with ICC profile support',
+      args: gsArgs,
+      iccProfile: !!options.iccProfilePath,
+      version: options.version || 'PDF/X-3'
     });
 
     try {
-      const exitCode = await module.callMain(basicCommand.args);
+      const exitCode = await module.callMain(gsArgs);
 
       if (exitCode !== 0) {
-        this.logger.error('Ghostscript execution failed', { 
-          exitCode
+        this.logger.error('PDF/X conversion failed', { 
+          exitCode,
+          args: gsArgs
         });
-        throw new Error(`Ghostscript failed with exit code ${exitCode}`);
+        throw new Error(`PDF/X conversion failed with exit code ${exitCode}`);
       }
 
-      this.logger.debug('Ghostscript execution successful');
+      this.logger.debug('PDF/X conversion successful');
 
     } catch (error) {
+      this.logger.error('PDF/X conversion error', { error });
       throw error;
     }
+  }
+
+  private generatePDFXDefinition(options: PDFX3Options): string {
+    const version = options.version || 'PDF/X-3';
+    const pdfxVersion = version === 'PDF/X-4' ? 'PDF/X-4:2008' : 'PDF/X-3:2002';
+    const iccProfile = options.iccProfilePath || '';
+    
+    // Generate PostScript definition matching rgb2cmyk.sh
+    return `%!
+% ${pdfxVersion} definition file
+[ /GTS_PDFXVersion (${pdfxVersion})
+  /Title (PDF/X Converted Document)
+  /Trapped /False
+  /DOCINFO pdfmark
+
+${iccProfile ? `/ICCProfile (${iccProfile}) def
+
+[/_objdef {icc_PDFX} /type /stream /OBJ pdfmark
+[{icc_PDFX}
+  <</N currentpagedevice /ProcessColorModel get /DeviceGray eq {1} {4} ifelse >> /PUT pdfmark
+[{icc_PDFX} ICCProfile (r) file /PUT pdfmark
+
+[/_objdef {OutputIntent_PDFX} /type /dict /OBJ pdfmark
+[{OutputIntent_PDFX} <<
+  /Type /OutputIntent
+  /S /GTS_PDFX
+  /OutputConditionIdentifier (Coated FOGRA39)
+  /DestOutputProfile {icc_PDFX}
+  /Info (Coated FOGRA39 \\(ISO 12647-2:2004\\))
+  /RegistryName (http://www.color.org)
+>> /PUT pdfmark
+
+[{Catalog} <</OutputIntents [{OutputIntent_PDFX}]>> /PUT pdfmark` : 
+'% No ICC profile specified - using default CMYK conversion'}
+`;
   }
 
   private async processBatch(
