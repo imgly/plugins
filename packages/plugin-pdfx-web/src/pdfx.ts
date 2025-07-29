@@ -52,7 +52,8 @@ export async function convertToPDFX3(
     await vfs.writeBlob(profilePath, options.iccProfile);
 
     // Create PDF/X-3 definition
-    const pdfxDefinition = createPDFXDefinition(profilePath);
+    const useICCProfile = options.iccProfile.size > 1000; // Only use real ICC profiles
+    const pdfxDefinition = createPDFXDefinition(useICCProfile ? profilePath : null);
     vfs.writeText(pdfxDefPath, pdfxDefinition);
 
     // Execute Ghostscript conversion
@@ -74,11 +75,15 @@ export async function convertToPDFX3(
       '-dDownsampleColorImages=false',
       '-dDownsampleGrayImages=false',
       '-dDownsampleMonoImages=false',
-      `-sOutputICCProfile=${profilePath}`,
       `-sOutputFile=${outputPath}`,
       pdfxDefPath,
       inputPath,
     ];
+
+    // Only add ICC profile if it's not the default dummy profile
+    if (options.iccProfile.size > 1000) { // Real ICC profiles are typically larger
+      gsArgs.splice(-3, 0, `-sOutputICCProfile=${profilePath}`);
+    }
 
     const exitCode = await module.callMain(gsArgs);
     if (exitCode !== 0) {
@@ -101,8 +106,10 @@ export async function convertToPDFX3(
   }
 }
 
-function createPDFXDefinition(profilePath: string): string {
-  return `%!
+function createPDFXDefinition(profilePath: string | null): string {
+  if (profilePath) {
+    // With ICC profile
+    return `%!
 % PDF/X-3:2002 definition file
 [ /GTS_PDFXVersion (PDF/X-3:2002)
   /Title (PDF/X Converted Document)
@@ -128,6 +135,26 @@ function createPDFXDefinition(profilePath: string): string {
 
 [{Catalog} <</OutputIntents [{OutputIntent_PDFX}]>> /PUT pdfmark
 `;
+  } else {
+    // Without ICC profile - basic PDF/X-3 compliance
+    return `%!
+% PDF/X-3:2002 definition file (basic CMYK conversion)
+[ /GTS_PDFXVersion (PDF/X-3:2002)
+  /Title (PDF/X Converted Document)
+  /Trapped /False
+  /DOCINFO pdfmark
+
+[/_objdef {OutputIntent_PDFX} /type /dict /OBJ pdfmark
+[{OutputIntent_PDFX} <<
+  /Type /OutputIntent
+  /S /GTS_PDFX
+  /OutputConditionIdentifier (Default CMYK)
+  /Info (Default CMYK Conversion)
+>> /PUT pdfmark
+
+[{Catalog} <</OutputIntents [{OutputIntent_PDFX}]>> /PUT pdfmark
+`;
+  }
 }
 
 // Export for compatibility with CE.SDK

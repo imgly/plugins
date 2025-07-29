@@ -1,10 +1,15 @@
 import { EditorPlugin } from '@cesdk/cesdk-js';
 
 import { convertToPDF } from './pdfx';
+import { getDefaultCMYKProfile } from './assets/default-cmyk-profile';
+import type { PluginConfiguration } from './types';
 
 export { PLUGIN_ID } from './constants';
+export type { PluginConfiguration } from './types';
 
-export default (): Omit<EditorPlugin, 'name' | 'version'> => {
+export default (
+  config: PluginConfiguration = {}
+): Omit<EditorPlugin, 'name' | 'version'> => {
   return {
     initialize({ cesdk }) {
       if (cesdk == null) return;
@@ -28,9 +33,11 @@ export default (): Omit<EditorPlugin, 'name' | 'version'> => {
                 'application/pdf' as any
               );
 
+              // Use provided ICC profile or fallback to default
+              const iccProfile = config.iccProfile || getDefaultCMYKProfile();
+
               // Convert to PDF/X-3 using our plugin
-              // Note: This requires an ICC profile to be configured
-              const convertedBlobs = await convertToPDF([pdfBlob]);
+              const convertedBlobs = await convertToPDF([pdfBlob], { iccProfile });
 
               // We can safely assume that the conversion will return at most one
               // blob, as pages get consolidated into a single PDF during the initial export.
