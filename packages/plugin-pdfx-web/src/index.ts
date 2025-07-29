@@ -17,14 +17,11 @@ const Plugin = (pluginConfiguration?: PluginConfiguration) => ({
 export default Plugin;
 
 // Export the helper functions directly for use in applications
-export { convertToPDF, convertSingle, isSupported, getCapabilities, PDFXService } from './pdfx';
+export { convertToPDF, convertToPDFX3 } from './pdfx';
 export type { 
   PluginConfiguration, 
-  PDFConversionOptions, 
-  PDFX3Options, 
-  ConversionResult, 
-  ConversionProgress,
-  ConversionMetadata 
+  ConversionOptions as PDFXOptions,
+  PDFConversionResult
 } from './types';
 
 // Export core classes for advanced usage
