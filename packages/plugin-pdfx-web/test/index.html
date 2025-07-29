@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDFX Plugin Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .test-result {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 3px;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .loading {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+        button:hover:not(:disabled) {
+            background-color: #0056b3;
+        }
+        .log-output {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <h1>PDFX Plugin Test Page</h1>
+    
+    <div class="test-section">
+        <h2>Browser Compatibility</h2>
+        <div id="browser-info"></div>
+        <div id="browser-capabilities"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Ghostscript Loading Test</h2>
+        <button id="test-ghostscript-btn" onclick="testGhostscriptLoading()">Test Ghostscript Loading</button>
+        <button id="test-version-btn" onclick="testGhostscriptVersion()" disabled>Get Version Info</button>
+        <div id="ghostscript-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Virtual Filesystem Test</h2>
+        <button id="test-vfs-btn" onclick="testVirtualFileSystem()" disabled>Test Virtual Filesystem</button>
+        <div id="vfs-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Command Builder Test</h2>
+        <button id="test-cmd-btn" onclick="testCommandBuilder()">Test Command Builder</button>
+        <div id="cmd-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>PDF Upload & Conversion Test</h2>
+        <div>
+            <input type="file" id="pdf-upload" accept=".pdf" onchange="handlePDFUpload(event)">
+            <label for="pdf-upload" style="cursor: pointer; background-color: #28a745; color: white; padding: 10px 20px; border-radius: 5px; display: inline-block; margin: 5px;">
+                📁 Select PDF File
+            </label>
+        </div>
+        <div id="pdf-info"></div>
+        <div>
+            <button id="convert-pdf-btn" onclick="convertUploadedPDF()" disabled>Convert to PDF/X-3</button>
+            <button id="download-original-btn" onclick="downloadOriginal()" disabled style="background-color: #6c757d;">📥 Download Original</button>
+            <button id="download-converted-btn" onclick="downloadConverted()" disabled style="background-color: #17a2b8;">📥 Download Converted</button>
+        </div>
+        <div id="conversion-result"></div>
+        <div id="conversion-progress"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Debug Logs</h2>
+        <button onclick="clearLogs()">Clear Logs</button>
+        <button onclick="updateLogs()">Refresh Logs</button>
+        <div id="log-output" class="log-output"></div>
+    </div>
+
+    <script type="module">
+        import { 
+          convertSingle,
+          isSupported,
+          getCapabilities,
+          PDFXService
+        } from '../dist/index.mjs';
+        
+        // Import core classes (may not be directly exported)
+        import { GhostscriptLoader } from '../dist/index.mjs';
+        import { VirtualFileSystem } from '../dist/index.mjs';
+        import { CommandBuilder } from '../dist/index.mjs';
+        import { BrowserDetection } from '../dist/index.mjs';
+        import { Logger } from '../dist/index.mjs';
+        
+        // Make functions available globally for Playwright tests
+        window.PDFXPlugin = {
+          convertSingle,
+          convertToPDF: async (blobs, options) => {
+            const service = new PDFXService();
+            return service.convertToPDF(blobs, options);
+          },
+          isSupported,
+          getCapabilities,
+          loadGhostscript: () => GhostscriptLoader.load()
+        };
+
+        // Set debug logging
+        Logger.setLogLevel('debug');
+
+        let ghostscriptModule = null;
+        let uploadedPDFBlob = null;
+        let convertedPDFBlob = null;
+
+        // Initialize browser info
+        window.addEventListener('DOMContentLoaded', () => {
+            showBrowserInfo();
+            updateLogs();
+            setInterval(updateLogs, 2000); // Update logs every 2 seconds
+        });
+
+        function showBrowserInfo() {
+            const browser = new BrowserDetection();
+            const info = browser.getBrowserInfo();
+            const capabilities = {
+                webAssembly: browser.supportsWebAssembly(),
+                workers: browser.supportsWorkers(),
+                sharedArrayBuffer: browser.supportsSharedArrayBuffer(),
+                estimatedMemoryLimit: browser.getEstimatedMemoryLimit()
+            };
+
+            document.getElementById('browser-info').innerHTML = `
+                <div class="test-result ${capabilities.webAssembly && capabilities.workers ? 'success' : 'error'}">
+                    <strong>Browser:</strong> ${info.name} ${info.version} on ${info.platform}
+                </div>
+            `;
+
+            document.getElementById('browser-capabilities').innerHTML = `
+                <div class="test-result">
+                    <strong>Capabilities:</strong><br>
+                    WebAssembly: ${capabilities.webAssembly ? '✓' : '✗'}<br>
+                    Web Workers: ${capabilities.workers ? '✓' : '✗'}<br>
+                    SharedArrayBuffer: ${capabilities.sharedArrayBuffer ? '✓' : '✗'}<br>
+                    Estimated Memory Limit: ${formatBytes(capabilities.estimatedMemoryLimit)}
+                </div>
+            `;
+        }
+
+        window.testGhostscriptLoading = async function() {
+            const btn = document.getElementById('test-ghostscript-btn');
+            const result = document.getElementById('ghostscript-result');
+            
+            btn.disabled = true;
+            result.innerHTML = '<div class="test-result loading">Loading Ghostscript...</div>';
+
+            try {
+                const startTime = Date.now();
+                ghostscriptModule = await GhostscriptLoader.load({
+                    fallbackToLocal: true,
+                    timeout: 30000
+                });
+                const loadTime = Date.now() - startTime;
+
+                result.innerHTML = `
+                    <div class="test-result success">
+                        <strong>Success!</strong> Ghostscript loaded in ${loadTime}ms<br>
+                        Module ready: ${ghostscriptModule ? '✓' : '✗'}
+                    </div>
+                `;
+
+                // Enable other test buttons
+                document.getElementById('test-version-btn').disabled = false;
+                document.getElementById('test-vfs-btn').disabled = false;
+
+            } catch (error) {
+                result.innerHTML = `
+                    <div class="test-result error">
+                        <strong>Error:</strong> ${error.message}
+                    </div>
+                `;
+            } finally {
+                btn.disabled = false;
+            }
+        };
+
+        window.testGhostscriptVersion = async function() {
+            const btn = document.getElementById('test-version-btn');
+            const result = document.getElementById('ghostscript-result');
+            
+            if (!ghostscriptModule) {
+                result.innerHTML = '<div class="test-result error">Ghostscript not loaded</div>';
+                return;
+            }
+
+            btn.disabled = true;
+            
+            try {
+                const cmdBuilder = new CommandBuilder();
+                const versionCmd = cmdBuilder.buildInfoCommand();
+                
+                // Capture output
+                let output = '';
+                const originalPrint = ghostscriptModule.print;
+                ghostscriptModule.print = (text) => {
+                    output += text + '\\n';
+                    originalPrint(text);
+                };
+
+                const exitCode = ghostscriptModule.callMain(versionCmd.args);
+                ghostscriptModule.print = originalPrint;
+
+                result.innerHTML += `
+                    <div class="test-result ${exitCode === 0 ? 'success' : 'error'}">
+                        <strong>Version Command:</strong> Exit code ${exitCode}<br>
+                        <strong>Output:</strong><br>
+                        <pre style="margin-top: 5px; font-size: 11px;">${output || 'No output'}</pre>
+                    </div>
+                `;
+
+            } catch (error) {
+                result.innerHTML += `
+                    <div class="test-result error">
+                        <strong>Version Test Error:</strong> ${error.message}
+                    </div>
+                `;
+            } finally {
+                btn.disabled = false;
+            }
+        };
+
+        window.testVirtualFileSystem = async function() {
+            const btn = document.getElementById('test-vfs-btn');
+            const result = document.getElementById('vfs-result');
+            
+            if (!ghostscriptModule) {
+                result.innerHTML = '<div class="test-result error">Ghostscript not loaded</div>';
+                return;
+            }
+
+            btn.disabled = true;
+            result.innerHTML = '<div class="test-result loading">Testing Virtual Filesystem...</div>';
+
+            try {
+                const vfs = new VirtualFileSystem(ghostscriptModule);
+                
+                // Test file operations
+                const testContent = 'Hello, PDF/X World!';
+                const testPath = vfs.generateTempPath('test', 'txt');
+                
+                // Write and read text
+                vfs.writeText(testPath, testContent);
+                const readContent = vfs.readText(testPath);
+                
+                // Test blob operations
+                const testBlob = new Blob([new Uint8Array([1, 2, 3, 4, 5])], { type: 'application/octet-stream' });
+                const blobPath = vfs.generateTempPath('test', 'bin');
+                await vfs.writeBlob(blobPath, testBlob);
+                const readData = vfs.readFile(blobPath);
+                
+                // Test file info
+                const textSize = vfs.getFileSize(testPath);
+                const blobSize = vfs.getFileSize(blobPath);
+                const workingDir = vfs.getWorkingDir();
+
+                result.innerHTML = `
+                    <div class="test-result success">
+                        <strong>Virtual Filesystem Test Successful!</strong><br>
+                        Working Directory: ${workingDir}<br>
+                        Text file: ${testContent === readContent ? '✓' : '✗'} (${textSize} bytes)<br>
+                        Binary file: ${readData.length === 5 ? '✓' : '✗'} (${blobSize} bytes)<br>
+                        Generated paths work: ✓
+                    </div>
+                `;
+
+                // Cleanup
+                vfs.cleanup();
+
+            } catch (error) {
+                result.innerHTML = `
+                    <div class="test-result error">
+                        <strong>VFS Error:</strong> ${error.message}
+                    </div>
+                `;
+            } finally {
+                btn.disabled = false;
+            }
+        };
+
+        window.testCommandBuilder = function() {
+            const result = document.getElementById('cmd-result');
+            
+            try {
+                const cmdBuilder = new CommandBuilder();
+                
+                // Test basic PDFX command
+                const options = {
+                    version: 'PDF/X-3',
+                    colorSpace: 'CMYK',
+                    renderingIntent: 'perceptual',
+                    preserveBlack: true,
+                    iccProfilePath: '/tmp/profile.icc'
+                };
+                
+                const cmd = cmdBuilder.buildPDFXConversionCommand(
+                    '/input.pdf',
+                    '/output.pdf',
+                    '/pdfx.ps',
+                    options
+                );
+
+                const versionCmd = cmdBuilder.buildInfoCommand();
+
+                result.innerHTML = `
+                    <div class="test-result success">
+                        <strong>Command Builder Test Successful!</strong><br><br>
+                        <strong>PDFX Conversion Command:</strong><br>
+                        <em>Description:</em> ${cmd.description}<br>
+                        <em>Args (${cmd.args.length}):</em><br>
+                        <pre style="font-size: 10px; margin: 5px 0;">${cmd.args.join(' ')}</pre><br>
+                        
+                        <strong>Version Command:</strong><br>
+                        <em>Description:</em> ${versionCmd.description}<br>
+                        <em>Args:</em> ${versionCmd.args.join(' ')}
+                    </div>
+                `;
+
+            } catch (error) {
+                result.innerHTML = `
+                    <div class="test-result error">
+                        <strong>Command Builder Error:</strong> ${error.message}
+                    </div>
+                `;
+            }
+        };
+
+        window.clearLogs = function() {
+            Logger.clearLogs();
+            document.getElementById('log-output').textContent = '';
+        };
+
+        window.updateLogs = function() {
+            const logs = Logger.getLogs();
+            const output = document.getElementById('log-output');
+            
+            const logText = logs.map(log => {
+                const timestamp = new Date(log.timestamp).toISOString();
+                const data = log.data ? ` ${JSON.stringify(log.data)}` : '';
+                return `[${timestamp}] [${log.level.toUpperCase()}] [${log.component}] ${log.message}${data}`;
+            }).join('\\n');
+            
+            output.textContent = logText;
+            output.scrollTop = output.scrollHeight;
+        };
+
+        function formatBytes(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        // PDF Upload & Conversion Functions
+        window.handlePDFUpload = async function(event) {
+            const file = event.target.files[0];
+            const infoDiv = document.getElementById('pdf-info');
+            const convertBtn = document.getElementById('convert-pdf-btn');
+            const downloadOriginalBtn = document.getElementById('download-original-btn');
+            const conversionResult = document.getElementById('conversion-result');
+            
+            if (!file) {
+                infoDiv.innerHTML = '';
+                convertBtn.disabled = true;
+                downloadOriginalBtn.disabled = true;
+                return;
+            }
+
+            // Reset previous results
+            convertedPDFBlob = null;
+            document.getElementById('download-converted-btn').disabled = true;
+            conversionResult.innerHTML = '';
+
+            try {
+                uploadedPDFBlob = file;
+                
+                // Validate PDF
+                const isValidPDF = await validatePDFFile(file);
+                
+                infoDiv.innerHTML = `
+                    <div class="test-result ${isValidPDF ? 'success' : 'error'}">
+                        <strong>File Info:</strong><br>
+                        Name: ${file.name}<br>
+                        Size: ${formatBytes(file.size)}<br>
+                        Type: ${file.type}<br>
+                        Valid PDF: ${isValidPDF ? '✓' : '✗'}
+                    </div>
+                `;
+
+                convertBtn.disabled = !isValidPDF;
+                downloadOriginalBtn.disabled = false;
+
+            } catch (error) {
+                infoDiv.innerHTML = `
+                    <div class="test-result error">
+                        <strong>Error:</strong> ${error.message}
+                    </div>
+                `;
+                convertBtn.disabled = true;
+                downloadOriginalBtn.disabled = true;
+            }
+        };
+
+        window.convertUploadedPDF = async function() {
+            if (!uploadedPDFBlob) {
+                document.getElementById('conversion-result').innerHTML = 
+                    '<div class="test-result error">No PDF file uploaded</div>';
+                return;
+            }
+
+            const convertBtn = document.getElementById('convert-pdf-btn');
+            const downloadConvertedBtn = document.getElementById('download-converted-btn');
+            const resultDiv = document.getElementById('conversion-result');
+            const progressDiv = document.getElementById('conversion-progress');
+            
+            convertBtn.disabled = true;
+            downloadConvertedBtn.disabled = true;
+            convertedPDFBlob = null;
+
+            progressDiv.innerHTML = '<div class="test-result loading">Preparing conversion...</div>';
+
+            try {
+                const startTime = Date.now();
+                
+                // Convert using the plugin with progress tracking
+                const result = await convertSingle(uploadedPDFBlob, {
+                    version: 'PDF/X-3',
+                    colorSpace: 'CMYK',
+                    renderingIntent: 'perceptual',
+                    preserveBlack: true
+                }, (progress) => {
+                    progressDiv.innerHTML = `
+                        <div class="test-result loading">
+                            <strong>${progress.stage}:</strong> ${progress.progress}% - ${progress.message}
+                        </div>
+                    `;
+                });
+
+                const totalTime = Date.now() - startTime;
+                convertedPDFBlob = result.blob;
+
+                progressDiv.innerHTML = '';
+                resultDiv.innerHTML = `
+                    <div class="test-result success">
+                        <strong>Conversion Successful!</strong><br>
+                        Original Size: ${formatBytes(result.metadata.originalSize)}<br>
+                        Converted Size: ${formatBytes(result.metadata.convertedSize)}<br>
+                        Compression Ratio: ${result.metadata.compressionRatio.toFixed(2)}x<br>
+                        Conversion Time: ${result.metadata.conversionTime}ms<br>
+                        Total Time: ${totalTime}ms<br>
+                        PDF/X Version: ${result.metadata.pdfxVersion}<br>
+                        Compliant: ${result.metadata.isCompliant ? '✓' : '✗'}
+                    </div>
+                `;
+
+                downloadConvertedBtn.disabled = false;
+
+            } catch (error) {
+                progressDiv.innerHTML = '';
+                resultDiv.innerHTML = `
+                    <div class="test-result error">
+                        <strong>Conversion Failed:</strong> ${error.message}
+                    </div>
+                `;
+                console.error('Conversion error:', error);
+            } finally {
+                convertBtn.disabled = false;
+            }
+        };
+
+        window.downloadOriginal = function() {
+            if (!uploadedPDFBlob) return;
+            
+            // Ensure the blob has the correct MIME type
+            const pdfBlob = new Blob([uploadedPDFBlob], { type: 'application/pdf' });
+            const url = URL.createObjectURL(pdfBlob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `original-${Date.now()}.pdf`;
+            a.style.display = 'none';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        };
+
+        window.downloadConverted = function() {
+            if (!convertedPDFBlob) return;
+            
+            // Ensure the blob has the correct MIME type
+            const pdfBlob = new Blob([convertedPDFBlob], { type: 'application/pdf' });
+            const url = URL.createObjectURL(pdfBlob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `converted-pdfx3-${Date.now()}.pdf`;
+            a.style.display = 'none';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        };
+
+        async function validatePDFFile(file) {
+            try {
+                const arrayBuffer = await file.arrayBuffer();
+                const uint8Array = new Uint8Array(arrayBuffer);
+                
+                // Check PDF signature
+                const pdfSignature = new Uint8Array([37, 80, 68, 70]); // %PDF
+                if (uint8Array.length < 4) return false;
+                
+                for (let i = 0; i < 4; i++) {
+                    if (uint8Array[i] !== pdfSignature[i]) return false;
+                }
+                
+                return true;
+            } catch (error) {
+                console.error('PDF validation error:', error);
+                return false;
+            }
+        }
+    </script>
+</body>
+</html>
