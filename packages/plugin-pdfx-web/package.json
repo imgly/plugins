@@ -71,6 +71,7 @@
     "concurrently": "^8.2.2",
     "esbuild": "^0.19.12",
     "eslint": "^8.57.1",
+    "http-server": "^14.1.1",
     "playwright": "^1.54.1",
     "pnpm-sync-dependencies-meta-injected": "^0.0.14",
     "prettier": "^2.8.8",
