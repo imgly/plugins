@@ -137,7 +137,7 @@
     </div>
 
     <script type="module">
-      import CreativeEditorSDK from 'https://cdn.img.ly/packages/imgly/cesdk-js/1.37.0/index.js';
+      import CreativeEditorSDK from 'https://cdn.img.ly/packages/imgly/cesdk-js/1.56.0/index.js';
       import PDFXPlugin from '/dist/index.mjs';
 
       let cesdk = null;
@@ -156,10 +156,28 @@
           const config = {
             license:
               'yDDwCZO23aFG8Ag3i5j81fgUeVGOHNkgKUgW_uczN5p0bJaftF_5LzHd7DpMEAAF',
-            baseURL: 'https://cdn.img.ly/packages/imgly/cesdk-js/1.37.0/assets',
+            baseURL: 'https://cdn.img.ly/packages/imgly/cesdk-js/1.56.0/assets',
             callbacks: {
               onUpload: 'local',
+              onLoadArchive: 'uploadArchive',
+              onExport: 'download'
             },
+            ui: {
+            elements: {
+                view: 'default',
+                panels: {
+                settings: true
+                },
+                navigation: {
+                action: {
+                    save: true,
+                    download: true,
+                    load: true,
+                    export: true
+                }
+                }
+            }
+        }
           };
 
           updateStatus('Creating editor instance...', 'loading');
@@ -167,12 +185,24 @@
           window.cesdk = cesdk; // Make it globally accessible for debugging
 
           updateStatus('Adding PDFX plugin...', 'loading');
-          // Add our local PDFX plugin with PSOcoated_v3 as default profile
-          cesdk.addPlugin(
-            PDFXPlugin({
-              iccProfilePath: '/src/assets/icc-profiles/PSOcoated_v3.icc',
-            })
-          );
+          // Load ICC profile and add PDFX plugin
+          const iccProfilePath = '/src/assets/icc-profiles/PSOcoated_v3.icc';
+          const iccProfileResponse = await fetch(iccProfilePath);
+          
+          if (!iccProfileResponse.ok) {
+            throw new Error(`Failed to load ICC profile: ${iccProfileResponse.status} ${iccProfileResponse.statusText}`);
+          }
+          
+          const iccProfileBlob = await iccProfileResponse.blob();
+          
+          // Validate the ICC profile size
+          if (iccProfileBlob.size < 1000) {
+            throw new Error(`ICC profile is too small (${iccProfileBlob.size} bytes). Expected at least 1KB.`);
+          }
+          
+          cesdk.addPlugin(PDFXPlugin({
+            iccProfile: iccProfileBlob,
+          }));
 
           updateStatus('Adding asset sources...', 'loading');
           cesdk.addDefaultAssetSources();
@@ -182,47 +212,14 @@
           await cesdk.createDesignScene();
 
           updateStatus('Configuring navigation bar...', 'loading');
-
-          // Get current navigation bar order
-          const currentOrder = cesdk.ui.getNavigationBarOrder();
-          console.log('Current navigation order:', currentOrder);
-
-          // Debug: Check each item to see what's actually there
-          currentOrder.forEach((item, index) => {
-            console.log(`Navigation item ${index}:`, item, typeof item);
-          });
-
-          // Try different approach: filter out actions and add our export
-          const actionsIndex = currentOrder.findIndex((item) => {
-            const itemStr = typeof item === 'string' ? item : String(item);
-            return itemStr.includes('actions') || itemStr.includes('Actions');
-          });
-
-          console.log('Actions component index:', actionsIndex);
-
-          let newOrder;
-          if (actionsIndex !== -1) {
-            // Replace the actions component with our export component
-            newOrder = [...currentOrder];
-            newOrder[actionsIndex] = 'pdfx.export';
-          } else {
-            // If no actions found, just add our component at the end
-            newOrder = [...currentOrder, 'pdfx.export'];
-          }
-
-          console.log('Original order:', currentOrder);
-          console.log('New order:', newOrder);
-
+          
           // Set the new navigation bar order
-          cesdk.ui.setNavigationBarOrder(newOrder);
-          console.log('Navigation bar updated');
+          cesdk.ui.setNavigationBarOrder([...cesdk.ui.getNavigationBarOrder(), 'pdfx.export']);
 
           // Hide loading overlay
           loadingEl.style.display = 'none';
 
           updateStatus('Ready', 'ready');
-
-          console.log('CE.SDK initialized successfully');
         } catch (error) {
           console.error('Failed to initialize CE.SDK:', error);
           updateStatus(`Error: ${error.message}`, 'error');
