@@ -9,7 +9,7 @@ import { BlobUtils } from './utils/blob-utils';
  */
 export async function convertToPDFX3(
   inputPDF: Blob,
-  options: ConversionOptions
+  options: ConversionOptions & { profileName?: string }
 ): Promise<Blob> {
   // Validate inputs
   if (!(inputPDF instanceof Blob)) {
@@ -53,19 +53,26 @@ export async function convertToPDFX3(
 
     // Create PDF/X-3 definition
     const useICCProfile = options.iccProfile.size > 1000; // Only use real ICC profiles
-    const pdfxDefinition = createPDFXDefinition(useICCProfile ? profilePath : null);
+    const pdfxDefinition = createPDFXDefinition(
+      useICCProfile ? profilePath : null,
+      options.profileName
+    );
     vfs.writeText(pdfxDefPath, pdfxDefinition);
 
     // Execute Ghostscript conversion
     const gsArgs = [
       '-dSAFER',
+      `--permit-file-read=${profilePath}`,
       '-dBATCH',
       '-dNOPAUSE',
       '-dNOCACHE',
       '-sDEVICE=pdfwrite',
       '-sColorConversionStrategy=CMYK',
       '-dProcessColorModel=/DeviceCMYK',
-      '-dOverrideICC=true',
+      `-sOutputICCProfile=${profilePath}`,
+      '-dOverrideICC',
+      '-dPreserveSpotColors=true',
+      '-dConvertCMYKImagesToRGB=false',
       '-dPDFSETTINGS=/prepress',
       '-dCompatibilityLevel=1.4',
       '-dPDFX',
@@ -79,11 +86,6 @@ export async function convertToPDFX3(
       pdfxDefPath,
       inputPath,
     ];
-
-    // Only add ICC profile if it's not the default dummy profile
-    if (options.iccProfile.size > 1000) { // Real ICC profiles are typically larger
-      gsArgs.splice(-3, 0, `-sOutputICCProfile=${profilePath}`);
-    }
 
     const exitCode = await module.callMain(gsArgs);
     if (exitCode !== 0) {
@@ -106,13 +108,54 @@ export async function convertToPDFX3(
   }
 }
 
-function createPDFXDefinition(profilePath: string | null): string {
+// Map ICC profile names to their standard output condition identifiers
+const ICC_PROFILE_MAPPINGS: Record<string, { identifier: string; info: string }> = {
+  'PSOcoated_v3.icc': {
+    identifier: 'Coated FOGRA39',
+    info: 'Coated FOGRA39 (ISO 12647-2:2004)'
+  },
+  'PSOuncoated_v3_FOGRA52.icc': {
+    identifier: 'Uncoated FOGRA52',
+    info: 'Uncoated FOGRA52 (ISO 12647-2:2013)'
+  },
+  'SWOP2006_Coated3v2.icc': {
+    identifier: 'SWOP2006_Coated3v2',
+    info: 'SWOP2006 Coated #3 v2'
+  },
+  'USWebCoatedSWOP.icc': {
+    identifier: 'US Web Coated (SWOP) v2',
+    info: 'US Web Coated (SWOP) v2'
+  },
+  'ISOcoated_v2_300_eci.icc': {
+    identifier: 'ISO Coated v2 300% (ECI)',
+    info: 'ISO Coated v2 300% (ECI)'
+  },
+  'JapanColor2001Coated.icc': {
+    identifier: 'Japan Color 2001 Coated',
+    info: 'Japan Color 2001 Coated'
+  }
+};
+
+function createPDFXDefinition(profilePath: string | null, profileName?: string): string {
   if (profilePath) {
+    // Determine output condition based on ICC profile name
+    let outputCondition = {
+      identifier: 'Custom ICC Profile',
+      info: 'Custom ICC Profile'
+    };
+    
+    if (profileName) {
+      const mapping = ICC_PROFILE_MAPPINGS[profileName];
+      if (mapping) {
+        outputCondition = mapping;
+      }
+    }
+    
     // With ICC profile
     return `%!
 % PDF/X-3:2002 definition file
 [ /GTS_PDFXVersion (PDF/X-3:2002)
-  /Title (PDF/X Converted Document)
+  /Title (RGB to CMYK Converted Document)
   /Trapped /False
   /DOCINFO pdfmark
 
@@ -127,9 +170,9 @@ function createPDFXDefinition(profilePath: string | null): string {
 [{OutputIntent_PDFX} <<
   /Type /OutputIntent
   /S /GTS_PDFX
-  /OutputConditionIdentifier (Custom ICC Profile)
+  /OutputConditionIdentifier (${outputCondition.identifier})
   /DestOutputProfile {icc_PDFX}
-  /Info (Custom ICC Profile)
+  /Info (${outputCondition.info})
   /RegistryName (http://www.color.org)
 >> /PUT pdfmark
 
@@ -140,7 +183,7 @@ function createPDFXDefinition(profilePath: string | null): string {
     return `%!
 % PDF/X-3:2002 definition file (basic CMYK conversion)
 [ /GTS_PDFXVersion (PDF/X-3:2002)
-  /Title (PDF/X Converted Document)
+  /Title (RGB to CMYK Converted Document)
   /Trapped /False
   /DOCINFO pdfmark
 
