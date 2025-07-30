@@ -25,6 +25,7 @@ const mimeTypes = {
   '.ico': 'image/x-icon',
   '.pdf': 'application/pdf',
   '.wasm': 'application/wasm',
+  '.icc': 'application/vnd.iccprofile',
 };
 
 function getMimeType(filePath) {
@@ -81,6 +82,9 @@ const server = createServer(async (req, res) => {
       filePath = join(projectRoot, requestPath.substring(1));
     } else if (requestPath.startsWith('/dist/')) {
       // Serve dist files from project root
+      filePath = join(projectRoot, requestPath.substring(1));
+    } else if (requestPath.startsWith('/src/')) {
+      // Serve src files from project root
       filePath = join(projectRoot, requestPath.substring(1));
     } else {
       // Serve test files from test directory

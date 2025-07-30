@@ -16,6 +16,7 @@ const mimeTypes = {
   '.wasm': 'application/wasm',
   '.ts': 'application/javascript', // For source maps
   '.map': 'application/json',
+  '.icc': 'application/vnd.iccprofile',
 };
 
 const server = createServer(async (req, res) => {
@@ -43,22 +44,45 @@ const server = createServer(async (req, res) => {
 
     // Map URLs to file paths
     if (url.startsWith('/dist/')) {
-      filePath = join(projectRoot, url);
+      filePath = join(projectRoot, url.substring(1)); // Remove leading slash
     } else if (url.startsWith('/src/')) {
-      filePath = join(projectRoot, url);
+      filePath = join(projectRoot, url.substring(1)); // Remove leading slash
     } else if (url.startsWith('/test/')) {
-      filePath = join(projectRoot, url);
+      filePath = join(projectRoot, url.substring(1)); // Remove leading slash
     } else if (url.startsWith('/node_modules/')) {
-      filePath = join(projectRoot, url);
+      filePath = join(projectRoot, url.substring(1)); // Remove leading slash
     } else if (url.startsWith('/@privyid/')) {
       // Special handling for @privyid scoped package
       filePath = join(projectRoot, 'node_modules', url.substring(1));
+    } else if (url === '/favicon.ico') {
+      // Skip favicon requests
+      res.writeHead(404);
+      res.end();
+      return;
     } else {
       filePath = join(projectRoot, 'test', url);
     }
+    
+    if (!filePath) {
+      res.writeHead(404);
+      res.end('File not found');
+      return;
+    }
+    
 
     // Get file stats
-    const stats = await stat(filePath);
+    let stats;
+    try {
+      stats = await stat(filePath);
+    } catch (error) {
+      console.error(`File not found at path: ${filePath}`);
+      console.error(`Error:`, error.message);
+      console.error(`URL was: ${url}`);
+      res.writeHead(404);
+      res.end('File not found');
+      return;
+    }
+    
     if (!stats.isFile()) {
       res.writeHead(404);
       res.end('File not found');
@@ -80,6 +104,7 @@ const server = createServer(async (req, res) => {
     res.end(content);
   } catch (error) {
     console.error('Server error:', error);
+    console.error('Stack trace:', error.stack);
     res.writeHead(404);
     res.end('File not found');
   }
