@@ -26,8 +26,9 @@ export async function convertToPDFX3(
     );
   }
 
-  if (!options.iccProfile || !(options.iccProfile instanceof Blob)) {
-    throw new Error('ICC profile must be provided as a Blob');
+  // ICC profile is now optional
+  if (options.iccProfile && !(options.iccProfile instanceof Blob)) {
+    throw new Error('If provided, ICC profile must be a Blob');
   }
 
   // Validate PDF format
@@ -49,10 +50,14 @@ export async function convertToPDFX3(
 
     // Write files to virtual filesystem
     await vfs.writeBlob(inputPath, inputPDF);
-    await vfs.writeBlob(profilePath, options.iccProfile);
+    
+    // Only write ICC profile if provided
+    if (options.iccProfile) {
+      await vfs.writeBlob(profilePath, options.iccProfile);
+    }
 
     // Create PDF/X-3 definition
-    const useICCProfile = options.iccProfile.size > 1000; // Only use real ICC profiles
+    const useICCProfile = options.iccProfile && options.iccProfile.size > 1000; // Only use real ICC profiles
     const pdfxDefinition = createPDFXDefinition(
       useICCProfile ? profilePath : null,
       options.profileName
@@ -62,15 +67,73 @@ export async function convertToPDFX3(
     // Execute Ghostscript conversion
     const gsArgs = [
       '-dSAFER',
-      `--permit-file-read=${profilePath}`,
+    ];
+    
+    // Only add ICC profile options if provided
+    if (options.iccProfile) {
+      gsArgs.push(
+        `--permit-file-read=${profilePath}`,
+        `-sOutputICCProfile=${profilePath}`
+      );
+    }
+    
+    // Add override ICC option if specified
+    if (options.overrideICC !== false) {
+      gsArgs.push('-dOverrideICC');
+    }
+    
+    // Color conversion strategy
+    const colorStrategy = options.colorConversionStrategy || 'CMYK';
+    gsArgs.push(`-sColorConversionStrategy=${colorStrategy}`);
+    
+    // Process color model
+    if (colorStrategy === 'CMYK') {
+      gsArgs.push('-dProcessColorModel=/DeviceCMYK');
+    }
+    
+    // Rendering intent
+    if (options.renderingIntent && options.renderingIntent !== 'Default') {
+      const intentMap: Record<string, number> = {
+        'Perceptual': 0,
+        'RelativeColorimetric': 1,
+        'Saturation': 2,
+        'AbsoluteColorimetric': 3
+      };
+      if (intentMap[options.renderingIntent] !== undefined) {
+        gsArgs.push(`-dRenderIntent=${intentMap[options.renderingIntent]}`);
+      }
+    }
+    
+    // Black generation
+    if (options.blackGeneration && options.blackGeneration !== 'Default') {
+      gsArgs.push(`-sBlackGeneration=${options.blackGeneration}`);
+    }
+    
+    // Under color removal
+    if (options.underColorRemoval && options.underColorRemoval !== 'Default') {
+      gsArgs.push(`-sUnderColorRemoval=${options.underColorRemoval}`);
+    }
+    
+    // Transfer function
+    if (options.transferFunction && options.transferFunction !== 'Default') {
+      gsArgs.push(`-sTransferFunctionInfo=/${options.transferFunction}`);
+    }
+    
+    // Preserve black
+    if (options.preserveBlack) {
+      gsArgs.push('-dPreserveBlack=true');
+    }
+    
+    // Preserve overprint
+    if (options.preserveOverprint !== false) {
+      gsArgs.push('-dPreserveOverprint=true');
+    }
+    
+    gsArgs.push(
       '-dBATCH',
       '-dNOPAUSE',
       '-dNOCACHE',
       '-sDEVICE=pdfwrite',
-      '-sColorConversionStrategy=CMYK',
-      '-dProcessColorModel=/DeviceCMYK',
-      `-sOutputICCProfile=${profilePath}`,
-      '-dOverrideICC',
       '-dPreserveSpotColors=true',
       '-dConvertCMYKImagesToRGB=false',
       '-dPDFSETTINGS=/prepress',
@@ -84,8 +147,8 @@ export async function convertToPDFX3(
       '-dDownsampleMonoImages=false',
       `-sOutputFile=${outputPath}`,
       pdfxDefPath,
-      inputPath,
-    ];
+      inputPath
+    );
 
     const exitCode = await module.callMain(gsArgs);
     if (exitCode !== 0) {
@@ -205,8 +268,8 @@ export async function convertToPDF(
   pdfBlobs: Blob[],
   options?: ConversionOptions
 ): Promise<Blob[]> {
-  // If no ICC profile provided, return original blobs
-  if (!options?.iccProfile) {
+  // If no options provided, return original blobs
+  if (!options) {
     return pdfBlobs;
   }
 
