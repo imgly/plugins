@@ -189,6 +189,10 @@ function App() {
                     OpenAiImage.GptImage1.Text2Image({
                       middleware: [imageRateLimitMiddleware, errorMiddleware],
                       proxyUrl: import.meta.env.VITE_OPENAI_PROXY_URL
+                    }),
+                    FalAiImage.IdeogramV3({
+                      middleware: [imageRateLimitMiddleware, errorMiddleware],
+                      proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
                     })
                   ],
                   image2image: [
@@ -205,6 +209,10 @@ function App() {
                       proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
                     }),
                     FalAiImage.FluxProKontextMaxEdit({
+                      middleware: [imageRateLimitMiddleware, errorMiddleware],
+                      proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
+                    }),
+                    FalAiImage.IdeogramV3Remix({
                       middleware: [imageRateLimitMiddleware, errorMiddleware],
                       proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
                     })

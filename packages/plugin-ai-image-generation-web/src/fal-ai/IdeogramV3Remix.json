@@ -1,0 +1,173 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Ideogram V3 Remix API",
+    "version": "1.0.0",
+    "description": "Ideogram V3 Remix image-to-image generation API"
+  },
+  "components": {
+    "schemas": {
+      "IdeogramV3RemixInput": {
+        "title": "IdeogramV3RemixInput",
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "title": "Prompt",
+            "type": "string",
+            "description": "Text description for image remix",
+            "x-imgly-builder": {
+              "component": "TextArea"
+            }
+          },
+          "image_url": {
+            "title": "Input Image",
+            "type": "string",
+            "description": "URL of image to remix",
+            "x-imgly-builder": {
+              "component": "ImageUrl"
+            }
+          },
+          "style": {
+            "title": "Style",
+            "type": "string",
+            "enum": ["AUTO", "GENERAL", "REALISTIC", "DESIGN"],
+            "default": "AUTO",
+            "description": "The style of the generated image",
+            "x-imgly-enum-labels": {
+              "AUTO": "Auto",
+              "GENERAL": "General",
+              "REALISTIC": "Realistic", 
+              "DESIGN": "Design"
+            }
+          },
+          "image_size": {
+            "anyOf": [
+              {
+                "enum": [
+                  "square_hd",
+                  "square", 
+                  "portrait_4_3",
+                  "portrait_16_9",
+                  "landscape_4_3",
+                  "landscape_16_9"
+                ],
+                "type": "string"
+              },
+              { "$ref": "#/components/schemas/ImageSize" }
+            ],
+            "title": "Format",
+            "default": "square_hd",
+            "x-imgly-enum-labels": {
+              "ImageSize": "Custom",
+              "square_hd": "Square HD",
+              "square": "Square",
+              "portrait_4_3": "Portrait 4:3",
+              "portrait_16_9": "Portrait 16:9",
+              "landscape_4_3": "Landscape 4:3",
+              "landscape_16_9": "Landscape 16:9"
+            },
+            "x-imgly-enum-icons": {
+              "square": "@imgly/plugin/formats/ratio1by1",
+              "square_hd": "@imgly/plugin/formats/ratio1by1",
+              "portrait_4_3": "@imgly/plugin/formats/ratio3by4",
+              "portrait_16_9": "@imgly/plugin/formats/ratio9by16",
+              "landscape_4_3": "@imgly/plugin/formats/ratio4by3",
+              "landscape_16_9": "@imgly/plugin/formats/ratio16by9",
+              "ImageSize": "@imgly/plugin/formats/ratioFree"
+            }
+          },
+          "rendering_speed": {
+            "title": "Rendering Speed",
+            "type": "string",
+            "enum": ["TURBO", "BALANCED", "QUALITY"],
+            "default": "BALANCED",
+            "description": "Speed vs quality tradeoff for generation",
+            "x-imgly-enum-labels": {
+              "TURBO": "Turbo",
+              "BALANCED": "Balanced",
+              "QUALITY": "Quality"
+            }
+          },
+          "strength": {
+            "title": "Strength",
+            "type": "number",
+            "minimum": 0.01,
+            "maximum": 1.0,
+            "default": 0.8,
+            "description": "Controls how much the input image influences the remix",
+            "x-imgly-builder": {
+              "component": "Slider",
+              "min": 0.01,
+              "max": 1.0,
+              "step": 0.01
+            }
+          }
+        },
+        "x-fal-order-properties": ["image_url", "prompt", "image_size"],
+        "required": ["prompt", "image_url"]
+      },
+      "IdeogramV3RemixOutput": {
+        "title": "IdeogramV3RemixOutput",
+        "type": "object", 
+        "properties": {
+          "images": {
+            "title": "Images",
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/File" }
+          }
+        },
+        "required": ["images"]
+      },
+      "ImageSize": {
+        "title": "ImageSize",
+        "type": "object",
+        "properties": {
+          "width": {
+            "type": "integer",
+            "title": "Width",
+            "description": "The width of the generated image",
+            "minimum": 64,
+            "maximum": 14142,
+            "default": 1024
+          },
+          "height": {
+            "type": "integer", 
+            "title": "Height",
+            "description": "The height of the generated image",
+            "minimum": 64,
+            "maximum": 14142,
+            "default": 1024
+          }
+        },
+        "x-fal-order-properties": ["width", "height"]
+      },
+      "File": {
+        "title": "File",
+        "type": "object",
+        "properties": {
+          "url": {
+            "title": "Url",
+            "type": "string",
+            "description": "The URL where the file can be downloaded from"
+          },
+          "content_type": {
+            "title": "Content Type",
+            "type": "string",
+            "description": "The mime type of the file"
+          },
+          "file_name": {
+            "title": "File Name", 
+            "type": "string",
+            "description": "The name of the file"
+          },
+          "file_size": {
+            "title": "File Size",
+            "type": "integer",
+            "description": "The size of the file in bytes"
+          }
+        },
+        "required": ["url"]
+      }
+    }
+  }
+}

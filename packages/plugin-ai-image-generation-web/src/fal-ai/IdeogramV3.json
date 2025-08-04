@@ -1,0 +1,169 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Ideogram V3 API",
+    "version": "1.0.0",
+    "description": "Ideogram V3 text-to-image generation API"
+  },
+  "components": {
+    "schemas": {
+      "IdeogramV3Input": {
+        "title": "IdeogramV3Input",
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "title": "Prompt",
+            "type": "string",
+            "description": "Text description for image generation",
+            "x-imgly-builder": {
+              "component": "TextArea"
+            }
+          },
+          "style": {
+            "title": "Style",
+            "type": "string",
+            "enum": ["AUTO", "GENERAL", "REALISTIC", "DESIGN"],
+            "default": "AUTO",
+            "description": "The style of the generated image",
+            "x-imgly-enum-labels": {
+              "AUTO": "Auto",
+              "GENERAL": "General",
+              "REALISTIC": "Realistic", 
+              "DESIGN": "Design"
+            }
+          },
+          "image_size": {
+            "anyOf": [
+              {
+                "enum": [
+                  "square_hd",
+                  "square", 
+                  "portrait_4_3",
+                  "portrait_16_9",
+                  "landscape_4_3",
+                  "landscape_16_9"
+                ],
+                "type": "string"
+              },
+              { "$ref": "#/components/schemas/ImageSize" }
+            ],
+            "title": "Format",
+            "default": "square_hd",
+            "x-imgly-enum-labels": {
+              "ImageSize": "Custom",
+              "square_hd": "Square HD",
+              "square": "Square",
+              "portrait_4_3": "Portrait 4:3",
+              "portrait_16_9": "Portrait 16:9",
+              "landscape_4_3": "Landscape 4:3",
+              "landscape_16_9": "Landscape 16:9"
+            },
+            "x-imgly-enum-icons": {
+              "square": "@imgly/plugin/formats/ratio1by1",
+              "square_hd": "@imgly/plugin/formats/ratio1by1",
+              "portrait_4_3": "@imgly/plugin/formats/ratio3by4",
+              "portrait_16_9": "@imgly/plugin/formats/ratio9by16",
+              "landscape_4_3": "@imgly/plugin/formats/ratio4by3",
+              "landscape_16_9": "@imgly/plugin/formats/ratio16by9",
+              "ImageSize": "@imgly/plugin/formats/ratioFree"
+            }
+          },
+          "rendering_speed": {
+            "title": "Rendering Speed",
+            "type": "string",
+            "enum": ["TURBO", "BALANCED", "QUALITY"],
+            "default": "QUALITY",
+            "description": "Speed vs quality tradeoff for generation",
+            "x-imgly-enum-labels": {
+              "TURBO": "Turbo",
+              "BALANCED": "Balanced",
+              "QUALITY": "Quality"
+            }
+          },
+          "expand_prompt": {
+            "title": "Expand Prompt",
+            "type": "boolean",
+            "default": true,
+            "description": "Use MagicPrompt to enhance the prompt"
+          },
+          "seed": {
+            "title": "Seed",
+            "type": "integer",
+            "description": "Random seed for reproducible results",
+            "minimum": 0,
+            "maximum": 2147483647
+          }
+        },
+        "x-fal-order-properties": ["prompt", "style", "image_size"],
+        "required": ["prompt"]
+      },
+      "IdeogramV3Output": {
+        "title": "IdeogramV3Output",
+        "type": "object", 
+        "properties": {
+          "images": {
+            "title": "Images",
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/File" }
+          },
+          "seed": {
+            "title": "Seed",
+            "type": "integer",
+            "description": "The seed used for generation"
+          }
+        },
+        "required": ["images"]
+      },
+      "ImageSize": {
+        "title": "ImageSize",
+        "type": "object",
+        "properties": {
+          "width": {
+            "type": "integer",
+            "title": "Width",
+            "description": "The width of the generated image",
+            "minimum": 64,
+            "maximum": 14142,
+            "default": 1024
+          },
+          "height": {
+            "type": "integer", 
+            "title": "Height",
+            "description": "The height of the generated image",
+            "minimum": 64,
+            "maximum": 14142,
+            "default": 1024
+          }
+        },
+        "x-fal-order-properties": ["width", "height"]
+      },
+      "File": {
+        "title": "File",
+        "type": "object",
+        "properties": {
+          "url": {
+            "title": "Url",
+            "type": "string",
+            "description": "The URL where the file can be downloaded from"
+          },
+          "content_type": {
+            "title": "Content Type",
+            "type": "string",
+            "description": "The mime type of the file"
+          },
+          "file_name": {
+            "title": "File Name", 
+            "type": "string",
+            "description": "The name of the file"
+          },
+          "file_size": {
+            "title": "File Size",
+            "type": "integer",
+            "description": "The size of the file in bytes"
+          }
+        },
+        "required": ["url"]
+      }
+    }
+  }
+}
