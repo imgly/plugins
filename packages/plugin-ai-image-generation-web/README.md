@@ -276,7 +276,6 @@ Key features:
 - Four distinct style modes: AUTO, GENERAL, REALISTIC, and DESIGN
 - Multiple image size presets: square HD, square, portrait 4:3/16:9, landscape 4:3/16:9
 - Custom dimensions support (64x64 to 14142x14142 pixels)
-- Three rendering speed options: TURBO, BALANCED, and QUALITY
 
 #### 6. IdeogramV3Remix (Image-to-Image)
 
@@ -297,7 +296,6 @@ Key features:
 - Four distinct style modes: AUTO, GENERAL, REALISTIC, and DESIGN
 - Multiple image size presets: square HD, square, portrait 4:3/16:9, landscape 4:3/16:9
 - Custom dimensions support (64x64 to 14142x14142 pixels)
-- Three rendering speed options: TURBO, BALANCED, and QUALITY
 
 #### 7. FluxProKontextEdit (Image-to-Image)
 
