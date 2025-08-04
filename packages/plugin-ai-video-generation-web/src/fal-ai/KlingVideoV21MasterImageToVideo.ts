@@ -33,7 +33,6 @@ export function KlingVideoV21MasterImageToVideo(
   return async ({ cesdk }: { cesdk: CreativeEditorSDK }) => {
     const modelKey = 'fal-ai/kling-video/v2.1/master/image-to-video';
 
-    // Set translations
     cesdk.i18n.setTranslations({
       en: {
         'ly.img.ai.quickAction.createVideoKling': 'Create Video (Kling)...',
@@ -41,7 +40,12 @@ export function KlingVideoV21MasterImageToVideo(
           'Select Image To Generate',
         [`panel.${modelKey}.imageSelection`]: 'Select Image To Generate',
         [`libraries.${getPanelId(modelKey)}.history.label`]:
-          'Generated From Image'
+          'Generated From Image',
+        [`${modelKey}.prompt`]: 'Prompt',
+        [`${modelKey}.image_url`]: 'Image',
+        [`${modelKey}.duration`]: 'Duration',
+        [`${modelKey}.duration.5`]: '5 seconds',
+        [`${modelKey}.duration.10`]: '10 seconds'
       }
     });
 

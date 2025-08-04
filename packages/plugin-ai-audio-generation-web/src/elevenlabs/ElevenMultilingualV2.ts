@@ -60,7 +60,11 @@ function getProvider(
       [`panel.${voiceSelectionPanelId}`]: 'Select a Voice',
       [`panel.${getPanelId('elevenlabs')}`]: 'AI Voice',
       [`libraries.${modelKey}.history.label`]: 'AI Voice',
-      [`libraries.elevenlabs/sound-generation.history.label`]: 'Generated Sound'
+      [`libraries.elevenlabs/sound-generation.history.label`]:
+        'Generated Sound',
+      [`${modelKey}.prompt`]: 'Prompt',
+      [`${modelKey}.voice_id`]: 'Voice',
+      [`${modelKey}.speed`]: 'Speed'
     }
   });
 

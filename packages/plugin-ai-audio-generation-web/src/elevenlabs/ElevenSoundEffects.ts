@@ -33,7 +33,9 @@ function getProvider(
 
   cesdk.setTranslations({
     en: {
-      [`panel.${modelKey}`]: 'Generate Sound'
+      [`panel.${modelKey}`]: 'Generate Sound',
+      [`${modelKey}.text`]: 'Prompt',
+      [`${modelKey}.duration_seconds`]: 'Duration (sec.)'
     }
   });
 

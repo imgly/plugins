@@ -26,12 +26,19 @@ export function Veo3TextToVideo(
   return async ({ cesdk }: { cesdk: CreativeEditorSDK }) => {
     const modelKey = 'fal-ai/veo3';
 
-    // Set translations
     cesdk.i18n.setTranslations({
       en: {
         [`panel.${getPanelId(modelKey)}.prompt`]: 'Enter your prompt',
         [`panel.${modelKey}.prompt`]: 'Enter your prompt',
-        [`libraries.${getPanelId(modelKey)}.history.label`]: 'Generated Videos'
+        [`libraries.${getPanelId(modelKey)}.history.label`]: 'Generated Videos',
+        [`${modelKey}.prompt`]: 'Prompt',
+        [`${modelKey}.aspect_ratio`]: 'Aspect Ratio',
+        [`${modelKey}.aspect_ratio.16:9`]: '16:9',
+        [`${modelKey}.aspect_ratio.9:16`]: '9:16',
+        [`${modelKey}.aspect_ratio.1:1`]: '1:1',
+        [`${modelKey}.duration`]: 'Duration',
+        [`${modelKey}.duration.8s`]: '8 seconds',
+        [`${modelKey}.generate_audio`]: 'Generate Audio'
       }
     });
 

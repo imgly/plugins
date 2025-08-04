@@ -179,80 +179,84 @@ function App() {
                   ],
                   text2image: [
                     FalAiImage.RecraftV3({
-                      middleware: [imageRateLimitMiddleware, errorMiddleware],
+                      middlewares: [imageRateLimitMiddleware, errorMiddleware],
                       proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
                     }),
                     FalAiImage.Recraft20b({
-                      middleware: [imageRateLimitMiddleware, errorMiddleware],
+                      middlewares: [imageRateLimitMiddleware, errorMiddleware],
                       proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
                     }),
                     OpenAiImage.GptImage1.Text2Image({
-                      middleware: [imageRateLimitMiddleware, errorMiddleware],
+                      middlewares: [imageRateLimitMiddleware, errorMiddleware],
                       proxyUrl: import.meta.env.VITE_OPENAI_PROXY_URL
                     }),
                     FalAiImage.IdeogramV3({
-                      middleware: [imageRateLimitMiddleware, errorMiddleware],
+                      middlewares: [imageRateLimitMiddleware, errorMiddleware],
                       proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
                     })
                   ],
                   image2image: [
                     FalAiImage.GeminiFlashEdit({
-                      middleware: [imageRateLimitMiddleware, errorMiddleware],
+                      middlewares: [imageRateLimitMiddleware, errorMiddleware],
                       proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
                     }),
                     OpenAiImage.GptImage1.Image2Image({
-                      middleware: [imageRateLimitMiddleware, errorMiddleware],
+                      middlewares: [imageRateLimitMiddleware, errorMiddleware],
                       proxyUrl: import.meta.env.VITE_OPENAI_PROXY_URL
                     }),
                     FalAiImage.FluxProKontextEdit({
-                      middleware: [imageRateLimitMiddleware, errorMiddleware],
+                      middlewares: [imageRateLimitMiddleware, errorMiddleware],
                       proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
                     }),
                     FalAiImage.FluxProKontextMaxEdit({
-                      middleware: [imageRateLimitMiddleware, errorMiddleware],
+                      middlewares: [imageRateLimitMiddleware, errorMiddleware],
                       proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
                     }),
                     FalAiImage.IdeogramV3Remix({
-                      middleware: [imageRateLimitMiddleware, errorMiddleware],
+                      middlewares: [imageRateLimitMiddleware, errorMiddleware],
                       proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
                     })
                   ],
                   text2video: [
                     FalAiVideo.MinimaxVideo01Live({
-                      middleware: [videoRateLimitMiddleware, errorMiddleware],
+                      middlewares: [videoRateLimitMiddleware, errorMiddleware],
                       proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
                     }),
                     FalAiVideo.Veo3TextToVideo({
-                      middleware: [videoRateLimitMiddleware, errorMiddleware],
+                      middlewares: [videoRateLimitMiddleware, errorMiddleware],
                       proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
                     }),
                     FalAiVideo.KlingVideoV21MasterTextToVideo({
-                      middleware: [videoRateLimitMiddleware, errorMiddleware],
+                      middlewares: [videoRateLimitMiddleware, errorMiddleware],
+                      proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
+                    }),
+                    FalAiVideo.PixverseV35TextToVideo({
+                      middlewares: [videoRateLimitMiddleware, errorMiddleware],
                       proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
                     })
                   ],
                   image2video: [
                     FalAiVideo.MinimaxVideo01LiveImageToVideo({
-                      middleware: [videoRateLimitMiddleware, errorMiddleware],
+                      middlewares: [videoRateLimitMiddleware, errorMiddleware],
                       proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
                     }),
                     FalAiVideo.KlingVideoV21MasterImageToVideo({
-                      middleware: [videoRateLimitMiddleware, errorMiddleware],
+                      middlewares: [videoRateLimitMiddleware, errorMiddleware],
                       proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
                     })
                   ],
                   text2speech: Elevenlabs.ElevenMultilingualV2({
-                    middleware: [soundRateLimitMiddleware, errorMiddleware],
+                    middlewares: [soundRateLimitMiddleware, errorMiddleware],
                     proxyUrl: import.meta.env.VITE_ELEVENLABS_PROXY_URL
                   }),
                   text2sound: [
                     Elevenlabs.ElevenSoundEffects({
-                      middleware: [soundRateLimitMiddleware, errorMiddleware],
+                      middlewares: [soundRateLimitMiddleware, errorMiddleware],
                       proxyUrl: import.meta.env.VITE_ELEVENLABS_PROXY_URL
                     })
                   ],
                   text2sticker: FalAiSticker.Recraft20b({
-                    middleware: [imageRateLimitMiddleware, errorMiddleware],
+                    middlewares: [imageRateLimitMiddleware, errorMiddleware],
                     proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
                   })
                 }
@@ -263,6 +267,26 @@ function App() {
               'sceneModeToggle',
               ...instance.ui.getNavigationBarOrder()
             ]);
+
+            // Add custom i18n translations for AI providers
+            instance.i18n.setTranslations({
+              en: {
+                // RecraftV3 provider translations (override schema defaults)
+                'fal-ai/recraft-v3.prompt': 'Describe your image',
+                'fal-ai/recraft-v3.image_size': 'Image Format',
+                'fal-ai/recraft-v3.image_size.square_hd':
+                  'Square HD (1024×1024)',
+                'fal-ai/recraft-v3.image_size.square': 'Square (512×512)',
+                'fal-ai/recraft-v3.image_size.portrait_4_3':
+                  'Portrait 4:3 (768×1024)',
+                'fal-ai/recraft-v3.image_size.portrait_16_9':
+                  'Portrait 16:9 (576×1024)',
+                'fal-ai/recraft-v3.image_size.landscape_4_3':
+                  'Landscape 4:3 (1024×768)',
+                'fal-ai/recraft-v3.image_size.landscape_16_9':
+                  'Landscape 16:9 (1024×576)'
+              }
+            });
 
             instance.ui.registerComponent('sceneModeToggle', ({ builder }) => {
               builder.Button('sceneModeToggle', {

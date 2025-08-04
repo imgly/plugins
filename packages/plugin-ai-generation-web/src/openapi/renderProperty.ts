@@ -48,47 +48,25 @@ function renderProperty<K extends OutputKind, I, O extends Output>(
   switch (type) {
     case 'string': {
       if (property.schema.enum != null) {
-        return renderEnumProperty(
-          context,
-          propertyWithSchema,
-          provider,
-          panelInput,
-          options,
-          config
-        );
+        return renderEnumProperty(context, propertyWithSchema, provider);
       } else {
         return renderStringProperty(
           context,
           propertyWithSchema,
           provider,
           panelInput,
-          options,
-          config
+          options
         );
       }
     }
 
     case 'boolean': {
-      return renderBooleanProperty(
-        context,
-        propertyWithSchema,
-        provider,
-        panelInput,
-        options,
-        config
-      );
+      return renderBooleanProperty(context, propertyWithSchema, provider);
     }
 
     case 'number':
     case 'integer': {
-      return renderIntegerProperty(
-        context,
-        propertyWithSchema,
-        provider,
-        panelInput,
-        options,
-        config
-      );
+      return renderIntegerProperty(context, propertyWithSchema, provider);
     }
 
     case 'object': {
@@ -163,13 +141,27 @@ function renderObjectProperty<K extends OutputKind, I, O extends Output>(
   });
 }
 
+function getTranslatedLabel(
+  provider: Provider<any, any, any>,
+  property: Required<Property>
+): string {
+  return `${provider.id}.${property.id}`;
+}
+
+function getTranslatedEnumValueLabel(
+  provider: Provider<any, any, any>,
+  property: Required<Property>,
+  valueId: string
+): string {
+  return `${provider.id}.${property.id}.${valueId}`;
+}
+
 function renderStringProperty<K extends OutputKind, I, O extends Output>(
   context: BuilderRenderFunctionContext<any>,
   property: Required<Property>,
   provider: Provider<K, I, O>,
-  panelInput: PanelInputSchema<K, I>,
-  options: UIOptions,
-  config: CommonConfiguration<I, O>
+  _panelInput: PanelInputSchema<K, I>,
+  options: UIOptions
 ): GetPropertyInput {
   const {
     builder,
@@ -178,7 +170,7 @@ function renderStringProperty<K extends OutputKind, I, O extends Output>(
   const { id: propertyId } = property;
 
   const id = `${provider.id}.${propertyId}`;
-  const inputLabel = property.schema.title ?? id;
+  const inputLabel = getTranslatedLabel(provider, property);
 
   const propertyState = global(id, property.schema.default ?? '');
 
@@ -204,10 +196,7 @@ function renderStringProperty<K extends OutputKind, I, O extends Output>(
 function renderEnumProperty<K extends OutputKind, I, O extends Output>(
   context: BuilderRenderFunctionContext<any>,
   property: Required<Property>,
-  provider: Provider<K, I, O>,
-  panelInput: PanelInputSchema<K, I>,
-  options: UIOptions,
-  config: CommonConfiguration<I, O>
+  provider: Provider<K, I, O>
 ): GetPropertyInput {
   const {
     builder,
@@ -216,17 +205,7 @@ function renderEnumProperty<K extends OutputKind, I, O extends Output>(
   const { id: propertyId } = property;
 
   const id = `${provider.id}.${propertyId}`;
-  const inputLabel = property.schema.title ?? id;
-
-  const labels: Record<string, string> =
-    property.schema.enum != null &&
-    'x-imgly-enum-labels' in property.schema.enum &&
-    typeof property.schema.enum['x-imgly-enum-labels'] === 'object'
-      ? (property.schema.enum['x-imgly-enum-labels'] as Record<string, string>)
-      : 'x-imgly-enum-labels' in property.schema &&
-        typeof property.schema['x-imgly-enum-labels'] === 'object'
-      ? (property.schema['x-imgly-enum-labels'] as Record<string, string>)
-      : {};
+  const inputLabel = getTranslatedLabel(provider, property);
 
   const icons: Record<string, string> =
     'x-imgly-enum-icons' in property.schema &&
@@ -236,7 +215,7 @@ function renderEnumProperty<K extends OutputKind, I, O extends Output>(
 
   const values: EnumValue[] = (property.schema.enum ?? []).map((valueId) => ({
     id: valueId,
-    label: labels[valueId] ?? getLabelFromId(valueId),
+    label: getTranslatedEnumValueLabel(provider, property, valueId),
     icon: icons[valueId]
   }));
   const defaultValue =
@@ -262,10 +241,7 @@ function renderEnumProperty<K extends OutputKind, I, O extends Output>(
 function renderBooleanProperty<K extends OutputKind, I, O extends Output>(
   context: BuilderRenderFunctionContext<any>,
   property: Required<Property>,
-  provider: Provider<K, I, O>,
-  panelInput: PanelInputSchema<K, I>,
-  options: UIOptions,
-  config: CommonConfiguration<I, O>
+  provider: Provider<K, I, O>
 ): GetPropertyInput {
   const {
     builder,
@@ -274,7 +250,7 @@ function renderBooleanProperty<K extends OutputKind, I, O extends Output>(
   const { id: propertyId } = property;
 
   const id = `${provider.id}.${propertyId}`;
-  const inputLabel = property.schema.title ?? id;
+  const inputLabel = getTranslatedLabel(provider, property);
 
   const defaultValue = !!property.schema.default;
   const propertyState = global<boolean>(id, defaultValue);
@@ -294,10 +270,7 @@ function renderBooleanProperty<K extends OutputKind, I, O extends Output>(
 function renderIntegerProperty<K extends OutputKind, I, O extends Output>(
   context: BuilderRenderFunctionContext<any>,
   property: Required<Property>,
-  provider: Provider<K, I, O>,
-  panelInput: PanelInputSchema<K, I>,
-  options: UIOptions,
-  config: CommonConfiguration<I, O>
+  provider: Provider<K, I, O>
 ): GetPropertyInput {
   const {
     builder,
@@ -306,7 +279,7 @@ function renderIntegerProperty<K extends OutputKind, I, O extends Output>(
   const { id: propertyId } = property;
 
   const id = `${provider.id}.${propertyId}`;
-  const inputLabel = property.schema.title ?? id;
+  const inputLabel = getTranslatedLabel(provider, property);
 
   const minValue = property.schema.minimum;
   const maxValue = property.schema.maximum;
@@ -371,7 +344,7 @@ function renderAnyOfProperty<K extends OutputKind, I, O extends Output>(
   const { id: propertyId } = property;
 
   const id = `${provider.id}.${propertyId}`;
-  const inputLabel = property.schema.title ?? id;
+  const inputLabel = getTranslatedLabel(provider, property);
 
   const anyOf = (property.schema.anyOf ?? []) as OpenAPIV3.SchemaObject[];
 
@@ -412,8 +385,7 @@ function renderAnyOfProperty<K extends OutputKind, I, O extends Output>(
             { id: schemaId, schema: { ...anySchema, title: label } },
             provider,
             panelInput,
-            options,
-            config
+            options
           );
         };
 
@@ -428,10 +400,7 @@ function renderAnyOfProperty<K extends OutputKind, I, O extends Output>(
         return renderBooleanProperty(
           context,
           { id: schemaId, schema: { ...anySchema, title: label } },
-          provider,
-          panelInput,
-          options,
-          config
+          provider
         );
       };
 
@@ -445,10 +414,7 @@ function renderAnyOfProperty<K extends OutputKind, I, O extends Output>(
         return renderIntegerProperty(
           context,
           { id: schemaId, schema: { ...anySchema, title: label } },
-          provider,
-          panelInput,
-          options,
-          config
+          provider
         );
       };
 

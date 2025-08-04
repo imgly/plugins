@@ -75,7 +75,16 @@ function getProvider(
     en: {
       [`panel.${getPanelId(modelKey)}.styleSelection`]: 'Style Selection',
       [`${modelKey}.style`]: 'Style',
-      [`panel.gpt-image-1.imageSelection`]: 'Select Image To Change'
+      [`panel.gpt-image-1.imageSelection`]: 'Select Image To Change',
+      [`${modelKey}.prompt`]: 'Prompt',
+      [`${modelKey}.size`]: 'Format',
+      [`${modelKey}.background`]: 'Background',
+      [`${modelKey}.size.1024x1024`]: 'Square',
+      [`${modelKey}.size.1536x1024`]: 'Landscape',
+      [`${modelKey}.size.1024x1536`]: 'Portrait',
+      [`${modelKey}.background.auto`]: 'Auto',
+      [`${modelKey}.background.transparent`]: 'Transparent',
+      [`${modelKey}.background.opaque`]: 'Opaque'
     }
   });
 

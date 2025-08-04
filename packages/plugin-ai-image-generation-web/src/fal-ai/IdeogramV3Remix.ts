@@ -46,6 +46,20 @@ function getProvider(
 ): Provider<'image', IdeogramV3RemixUIInput, IdeogramV3RemixOutput> {
   const modelKey = 'fal-ai/ideogram/v3/remix';
 
+  cesdk.i18n.setTranslations({
+    en: {
+      [`${modelKey}.prompt`]: 'Prompt',
+      [`${modelKey}.image_url`]: 'Image',
+      [`${modelKey}.style`]: 'Style',
+      [`${modelKey}.style.AUTO`]: 'Auto',
+      [`${modelKey}.style.GENERAL`]: 'General',
+      [`${modelKey}.style.REALISTIC`]: 'Realistic',
+      [`${modelKey}.style.DESIGN`]: 'Design',
+      [`${modelKey}.image_size`]: 'Format',
+      [`${modelKey}.width`]: 'Width'
+    }
+  });
+
   return createImageProvider(
     {
       modelKey,

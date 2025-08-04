@@ -33,7 +33,9 @@ export function MinimaxVideo01LiveImageToVideo(
           'Select Image To Generate',
         [`panel.${modelKey}.imageSelection`]: 'Select Image To Generate',
         [`libraries.${getPanelId(modelKey)}.history.label`]:
-          'Generated From Image'
+          'Generated From Image',
+        [`${modelKey}.prompt`]: 'Prompt',
+        [`${modelKey}.image_url`]: 'Image'
       }
     });
 

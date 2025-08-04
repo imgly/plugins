@@ -39,6 +39,18 @@ function getProvider(
 ): Provider<'image', IdeogramV3Input, IdeogramV3Output> {
   const modelKey = 'fal-ai/ideogram/v3';
 
+  cesdk.i18n.setTranslations({
+    en: {
+      [`${modelKey}.prompt`]: 'Prompt',
+      [`${modelKey}.style`]: 'Style',
+      [`${modelKey}.style.AUTO`]: 'Auto',
+      [`${modelKey}.style.GENERAL`]: 'General',
+      [`${modelKey}.style.REALISTIC`]: 'Realistic',
+      [`${modelKey}.style.DESIGN`]: 'Design',
+      [`${modelKey}.image_size`]: 'Format'
+    }
+  });
+
   return createImageProvider(
     {
       modelKey,
