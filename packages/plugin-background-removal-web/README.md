@@ -10,9 +10,9 @@ You can install the plugin via npm or a compatible package manager. We are using
 Use the following commands to install the package:
 
 ```
-pnpm add @imgly/plugin-background-removal-web onnxruntime-web@1.21.0-dev.20250114-228dd16893
-yarn add @imgly/plugin-background-removal-web onnxruntime-web@1.21.0-dev.20250114-228dd16893
-npm install @imgly/plugin-background-removal-web onnxruntime-web@1.21.0-dev.20250114-228dd16893
+pnpm add @imgly/plugin-background-removal-web onnxruntime-web@1.21.0
+yarn add @imgly/plugin-background-removal-web onnxruntime-web@1.21.0
+npm install @imgly/plugin-background-removal-web onnxruntime-web@1.21.0
 ```
 
 ## Usage

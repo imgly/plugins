@@ -104,12 +104,30 @@ async function initializeProviders<K extends OutputKind, I, O extends Output>(
       .filter(isDefined)
   });
 
+  let compositeHistoryAssetLibraryEntryId: string | undefined;
+
+  if (compositeHistoryAssetSourceId != null) {
+    compositeHistoryAssetLibraryEntryId = compositeHistoryAssetSourceId;
+    options.cesdk.ui.addAssetLibraryEntry({
+      id: compositeHistoryAssetLibraryEntryId,
+      sourceIds: [compositeHistoryAssetSourceId],
+      sortBy: {
+        sortKey: 'insertedAt',
+        sortingOrder: 'Descending'
+      },
+      canRemove: true,
+      gridItemHeight: 'square',
+      gridBackgroundType: 'cover'
+    });
+  }
+
   return {
     panel: {
       builderRenderFunction
     },
     history: {
-      assetSourceId: compositeHistoryAssetSourceId
+      assetSourceId: compositeHistoryAssetSourceId,
+      assetLibraryEntryId: compositeHistoryAssetLibraryEntryId
     },
     providerInitializationResults: providerResults
   };

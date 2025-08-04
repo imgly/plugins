@@ -83,6 +83,24 @@ export function AudioGeneration<I, O extends Output>(
         toArray(text2sound).map((getProvider) => getProvider({ cesdk }))
       );
 
+      // Check if any providers are configured
+      const hasSpeechProviders = text2speechProviders.length > 0;
+      const hasSoundProviders = text2soundProviders.length > 0;
+
+      if (!hasSpeechProviders && !hasSoundProviders) {
+        disposeSoundApp();
+        disposeSpeechApp();
+        return; // Don't continue if no providers are configured
+      }
+
+      // Dispose unused apps based on provider availability
+      if (!hasSoundProviders) {
+        disposeSoundApp();
+      }
+      if (!hasSpeechProviders) {
+        disposeSpeechApp();
+      }
+
       const text2SpeechInitializedResult = await initializeProviders(
         'audio',
         text2speechProviders,

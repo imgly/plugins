@@ -134,49 +134,54 @@ function initializeAppLibrary(
   });
 
   const componentId = `${AI_APP_ID}.dock`;
-  cesdk.ui.registerComponent(componentId, ({ builder, experimental }) => {
-    const apps = appAssetSource.getCurrentAssets();
-    if (apps.length === 0) return;
-    const singleAction =
-      apps.length === 1
-        ? ActionRegistry.get().getBy({ id: apps[0].id, type: 'plugin' })[0]
-        : undefined;
+  // Old component ID we keep for backwards compatibility
+  const oldComponentId = 'ly.img.ai/apps.dock';
+  cesdk.ui.registerComponent(
+    [componentId, oldComponentId],
+    ({ builder, experimental }) => {
+      const apps = appAssetSource.getCurrentAssets();
+      if (apps.length === 0) return;
+      const singleAction =
+        apps.length === 1
+          ? ActionRegistry.get().getBy({ id: apps[0].id, type: 'plugin' })[0]
+          : undefined;
 
-    const panelId = singleAction?.meta?.panelId ?? AI_APP_ID;
-    const isOpen = cesdk.ui.isPanelOpen(panelId);
-    const isGeneratingState = experimental.global<boolean>(
-      `${AI_APP_ID}.isGenerating`,
-      false
-    );
+      const panelId = singleAction?.meta?.panelId ?? AI_APP_ID;
+      const isOpen = cesdk.ui.isPanelOpen(panelId);
+      const isGeneratingState = experimental.global<boolean>(
+        `${AI_APP_ID}.isGenerating`,
+        false
+      );
 
-    builder.Button(`${AI_APP_ID}.dock.button`, {
-      label: 'AI',
-      isSelected: isOpen,
-      icon: isGeneratingState.value
-        ? '@imgly/LoadingSpinner'
-        : '@imgly/Sparkle',
-      onClick: () => {
-        cesdk.ui.findAllPanels().forEach((panel) => {
-          if (panel.startsWith('ly.img.ai.') && panel !== panelId) {
-            cesdk.ui.closePanel(panel);
-          }
-          if (!isOpen && panel === '//ly.img.panel/assetLibrary') {
-            cesdk.ui.closePanel(panel);
-          }
-        });
+      builder.Button(`${AI_APP_ID}.dock.button`, {
+        label: 'AI',
+        isSelected: isOpen,
+        icon: isGeneratingState.value
+          ? '@imgly/LoadingSpinner'
+          : '@imgly/Sparkle',
+        onClick: () => {
+          cesdk.ui.findAllPanels().forEach((panel) => {
+            if (panel.startsWith('ly.img.ai.') && panel !== panelId) {
+              cesdk.ui.closePanel(panel);
+            }
+            if (!isOpen && panel === '//ly.img.panel/assetLibrary') {
+              cesdk.ui.closePanel(panel);
+            }
+          });
 
-        if (singleAction != null) {
-          singleAction.execute();
-        } else {
-          if (!isOpen) {
-            cesdk.ui.openPanel(AI_APP_ID);
+          if (singleAction != null) {
+            singleAction.execute();
           } else {
-            cesdk.ui.closePanel(AI_APP_ID);
+            if (!isOpen) {
+              cesdk.ui.openPanel(AI_APP_ID);
+            } else {
+              cesdk.ui.closePanel(AI_APP_ID);
+            }
           }
         }
-      }
-    });
-  });
+      });
+    }
+  );
 }
 
 function registerAppAssetSource(
