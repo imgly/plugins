@@ -6,77 +6,66 @@ export interface TranslationMap {
 
 /**
  * Extracts translations from an OpenAPI schema document
- * @param modelKey - The model key/provider ID (e.g., 'fal-ai/ideogram/v3')
+ * @param modelKey - The model key/provider ID
  * @param schema - The OpenAPI schema document
- * @param inputReference - The reference to the input schema (e.g., '#/components/schemas/IdeogramV3Input')
- * @returns A map of translation keys to their English labels
+ * @param inputReference - The reference to the input schema
+ * @param genericTranslations - Generic property translations that override schema defaults
+ * @returns Translation map with provider-specific keys
  */
 export function extractTranslationsFromSchema(
   modelKey: string,
   schema: OpenAPIV3.Document,
-  inputReference: string
+  inputReference: string,
+  genericTranslations: TranslationMap = {}
 ): TranslationMap {
   const translations: TranslationMap = {};
-
-  // Extract the schema name from the reference
-  const schemaPath = inputReference.split('/');
-  const schemaName = schemaPath[schemaPath.length - 1];
-
-  // Get the input schema
+  const schemaName = inputReference.split('/').pop()!;
   const inputSchema = schema.components?.schemas?.[
     schemaName
   ] as OpenAPIV3.SchemaObject;
-  if (!inputSchema || !inputSchema.properties) {
-    return translations;
-  }
 
-  // Process each property in the schema
+  if (!inputSchema?.properties) return translations;
+
   Object.entries(inputSchema.properties).forEach(
     ([propertyKey, propertyValue]) => {
       const property = propertyValue as OpenAPIV3.SchemaObject;
+      const providerKey = `${modelKey}.${propertyKey}`;
 
-      // Add translation for the property title
       if (property.title) {
-        translations[`${modelKey}.${propertyKey}`] = property.title;
+        translations[providerKey] = property.title;
       }
 
-      // Handle enum values
-      if (property.enum && Array.isArray(property.enum)) {
-        // Check for x-imgly-enum-labels extension
+      const genericKey = `ai.property.${propertyKey}`;
+      if (genericTranslations[genericKey]) {
+        translations[providerKey] = genericTranslations[genericKey];
+      }
+
+      if (property.enum?.length) {
         const enumLabels = (property as any)['x-imgly-enum-labels'] as
           | Record<string, string>
           | undefined;
 
         property.enum.forEach((enumValue) => {
           const enumKey = String(enumValue);
-          if (enumLabels && enumLabels[enumKey]) {
-            translations[`${modelKey}.${propertyKey}.${enumKey}`] =
-              enumLabels[enumKey];
-          } else {
-            // Fallback to the enum value itself if no label is provided
-            translations[`${modelKey}.${propertyKey}.${enumKey}`] = enumKey;
-          }
+          const enumTranslationKey = `${providerKey}.${enumKey}`;
+          translations[enumTranslationKey] = enumLabels?.[enumKey] || enumKey;
         });
       }
 
-      // Handle anyOf with enum (like image_size in IdeogramV3)
-      if (property.anyOf && Array.isArray(property.anyOf)) {
+      if (property.anyOf?.length) {
+        const parentEnumLabels = (property as any)['x-imgly-enum-labels'] as
+          | Record<string, string>
+          | undefined;
+
         property.anyOf.forEach((subSchema) => {
           const anyOfSchema = subSchema as OpenAPIV3.SchemaObject;
-          if (anyOfSchema.enum && Array.isArray(anyOfSchema.enum)) {
-            // Check for x-imgly-enum-labels at the parent level
-            const parentEnumLabels = (property as any)[
-              'x-imgly-enum-labels'
-            ] as Record<string, string> | undefined;
-
-            anyOfSchema.enum.forEach((enumValue) => {
-              const enumKey = String(enumValue);
-              if (parentEnumLabels && parentEnumLabels[enumKey]) {
-                translations[`${modelKey}.${propertyKey}.${enumKey}`] =
-                  parentEnumLabels[enumKey];
-              }
-            });
-          }
+          anyOfSchema.enum?.forEach((enumValue) => {
+            const enumKey = String(enumValue);
+            if (parentEnumLabels?.[enumKey]) {
+              translations[`${providerKey}.${enumKey}`] =
+                parentEnumLabels[enumKey];
+            }
+          });
         });
       }
     }

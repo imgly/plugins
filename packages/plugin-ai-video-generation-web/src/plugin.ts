@@ -76,12 +76,19 @@ export function VideoGeneration<I, O extends Output>(
         config
       );
 
-      // Extract and set translations from schemas after providers are initialized
       const allProviders = [...text2videoProviders, ...image2videoProviders];
       const allTranslations: Record<string, any> = {};
 
+      const genericTranslations: Record<string, string> = {};
+      if (config.customTranslations?.en) {
+        Object.keys(config.customTranslations.en).forEach((key) => {
+          if (key.startsWith('ai.property.')) {
+            genericTranslations[key] = config.customTranslations!.en![key];
+          }
+        });
+      }
+
       allProviders.forEach((provider) => {
-        // Check if the provider has schema and inputReference in its configuration
         if (
           provider.input?.panel?.type === 'schema' &&
           provider.input?.panel?.document &&
@@ -91,7 +98,8 @@ export function VideoGeneration<I, O extends Output>(
             const translations = extractTranslationsFromSchema(
               provider.id,
               provider.input.panel.document as any,
-              provider.input.panel.inputReference
+              provider.input.panel.inputReference,
+              genericTranslations
             );
             Object.assign(allTranslations, translations);
           } catch (error) {
@@ -106,20 +114,12 @@ export function VideoGeneration<I, O extends Output>(
         }
       });
 
-      // Merge schema translations with existing plugin translations
-      const pluginTranslations = {
-        [`panel.${VIDEO_GENERATION_PANEL_ID}`]: 'Video Generation',
-        [`${VIDEO_GENERATION_PANEL_ID}.dock.label`]: 'AI Video'
-      };
-
-      // Merge custom translations if provided
-      const customTranslations = config.customTranslations?.en || {};
-
       cesdk.i18n.setTranslations({
         en: {
-          ...pluginTranslations,
+          [`panel.${VIDEO_GENERATION_PANEL_ID}`]: 'Video Generation',
+          [`${VIDEO_GENERATION_PANEL_ID}.dock.label`]: 'AI Video',
           ...allTranslations,
-          ...customTranslations // Custom translations override schema translations
+          ...(config.customTranslations?.en || {})
         }
       });
 

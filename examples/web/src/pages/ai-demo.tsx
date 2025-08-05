@@ -262,7 +262,11 @@ function App() {
                 },
                 translations: {
                   en: {
-                    // RecraftV3 provider translations (override schema defaults)
+                    // Generic property translations (override schema defaults)
+                    'ai.property.prompt': 'Describe your prompt',
+                    'ai.property.image_size': 'Image Size',
+
+                    // RecraftV3 provider translations (override schema defaults & generic)
                     'fal-ai/recraft-v3.prompt': 'Describe your image',
                     'fal-ai/recraft-v3.image_size': 'Image Format',
                     'fal-ai/recraft-v3.image_size.square_hd':
