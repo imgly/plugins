@@ -29,6 +29,7 @@ export function PixverseV35TextToVideo(
   return async ({ cesdk }: { cesdk: CreativeEditorSDK }) => {
     const modelKey = 'fal-ai/pixverse/v3.5/text-to-video';
 
+     // Set translations
     cesdk.i18n.setTranslations({
       en: {
         [`libraries.${getPanelId(modelKey)}.history.label`]:

@@ -106,7 +106,10 @@ function getProvider(
     en: {
       [`panel.${getPanelId(
         'fal-ai/recraft/v2/text-to-sticker'
-      )}.styleSelection`]: 'Style Selection'
+      )}.styleSelection`]: 'Style Selection',
+      [`${modelKey}.style`]: 'Style',
+      [`${modelKey}.style.type`]: 'Type',
+      [`${modelKey}.style.type.icon`]: 'Icon'
     }
   });
 

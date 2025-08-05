@@ -14,9 +14,6 @@ import CreateVideo from './quickActions/CreateVideo';
 
 export { PLUGIN_ID } from './constants';
 
-// Plugin version - this should be imported from package.json ideally
-const PLUGIN_VERSION = '0.0.0';
-
 const VIDEO_GENERATION_PANEL_ID = 'ly.img.ai.video-generation';
 
 export function VideoGeneration<I, O extends Output>(

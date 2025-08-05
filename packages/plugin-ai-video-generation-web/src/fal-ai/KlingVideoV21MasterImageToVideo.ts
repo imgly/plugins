@@ -33,6 +33,7 @@ export function KlingVideoV21MasterImageToVideo(
   return async ({ cesdk }: { cesdk: CreativeEditorSDK }) => {
     const modelKey = 'fal-ai/kling-video/v2.1/master/image-to-video';
 
+    // Set translations
     cesdk.i18n.setTranslations({
       en: {
         'ly.img.ai.quickAction.createVideoKling': 'Create Video (Kling)...',
