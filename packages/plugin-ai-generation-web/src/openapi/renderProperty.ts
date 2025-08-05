@@ -48,25 +48,47 @@ function renderProperty<K extends OutputKind, I, O extends Output>(
   switch (type) {
     case 'string': {
       if (property.schema.enum != null) {
-        return renderEnumProperty(context, propertyWithSchema, provider);
+        return renderEnumProperty(
+          context,
+          propertyWithSchema,
+          provider,
+          panelInput,
+          options,
+          config
+        );
       } else {
         return renderStringProperty(
           context,
           propertyWithSchema,
           provider,
           panelInput,
-          options
+          options,
+          config
         );
       }
     }
 
     case 'boolean': {
-      return renderBooleanProperty(context, propertyWithSchema, provider);
+      return renderBooleanProperty(
+        context,
+        propertyWithSchema,
+        provider,
+        panelInput,
+        options,
+        config
+      );
     }
 
     case 'number':
     case 'integer': {
-      return renderIntegerProperty(context, propertyWithSchema, provider);
+      return renderIntegerProperty(
+        context,
+        propertyWithSchema,
+        provider,
+        panelInput,
+        options,
+        config
+      );
     }
 
     case 'object': {
@@ -160,8 +182,9 @@ function renderStringProperty<K extends OutputKind, I, O extends Output>(
   context: BuilderRenderFunctionContext<any>,
   property: Required<Property>,
   provider: Provider<K, I, O>,
-  _panelInput: PanelInputSchema<K, I>,
-  options: UIOptions
+  panelInput: PanelInputSchema<K, I>,
+  options: UIOptions,
+  config: CommonConfiguration<I, O>
 ): GetPropertyInput {
   const {
     builder,
@@ -196,7 +219,10 @@ function renderStringProperty<K extends OutputKind, I, O extends Output>(
 function renderEnumProperty<K extends OutputKind, I, O extends Output>(
   context: BuilderRenderFunctionContext<any>,
   property: Required<Property>,
-  provider: Provider<K, I, O>
+  provider: Provider<K, I, O>,
+  panelInput: PanelInputSchema<K, I>,
+  options: UIOptions,
+  config: CommonConfiguration<I, O>
 ): GetPropertyInput {
   const {
     builder,
@@ -241,7 +267,10 @@ function renderEnumProperty<K extends OutputKind, I, O extends Output>(
 function renderBooleanProperty<K extends OutputKind, I, O extends Output>(
   context: BuilderRenderFunctionContext<any>,
   property: Required<Property>,
-  provider: Provider<K, I, O>
+  provider: Provider<K, I, O>,
+  panelInput: PanelInputSchema<K, I>,
+  options: UIOptions,
+  config: CommonConfiguration<I, O>
 ): GetPropertyInput {
   const {
     builder,
@@ -270,7 +299,10 @@ function renderBooleanProperty<K extends OutputKind, I, O extends Output>(
 function renderIntegerProperty<K extends OutputKind, I, O extends Output>(
   context: BuilderRenderFunctionContext<any>,
   property: Required<Property>,
-  provider: Provider<K, I, O>
+  provider: Provider<K, I, O>,
+  panelInput: PanelInputSchema<K, I>,
+  options: UIOptions,
+  config: CommonConfiguration<I, O>
 ): GetPropertyInput {
   const {
     builder,
@@ -385,7 +417,8 @@ function renderAnyOfProperty<K extends OutputKind, I, O extends Output>(
             { id: schemaId, schema: { ...anySchema, title: label } },
             provider,
             panelInput,
-            options
+            options,
+            config
           );
         };
 
@@ -400,7 +433,10 @@ function renderAnyOfProperty<K extends OutputKind, I, O extends Output>(
         return renderBooleanProperty(
           context,
           { id: schemaId, schema: { ...anySchema, title: label } },
-          provider
+          provider,
+          panelInput,
+          options,
+          config
         );
       };
 
@@ -414,7 +450,10 @@ function renderAnyOfProperty<K extends OutputKind, I, O extends Output>(
         return renderIntegerProperty(
           context,
           { id: schemaId, schema: { ...anySchema, title: label } },
-          provider
+          provider,
+          panelInput,
+          options,
+          config
         );
       };
 
