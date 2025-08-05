@@ -17,14 +17,6 @@ export function MinimaxVideo01Live(
   cesdk: CreativeEditorSDK;
 }) => Promise<Provider<'video', MinimaxVideo01LiveInput, VideoOutput>> {
   return async ({ cesdk }: { cesdk: CreativeEditorSDK }) => {
-    const modelKey = 'fal-ai/minimax/video-01-live';
-
-    cesdk.i18n.setTranslations({
-      en: {
-        [`${modelKey}.prompt`]: 'Prompt'
-      }
-    });
-
     return getProvider(cesdk, config);
   };
 }

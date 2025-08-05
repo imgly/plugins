@@ -6,7 +6,8 @@ import {
   ActionRegistry,
   initializeQuickActionComponents,
   AI_EDIT_MODE,
-  checkAiPluginVersion
+  checkAiPluginVersion,
+  extractTranslationsFromSchema
 } from '@imgly/plugin-ai-generation-web';
 import { PluginConfiguration } from './types';
 import iconSprite, { PLUGIN_ICON_SET_ID } from './iconSprite';
@@ -57,12 +58,6 @@ export function ImageGeneration<I, O extends Output>(
       });
 
       cesdk.ui.addIconSet(PLUGIN_ICON_SET_ID, iconSprite);
-      cesdk.i18n.setTranslations({
-        en: {
-          [`panel.${IMAGE_GENERATION_PANEL_ID}`]: 'Image Generation',
-          [`${IMAGE_GENERATION_PANEL_ID}.dock.label`]: 'AI Image'
-        }
-      });
 
       printConfigWarnings(config);
 
@@ -102,6 +97,53 @@ export function ImageGeneration<I, O extends Output>(
         { cesdk },
         config
       );
+
+      // Extract and set translations from schemas after providers are initialized
+      const allProviders = [...text2imageProviders, ...image2imageProviders];
+      const allTranslations: Record<string, any> = {};
+
+      allProviders.forEach((provider) => {
+        // Check if the provider has schema and inputReference in its configuration
+        if (
+          provider.input?.panel?.type === 'schema' &&
+          provider.input?.panel?.document &&
+          provider.input?.panel?.inputReference
+        ) {
+          try {
+            const translations = extractTranslationsFromSchema(
+              provider.id,
+              provider.input.panel.document as any,
+              provider.input.panel.inputReference
+            );
+            Object.assign(allTranslations, translations);
+          } catch (error) {
+            if (config.debug) {
+              // eslint-disable-next-line no-console
+              console.warn(
+                `Failed to extract translations for provider ${provider.id}:`,
+                error
+              );
+            }
+          }
+        }
+      });
+
+      // Merge schema translations with existing plugin translations
+      const pluginTranslations = {
+        [`panel.${IMAGE_GENERATION_PANEL_ID}`]: 'Image Generation',
+        [`${IMAGE_GENERATION_PANEL_ID}.dock.label`]: 'AI Image'
+      };
+
+      // Merge custom translations if provided
+      const customTranslations = config.customTranslations?.en || {};
+
+      cesdk.i18n.setTranslations({
+        en: {
+          ...pluginTranslations,
+          ...allTranslations,
+          ...customTranslations // Custom translations override schema translations
+        }
+      });
 
       const initializedQuickActions = await initializeQuickActionComponents({
         kind: 'image',

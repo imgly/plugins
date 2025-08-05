@@ -40,6 +40,15 @@ export interface CommonPluginConfiguration<
    * from the `/assets` folder to your own server and set the base URL to your server.
    */
   baseURL?: string;
+
+  /**
+   * Custom translations to override schema-based translations.
+   */
+  customTranslations?: {
+    [locale: string]: {
+      [key: string]: string;
+    };
+  };
 }
 
 /**

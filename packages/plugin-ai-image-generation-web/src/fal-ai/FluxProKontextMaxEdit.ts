@@ -32,17 +32,7 @@ export function FluxProKontextMaxEdit(
           'Select Image To Change',
         [`panel.${modelKey}.imageSelection`]: 'Select Image To Change',
         [`libraries.${getPanelId(modelKey)}.history.label`]:
-          'Generated From Image',
-        [`${modelKey}.prompt`]: 'Prompt',
-        [`${modelKey}.image_url`]: 'Image',
-        [`${modelKey}.strength`]: 'Strength',
-        [`${modelKey}.aspect_ratio`]: 'Aspect Ratio',
-        [`${modelKey}.aspect_ratio.21:9`]: '21:9',
-        [`${modelKey}.aspect_ratio.16:9`]: '16:9',
-        [`${modelKey}.aspect_ratio.4:3`]: '4:3',
-        [`${modelKey}.aspect_ratio.1:1`]: '1:1',
-        [`${modelKey}.aspect_ratio.3:4`]: '3:4',
-        [`${modelKey}.aspect_ratio.9:16`]: '9:16'
+          'Generated From Image'
       }
     });
 
@@ -62,7 +52,7 @@ function getProvider(
       name: 'Flux Pro Kontext (Max)',
       // @ts-ignore
       schema,
-      inputReference: '#/components/schemas/FluxProKontextMaxEditInput',
+      inputReference: '#/components/schemas/FluxProKontextMaxInput',
       cesdk,
       middlewares: config.middlewares,
       headers: config.headers,

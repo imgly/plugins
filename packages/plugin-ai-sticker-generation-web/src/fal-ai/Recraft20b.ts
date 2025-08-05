@@ -106,18 +106,7 @@ function getProvider(
     en: {
       [`panel.${getPanelId(
         'fal-ai/recraft/v2/text-to-sticker'
-      )}.styleSelection`]: 'Style Selection',
-      [`${modelKey}.style`]: 'Style',
-      [`${modelKey}.style.type`]: 'Type',
-      [`${modelKey}.style.type.icon`]: 'Icon',
-      [`${modelKey}.prompt`]: 'Prompt',
-      [`${modelKey}.image_size`]: 'Format',
-      [`${modelKey}.image_size.square_hd`]: 'Square HD',
-      [`${modelKey}.image_size.square`]: 'Square',
-      [`${modelKey}.image_size.portrait_4_3`]: 'Portrait 4:3',
-      [`${modelKey}.image_size.portrait_16_9`]: 'Portrait 16:9',
-      [`${modelKey}.image_size.landscape_4_3`]: 'Landscape 4:3',
-      [`${modelKey}.image_size.landscape_16_9`]: 'Landscape 16:9'
+      )}.styleSelection`]: 'Style Selection'
     }
   });
 

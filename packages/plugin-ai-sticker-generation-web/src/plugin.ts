@@ -4,7 +4,8 @@ import {
   Output,
   registerDockComponent,
   ActionRegistry,
-  checkAiPluginVersion
+  checkAiPluginVersion,
+  extractTranslationsFromSchema
 } from '@imgly/plugin-ai-generation-web';
 import { PluginConfiguration } from './types';
 import iconSprite, { PLUGIN_ICON_SET_ID } from './iconSprite';
@@ -47,12 +48,6 @@ export function StickerGeneration<I, O extends Output>(
       });
 
       cesdk.ui.addIconSet(PLUGIN_ICON_SET_ID, iconSprite);
-      cesdk.i18n.setTranslations({
-        en: {
-          [`panel.${STICKER_GENERATION_PANEL_ID}`]: 'Sticker Generation',
-          [`${STICKER_GENERATION_PANEL_ID}.dock.label`]: 'AI Sticker'
-        }
-      });
 
       const text2sticker = config.providers?.text2sticker;
 
@@ -76,6 +71,53 @@ export function StickerGeneration<I, O extends Output>(
         { cesdk },
         config
       );
+
+      // Extract and set translations from schemas after providers are initialized
+      const allProviders = [...text2stickerProviders];
+      const allTranslations: Record<string, any> = {};
+
+      allProviders.forEach((provider) => {
+        // Check if the provider has schema and inputReference in its configuration
+        if (
+          provider.input?.panel?.type === 'schema' &&
+          provider.input?.panel?.document &&
+          provider.input?.panel?.inputReference
+        ) {
+          try {
+            const translations = extractTranslationsFromSchema(
+              provider.id,
+              provider.input.panel.document as any,
+              provider.input.panel.inputReference
+            );
+            Object.assign(allTranslations, translations);
+          } catch (error) {
+            if (config.debug) {
+              // eslint-disable-next-line no-console
+              console.warn(
+                `Failed to extract translations for provider ${provider.id}:`,
+                error
+              );
+            }
+          }
+        }
+      });
+
+      // Merge schema translations with existing plugin translations
+      const pluginTranslations = {
+        [`panel.${STICKER_GENERATION_PANEL_ID}`]: 'Sticker Generation',
+        [`${STICKER_GENERATION_PANEL_ID}.dock.label`]: 'AI Sticker'
+      };
+
+      // Merge custom translations if provided
+      const customTranslations = config.customTranslations?.en || {};
+
+      cesdk.i18n.setTranslations({
+        en: {
+          ...pluginTranslations,
+          ...allTranslations,
+          ...customTranslations // Custom translations override schema translations
+        }
+      });
 
       if (initializedResult.history?.assetSourceId != null) {
         // TODO: Add combined asset source for this kind

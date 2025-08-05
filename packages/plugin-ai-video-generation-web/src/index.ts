@@ -3,6 +3,9 @@ import plugin, { PLUGIN_ID } from './plugin';
 import { type PluginConfiguration } from './types';
 import { DEFAULT_VIDEO_QUICK_ACTION_ORDER } from './constants';
 
+// Plugin version - this should be imported from package.json ideally
+const PLUGIN_VERSION = '0.0.0';
+
 const Plugin = <I, O extends Output>(
   pluginConfiguration: PluginConfiguration<I, O>
 ) => ({

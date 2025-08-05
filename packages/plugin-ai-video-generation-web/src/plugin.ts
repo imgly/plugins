@@ -4,6 +4,7 @@ import {
   initializeProviders,
   Output,
   registerDockComponent,
+  extractTranslationsFromSchema,
   checkAiPluginVersion
 } from '@imgly/plugin-ai-generation-web';
 import { PluginConfiguration } from './types';
@@ -12,6 +13,9 @@ import { PLUGIN_ID } from './constants';
 import CreateVideo from './quickActions/CreateVideo';
 
 export { PLUGIN_ID } from './constants';
+
+// Plugin version - this should be imported from package.json ideally
+const PLUGIN_VERSION = '0.0.0';
 
 const VIDEO_GENERATION_PANEL_ID = 'ly.img.ai.video-generation';
 
@@ -24,13 +28,6 @@ export function VideoGeneration<I, O extends Output>(
 
       // Check AI plugin version consistency
       checkAiPluginVersion(cesdk, PLUGIN_ID, PLUGIN_VERSION);
-
-      cesdk.setTranslations({
-        en: {
-          [`panel.${VIDEO_GENERATION_PANEL_ID}`]: 'Video Generation',
-          [`${VIDEO_GENERATION_PANEL_ID}.dock.label`]: 'AI Video'
-        }
-      });
 
       printConfigWarnings(config);
 
@@ -81,6 +78,53 @@ export function VideoGeneration<I, O extends Output>(
         { cesdk },
         config
       );
+
+      // Extract and set translations from schemas after providers are initialized
+      const allProviders = [...text2videoProviders, ...image2videoProviders];
+      const allTranslations: Record<string, any> = {};
+
+      allProviders.forEach((provider) => {
+        // Check if the provider has schema and inputReference in its configuration
+        if (
+          provider.input?.panel?.type === 'schema' &&
+          provider.input?.panel?.document &&
+          provider.input?.panel?.inputReference
+        ) {
+          try {
+            const translations = extractTranslationsFromSchema(
+              provider.id,
+              provider.input.panel.document as any,
+              provider.input.panel.inputReference
+            );
+            Object.assign(allTranslations, translations);
+          } catch (error) {
+            if (config.debug) {
+              // eslint-disable-next-line no-console
+              console.warn(
+                `Failed to extract translations for provider ${provider.id}:`,
+                error
+              );
+            }
+          }
+        }
+      });
+
+      // Merge schema translations with existing plugin translations
+      const pluginTranslations = {
+        [`panel.${VIDEO_GENERATION_PANEL_ID}`]: 'Video Generation',
+        [`${VIDEO_GENERATION_PANEL_ID}.dock.label`]: 'AI Video'
+      };
+
+      // Merge custom translations if provided
+      const customTranslations = config.customTranslations?.en || {};
+
+      cesdk.i18n.setTranslations({
+        en: {
+          ...pluginTranslations,
+          ...allTranslations,
+          ...customTranslations // Custom translations override schema translations
+        }
+      });
 
       // Register video quick actions
       ActionRegistry.get().register(CreateVideo({ cesdk }));

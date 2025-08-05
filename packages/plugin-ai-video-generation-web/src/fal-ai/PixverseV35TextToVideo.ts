@@ -32,28 +32,7 @@ export function PixverseV35TextToVideo(
     cesdk.i18n.setTranslations({
       en: {
         [`libraries.${getPanelId(modelKey)}.history.label`]:
-          'Generated From Text',
-        [`${modelKey}.prompt`]: 'Prompt',
-        [`${modelKey}.aspect_ratio`]: 'Aspect Ratio',
-        [`${modelKey}.aspect_ratio.16:9`]: '16:9',
-        [`${modelKey}.aspect_ratio.4:3`]: '4:3',
-        [`${modelKey}.aspect_ratio.1:1`]: '1:1',
-        [`${modelKey}.aspect_ratio.3:4`]: '3:4',
-        [`${modelKey}.aspect_ratio.9:16`]: '9:16',
-        [`${modelKey}.resolution`]: 'Resolution',
-        [`${modelKey}.resolution.1080p`]: '1080p',
-        [`${modelKey}.resolution.720p`]: '720p',
-        [`${modelKey}.resolution.540p`]: '540p',
-        [`${modelKey}.resolution.360p`]: '360p',
-        [`${modelKey}.style`]: 'Style',
-        [`${modelKey}.style.anime`]: 'Anime',
-        [`${modelKey}.style.3d_animation`]: '3D Animation',
-        [`${modelKey}.style.clay`]: 'Clay',
-        [`${modelKey}.style.comic`]: 'Comic',
-        [`${modelKey}.style.cyberpunk`]: 'Cyberpunk',
-        [`${modelKey}.duration`]: 'Duration',
-        [`${modelKey}.duration.5`]: '5 seconds',
-        [`${modelKey}.duration.8`]: '8 seconds'
+          'Generated From Text'
       }
     });
 

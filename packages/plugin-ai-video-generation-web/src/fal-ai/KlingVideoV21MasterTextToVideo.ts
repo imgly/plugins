@@ -29,21 +29,6 @@ export function KlingVideoV21MasterTextToVideo(
   Provider<'video', KlingVideoV21MasterTextToVideoInput, VideoOutput>
 > {
   return async ({ cesdk }: { cesdk: CreativeEditorSDK }) => {
-    const modelKey = 'fal-ai/kling-video/v2.1/master/text-to-video';
-
-    cesdk.i18n.setTranslations({
-      en: {
-        [`${modelKey}.prompt`]: 'Prompt',
-        [`${modelKey}.duration`]: 'Duration',
-        [`${modelKey}.duration.5`]: '5 seconds',
-        [`${modelKey}.duration.10`]: '10 seconds',
-        [`${modelKey}.aspect_ratio`]: 'Aspect Ratio',
-        [`${modelKey}.aspect_ratio.16:9`]: '16:9',
-        [`${modelKey}.aspect_ratio.9:16`]: '9:16',
-        [`${modelKey}.aspect_ratio.1:1`]: '1:1'
-      }
-    });
-
     return getProvider(cesdk, config);
   };
 }

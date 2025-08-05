@@ -71,4 +71,14 @@ export interface PluginConfiguration {
    * from the `/assets` folder to your own server and set the base URL to your server.
    */
   baseURL?: string;
+
+  /**
+   * Custom translations to override schema-based translations.
+   * These will be applied after all provider schema translations are set.
+   */
+  translations?: {
+    [locale: string]: {
+      [key: string]: string;
+    };
+  };
 }

@@ -135,17 +135,7 @@ function getProvider(
       [`${modelKey}.style.type`]: 'Type',
       [`${modelKey}.style.type.image`]: 'Image',
       [`${modelKey}.style.type.vector`]: 'Vector',
-      [`libraries.${getPanelId(modelKey)}.history.label`]:
-        'Generated From Text',
-      [`${modelKey}.prompt`]: 'Prompt',
-      [`${modelKey}.image_size`]: 'Format',
-      [`${modelKey}.image_size.square_hd`]: 'Square HD',
-      [`${modelKey}.image_size.square`]: 'Square',
-      [`${modelKey}.image_size.portrait_4_3`]: 'Portrait 4:3',
-      [`${modelKey}.image_size.portrait_16_9`]: 'Portrait 16:9',
-      [`${modelKey}.image_size.landscape_4_3`]: 'Landscape 4:3',
-      [`${modelKey}.image_size.landscape_16_9`]: 'Landscape 16:9',
-      [`${modelKey}.image_size.ImageSize`]: 'Custom'
+      [`libraries.${getPanelId(modelKey)}.history.label`]: 'Generated From Text'
     }
   });
 

@@ -29,9 +29,7 @@ export function GeminiFlashEdit(
           'Select Image To Change',
         [`panel.${modelKey}.imageSelection`]: 'Select Image To Generate',
         [`libraries.${getPanelId(modelKey)}.history.label`]:
-          'Generated From Image',
-        [`${modelKey}.prompt`]: 'Prompt',
-        [`${modelKey}.image_url`]: 'Image'
+          'Generated From Image'
       }
     });
 

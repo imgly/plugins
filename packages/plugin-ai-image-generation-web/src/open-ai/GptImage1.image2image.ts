@@ -56,13 +56,6 @@ function getProvider(
     })
   );
 
-  cesdk.i18n.setTranslations({
-    en: {
-      [`${modelKey}.prompt`]: 'Prompt',
-      [`${modelKey}.image_url`]: 'Image Url'
-    }
-  });
-
   const provider: Provider<'image', GptImage1Input, GptImage1Output> = {
     id: modelKey,
     kind: 'image',
