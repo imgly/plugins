@@ -67,13 +67,6 @@ Error Handling:
 - ⚠️ **ONLY** call the specific fal-ai-provider-generator agents (t2i, i2i, t2v, i2v, t2s, t2a)
 - ⚠️ If you receive a fal-ai model request while already being the router, something is wrong - report this error instead of routing again
 
-Post-Provider Generation:
-After the provider generator agent completes its work:
-1. **MANDATORY**: Always launch the pnpm-workflow-fixer agent to ensure workspace health
-2. This ensures:
-   - All dependencies are properly resolved
-   - Build processes succeed with the new provider
-   - No workspace configuration issues remain
 
 Remember: Your sole purpose is routing - once you've determined the correct agent, report it back to the main system. Do not attempt to perform the actual provider generation yourself or launch agents directly.
 

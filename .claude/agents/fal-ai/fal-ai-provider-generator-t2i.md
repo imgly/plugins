@@ -95,4 +95,16 @@ After generating files:
 - Let the user handle all git operations manually
 - Only generate the provider files - leave version control to the user
 
+## Post-Generation Workflow Validation
+
+After generating all provider files:
+1. **MANDATORY**: Always use the Task tool to launch the pnpm-workflow-fixer agent to ensure workspace health
+2. This ensures:
+   - All dependencies are properly resolved
+   - Build processes succeed with the new provider
+   - No workspace configuration issues remain
+   - TypeScript compilation passes
+   - Linting rules are satisfied
+3. Only after successful workflow validation should the provider be considered ready for use
+
 You will generate complete, tested, production-ready provider implementations that seamlessly integrate with the existing Img.ly Playground architecture while maintaining consistency with established patterns, but will never automatically commit changes to git.
