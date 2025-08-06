@@ -15,7 +15,7 @@ export const ID = `ly.img.${ACTION_NAME}`;
 /**
  * The i18n prefix for the quick action.
  */
-export const I18N_PREFIX = `ly.img.ai.quickAction.${ACTION_NAME}`;
+export const I18N_PREFIX = `ly.img.plugin-ai-image-generation-web.quickAction.${ACTION_NAME}`;
 
 /**
  * The input generated from this quick action which needs
@@ -49,7 +49,6 @@ const RemixPageWithPrompt: GetQuickActionDefinition<InputType> = ({
     },
 
     label: `${I18N_PREFIX}`,
-    description: 'Remix the page with custom instructions',
     enable: ({ engine }) => {
       const blockIds = engine.block.findAllSelected();
       if (blockIds.length !== 1) return false;

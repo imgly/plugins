@@ -15,7 +15,7 @@ export const ID = `ly.img.${ACTION_NAME}`;
 /**
  * The i18n prefix for the quick action.
  */
-export const I18N_PREFIX = `ly.img.ai.quickAction.text.${ACTION_NAME}`;
+export const I18N_PREFIX = `ly.img.plugin-ai-text-generation-web.quickAction.${ACTION_NAME}`;
 
 /**
  * The input generated from this quick action which needs
@@ -40,7 +40,6 @@ const Improve: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
     scopes: ['text/edit'],
 
     label: `${I18N_PREFIX}.label`,
-    description: `${I18N_PREFIX}.label`,
     enable: ({ engine }) => {
       const blockIds = engine.block.findAllSelected();
       if (blockIds == null || blockIds.length !== 1) return false;

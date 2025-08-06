@@ -19,7 +19,7 @@ export const ID = `ly.img.${ACTION_NAME}`;
 /**
  * The i18n prefix for the quick action.
  */
-export const I18N_PREFIX = `ly.img.ai.quickAction.image.${ACTION_NAME}`;
+export const I18N_PREFIX = `ly.img.plugin-ai-image-generation-web.quickAction.${ACTION_NAME}`;
 
 /**
  * The input generated from this quick action which needs
@@ -91,7 +91,6 @@ const StyleTransfer: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
     kind: 'image',
 
     label: `${I18N_PREFIX}.label`,
-    description: `${I18N_PREFIX}.description`,
     enable: enableQuickActionForImageFill(),
     scopes: ['fill/change'],
 

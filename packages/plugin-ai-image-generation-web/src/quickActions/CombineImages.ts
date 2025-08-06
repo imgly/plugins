@@ -16,7 +16,7 @@ export const ID = `ly.img.${ACTION_NAME}`;
 /**
  * The i18n prefix for the quick action.
  */
-export const I18N_PREFIX = `ly.img.ai.quickAction.${ACTION_NAME}`;
+export const I18N_PREFIX = `ly.img.plugin-ai-image-generation-web.quickAction.${ACTION_NAME}`;
 
 /**
  * The input generated from this quick action which needs
@@ -50,7 +50,6 @@ const CombineImages: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
     },
 
     label: `${I18N_PREFIX}`,
-    description: 'Combine multiple images with instructions',
     enable: (context) => {
       const blockIds = context.engine.block.findAllSelected();
 
