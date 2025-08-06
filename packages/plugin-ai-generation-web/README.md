@@ -665,8 +665,14 @@ You can customize all labels and text in the AI generation interface using the t
 
 The system checks for translations in this order (highest to lowest priority):
 
-1. **Provider-specific**: `ly.img.ai.property.${provider}.${field}` - Override labels for a specific AI provider (for customers)
-2. **Generic**: `ly.img.ai.property.${field}` - Override labels for all AI plugins (for customers)
+1. **Provider & Kind-specific**: `ly.img.plugin-ai-${kind}-generation-web.property.${provider}.${field}` - Override labels for a specific AI provider and generation type (for customers)
+2. **Generic**: `ly.img.plugin-ai-generation-web.property.${field}` - Override labels for all AI plugins (for customers)
+
+Where `${kind}` can be:
+- `image` for image generation plugins
+- `video` for video generation plugins  
+- `audio` for audio generation plugins
+- `text` for text generation plugins
 
 ### Basic Example
 
@@ -675,12 +681,17 @@ The system checks for translations in this order (highest to lowest priority):
 cesdk.i18n.setTranslations({
   en: {
     // Generic labels (applies to ALL AI plugins)
-    'ly.img.ai.property.prompt': 'Describe what you want to create',
-    'ly.img.ai.property.image_size': 'Image Dimensions',
+    'ly.img.plugin-ai-generation-web.property.prompt': 'Describe what you want to create',
+    'ly.img.plugin-ai-generation-web.property.image_size': 'Image Dimensions',
+    'ly.img.plugin-ai-generation-web.property.duration': 'Video Length',
 
-    // Provider-specific (highest priority - for specific providers only)
-    'ly.img.ai.property.fal-ai/recraft-v3.prompt': 'Describe your Recraft image',
-    'ly.img.ai.property.fal-ai/recraft-v3.image_size': 'Canvas Size'
+    // Provider-specific for images (highest priority)
+    'ly.img.plugin-ai-image-generation-web.property.fal-ai/recraft-v3.prompt': 'Describe your Recraft image',
+    'ly.img.plugin-ai-image-generation-web.property.fal-ai/recraft-v3.image_size': 'Canvas Size',
+
+    // Provider-specific for videos (highest priority)
+    'ly.img.plugin-ai-video-generation-web.property.fal-ai/veo3.prompt': 'Describe your video scene',
+    'ly.img.plugin-ai-video-generation-web.property.fal-ai/veo3.duration': 'Video Duration'
   }
 });
 ```
@@ -692,10 +703,13 @@ For dropdown menus, add the option value to the translation key:
 ```typescript
 cesdk.i18n.setTranslations({
   en: {
-    // Provider-specific dropdown options
-    'ly.img.ai.property.fal-ai/recraft-v3.image_size.square_hd': 'Square HD (1024×1024)',
-    'ly.img.ai.property.fal-ai/recraft-v3.image_size.portrait_4_3': 'Portrait 4:3 (768×1024)',
-    'ly.img.ai.property.fal-ai/recraft-v3.image_size.landscape_16_9': 'Landscape 16:9 (1024×576)'
+    // Image generation dropdown options
+    'ly.img.plugin-ai-image-generation-web.property.fal-ai/recraft-v3.image_size.square_hd': 'Square HD (1024×1024)',
+    'ly.img.plugin-ai-image-generation-web.property.fal-ai/recraft-v3.image_size.portrait_4_3': 'Portrait 4:3 (768×1024)',
+
+    // Video generation dropdown options
+    'ly.img.plugin-ai-video-generation-web.property.fal-ai/veo3.duration.5': '5 seconds',
+    'ly.img.plugin-ai-video-generation-web.property.fal-ai/veo3.duration.10': '10 seconds'
   }
 });
 ```

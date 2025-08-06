@@ -266,26 +266,26 @@ function App() {
 
             instance.i18n.setTranslations({
               en: {
-                // Generic property translations (override schema defaults)
-                'ly.img.ai.property.prompt': 'Describe your prompt',
-                'ly.img.ai.property.image_size': 'Image Size',
+                // Generic labels (applies to ALL AI plugins)
+                'ly.img.plugin-ai-generation-web.property.prompt': 'Describe what you want to create',
+                'ly.img.plugin-ai-generation-web.property.image_size': 'Image Dimensions',
+                'ly.img.plugin-ai-generation-web.property.duration': 'Video Length',
 
-                // Provider-specific translations (highest priority - for specific providers only)
-                'ly.img.ai.property.fal-ai/recraft-v3.prompt': 'Describe your recraft image',
-                'ly.img.ai.property.fal-ai/recraft-v3.image_size': 'Image Format',
+                // Provider-specific for images (highest priority)
+                'ly.img.plugin-ai-image-generation-web.property.fal-ai/recraft-v3.prompt': 'Describe your Recraft image',
+                'ly.img.plugin-ai-image-generation-web.property.fal-ai/recraft-v3.image_size': 'Canvas Size',
 
-                // Provider-specific dropdown options
-                'ly.img.ai.property.fal-ai/recraft-v3.image_size.square_hd':
-                  'Square HD (1024×1024)',
-                'ly.img.ai.property.fal-ai/recraft-v3.image_size.square': 'Square (512×512)',
-                'ly.img.ai.property.fal-ai/recraft-v3.image_size.portrait_4_3':
-                  'Portrait 4:3 (768×1024)',
-                'ly.img.ai.property.fal-ai/recraft-v3.image_size.portrait_16_9':
-                  'Portrait 16:9 (576×1024)',
-                'ly.img.ai.property.fal-ai/recraft-v3.image_size.landscape_4_3':
-                  'Landscape 4:3 (1024×768)',
-                'ly.img.ai.property.fal-ai/recraft-v3.image_size.landscape_16_9':
-                  'Landscape 16:9 (1024×576)'
+                // Provider-specific for videos (highest priority)
+                'ly.img.plugin-ai-video-generation-web.property.fal-ai/veo3.prompt': 'Describe your video scene',
+                'ly.img.plugin-ai-video-generation-web.property.fal-ai/veo3.duration': 'Video Duration',
+
+                // Image generation dropdown options
+                'ly.img.plugin-ai-image-generation-web.property.fal-ai/recraft-v3.image_size.square_hd': 'Square HD (1024×1024)',
+                'ly.img.plugin-ai-image-generation-web.property.fal-ai/recraft-v3.image_size.portrait_4_3': 'Portrait 4:3 (768×1024)',
+
+                // Video generation dropdown options
+                'ly.img.plugin-ai-video-generation-web.property.fal-ai/veo3.duration.5': '5 seconds',
+                'ly.img.plugin-ai-video-generation-web.property.fal-ai/veo3.duration.10': '10 seconds'
               }
             });
 

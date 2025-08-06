@@ -58,7 +58,7 @@ async function createPanelRenderFunctionFromSchema<
   const properties = getProperties(inputSchema, panelInput);
 
   // Extract and set translations from schema
-  extractAndSetSchemaTranslations(properties, provider, options);
+  extractAndSetSchemaTranslations(properties, provider, options, provider.kind);
 
   const builderRenderFunction: BuilderRenderFunction<any> = (context) => {
     const { builder } = context;
@@ -73,7 +73,8 @@ async function createPanelRenderFunctionFromSchema<
             provider,
             panelInput,
             options,
-            config
+            config,
+            provider.kind
           );
           if (getInput != null) {
             if (Array.isArray(getInput)) {
