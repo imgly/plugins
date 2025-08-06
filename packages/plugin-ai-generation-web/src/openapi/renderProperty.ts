@@ -243,8 +243,8 @@ function renderEnumProperty<K extends OutputKind, I, O extends Output>(
     label: [
       `${provider.id}.${property.id}.${valueId}`,
       `ai.property.${property.id}.${valueId}`,
-      enumLabels?.[valueId] || valueId
-    ].filter((label): label is string => Boolean(label)),
+      `schema.${provider.id}.${property.id}.${valueId}`
+    ],
     icon: icons[valueId]
   }));
   const defaultValue =

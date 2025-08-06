@@ -12,6 +12,19 @@ import { GetPropertyInput, PropertyInput } from '../../openapi/types';
 import renderProperty from '../../openapi/renderProperty';
 import { Generate } from '../../generation/createGenerateFunction';
 
+function formatEnumLabel(enumValue: string): string {
+  return (
+    enumValue
+      // Replace underscores with spaces
+      .replace(/_/g, ' ')
+      // Handle specific cases first
+      .replace(/\b3d\b/gi, '3D')
+      .replace(/\b2d\b/gi, '2D')
+      // Capitalize each word
+      .replace(/\b\w/g, (char) => char.toUpperCase())
+  );
+}
+
 /**
  * Creates a panel render function based on the schema definition in the provider.
  */
@@ -74,9 +87,31 @@ async function createPanelRenderFunctionFromSchema<
 
       property.schema.enum.forEach((enumValue) => {
         const valueId = String(enumValue);
-        if (enumLabels[valueId]) {
-          translations[`${provider.id}.${property.id}.${valueId}`] =
-            enumLabels[valueId];
+        // Set translation either from enumLabels or fallback to formatted valueId
+        const labelValue = enumLabels[valueId] || formatEnumLabel(valueId);
+        translations[`schema.${provider.id}.${property.id}.${valueId}`] =
+          labelValue;
+      });
+    }
+
+    // Add anyOf enum labels translations
+    if (property.schema?.anyOf && Array.isArray(property.schema.anyOf)) {
+      const enumLabels: Record<string, string> =
+        'x-imgly-enum-labels' in property.schema &&
+        typeof property.schema['x-imgly-enum-labels'] === 'object'
+          ? (property.schema['x-imgly-enum-labels'] as Record<string, string>)
+          : {};
+
+      property.schema.anyOf.forEach((anySchema) => {
+        const schema = anySchema as any;
+        if (schema.enum && Array.isArray(schema.enum)) {
+          schema.enum.forEach((enumValue: any) => {
+            const valueId = String(enumValue);
+            // Set translation either from enumLabels or fallback to formatted valueId
+            const labelValue = enumLabels[valueId] || formatEnumLabel(valueId);
+            translations[`schema.${provider.id}.${property.id}.${valueId}`] =
+              labelValue;
+          });
         }
       });
     }
