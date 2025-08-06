@@ -270,8 +270,12 @@ function App() {
                 'ai.property.prompt': 'Describe your prompt',
                 'ai.property.image_size': 'Image Size',
 
-                // RecraftV3 provider translations (override schema defaults & generic)
-                'fal-ai/recraft-v3.prompt': 'Describe your image',
+                // Plugin-type specific translations (override generic, but can be overridden by provider-specific)
+                'ai.image-generation.prompt' : 'Describe your image',
+                'ai.video-generation.prompt' : 'Describe your video',
+
+                // Provider-specific translations (override all translations)
+                'fal-ai/recraft-v3.prompt': 'Describe your recraft image',
                 'fal-ai/recraft-v3.image_size': 'Image Format',
                 'fal-ai/recraft-v3.image_size.square_hd':
                   'Square HD (1024×1024)',

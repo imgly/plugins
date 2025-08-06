@@ -23,7 +23,8 @@ function renderProperty<K extends OutputKind, I, O extends Output>(
   provider: Provider<K, I, O>,
   panelInput: PanelInputSchema<K, I>,
   options: UIOptions,
-  config: CommonConfiguration<I, O>
+  config: CommonConfiguration<I, O>,
+  kind: K
 ): GetPropertyInput | undefined {
   if (property.schema == null) {
     if (
@@ -54,7 +55,8 @@ function renderProperty<K extends OutputKind, I, O extends Output>(
           provider,
           panelInput,
           options,
-          config
+          config,
+          kind
         );
       } else {
         return renderStringProperty(
@@ -63,7 +65,8 @@ function renderProperty<K extends OutputKind, I, O extends Output>(
           provider,
           panelInput,
           options,
-          config
+          config,
+          kind
         );
       }
     }
@@ -75,7 +78,8 @@ function renderProperty<K extends OutputKind, I, O extends Output>(
         provider,
         panelInput,
         options,
-        config
+        config,
+        kind
       );
     }
 
@@ -87,7 +91,8 @@ function renderProperty<K extends OutputKind, I, O extends Output>(
         provider,
         panelInput,
         options,
-        config
+        config,
+        kind
       );
     }
 
@@ -98,7 +103,8 @@ function renderProperty<K extends OutputKind, I, O extends Output>(
         provider,
         panelInput,
         options,
-        config
+        config,
+        kind
       );
     }
 
@@ -118,7 +124,8 @@ function renderProperty<K extends OutputKind, I, O extends Output>(
           provider,
           panelInput,
           options,
-          config
+          config,
+          kind
         );
       }
       break;
@@ -137,7 +144,8 @@ function renderObjectProperty<K extends OutputKind, I, O extends Output>(
   provider: Provider<K, I, O>,
   panelInput: PanelInputSchema<K, I>,
   options: UIOptions,
-  config: CommonConfiguration<I, O>
+  config: CommonConfiguration<I, O>,
+  kind: K
 ): GetPropertyInput {
   const properties = getProperties(property.schema ?? {}, panelInput);
 
@@ -148,7 +156,8 @@ function renderObjectProperty<K extends OutputKind, I, O extends Output>(
       provider,
       panelInput,
       options,
-      config
+      config,
+      kind
     );
     if (getInput != null) {
       acc[childProperty.id] = getInput();
@@ -169,7 +178,8 @@ function renderStringProperty<K extends OutputKind, I, O extends Output>(
   provider: Provider<K, I, O>,
   panelInput: PanelInputSchema<K, I>,
   options: UIOptions,
-  config: CommonConfiguration<I, O>
+  config: CommonConfiguration<I, O>,
+  kind: K
 ): GetPropertyInput {
   const {
     builder,
@@ -180,6 +190,7 @@ function renderStringProperty<K extends OutputKind, I, O extends Output>(
   const id = `${provider.id}.${propertyId}`;
   const inputLabel = [
     `${provider.id}.${property.id}`,
+    `ai.${kind}-generation.${property.id}`,
     `ai.property.${property.id}`,
     `schema.${provider.id}.${property.id}`
   ];
@@ -211,7 +222,8 @@ function renderEnumProperty<K extends OutputKind, I, O extends Output>(
   provider: Provider<K, I, O>,
   panelInput: PanelInputSchema<K, I>,
   options: UIOptions,
-  config: CommonConfiguration<I, O>
+  config: CommonConfiguration<I, O>,
+  kind: K
 ): GetPropertyInput {
   const {
     builder,
@@ -222,6 +234,7 @@ function renderEnumProperty<K extends OutputKind, I, O extends Output>(
   const id = `${provider.id}.${propertyId}`;
   const inputLabel = [
     `${provider.id}.${property.id}`,
+    `ai.${kind}-generation.${property.id}`,
     `ai.property.${property.id}`,
     `schema.${provider.id}.${property.id}`
   ];
@@ -242,6 +255,7 @@ function renderEnumProperty<K extends OutputKind, I, O extends Output>(
     id: valueId,
     label: [
       `${provider.id}.${property.id}.${valueId}`,
+      `ai.${kind}-generation.${property.id}.${valueId}`,
       `ai.property.${property.id}.${valueId}`,
       `schema.${provider.id}.${property.id}.${valueId}`
     ],
@@ -273,7 +287,8 @@ function renderBooleanProperty<K extends OutputKind, I, O extends Output>(
   provider: Provider<K, I, O>,
   panelInput: PanelInputSchema<K, I>,
   options: UIOptions,
-  config: CommonConfiguration<I, O>
+  config: CommonConfiguration<I, O>,
+  kind: K
 ): GetPropertyInput {
   const {
     builder,
@@ -284,6 +299,7 @@ function renderBooleanProperty<K extends OutputKind, I, O extends Output>(
   const id = `${provider.id}.${propertyId}`;
   const inputLabel = [
     `${provider.id}.${property.id}`,
+    `ai.${kind}-generation.${property.id}`,
     `ai.property.${property.id}`,
     `schema.${provider.id}.${property.id}`
   ];
@@ -309,7 +325,8 @@ function renderIntegerProperty<K extends OutputKind, I, O extends Output>(
   provider: Provider<K, I, O>,
   panelInput: PanelInputSchema<K, I>,
   options: UIOptions,
-  config: CommonConfiguration<I, O>
+  config: CommonConfiguration<I, O>,
+  kind: K
 ): GetPropertyInput {
   const {
     builder,
@@ -320,6 +337,7 @@ function renderIntegerProperty<K extends OutputKind, I, O extends Output>(
   const id = `${provider.id}.${propertyId}`;
   const inputLabel = [
     `${provider.id}.${property.id}`,
+    `ai.${kind}-generation.${property.id}`,
     `ai.property.${property.id}`,
     `schema.${provider.id}.${property.id}`
   ];
@@ -378,7 +396,8 @@ function renderAnyOfProperty<K extends OutputKind, I, O extends Output>(
   provider: Provider<K, I, O>,
   panelInput: PanelInputSchema<K, I>,
   options: UIOptions,
-  config: CommonConfiguration<I, O>
+  config: CommonConfiguration<I, O>,
+  kind: K
 ): GetPropertyInput | undefined {
   const {
     builder,
@@ -389,6 +408,7 @@ function renderAnyOfProperty<K extends OutputKind, I, O extends Output>(
   const id = `${provider.id}.${propertyId}`;
   const inputLabel = [
     `${provider.id}.${property.id}`,
+    `ai.${kind}-generation.${property.id}`,
     `ai.property.${property.id}`,
     `schema.${provider.id}.${property.id}`
   ];
@@ -433,7 +453,8 @@ function renderAnyOfProperty<K extends OutputKind, I, O extends Output>(
             provider,
             panelInput,
             options,
-            config
+            config,
+            kind
           );
         };
 
@@ -451,7 +472,8 @@ function renderAnyOfProperty<K extends OutputKind, I, O extends Output>(
           provider,
           panelInput,
           options,
-          config
+          config,
+          kind
         );
       };
 
@@ -468,7 +490,8 @@ function renderAnyOfProperty<K extends OutputKind, I, O extends Output>(
           provider,
           panelInput,
           options,
-          config
+          config,
+          kind
         );
       };
 
@@ -487,7 +510,8 @@ function renderAnyOfProperty<K extends OutputKind, I, O extends Output>(
           provider,
           panelInput,
           options,
-          config
+          config,
+          kind
         );
       };
 

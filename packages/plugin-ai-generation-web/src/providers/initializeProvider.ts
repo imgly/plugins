@@ -38,7 +38,7 @@ export type ProviderInitializationResult<
  * Initializes a provider with the given configuration and options.
  */
 async function initializeProvider<K extends OutputKind, I, O extends Output>(
-  _kind: K,
+  kind: K,
   provider: Provider<K, I, O>,
   options: {
     cesdk: CreativeEditorSDK;
@@ -58,7 +58,8 @@ async function initializeProvider<K extends OutputKind, I, O extends Output>(
       cesdk: options.cesdk,
       engine: options.cesdk.engine
     },
-    config: internalConfig
+    config: internalConfig,
+    kind
   };
 
   await provider.initialize?.({ ...options, engine: options.cesdk.engine });
