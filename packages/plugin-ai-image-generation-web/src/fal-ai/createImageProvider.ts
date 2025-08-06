@@ -6,7 +6,8 @@ import {
   GetBlockInput,
   CommonProperties,
   Provider,
-  Middleware
+  Middleware,
+  mergeQuickActionsConfig
 } from '@imgly/plugin-ai-generation-web';
 import { fal } from '@fal-ai/client';
 import { isCustomImageSize, uploadImageInputToFalIfNeeded } from './utils';
@@ -35,32 +36,6 @@ type ImageProviderConfiguration = {
       | null;
   };
 };
-
-/**
- * Process quick actions configuration by merging provider defaults with user configuration
- */
-function processQuickActions<I>(
-  providerDefaults: ImageQuickActionSupportMap<I>,
-  userConfig?: ImageProviderConfiguration['supportedQuickActions']
-): ImageQuickActionSupportMap<I> {
-  if (!userConfig) return providerDefaults;
-
-  const result = { ...providerDefaults };
-
-  for (const [actionId, config] of Object.entries(userConfig)) {
-    if (config === false || config === null || config === undefined) {
-      // Remove the quick action
-      delete result[actionId];
-    } else if (config === true) {
-      // Keep provider's default (no-op)
-    } else {
-      // Override with user configuration
-      result[actionId] = config as ImageQuickActionSupportMap<I>[string];
-    }
-  }
-
-  return result;
-}
 
 /**
  * Creates a base provider from schema. This should work out of the box
@@ -115,7 +90,7 @@ function createImageProvider<I extends Record<string, any>>(
     },
     input: {
       quickActions: {
-        supported: processQuickActions(
+        supported: mergeQuickActionsConfig(
           options.supportedQuickActions ?? {},
           config.supportedQuickActions
         )

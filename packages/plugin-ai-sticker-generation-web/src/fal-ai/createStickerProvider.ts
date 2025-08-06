@@ -3,7 +3,8 @@ import CreativeEditorSDK, { CreativeEngine } from '@cesdk/cesdk-js';
 import {
   RenderCustomProperty,
   CommonProperties,
-  Middleware
+  Middleware,
+  mergeQuickActionsConfig
 } from '@imgly/plugin-ai-generation-web';
 import { fal } from '@fal-ai/client';
 import { isCustomImageSize, uploadImageInputToFalIfNeeded } from './utils';
@@ -32,32 +33,6 @@ type StickerProviderConfiguration = {
       | null;
   };
 };
-
-/**
- * Process quick actions configuration by merging provider defaults with user configuration
- */
-function processQuickActions<I>(
-  providerDefaults: StickerQuickActionSupportMap<I>,
-  userConfig?: StickerProviderConfiguration['supportedQuickActions']
-): StickerQuickActionSupportMap<I> {
-  if (!userConfig) return providerDefaults;
-
-  const result = { ...providerDefaults };
-
-  for (const [actionId, config] of Object.entries(userConfig)) {
-    if (config === false || config === null || config === undefined) {
-      // Remove the quick action
-      delete result[actionId];
-    } else if (config === true) {
-      // Keep provider's default (no-op)
-    } else {
-      // Override with user configuration
-      result[actionId] = config as StickerQuickActionSupportMap<I>[string];
-    }
-  }
-
-  return result;
-}
 
 /**
  * Creates a base provider from schema. This should work out of the box
@@ -113,7 +88,7 @@ function createStickerProvider<I extends Record<string, any>>(
     },
     input: {
       quickActions: {
-        supported: processQuickActions(
+        supported: mergeQuickActionsConfig(
           options.supportedQuickActions ?? {},
           config.supportedQuickActions
         )

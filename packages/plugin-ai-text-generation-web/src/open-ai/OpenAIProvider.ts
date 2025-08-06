@@ -1,5 +1,8 @@
 import CreativeEditorSDK from '@cesdk/cesdk-js';
-import { type CommonProviderConfiguration } from '@imgly/plugin-ai-generation-web';
+import {
+  type CommonProviderConfiguration,
+  mergeQuickActionsConfig
+} from '@imgly/plugin-ai-generation-web';
 import { TextProvider } from '../types';
 import OpenAI from 'openai';
 import sendPrompt from './sendPrompt';
@@ -42,22 +45,10 @@ export function OpenAIProvider(
       'ly.img.changeTextTo': true
     };
 
-    const supportedQuickActions: any = { ...defaultQuickActions };
-    if (config.supportedQuickActions) {
-      for (const [actionId, actionConfig] of Object.entries(
-        config.supportedQuickActions
-      )) {
-        if (
-          actionConfig === false ||
-          actionConfig === null ||
-          actionConfig === undefined
-        ) {
-          delete supportedQuickActions[actionId];
-        } else if (actionConfig !== true) {
-          supportedQuickActions[actionId] = actionConfig;
-        }
-      }
-    }
+    const supportedQuickActions = mergeQuickActionsConfig(
+      defaultQuickActions,
+      config.supportedQuickActions
+    );
 
     const provider: TextProvider<OpenAIInput> = {
       kind: 'text',
