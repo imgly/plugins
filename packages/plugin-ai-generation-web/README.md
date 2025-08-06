@@ -667,8 +667,6 @@ The system checks for translations in this order (highest to lowest priority):
 
 1. **Provider-specific**: `ly.img.ai.property.${provider}.${field}` - Override labels for a specific AI provider (for customers)
 2. **Generic**: `ly.img.ai.property.${field}` - Override labels for all AI plugins (for customers)
-3. **Schema defaults (provider)**: `ly.img.ai.defaults.property.${provider}.${field}` - Automatically extracted from schema (under the hood)
-4. **Schema defaults (generic)**: `ly.img.ai.defaults.property.${field}` - Self-defined defaults (under the hood)
 
 ### Basic Example
 

@@ -107,7 +107,6 @@ export type InitializationContext<
   panelInput?: P;
   options: UIOptions;
   config: InternalPluginConfiguration<K, I, O>;
-  kind: K;
 };
 
 /**
