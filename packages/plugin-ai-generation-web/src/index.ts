@@ -79,4 +79,3 @@ export { default as initializeQuickActionComponents } from './ui/quickActions/in
 
 export { AI_EDIT_MODE, AI_METADATA_KEY } from './ui/quickActions/utils';
 
-export { extractTranslationsFromSchema } from './openapi/extractTranslationsFromSchema';

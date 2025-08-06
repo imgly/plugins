@@ -4,7 +4,6 @@ import {
   Output,
   initializeProviders,
   registerDockComponent,
-  extractTranslationsFromSchema,
   checkAiPluginVersion
 } from '@imgly/plugin-ai-generation-web';
 import { PluginConfiguration } from './types';
@@ -108,49 +107,10 @@ export function AudioGeneration<I, O extends Output>(
         config
       );
 
-      const allProviders = [...text2speechProviders, ...text2soundProviders];
-      const allTranslations: Record<string, any> = {};
-
-      const genericTranslations: Record<string, string> = {};
-      if (config.customTranslations?.en) {
-        Object.keys(config.customTranslations.en).forEach((key) => {
-          if (key.startsWith('ai.property.')) {
-            genericTranslations[key] = config.customTranslations!.en![key];
-          }
-        });
-      }
-
-      allProviders.forEach((provider) => {
-        if (
-          provider.input?.panel?.type === 'schema' &&
-          provider.input?.panel?.document &&
-          provider.input?.panel?.inputReference
-        ) {
-          try {
-            const translations = extractTranslationsFromSchema(
-              provider.id,
-              provider.input.panel.document as any,
-              provider.input.panel.inputReference,
-              genericTranslations
-            );
-            Object.assign(allTranslations, translations);
-          } catch (error) {
-            if (config.debug) {
-              // eslint-disable-next-line no-console
-              console.warn(
-                `Failed to extract translations for provider ${provider.id}:`,
-                error
-              );
-            }
-          }
-        }
-      });
-
       cesdk.i18n.setTranslations({
         en: {
           [`panel.${SPEECH_GENERATION_PANEL_ID}`]: 'AI Voice',
           [`panel.${SOUND_GENERATION_PANEL_ID}`]: 'Sound Generation',
-          ...allTranslations,
           ...(config.customTranslations?.en || {})
         }
       });

@@ -4,8 +4,7 @@ import {
   Output,
   registerDockComponent,
   ActionRegistry,
-  checkAiPluginVersion,
-  extractTranslationsFromSchema
+  checkAiPluginVersion
 } from '@imgly/plugin-ai-generation-web';
 import { PluginConfiguration } from './types';
 import iconSprite, { PLUGIN_ICON_SET_ID } from './iconSprite';
@@ -72,49 +71,10 @@ export function StickerGeneration<I, O extends Output>(
         config
       );
 
-      const allProviders = [...text2stickerProviders];
-      const allTranslations: Record<string, any> = {};
-
-      const genericTranslations: Record<string, string> = {};
-      if (config.customTranslations?.en) {
-        Object.keys(config.customTranslations.en).forEach((key) => {
-          if (key.startsWith('ai.property.')) {
-            genericTranslations[key] = config.customTranslations!.en![key];
-          }
-        });
-      }
-
-      allProviders.forEach((provider) => {
-        if (
-          provider.input?.panel?.type === 'schema' &&
-          provider.input?.panel?.document &&
-          provider.input?.panel?.inputReference
-        ) {
-          try {
-            const translations = extractTranslationsFromSchema(
-              provider.id,
-              provider.input.panel.document as any,
-              provider.input.panel.inputReference,
-              genericTranslations
-            );
-            Object.assign(allTranslations, translations);
-          } catch (error) {
-            if (config.debug) {
-              // eslint-disable-next-line no-console
-              console.warn(
-                `Failed to extract translations for provider ${provider.id}:`,
-                error
-              );
-            }
-          }
-        }
-      });
-
       cesdk.i18n.setTranslations({
         en: {
           [`panel.${STICKER_GENERATION_PANEL_ID}`]: 'Sticker Generation',
           [`${STICKER_GENERATION_PANEL_ID}.dock.label`]: 'AI Sticker',
-          ...allTranslations,
           ...(config.customTranslations?.en || {})
         }
       });

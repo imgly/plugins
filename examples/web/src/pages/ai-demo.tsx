@@ -259,31 +259,33 @@ function App() {
                     middleware: [imageRateLimitMiddleware, errorMiddleware],
                     proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
                   })
-                },
-                translations: {
-                  en: {
-                    // Generic property translations (override schema defaults)
-                    'ai.property.prompt': 'Describe your prompt',
-                    'ai.property.image_size': 'Image Size',
-
-                    // RecraftV3 provider translations (override schema defaults & generic)
-                    'fal-ai/recraft-v3.prompt': 'Describe your image',
-                    'fal-ai/recraft-v3.image_size': 'Image Format',
-                    'fal-ai/recraft-v3.image_size.square_hd':
-                      'Square HD (1024×1024)',
-                    'fal-ai/recraft-v3.image_size.square': 'Square (512×512)',
-                    'fal-ai/recraft-v3.image_size.portrait_4_3':
-                      'Portrait 4:3 (768×1024)',
-                    'fal-ai/recraft-v3.image_size.portrait_16_9':
-                      'Portrait 16:9 (576×1024)',
-                    'fal-ai/recraft-v3.image_size.landscape_4_3':
-                      'Landscape 4:3 (1024×768)',
-                    'fal-ai/recraft-v3.image_size.landscape_16_9':
-                      'Landscape 16:9 (1024×576)'
-                  }
                 }
               })
             );
+
+
+            instance.i18n.setTranslations({
+              en: {
+                // Generic property translations (override schema defaults)
+                'ai.property.prompt': 'Describe your prompt',
+                'ai.property.image_size': 'Image Size',
+
+                // RecraftV3 provider translations (override schema defaults & generic)
+                'fal-ai/recraft-v3.prompt': 'Describe your image',
+                'fal-ai/recraft-v3.image_size': 'Image Format',
+                'fal-ai/recraft-v3.image_size.square_hd':
+                  'Square HD (1024×1024)',
+                'fal-ai/recraft-v3.image_size.square': 'Square (512×512)',
+                'fal-ai/recraft-v3.image_size.portrait_4_3':
+                  'Portrait 4:3 (768×1024)',
+                'fal-ai/recraft-v3.image_size.portrait_16_9':
+                  'Portrait 16:9 (576×1024)',
+                'fal-ai/recraft-v3.image_size.landscape_4_3':
+                  'Landscape 4:3 (1024×768)',
+                'fal-ai/recraft-v3.image_size.landscape_16_9':
+                  'Landscape 16:9 (1024×576)'
+              }
+            });
 
             instance.ui.setNavigationBarOrder([
               'sceneModeToggle',

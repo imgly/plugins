@@ -163,20 +163,6 @@ function renderObjectProperty<K extends OutputKind, I, O extends Output>(
   });
 }
 
-function getTranslatedLabel(
-  provider: Provider<any, any, any>,
-  property: Required<Property>
-): string {
-  return `${provider.id}.${property.id}`;
-}
-
-function getTranslatedEnumValueLabel(
-  provider: Provider<any, any, any>,
-  property: Required<Property>,
-  valueId: string
-): string {
-  return `${provider.id}.${property.id}.${valueId}`;
-}
 
 function renderStringProperty<K extends OutputKind, I, O extends Output>(
   context: BuilderRenderFunctionContext<any>,
@@ -193,7 +179,11 @@ function renderStringProperty<K extends OutputKind, I, O extends Output>(
   const { id: propertyId } = property;
 
   const id = `${provider.id}.${propertyId}`;
-  const inputLabel = getTranslatedLabel(provider, property);
+  const inputLabel = [
+    `${provider.id}.${property.id}`,
+    `ai.property.${property.id}`,
+    `schema.${provider.id}.${property.id}`
+  ];
 
   const propertyState = global(id, property.schema.default ?? '');
 
@@ -231,7 +221,11 @@ function renderEnumProperty<K extends OutputKind, I, O extends Output>(
   const { id: propertyId } = property;
 
   const id = `${provider.id}.${propertyId}`;
-  const inputLabel = getTranslatedLabel(provider, property);
+  const inputLabel = [
+    `${provider.id}.${property.id}`,
+    `ai.property.${property.id}`,
+    `schema.${provider.id}.${property.id}`
+  ];
 
   const icons: Record<string, string> =
     'x-imgly-enum-icons' in property.schema &&
@@ -239,9 +233,19 @@ function renderEnumProperty<K extends OutputKind, I, O extends Output>(
       ? (property.schema['x-imgly-enum-icons'] as Record<string, string>)
       : {};
 
+  const enumLabels: Record<string, string> =
+    'x-imgly-enum-labels' in property.schema &&
+    typeof property.schema['x-imgly-enum-labels'] === 'object'
+      ? (property.schema['x-imgly-enum-labels'] as Record<string, string>)
+      : {};
+
   const values: EnumValue[] = (property.schema.enum ?? []).map((valueId) => ({
     id: valueId,
-    label: getTranslatedEnumValueLabel(provider, property, valueId),
+    label: [
+      `${provider.id}.${property.id}.${valueId}`,
+      `ai.property.${property.id}.${valueId}`,
+      enumLabels?.[valueId] || valueId
+    ].filter((label): label is string => Boolean(label)),
     icon: icons[valueId]
   }));
   const defaultValue =
@@ -279,7 +283,11 @@ function renderBooleanProperty<K extends OutputKind, I, O extends Output>(
   const { id: propertyId } = property;
 
   const id = `${provider.id}.${propertyId}`;
-  const inputLabel = getTranslatedLabel(provider, property);
+  const inputLabel = [
+    `${provider.id}.${property.id}`,
+    `ai.property.${property.id}`,
+    `schema.${provider.id}.${property.id}`
+  ];
 
   const defaultValue = !!property.schema.default;
   const propertyState = global<boolean>(id, defaultValue);
@@ -311,7 +319,11 @@ function renderIntegerProperty<K extends OutputKind, I, O extends Output>(
   const { id: propertyId } = property;
 
   const id = `${provider.id}.${propertyId}`;
-  const inputLabel = getTranslatedLabel(provider, property);
+  const inputLabel = [
+    `${provider.id}.${property.id}`,
+    `ai.property.${property.id}`,
+    `schema.${provider.id}.${property.id}`
+  ];
 
   const minValue = property.schema.minimum;
   const maxValue = property.schema.maximum;
@@ -376,7 +388,11 @@ function renderAnyOfProperty<K extends OutputKind, I, O extends Output>(
   const { id: propertyId } = property;
 
   const id = `${provider.id}.${propertyId}`;
-  const inputLabel = getTranslatedLabel(provider, property);
+  const inputLabel = [
+    `${provider.id}.${property.id}`,
+    `ai.property.${property.id}`,
+    `schema.${provider.id}.${property.id}`
+  ];
 
   const anyOf = (property.schema.anyOf ?? []) as OpenAPIV3.SchemaObject[];
 

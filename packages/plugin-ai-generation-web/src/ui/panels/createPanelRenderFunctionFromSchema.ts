@@ -56,6 +56,36 @@ async function createPanelRenderFunctionFromSchema<
   const inputSchema: OpenAPIV3.SchemaObject = resolvedInputReference;
   const properties = getProperties(inputSchema, panelInput);
 
+  // Set translations for schema titles and enum labels before creating render function
+  const translations: Record<string, string> = {};
+  properties.forEach((property) => {
+    if (property.schema?.title) {
+      translations[`schema.${provider.id}.${property.id}`] = property.schema.title;
+    }
+
+    // Add enum labels translations
+    if (property.schema?.enum) {
+      const enumLabels: Record<string, string> =
+        'x-imgly-enum-labels' in property.schema &&
+        typeof property.schema['x-imgly-enum-labels'] === 'object'
+          ? (property.schema['x-imgly-enum-labels'] as Record<string, string>)
+          : {};
+
+      property.schema.enum.forEach((enumValue) => {
+        const valueId = String(enumValue);
+        if (enumLabels[valueId]) {
+          translations[`${provider.id}.${property.id}.${valueId}`] = enumLabels[valueId];
+        }
+      });
+    }
+  });
+  if (Object.keys(translations).length > 0) {
+    console.log('Setting translations:', translations);
+    options.cesdk.i18n.setTranslations({
+      en: translations
+    });
+  }
+
   const builderRenderFunction: BuilderRenderFunction<any> = (context) => {
     const { builder } = context;
 
