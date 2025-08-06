@@ -267,26 +267,26 @@ function App() {
             instance.i18n.setTranslations({
               en: {
                 // Generic property translations (override schema defaults)
-                'ai.property.prompt': 'Describe your prompt',
-                'ai.property.image_size': 'Image Size',
+                'ly.img.ai.property.prompt': 'Describe your prompt',
+                'ly.img.ai.property.image_size': 'Image Size',
 
                 // Plugin-type specific translations (override generic, but can be overridden by provider-specific)
-                'ai.property.image-generation.prompt' : 'Describe your image',
-                'ai.property.video-generation.prompt' : 'Describe your video',
+                'ly.img.ai.image-generation.prompt' : 'Describe your image',
+                'ly.img.ai.video-generation.prompt' : 'Describe your video',
 
                 // Provider-specific translations (override all translations)
-                'ai.property.fal-ai/recraft-v3.prompt': 'Describe your recraft image',
-                'ai.property.fal-ai/recraft-v3.image_size': 'Image Format',
-                'ai.property.fal-ai/recraft-v3.image_size.square_hd':
+                'ly.img.ai.fal-ai/recraft-v3.prompt': 'Describe your recraft image',
+                'ly.img.ai.fal-ai/recraft-v3.image_size': 'Image Format',
+                'ly.img.ai.fal-ai/recraft-v3.image_size.square_hd':
                   'Square HD (1024×1024)',
-                'ai.property.fal-ai/recraft-v3.image_size.square': 'Square (512×512)',
-                'ai.property.fal-ai/recraft-v3.image_size.portrait_4_3':
+                'ly.img.ai.fal-ai/recraft-v3.image_size.square': 'Square (512×512)',
+                'ly.img.ai.fal-ai/recraft-v3.image_size.portrait_4_3':
                   'Portrait 4:3 (768×1024)',
-                'ai.property.fal-ai/recraft-v3.image_size.portrait_16_9':
+                'ly.img.ai.fal-ai/recraft-v3.image_size.portrait_16_9':
                   'Portrait 16:9 (576×1024)',
-                'ai.property.fal-ai/recraft-v3.image_size.landscape_4_3':
+                'ly.img.ai.fal-ai/recraft-v3.image_size.landscape_4_3':
                   'Landscape 4:3 (1024×768)',
-                'ai.property.fal-ai/recraft-v3.image_size.landscape_16_9':
+                'ly.img.ai.fal-ai/recraft-v3.image_size.landscape_16_9':
                   'Landscape 16:9 (1024×576)'
               }
             });
