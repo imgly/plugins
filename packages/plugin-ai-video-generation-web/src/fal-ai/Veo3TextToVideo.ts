@@ -1,8 +1,8 @@
 import {
   CommonProviderConfiguration,
   VideoOutput,
-  getPanelId,
-  type Provider
+  type Provider,
+  getPanelId
 } from '@imgly/plugin-ai-generation-web';
 import schema from './Veo3TextToVideo.json';
 import CreativeEditorSDK from '@cesdk/cesdk-js';
@@ -34,7 +34,7 @@ export function Veo3TextToVideo(
         [`libraries.${getPanelId(modelKey)}.history.label`]: 'Generated Videos'
       }
     });
-    
+
     return getProvider(cesdk, config);
   };
 }
