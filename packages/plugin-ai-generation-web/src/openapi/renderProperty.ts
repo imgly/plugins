@@ -189,10 +189,10 @@ function renderStringProperty<K extends OutputKind, I, O extends Output>(
 
   const id = `${provider.id}.${propertyId}`;
   const inputLabel = [
-    `${provider.id}.${property.id}`,
-    `ai.${kind}-generation.${property.id}`,
+    `ai.property.${provider.id}.${property.id}`,
+    `ai.property.${kind}-generation.${property.id}`,
     `ai.property.${property.id}`,
-    `schema.${provider.id}.${property.id}`
+    `ai.property.schema.${provider.id}.${property.id}`
   ];
 
   const propertyState = global(id, property.schema.default ?? '');
@@ -233,10 +233,10 @@ function renderEnumProperty<K extends OutputKind, I, O extends Output>(
 
   const id = `${provider.id}.${propertyId}`;
   const inputLabel = [
-    `${provider.id}.${property.id}`,
-    `ai.${kind}-generation.${property.id}`,
+    `ai.property.${provider.id}.${property.id}`,
+    `ai.property.${kind}-generation.${property.id}`,
     `ai.property.${property.id}`,
-    `schema.${provider.id}.${property.id}`
+    `ai.property.schema.${provider.id}.${property.id}`
   ];
 
   const icons: Record<string, string> =
@@ -254,10 +254,10 @@ function renderEnumProperty<K extends OutputKind, I, O extends Output>(
   const values: EnumValue[] = (property.schema.enum ?? []).map((valueId) => ({
     id: valueId,
     label: [
-      `${provider.id}.${property.id}.${valueId}`,
-      `ai.${kind}-generation.${property.id}.${valueId}`,
+      `ai.property.${provider.id}.${property.id}.${valueId}`,
+      `ai.property.${kind}-generation.${property.id}.${valueId}`,
       `ai.property.${property.id}.${valueId}`,
-      `schema.${provider.id}.${property.id}.${valueId}`
+      `ai.property.schema.${provider.id}.${property.id}.${valueId}`
     ],
     icon: icons[valueId]
   }));
@@ -298,10 +298,10 @@ function renderBooleanProperty<K extends OutputKind, I, O extends Output>(
 
   const id = `${provider.id}.${propertyId}`;
   const inputLabel = [
-    `${provider.id}.${property.id}`,
-    `ai.${kind}-generation.${property.id}`,
+    `ai.property.${provider.id}.${property.id}`,
+    `ai.property.${kind}-generation.${property.id}`,
     `ai.property.${property.id}`,
-    `schema.${provider.id}.${property.id}`
+    `ai.property.schema.${provider.id}.${property.id}`
   ];
 
   const defaultValue = !!property.schema.default;
@@ -336,10 +336,10 @@ function renderIntegerProperty<K extends OutputKind, I, O extends Output>(
 
   const id = `${provider.id}.${propertyId}`;
   const inputLabel = [
-    `${provider.id}.${property.id}`,
-    `ai.${kind}-generation.${property.id}`,
+    `ai.property.${provider.id}.${property.id}`,
+    `ai.property.${kind}-generation.${property.id}`,
     `ai.property.${property.id}`,
-    `schema.${provider.id}.${property.id}`
+    `ai.property.schema.${provider.id}.${property.id}`
   ];
 
   const minValue = property.schema.minimum;
@@ -407,10 +407,10 @@ function renderAnyOfProperty<K extends OutputKind, I, O extends Output>(
 
   const id = `${provider.id}.${propertyId}`;
   const inputLabel = [
-    `${provider.id}.${property.id}`,
-    `ai.${kind}-generation.${property.id}`,
+    `ai.property.${provider.id}.${property.id}`,
+    `ai.property.${kind}-generation.${property.id}`,
     `ai.property.${property.id}`,
-    `schema.${provider.id}.${property.id}`
+    `ai.property.schema.${provider.id}.${property.id}`
   ];
 
   const anyOf = (property.schema.anyOf ?? []) as OpenAPIV3.SchemaObject[];

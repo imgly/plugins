@@ -271,22 +271,22 @@ function App() {
                 'ai.property.image_size': 'Image Size',
 
                 // Plugin-type specific translations (override generic, but can be overridden by provider-specific)
-                'ai.image-generation.prompt' : 'Describe your image',
-                'ai.video-generation.prompt' : 'Describe your video',
+                'ai.property.image-generation.prompt' : 'Describe your image',
+                'ai.property.video-generation.prompt' : 'Describe your video',
 
                 // Provider-specific translations (override all translations)
-                'fal-ai/recraft-v3.prompt': 'Describe your recraft image',
-                'fal-ai/recraft-v3.image_size': 'Image Format',
-                'fal-ai/recraft-v3.image_size.square_hd':
+                'ai.property.fal-ai/recraft-v3.prompt': 'Describe your recraft image',
+                'ai.property.fal-ai/recraft-v3.image_size': 'Image Format',
+                'ai.property.fal-ai/recraft-v3.image_size.square_hd':
                   'Square HD (1024×1024)',
-                'fal-ai/recraft-v3.image_size.square': 'Square (512×512)',
-                'fal-ai/recraft-v3.image_size.portrait_4_3':
+                'ai.property.fal-ai/recraft-v3.image_size.square': 'Square (512×512)',
+                'ai.property.fal-ai/recraft-v3.image_size.portrait_4_3':
                   'Portrait 4:3 (768×1024)',
-                'fal-ai/recraft-v3.image_size.portrait_16_9':
+                'ai.property.fal-ai/recraft-v3.image_size.portrait_16_9':
                   'Portrait 16:9 (576×1024)',
-                'fal-ai/recraft-v3.image_size.landscape_4_3':
+                'ai.property.fal-ai/recraft-v3.image_size.landscape_4_3':
                   'Landscape 4:3 (1024×768)',
-                'fal-ai/recraft-v3.image_size.landscape_16_9':
+                'ai.property.fal-ai/recraft-v3.image_size.landscape_16_9':
                   'Landscape 16:9 (1024×576)'
               }
             });

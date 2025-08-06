@@ -18,8 +18,8 @@ function formatEnumLabel(enumValue: string): string {
 /**
  * Extracts translations from OpenAPI schema properties and sets them via cesdk.i18n
  * This includes:
- * - Schema property titles as `schema.${provider.id}.${property.id}`
- * - Enum value labels as `schema.${provider.id}.${property.id}.${valueId}`
+ * - Schema property titles as `ai.property.schema.${provider.id}.${property.id}`
+ * - Enum value labels as `ai.property.schema.${provider.id}.${property.id}.${valueId}`
  * - AnyOf enum value labels with the same pattern
  */
 export function extractAndSetSchemaTranslations<
@@ -36,7 +36,7 @@ export function extractAndSetSchemaTranslations<
   properties.forEach((property) => {
     // Add schema title translations
     if (property.schema?.title) {
-      translations[`schema.${provider.id}.${property.id}`] =
+      translations[`ai.property.schema.${provider.id}.${property.id}`] =
         property.schema.title;
     }
 
@@ -52,8 +52,9 @@ export function extractAndSetSchemaTranslations<
         const valueId = String(enumValue);
         // Set translation either from enumLabels or fallback to formatted valueId
         const labelValue = enumLabels[valueId] || formatEnumLabel(valueId);
-        translations[`schema.${provider.id}.${property.id}.${valueId}`] =
-          labelValue;
+        translations[
+          `ai.property.schema.${provider.id}.${property.id}.${valueId}`
+        ] = labelValue;
       });
     }
 
@@ -72,8 +73,9 @@ export function extractAndSetSchemaTranslations<
             const valueId = String(enumValue);
             // Set translation either from enumLabels or fallback to formatted valueId
             const labelValue = enumLabels[valueId] || formatEnumLabel(valueId);
-            translations[`schema.${provider.id}.${property.id}.${valueId}`] =
-              labelValue;
+            translations[
+              `ai.property.schema.${provider.id}.${property.id}.${valueId}`
+            ] = labelValue;
           });
         }
       });
