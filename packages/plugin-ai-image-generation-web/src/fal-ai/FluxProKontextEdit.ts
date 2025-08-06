@@ -51,7 +51,7 @@ function getProvider(
       name: 'Flux Pro Kontext',
       // @ts-ignore
       schema,
-      inputReference: '#/components/schemas/FluxProKontextInput',
+      inputReference: '#/components/schemas/FluxProKontextEditInput',
       cesdk,
       middlewares: config.middlewares,
       headers: config.headers,

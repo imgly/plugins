@@ -52,7 +52,7 @@ function getProvider(
       name: 'Flux Pro Kontext (Max)',
       // @ts-ignore
       schema,
-      inputReference: '#/components/schemas/FluxProKontextMaxInput',
+      inputReference: '#/components/schemas/FluxProKontextMaxEditInput',
       cesdk,
       middlewares: config.middlewares,
       headers: config.headers,
