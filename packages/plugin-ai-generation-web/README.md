@@ -665,9 +665,10 @@ You can customize all labels and text in the AI generation interface using the t
 
 The system checks for translations in this order (highest to lowest priority):
 
-1. **Provider-specific**: `ly.img.ai.${provider}.${field}` - Override labels for a specific AI provider
-2. **Plugin-type specific**: `ly.img.ai.${type}-generation.${field}` - Override labels for all image, video, or audio providers  
-3. **Generic**: `ly.img.ai.property.${field}` - Override labels for all AI plugins
+1. **Provider-specific**: `ly.img.ai.property.${provider}.${field}` - Override labels for a specific AI provider (for customers)
+2. **Generic**: `ly.img.ai.property.${field}` - Override labels for all AI plugins (for customers)
+3. **Schema defaults (provider)**: `ly.img.ai.defaults.property.${provider}.${field}` - Automatically extracted from schema (under the hood)
+4. **Schema defaults (generic)**: `ly.img.ai.defaults.property.${field}` - Self-defined defaults (under the hood)
 
 ### Basic Example
 
@@ -679,16 +680,9 @@ cesdk.i18n.setTranslations({
     'ly.img.ai.property.prompt': 'Describe what you want to create',
     'ly.img.ai.property.image_size': 'Image Dimensions',
 
-    // Plugin-type specific (applies to ALL image generation providers)
-    'ly.img.ai.image-generation.prompt': 'Describe your image',
-    'ly.img.ai.image-generation.image_size': 'Image Format',
-    
-    // Plugin-type specific (applies to ALL video generation providers)
-    'ly.img.ai.video-generation.prompt': 'Describe your video',
-
     // Provider-specific (highest priority - for specific providers only)
-    'ly.img.ai.fal-ai/recraft-v3.prompt': 'Describe your Recraft image',
-    'ly.img.ai.fal-ai/recraft-v3.image_size': 'Canvas Size'
+    'ly.img.ai.property.fal-ai/recraft-v3.prompt': 'Describe your Recraft image',
+    'ly.img.ai.property.fal-ai/recraft-v3.image_size': 'Canvas Size'
   }
 });
 ```
@@ -701,9 +695,9 @@ For dropdown menus, add the option value to the translation key:
 cesdk.i18n.setTranslations({
   en: {
     // Provider-specific dropdown options
-    'ly.img.ai.fal-ai/recraft-v3.image_size.square_hd': 'Square HD (1024×1024)',
-    'ly.img.ai.fal-ai/recraft-v3.image_size.portrait_4_3': 'Portrait 4:3 (768×1024)',
-    'ly.img.ai.fal-ai/recraft-v3.image_size.landscape_16_9': 'Landscape 16:9 (1024×576)'
+    'ly.img.ai.property.fal-ai/recraft-v3.image_size.square_hd': 'Square HD (1024×1024)',
+    'ly.img.ai.property.fal-ai/recraft-v3.image_size.portrait_4_3': 'Portrait 4:3 (768×1024)',
+    'ly.img.ai.property.fal-ai/recraft-v3.image_size.landscape_16_9': 'Landscape 16:9 (1024×576)'
   }
 });
 ```

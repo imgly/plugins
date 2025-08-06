@@ -25,8 +25,7 @@ async function createPanelRenderFunctionFromSchema<
     options,
     provider,
     panelInput,
-    config,
-    kind
+    config
   }: InitializationContext<K, I, O, PanelInputSchema<K, I>>,
   generate: Generate<I, O>
 ): Promise<BuilderRenderFunction<any> | undefined> {
@@ -74,8 +73,7 @@ async function createPanelRenderFunctionFromSchema<
             provider,
             panelInput,
             options,
-            config,
-            kind
+            config
           );
           if (getInput != null) {
             if (Array.isArray(getInput)) {

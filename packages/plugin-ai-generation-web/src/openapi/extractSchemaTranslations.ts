@@ -1,6 +1,7 @@
 import { Property } from './types';
 import Provider, { Output, OutputKind } from '../core/provider';
 import { UIOptions } from '../types';
+import { defaultTranslations } from './defaultTranslations';
 
 function formatEnumLabel(enumValue: string): string {
   return (
@@ -18,8 +19,8 @@ function formatEnumLabel(enumValue: string): string {
 /**
  * Extracts translations from OpenAPI schema properties and sets them via cesdk.i18n
  * This includes:
- * - Schema property titles as `ly.img.ai.schema.${provider.id}.${property.id}`
- * - Enum value labels as `ly.img.ai.schema.${provider.id}.${property.id}.${valueId}`
+ * - Schema property titles as `ly.img.ai.defaults.property.${provider.id}.${property.id}`
+ * - Enum value labels as `ly.img.ai.defaults.property.${provider.id}.${property.id}.${valueId}`
  * - AnyOf enum value labels with the same pattern
  */
 export function extractAndSetSchemaTranslations<
@@ -36,8 +37,9 @@ export function extractAndSetSchemaTranslations<
   properties.forEach((property) => {
     // Add schema title translations
     if (property.schema?.title) {
-      translations[`ly.img.ai.schema.${provider.id}.${property.id}`] =
-        property.schema.title;
+      translations[
+        `ly.img.ai.defaults.property.${provider.id}.${property.id}`
+      ] = property.schema.title;
     }
 
     // Add enum labels translations
@@ -53,7 +55,7 @@ export function extractAndSetSchemaTranslations<
         // Set translation either from enumLabels or fallback to formatted valueId
         const labelValue = enumLabels[valueId] || formatEnumLabel(valueId);
         translations[
-          `ly.img.ai.schema.${provider.id}.${property.id}.${valueId}`
+          `ly.img.ai.defaults.property.${provider.id}.${property.id}.${valueId}`
         ] = labelValue;
       });
     }
@@ -82,10 +84,13 @@ export function extractAndSetSchemaTranslations<
     }
   });
 
+  // Merge schema translations with default translations (schema translations take precedence)
+  const allTranslations = { ...defaultTranslations, ...translations };
+
   // Set translations if any were found
-  if (Object.keys(translations).length > 0) {
+  if (Object.keys(allTranslations).length > 0) {
     options.cesdk.i18n.setTranslations({
-      en: translations
+      en: allTranslations
     });
   }
 }
