@@ -30,6 +30,35 @@ export function OpenAIProvider(
 }) => Promise<TextProvider<OpenAIInput>> {
   return () => {
     let openai: OpenAI | null = null;
+
+    // Process quick actions configuration
+    const defaultQuickActions: any = {
+      'ly.img.improve': true,
+      'ly.img.fix': true,
+      'ly.img.shorter': true,
+      'ly.img.longer': true,
+      'ly.img.changeTone': true,
+      'ly.img.translate': true,
+      'ly.img.changeTextTo': true
+    };
+
+    const supportedQuickActions: any = { ...defaultQuickActions };
+    if (config.supportedQuickActions) {
+      for (const [actionId, actionConfig] of Object.entries(
+        config.supportedQuickActions
+      )) {
+        if (
+          actionConfig === false ||
+          actionConfig === null ||
+          actionConfig === undefined
+        ) {
+          delete supportedQuickActions[actionId];
+        } else if (actionConfig !== true) {
+          supportedQuickActions[actionId] = actionConfig;
+        }
+      }
+    }
+
     const provider: TextProvider<OpenAIInput> = {
       kind: 'text',
       id: 'openai',
@@ -44,15 +73,7 @@ export function OpenAIProvider(
       },
       input: {
         quickActions: {
-          supported: {
-            'ly.img.improve': true,
-            'ly.img.fix': true,
-            'ly.img.shorter': true,
-            'ly.img.longer': true,
-            'ly.img.changeTone': true,
-            'ly.img.translate': true,
-            'ly.img.changeTextTo': true
-          }
+          supported: supportedQuickActions
         }
       },
       output: {

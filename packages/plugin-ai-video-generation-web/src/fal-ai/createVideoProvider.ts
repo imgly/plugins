@@ -20,7 +20,46 @@ type VideoProviderConfiguration = {
    * @deprecated Use `middlewares` instead.
    */
   middleware?: Middleware<any, any>[];
+  /**
+   * Override provider's default history asset source
+   */
+  history?: false | '@imgly/local' | '@imgly/indexedDB' | (string & {});
+  /**
+   * Configure supported quick actions
+   */
+  supportedQuickActions?: {
+    [quickActionId: string]:
+      | Partial<VideoQuickActionSupportMap<any>[string]>
+      | false
+      | null;
+  };
 };
+
+/**
+ * Process quick actions configuration by merging provider defaults with user configuration
+ */
+function processQuickActions<I>(
+  providerDefaults: VideoQuickActionSupportMap<I>,
+  userConfig?: VideoProviderConfiguration['supportedQuickActions']
+): VideoQuickActionSupportMap<I> {
+  if (!userConfig) return providerDefaults;
+
+  const result = { ...providerDefaults };
+
+  for (const [actionId, config] of Object.entries(userConfig)) {
+    if (config === false || config === null || config === undefined) {
+      // Remove the quick action
+      delete result[actionId];
+    } else if (config === true) {
+      // Keep provider's default (no-op)
+    } else {
+      // Override with user configuration
+      result[actionId] = config as VideoQuickActionSupportMap<I>[string];
+    }
+  }
+
+  return result;
+}
 
 /**
  * Creates a base provider from schema. This should work out of the box
@@ -78,7 +117,10 @@ function createVideoProvider<I extends Record<string, any>>(
     },
     input: {
       quickActions: {
-        supported: options.supportedQuickActions ?? {}
+        supported: processQuickActions(
+          options.supportedQuickActions ?? {},
+          config.supportedQuickActions
+        )
       },
       panel: {
         type: 'schema',
@@ -100,7 +142,7 @@ function createVideoProvider<I extends Record<string, any>>(
     },
     output: {
       abortable: true,
-      history: '@imgly/indexedDB',
+      history: config.history ?? '@imgly/indexedDB',
       middleware,
       generate: async (
         input: I,
