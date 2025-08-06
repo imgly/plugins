@@ -47,7 +47,6 @@ export function StickerGeneration<I, O extends Output>(
       });
 
       cesdk.ui.addIconSet(PLUGIN_ICON_SET_ID, iconSprite);
-
       cesdk.i18n.setTranslations({
         en: {
           [`panel.${STICKER_GENERATION_PANEL_ID}`]: 'Sticker Generation',

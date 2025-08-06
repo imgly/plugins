@@ -57,7 +57,6 @@ export function ImageGeneration<I, O extends Output>(
       });
 
       cesdk.ui.addIconSet(PLUGIN_ICON_SET_ID, iconSprite);
-
       cesdk.i18n.setTranslations({
         en: {
           [`panel.${IMAGE_GENERATION_PANEL_ID}`]: 'Image Generation',

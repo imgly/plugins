@@ -1,6 +1,7 @@
 import {
   CommonProviderConfiguration,
   VideoOutput,
+  getPanelId,
   type Provider
 } from '@imgly/plugin-ai-generation-web';
 import schema from './Veo3TextToVideo.json';
@@ -23,6 +24,17 @@ export function Veo3TextToVideo(
   cesdk: CreativeEditorSDK;
 }) => Promise<Provider<'video', Veo3Input, VideoOutput>> {
   return async ({ cesdk }: { cesdk: CreativeEditorSDK }) => {
+    const modelKey = 'fal-ai/veo3';
+
+    // Set translations
+    cesdk.i18n.setTranslations({
+      en: {
+        [`panel.${getPanelId(modelKey)}.prompt`]: 'Enter your prompt',
+        [`panel.${modelKey}.prompt`]: 'Enter your prompt',
+        [`libraries.${getPanelId(modelKey)}.history.label`]: 'Generated Videos'
+      }
+    });
+    
     return getProvider(cesdk, config);
   };
 }
