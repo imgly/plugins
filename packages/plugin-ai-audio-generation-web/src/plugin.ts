@@ -25,6 +25,13 @@ export function AudioGeneration<I, O extends Output>(
       // Check AI plugin version consistency
       checkAiPluginVersion(cesdk, PLUGIN_ID, PLUGIN_VERSION);
 
+      cesdk.setTranslations({
+        en: {
+          [`panel.${SPEECH_GENERATION_PANEL_ID}`]: 'AI Voice',
+          [`panel.${SOUND_GENERATION_PANEL_ID}`]: 'Sound Generation'
+        }
+      });
+
       printConfigWarnings(config);
 
       const registry = ActionRegistry.get();
@@ -106,14 +113,6 @@ export function AudioGeneration<I, O extends Output>(
         { cesdk },
         config
       );
-
-      cesdk.i18n.setTranslations({
-        en: {
-          [`panel.${SPEECH_GENERATION_PANEL_ID}`]: 'AI Voice',
-          [`panel.${SOUND_GENERATION_PANEL_ID}`]: 'Sound Generation',
-          ...(config.customTranslations?.en || {})
-        }
-      });
 
       if (text2SoundInitializedResult.panel.builderRenderFunction != null) {
         cesdk.ui.registerPanel(

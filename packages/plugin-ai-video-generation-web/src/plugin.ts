@@ -25,6 +25,13 @@ export function VideoGeneration<I, O extends Output>(
       // Check AI plugin version consistency
       checkAiPluginVersion(cesdk, PLUGIN_ID, PLUGIN_VERSION);
 
+      cesdk.setTranslations({
+        en: {
+          [`panel.${VIDEO_GENERATION_PANEL_ID}`]: 'Video Generation',
+          [`${VIDEO_GENERATION_PANEL_ID}.dock.label`]: 'AI Video'
+        }
+      });
+
       printConfigWarnings(config);
 
       const registry = ActionRegistry.get();
@@ -74,14 +81,6 @@ export function VideoGeneration<I, O extends Output>(
         { cesdk },
         config
       );
-
-      cesdk.i18n.setTranslations({
-        en: {
-          [`panel.${VIDEO_GENERATION_PANEL_ID}`]: 'Video Generation',
-          [`${VIDEO_GENERATION_PANEL_ID}.dock.label`]: 'AI Video',
-          ...(config.customTranslations?.en || {})
-        }
-      });
 
       // Register video quick actions
       ActionRegistry.get().register(CreateVideo({ cesdk }));

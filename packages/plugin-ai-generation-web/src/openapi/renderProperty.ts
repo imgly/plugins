@@ -163,7 +163,6 @@ function renderObjectProperty<K extends OutputKind, I, O extends Output>(
   });
 }
 
-
 function renderStringProperty<K extends OutputKind, I, O extends Output>(
   context: BuilderRenderFunctionContext<any>,
   property: Required<Property>,

@@ -48,6 +48,13 @@ export function StickerGeneration<I, O extends Output>(
 
       cesdk.ui.addIconSet(PLUGIN_ICON_SET_ID, iconSprite);
 
+      cesdk.i18n.setTranslations({
+        en: {
+          [`panel.${STICKER_GENERATION_PANEL_ID}`]: 'Sticker Generation',
+          [`${STICKER_GENERATION_PANEL_ID}.dock.label`]: 'AI Sticker'
+        }
+      });
+
       const text2sticker = config.providers?.text2sticker;
 
       const text2stickerProviders = await Promise.all(
@@ -70,14 +77,6 @@ export function StickerGeneration<I, O extends Output>(
         { cesdk },
         config
       );
-
-      cesdk.i18n.setTranslations({
-        en: {
-          [`panel.${STICKER_GENERATION_PANEL_ID}`]: 'Sticker Generation',
-          [`${STICKER_GENERATION_PANEL_ID}.dock.label`]: 'AI Sticker',
-          ...(config.customTranslations?.en || {})
-        }
-      });
 
       if (initializedResult.history?.assetSourceId != null) {
         // TODO: Add combined asset source for this kind

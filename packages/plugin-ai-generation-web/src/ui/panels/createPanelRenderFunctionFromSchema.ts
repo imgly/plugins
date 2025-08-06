@@ -60,7 +60,8 @@ async function createPanelRenderFunctionFromSchema<
   const translations: Record<string, string> = {};
   properties.forEach((property) => {
     if (property.schema?.title) {
-      translations[`schema.${provider.id}.${property.id}`] = property.schema.title;
+      translations[`schema.${provider.id}.${property.id}`] =
+        property.schema.title;
     }
 
     // Add enum labels translations
@@ -74,13 +75,13 @@ async function createPanelRenderFunctionFromSchema<
       property.schema.enum.forEach((enumValue) => {
         const valueId = String(enumValue);
         if (enumLabels[valueId]) {
-          translations[`${provider.id}.${property.id}.${valueId}`] = enumLabels[valueId];
+          translations[`${provider.id}.${property.id}.${valueId}`] =
+            enumLabels[valueId];
         }
       });
     }
   });
   if (Object.keys(translations).length > 0) {
-    console.log('Setting translations:', translations);
     options.cesdk.i18n.setTranslations({
       en: translations
     });

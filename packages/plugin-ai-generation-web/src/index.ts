@@ -78,4 +78,3 @@ export { default as initializeProvider } from './providers/initializeProvider';
 export { default as initializeQuickActionComponents } from './ui/quickActions/initializeQuickActionComponents';
 
 export { AI_EDIT_MODE, AI_METADATA_KEY } from './ui/quickActions/utils';
-

@@ -43,8 +43,7 @@ export default (
             text2text: providers.text2text
           },
           debug: config.debug,
-          dryRun: config.dryRun,
-          customTranslations: config.translations
+          dryRun: config.dryRun
         })
       );
 
@@ -55,8 +54,7 @@ export default (
             image2image: providers.image2image
           },
           debug: config.debug,
-          dryRun: config.dryRun,
-          customTranslations: config.translations
+          dryRun: config.dryRun
         })
       );
 
@@ -67,8 +65,7 @@ export default (
             image2video: providers.image2video
           },
           debug: config.debug,
-          dryRun: config.dryRun,
-          customTranslations: config.translations
+          dryRun: config.dryRun
         })
       );
 
@@ -79,8 +76,7 @@ export default (
             text2sound: providers.text2sound
           },
           debug: config.debug,
-          dryRun: config.dryRun,
-          customTranslations: config.translations
+          dryRun: config.dryRun
         })
       );
 
@@ -90,8 +86,7 @@ export default (
             text2sticker: providers.text2sticker
           },
           debug: config.debug,
-          dryRun: config.dryRun,
-          customTranslations: config.translations
+          dryRun: config.dryRun
         })
       );
 

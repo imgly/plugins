@@ -58,6 +58,13 @@ export function ImageGeneration<I, O extends Output>(
 
       cesdk.ui.addIconSet(PLUGIN_ICON_SET_ID, iconSprite);
 
+      cesdk.i18n.setTranslations({
+        en: {
+          [`panel.${IMAGE_GENERATION_PANEL_ID}`]: 'Image Generation',
+          [`${IMAGE_GENERATION_PANEL_ID}.dock.label`]: 'AI Image'
+        }
+      });
+
       printConfigWarnings(config);
 
       registry.register(EditImage({ cesdk }));
@@ -96,14 +103,6 @@ export function ImageGeneration<I, O extends Output>(
         { cesdk },
         config
       );
-
-      cesdk.i18n.setTranslations({
-        en: {
-          [`panel.${IMAGE_GENERATION_PANEL_ID}`]: 'Image Generation',
-          [`${IMAGE_GENERATION_PANEL_ID}.dock.label`]: 'AI Image',
-          ...(config.customTranslations?.en || {})
-        }
-      });
 
       const initializedQuickActions = await initializeQuickActionComponents({
         kind: 'image',
