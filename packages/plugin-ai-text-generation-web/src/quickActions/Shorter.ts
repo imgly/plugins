@@ -28,7 +28,7 @@ export type InputType = {
 const Shorter: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
   cesdk.i18n.setTranslations({
     en: {
-      [`${I18N_PREFIX}.label`]: 'Make Shorter'
+      [`${I18N_PREFIX}`]: 'Make Shorter'
     }
   });
 
@@ -39,7 +39,7 @@ const Shorter: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
 
     scopes: ['text/edit'],
 
-    label: `${I18N_PREFIX}.label`,
+    label: `${I18N_PREFIX}`,
     enable: ({ engine }) => {
       const blockIds = engine.block.findAllSelected();
       if (blockIds == null || blockIds.length !== 1) return false;
@@ -49,7 +49,7 @@ const Shorter: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
 
     render: ({ builder, generate, engine, close }) => {
       builder.Button(`${ID}.button`, {
-        label: `${I18N_PREFIX}.label`,
+        label: `${I18N_PREFIX}`,
         icon: '@imgly/TextShorter',
         labelAlignment: 'left',
         variant: 'plain',

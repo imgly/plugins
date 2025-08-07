@@ -34,7 +34,7 @@ const languageOptions = LOCALES.map((locale) => ({
 const Translate: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
   cesdk.i18n.setTranslations({
     en: {
-      [`${I18N_PREFIX}.label`]: 'Translate'
+      [`${I18N_PREFIX}`]: 'Translate'
     }
   });
 
@@ -45,7 +45,7 @@ const Translate: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
 
     scopes: ['text/edit'],
 
-    label: `${I18N_PREFIX}.label`,
+    label: `${I18N_PREFIX}`,
     enable: ({ engine }) => {
       const blockIds = engine.block.findAllSelected();
       if (blockIds == null || blockIds.length !== 1) return false;
@@ -55,7 +55,7 @@ const Translate: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
 
     render: ({ builder, generate, engine, close, experimental }) => {
       experimental.builder.Popover(`${ID}.popover`, {
-        label: `${I18N_PREFIX}.label`,
+        label: `${I18N_PREFIX}`,
         icon: '@imgly/Language',
         labelAlignment: 'left',
         variant: 'plain',

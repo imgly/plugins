@@ -33,7 +33,7 @@ const CombineImages: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
     en: {
       [`${I18N_PREFIX}.apply`]: 'Combine',
       [`${I18N_PREFIX}`]: 'Combine Images...',
-      [`${I18N_PREFIX}.prompt.inputLabel`]: 'Image Combination Instructions',
+      [`${I18N_PREFIX}.prompt`]: 'Image Combination Instructions',
       [`${I18N_PREFIX}.prompt.placeholder`]:
         'e.g., add character to the left of the mountain scene'
     }
@@ -114,7 +114,7 @@ const CombineImages: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
         const promptState = state(`${ID}.prompt`, '');
 
         builder.TextArea(`${ID}.prompt`, {
-          inputLabel: `${I18N_PREFIX}.prompt.inputLabel`,
+          inputLabel: `${I18N_PREFIX}.prompt`,
           placeholder: `${I18N_PREFIX}.prompt.placeholder`,
           ...promptState
         });

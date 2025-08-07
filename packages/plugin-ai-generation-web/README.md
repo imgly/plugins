@@ -665,8 +665,8 @@ You can customize all labels and text in the AI generation interface using the t
 
 The system checks for translations in this order (highest to lowest priority):
 
-1. **Provider & Kind-specific**: `ly.img.plugin-ai-${kind}-generation-web.property.${provider}.${field}` - Override labels for a specific AI provider and generation type (for customers)
-2. **Generic**: `ly.img.plugin-ai-generation-web.property.${field}` - Override labels for all AI plugins (for customers)
+1. **Provider & Kind-specific**: `ly.img.plugin-ai-${kind}-generation-web.property.${provider}.${field}` - Override labels for a specific AI provider and generation type
+2. **Generic**: `ly.img.plugin-ai-generation-web.property.${field}` - Override labels for all AI plugins 
 
 Where `${kind}` can be:
 - `image` for image generation plugins
@@ -722,23 +722,23 @@ QuickActions (like "Edit Image", "Style Transfer", etc.) use their own translati
 cesdk.i18n.setTranslations({
   en: {
     // Image generation QuickActions
-    'ly.img.plugin-ai-image-generation-web.quickAction.editImage.label': 'Edit Image...',
-    'ly.img.plugin-ai-image-generation-web.quickAction.editImage.prompt.label': 'Edit Image...',
+    'ly.img.plugin-ai-image-generation-web.quickAction.editImage': 'Edit Image...',
+    'ly.img.plugin-ai-image-generation-web.quickAction.editImage.prompt': 'Edit Image...',
     'ly.img.plugin-ai-image-generation-web.quickAction.editImage.apply': 'Change',
 
     // Text generation QuickActions  
-    'ly.img.plugin-ai-text-generation-web.quickAction.improve.label': 'Improve Text',
-    'ly.img.plugin-ai-text-generation-web.quickAction.translate.label': 'Translate Text',
+    'ly.img.plugin-ai-text-generation-web.quickAction.improve': 'Improve Text',
+    'ly.img.plugin-ai-text-generation-web.quickAction.translate': 'Translate Text',
 
     // Video generation QuickActions
-    'ly.img.plugin-ai-video-generation-web.quickAction.createVideo.label': 'Create Video'
+    'ly.img.plugin-ai-video-generation-web.quickAction.createVideo': 'Create Video'
   }
 });
 ```
 
 **QuickAction Translation Structure:**
-- `.label`: Button text when QuickAction is collapsed
-- `.prompt.label`: Label for input field when expanded
+- Base key (e.g., `.quickAction.editImage`): Button text when QuickAction is collapsed
+- `.prompt`: Label for input field when expanded
 - `.prompt.placeholder`: Placeholder text for input field
 - `.apply`: Text for action/submit button
 

@@ -111,7 +111,7 @@ const ARTIST_OPTIONS = [
 const ArtistTransfer: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
   cesdk.i18n.setTranslations({
     en: {
-      [`${I18N_PREFIX}.label`]: 'Painted By',
+      [`${I18N_PREFIX}`]: 'Painted By',
       [`${I18N_PREFIX}.description`]:
         'Transform image in the style of famous artists'
     }
@@ -122,13 +122,13 @@ const ArtistTransfer: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
     type: 'quick',
     kind: 'image',
 
-    label: `${I18N_PREFIX}.label`,
+    label: `${I18N_PREFIX}`,
     enable: enableQuickActionForImageFill(),
     scopes: ['fill/change'],
 
     render: ({ builder, experimental, generate, engine, close }) => {
       experimental.builder.Popover(`${ID}.popover`, {
-        label: `${I18N_PREFIX}.label`,
+        label: `${I18N_PREFIX}`,
         icon: '@imgly/Appearance',
         labelAlignment: 'left',
         variant: 'plain',

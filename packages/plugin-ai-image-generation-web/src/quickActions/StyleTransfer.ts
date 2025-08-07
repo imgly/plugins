@@ -79,7 +79,7 @@ const STYLE_OPTIONS = [
 const StyleTransfer: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
   cesdk.i18n.setTranslations({
     en: {
-      [`${I18N_PREFIX}.label`]: 'Change Art Style',
+      [`${I18N_PREFIX}`]: 'Change Art Style',
       [`${I18N_PREFIX}.description`]:
         'Transform image into different art styles'
     }
@@ -90,13 +90,13 @@ const StyleTransfer: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
     type: 'quick',
     kind: 'image',
 
-    label: `${I18N_PREFIX}.label`,
+    label: `${I18N_PREFIX}`,
     enable: enableQuickActionForImageFill(),
     scopes: ['fill/change'],
 
     render: ({ builder, experimental, generate, engine, close }) => {
       experimental.builder.Popover(`${ID}.popover`, {
-        label: `${I18N_PREFIX}.label`,
+        label: `${I18N_PREFIX}`,
         icon: '@imgly/Appearance',
         labelAlignment: 'left',
         variant: 'plain',

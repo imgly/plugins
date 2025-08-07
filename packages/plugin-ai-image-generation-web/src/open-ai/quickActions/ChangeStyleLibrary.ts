@@ -194,7 +194,7 @@ const ChangeStyleLibrary = (context: {
 
   cesdk.i18n.setTranslations({
     en: {
-      [`${I18N_PREFIX}.label`]: 'Change Style',
+      [`${I18N_PREFIX}`]: 'Change Style',
       [`${I18N_PREFIX}.description`]: 'Apply different art styles to your image'
     }
   });
@@ -204,13 +204,13 @@ const ChangeStyleLibrary = (context: {
     type: 'quick',
     kind: 'image',
 
-    label: `${I18N_PREFIX}.label`,
+    label: `${I18N_PREFIX}`,
     enable: enableQuickActionForImageFill(),
     scopes: ['fill/change'],
 
     render: ({ builder, experimental, generate, engine, close }) => {
       experimental.builder.Popover(`${ID}.popover`, {
-        label: `${I18N_PREFIX}.label`,
+        label: `${I18N_PREFIX}`,
         icon: '@imgly/Appearance',
         labelAlignment: 'left',
         variant: 'plain',

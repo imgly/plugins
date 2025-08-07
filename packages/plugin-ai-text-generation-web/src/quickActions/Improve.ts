@@ -28,7 +28,7 @@ export type InputType = {
 const Improve: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
   cesdk.i18n.setTranslations({
     en: {
-      [`${I18N_PREFIX}.label`]: 'Improve Writing'
+      [`${I18N_PREFIX}`]: 'Improve Writing'
     }
   });
 
@@ -39,7 +39,7 @@ const Improve: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
 
     scopes: ['text/edit'],
 
-    label: `${I18N_PREFIX}.label`,
+    label: `${I18N_PREFIX}`,
     enable: ({ engine }) => {
       const blockIds = engine.block.findAllSelected();
       if (blockIds == null || blockIds.length !== 1) return false;
@@ -49,7 +49,7 @@ const Improve: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
 
     render: ({ builder, generate, engine, close }) => {
       builder.Button(`${ID}.button`, {
-        label: `${I18N_PREFIX}.label`,
+        label: `${I18N_PREFIX}`,
         icon: '@imgly/Sparkle',
         labelAlignment: 'left',
         variant: 'plain',

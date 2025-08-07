@@ -32,7 +32,7 @@ const RemixPageWithPrompt: GetQuickActionDefinition<InputType> = ({
   cesdk.i18n.setTranslations({
     en: {
       [`${I18N_PREFIX}`]: 'Remix Page...',
-      [`${I18N_PREFIX}.prompt.inputLabel`]: 'Remix Page Prompt',
+      [`${I18N_PREFIX}.prompt`]: 'Remix Page Prompt',
       [`${I18N_PREFIX}.prompt.placeholder`]: 'e.g. rearrange the layout to...',
       [`${I18N_PREFIX}.apply`]: 'Remix'
     }
@@ -72,7 +72,7 @@ const RemixPageWithPrompt: GetQuickActionDefinition<InputType> = ({
         const promptState = state(`${ID}.prompt`, '');
 
         builder.TextArea(`${ID}.prompt`, {
-          inputLabel: `${I18N_PREFIX}.prompt.inputLabel`,
+          inputLabel: `${I18N_PREFIX}.prompt`,
           placeholder: `${I18N_PREFIX}.prompt.placeholder`,
           ...promptState
         });

@@ -29,8 +29,8 @@ export type InputType = {
 const ChangeTextTo: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
   cesdk.i18n.setTranslations({
     en: {
-      [`${I18N_PREFIX}.label`]: 'Change Text to...',
-      [`${I18N_PREFIX}.prompt.label`]: 'Change Text to...',
+      [`${I18N_PREFIX}`]: 'Change Text to...',
+      [`${I18N_PREFIX}.prompt`]: 'Change Text to...',
       [`${I18N_PREFIX}.prompt.placeholder`]:
         'e.g. "a list of bullet points", "a formal announcement"'
     }
@@ -43,7 +43,7 @@ const ChangeTextTo: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
 
     scopes: ['text/edit'],
 
-    label: `${I18N_PREFIX}.label`,
+    label: `${I18N_PREFIX}`,
     enable: ({ engine }) => {
       const blockIds = engine.block.findAllSelected();
       if (blockIds == null || blockIds.length !== 1) return false;
@@ -65,7 +65,7 @@ const ChangeTextTo: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
         const promptState = state(`${ID}.prompt`, '');
 
         builder.TextArea(`${ID}.prompt`, {
-          inputLabel: `${I18N_PREFIX}.prompt.label`,
+          inputLabel: `${I18N_PREFIX}.prompt`,
           placeholder: `${I18N_PREFIX}.prompt.placeholder`,
           ...promptState
         });
@@ -121,7 +121,7 @@ const ChangeTextTo: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
         });
       } else {
         builder.Button(`${ID}.button`, {
-          label: `${I18N_PREFIX}.label`,
+          label: `${I18N_PREFIX}`,
           icon: '@imgly/MagicWand',
           labelAlignment: 'left',
           variant: 'plain',
