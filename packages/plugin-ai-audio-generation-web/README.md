@@ -147,6 +147,18 @@ Key features:
 -   Natural-sounding speech
 -   Custom headers support for API requests
 
+**Custom Translations:**
+
+```typescript
+cesdk.i18n.setTranslations({
+  en: {
+    'ly.img.plugin-ai-audio-generation-web.property.elevenlabs/monolingual/v1.prompt': 'Enter text to convert to speech',
+    'ly.img.plugin-ai-audio-generation-web.property.elevenlabs/monolingual/v1.voice_id': 'Select Voice',
+    'ly.img.plugin-ai-audio-generation-web.property.elevenlabs/monolingual/v1.speed': 'Playback Speed'
+  }
+});
+```
+
 #### 2. ElevenSoundEffects (Text-to-Sound)
 
 A sound effect generator that creates audio from text descriptions:
@@ -168,6 +180,51 @@ Key features:
 -   Seamless integration with CreativeEditor SDK
 -   Automatic thumbnails and duration detection
 -   Custom headers support for API requests
+
+**Custom Translations:**
+
+```typescript
+cesdk.i18n.setTranslations({
+  en: {
+    'ly.img.plugin-ai-audio-generation-web.property.elevenlabs/sound-generation.prompt': 'Describe the sound you want to create',
+    'ly.img.plugin-ai-audio-generation-web.property.elevenlabs/sound-generation.duration': 'Audio Length'
+  }
+});
+```
+
+### Customizing Labels and Translations
+
+You can customize all labels and text in the AI audio generation interface using the translation system. This allows you to provide better labels for your users in any language.
+
+#### Translation Key Structure
+
+The system checks for translations in this order (highest to lowest priority):
+
+1. **Provider-specific**: `ly.img.plugin-ai-audio-generation-web.property.${provider}.${field}` - Override labels for a specific AI provider
+2. **Generic**: `ly.img.plugin-ai-generation-web.property.${field}` - Override labels for all AI plugins
+
+#### Basic Example
+
+```typescript
+// Customize labels for your AI audio generation interface
+cesdk.i18n.setTranslations({
+  en: {
+    // Generic labels (applies to ALL AI plugins)
+    'ly.img.plugin-ai-generation-web.property.prompt': 'Describe what you want to create',
+    'ly.img.plugin-ai-generation-web.property.voice_id': 'Voice Selection',
+    'ly.img.plugin-ai-generation-web.property.speed': 'Speaking Speed',
+
+    // Provider-specific for ElevenMultilingualV2
+    'ly.img.plugin-ai-audio-generation-web.property.elevenlabs/monolingual/v1.prompt': 'Enter text to speak',
+    'ly.img.plugin-ai-audio-generation-web.property.elevenlabs/monolingual/v1.voice_id': 'Choose Voice',
+    'ly.img.plugin-ai-audio-generation-web.property.elevenlabs/monolingual/v1.speed': 'Speech Speed',
+
+    // Provider-specific for ElevenSoundEffects
+    'ly.img.plugin-ai-audio-generation-web.property.elevenlabs/sound-generation.prompt': 'Describe the sound effect',
+    'ly.img.plugin-ai-audio-generation-web.property.elevenlabs/sound-generation.duration': 'Sound Duration'
+  }
+});
+```
 
 ### Configuration Options
 
