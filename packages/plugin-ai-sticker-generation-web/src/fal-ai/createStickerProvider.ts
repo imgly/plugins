@@ -3,7 +3,8 @@ import CreativeEditorSDK, { CreativeEngine } from '@cesdk/cesdk-js';
 import {
   RenderCustomProperty,
   CommonProperties,
-  Middleware
+  Middleware,
+  mergeQuickActionsConfig
 } from '@imgly/plugin-ai-generation-web';
 import { fal } from '@fal-ai/client';
 import { isCustomImageSize, uploadImageInputToFalIfNeeded } from './utils';
@@ -18,6 +19,19 @@ type StickerProviderConfiguration = {
    * @deprecated Use `middlewares` instead.
    */
   middleware?: Middleware<any, any>[];
+  /**
+   * Override provider's default history asset source
+   */
+  history?: false | '@imgly/local' | '@imgly/indexedDB' | (string & {});
+  /**
+   * Configure supported quick actions
+   */
+  supportedQuickActions?: {
+    [quickActionId: string]:
+      | Partial<StickerQuickActionSupportMap<any>[string]>
+      | false
+      | null;
+  };
 };
 
 /**
@@ -74,7 +88,10 @@ function createStickerProvider<I extends Record<string, any>>(
     },
     input: {
       quickActions: {
-        supported: options.supportedQuickActions ?? {}
+        supported: mergeQuickActionsConfig(
+          options.supportedQuickActions ?? {},
+          config.supportedQuickActions
+        )
       },
       panel: {
         type: 'schema',
@@ -129,7 +146,7 @@ function createStickerProvider<I extends Record<string, any>>(
     output: {
       abortable: true,
       middleware,
-      history: '@imgly/indexedDB',
+      history: config.history ?? '@imgly/indexedDB',
       generate: async (
         input: I,
         { abortSignal }: { abortSignal?: AbortSignal }

@@ -164,7 +164,7 @@ function getProvider(
     },
     output: {
       abortable: true,
-      history: '@imgly/indexedDB',
+      history: config.history ?? '@imgly/indexedDB',
       middleware: config.middlewares ?? config.middleware ?? [],
       generate: async (
         input: ElevenlabsInput,

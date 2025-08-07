@@ -118,14 +118,41 @@ interface CommonProviderConfiguration<I, O extends Output> {
     
     // Custom headers to include in all API requests
     headers?: Record<string, string>;
+    
+    // Override provider's default history asset source
+    history?: false | '@imgly/local' | '@imgly/indexedDB' | (string & {});
+    
+    // Configure supported quick actions
+    supportedQuickActions?: {
+        [quickActionId: string]: Partial<QuickActionSupport<I>> | false | null;
+    };
 }
 ```
 
+### Extended Configuration Options
+
+#### Headers Configuration
 The `headers` property is particularly useful for:
 - Adding custom client identification headers
 - Including version information
 - Passing through metadata required by your API
 - Adding correlation IDs for request tracing
+
+#### History Configuration
+The `history` property allows you to override the provider's default history storage behavior:
+
+- `false`: Disable history storage entirely
+- `'@imgly/local'`: Use temporary local storage (not persistent across sessions)
+- `'@imgly/indexedDB'`: Use browser IndexedDB storage (persistent across sessions)
+- `string`: Use your own custom asset source ID
+
+#### Quick Actions Configuration
+The `supportedQuickActions` property allows you to customize which quick actions are supported and how they behave:
+
+- `false` or `null`: Remove the quick action entirely
+- `true`: Keep the provider's default implementation
+- Object with `mapInput`: Override the quick action with custom input mapping
+- Object with other properties: Override with custom configuration
 
 ## 5. Creating a Schema-Based Image Provider
 

@@ -202,8 +202,88 @@ interface CommonProviderConfiguration<I, O extends Output> {
     
     // Custom headers to include in all API requests
     headers?: Record<string, string>;
+    
+    // Override provider's default history asset source
+    history?: false | '@imgly/local' | '@imgly/indexedDB' | (string & {});
+    
+    // Configure supported quick actions
+    supportedQuickActions?: {
+        [quickActionId: string]: Partial<QuickActionSupport<I>> | false | null;
+    };
 }
 ```
+
+### Extended Configuration Options
+
+#### History Configuration
+
+The `history` field allows you to override the provider's default history storage behavior:
+
+```typescript
+const provider = createMyImageProvider({
+    proxyUrl: 'https://proxy.example.com',
+    
+    // Disable history storage entirely
+    history: false,
+    
+    // Or use temporary local storage (not persistent)
+    // history: '@imgly/local',
+    
+    // Or use persistent browser storage (default for most providers)
+    // history: '@imgly/indexedDB',
+    
+    // Or use a custom asset source ID
+    // history: 'my-custom-asset-source'
+});
+```
+
+**Available Options:**
+- `false`: Disable history storage entirely
+- `'@imgly/local'`: Use temporary local storage (not persistent across sessions)
+- `'@imgly/indexedDB'`: Use browser IndexedDB storage (persistent across sessions)
+- `string`: Use your own custom asset source ID
+
+#### Quick Actions Configuration
+
+The `supportedQuickActions` field allows you to customize which quick actions are supported and how they behave:
+
+```typescript
+const provider = createMyImageProvider({
+    proxyUrl: 'https://proxy.example.com',
+    
+    // Configure quick actions
+    supportedQuickActions: {
+        // Remove an unwanted quick action
+        'ly.img.editImage': false,
+        
+        // Override with custom mapping
+        'ly.img.swapBackground': {
+            mapInput: (input) => ({
+                prompt: input.prompt,
+                image_url: input.uri,
+                strength: 0.9, // Custom strength
+                style: 'REALISTIC' // Force realistic style
+            })
+        },
+        
+        // Add support for new quick action
+        'ly.img.customAction': {
+            mapInput: (input) => ({
+                prompt: `Custom prefix: ${input.text}`,
+                image_url: input.imageUrl
+            })
+        }
+    }
+});
+```
+
+**Configuration Values:**
+- `false` or `null`: Remove the quick action entirely
+- `true`: Keep the provider's default implementation
+- Object with `mapInput`: Override the quick action with custom input mapping
+- Object with other properties: Override with custom configuration
+
+### Headers Configuration
 
 The `headers` property allows you to include custom HTTP headers in all API requests made by your provider. This is useful for:
 - Adding custom client identification headers
@@ -989,7 +1069,7 @@ export { initializeProvider, initializeProviders } from './providers/';
 export { loggingMiddleware, rateLimitMiddleware, uploadMiddleware } from './middleware/';
 
 // Utilities
-export { getPanelId, enableQuickActionForImageFill } from './utils/';
+export { getPanelId, enableQuickActionForImageFill, mergeQuickActionsConfig } from './utils/';
 ```
 
 ### Initialization Functions
@@ -1036,6 +1116,10 @@ interface CommonProviderConfiguration<I, O extends Output> {
     debug?: boolean;
     middleware?: Middleware<I, O>[];
     headers?: Record<string, string>;
+    history?: false | '@imgly/local' | '@imgly/indexedDB' | (string & {});
+    supportedQuickActions?: {
+        [quickActionId: string]: Partial<QuickActionSupport<I>> | false | null;
+    };
 }
 
 // Quick action definition
