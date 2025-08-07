@@ -74,7 +74,6 @@ function getProvider(
   cesdk.i18n.setTranslations({
     en: {
       [`panel.${getPanelId(modelKey)}.styleSelection`]: 'Style Selection',
-      [`${modelKey}.style`]: 'Style',
       [`panel.gpt-image-1.imageSelection`]: 'Select Image To Change'
     }
   });
@@ -105,7 +104,12 @@ function getProvider(
 
             // Show the style library for the selected type.
             builder.Button(`${property.id}`, {
-              inputLabel: `${modelKey}.${property.id}`,
+              inputLabel: [
+                `ly.img.plugin-ai-image-generation-web.${modelKey}.property.${property.id}`,
+                `ly.img.plugin-ai-generation-web.property.${property.id}`,
+                `ly.img.plugin-ai-image-generation-web.${modelKey}.defaults.property.${property.id}`,
+                `ly.img.plugin-ai-generation-web.defaults.property.${property.id}`
+              ],
               icon: '@imgly/Appearance',
               trailingIcon: '@imgly/ChevronRight',
               label: styleState.value.label,

@@ -106,10 +106,7 @@ function getProvider(
     en: {
       [`panel.${getPanelId(
         'fal-ai/recraft/v2/text-to-sticker'
-      )}.styleSelection`]: 'Style Selection',
-      [`${modelKey}.style`]: 'Style',
-      [`${modelKey}.style.type`]: 'Type',
-      [`${modelKey}.style.type.icon`]: 'Icon'
+      )}.styleSelection`]: 'Style Selection'
     }
   });
 
@@ -136,7 +133,12 @@ function getProvider(
 
           // Show the style library for icon type.
           builder.Button(`${property.id}`, {
-            inputLabel: `${modelKey}.${property.id}`,
+            inputLabel: [
+              `ly.img.plugin-ai-sticker-generation-web.${modelKey}.property.${property.id}`,
+              `ly.img.plugin-ai-generation-web.property.${property.id}`,
+              `ly.img.plugin-ai-sticker-generation-web.${modelKey}.defaults.property.${property.id}`,
+              `ly.img.plugin-ai-generation-web.defaults.property.${property.id}`
+            ],
             icon: '@imgly/Appearance',
             trailingIcon: '@imgly/ChevronRight',
             label: styleIconState.value.label,

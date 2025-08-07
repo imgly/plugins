@@ -115,7 +115,12 @@ function getProvider(
             });
 
             context.builder.Button(`${prefix}.openVoiceSelection`, {
-              inputLabel: 'Voice',
+              inputLabel: [
+                `ly.img.plugin-ai-audio-generation-web.${modelKey}.property.voice_id`,
+                `ly.img.plugin-ai-generation-web.property.voice_id`,
+                `ly.img.plugin-ai-audio-generation-web.${modelKey}.defaults.property.voice_id`,
+                `ly.img.plugin-ai-generation-web.defaults.property.voice_id`
+              ],
               icon: '@imgly/Appearance',
               trailingIcon: '@imgly/ChevronRight',
               labelAlignment: 'left',

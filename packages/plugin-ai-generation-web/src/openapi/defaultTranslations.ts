@@ -38,6 +38,13 @@ export const defaultTranslations: Record<string, string> = {
   'ly.img.plugin-ai-generation-web.defaults.property.duration_seconds':
     'Duration (seconds)',
 
+  // Custom renderer translations for Recraft providers
+  'ly.img.plugin-ai-generation-web.defaults.property.style.type': 'Type',
+  'ly.img.plugin-ai-generation-web.defaults.property.style.type.image': 'Image',
+  'ly.img.plugin-ai-generation-web.defaults.property.style.type.vector':
+    'Vector',
+  'ly.img.plugin-ai-generation-web.defaults.property.style.type.icon': 'Icon',
+
   // Enum value translations - common formats
   'ly.img.plugin-ai-generation-web.defaults.property.image_size.square':
     'Square',
