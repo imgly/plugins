@@ -291,6 +291,9 @@ function App() {
                 variant: 'regular',
                 onClick: () => {
                   testAllTranslations(instance);
+                  // Expose reset function for debugging
+                  // @ts-ignore
+                  window.resetTranslations = () => resetTranslations(instance);
                 }
               });
             });
