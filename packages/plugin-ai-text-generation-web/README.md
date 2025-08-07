@@ -161,9 +161,9 @@ Key features:
 ```typescript
 cesdk.i18n.setTranslations({
   en: {
-    'ly.img.plugin-ai-text-generation-web.property.anthropic.prompt': 'Enter your text transformation request',
-    'ly.img.plugin-ai-text-generation-web.property.anthropic.temperature': 'Claude Creativity Level',
-    'ly.img.plugin-ai-text-generation-web.property.anthropic.maxTokens': 'Claude Response Length'
+    'ly.img.plugin-ai-text-generation-web.anthropic.property.prompt': 'Enter your text transformation request',
+    'ly.img.plugin-ai-text-generation-web.anthropic.property.temperature': 'Claude Creativity Level',
+    'ly.img.plugin-ai-text-generation-web.anthropic.property.maxTokens': 'Claude Response Length'
   }
 });
 ```
@@ -208,9 +208,9 @@ Key features:
 ```typescript
 cesdk.i18n.setTranslations({
   en: {
-    'ly.img.plugin-ai-text-generation-web.property.openai.prompt': 'Enter your text transformation request',
-    'ly.img.plugin-ai-text-generation-web.property.openai.temperature': 'GPT Creativity Level',
-    'ly.img.plugin-ai-text-generation-web.property.openai.maxTokens': 'GPT Response Length'
+    'ly.img.plugin-ai-text-generation-web.openai.property.prompt': 'Enter your text transformation request',
+    'ly.img.plugin-ai-text-generation-web.openai.property.temperature': 'GPT Creativity Level',
+    'ly.img.plugin-ai-text-generation-web.openai.property.maxTokens': 'GPT Response Length'
   }
 });
 ```
@@ -223,7 +223,7 @@ You can customize all labels and text in the AI text generation interface using 
 
 The system checks for translations in this order (highest to lowest priority):
 
-1. **Provider-specific**: `ly.img.plugin-ai-text-generation-web.property.${provider}.${field}` - Override labels for a specific AI provider
+1. **Provider-specific**: `ly.img.plugin-ai-text-generation-web.${provider}.property.${field}` - Override labels for a specific AI provider
 2. **Generic**: `ly.img.plugin-ai-generation-web.property.${field}` - Override labels for all AI plugins
 
 #### Basic Example
@@ -238,14 +238,14 @@ cesdk.i18n.setTranslations({
     'ly.img.plugin-ai-generation-web.property.maxTokens': 'Maximum Response Length',
 
     // Provider-specific for Anthropic
-    'ly.img.plugin-ai-text-generation-web.property.anthropic.prompt': 'Enter your text transformation prompt',
-    'ly.img.plugin-ai-text-generation-web.property.anthropic.temperature': 'Response Creativity',
-    'ly.img.plugin-ai-text-generation-web.property.anthropic.maxTokens': 'Max Response Length',
+    'ly.img.plugin-ai-text-generation-web.anthropic.property.prompt': 'Enter your text transformation prompt',
+    'ly.img.plugin-ai-text-generation-web.anthropic.property.temperature': 'Response Creativity',
+    'ly.img.plugin-ai-text-generation-web.anthropic.property.maxTokens': 'Max Response Length',
 
     // Provider-specific for OpenAI
-    'ly.img.plugin-ai-text-generation-web.property.openai.prompt': 'Describe your text transformation',
-    'ly.img.plugin-ai-text-generation-web.property.openai.temperature': 'Creativity Setting',
-    'ly.img.plugin-ai-text-generation-web.property.openai.maxTokens': 'Response Limit'
+    'ly.img.plugin-ai-text-generation-web.openai.property.prompt': 'Describe your text transformation',
+    'ly.img.plugin-ai-text-generation-web.openai.property.temperature': 'Creativity Setting',
+    'ly.img.plugin-ai-text-generation-web.openai.property.maxTokens': 'Response Limit'
   }
 });
 ```

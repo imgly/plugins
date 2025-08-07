@@ -177,11 +177,11 @@ Key features:
 ```typescript
 cesdk.i18n.setTranslations({
   en: {
-    'ly.img.plugin-ai-image-generation-web.property.fal-ai/recraft-v3.prompt': 'Your image description',
-    'ly.img.plugin-ai-image-generation-web.property.fal-ai/recraft-v3.style': 'Art Style',
-    'ly.img.plugin-ai-image-generation-web.property.fal-ai/recraft-v3.style.realistic_image': 'Photorealistic',
-    'ly.img.plugin-ai-image-generation-web.property.fal-ai/recraft-v3.style.illustration': 'Illustration',
-    'ly.img.plugin-ai-image-generation-web.property.fal-ai/recraft-v3.image_size': 'Canvas Size'
+    'ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.property.prompt': 'Your image description',
+    'ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.property.style': 'Art Style',
+    'ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.property.style.realistic_image': 'Photorealistic',
+    'ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.property.style.illustration': 'Illustration',
+    'ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.property.image_size': 'Canvas Size'
   }
 });
 ```
@@ -211,11 +211,11 @@ Key features:
 ```typescript
 cesdk.i18n.setTranslations({
   en: {
-    'ly.img.plugin-ai-image-generation-web.property.fal-ai/recraft/v2/text-to-image.prompt': 'Icon description',
-    'ly.img.plugin-ai-image-generation-web.property.fal-ai/recraft/v2/text-to-image.style': 'Icon Style',
-    'ly.img.plugin-ai-image-generation-web.property.fal-ai/recraft/v2/text-to-image.style.icon': 'Standard Icon',
-    'ly.img.plugin-ai-image-generation-web.property.fal-ai/recraft/v2/text-to-image.style.logo': 'Logo Icon',
-    'ly.img.plugin-ai-image-generation-web.property.fal-ai/recraft/v2/text-to-image.n_colors': 'Number of Colors'
+    'ly.img.plugin-ai-image-generation-web.fal-ai/recraft/v2/text-to-image.property.prompt': 'Icon description',
+    'ly.img.plugin-ai-image-generation-web.fal-ai/recraft/v2/text-to-image.property.style': 'Icon Style',
+    'ly.img.plugin-ai-image-generation-web.fal-ai/recraft/v2/text-to-image.property.style.icon': 'Standard Icon',
+    'ly.img.plugin-ai-image-generation-web.fal-ai/recraft/v2/text-to-image.property.style.logo': 'Logo Icon',
+    'ly.img.plugin-ai-image-generation-web.fal-ai/recraft/v2/text-to-image.property.n_colors': 'Number of Colors'
   }
 });
 ```
@@ -267,8 +267,8 @@ Key features:
 ```typescript
 cesdk.i18n.setTranslations({
   en: {
-    'ly.img.plugin-ai-image-generation-web.property.fal-ai/gemini-flash-edit.prompt': 'Transformation instructions',
-    'ly.img.plugin-ai-image-generation-web.property.fal-ai/gemini-flash-edit.image_url': 'Source Image'
+    'ly.img.plugin-ai-image-generation-web.fal-ai/gemini-flash-edit.property.prompt': 'Transformation instructions',
+    'ly.img.plugin-ai-image-generation-web.fal-ai/gemini-flash-edit.property.image_url': 'Source Image'
   }
 });
 ```
@@ -372,7 +372,7 @@ You can customize all labels and text in the AI image generation interface using
 
 The system checks for translations in this order (highest to lowest priority):
 
-1. **Provider-specific**: `ly.img.plugin-ai-image-generation-web.property.${provider}.${field}` - Override labels for a specific AI provider
+1. **Provider-specific**: `ly.img.plugin-ai-image-generation-web.${provider}.property.${field}` - Override labels for a specific AI provider
 2. **Generic**: `ly.img.plugin-ai-generation-web.property.${field}` - Override labels for all AI plugins
 
 #### Basic Example
@@ -386,15 +386,15 @@ cesdk.i18n.setTranslations({
     'ly.img.plugin-ai-generation-web.property.image_size': 'Image Dimensions',
 
     // Provider-specific for RecraftV3
-    'ly.img.plugin-ai-image-generation-web.property.fal-ai/recraft-v3.prompt': 'Describe your Recraft image',
-    'ly.img.plugin-ai-image-generation-web.property.fal-ai/recraft-v3.image_size': 'Canvas Size',
-    'ly.img.plugin-ai-image-generation-web.property.fal-ai/recraft-v3.image_size.square_hd': 'Square HD (1024×1024)',
-    'ly.img.plugin-ai-image-generation-web.property.fal-ai/recraft-v3.image_size.portrait_4_3': 'Portrait 4:3 (768×1024)',
+    'ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.property.prompt': 'Describe your Recraft image',
+    'ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.property.image_size': 'Canvas Size',
+    'ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.property.image_size.square_hd': 'Square HD (1024×1024)',
+    'ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.property.image_size.portrait_4_3': 'Portrait 4:3 (768×1024)',
 
     // Provider-specific for IdeogramV3
-    'ly.img.plugin-ai-image-generation-web.property.fal-ai/ideogram/v3.prompt': 'Describe your Ideogram image',
-    'ly.img.plugin-ai-image-generation-web.property.fal-ai/ideogram/v3.style_mode': 'Style Mode',
-    'ly.img.plugin-ai-image-generation-web.property.fal-ai/ideogram/v3.style_mode.REALISTIC': 'Photorealistic'
+    'ly.img.plugin-ai-image-generation-web.fal-ai/ideogram/v3.property.prompt': 'Describe your Ideogram image',
+    'ly.img.plugin-ai-image-generation-web.fal-ai/ideogram/v3.property.style_mode': 'Style Mode',
+    'ly.img.plugin-ai-image-generation-web.fal-ai/ideogram/v3.property.style_mode.REALISTIC': 'Photorealistic'
   }
 });
 ```

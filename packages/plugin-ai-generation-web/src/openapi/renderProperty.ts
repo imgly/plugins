@@ -189,9 +189,9 @@ function renderStringProperty<K extends OutputKind, I, O extends Output>(
 
   const id = `${provider.id}.${propertyId}`;
   const inputLabel = [
-    `ly.img.plugin-ai-${kind}-generation-web.property.${provider.id}.${property.id}`,
+    `ly.img.plugin-ai-${kind}-generation-web.${provider.id}.property.${property.id}`,
     `ly.img.plugin-ai-generation-web.property.${property.id}`,
-    `ly.img.plugin-ai-${kind}-generation-web.defaults.property.${provider.id}.${property.id}`,
+    `ly.img.plugin-ai-${kind}-generation-web.${provider.id}.defaults.property.${property.id}`,
     `ly.img.plugin-ai-generation-web.defaults.property.${property.id}`
   ];
 
@@ -233,9 +233,9 @@ function renderEnumProperty<K extends OutputKind, I, O extends Output>(
 
   const id = `${provider.id}.${propertyId}`;
   const inputLabel = [
-    `ly.img.plugin-ai-${kind}-generation-web.property.${provider.id}.${property.id}`,
+    `ly.img.plugin-ai-${kind}-generation-web.${provider.id}.property.${property.id}`,
     `ly.img.plugin-ai-generation-web.property.${property.id}`,
-    `ly.img.plugin-ai-${kind}-generation-web.defaults.property.${provider.id}.${property.id}`,
+    `ly.img.plugin-ai-${kind}-generation-web.${provider.id}.defaults.property.${property.id}`,
     `ly.img.plugin-ai-generation-web.defaults.property.${property.id}`
   ];
 
@@ -254,9 +254,9 @@ function renderEnumProperty<K extends OutputKind, I, O extends Output>(
   const values: EnumValue[] = (property.schema.enum ?? []).map((valueId) => ({
     id: valueId,
     label: [
-      `ly.img.plugin-ai-${kind}-generation-web.property.${provider.id}.${property.id}.${valueId}`,
+      `ly.img.plugin-ai-${kind}-generation-web.${provider.id}.property.${property.id}.${valueId}`,
       `ly.img.plugin-ai-generation-web.property.${property.id}.${valueId}`,
-      `ly.img.plugin-ai-${kind}-generation-web.defaults.property.${provider.id}.${property.id}.${valueId}`,
+      `ly.img.plugin-ai-${kind}-generation-web.${provider.id}.defaults.property.${property.id}.${valueId}`,
       `ly.img.plugin-ai-generation-web.defaults.property.${property.id}.${valueId}`
     ],
     icon: icons[valueId]
@@ -298,9 +298,9 @@ function renderBooleanProperty<K extends OutputKind, I, O extends Output>(
 
   const id = `${provider.id}.${propertyId}`;
   const inputLabel = [
-    `ly.img.plugin-ai-${kind}-generation-web.property.${provider.id}.${property.id}`,
+    `ly.img.plugin-ai-${kind}-generation-web.${provider.id}.property.${property.id}`,
     `ly.img.plugin-ai-generation-web.property.${property.id}`,
-    `ly.img.plugin-ai-${kind}-generation-web.defaults.property.${provider.id}.${property.id}`,
+    `ly.img.plugin-ai-${kind}-generation-web.${provider.id}.defaults.property.${property.id}`,
     `ly.img.plugin-ai-generation-web.defaults.property.${property.id}`
   ];
 
@@ -336,9 +336,9 @@ function renderIntegerProperty<K extends OutputKind, I, O extends Output>(
 
   const id = `${provider.id}.${propertyId}`;
   const inputLabel = [
-    `ly.img.plugin-ai-${kind}-generation-web.property.${provider.id}.${property.id}`,
+    `ly.img.plugin-ai-${kind}-generation-web.${provider.id}.property.${property.id}`,
     `ly.img.plugin-ai-generation-web.property.${property.id}`,
-    `ly.img.plugin-ai-${kind}-generation-web.defaults.property.${provider.id}.${property.id}`,
+    `ly.img.plugin-ai-${kind}-generation-web.${provider.id}.defaults.property.${property.id}`,
     `ly.img.plugin-ai-generation-web.defaults.property.${property.id}`
   ];
 
@@ -407,9 +407,9 @@ function renderAnyOfProperty<K extends OutputKind, I, O extends Output>(
 
   const id = `${provider.id}.${propertyId}`;
   const inputLabel = [
-    `ly.img.plugin-ai-${kind}-generation-web.property.${provider.id}.${property.id}`,
+    `ly.img.plugin-ai-${kind}-generation-web.${provider.id}.property.${property.id}`,
     `ly.img.plugin-ai-generation-web.property.${property.id}`,
-    `ly.img.plugin-ai-${kind}-generation-web.defaults.property.${provider.id}.${property.id}`,
+    `ly.img.plugin-ai-${kind}-generation-web.${provider.id}.defaults.property.${property.id}`,
     `ly.img.plugin-ai-generation-web.defaults.property.${property.id}`
   ];
 

@@ -150,7 +150,7 @@ Key features:
 ```typescript
 cesdk.i18n.setTranslations({
   en: {
-    'ly.img.plugin-ai-video-generation-web.property.fal-ai/minimax/video-01-live.prompt': 'Describe your Minimax video'
+    'ly.img.plugin-ai-video-generation-web.fal-ai/minimax/video-01-live.property.prompt': 'Describe your Minimax video'
   }
 });
 ```
@@ -217,9 +217,9 @@ Key features:
 ```typescript
 cesdk.i18n.setTranslations({
   en: {
-    'ly.img.plugin-ai-video-generation-web.property.fal-ai/kling-video/v2.1/master/text-to-video.prompt': 'Describe your KlingVideo',
-    'ly.img.plugin-ai-video-generation-web.property.fal-ai/kling-video/v2.1/master/text-to-video.aspect_ratio': 'Video Format',
-    'ly.img.plugin-ai-video-generation-web.property.fal-ai/kling-video/v2.1/master/text-to-video.duration': 'Video Length (seconds)'
+    'ly.img.plugin-ai-video-generation-web.fal-ai/kling-video/v2.1/master/text-to-video.property.prompt': 'Describe your KlingVideo',
+    'ly.img.plugin-ai-video-generation-web.fal-ai/kling-video/v2.1/master/text-to-video.property.aspect_ratio': 'Video Format',
+    'ly.img.plugin-ai-video-generation-web.fal-ai/kling-video/v2.1/master/text-to-video.property.duration': 'Video Length (seconds)'
   }
 });
 ```
@@ -266,7 +266,7 @@ You can customize all labels and text in the AI video generation interface using
 
 The system checks for translations in this order (highest to lowest priority):
 
-1. **Provider-specific**: `ly.img.plugin-ai-video-generation-web.property.${provider}.${field}` - Override labels for a specific AI provider
+1. **Provider-specific**: `ly.img.plugin-ai-video-generation-web.${provider}.property.${field}` - Override labels for a specific AI provider
 2. **Generic**: `ly.img.plugin-ai-generation-web.property.${field}` - Override labels for all AI plugins
 
 #### Basic Example
@@ -280,12 +280,12 @@ cesdk.i18n.setTranslations({
     'ly.img.plugin-ai-generation-web.property.duration': 'Video Duration',
 
     // Provider-specific for MinimaxVideo01Live
-    'ly.img.plugin-ai-video-generation-web.property.fal-ai/minimax/video-01-live.prompt': 'Describe your video',
-    'ly.img.plugin-ai-video-generation-web.property.fal-ai/minimax/video-01-live.duration': 'Video Length',
+    'ly.img.plugin-ai-video-generation-web.fal-ai/minimax/video-01-live.property.prompt': 'Describe your video',
+    'ly.img.plugin-ai-video-generation-web.fal-ai/minimax/video-01-live.property.duration': 'Video Length',
 
     // Provider-specific for KlingVideoV21Master
-    'ly.img.plugin-ai-video-generation-web.property.fal-ai/kling-video/v2.1/master/text-to-video.aspect_ratio': 'Video Aspect Ratio',
-    'ly.img.plugin-ai-video-generation-web.property.fal-ai/kling-video/v2.1/master/text-to-video.duration': 'Video Duration (seconds)'
+    'ly.img.plugin-ai-video-generation-web.fal-ai/kling-video/v2.1/master/text-to-video.property.aspect_ratio': 'Video Aspect Ratio',
+    'ly.img.plugin-ai-video-generation-web.fal-ai/kling-video/v2.1/master/text-to-video.property.duration': 'Video Duration (seconds)'
   }
 });
 ```

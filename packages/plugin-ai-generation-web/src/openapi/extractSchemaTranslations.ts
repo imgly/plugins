@@ -19,8 +19,8 @@ function formatEnumLabel(enumValue: string): string {
 /**
  * Extracts translations from OpenAPI schema properties and sets them via cesdk.i18n
  * This includes:
- * - Schema property titles as `ly.img.plugin-ai-${kind}-generation-web.defaults.property.${provider.id}.${property.id}`
- * - Enum value labels as `ly.img.plugin-ai-${kind}-generation-web.defaults.property.${provider.id}.${property.id}.${valueId}`
+ * - Schema property titles as `ly.img.plugin-ai-${kind}-generation-web.${provider.id}.defaults.property.${property.id}`
+ * - Enum value labels as `ly.img.plugin-ai-${kind}-generation-web.${provider.id}.defaults.property.${property.id}.${valueId}`
  * - AnyOf enum value labels with the same pattern
  */
 export function extractAndSetSchemaTranslations<
@@ -39,7 +39,7 @@ export function extractAndSetSchemaTranslations<
     // Add schema title translations
     if (property.schema?.title) {
       translations[
-        `ly.img.plugin-ai-${kind}-generation-web.defaults.property.${provider.id}.${property.id}`
+        `ly.img.plugin-ai-${kind}-generation-web.${provider.id}.defaults.property.${property.id}`
       ] = property.schema.title;
     }
 
@@ -56,7 +56,7 @@ export function extractAndSetSchemaTranslations<
         // Set translation either from enumLabels or fallback to formatted valueId
         const labelValue = enumLabels[valueId] || formatEnumLabel(valueId);
         translations[
-          `ly.img.plugin-ai-${kind}-generation-web.defaults.property.${provider.id}.${property.id}.${valueId}`
+          `ly.img.plugin-ai-${kind}-generation-web.${provider.id}.defaults.property.${property.id}.${valueId}`
         ] = labelValue;
       });
     }

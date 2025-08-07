@@ -152,9 +152,9 @@ Key features:
 ```typescript
 cesdk.i18n.setTranslations({
   en: {
-    'ly.img.plugin-ai-audio-generation-web.property.elevenlabs/monolingual/v1.prompt': 'Enter text to convert to speech',
-    'ly.img.plugin-ai-audio-generation-web.property.elevenlabs/monolingual/v1.voice_id': 'Select Voice',
-    'ly.img.plugin-ai-audio-generation-web.property.elevenlabs/monolingual/v1.speed': 'Playback Speed'
+    'ly.img.plugin-ai-audio-generation-web.elevenlabs/monolingual/v1.property.prompt': 'Enter text to convert to speech',
+    'ly.img.plugin-ai-audio-generation-web.elevenlabs/monolingual/v1.property.voice_id': 'Select Voice',
+    'ly.img.plugin-ai-audio-generation-web.elevenlabs/monolingual/v1.property.speed': 'Playback Speed'
   }
 });
 ```
@@ -186,8 +186,8 @@ Key features:
 ```typescript
 cesdk.i18n.setTranslations({
   en: {
-    'ly.img.plugin-ai-audio-generation-web.property.elevenlabs/sound-generation.prompt': 'Describe the sound you want to create',
-    'ly.img.plugin-ai-audio-generation-web.property.elevenlabs/sound-generation.duration': 'Audio Length'
+    'ly.img.plugin-ai-audio-generation-web.elevenlabs/sound-generation.property.prompt': 'Describe the sound you want to create',
+    'ly.img.plugin-ai-audio-generation-web.elevenlabs/sound-generation.property.duration': 'Audio Length'
   }
 });
 ```
@@ -200,7 +200,7 @@ You can customize all labels and text in the AI audio generation interface using
 
 The system checks for translations in this order (highest to lowest priority):
 
-1. **Provider-specific**: `ly.img.plugin-ai-audio-generation-web.property.${provider}.${field}` - Override labels for a specific AI provider
+1. **Provider-specific**: `ly.img.plugin-ai-audio-generation-web.${provider}.property.${field}` - Override labels for a specific AI provider
 2. **Generic**: `ly.img.plugin-ai-generation-web.property.${field}` - Override labels for all AI plugins
 
 #### Basic Example
@@ -215,13 +215,13 @@ cesdk.i18n.setTranslations({
     'ly.img.plugin-ai-generation-web.property.speed': 'Speaking Speed',
 
     // Provider-specific for ElevenMultilingualV2
-    'ly.img.plugin-ai-audio-generation-web.property.elevenlabs/monolingual/v1.prompt': 'Enter text to speak',
-    'ly.img.plugin-ai-audio-generation-web.property.elevenlabs/monolingual/v1.voice_id': 'Choose Voice',
-    'ly.img.plugin-ai-audio-generation-web.property.elevenlabs/monolingual/v1.speed': 'Speech Speed',
+    'ly.img.plugin-ai-audio-generation-web.elevenlabs/monolingual/v1.property.prompt': 'Enter text to speak',
+    'ly.img.plugin-ai-audio-generation-web.elevenlabs/monolingual/v1.property.voice_id': 'Choose Voice',
+    'ly.img.plugin-ai-audio-generation-web.elevenlabs/monolingual/v1.property.speed': 'Speech Speed',
 
     // Provider-specific for ElevenSoundEffects
-    'ly.img.plugin-ai-audio-generation-web.property.elevenlabs/sound-generation.prompt': 'Describe the sound effect',
-    'ly.img.plugin-ai-audio-generation-web.property.elevenlabs/sound-generation.duration': 'Sound Duration'
+    'ly.img.plugin-ai-audio-generation-web.elevenlabs/sound-generation.property.prompt': 'Describe the sound effect',
+    'ly.img.plugin-ai-audio-generation-web.elevenlabs/sound-generation.property.duration': 'Sound Duration'
   }
 });
 ```
