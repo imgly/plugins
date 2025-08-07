@@ -13,6 +13,7 @@ import { useRef } from 'react';
 import { rateLimitMiddleware } from '@imgly/plugin-ai-generation-web';
 import { Middleware } from '@imgly/plugin-ai-generation-web';
 import { RateLimitOptions } from '@imgly/plugin-ai-generation-web';
+import { testAllTranslations, resetTranslations } from '../utils/testTranslations';
 
 function App() {
   const cesdk = useRef<CreativeEditorSDK>();
@@ -265,6 +266,7 @@ function App() {
 
             instance.ui.setNavigationBarOrder([
               'sceneModeToggle',
+              'testTranslations',
               ...instance.ui.getNavigationBarOrder()
             ]);
 
@@ -279,6 +281,16 @@ function App() {
                   } else {
                     window.location.search = '?archive=video';
                   }
+                }
+              });
+            });
+            instance.ui.registerComponent('testTranslations', ({ builder }) => {
+              builder.Button('testTranslations', {
+                label: 'Test Translations',
+                icon: '@imgly/Text',
+                variant: 'regular',
+                onClick: () => {
+                  testAllTranslations(instance);
                 }
               });
             });
