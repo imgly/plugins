@@ -1,0 +1,55 @@
+{
+  "en": {
+    "ly.img.plugin-ai-video-generation-web.fal-ai/minimax/video-01-live.property.prompt": "Prompt",
+    "ly.img.plugin-ai-video-generation-web.fal-ai/minimax/video-01-live.property.prompt_optimizer": "Use Prompt Optimizer",
+
+    "ly.img.plugin-ai-video-generation-web.fal-ai/minimax/video-01-live/image-to-video.property.prompt": "Prompt",
+    "ly.img.plugin-ai-video-generation-web.fal-ai/minimax/video-01-live/image-to-video.property.prompt_optimizer": "Use Prompt Optimizer",
+
+    "ly.img.plugin-ai-video-generation-web.fal-ai/kling-video/v2.1/master/text-to-video.property.prompt": "Prompt",
+    "ly.img.plugin-ai-video-generation-web.fal-ai/kling-video/v2.1/master/text-to-video.property.duration": "Duration",
+    "ly.img.plugin-ai-video-generation-web.fal-ai/kling-video/v2.1/master/text-to-video.property.aspect_ratio": "Aspect Ratio",
+    "ly.img.plugin-ai-video-generation-web.fal-ai/kling-video/v2.1/master/text-to-video.property.negative_prompt": "Negative Prompt",
+    "ly.img.plugin-ai-video-generation-web.fal-ai/kling-video/v2.1/master/text-to-video.property.cfg_scale": "CFG Scale",
+
+    "ly.img.plugin-ai-video-generation-web.fal-ai/kling-video/v2.1/master/text-to-video.property.duration.5": "5 seconds",
+    "ly.img.plugin-ai-video-generation-web.fal-ai/kling-video/v2.1/master/text-to-video.property.duration.10": "10 seconds",
+
+    "ly.img.plugin-ai-video-generation-web.fal-ai/kling-video/v2.1/master/text-to-video.property.aspect_ratio.16:9": "16:9 (Widescreen)",
+    "ly.img.plugin-ai-video-generation-web.fal-ai/kling-video/v2.1/master/text-to-video.property.aspect_ratio.9:16": "9:16 (Vertical)",
+    "ly.img.plugin-ai-video-generation-web.fal-ai/kling-video/v2.1/master/text-to-video.property.aspect_ratio.1:1": "1:1 (Square)",
+
+    "ly.img.plugin-ai-video-generation-web.fal-ai/kling-video/v2.1/master/image-to-video.property.prompt": "Prompt",
+    "ly.img.plugin-ai-video-generation-web.fal-ai/kling-video/v2.1/master/image-to-video.property.duration": "Duration",
+    "ly.img.plugin-ai-video-generation-web.fal-ai/kling-video/v2.1/master/image-to-video.property.negative_prompt": "Negative Prompt",
+    "ly.img.plugin-ai-video-generation-web.fal-ai/kling-video/v2.1/master/image-to-video.property.cfg_scale": "CFG Scale",
+
+    "ly.img.plugin-ai-video-generation-web.fal-ai/pixverse/v3.5/text-to-video.property.prompt": "Prompt",
+    "ly.img.plugin-ai-video-generation-web.fal-ai/pixverse/v3.5/text-to-video.property.aspect_ratio": "Aspect Ratio",
+    "ly.img.plugin-ai-video-generation-web.fal-ai/pixverse/v3.5/text-to-video.property.resolution": "Resolution",
+    "ly.img.plugin-ai-video-generation-web.fal-ai/pixverse/v3.5/text-to-video.property.style": "Style",
+    "ly.img.plugin-ai-video-generation-web.fal-ai/pixverse/v3.5/text-to-video.property.duration": "Duration",
+    "ly.img.plugin-ai-video-generation-web.fal-ai/pixverse/v3.5/text-to-video.property.seed": "Seed",
+    "ly.img.plugin-ai-video-generation-web.fal-ai/pixverse/v3.5/text-to-video.property.negative_prompt": "Negative Prompt",
+
+    "ly.img.plugin-ai-video-generation-web.fal-ai/pixverse/v3.5/text-to-video.property.style.anime": "Anime",
+    "ly.img.plugin-ai-video-generation-web.fal-ai/pixverse/v3.5/text-to-video.property.style.3d_animation": "3D Animation",
+    "ly.img.plugin-ai-video-generation-web.fal-ai/pixverse/v3.5/text-to-video.property.style.clay": "Clay",
+    "ly.img.plugin-ai-video-generation-web.fal-ai/pixverse/v3.5/text-to-video.property.style.comic": "Comic",
+    "ly.img.plugin-ai-video-generation-web.fal-ai/pixverse/v3.5/text-to-video.property.style.cyberpunk": "Cyberpunk",
+
+    "ly.img.plugin-ai-video-generation-web.fal-ai/pixverse/v3.5/text-to-video.property.duration.5": "5 seconds",
+    "ly.img.plugin-ai-video-generation-web.fal-ai/pixverse/v3.5/text-to-video.property.duration.8": "8 seconds",
+
+    "ly.img.plugin-ai-video-generation-web.fal-ai/veo3.property.prompt": "Prompt",
+    "ly.img.plugin-ai-video-generation-web.fal-ai/veo3.property.aspect_ratio": "Aspect Ratio",
+    "ly.img.plugin-ai-video-generation-web.fal-ai/veo3.property.duration": "Duration",
+    "ly.img.plugin-ai-video-generation-web.fal-ai/veo3.property.generate_audio": "Generate Audio",
+
+    "ly.img.plugin-ai-video-generation-web.fal-ai/veo3.property.duration.8s": "8 seconds",
+
+    "ly.img.plugin-ai-video-generation-web.quickAction.createVideo": "Create Video",
+    "ly.img.plugin-ai-video-generation-web.quickAction.createVideo.prompt": "Video description",
+    "ly.img.plugin-ai-video-generation-web.quickAction.createVideo.apply": "Generate Video"
+  }
+}

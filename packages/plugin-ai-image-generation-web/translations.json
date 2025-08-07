@@ -1,0 +1,129 @@
+{
+  "en": {
+    "ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.property.prompt": "Prompt",
+    "ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.property.image_size": "Format",
+    "ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.property.style": "Style",
+    "ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.property.colors": "Colors",
+    
+    "ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.property.style.type": "Type",
+    "ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.property.style.type.image": "Image",
+    "ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.property.style.type.vector": "Vector",
+    
+    "ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.property.style.any": "Any",
+    "ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.property.style.realistic_image": "Realistic Image",
+    "ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.property.style.digital_illustration": "Digital Illustration",
+    "ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.property.style.vector_illustration": "Vector Illustration",
+    "ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.property.style.realistic_image/b_and_w": "Realistic - B&W",
+    "ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.property.style.realistic_image/hard_flash": "Realistic - Hard Flash",
+    "ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.property.style.realistic_image/hdr": "Realistic - HDR",
+    "ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.property.style.realistic_image/natural_light": "Realistic - Natural Light",
+    "ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.property.style.realistic_image/studio_portrait": "Realistic - Studio Portrait",
+    "ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.property.style.realistic_image/enterprise": "Realistic - Enterprise",
+    "ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.property.style.digital_illustration/pixel_art": "Digital - Pixel Art",
+    "ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.property.style.digital_illustration/hand_drawn": "Digital - Hand Drawn",
+    "ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.property.style.digital_illustration/grain": "Digital - Grain",
+    "ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.property.style.vector_illustration/bold_stroke": "Vector - Bold Stroke",
+    "ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.property.style.vector_illustration/line_art": "Vector - Line Art",
+    "ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.property.style.vector_illustration/engraving": "Vector - Engraving",
+
+    "ly.img.plugin-ai-image-generation-web.fal-ai/recraft/v2/text-to-image.property.prompt": "Prompt",
+    "ly.img.plugin-ai-image-generation-web.fal-ai/recraft/v2/text-to-image.property.image_size": "Format",
+    "ly.img.plugin-ai-image-generation-web.fal-ai/recraft/v2/text-to-image.property.style": "Style",
+    "ly.img.plugin-ai-image-generation-web.fal-ai/recraft/v2/text-to-image.property.colors": "Colors",
+    
+    "ly.img.plugin-ai-image-generation-web.fal-ai/recraft/v2/text-to-image.property.style.type": "Type",
+    "ly.img.plugin-ai-image-generation-web.fal-ai/recraft/v2/text-to-image.property.style.type.image": "Image",
+    "ly.img.plugin-ai-image-generation-web.fal-ai/recraft/v2/text-to-image.property.style.type.vector": "Vector",
+    "ly.img.plugin-ai-image-generation-web.fal-ai/recraft/v2/text-to-image.property.style.type.icon": "Icon",
+    
+    "ly.img.plugin-ai-image-generation-web.fal-ai/recraft/v2/text-to-image.property.style.icon/broken_line": "Icon - Broken Line",
+    "ly.img.plugin-ai-image-generation-web.fal-ai/recraft/v2/text-to-image.property.style.icon/colored_outline": "Icon - Colored Outline",
+    "ly.img.plugin-ai-image-generation-web.fal-ai/recraft/v2/text-to-image.property.style.icon/colored_shapes": "Icon - Colored Shapes",
+    "ly.img.plugin-ai-image-generation-web.fal-ai/recraft/v2/text-to-image.property.style.icon/colored_shapes_gradient": "Icon - Colored Shapes Gradient",
+    "ly.img.plugin-ai-image-generation-web.fal-ai/recraft/v2/text-to-image.property.style.icon/doodle_fill": "Icon - Doodle Fill",
+    "ly.img.plugin-ai-image-generation-web.fal-ai/recraft/v2/text-to-image.property.style.icon/doodle_offset_fill": "Icon - Doodle Offset Fill",
+    "ly.img.plugin-ai-image-generation-web.fal-ai/recraft/v2/text-to-image.property.style.icon/offset_fill": "Icon - Offset Fill",
+    "ly.img.plugin-ai-image-generation-web.fal-ai/recraft/v2/text-to-image.property.style.icon/outline": "Icon - Outline",
+    "ly.img.plugin-ai-image-generation-web.fal-ai/recraft/v2/text-to-image.property.style.icon/outline_gradient": "Icon - Outline Gradient",
+    "ly.img.plugin-ai-image-generation-web.fal-ai/recraft/v2/text-to-image.property.style.icon/uneven_fill": "Icon - Uneven Fill",
+
+    "ly.img.plugin-ai-image-generation-web.fal-ai/ideogram/v3.property.prompt": "Prompt",
+    "ly.img.plugin-ai-image-generation-web.fal-ai/ideogram/v3.property.style": "Style",
+    "ly.img.plugin-ai-image-generation-web.fal-ai/ideogram/v3.property.image_size": "Format",
+    "ly.img.plugin-ai-image-generation-web.fal-ai/ideogram/v3.property.rendering_speed": "Rendering Speed",
+    "ly.img.plugin-ai-image-generation-web.fal-ai/ideogram/v3.property.expand_prompt": "Expand Prompt",
+    "ly.img.plugin-ai-image-generation-web.fal-ai/ideogram/v3.property.seed": "Seed",
+
+    "ly.img.plugin-ai-image-generation-web.fal-ai/ideogram/v3.property.style.AUTO": "Auto",
+    "ly.img.plugin-ai-image-generation-web.fal-ai/ideogram/v3.property.style.GENERAL": "General",
+    "ly.img.plugin-ai-image-generation-web.fal-ai/ideogram/v3.property.style.REALISTIC": "Realistic",
+    "ly.img.plugin-ai-image-generation-web.fal-ai/ideogram/v3.property.style.DESIGN": "Design",
+
+    "ly.img.plugin-ai-image-generation-web.fal-ai/ideogram/v3.property.rendering_speed.TURBO": "Turbo",
+    "ly.img.plugin-ai-image-generation-web.fal-ai/ideogram/v3.property.rendering_speed.BALANCED": "Balanced",
+    "ly.img.plugin-ai-image-generation-web.fal-ai/ideogram/v3.property.rendering_speed.QUALITY": "Quality",
+
+    "ly.img.plugin-ai-image-generation-web.fal-ai/ideogram/v3/remix.property.prompt": "Prompt",
+    "ly.img.plugin-ai-image-generation-web.fal-ai/ideogram/v3/remix.property.style": "Style",
+    "ly.img.plugin-ai-image-generation-web.fal-ai/ideogram/v3/remix.property.image_size": "Format",
+
+    "ly.img.plugin-ai-image-generation-web.fal-ai/flux-pro/kontext.property.prompt": "Prompt",
+    "ly.img.plugin-ai-image-generation-web.fal-ai/flux-pro/kontext.property.aspect_ratio": "Aspect Ratio",
+
+    "ly.img.plugin-ai-image-generation-web.fal-ai/flux-pro/kontext/max.property.prompt": "Prompt",
+    "ly.img.plugin-ai-image-generation-web.fal-ai/flux-pro/kontext/max.property.aspect_ratio": "Aspect Ratio",
+
+    "ly.img.plugin-ai-image-generation-web.fal-ai/gemini-flash-edit.property.prompt": "Prompt",
+    "ly.img.plugin-ai-image-generation-web.fal-ai/gemini-flash-edit.property.image_url": "Source Image",
+
+    "ly.img.plugin-ai-image-generation-web.open-ai/gpt-image-1/text2image.property.prompt": "Prompt",
+    "ly.img.plugin-ai-image-generation-web.open-ai/gpt-image-1/text2image.property.style": "Style",
+    "ly.img.plugin-ai-image-generation-web.open-ai/gpt-image-1/text2image.property.size": "Size",
+    "ly.img.plugin-ai-image-generation-web.open-ai/gpt-image-1/text2image.property.background": "Background",
+
+    "ly.img.plugin-ai-image-generation-web.open-ai/gpt-image-1/text2image.property.size.1024x1024": "1024×1024 (Square)",
+    "ly.img.plugin-ai-image-generation-web.open-ai/gpt-image-1/text2image.property.size.1536x1024": "1536×1024 (Landscape)",
+    "ly.img.plugin-ai-image-generation-web.open-ai/gpt-image-1/text2image.property.size.1024x1536": "1024×1536 (Portrait)",
+
+    "ly.img.plugin-ai-image-generation-web.open-ai/gpt-image-1/image2image.property.prompt": "Prompt",
+    "ly.img.plugin-ai-image-generation-web.open-ai/gpt-image-1/image2image.property.style": "Style",
+    "ly.img.plugin-ai-image-generation-web.open-ai/gpt-image-1/image2image.property.size": "Size",
+    "ly.img.plugin-ai-image-generation-web.open-ai/gpt-image-1/image2image.property.background": "Background",
+
+    "ly.img.plugin-ai-image-generation-web.quickAction.editImage": "Edit Image",
+    "ly.img.plugin-ai-image-generation-web.quickAction.editImage.prompt": "Describe your changes",
+    "ly.img.plugin-ai-image-generation-web.quickAction.editImage.apply": "Apply Changes",
+    
+    "ly.img.plugin-ai-image-generation-web.quickAction.styleTransfer": "Style Transfer",
+    "ly.img.plugin-ai-image-generation-web.quickAction.styleTransfer.prompt": "Choose a style",
+    "ly.img.plugin-ai-image-generation-web.quickAction.styleTransfer.apply": "Apply Style",
+    
+    "ly.img.plugin-ai-image-generation-web.quickAction.artistTransfer": "Artist Style",
+    "ly.img.plugin-ai-image-generation-web.quickAction.artistTransfer.prompt": "Choose an artist",
+    "ly.img.plugin-ai-image-generation-web.quickAction.artistTransfer.apply": "Apply Artist Style",
+    
+    "ly.img.plugin-ai-image-generation-web.quickAction.createVariant": "Create Variant",
+    "ly.img.plugin-ai-image-generation-web.quickAction.createVariant.prompt": "Describe the variation",
+    "ly.img.plugin-ai-image-generation-web.quickAction.createVariant.apply": "Create Variant",
+    
+    "ly.img.plugin-ai-image-generation-web.quickAction.swapBackground": "Swap Background",
+    "ly.img.plugin-ai-image-generation-web.quickAction.swapBackground.prompt": "Describe the new background",
+    "ly.img.plugin-ai-image-generation-web.quickAction.swapBackground.apply": "Swap Background",
+    
+    "ly.img.plugin-ai-image-generation-web.quickAction.combineImages": "Combine Images",
+    "ly.img.plugin-ai-image-generation-web.quickAction.combineImages.prompt": "How to combine the images",
+    "ly.img.plugin-ai-image-generation-web.quickAction.combineImages.apply": "Combine",
+    
+    "ly.img.plugin-ai-image-generation-web.quickAction.remixPage": "Remix Page",
+    "ly.img.plugin-ai-image-generation-web.quickAction.remixPage.prompt": "Describe the remix",
+    "ly.img.plugin-ai-image-generation-web.quickAction.remixPage.apply": "Remix",
+    
+    "ly.img.plugin-ai-image-generation-web.quickAction.remixPageWithPrompt": "Remix Page with Prompt",
+    "ly.img.plugin-ai-image-generation-web.quickAction.remixPageWithPrompt.prompt": "Custom remix instructions",
+    "ly.img.plugin-ai-image-generation-web.quickAction.remixPageWithPrompt.apply": "Remix",
+
+    "ly.img.plugin-ai-image-generation-web.quickAction.gpt-image-1.changeStyleLibrary": "Change Style",
+    "ly.img.plugin-ai-image-generation-web.quickAction.gpt-image-1.changeStyleLibrary.prompt": "Choose a style",
+    "ly.img.plugin-ai-image-generation-web.quickAction.gpt-image-1.changeStyleLibrary.apply": "Apply Style"
+  }
+}
