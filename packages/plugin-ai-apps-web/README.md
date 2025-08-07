@@ -512,6 +512,16 @@ CreativeEditorSDK.create(domElement, {
 });
 ```
 
+## Translations
+
+The AI Apps plugin uses translations from individual AI generation plugins. For customization, refer to the respective translation files:
+
+- [Base translations](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-generation-web/translations.json) - Core translation keys
+- [Image generation translations](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-image-generation-web/translations.json) - Image generation interfaces
+- [Video generation translations](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-video-generation-web/translations.json) - Video generation interfaces
+- [Text generation translations](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-text-generation-web/translations.json) - Text generation interfaces
+- [Audio generation translations](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-audio-generation-web/translations.json) - Audio generation interfaces
+
 ## License
 
 This plugin is part of the IMG.LY plugin ecosystem for CreativeEditor SDK. Please refer to the license terms in the package.

@@ -19,7 +19,7 @@ export const ID = `ly.img.${ACTION_NAME}`;
 /**
  * The i18n prefix for the quick action.
  */
-export const I18N_PREFIX = `ly.img.ai.quickAction.image.${ACTION_NAME}`;
+export const I18N_PREFIX = `ly.img.plugin-ai-image-generation-web.quickAction.${ACTION_NAME}`;
 
 /**
  * The input generated from this quick action which needs
@@ -33,9 +33,9 @@ export type InputType = {
 const EditImage: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
   cesdk.i18n.setTranslations({
     en: {
-      [`${I18N_PREFIX}.label`]: 'Edit Image...',
+      [`${I18N_PREFIX}`]: 'Edit Image...',
       [`${I18N_PREFIX}.description`]: 'Change image based on description',
-      [`${I18N_PREFIX}.prompt.label`]: 'Edit Image...',
+      [`${I18N_PREFIX}.prompt`]: 'Edit Image...',
       [`${I18N_PREFIX}.prompt.placeholder`]: 'e.g. "Add a sunset"',
       [`${I18N_PREFIX}.apply`]: 'Change'
     }
@@ -46,8 +46,7 @@ const EditImage: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
     type: 'quick',
     kind: 'image',
 
-    label: `${I18N_PREFIX}.label`,
-    description: `${I18N_PREFIX}.description`,
+    label: `${I18N_PREFIX}`,
     enable: enableQuickActionForImageFill(),
     scopes: ['fill/change'],
 
@@ -65,7 +64,7 @@ const EditImage: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
         const promptState = state(`${ID}.prompt`, '');
 
         builder.TextArea(`${ID}.prompt`, {
-          inputLabel: `${I18N_PREFIX}.prompt.label`,
+          inputLabel: `${I18N_PREFIX}.prompt`,
           placeholder: `${I18N_PREFIX}.prompt.placeholder`,
           ...promptState
         });
@@ -120,7 +119,7 @@ const EditImage: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
         });
       } else {
         builder.Button(`${ID}.button`, {
-          label: `${I18N_PREFIX}.label`,
+          label: `${I18N_PREFIX}`,
           icon: '@imgly/plugin-ai-generation/image',
           labelAlignment: 'left',
           variant: 'plain',

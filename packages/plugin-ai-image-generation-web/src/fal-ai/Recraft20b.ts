@@ -166,12 +166,7 @@ function getProvider(
   cesdk.i18n.setTranslations({
     en: {
       [`panel.${getPanelId('fal-ai/recraft/v2/text-to-image')}.styleSelection`]:
-        'Style Selection',
-      [`${modelKey}.style`]: 'Style',
-      [`${modelKey}.style.type`]: 'Type',
-      [`${modelKey}.style.type.image`]: 'Image',
-      [`${modelKey}.style.type.vector`]: 'Vector',
-      [`${modelKey}.style.type.icon`]: 'Icon'
+        'Style Selection'
     }
   });
 
@@ -219,20 +214,40 @@ function getProvider(
               : styleIconState;
 
           builder.ButtonGroup(`${property.id}.type`, {
-            inputLabel: `${modelKey}.${property.id}.type`,
+            inputLabel: [
+              `ly.img.plugin-ai-image-generation-web.${modelKey}.property.${property.id}.type`,
+              `ly.img.plugin-ai-generation-web.property.${property.id}.type`,
+              `ly.img.plugin-ai-image-generation-web.${modelKey}.defaults.property.${property.id}.type`,
+              `ly.img.plugin-ai-generation-web.defaults.property.${property.id}.type`
+            ],
             children: () => {
               builder.Button(`${property.id}.type.image`, {
-                label: `${modelKey}.${property.id}.type.image`,
+                label: [
+                  `ly.img.plugin-ai-image-generation-web.${modelKey}.property.${property.id}.type.image`,
+                  `ly.img.plugin-ai-generation-web.property.${property.id}.type.image`,
+                  `ly.img.plugin-ai-image-generation-web.${modelKey}.defaults.property.${property.id}.type.image`,
+                  `ly.img.plugin-ai-generation-web.defaults.property.${property.id}.type.image`
+                ],
                 isActive: typeState.value === 'image',
                 onClick: () => typeState.setValue('image')
               });
               builder.Button(`${property.id}.type.vector`, {
-                label: `${modelKey}.${property.id}.type.vector`,
+                label: [
+                  `ly.img.plugin-ai-image-generation-web.${modelKey}.property.${property.id}.type.vector`,
+                  `ly.img.plugin-ai-generation-web.property.${property.id}.type.vector`,
+                  `ly.img.plugin-ai-image-generation-web.${modelKey}.defaults.property.${property.id}.type.vector`,
+                  `ly.img.plugin-ai-generation-web.defaults.property.${property.id}.type.vector`
+                ],
                 isActive: typeState.value === 'vector',
                 onClick: () => typeState.setValue('vector')
               });
               builder.Button(`${property.id}.type.icon`, {
-                label: `${modelKey}.${property.id}.type.icon`,
+                label: [
+                  `ly.img.plugin-ai-image-generation-web.${modelKey}.property.${property.id}.type.icon`,
+                  `ly.img.plugin-ai-generation-web.property.${property.id}.type.icon`,
+                  `ly.img.plugin-ai-image-generation-web.${modelKey}.defaults.property.${property.id}.type.icon`,
+                  `ly.img.plugin-ai-generation-web.defaults.property.${property.id}.type.icon`
+                ],
                 isActive: typeState.value === 'icon',
                 onClick: () => typeState.setValue('icon')
               });
@@ -241,7 +256,12 @@ function getProvider(
 
           // Show the style library for the selected type.
           builder.Button(`${property.id}`, {
-            inputLabel: `${modelKey}.${property.id}`,
+            inputLabel: [
+              `ly.img.plugin-ai-image-generation-web.${modelKey}.property.${property.id}`,
+              `ly.img.plugin-ai-generation-web.property.${property.id}`,
+              `ly.img.plugin-ai-image-generation-web.${modelKey}.defaults.property.${property.id}`,
+              `ly.img.plugin-ai-generation-web.defaults.property.${property.id}`
+            ],
             icon: '@imgly/Appearance',
             trailingIcon: '@imgly/ChevronRight',
             label: styleState.value.label,

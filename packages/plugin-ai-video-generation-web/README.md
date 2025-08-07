@@ -145,6 +145,16 @@ Key features:
 -   5-second video duration
 -   Custom headers support for API requests
 
+**Custom Translations:**
+
+```typescript
+cesdk.i18n.setTranslations({
+  en: {
+    'ly.img.plugin-ai-video-generation-web.fal-ai/minimax/video-01-live.property.prompt': 'Describe your Minimax video'
+  }
+});
+```
+
 #### 2. MinimaxVideo01LiveImageToVideo (Image-to-Video)
 
 A model that transforms still images into videos:
@@ -202,6 +212,18 @@ Key features:
 -   Selectable durations (5 s or 10 s)
 -   Adaptive resolution (height fixed at 720 px, width is calculated)
 
+**Custom Translations:**
+
+```typescript
+cesdk.i18n.setTranslations({
+  en: {
+    'ly.img.plugin-ai-video-generation-web.fal-ai/kling-video/v2.1/master/text-to-video.property.prompt': 'Describe your KlingVideo',
+    'ly.img.plugin-ai-video-generation-web.fal-ai/kling-video/v2.1/master/text-to-video.property.aspect_ratio': 'Video Format',
+    'ly.img.plugin-ai-video-generation-web.fal-ai/kling-video/v2.1/master/text-to-video.property.duration': 'Video Length (seconds)'
+  }
+});
+```
+
 #### 5. KlingVideoV21MasterImageToVideo (Image-to-Video)
 
 A model that converts still images into videos using KlingVideo V2.1:
@@ -235,6 +257,62 @@ Key features:
 -   Supports aspect ratios 16:9, 9:16 and 1:1 (defaults to 16:9)
 -   Fixed duration of 8 seconds
 -   Optional audio generation via `generate_audio`
+
+### Customizing Labels and Translations
+
+You can customize all labels and text in the AI video generation interface using the translation system. This allows you to provide better labels for your users in any language.
+
+#### Translation Key Structure
+
+The system checks for translations in this order (highest to lowest priority):
+
+1. **Provider-specific**: `ly.img.plugin-ai-video-generation-web.${provider}.property.${field}` - Override labels for a specific AI provider
+2. **Generic**: `ly.img.plugin-ai-generation-web.property.${field}` - Override labels for all AI plugins
+
+#### Basic Example
+
+```typescript
+// Customize labels for your AI video generation interface
+cesdk.i18n.setTranslations({
+  en: {
+    // Generic labels (applies to ALL AI plugins)
+    'ly.img.plugin-ai-generation-web.property.prompt': 'Describe what you want to create',
+    'ly.img.plugin-ai-generation-web.property.duration': 'Video Duration',
+
+    // Provider-specific for MinimaxVideo01Live
+    'ly.img.plugin-ai-video-generation-web.fal-ai/minimax/video-01-live.property.prompt': 'Describe your video',
+    'ly.img.plugin-ai-video-generation-web.fal-ai/minimax/video-01-live.property.duration': 'Video Length',
+
+    // Provider-specific for KlingVideoV21Master
+    'ly.img.plugin-ai-video-generation-web.fal-ai/kling-video/v2.1/master/text-to-video.property.aspect_ratio': 'Video Aspect Ratio',
+    'ly.img.plugin-ai-video-generation-web.fal-ai/kling-video/v2.1/master/text-to-video.property.duration': 'Video Duration (seconds)'
+  }
+});
+```
+
+#### QuickAction Translations
+
+Video QuickActions (like "Create Video from Image") use their own translation keys:
+
+```typescript
+cesdk.i18n.setTranslations({
+  en: {
+    // QuickAction button labels
+    'ly.img.plugin-ai-video-generation-web.quickAction.createVideo': 'Create Video...',
+    
+    // QuickAction input fields and buttons
+    'ly.img.plugin-ai-video-generation-web.quickAction.createVideo.prompt': 'Create Video...',
+    'ly.img.plugin-ai-video-generation-web.quickAction.createVideo.prompt.placeholder': 'e.g. "Make the image move slowly"',
+    'ly.img.plugin-ai-video-generation-web.quickAction.createVideo.apply': 'Generate'
+  }
+});
+```
+
+**QuickAction Translation Structure:**
+- Base key (e.g., `.quickAction.createVideo`): Button text when QuickAction is collapsed
+- `.prompt`: Label for input field when expanded
+- `.prompt.placeholder`: Placeholder text for input field
+- `.apply`: Text for action/submit button
 
 ### Configuration Options
 
@@ -465,6 +543,10 @@ const currentOrder = cesdk.ui.getDockOrder();
 currentOrder.splice(2, 0, 'ly.img.ai.video-generation.dock');
 cesdk.ui.setDockOrder(currentOrder);
 ```
+
+## Translations
+
+For customization and localization, see the [translations.json](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-video-generation-web/translations.json) file which contains provider-specific translation keys for video generation interfaces.
 
 ## Related Packages
 

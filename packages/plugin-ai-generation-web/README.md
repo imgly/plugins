@@ -737,6 +737,91 @@ render: ({ builder, isExpanded, toggleExpand }) => {
 }
 ```
 
+## Customizing Labels and Text
+
+You can customize all labels and text in the AI generation interface using the translation system. This allows you to provide better labels for your users in any language.
+
+### Translation Priority
+
+The system checks for translations in this order (highest to lowest priority):
+
+1. **Provider & Kind-specific**: `ly.img.plugin-ai-${kind}-generation-web.${provider}.property.${field}` - Override labels for a specific AI provider and generation type
+2. **Generic**: `ly.img.plugin-ai-generation-web.property.${field}` - Override labels for all AI plugins 
+
+Where `${kind}` can be:
+- `image` for image generation plugins
+- `video` for video generation plugins  
+- `audio` for audio generation plugins
+- `text` for text generation plugins
+
+### Basic Example
+
+```typescript
+// Customize labels for your AI generation interface
+cesdk.i18n.setTranslations({
+  en: {
+    // Generic labels (applies to ALL AI plugins)
+    'ly.img.plugin-ai-generation-web.property.prompt': 'Describe what you want to create',
+    'ly.img.plugin-ai-generation-web.property.image_size': 'Image Dimensions',
+    'ly.img.plugin-ai-generation-web.property.duration': 'Video Length',
+
+    // Provider-specific for images (highest priority)
+    'ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.property.prompt': 'Describe your Recraft image',
+    'ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.property.image_size': 'Canvas Size',
+
+    // Provider-specific for videos (highest priority)
+    'ly.img.plugin-ai-video-generation-web.fal-ai/veo3.property.prompt': 'Describe your video scene',
+    'ly.img.plugin-ai-video-generation-web.fal-ai/veo3.property.duration': 'Video Duration'
+  }
+});
+```
+
+### Dropdown Options
+
+For dropdown menus, add the option value to the translation key:
+
+```typescript
+cesdk.i18n.setTranslations({
+  en: {
+    // Image generation dropdown options
+    'ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.property.image_size.square_hd': 'Square HD (1024×1024)',
+    'ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.property.image_size.portrait_4_3': 'Portrait 4:3 (768×1024)',
+
+    // Video generation dropdown options
+    'ly.img.plugin-ai-video-generation-web.fal-ai/veo3.property.duration.5': '5 seconds',
+    'ly.img.plugin-ai-video-generation-web.fal-ai/veo3.property.duration.10': '10 seconds'
+  }
+});
+```
+
+### QuickAction Translations
+
+QuickActions (like "Edit Image", "Style Transfer", etc.) use their own translation keys:
+
+```typescript
+cesdk.i18n.setTranslations({
+  en: {
+    // Image generation QuickActions
+    'ly.img.plugin-ai-image-generation-web.quickAction.editImage': 'Edit Image...',
+    'ly.img.plugin-ai-image-generation-web.quickAction.editImage.prompt': 'Edit Image...',
+    'ly.img.plugin-ai-image-generation-web.quickAction.editImage.apply': 'Change',
+
+    // Text generation QuickActions  
+    'ly.img.plugin-ai-text-generation-web.quickAction.improve': 'Improve Text',
+    'ly.img.plugin-ai-text-generation-web.quickAction.translate': 'Translate Text',
+
+    // Video generation QuickActions
+    'ly.img.plugin-ai-video-generation-web.quickAction.createVideo': 'Create Video'
+  }
+});
+```
+
+**QuickAction Translation Structure:**
+- Base key (e.g., `.quickAction.editImage`): Button text when QuickAction is collapsed
+- `.prompt`: Label for input field when expanded
+- `.prompt.placeholder`: Placeholder text for input field
+- `.apply`: Text for action/submit button
+
 ## Using Your Provider
 
 Once you've created your provider, you need to initialize it with CreativeEditor SDK and integrate it into the UI.
@@ -780,12 +865,12 @@ function setupMyProvider(cesdk) {
 When a provider is initialized, it automatically registers panels with specific IDs:
 
 ```
-ly.img.ai.{provider-id}
+ly.img.plugin-ai-{kind}-generation-web.{provider-id}
 ```
 
 For example:
-- A provider with ID `my-image-provider` registers a panel with ID `ly.img.ai.my-image-provider`
-- A provider with ID `fal-ai/recraft-v3` registers a panel with ID `ly.img.ai.fal-ai/recraft-v3`
+- A provider with ID `my-image-provider` for images registers a panel with ID `ly.img.plugin-ai-image-generation-web.my-image-provider`
+- A provider with ID `fal-ai/recraft-v3` for images registers a panel with ID `ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3`
 
 You can programmatically get a panel ID using the `getPanelId` function:
 
@@ -804,14 +889,14 @@ cesdk.ui.openPanel(panelId);
 Quick actions are automatically registered in canvas menus with these IDs:
 
 ```
-ly.img.ai.{kind}.canvasMenu
+ly.img.plugin-ai-{kind}-generation-web.canvasMenu
 ```
 
 For example:
-- Image quick actions: `ly.img.ai.image.canvasMenu`
-- Video quick actions: `ly.img.ai.video.canvasMenu`
-- Audio quick actions: `ly.img.ai.audio.canvasMenu`
-- Text quick actions: `ly.img.ai.text.canvasMenu`
+- Image quick actions: `ly.img.plugin-ai-image-generation-web.canvasMenu`
+- Video quick actions: `ly.img.plugin-ai-video-generation-web.canvasMenu`
+- Audio quick actions: `ly.img.plugin-ai-audio-generation-web.canvasMenu`
+- Text quick actions: `ly.img.plugin-ai-text-generation-web.canvasMenu`
 
 ### Using with Existing AI Generation Plugins
 
@@ -857,8 +942,8 @@ CreativeEditorSDK.create(domElement, {
 
     // Add quick action menus to canvas
     cesdk.ui.setCanvasMenuOrder([
-        'ly.img.ai.image.canvasMenu',
-        'ly.img.ai.video.canvasMenu',
+        'ly.img.plugin-ai-image-generation-web.canvasMenu',
+        'ly.img.plugin-ai-video-generation-web.canvasMenu',
         ...cesdk.ui.getCanvasMenuOrder()
     ]);
 });
@@ -1017,7 +1102,7 @@ const result = await initializeProviders(
 ```
 
 **Key Points:**
-- Creates a composite history asset source with ID format: `ly.img.ai.{kind}-generation.history`
+- Creates a composite history asset source with ID format: `ly.img.plugin-ai-{kind}-generation-web.history`
 - Automatically creates an asset library entry with the same ID as the asset source
 - The library entry is configured with appropriate settings (sortBy: insertedAt descending, canRemove: true, etc.)
 - Returns both the asset source ID and library entry ID for reference
@@ -1047,3 +1132,7 @@ interface QuickActionDefinition<Q extends Record<string, any>> {
     render: (context: QuickActionRenderContext<Q>) => void;
 }
 ```
+
+## Translations
+
+For customization and localization, see the [translations.json](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-generation-web/translations.json) file which contains base translation keys that can be overridden for all AI plugins.

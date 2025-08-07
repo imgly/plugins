@@ -13,6 +13,7 @@ import { useRef } from 'react';
 import { rateLimitMiddleware } from '@imgly/plugin-ai-generation-web';
 import { Middleware } from '@imgly/plugin-ai-generation-web';
 import { RateLimitOptions } from '@imgly/plugin-ai-generation-web';
+import { testAllTranslations, resetTranslations } from '../utils/testTranslations';
 
 function App() {
   const cesdk = useRef<CreativeEditorSDK>();
@@ -229,6 +230,10 @@ function App() {
                     FalAiVideo.KlingVideoV21MasterTextToVideo({
                       middleware: [videoRateLimitMiddleware, errorMiddleware],
                       proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
+                    }),
+                    FalAiVideo.PixverseV35TextToVideo({
+                      middleware: [videoRateLimitMiddleware, errorMiddleware],
+                      proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
                     })
                   ],
                   image2video: [
@@ -261,6 +266,7 @@ function App() {
 
             instance.ui.setNavigationBarOrder([
               'sceneModeToggle',
+              'testTranslations',
               ...instance.ui.getNavigationBarOrder()
             ]);
 
@@ -275,6 +281,19 @@ function App() {
                   } else {
                     window.location.search = '?archive=video';
                   }
+                }
+              });
+            });
+            instance.ui.registerComponent('testTranslations', ({ builder }) => {
+              builder.Button('testTranslations', {
+                label: 'Test Translations',
+                icon: '@imgly/Text',
+                variant: 'regular',
+                onClick: () => {
+                  testAllTranslations(instance);
+                  // Expose reset function for debugging
+                  // @ts-ignore
+                  window.resetTranslations = () => resetTranslations(instance);
                 }
               });
             });

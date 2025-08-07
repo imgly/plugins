@@ -295,6 +295,10 @@ cesdk.addPlugin(
 
 When integrated with AI Apps, the sticker generation functionality appears in the main AI interface alongside other AI generation capabilities.
 
+## Translations
+
+For customization and localization, see the [translations.json](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-sticker-generation-web/translations.json) file which contains provider-specific translation keys for sticker generation interfaces.
+
 ## Related Packages
 
 - [@imgly/plugin-ai-generation-web](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-generation-web) - Core utilities for AI generation

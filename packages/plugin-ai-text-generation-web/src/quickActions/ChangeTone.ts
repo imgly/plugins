@@ -15,7 +15,7 @@ export const ID = `ly.img.${ACTION_NAME}`;
 /**
  * The i18n prefix for the quick action.
  */
-export const I18N_PREFIX = `ly.img.ai.quickAction.text.${ACTION_NAME}`;
+export const I18N_PREFIX = `ly.img.plugin-ai-text-generation-web.quickAction.${ACTION_NAME}`;
 
 /**
  * The input generated from this quick action which needs
@@ -38,7 +38,7 @@ const toneOptions = [
 const ChangeTone: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
   cesdk.i18n.setTranslations({
     en: {
-      [`${I18N_PREFIX}.label`]: 'Change Tone',
+      [`${I18N_PREFIX}`]: 'Change Tone',
       [`${I18N_PREFIX}.type.professional`]: 'Professional',
       [`${I18N_PREFIX}.type.casual`]: 'Casual',
       [`${I18N_PREFIX}.type.friendly`]: 'Friendly',
@@ -55,8 +55,7 @@ const ChangeTone: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
 
     scopes: ['text/edit'],
 
-    label: `${I18N_PREFIX}.label`,
-    description: `${I18N_PREFIX}.label`,
+    label: `${I18N_PREFIX}`,
     enable: ({ engine }) => {
       const blockIds = engine.block.findAllSelected();
       if (blockIds == null || blockIds.length !== 1) return false;
@@ -66,7 +65,7 @@ const ChangeTone: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
 
     render: ({ builder, generate, engine, close, experimental }) => {
       experimental.builder.Popover(`${ID}.popover`, {
-        label: `${I18N_PREFIX}.label`,
+        label: `${I18N_PREFIX}`,
         icon: '@imgly/Microphone',
         labelAlignment: 'left',
         variant: 'plain',

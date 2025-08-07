@@ -19,7 +19,7 @@ export const ID = `ly.img.${ACTION_NAME}`;
 /**
  * The i18n prefix for the quick action.
  */
-export const I18N_PREFIX = `ly.img.ai.quickAction.image.${ACTION_NAME}`;
+export const I18N_PREFIX = `ly.img.plugin-ai-image-generation-web.quickAction.${ACTION_NAME}`;
 
 /**
  * The input generated from this quick action which needs
@@ -33,9 +33,9 @@ export type InputType = {
 const CreateVariant: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
   cesdk.i18n.setTranslations({
     en: {
-      [`${I18N_PREFIX}.label`]: 'Create Variant...',
+      [`${I18N_PREFIX}`]: 'Create Variant...',
       [`${I18N_PREFIX}.description`]: 'Create a variation of the image',
-      [`${I18N_PREFIX}.prompt.label`]: 'Create Variant...',
+      [`${I18N_PREFIX}.prompt`]: 'Create Variant...',
       [`${I18N_PREFIX}.prompt.placeholder`]: 'e.g. "Make it more colorful"',
       [`${I18N_PREFIX}.apply`]: 'Create'
     }
@@ -51,8 +51,7 @@ const CreateVariant: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
       lock: false
     },
 
-    label: `${I18N_PREFIX}.label`,
-    description: `${I18N_PREFIX}.description`,
+    label: `${I18N_PREFIX}`,
     enable: (context) => {
       // First check basic image fill requirements
       if (!enableQuickActionForImageFill()(context)) return false;
@@ -93,7 +92,7 @@ const CreateVariant: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
         const promptState = state(`${ID}.prompt`, '');
 
         builder.TextArea(`${ID}.prompt`, {
-          inputLabel: `${I18N_PREFIX}.prompt.label`,
+          inputLabel: `${I18N_PREFIX}.prompt`,
           placeholder: `${I18N_PREFIX}.prompt.placeholder`,
           ...promptState
         });
@@ -200,7 +199,7 @@ const CreateVariant: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
         });
       } else {
         builder.Button(`${ID}.button`, {
-          label: `${I18N_PREFIX}.label`,
+          label: `${I18N_PREFIX}`,
           icon: '@imgly/ImageVariation',
           labelAlignment: 'left',
           variant: 'plain',

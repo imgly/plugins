@@ -147,6 +147,18 @@ Key features:
 -   Natural-sounding speech
 -   Custom headers support for API requests
 
+**Custom Translations:**
+
+```typescript
+cesdk.i18n.setTranslations({
+  en: {
+    'ly.img.plugin-ai-audio-generation-web.elevenlabs/monolingual/v1.property.prompt': 'Enter text to convert to speech',
+    'ly.img.plugin-ai-audio-generation-web.elevenlabs/monolingual/v1.property.voice_id': 'Select Voice',
+    'ly.img.plugin-ai-audio-generation-web.elevenlabs/monolingual/v1.property.speed': 'Playback Speed'
+  }
+});
+```
+
 #### 2. ElevenSoundEffects (Text-to-Sound)
 
 A sound effect generator that creates audio from text descriptions:
@@ -168,6 +180,51 @@ Key features:
 -   Seamless integration with CreativeEditor SDK
 -   Automatic thumbnails and duration detection
 -   Custom headers support for API requests
+
+**Custom Translations:**
+
+```typescript
+cesdk.i18n.setTranslations({
+  en: {
+    'ly.img.plugin-ai-audio-generation-web.elevenlabs/sound-generation.property.prompt': 'Describe the sound you want to create',
+    'ly.img.plugin-ai-audio-generation-web.elevenlabs/sound-generation.property.duration': 'Audio Length'
+  }
+});
+```
+
+### Customizing Labels and Translations
+
+You can customize all labels and text in the AI audio generation interface using the translation system. This allows you to provide better labels for your users in any language.
+
+#### Translation Key Structure
+
+The system checks for translations in this order (highest to lowest priority):
+
+1. **Provider-specific**: `ly.img.plugin-ai-audio-generation-web.${provider}.property.${field}` - Override labels for a specific AI provider
+2. **Generic**: `ly.img.plugin-ai-generation-web.property.${field}` - Override labels for all AI plugins
+
+#### Basic Example
+
+```typescript
+// Customize labels for your AI audio generation interface
+cesdk.i18n.setTranslations({
+  en: {
+    // Generic labels (applies to ALL AI plugins)
+    'ly.img.plugin-ai-generation-web.property.prompt': 'Describe what you want to create',
+    'ly.img.plugin-ai-generation-web.property.voice_id': 'Voice Selection',
+    'ly.img.plugin-ai-generation-web.property.speed': 'Speaking Speed',
+
+    // Provider-specific for ElevenMultilingualV2
+    'ly.img.plugin-ai-audio-generation-web.elevenlabs/monolingual/v1.property.prompt': 'Enter text to speak',
+    'ly.img.plugin-ai-audio-generation-web.elevenlabs/monolingual/v1.property.voice_id': 'Choose Voice',
+    'ly.img.plugin-ai-audio-generation-web.elevenlabs/monolingual/v1.property.speed': 'Speech Speed',
+
+    // Provider-specific for ElevenSoundEffects
+    'ly.img.plugin-ai-audio-generation-web.elevenlabs/sound-generation.property.prompt': 'Describe the sound effect',
+    'ly.img.plugin-ai-audio-generation-web.elevenlabs/sound-generation.property.duration': 'Sound Duration'
+  }
+});
+```
 
 ### Configuration Options
 
@@ -334,6 +391,10 @@ Generated audio files are automatically stored in asset sources with the followi
 
 -   Text-to-Speech: `elevenlabs/monolingual/v1.history`
 -   Sound Effects: `elevenlabs/sound-generation.history`
+
+## Translations
+
+For customization and localization, see the [translations.json](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-audio-generation-web/translations.json) file which contains provider-specific translation keys for audio generation interfaces.
 
 ## Related Packages
 

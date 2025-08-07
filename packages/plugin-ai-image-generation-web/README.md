@@ -173,6 +173,19 @@ Key features:
 - Adjustable quality settings
 - Custom headers support for API requests
 
+**Custom Translations:**
+```typescript
+cesdk.i18n.setTranslations({
+  en: {
+    'ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.property.prompt': 'Your image description',
+    'ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.property.style': 'Art Style',
+    'ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.property.style.realistic_image': 'Photorealistic',
+    'ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.property.style.illustration': 'Illustration',
+    'ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.property.image_size': 'Canvas Size'
+  }
+});
+```
+
 #### 2. Recraft20b (Text-to-Image)
 
 An enhanced text-to-image model from fal.ai with additional icon style support:
@@ -193,6 +206,19 @@ Key features:
 - Three-way style selection (image/vector/icon)
 - Same image size presets and custom dimensions support
 - Cost-effective alternative to RecraftV3
+
+**Custom Translations:**
+```typescript
+cesdk.i18n.setTranslations({
+  en: {
+    'ly.img.plugin-ai-image-generation-web.fal-ai/recraft/v2/text-to-image.property.prompt': 'Icon description',
+    'ly.img.plugin-ai-image-generation-web.fal-ai/recraft/v2/text-to-image.property.style': 'Icon Style',
+    'ly.img.plugin-ai-image-generation-web.fal-ai/recraft/v2/text-to-image.property.style.icon': 'Standard Icon',
+    'ly.img.plugin-ai-image-generation-web.fal-ai/recraft/v2/text-to-image.property.style.logo': 'Logo Icon',
+    'ly.img.plugin-ai-image-generation-web.fal-ai/recraft/v2/text-to-image.property.n_colors': 'Number of Colors'
+  }
+});
+```
 - Custom headers support for API requests
 
 #### 3. GptImage1.Text2Image (Text-to-Image)
@@ -236,6 +262,16 @@ Key features:
 - Maintains original image dimensions
 - Includes style presets and artist-specific transformations
 - Custom headers support for API requests
+
+**Custom Translations:**
+```typescript
+cesdk.i18n.setTranslations({
+  en: {
+    'ly.img.plugin-ai-image-generation-web.fal-ai/gemini-flash-edit.property.prompt': 'Transformation instructions',
+    'ly.img.plugin-ai-image-generation-web.fal-ai/gemini-flash-edit.property.image_url': 'Source Image'
+  }
+});
+```
 
 #### 5. GptImage1.Image2Image (Image-to-Image)
 
@@ -327,6 +363,72 @@ Key features:
 - Style transfer & artist presets
 - Maintains original dimensions
 - Canvas quick-action integration
+
+### Customizing Labels and Translations
+
+You can customize all labels and text in the AI image generation interface using the translation system. This allows you to provide better labels for your users in any language.
+
+#### Translation Key Structure
+
+The system checks for translations in this order (highest to lowest priority):
+
+1. **Provider-specific**: `ly.img.plugin-ai-image-generation-web.${provider}.property.${field}` - Override labels for a specific AI provider
+2. **Generic**: `ly.img.plugin-ai-generation-web.property.${field}` - Override labels for all AI plugins
+
+#### Basic Example
+
+```typescript
+// Customize labels for your AI image generation interface
+cesdk.i18n.setTranslations({
+  en: {
+    // Generic labels (applies to ALL AI plugins)
+    'ly.img.plugin-ai-generation-web.property.prompt': 'Describe what you want to create',
+    'ly.img.plugin-ai-generation-web.property.image_size': 'Image Dimensions',
+
+    // Provider-specific for RecraftV3
+    'ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.property.prompt': 'Describe your Recraft image',
+    'ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.property.image_size': 'Canvas Size',
+    'ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.property.image_size.square_hd': 'Square HD (1024×1024)',
+    'ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.property.image_size.portrait_4_3': 'Portrait 4:3 (768×1024)',
+
+    // Provider-specific for IdeogramV3
+    'ly.img.plugin-ai-image-generation-web.fal-ai/ideogram/v3.property.prompt': 'Describe your Ideogram image',
+    'ly.img.plugin-ai-image-generation-web.fal-ai/ideogram/v3.property.style_mode': 'Style Mode',
+    'ly.img.plugin-ai-image-generation-web.fal-ai/ideogram/v3.property.style_mode.REALISTIC': 'Photorealistic'
+  }
+});
+```
+
+#### QuickAction Translations
+
+QuickActions (like "Edit Image", "Style Transfer", etc.) use their own translation keys:
+
+```typescript
+cesdk.i18n.setTranslations({
+  en: {
+    // QuickAction button labels
+    'ly.img.plugin-ai-image-generation-web.quickAction.editImage': 'Edit Image...',
+    'ly.img.plugin-ai-image-generation-web.quickAction.swapBackground': 'Swap Background...',
+    'ly.img.plugin-ai-image-generation-web.quickAction.styleTransfer': 'Style Transfer...',
+    'ly.img.plugin-ai-image-generation-web.quickAction.createVariant': 'Create Variant...',
+    
+    // QuickAction input fields and buttons
+    'ly.img.plugin-ai-image-generation-web.quickAction.editImage.prompt': 'Edit Image...',
+    'ly.img.plugin-ai-image-generation-web.quickAction.editImage.prompt.placeholder': 'e.g. "Add a sunset"',
+    'ly.img.plugin-ai-image-generation-web.quickAction.editImage.apply': 'Change',
+    
+    'ly.img.plugin-ai-image-generation-web.quickAction.swapBackground.prompt': 'Swap Background...',
+    'ly.img.plugin-ai-image-generation-web.quickAction.swapBackground.prompt.placeholder': 'e.g. "Beach at sunset"',
+    'ly.img.plugin-ai-image-generation-web.quickAction.swapBackground.apply': 'Swap'
+  }
+});
+```
+
+**QuickAction Translation Structure:**
+- Base key (e.g., `.quickAction.editImage`): Button text when QuickAction is collapsed
+- `.prompt`: Label for input field when expanded
+- `.prompt.placeholder`: Placeholder text for input field
+- `.apply`: Text for action/submit button
 
 ### Configuration Options
 
@@ -697,6 +799,10 @@ const currentOrder = cesdk.ui.getDockOrder();
 currentOrder.splice(2, 0, 'ly.img.ai.image-generation.dock');
 cesdk.ui.setDockOrder(currentOrder);
 ```
+
+## Translations
+
+For customization and localization, see the [translations.json](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-image-generation-web/translations.json) file which contains provider-specific translation keys for image generation interfaces.
 
 ## Related Packages
 

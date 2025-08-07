@@ -16,7 +16,7 @@ export const ID = `ly.img.${ACTION_NAME}`;
 /**
  * The i18n prefix for the quick action.
  */
-export const I18N_PREFIX = `ly.img.ai.quickAction.${ACTION_NAME}`;
+export const I18N_PREFIX = `ly.img.plugin-ai-image-generation-web.quickAction.${ACTION_NAME}`;
 
 /**
  * The input generated from this quick action which needs
@@ -33,7 +33,7 @@ const CombineImages: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
     en: {
       [`${I18N_PREFIX}.apply`]: 'Combine',
       [`${I18N_PREFIX}`]: 'Combine Images...',
-      [`${I18N_PREFIX}.prompt.inputLabel`]: 'Image Combination Instructions',
+      [`${I18N_PREFIX}.prompt`]: 'Image Combination Instructions',
       [`${I18N_PREFIX}.prompt.placeholder`]:
         'e.g., add character to the left of the mountain scene'
     }
@@ -50,7 +50,6 @@ const CombineImages: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
     },
 
     label: `${I18N_PREFIX}`,
-    description: 'Combine multiple images with instructions',
     enable: (context) => {
       const blockIds = context.engine.block.findAllSelected();
 
@@ -115,7 +114,7 @@ const CombineImages: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
         const promptState = state(`${ID}.prompt`, '');
 
         builder.TextArea(`${ID}.prompt`, {
-          inputLabel: `${I18N_PREFIX}.prompt.inputLabel`,
+          inputLabel: `${I18N_PREFIX}.prompt`,
           placeholder: `${I18N_PREFIX}.prompt.placeholder`,
           ...promptState
         });
