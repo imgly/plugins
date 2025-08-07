@@ -800,6 +800,10 @@ currentOrder.splice(2, 0, 'ly.img.ai.image-generation.dock');
 cesdk.ui.setDockOrder(currentOrder);
 ```
 
+## Translations
+
+For customization and localization, see the [translations.json](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-image-generation-web/translations.json) file which contains provider-specific translation keys for image generation interfaces.
+
 ## Related Packages
 
 - [@imgly/plugin-ai-generation-web](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-generation-web) - Core utilities for AI generation

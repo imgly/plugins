@@ -1048,3 +1048,7 @@ interface QuickActionDefinition<Q extends Record<string, any>> {
     render: (context: QuickActionRenderContext<Q>) => void;
 }
 ```
+
+## Translations
+
+For customization and localization, see the [translations.json](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-generation-web/translations.json) file which contains base translation keys that can be overridden for all AI plugins.

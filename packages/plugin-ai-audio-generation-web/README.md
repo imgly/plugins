@@ -392,6 +392,10 @@ Generated audio files are automatically stored in asset sources with the followi
 -   Text-to-Speech: `elevenlabs/monolingual/v1.history`
 -   Sound Effects: `elevenlabs/sound-generation.history`
 
+## Translations
+
+For customization and localization, see the [translations.json](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-audio-generation-web/translations.json) file which contains provider-specific translation keys for audio generation interfaces.
+
 ## Related Packages
 
 -   [@imgly/plugin-ai-generation-web](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-generation-web) - Core utilities for AI generation
