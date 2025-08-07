@@ -1,5 +1,8 @@
 import CreativeEditorSDK from '@cesdk/cesdk-js';
-import { type CommonProviderConfiguration } from '@imgly/plugin-ai-generation-web';
+import {
+  type CommonProviderConfiguration,
+  mergeQuickActionsConfig
+} from '@imgly/plugin-ai-generation-web';
 import { TextProvider } from '../types';
 import Anthropic from '@anthropic-ai/sdk';
 import sendPrompt from './sendPrompt';
@@ -30,6 +33,23 @@ export function AnthropicProvider(
 }) => Promise<TextProvider<AnthropicInput>> {
   return () => {
     let anthropic: Anthropic | null = null;
+
+    // Process quick actions configuration
+    const defaultQuickActions: any = {
+      'ly.img.improve': true,
+      'ly.img.fix': {}, // Test new empty object syntax
+      'ly.img.shorter': true,
+      'ly.img.longer': {}, // Test new empty object syntax
+      'ly.img.changeTone': true,
+      'ly.img.translate': true,
+      'ly.img.changeTextTo': {} // Test new empty object syntax
+    };
+
+    const supportedQuickActions = mergeQuickActionsConfig(
+      defaultQuickActions,
+      config.supportedQuickActions
+    );
+
     const provider: TextProvider<AnthropicInput> = {
       kind: 'text',
       id: 'anthropic',
@@ -45,15 +65,7 @@ export function AnthropicProvider(
       },
       input: {
         quickActions: {
-          supported: {
-            'ly.img.improve': true,
-            'ly.img.fix': {}, // Test new empty object syntax
-            'ly.img.shorter': true,
-            'ly.img.longer': {}, // Test new empty object syntax
-            'ly.img.changeTone': true,
-            'ly.img.translate': true,
-            'ly.img.changeTextTo': {} // Test new empty object syntax
-          }
+          supported: supportedQuickActions
         }
       },
       output: {

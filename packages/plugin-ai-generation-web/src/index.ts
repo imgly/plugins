@@ -48,6 +48,9 @@ export { ProviderRegistry } from './core/ProviderRegistry';
 export { composeMiddlewares, type Middleware } from './middleware/middleware';
 export { default as loggingMiddleware } from './middleware/loggingMiddleware';
 export { default as uploadMiddleware } from './middleware/uploadMiddleware';
+
+// Export utilities
+export { mergeQuickActionsConfig } from './utils/mergeQuickActionsConfig';
 export {
   default as rateLimitMiddleware,
   type RateLimitOptions

@@ -7,7 +7,8 @@ import {
   VideoOutput,
   GetBlockInput,
   CommonProperties,
-  Middleware
+  Middleware,
+  mergeQuickActionsConfig
 } from '@imgly/plugin-ai-generation-web';
 import { fal } from '@fal-ai/client';
 import { VideoQuickActionSupportMap } from '../types';
@@ -20,6 +21,19 @@ type VideoProviderConfiguration = {
    * @deprecated Use `middlewares` instead.
    */
   middleware?: Middleware<any, any>[];
+  /**
+   * Override provider's default history asset source
+   */
+  history?: false | '@imgly/local' | '@imgly/indexedDB' | (string & {});
+  /**
+   * Configure supported quick actions
+   */
+  supportedQuickActions?: {
+    [quickActionId: string]:
+      | Partial<VideoQuickActionSupportMap<any>[string]>
+      | false
+      | null;
+  };
 };
 
 /**
@@ -78,7 +92,10 @@ function createVideoProvider<I extends Record<string, any>>(
     },
     input: {
       quickActions: {
-        supported: options.supportedQuickActions ?? {}
+        supported: mergeQuickActionsConfig(
+          options.supportedQuickActions ?? {},
+          config.supportedQuickActions
+        )
       },
       panel: {
         type: 'schema',
@@ -100,7 +117,7 @@ function createVideoProvider<I extends Record<string, any>>(
     },
     output: {
       abortable: true,
-      history: '@imgly/indexedDB',
+      history: config.history ?? '@imgly/indexedDB',
       middleware,
       generate: async (
         input: I,

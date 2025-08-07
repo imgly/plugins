@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+### New Features
+
+-   [all] **Extended Provider Configuration**: Added support for `history` and `supportedQuickActions` configuration fields in `CommonProviderConfiguration`, allowing customers to:
+    -   Override provider's default history asset source (`history` field) - can be set to `false` to disable history, `'@imgly/local'` for temporary storage, `'@imgly/indexedDB'` for persistent browser storage, or any custom asset source ID
+    -   Configure supported quick actions (`supportedQuickActions` field) - can disable quick actions by setting to `false`/`null`, keep defaults with `true`, or override with custom mappings and configurations
+    -   Both fields are optional and maintain backward compatibility with existing provider configurations
+-   [generation-web] **Utility Function**: Added `mergeQuickActionsConfig` utility function for merging provider defaults with user configuration overrides, exported from `@imgly/plugin-ai-generation-web` with comprehensive Jest test coverage
+
 ## [0.2.3] - 2025-07-23
 
 -   [all] **Automatic History Asset Library Entries**: Composite history asset sources now automatically have corresponding asset library entries created with the same IDs (e.g., `ly.img.ai.image-generation.history`)
