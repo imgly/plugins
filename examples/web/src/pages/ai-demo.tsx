@@ -158,9 +158,7 @@ function App() {
 
 
             await instance.addPlugin(BackgroundRemovalPlugin({
-              provider: await FalAi.createProvider(
-                'fal-ai/birefnet/v2',
-                {
+              provider: await FalAi.Birefnet2({
                   proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL,
                   headers: {
                     'x-client-version': '1.0.0',
@@ -168,8 +166,7 @@ function App() {
                   },
                   timeout: 30000,
                   debug: true
-                }
-              )({ cesdk: instance }),
+                })({ cesdk: instance }),
               ui: {
                 locations: ['canvasMenu', 'dock']
               }

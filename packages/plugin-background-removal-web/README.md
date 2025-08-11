@@ -64,10 +64,33 @@ import BackgroundRemovalPlugin, { FalAi } from '@imgly/plugin-background-removal
 
 // ... CESDK setup ...
 
-// Server-side background removal with Fal-AI
+// Server-side background removal with pre-configured models
+await cesdk.addPlugin(BackgroundRemovalPlugin({
+  provider: await FalAi.Birefnet2({
+    proxyUrl: 'your-proxy-url',
+    headers: {
+      'x-client-version': '1.0.0',
+      'User-Agent': 'CreativeEditor-AI-Demo/1.0'
+    },
+    timeout: 30000,
+    debug: true
+  })({ cesdk }),
+  ui: {
+    locations: ['canvasMenu', 'dock']
+  }
+}));
+
+// Available pre-configured models:
+// - FalAi.Birefnet2 - High-quality background removal (fal-ai/birefnet/v2)
+// - FalAi.Birefnet - Original Birefnet model (fal-ai/birefnet)
+// - FalAi.BriaBackgroundRemove - Bria's background removal (fal-ai/bria/background/remove)
+// - FalAi.RembgEnhance - Enhanced background removal (smoretalk-ai/rembg-enhance)
+// - FalAi.ImageutilsRembg - Image utils background removal (fal-ai/imageutils/rembg)
+
+// Or use any custom model with createProvider:
 await cesdk.addPlugin(BackgroundRemovalPlugin({
   provider: await FalAi.createProvider(
-    'fal-ai/birefnet/v2',
+    'your-custom-model-key',
     {
       proxyUrl: 'your-proxy-url',
       headers: {
