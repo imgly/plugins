@@ -176,7 +176,29 @@ Key features:
 -   Maintains original image aspect ratio
 -   Custom headers support for API requests
 
-#### 3. PixverseV35TextToVideo (Text-to-Video)
+#### 3. MinimaxHailuo02StandardImageToVideo (Image-to-Video)
+
+An advanced model that transforms still images into videos using Hailuo 02 Standard:
+
+```typescript
+image2video: FalAiVideo.MinimaxHailuo02StandardImageToVideo({
+    proxyUrl: 'http://your-proxy-server.com/api/proxy',
+    headers: {
+        'x-custom-header': 'value',
+        'x-client-version': '1.0.0'
+    }
+});
+```
+
+Key features:
+
+-   Transform existing images into videos
+-   Available through canvas quick actions
+-   Selectable resolutions (512P: 912×512, 768P: 1280×720)
+-   Adjustable durations (6 or 10 seconds)
+-   Custom headers support for API requests
+
+#### 4. PixverseV35TextToVideo (Text-to-Video)
 
 An alternative text-to-video model:
 
@@ -195,7 +217,7 @@ Key features:
 -   Alternative text-to-video generation
 -   Custom headers support for API requests
 
-#### 4. KlingVideoV21MasterTextToVideo (Text-to-Video)
+#### 5. KlingVideoV21MasterTextToVideo (Text-to-Video)
 
 A model based on KlingVideo V2.1 that generates videos from text prompts:
 
@@ -224,7 +246,7 @@ cesdk.i18n.setTranslations({
 });
 ```
 
-#### 5. KlingVideoV21MasterImageToVideo (Image-to-Video)
+#### 6. KlingVideoV21MasterImageToVideo (Image-to-Video)
 
 A model that converts still images into videos using KlingVideo V2.1:
 
@@ -241,7 +263,7 @@ Key features:
 -   Canvas quick-action integration
 -   Selectable durations (5 s or 10 s)
 
-#### 6. Veo3TextToVideo (Text-to-Video)
+#### 7. Veo3TextToVideo (Text-to-Video)
 
 An advanced text-to-video model:
 
@@ -458,6 +480,16 @@ FalAiVideo.MinimaxVideo01LiveImageToVideo(config: {
 }): AiVideoProvider
 ```
 
+#### MinimaxHailuo02StandardImageToVideo
+
+```typescript
+FalAiVideo.MinimaxHailuo02StandardImageToVideo(config: {
+  proxyUrl: string;
+  headers?: Record<string, string>;
+  debug?: boolean;
+}): AiVideoProvider
+```
+
 #### PixverseV35TextToVideo
 
 ```typescript
@@ -511,6 +543,7 @@ The plugin automatically registers the following UI components:
 -   Provider-specific panels:
     -   MinimaxVideo01Live: `ly.img.ai.fal-ai/minimax/video-01-live`
     -   MinimaxVideo01LiveImageToVideo: `ly.img.ai.fal-ai/minimax/video-01-live/image-to-video`
+    -   MinimaxHailuo02StandardImageToVideo: `ly.img.ai.fal-ai/minimax/hailuo-02/standard/image-to-video`
     -   PixverseV35TextToVideo: `ly.img.ai.fal-ai/pixverse/v3.5/text-to-video`
     -   KlingVideoV21MasterTextToVideo: `ly.img.ai.fal-ai/kling-video/v2.1/master/text-to-video`
     -   KlingVideoV21MasterImageToVideo: `ly.img.ai.fal-ai/kling-video/v2.1/master/image-to-video`
@@ -522,6 +555,7 @@ Generated videos are automatically stored in asset sources with the following ID
 
 -   MinimaxVideo01Live: `fal-ai/minimax/video-01-live.history`
 -   MinimaxVideo01LiveImageToVideo: `fal-ai/minimax/video-01-live/image-to-video.history`
+-   MinimaxHailuo02StandardImageToVideo: `fal-ai/minimax/hailuo-02/standard/image-to-video.history`
 -   PixverseV35TextToVideo: `fal-ai/pixverse/v3.5/text-to-video.history`
 -   KlingVideoV21MasterTextToVideo: `fal-ai/kling-video/v2.1/master/text-to-video.history`
 -   KlingVideoV21MasterImageToVideo: `fal-ai/kling-video/v2.1/master/image-to-video.history`
