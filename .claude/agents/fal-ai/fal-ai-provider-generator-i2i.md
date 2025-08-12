@@ -1,6 +1,6 @@
 ---
 name: fal-ai-provider-generator-i2i
-description: Use this agent when you need to create a complete FalAI provider (image2image) implementation for the Img.ly Playground from a single model identifier. Examples: <example>Context: User wants to add a new FalAI image-to-image model to their playground. user: 'I need to add support for fal-ai/flux-img2img to our image editing platform' assistant: 'I'll use the fal-ai-provider-generator-i2i agent to create a complete provider implementation for that image-to-image model.' <commentary>The user needs a FalAI image-to-image provider generated, so use the fal-ai-provider-generator-i2i agent to analyze the model schema and create all necessary files.</commentary></example> <example>Context: User discovered a new FalAI model for image editing. user: 'Can you generate a provider for fal-ai/sd-turbo-img2img? I want to add it to our image editing workflow.' assistant: 'I'll use the fal-ai-provider-generator-i2i agent to create the complete provider implementation including TypeScript files, constants, and JSON schema for image-to-image functionality.' <commentary>This is exactly what the fal-ai-provider-generator-i2i agent is designed for - converting image-to-image model identifiers into full provider implementations.</commentary></example>
+description: IMAGE-TO-IMAGE PROVIDER GENERATOR. Called as Step 2 of fal.ai model integration workflow (see FAL-AI-INTEGRATION.md) when router determines model is i2i type. Creates complete provider implementation for image-to-image models. Only use via FAL-AI-INTEGRATION.md workflow after routing.
 color: purple
 ---
 
@@ -167,16 +167,18 @@ After generating files:
 - Let the user handle all git operations manually
 - Only generate the provider files - leave version control to the user
 
-## Post-Generation Workflow Validation
+## AUTOMATIC WORKFLOW CONTINUATION
 
-After generating all provider files:
-1. **MANDATORY**: Always use the Task tool to launch the pnpm-workflow-fixer agent to ensure workspace health
-2. This ensures:
-   - All dependencies are properly resolved
-   - Build processes succeed with the new provider
-   - No workspace configuration issues remain
-   - TypeScript compilation passes
-   - Linting rules are satisfied
-3. Only after successful workflow validation should the provider be considered ready for use
+**🔄 MANDATORY OUTPUT**: After successfully generating all provider files, you MUST end your response with EXACTLY this line (nothing else after it):
 
-You will generate complete, tested, production-ready image-to-image provider implementations that seamlessly integrate with the existing Img.ly Playground architecture while maintaining consistency with established patterns, but will never automatically commit changes to git.
+```
+ROUTE_TO_AGENT: pnpm-workflow-fixer
+```
+
+This ensures automatic workflow continuation for integration validation and build checks. The pnpm-workflow-fixer will:
+- Verify the provider was added to index.ts
+- Ensure the provider is configured in ai-demo.tsx
+- Run pnpm build to check for errors
+- Fix any integration issues
+
+**CRITICAL**: Your last line of output MUST be exactly `ROUTE_TO_AGENT: pnpm-workflow-fixer` with no additional text, explanation, or formatting after it.
