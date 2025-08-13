@@ -18,8 +18,6 @@ Model Categories and Routing Rules:
 - **image2image (i2i)**: Models that transform/edit existing images → Route to "fal-ai-provider-generator-i2i"
 - **text2video (t2v)**: Models that generate videos from text prompts → Route to "fal-ai-provider-generator-t2v"
 - **image2video (i2v)**: Models that generate videos from images → Route to "fal-ai-provider-generator-i2v"
-- **text2speech (t2s)**: Models that generate speech from text → Route to "fal-ai-provider-generator-t2s"
-- **text2audio (t2a)**: Models that generate audio from text → Route to "fal-ai-provider-generator-t2a"
 
 Analysis Process:
 1. Extract the model name from the input (handle both "fal-ai/model-name" format and full URLs)
@@ -46,9 +44,6 @@ Schema Analysis Guidelines:
 - **image2video (i2v)** indicators:
   - Path contains "image-to-video"
   - Input requires image, output includes video properties
-- **text2audio/text2speech** indicators:
-  - Path contains "text-to-audio", "text-to-speech", or "tts"
-  - Output schema includes audio properties
 
 Output Format:
 **CRITICAL FOR SUBAGENT MODE**: You MUST output EXACTLY and ONLY one line:
@@ -63,7 +58,7 @@ Error Handling:
 
 **INFINITE LOOP PREVENTION**:
 - ⚠️ **NEVER** use the Task tool to call "fal-ai-model-router" agent
-- ⚠️ **ONLY** call the specific fal-ai-provider-generator agents (t2i, i2i, t2v, i2v, t2s, t2a)
+- ⚠️ **ONLY** call the specific fal-ai-provider-generator agents (t2i, i2i, t2v, i2v)
 - ⚠️ If you receive a fal-ai model request while already being the router, something is wrong - report this error instead of routing again
 
 
@@ -76,5 +71,3 @@ Remember: Your sole purpose is routing - once you've determined the correct agen
 - fal-ai-provider-generator-i2i  
 - fal-ai-provider-generator-t2v
 - fal-ai-provider-generator-i2v
-- fal-ai-provider-generator-t2s
-- fal-ai-provider-generator-t2a

@@ -40,6 +40,22 @@ The router outputs: `ROUTE_TO_AGENT: {agent-name}`
   - prompt: "Create complete provider implementation for model: [EXACT_MODEL_NAME]"
   ```
 
+- If router outputs `ROUTE_TO_AGENT: fal-ai-provider-generator-t2v`:
+  ```
+  IMMEDIATELY use Task tool with:
+  - subagent_type: "fal-ai-provider-generator-t2v"
+  - description: "Generate t2v provider"
+  - prompt: "Create complete provider implementation for model: [EXACT_MODEL_NAME]"
+  ```
+
+- If router outputs `ROUTE_TO_AGENT: fal-ai-provider-generator-i2v`:
+  ```
+  IMMEDIATELY use Task tool with:
+  - subagent_type: "fal-ai-provider-generator-i2v"
+  - description: "Generate i2v provider"
+  - prompt: "Create complete provider implementation for model: [EXACT_MODEL_NAME]"
+  ```
+
 ### Step 3: Integration Check (AUTOMATIC - NO PAUSE)
 **MANDATORY**: The generator ALWAYS ends with `ROUTE_TO_AGENT: pnpm-workflow-fixer`. You MUST **IMMEDIATELY** execute:
 
