@@ -160,5 +160,33 @@ export const defaultTranslations: Record<string, string> = {
   'ly.img.plugin-ai-generation-web.defaults.property.style.vector_illustration/engraving': 'Engraving',
   'ly.img.plugin-ai-generation-web.defaults.property.style.vector_illustration/line_art': 'Line Art',
   'ly.img.plugin-ai-generation-web.defaults.property.style.vector_illustration/line_circuit': 'Line Circuit',
-  'ly.img.plugin-ai-generation-web.defaults.property.style.vector_illustration/linocut': 'Linocut'
+  'ly.img.plugin-ai-generation-web.defaults.property.style.vector_illustration/linocut': 'Linocut',
+
+  // Recraft V3 Icon Styles
+  'ly.img.plugin-ai-generation-web.defaults.property.style.icon/broken_line': 'Broken Line',
+  'ly.img.plugin-ai-generation-web.defaults.property.style.icon/colored_outline': 'Colored Outline',
+  'ly.img.plugin-ai-generation-web.defaults.property.style.icon/colored_shapes': 'Colored Shapes',
+  'ly.img.plugin-ai-generation-web.defaults.property.style.icon/colored_shapes_gradient': 'Colored Shapes Gradient',
+  'ly.img.plugin-ai-generation-web.defaults.property.style.icon/doodle_fill': 'Doodle Fill',
+  'ly.img.plugin-ai-generation-web.defaults.property.style.icon/doodle_offset_fill': 'Doodle Offset Fill',
+  'ly.img.plugin-ai-generation-web.defaults.property.style.icon/offset_fill': 'Offset Fill',
+  'ly.img.plugin-ai-generation-web.defaults.property.style.icon/outline': 'Outline',
+  'ly.img.plugin-ai-generation-web.defaults.property.style.icon/outline_gradient': 'Outline Gradient',
+  'ly.img.plugin-ai-generation-web.defaults.property.style.icon/uneven_fill': 'Uneven Fill',
+
+  // GPT Image 1 Styles
+  'ly.img.plugin-ai-generation-web.defaults.property.style.none': 'None',
+  'ly.img.plugin-ai-generation-web.defaults.property.style.anime-celshaded': 'Anime',
+  'ly.img.plugin-ai-generation-web.defaults.property.style.cyberpunk-neon': 'Cyberpunk',
+  'ly.img.plugin-ai-generation-web.defaults.property.style.kodak-portra-400': 'Kodak 400',
+  'ly.img.plugin-ai-generation-web.defaults.property.style.watercolor-storybook': 'Watercolor',
+  'ly.img.plugin-ai-generation-web.defaults.property.style.dark-fantasy-realism': 'Dark Fantasy',
+  'ly.img.plugin-ai-generation-web.defaults.property.style.vaporwave-retrofuturism': 'Vaporwave',
+  'ly.img.plugin-ai-generation-web.defaults.property.style.minimal-vector-flat': 'Vector Flat',
+  'ly.img.plugin-ai-generation-web.defaults.property.style.pixarstyle-3d-render': '3D Animation',
+  'ly.img.plugin-ai-generation-web.defaults.property.style.ukiyoe-woodblock': 'Ukiyo‑e',
+  'ly.img.plugin-ai-generation-web.defaults.property.style.surreal-dreamscape': 'Surreal',
+  'ly.img.plugin-ai-generation-web.defaults.property.style.steampunk-victorian': 'Steampunk',
+  'ly.img.plugin-ai-generation-web.defaults.property.style.nightstreet-photo-bokeh': 'Night Bokeh',
+  'ly.img.plugin-ai-generation-web.defaults.property.style.comicbook-pop-art': 'Pop Art'
 };

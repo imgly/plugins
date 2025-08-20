@@ -1,4 +1,4 @@
-import { Icons } from '@imgly/plugin-utils';
+import { Icons, CustomAssetSource } from '@imgly/plugin-utils';
 import {
   CommonProviderConfiguration,
   getPanelId,
@@ -7,11 +7,8 @@ import {
 import GptImage1Schema from './GptImage1.text2image.json';
 import CreativeEditorSDK, { AssetResult } from '@cesdk/cesdk-js';
 import { b64JsonToBlob } from './utils';
-import {
-  addStyleAssetSource,
-  createStyleAssetSource,
-  STYLES
-} from './GptImage1.styles';
+import { STYLES } from './GptImage1.styles';
+import { initializeStyleTranslations } from '../fal-ai/utils';
 
 type StyleSelectionPayload = {
   onSelect: (asset: AssetResult) => Promise<void>;
@@ -50,11 +47,56 @@ function getProvider(
   const baseURL =
     'https://cdn.img.ly/assets/plugins/plugin-ai-image-generation-web/v1/gpt-image-1/';
   const styleAssetSourceId = `${modelKey}/styles`;
-  const styleAssetSource = createStyleAssetSource(styleAssetSourceId, {
-    baseURL,
-    includeNone: true
+  
+  // Initialize style translations
+  const styles = initializeStyleTranslations(cesdk, modelKey);
+
+  const createAsset = (style: { id: string }) => ({
+    id: style.id,
+    label: styles.resolve(style.id),
+    thumbUri: style.id === 'none' 
+      ? `${baseURL}/thumbnails/None.svg`
+      : `${baseURL}/thumbnails/${style.id}.jpeg`
   });
-  addStyleAssetSource(styleAssetSource, { cesdk });
+
+  const filteredStyles = STYLES.filter(style => style.id === 'none' || true); // includeNone: true
+  let styleAssetSource = new CustomAssetSource(
+    styleAssetSourceId,
+    filteredStyles.map(createAsset)
+  );
+
+  const defaultStyle = STYLES[0];
+  styleAssetSource.setAssetActive(defaultStyle.id);
+
+  cesdk.engine.asset.addSource(styleAssetSource);
+  cesdk.ui.addAssetLibraryEntry({
+    id: styleAssetSourceId,
+    sourceIds: [styleAssetSourceId],
+    gridItemHeight: 'square',
+    gridBackgroundType: 'cover',
+    cardLabel: styles.cardLabel,
+    cardLabelPosition: () => 'below'
+  });
+
+  // Refresh assets on translation updates
+  styles.onUpdate(() => {
+    const assets = styles.createAssets(
+      filteredStyles.map(s => s.id),
+      (id, label) => ({
+        id,
+        label,
+        thumbUri: id === 'none' 
+          ? `${baseURL}/thumbnails/None.svg`
+          : `${baseURL}/thumbnails/${id}.jpeg`
+      })
+    );
+    const newSource = new CustomAssetSource(styleAssetSourceId, assets);
+    newSource.setAssetActive(defaultStyle.id);
+    
+    try { cesdk.engine.asset.removeSource(styleAssetSourceId); } catch {}
+    cesdk.engine.asset.addSource(newSource);
+    styleAssetSource = newSource;
+  });
 
   cesdk.ui.registerPanel<StyleSelectionPayload>(
     `${getPanelId(modelKey)}.styleSelection`,
@@ -99,7 +141,10 @@ function getProvider(
               'style',
               styleAssetSource.getAssetSelectValue(
                 styleAssetSource.getActiveAssetIds()[0]
-              ) ?? STYLES[0]
+              ) ?? {
+                id: STYLES[0].id,
+                label: styles.resolve(STYLES[0].id)
+              }
             );
 
             // Show the style library for the selected type.
@@ -119,7 +164,7 @@ function getProvider(
                   onSelect: async (asset) => {
                     const newValue = {
                       id: asset.id,
-                      label: asset.label ?? asset.id
+                      label: asset.label ?? styles.resolve(asset.id)
                     };
 
                     styleAssetSource.clearActiveAssets();

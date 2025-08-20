@@ -12,7 +12,7 @@ import {
   type StyleId
 } from './Recraft20b.constants';
 import createStickerProvider from './createStickerProvider';
-import { isCustomImageSize } from './utils';
+import { isCustomImageSize, initializeStyleTranslations } from './utils';
 
 type Recraft20bInput = {
   prompt: string;
@@ -66,25 +66,44 @@ function getProvider(
 
   cesdk.ui.addIconSet('@imgly/plugin/formats', Icons.Formats);
 
+  // Initialize style translations
+  const styles = initializeStyleTranslations(cesdk, modelKey);
+
+  const createAsset = (item: { id: StyleId }) => ({
+    id: item.id,
+    label: styles.resolve(item.id),
+    thumbUri: getStyleThumbnail(item.id, baseURL)
+  });
+
   iconStyleAssetSource = new CustomAssetSource(
     styleIconAssetSourceId,
-    STYLES_ICON.map(({ id, label }) => ({
-      id,
-      label,
-      thumbUri: getStyleThumbnail(id, baseURL)
-    }))
+    STYLES_ICON.map(createAsset)
   );
 
   iconStyleAssetSource.setAssetActive('icon/broken_line');
 
   cesdk.engine.asset.addSource(iconStyleAssetSource);
 
+  // Refresh assets on translation updates
+  styles.onUpdate(() => {
+    const assets = styles.createAssets(
+      STYLES_ICON.map(item => item.id), 
+      (id, label) => ({ id, label, thumbUri: getStyleThumbnail(id as StyleId, baseURL) })
+    );
+    const newSource = new CustomAssetSource(styleIconAssetSourceId, assets);
+    newSource.setAssetActive('icon/broken_line');
+    
+    try { cesdk.engine.asset.removeSource(styleIconAssetSourceId); } catch {}
+    cesdk.engine.asset.addSource(newSource);
+    iconStyleAssetSource = newSource;
+  });
+
   cesdk.ui.addAssetLibraryEntry({
     id: styleIconAssetSourceId,
     sourceIds: [styleIconAssetSourceId],
     gridItemHeight: 'square',
     gridBackgroundType: 'cover',
-    cardLabel: ({ label }) => label,
+    cardLabel: styles.cardLabel,
     cardLabelPosition: () => 'below'
   });
 
@@ -128,7 +147,7 @@ function getProvider(
             label: string;
           }>('style/icon', {
             id: 'icon/broken_line',
-            label: 'Broken Line'
+            label: styles.resolve('icon/broken_line')
           });
 
           // Show the style library for icon type.

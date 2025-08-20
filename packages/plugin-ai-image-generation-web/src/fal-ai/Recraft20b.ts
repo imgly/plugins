@@ -15,7 +15,7 @@ import {
   type StyleId
 } from './Recraft20b.constants';
 import createImageProvider from './createImageProvider';
-import { isCustomImageSize } from './utils';
+import { isCustomImageSize, initializeStyleTranslations } from './utils';
 
 type Recraft20bOutput = {
   kind: 'image';
@@ -82,29 +82,26 @@ function getProvider(
 
   cesdk.ui.addIconSet('@imgly/plugin/formats', Icons.Formats);
 
+  // Initialize style translations
+  const styles = initializeStyleTranslations(cesdk, modelKey);
+
+  const createAsset = (item: { id: StyleId }) => ({
+    id: item.id,
+    label: styles.resolve(item.id),
+    thumbUri: getStyleThumbnail(item.id, baseURL)
+  });
+
   imageStyleAssetSource = new CustomAssetSource(
     styleImageAssetSourceId,
-    STYLES_IMAGE.map(({ id, label }) => ({
-      id,
-      label,
-      thumbUri: getStyleThumbnail(id, baseURL)
-    }))
+    STYLES_IMAGE.map(createAsset)
   );
   vectorStyleAssetSource = new CustomAssetSource(
     styleVectorAssetSourceId,
-    STYLES_VECTOR.map(({ id, label }) => ({
-      id,
-      label,
-      thumbUri: getStyleThumbnail(id, baseURL)
-    }))
+    STYLES_VECTOR.map(createAsset)
   );
   iconStyleAssetSource = new CustomAssetSource(
     styleIconAssetSourceId,
-    STYLES_ICON.map(({ id, label }) => ({
-      id,
-      label,
-      thumbUri: getStyleThumbnail(id, baseURL)
-    }))
+    STYLES_ICON.map(createAsset)
   );
 
   imageStyleAssetSource.setAssetActive('realistic_image');
@@ -115,12 +112,32 @@ function getProvider(
   cesdk.engine.asset.addSource(vectorStyleAssetSource);
   cesdk.engine.asset.addSource(iconStyleAssetSource);
 
+  // Refresh assets on translation updates
+  styles.onUpdate(() => {
+    const refreshAssets = (sourceId: string, styleItems: { id: StyleId }[], activeId: StyleId) => {
+      const assets = styles.createAssets(
+        styleItems.map(item => item.id), 
+        (id, label) => ({ id, label, thumbUri: getStyleThumbnail(id as StyleId, baseURL) })
+      );
+      const newSource = new CustomAssetSource(sourceId, assets);
+      newSource.setAssetActive(activeId);
+      
+      try { cesdk.engine.asset.removeSource(sourceId); } catch {}
+      cesdk.engine.asset.addSource(newSource);
+      return newSource;
+    };
+    
+    imageStyleAssetSource = refreshAssets(styleImageAssetSourceId, STYLES_IMAGE, 'realistic_image');
+    vectorStyleAssetSource = refreshAssets(styleVectorAssetSourceId, STYLES_VECTOR, 'vector_illustration');
+    iconStyleAssetSource = refreshAssets(styleIconAssetSourceId, STYLES_ICON, 'icon/broken_line');
+  });
+
   cesdk.ui.addAssetLibraryEntry({
     id: styleImageAssetSourceId,
     sourceIds: [styleImageAssetSourceId],
     gridItemHeight: 'square',
     gridBackgroundType: 'cover',
-    cardLabel: ({ label }) => label,
+    cardLabel: styles.cardLabel,
     cardLabelPosition: () => 'below'
   });
 
@@ -129,7 +146,7 @@ function getProvider(
     sourceIds: [styleVectorAssetSourceId],
     gridItemHeight: 'square',
     gridBackgroundType: 'cover',
-    cardLabel: ({ label }) => label,
+    cardLabel: styles.cardLabel,
     cardLabelPosition: () => 'below'
   });
 
@@ -138,7 +155,7 @@ function getProvider(
     sourceIds: [styleIconAssetSourceId],
     gridItemHeight: 'square',
     gridBackgroundType: 'cover',
-    cardLabel: ({ label }) => label,
+    cardLabel: styles.cardLabel,
     cardLabelPosition: () => 'below'
   });
 
@@ -189,21 +206,21 @@ function getProvider(
             label: string;
           }>('style/image', {
             id: 'realistic_image',
-            label: 'Realistic Image'
+            label: styles.resolve('realistic_image')
           });
           const styleVectorState = state<{
             id: Recraft20bInput['style'];
             label: string;
           }>('style/vector', {
             id: 'vector_illustration',
-            label: 'Vector Illustration'
+            label: styles.resolve('vector_illustration')
           });
           const styleIconState = state<{
             id: Recraft20bInput['style'];
             label: string;
           }>('style/icon', {
             id: 'icon/broken_line',
-            label: 'Broken Line'
+            label: styles.resolve('icon/broken_line')
           });
 
           const styleState =

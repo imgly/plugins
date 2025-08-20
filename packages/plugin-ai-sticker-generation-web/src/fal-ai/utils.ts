@@ -55,3 +55,42 @@ export async function uploadImageInputToFalIfNeeded(
 
   return imageUrl;
 }
+
+/**
+ * Initializes style translation system with priority hierarchy
+ */
+export function initializeStyleTranslations(cesdk: CreativeEditorSDK, modelKey: string) {
+  const cache: Record<string, string> = {};
+  const callbacks: (() => void)[] = [];
+  
+  // Intercept translation loading
+  const original = cesdk.i18n.setTranslations.bind(cesdk.i18n);
+  cesdk.i18n.setTranslations = (translations: any) => {
+    if (translations.en) {
+      Object.assign(cache, translations.en);
+      callbacks.forEach(fn => fn());
+    }
+    return original(translations);
+  };
+
+  const resolve = (styleId: string): string => {
+    const keys = [
+      `ly.img.plugin-ai-sticker-generation-web.${modelKey}.property.style.${styleId}`,
+      `ly.img.plugin-ai-sticker-generation-web.property.style.${styleId}`,
+      `ly.img.plugin-ai-sticker-generation-web.${modelKey}.defaults.property.style.${styleId}`,
+      `ly.img.plugin-ai-generation-web.defaults.property.style.${styleId}`
+    ];
+    
+    const found = keys.find(key => cache[key]);
+    return found ? cache[found] : keys[keys.length - 1];
+  };
+
+  return {
+    resolve,
+    cardLabel: ({ label }: { label?: string }) => 
+      label?.includes('ly.img.plugin-ai-') ? resolve(label.split('.').pop() || '') : label || '',
+    onUpdate: (fn: () => void) => callbacks.push(fn),
+    createAssets: <T>(ids: readonly string[], factory: (id: string, label: string) => T): T[] =>
+      ids.map(id => factory(id, resolve(id)))
+  };
+}
