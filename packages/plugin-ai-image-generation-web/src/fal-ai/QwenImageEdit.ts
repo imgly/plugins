@@ -24,7 +24,6 @@ type QwenImageEditInput = {
   enable_safety_checker?: boolean;
 };
 
-
 export function QwenImageEdit(
   config: CommonProviderConfiguration<QwenImageEditInput, ImageOutput>
 ): (context: {
@@ -39,8 +38,7 @@ export function QwenImageEdit(
         [`panel.${getPanelId(modelKey)}.imageSelection`]:
           'Select Image To Edit',
         [`panel.${modelKey}.imageSelection`]: 'Select Image To Generate',
-        [`libraries.${getPanelId(modelKey)}.history.label`]:
-          'Edited With Qwen'
+        [`libraries.${getPanelId(modelKey)}.history.label`]: 'Edited With Qwen'
       }
     });
 
