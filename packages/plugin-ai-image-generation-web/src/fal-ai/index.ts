@@ -5,6 +5,7 @@ import { FluxProKontextEdit } from './FluxProKontextEdit';
 import { FluxProKontextMaxEdit } from './FluxProKontextMaxEdit';
 import { IdeogramV3 } from './IdeogramV3';
 import { IdeogramV3Remix } from './IdeogramV3Remix';
+import { QwenImageEdit } from './QwenImageEdit';
 
 const FalAi = {
   FluxProKontextEdit,
@@ -12,6 +13,7 @@ const FalAi = {
   GeminiFlashEdit,
   IdeogramV3,
   IdeogramV3Remix,
+  QwenImageEdit,
   Recraft20b,
   RecraftV3
 };
