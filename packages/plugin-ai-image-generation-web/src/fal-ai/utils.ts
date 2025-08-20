@@ -57,9 +57,9 @@ export async function uploadImageInputToFalIfNeeded(
 }
 
 /**
- * Creates style translation resolver with priority hierarchy
+ * Initializes style translation system with priority hierarchy
  */
-export function createStyleResolver(cesdk: CreativeEditorSDK, modelKey: string) {
+export function initializeStyleTranslations(cesdk: CreativeEditorSDK, modelKey: string) {
   const cache: Record<string, string> = {};
   const callbacks: (() => void)[] = [];
   

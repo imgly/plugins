@@ -15,7 +15,7 @@ import {
 } from './RecraftV3.constants';
 import createImageProvider from './createImageProvider';
 import { isCustomImageSize } from './utils';
-import { createStyleResolver } from './utils';
+import { initializeStyleTranslations } from './utils';
 
 type RecraftV3Output = {
   kind: 'image';
@@ -68,8 +68,8 @@ function getProvider(
 
   cesdk.ui.addIconSet('@imgly/plugin/formats', Icons.Formats);
 
-  // Style translation resolver
-  const styles = createStyleResolver(cesdk, modelKey);
+  // Initialize style translations
+  const styles = initializeStyleTranslations(cesdk, modelKey);
 
   const createAsset = (id: StyleId) => ({
     id,
