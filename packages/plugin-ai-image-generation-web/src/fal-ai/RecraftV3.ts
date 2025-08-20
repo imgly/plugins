@@ -15,6 +15,7 @@ import {
 } from './RecraftV3.constants';
 import createImageProvider from './createImageProvider';
 import { isCustomImageSize } from './utils';
+import { createStyleResolver } from './utils';
 
 type RecraftV3Output = {
   kind: 'image';
@@ -67,21 +68,22 @@ function getProvider(
 
   cesdk.ui.addIconSet('@imgly/plugin/formats', Icons.Formats);
 
+  // Style translation resolver
+  const styles = createStyleResolver(cesdk, modelKey);
+
+  const createAsset = (id: StyleId) => ({
+    id,
+    label: styles.resolve(id),
+    thumbUri: getStyleThumbnail(id, baseURL)
+  });
+
   imageStyleAssetSource = new CustomAssetSource(
     styleImageAssetSourceId,
-    STYLES_IMAGE.map(({ id, label }) => ({
-      id,
-      label,
-      thumbUri: getStyleThumbnail(id, baseURL)
-    }))
+    STYLES_IMAGE.map(createAsset)
   );
   vectorStyleAssetSource = new CustomAssetSource(
     styleVectorAssetSourceId,
-    STYLES_VECTOR.map(({ id, label }) => ({
-      id,
-      label,
-      thumbUri: getStyleThumbnail(id, baseURL)
-    }))
+    STYLES_VECTOR.map(createAsset)
   );
 
   imageStyleAssetSource.setAssetActive('realistic_image');
@@ -90,12 +92,28 @@ function getProvider(
   cesdk.engine.asset.addSource(imageStyleAssetSource);
   cesdk.engine.asset.addSource(vectorStyleAssetSource);
 
+  // Refresh assets on translation updates
+  styles.onUpdate(() => {
+    const refreshAssets = (sourceId: string, styleIds: readonly StyleId[], activeId: StyleId) => {
+      const assets = styles.createAssets(styleIds, (id, label) => ({ id, label, thumbUri: getStyleThumbnail(id as StyleId, baseURL) }));
+      const newSource = new CustomAssetSource(sourceId, assets);
+      newSource.setAssetActive(activeId);
+      
+      try { cesdk.engine.asset.removeSource(sourceId); } catch {}
+      cesdk.engine.asset.addSource(newSource);
+      return newSource;
+    };
+    
+    imageStyleAssetSource = refreshAssets(styleImageAssetSourceId, STYLES_IMAGE, 'realistic_image');
+    vectorStyleAssetSource = refreshAssets(styleVectorAssetSourceId, STYLES_VECTOR, 'vector_illustration');
+  });
+
   cesdk.ui.addAssetLibraryEntry({
     id: styleImageAssetSourceId,
     sourceIds: [styleImageAssetSourceId],
     gridItemHeight: 'square',
     gridBackgroundType: 'cover',
-    cardLabel: ({ label }) => label,
+    cardLabel: styles.cardLabel,
     cardLabelPosition: () => 'below'
   });
 
@@ -104,7 +122,7 @@ function getProvider(
     sourceIds: [styleVectorAssetSourceId],
     gridItemHeight: 'square',
     gridBackgroundType: 'cover',
-    cardLabel: ({ label }) => label,
+    cardLabel: styles.cardLabel,
     cardLabelPosition: () => 'below'
   });
 
@@ -127,6 +145,9 @@ function getProvider(
     }
   );
 
+  // Note: Translation loading is handled by the plugin system
+  // No need to manually load default translations as they should be available through cesdk.i18n
+
   cesdk.i18n.setTranslations({
     en: {
       [`panel.${getPanelId('fal-ai/recraft-v3')}.styleSelection`]:
@@ -134,6 +155,7 @@ function getProvider(
       [`libraries.${getPanelId(modelKey)}.history.label`]: 'Generated From Text'
     }
   });
+
 
   return createImageProvider(
     {
@@ -154,14 +176,14 @@ function getProvider(
             label: string;
           }>('style/image', {
             id: 'realistic_image',
-            label: 'Realistic Image'
+            label: styles.resolve('realistic_image')
           });
           const styleVectorState = state<{
             id: RecraftV3Input['style'];
             label: string;
           }>('style/vector', {
             id: 'vector_illustration',
-            label: 'Vector Illustration'
+            label: styles.resolve('vector_illustration')
           });
 
           const styleState =
