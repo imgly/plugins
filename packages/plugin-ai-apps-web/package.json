@@ -1,6 +1,6 @@
 {
   "name": "@imgly/plugin-ai-apps-web",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "AI apps orchestration plugin for the CE.SDK editor",
   "keywords": ["CE.SDK", "plugin", "AI", "ai apps"],
   "repository": {
