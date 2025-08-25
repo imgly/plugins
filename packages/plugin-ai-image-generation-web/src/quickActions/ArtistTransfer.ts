@@ -31,78 +31,80 @@ export type InputType = {
 };
 
 /**
+ * Get i18n label for artist.
+ */
+function getArtistLabel(modelKey: string, artistId: string) {
+  const artistLabel = [
+    `${I18N_PREFIX}.${modelKey}.property.artist.${artistId}`,
+    `${I18N_PREFIX}.property.artist.${artistId}`,
+    `${I18N_PREFIX}.${modelKey}.defaults.property.artist.${artistId}`,
+    `${I18N_PREFIX}.defaults.property.artist.${artistId}`
+  ];
+
+  return artistLabel;
+}
+
+/**
  * Available artists for artist transfer.
  */
 const ARTIST_OPTIONS = [
   {
     id: 'van-gogh',
-    label: 'Van Gogh',
     prompt:
       'Render this image in the style of Vincent van Gogh, using expressive brushstrokes and swirling motion.'
   },
   {
     id: 'monet',
-    label: 'Monet',
     prompt:
       'Transform this image into the soft, impressionistic style of Claude Monet with natural light and delicate color blending.'
   },
   {
     id: 'picasso',
-    label: 'Picasso',
     prompt:
       'Apply a Pablo Picasso cubist style with abstract geometry and fragmented shapes.'
   },
   {
     id: 'dali',
-    label: 'Dalí',
     prompt:
       "Make this image resemble Salvador Dalí's surrealist style, with dreamlike distortion and soft shadows."
   },
   {
     id: 'matisse',
-    label: 'Matisse',
     prompt:
       "Stylize the image using Henri Matisse's bold colors and simplified, flowing shapes."
   },
   {
     id: 'warhol',
-    label: 'Warhol',
     prompt:
       "Convert this image into Andy Warhol's pop art style with flat colors, repetition, and bold outlines."
   },
   {
     id: 'michelangelo',
-    label: 'Michelangelo',
     prompt:
       'Render the image in the classical Renaissance style of Michelangelo, with dramatic anatomy and fresco-like detail.'
   },
   {
     id: 'da-vinci',
-    label: 'Da Vinci',
     prompt:
       'Make this image look like a Leonardo da Vinci painting, using soft transitions, balanced composition, and natural tones.'
   },
   {
     id: 'rembrandt',
-    label: 'Rembrandt',
     prompt:
       "Apply Rembrandt's style with rich contrast, warm tones, and dramatic use of light and shadow."
   },
   {
     id: 'mondrian',
-    label: 'Mondrian',
     prompt:
       "Transform the image into Piet Mondrian's abstract geometric style with grids and primary colors."
   },
   {
     id: 'kahlo',
-    label: 'Frida Kahlo',
     prompt:
       'Stylize this image in the expressive, symbolic style of Frida Kahlo with vivid colors and surreal framing.'
   },
   {
     id: 'hokusai',
-    label: 'Hokusai',
     prompt:
       'Render the image in the style of Hokusai, using bold outlines, flat color, and traditional Japanese woodblock aesthetics.'
   }
@@ -113,7 +115,21 @@ const ArtistTransfer: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
     en: {
       [`${I18N_PREFIX}`]: 'Painted By',
       [`${I18N_PREFIX}.description`]:
-        'Transform image in the style of famous artists'
+        'Transform image in the style of famous artists',
+
+      // ArtistTransfer artist translations
+      [`${I18N_PREFIX}.defaults.property.artist.van-gogh`]: 'Van Gogh',
+      [`${I18N_PREFIX}.defaults.property.artist.monet`]: 'Monet',
+      [`${I18N_PREFIX}.defaults.property.artist.picasso`]: 'Picasso',
+      [`${I18N_PREFIX}.defaults.property.artist.dali`]: 'Dalí',
+      [`${I18N_PREFIX}.defaults.property.artist.matisse`]: 'Matisse',
+      [`${I18N_PREFIX}.defaults.property.artist.warhol`]: 'Warhol',
+      [`${I18N_PREFIX}.defaults.property.artist.michelangelo`]: 'Michelangelo',
+      [`${I18N_PREFIX}.defaults.property.artist.da-vinci`]: 'Da Vinci',
+      [`${I18N_PREFIX}.defaults.property.artist.rembrandt`]: 'Rembrandt',
+      [`${I18N_PREFIX}.defaults.property.artist.mondrian`]: 'Mondrian',
+      [`${I18N_PREFIX}.defaults.property.artist.kahlo`]: 'Frida Kahlo',
+      [`${I18N_PREFIX}.defaults.property.artist.hokusai`]: 'Hokusai'
     }
   });
 
@@ -126,7 +142,14 @@ const ArtistTransfer: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
     enable: enableQuickActionForImageFill(),
     scopes: ['fill/change'],
 
-    render: ({ builder, experimental, generate, engine, close }) => {
+    render: ({
+      builder,
+      experimental,
+      generate,
+      engine,
+      close,
+      providerId
+    }) => {
       experimental.builder.Popover(`${ID}.popover`, {
         label: `${I18N_PREFIX}`,
         icon: '@imgly/Appearance',
@@ -141,7 +164,7 @@ const ArtistTransfer: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
                 children: () => {
                   ARTIST_OPTIONS.forEach((artist) => {
                     builder.Button(`${ID}.popover.menu.${artist.id}`, {
-                      label: artist.label,
+                      label: getArtistLabel(providerId, artist.id),
                       labelAlignment: 'left',
                       variant: 'plain',
                       onClick: async () => {
