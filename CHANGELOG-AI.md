@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [0.2.4] - 2025-08-07
+
 ### New Features
 
 -   [all] **Provider Label Translations**: Added support for provider label translations

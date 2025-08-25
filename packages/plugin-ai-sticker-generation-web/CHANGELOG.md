@@ -2,11 +2,23 @@
 
 ## [Unreleased]
 
+## [0.2.4] - 2025-08-07
+
+### New Features
+
+-   [all] **Provider Label Translations**: Added support for provider label translations
+-   [all] **Extended Provider Configuration**: Added support for `history` and `supportedQuickActions` configuration fields in `CommonProviderConfiguration`, allowing customers to:
+    -   Override provider's default history asset source (`history` field) - can be set to `false` to disable history, `'@imgly/local'` for temporary storage, `'@imgly/indexedDB'` for persistent browser storage, or any custom asset source ID
+    -   Configure supported quick actions (`supportedQuickActions` field) - can disable quick actions by setting to `false`/`null`, keep defaults with `true`, or override with custom mappings and configurations
+    -   Both fields are optional and maintain backward compatibility with existing provider configurations
+-   [generation-web] **Utility Function**: Added `mergeQuickActionsConfig` utility function for merging provider defaults with user configuration overrides, exported from `@imgly/plugin-ai-generation-web` with comprehensive Jest test coverage
+
 ## [0.2.3] - 2025-07-23
 
 -   [all] **Automatic History Asset Library Entries**: Composite history asset sources now automatically have corresponding asset library entries created with the same IDs (e.g., `ly.img.ai.image-generation.history`)
 -   [all] **Provider Selection in Expanded Quick Actions**: When a quick action is expanded, users can now switch between all providers that support that specific quick action, enhancing flexibility in provider selection
 -   [all] **Quick Action Can Disable Lock**: Some quick actions can now decide to not lock the block when operating on a block. Examples are `CreateVariant` and `CombineImages`.
+-   [image-generation] **Ideogram V3**: Added support for Ideogram V3 provider for image generation, which supports text-to-image and image-to-image generation
 
 ## [0.2.2] - 2025-07-16
 
