@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed
+
+-   **QuickAction Button Translations**: Artist Transfer and Style Transfer quick actions now use proper i18n key lookup patterns for localization instead of hardcoded labels.
+
 ## [0.2.3] - 2025-07-23
 
 -   [all] **Automatic History Asset Library Entries**: Composite history asset sources now automatically have corresponding asset library entries created with the same IDs (e.g., `ly.img.ai.image-generation.history`)
