@@ -12,6 +12,17 @@ import { CommonPluginConfiguration } from '../types';
 import initializeHistoryCompositeAssetSource from '../assets/initializeHistoryCompositeAssetSource';
 import { isDefined } from '@imgly/plugin-utils';
 
+function createLabelArray<K extends OutputKind>(
+  kind: K,
+  key: string
+): string[] {
+  return [
+    `ly.img.plugin-ai-${kind}-generation-web.${key}`,
+    `ly.img.plugin-ai-generation-web.${key}`,
+    `ly.img.plugin-ai-generation-web.defaults.${key}`
+  ];
+}
+
 export type ProvidersInitializationResult<
   K extends OutputKind,
   I,
@@ -59,6 +70,18 @@ async function initializeProviders<K extends OutputKind, I, O extends Output>(
   },
   config: CommonPluginConfiguration<K, I, O>
 ): Promise<ProvidersInitializationResult<K, I, O>> {
+  // Set default translations
+  const { cesdk } = options;
+  cesdk.setTranslations({
+    en: {
+      'ly.img.plugin-ai-generation-web.defaults.fromType.label': 'Input',
+      'ly.img.plugin-ai-generation-web.defaults.providerSelect.label':
+        'Provider',
+      'ly.img.plugin-ai-generation-web.defaults.fromText.label': 'Text',
+      'ly.img.plugin-ai-generation-web.defaults.fromImage.label': 'Image'
+    }
+  });
+
   let builderRenderFunction: BuilderRenderFunction | undefined;
 
   const providerResults: ProviderInitializationResult<K, I, O>[] = [];
@@ -78,6 +101,7 @@ async function initializeProviders<K extends OutputKind, I, O extends Output>(
     providerResults.push(...initializedFromImageProviders);
 
     builderRenderFunction = getBuilderRenderFunctionByFromType({
+      kind,
       prefix: `ly.img.ai.${kind}-generation`,
       initializedFromTextProviders,
       initializedFromImageProviders
@@ -91,6 +115,7 @@ async function initializeProviders<K extends OutputKind, I, O extends Output>(
     providerResults.push(...results);
 
     builderRenderFunction = getBuilderRenderFunctionByProvider({
+      kind,
       prefix: kind,
       providerInitializationResults: providerResults
     });
@@ -143,10 +168,12 @@ function getBuilderRenderFunctionByFromType<
   I,
   O extends Output
 >({
+  kind,
   prefix,
   initializedFromTextProviders,
   initializedFromImageProviders
 }: {
+  kind: K;
   prefix: string;
   initializedFromTextProviders: ProviderInitializationResult<K, I, O>[];
   initializedFromImageProviders: ProviderInitializationResult<K, I, O>[];
@@ -215,10 +242,10 @@ function getBuilderRenderFunctionByFromType<
           // RENDER FROM SELECTION
           if (includeFromSwitch) {
             builder.ButtonGroup(`${prefix}.fromType.buttonGroup`, {
-              inputLabel: 'Input',
+              inputLabel: createLabelArray(kind, 'fromType.label'),
               children: () => {
                 builder.Button(`${prefix}.fromType.buttonGroup.fromText`, {
-                  label: 'Text',
+                  label: createLabelArray(kind, 'fromText.label'),
                   icon:
                     inputTypeState.value !== 'fromText' &&
                     isSomeProviderGenerating(
@@ -233,7 +260,7 @@ function getBuilderRenderFunctionByFromType<
                   }
                 });
                 builder.Button(`${prefix}.fromType.buttonGroup.fromImage`, {
-                  label: 'Image',
+                  label: createLabelArray(kind, 'fromImage.label'),
                   icon:
                     inputTypeState.value !== 'fromImage' &&
                     isSomeProviderGenerating(
@@ -262,7 +289,7 @@ function getBuilderRenderFunctionByFromType<
 
             if (providerState != null) {
               builder.Select(`${prefix}.providerSelect.select`, {
-                inputLabel: 'Provider',
+                inputLabel: createLabelArray(kind, 'providerSelect.label'),
                 values: providerValues,
                 ...providerState
               });
@@ -296,9 +323,11 @@ function getBuilderRenderFunctionByProvider<
   I,
   O extends Output
 >({
+  kind,
   prefix,
   providerInitializationResults
 }: {
+  kind: K;
   prefix: string;
   providerInitializationResults: ProviderInitializationResult<K, I, O>[];
 }): BuilderRenderFunction<{}> {
@@ -324,7 +353,7 @@ function getBuilderRenderFunctionByProvider<
         builder.Section(`${prefix}.providerSelection.section`, {
           children: () => {
             builder.Select(`${prefix}.providerSelect.select`, {
-              inputLabel: 'Provider',
+              inputLabel: createLabelArray(kind, 'providerSelect.label'),
               values: providerValues,
               ...providerState
             });

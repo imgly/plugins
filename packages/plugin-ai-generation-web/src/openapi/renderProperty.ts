@@ -17,6 +17,40 @@ import { OpenAPIV3 } from 'openapi-types';
 import getProperties from './getProperties';
 import { getLabelFromId } from '../utils/utils';
 
+function createInputLabelArray<K extends OutputKind, I, O extends Output>(
+  property: Property,
+  provider: Provider<K, I, O>,
+  kind: K,
+  valueId?: string
+): string[] {
+  const baseKey = `property.${property.id}${valueId ? `.${valueId}` : ''}`;
+  return [
+    `ly.img.plugin-ai-${kind}-generation-web.${provider.id}.${baseKey}`,
+    `ly.img.plugin-ai-generation-web.${baseKey}`,
+    `ly.img.plugin-ai-${kind}-generation-web.${provider.id}.defaults.${baseKey}`,
+    `ly.img.plugin-ai-generation-web.defaults.${baseKey}`
+  ];
+}
+
+function extractEnumMetadata(schema: any): {
+  labels: Record<string, string>;
+  icons: Record<string, string>;
+} {
+  const labels =
+    'x-imgly-enum-labels' in schema &&
+    typeof schema['x-imgly-enum-labels'] === 'object'
+      ? (schema['x-imgly-enum-labels'] as Record<string, string>)
+      : {};
+
+  const icons =
+    'x-imgly-enum-icons' in schema &&
+    typeof schema['x-imgly-enum-icons'] === 'object'
+      ? (schema['x-imgly-enum-icons'] as Record<string, string>)
+      : {};
+
+  return { labels, icons };
+}
+
 function renderProperty<K extends OutputKind, I, O extends Output>(
   context: BuilderRenderFunctionContext<any>,
   property: Property,
@@ -188,12 +222,7 @@ function renderStringProperty<K extends OutputKind, I, O extends Output>(
   const { id: propertyId } = property;
 
   const id = `${provider.id}.${propertyId}`;
-  const inputLabel = [
-    `ly.img.plugin-ai-${kind}-generation-web.${provider.id}.property.${property.id}`,
-    `ly.img.plugin-ai-generation-web.property.${property.id}`,
-    `ly.img.plugin-ai-${kind}-generation-web.${provider.id}.defaults.property.${property.id}`,
-    `ly.img.plugin-ai-generation-web.defaults.property.${property.id}`
-  ];
+  const inputLabel = createInputLabelArray(property, provider, kind);
 
   const propertyState = global(id, property.schema.default ?? '');
 
@@ -232,33 +261,13 @@ function renderEnumProperty<K extends OutputKind, I, O extends Output>(
   const { id: propertyId } = property;
 
   const id = `${provider.id}.${propertyId}`;
-  const inputLabel = [
-    `ly.img.plugin-ai-${kind}-generation-web.${provider.id}.property.${property.id}`,
-    `ly.img.plugin-ai-generation-web.property.${property.id}`,
-    `ly.img.plugin-ai-${kind}-generation-web.${provider.id}.defaults.property.${property.id}`,
-    `ly.img.plugin-ai-generation-web.defaults.property.${property.id}`
-  ];
+  const inputLabel = createInputLabelArray(property, provider, kind);
 
-  const icons: Record<string, string> =
-    'x-imgly-enum-icons' in property.schema &&
-    typeof property.schema['x-imgly-enum-icons'] === 'object'
-      ? (property.schema['x-imgly-enum-icons'] as Record<string, string>)
-      : {};
-
-  const enumLabels: Record<string, string> =
-    'x-imgly-enum-labels' in property.schema &&
-    typeof property.schema['x-imgly-enum-labels'] === 'object'
-      ? (property.schema['x-imgly-enum-labels'] as Record<string, string>)
-      : {};
+  const { labels: enumLabels, icons } = extractEnumMetadata(property.schema);
 
   const values: EnumValue[] = (property.schema.enum ?? []).map((valueId) => ({
     id: valueId,
-    label: [
-      `ly.img.plugin-ai-${kind}-generation-web.${provider.id}.property.${property.id}.${valueId}`,
-      `ly.img.plugin-ai-generation-web.property.${property.id}.${valueId}`,
-      `ly.img.plugin-ai-${kind}-generation-web.${provider.id}.defaults.property.${property.id}.${valueId}`,
-      `ly.img.plugin-ai-generation-web.defaults.property.${property.id}.${valueId}`
-    ],
+    label: createInputLabelArray(property, provider, kind, valueId),
     icon: icons[valueId]
   }));
   const defaultValue =
@@ -297,12 +306,7 @@ function renderBooleanProperty<K extends OutputKind, I, O extends Output>(
   const { id: propertyId } = property;
 
   const id = `${provider.id}.${propertyId}`;
-  const inputLabel = [
-    `ly.img.plugin-ai-${kind}-generation-web.${provider.id}.property.${property.id}`,
-    `ly.img.plugin-ai-generation-web.property.${property.id}`,
-    `ly.img.plugin-ai-${kind}-generation-web.${provider.id}.defaults.property.${property.id}`,
-    `ly.img.plugin-ai-generation-web.defaults.property.${property.id}`
-  ];
+  const inputLabel = createInputLabelArray(property, provider, kind);
 
   const defaultValue = !!property.schema.default;
   const propertyState = global<boolean>(id, defaultValue);
@@ -335,12 +339,7 @@ function renderIntegerProperty<K extends OutputKind, I, O extends Output>(
   const { id: propertyId } = property;
 
   const id = `${provider.id}.${propertyId}`;
-  const inputLabel = [
-    `ly.img.plugin-ai-${kind}-generation-web.${provider.id}.property.${property.id}`,
-    `ly.img.plugin-ai-generation-web.property.${property.id}`,
-    `ly.img.plugin-ai-${kind}-generation-web.${provider.id}.defaults.property.${property.id}`,
-    `ly.img.plugin-ai-generation-web.defaults.property.${property.id}`
-  ];
+  const inputLabel = createInputLabelArray(property, provider, kind);
 
   const minValue = property.schema.minimum;
   const maxValue = property.schema.maximum;
@@ -406,120 +405,83 @@ function renderAnyOfProperty<K extends OutputKind, I, O extends Output>(
   const { id: propertyId } = property;
 
   const id = `${provider.id}.${propertyId}`;
-  const inputLabel = [
-    `ly.img.plugin-ai-${kind}-generation-web.${provider.id}.property.${property.id}`,
-    `ly.img.plugin-ai-generation-web.property.${property.id}`,
-    `ly.img.plugin-ai-${kind}-generation-web.${provider.id}.defaults.property.${property.id}`,
-    `ly.img.plugin-ai-generation-web.defaults.property.${property.id}`
-  ];
+  const inputLabel = createInputLabelArray(property, provider, kind);
 
   const anyOf = (property.schema.anyOf ?? []) as OpenAPIV3.SchemaObject[];
-
   const values: EnumValue[] = [];
-
   const conditionalRender: Record<string, () => GetPropertyInput> = {};
   const conditionalInputs: Record<string, () => PropertyInput> = {};
+  const { labels, icons } = extractEnumMetadata(property.schema);
+
+  const renderFunctionMap: Record<string, Function> = {
+    string: renderStringProperty,
+    boolean: renderBooleanProperty,
+    integer: renderIntegerProperty,
+    object: renderObjectProperty
+  };
+
+  const extractValueId = (anySchema: any, schemaId: string): string =>
+    (anySchema as any).$ref
+      ? (anySchema as any).$ref.split('/').pop()
+      : schemaId.split('.').pop() ?? schemaId;
+
+  const createEnumValue = (enumId: string, valueId: string): EnumValue => ({
+    id: enumId,
+    label: createInputLabelArray(property, provider, kind, valueId),
+    icon: icons[valueId] ?? icons[enumId]
+  });
 
   anyOf.forEach((anySchema, index) => {
-    const label = anySchema.title ?? 'common.custom';
     const schemaId = `${provider.id}.${propertyId}.anyOf[${index}]`;
 
-    const labels: Record<string, string> =
-      'x-imgly-enum-labels' in property.schema &&
-      typeof property.schema['x-imgly-enum-labels'] === 'object'
-        ? (property.schema['x-imgly-enum-labels'] as Record<string, string>)
-        : {};
+    if ((anySchema as any).$ref || anySchema.title) {
+      const refName = (anySchema as any).$ref
+        ? (anySchema as any).$ref.split('/').pop()
+        : anySchema.title;
 
-    const icons: Record<string, string> =
-      'x-imgly-enum-icons' in property.schema &&
-      typeof property.schema['x-imgly-enum-icons'] === 'object'
-        ? (property.schema['x-imgly-enum-icons'] as Record<string, string>)
-        : {};
-
-    if (anySchema.type === 'string') {
-      if (anySchema.enum != null) {
-        anySchema.enum.forEach((valueId) => {
-          values.push({
-            id: valueId,
-            label: labels[valueId] ?? getLabelFromId(valueId),
-            icon: icons[valueId]
-          });
-        });
-      } else {
-        conditionalRender[schemaId] = () => {
-          return renderStringProperty(
-            context,
-            { id: schemaId, schema: { ...anySchema, title: label } },
-            provider,
-            panelInput,
-            options,
-            config,
-            kind
-          );
-        };
-
-        values.push({
-          id: schemaId,
-          label: labels[label] ?? label,
-          icon: icons[label]
-        });
-      }
-    } else if (anySchema.type === 'boolean') {
-      conditionalRender[schemaId] = () => {
-        return renderBooleanProperty(
+      conditionalRender[schemaId] = () =>
+        renderObjectProperty(
           context,
-          { id: schemaId, schema: { ...anySchema, title: label } },
+          {
+            id: schemaId,
+            schema: { ...anySchema, title: labels[refName] || refName }
+          },
           provider,
           panelInput,
           options,
           config,
           kind
         );
-      };
 
-      values.push({
-        id: schemaId,
-        label: labels[label] ?? label,
-        icon: icons[label]
+      values.push(createEnumValue(schemaId, refName));
+    } else if (anySchema.type === 'string' && anySchema.enum) {
+      anySchema.enum.forEach((valueId) => {
+        values.push(createEnumValue(valueId, valueId));
       });
-    } else if (anySchema.type === 'integer') {
-      conditionalRender[schemaId] = () => {
-        return renderIntegerProperty(
+    } else if (anySchema.type && renderFunctionMap[anySchema.type]) {
+      const renderFunction = renderFunctionMap[anySchema.type];
+      conditionalRender[schemaId] = () =>
+        renderFunction(
           context,
-          { id: schemaId, schema: { ...anySchema, title: label } },
+          { id: schemaId, schema: { ...anySchema, title: anySchema.title } },
           provider,
           panelInput,
           options,
           config,
           kind
         );
-      };
 
-      values.push({
-        id: schemaId,
-        label: labels[label] ?? label,
-        icon: icons[label]
-      });
-    } else if (anySchema.type === 'array') {
-      // not supported yet
-    } else if (anySchema.type === 'object') {
-      conditionalRender[schemaId] = () => {
-        return renderObjectProperty(
-          context,
-          { id: schemaId, schema: { ...anySchema, title: label } },
-          provider,
-          panelInput,
-          options,
-          config,
-          kind
-        );
-      };
-
-      values.push({
-        id: schemaId,
-        label: labels[label] ?? label,
-        icon: icons[label]
-      });
+      const valueId = extractValueId(anySchema, schemaId);
+      values.push(
+        anySchema.type === 'string' && !anySchema.enum
+          ? {
+              id: schemaId,
+              label: anySchema.title || valueId,
+              icon:
+                (anySchema.title && icons[anySchema.title]) || icons[valueId]
+            }
+          : createEnumValue(schemaId, valueId)
+      );
     }
   });
 
