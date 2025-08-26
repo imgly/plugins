@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed
+
+-   **QuickAction Button Translations**: Artist Transfer and Style Transfer quick actions now use proper i18n key lookup patterns for localization instead of hardcoded labels.
+
 ## [0.2.4] - 2025-08-07
 
 ### New Features

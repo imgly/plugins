@@ -411,6 +411,7 @@ cesdk.i18n.setTranslations({
     'ly.img.plugin-ai-image-generation-web.quickAction.swapBackground': 'Swap Background...',
     'ly.img.plugin-ai-image-generation-web.quickAction.styleTransfer': 'Style Transfer...',
     'ly.img.plugin-ai-image-generation-web.quickAction.createVariant': 'Create Variant...',
+    'ly.img.plugin-ai-image-generation-web.quickAction.artistTransfer': 'Painted By...',
     
     // QuickAction input fields and buttons
     'ly.img.plugin-ai-image-generation-web.quickAction.editImage.prompt': 'Edit Image...',
@@ -429,6 +430,49 @@ cesdk.i18n.setTranslations({
 - `.prompt`: Label for input field when expanded
 - `.prompt.placeholder`: Placeholder text for input field
 - `.apply`: Text for action/submit button
+
+#### QuickAction Dropdown Options
+
+Some QuickActions like Artist Transfer and Style Transfer include dropdown menus with predefined options. You can customize these dropdown labels using provider-specific translation keys:
+
+```typescript
+cesdk.i18n.setTranslations({
+  en: {
+    // Artist Transfer dropdown options (provider-specific)
+    'ly.img.plugin-ai-image-generation-web.quickAction.artistTransfer.fal-ai/gemini-flash-edit.property.artist.van-gogh': 'Van Gogh',
+    'ly.img.plugin-ai-image-generation-web.quickAction.artistTransfer.fal-ai/gemini-flash-edit.property.artist.monet': 'Monet',
+    'ly.img.plugin-ai-image-generation-web.quickAction.artistTransfer.fal-ai/gemini-flash-edit.property.artist.picasso': 'Picasso',
+    'ly.img.plugin-ai-image-generation-web.quickAction.artistTransfer.fal-ai/gemini-flash-edit.property.artist.dali': 'Dalí',
+    'ly.img.plugin-ai-image-generation-web.quickAction.artistTransfer.fal-ai/gemini-flash-edit.property.artist.matisse': 'Matisse',
+    'ly.img.plugin-ai-image-generation-web.quickAction.artistTransfer.fal-ai/gemini-flash-edit.property.artist.warhol': 'Warhol',
+    'ly.img.plugin-ai-image-generation-web.quickAction.artistTransfer.fal-ai/gemini-flash-edit.property.artist.michelangelo': 'Michelangelo',
+    'ly.img.plugin-ai-image-generation-web.quickAction.artistTransfer.fal-ai/gemini-flash-edit.property.artist.da-vinci': 'Da Vinci',
+    'ly.img.plugin-ai-image-generation-web.quickAction.artistTransfer.fal-ai/gemini-flash-edit.property.artist.rembrandt': 'Rembrandt',
+    'ly.img.plugin-ai-image-generation-web.quickAction.artistTransfer.fal-ai/gemini-flash-edit.property.artist.mondrian': 'Mondrian',
+    'ly.img.plugin-ai-image-generation-web.quickAction.artistTransfer.fal-ai/gemini-flash-edit.property.artist.kahlo': 'Frida Kahlo',
+    'ly.img.plugin-ai-image-generation-web.quickAction.artistTransfer.fal-ai/gemini-flash-edit.property.artist.hokusai': 'Hokusai',
+    
+    // Style Transfer dropdown options (provider-specific)  
+    'ly.img.plugin-ai-image-generation-web.quickAction.styleTransfer.fal-ai/gemini-flash-edit.property.style.water': 'Watercolor Painting',
+    'ly.img.plugin-ai-image-generation-web.quickAction.styleTransfer.fal-ai/gemini-flash-edit.property.style.oil': 'Oil Painting',
+    'ly.img.plugin-ai-image-generation-web.quickAction.styleTransfer.fal-ai/gemini-flash-edit.property.style.charcoal': 'Charcoal Sketch',
+    'ly.img.plugin-ai-image-generation-web.quickAction.styleTransfer.fal-ai/gemini-flash-edit.property.style.pencil': 'Pencil Drawing',
+    'ly.img.plugin-ai-image-generation-web.quickAction.styleTransfer.fal-ai/gemini-flash-edit.property.style.pastel': 'Pastel Artwork',
+    'ly.img.plugin-ai-image-generation-web.quickAction.styleTransfer.fal-ai/gemini-flash-edit.property.style.ink': 'Ink Wash',
+    'ly.img.plugin-ai-image-generation-web.quickAction.styleTransfer.fal-ai/gemini-flash-edit.property.style.stained-glass': 'Stained Glass Window',
+    'ly.img.plugin-ai-image-generation-web.quickAction.styleTransfer.fal-ai/gemini-flash-edit.property.style.japanese': 'Japanese Woodblock Print',
+    
+    // Generic fallback options (applies to all providers)
+    'ly.img.plugin-ai-image-generation-web.quickAction.artistTransfer.property.artist.van-gogh': 'Van Gogh',
+    'ly.img.plugin-ai-image-generation-web.quickAction.styleTransfer.property.style.water': 'Watercolor Painting'
+  }
+});
+```
+
+The system checks for translations in this order (highest to lowest priority):
+
+1. **Provider-specific**: `ly.img.plugin-ai-image-generation-web.quickAction.${actionName}.${providerId}.property.${field}.${option}` - Override labels for a specific AI provider
+2. **Generic**: `ly.img.plugin-ai-image-generation-web.quickAction.${actionName}.property.${field}.${option}` - Override labels for all AI plugins  
 
 ### Configuration Options
 

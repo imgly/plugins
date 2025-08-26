@@ -31,47 +31,53 @@ export type InputType = {
 };
 
 /**
+ * Get i18n label for style.
+ */
+function getStyleLabel(modelKey: string, styleId: string) {
+  const styleLabel = [
+    `${I18N_PREFIX}.${modelKey}.property.style.${styleId}`,
+    `${I18N_PREFIX}.property.style.${styleId}`,
+    `${I18N_PREFIX}.${modelKey}.defaults.property.style.${styleId}`,
+    `${I18N_PREFIX}.defaults.property.style.${styleId}`
+  ];
+
+  return styleLabel;
+}
+
+/**
  * Available art styles for style transfer.
  */
 const STYLE_OPTIONS = [
   {
     id: 'water',
-    label: 'Watercolor Painting',
     prompt: 'Convert to watercolor painting.'
   },
   {
     id: 'oil',
-    label: 'Oil Painting',
     prompt: 'Render in oil painting style.'
   },
   {
     id: 'charcoal',
-    label: 'Charcoal Sketch',
     prompt: 'Transform into a charcoal sketch.'
   },
   {
     id: 'pencil',
-    label: 'Pencil Drawing',
     prompt: 'Apply pencil drawing effect.'
   },
   {
     id: 'pastel',
-    label: 'Pastel Artwork',
     prompt: 'Make it look like a pastel artwork.'
   },
   {
     id: 'ink',
-    label: 'Ink Wash',
     prompt: 'Turn into a classic ink wash painting.'
   },
   {
     id: 'stained-glass',
-    label: 'Stained Glass Window',
     prompt: 'Stylize as a stained glass window.'
   },
   {
     id: 'japanese',
-    label: 'Japanese Woodblock Print',
     prompt: 'Repaint as a traditional Japanese woodblock print.'
   }
 ];
@@ -81,7 +87,19 @@ const StyleTransfer: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
     en: {
       [`${I18N_PREFIX}`]: 'Change Art Style',
       [`${I18N_PREFIX}.description`]:
-        'Transform image into different art styles'
+        'Transform image into different art styles',
+
+      // StyleTransfer style translations
+      [`${I18N_PREFIX}.defaults.property.style.water`]: 'Watercolor Painting',
+      [`${I18N_PREFIX}.defaults.property.style.oil`]: 'Oil Painting',
+      [`${I18N_PREFIX}.defaults.property.style.charcoal`]: 'Charcoal Sketch',
+      [`${I18N_PREFIX}.defaults.property.style.pencil`]: 'Pencil Drawing',
+      [`${I18N_PREFIX}.defaults.property.style.pastel`]: 'Pastel Artwork',
+      [`${I18N_PREFIX}.defaults.property.style.ink`]: 'Ink Wash',
+      [`${I18N_PREFIX}.defaults.property.style.stained-glass`]:
+        'Stained Glass Window',
+      [`${I18N_PREFIX}.defaults.property.style.japanese`]:
+        'Japanese Woodblock Print'
     }
   });
 
@@ -94,7 +112,14 @@ const StyleTransfer: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
     enable: enableQuickActionForImageFill(),
     scopes: ['fill/change'],
 
-    render: ({ builder, experimental, generate, engine, close }) => {
+    render: ({
+      builder,
+      experimental,
+      generate,
+      engine,
+      close,
+      providerId
+    }) => {
       experimental.builder.Popover(`${ID}.popover`, {
         label: `${I18N_PREFIX}`,
         icon: '@imgly/Appearance',
@@ -109,7 +134,7 @@ const StyleTransfer: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
                 children: () => {
                   STYLE_OPTIONS.forEach((style) => {
                     builder.Button(`${ID}.popover.menu.${style.id}`, {
-                      label: style.label,
+                      label: getStyleLabel(providerId, style.id),
                       labelAlignment: 'left',
                       variant: 'plain',
                       onClick: async () => {
