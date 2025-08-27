@@ -10,7 +10,11 @@ import {
   mergeQuickActionsConfig
 } from '@imgly/plugin-ai-generation-web';
 import { fal } from '@fal-ai/client';
-import { isCustomImageSize, uploadImageInputToFalIfNeeded } from './utils';
+import {
+  isCustomImageSize,
+  uploadImageInputToFalIfNeeded,
+  uploadImageArrayToFalIfNeeded
+} from './utils';
 import { getImageDimensions } from './RecraftV3.constants';
 import { ImageQuickActionSupportMap } from '../types';
 
@@ -41,7 +45,9 @@ type ImageProviderConfiguration = {
  * Creates a base provider from schema. This should work out of the box
  * but may be rough around the edges and should/can be further customized.
  */
-function createImageProvider<I extends Record<string, any>>(
+function createImageProvider<
+  I extends Record<string, any> & { image_url?: string; image_urls?: string[] }
+>(
   options: {
     modelKey: string;
     name?: string;
@@ -153,14 +159,29 @@ function createImageProvider<I extends Record<string, any>>(
         input: I,
         { abortSignal }: { abortSignal?: AbortSignal }
       ) => {
+        // Handle both image_url and image_urls
         const image_url = await uploadImageInputToFalIfNeeded(
           input.image_url,
           options.cesdk
         );
 
+        const image_urls = await uploadImageArrayToFalIfNeeded(
+          input.image_urls,
+          options.cesdk
+        );
+
+        // Prepare the input with uploaded images
+        let processedInput = input;
+        if (image_url != null) {
+          processedInput = { ...input, image_url };
+        }
+        if (image_urls != null) {
+          processedInput = { ...processedInput, image_urls };
+        }
+
         const response = await fal.subscribe(options.modelKey, {
           abortSignal,
-          input: image_url != null ? { ...input, image_url } : input,
+          input: processedInput,
           logs: true
         });
 

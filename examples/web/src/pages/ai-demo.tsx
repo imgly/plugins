@@ -201,6 +201,10 @@ function App() {
                       middleware: [imageRateLimitMiddleware, errorMiddleware],
                       proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
                     }),
+                    FalAiImage.NanoBananaEdit({
+                      middleware: [imageRateLimitMiddleware, errorMiddleware],
+                      proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
+                    }),
                     OpenAiImage.GptImage1.Image2Image({
                       middleware: [imageRateLimitMiddleware, errorMiddleware],
                       proxyUrl: import.meta.env.VITE_OPENAI_PROXY_URL
