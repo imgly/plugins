@@ -115,6 +115,7 @@
     
     "ly.img.plugin-ai-image-generation-web.quickAction.combineImages": "Combine Images",
     "ly.img.plugin-ai-image-generation-web.quickAction.combineImages.prompt": "How to combine the images",
+    "ly.img.plugin-ai-image-generation-web.quickAction.combineImages.prompt.placeholder": "e.g., add character to the left of the mountain scene",
     "ly.img.plugin-ai-image-generation-web.quickAction.combineImages.apply": "Combine",
     
     "ly.img.plugin-ai-image-generation-web.quickAction.remixPage": "Remix Page",

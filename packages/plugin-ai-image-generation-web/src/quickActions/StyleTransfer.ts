@@ -38,7 +38,7 @@ function getI18nLabel(modelKey: string, suffix?: string) {
   const basePath = `ly.img.plugin-ai-image-generation-web`;
   const actionPath = `quickAction.${ACTION_NAME}`;
   const fullPath = suffix ? `${actionPath}.${suffix}` : actionPath;
-  
+
   return [
     `${basePath}.${modelKey}.${fullPath}`,
     `${basePath}.${fullPath}`,
@@ -99,10 +99,8 @@ const StyleTransfer: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
       [`${I18N_DEFAULT_PREFIX}.pencil`]: 'Pencil Drawing',
       [`${I18N_DEFAULT_PREFIX}.pastel`]: 'Pastel Artwork',
       [`${I18N_DEFAULT_PREFIX}.ink`]: 'Ink Wash',
-      [`${I18N_DEFAULT_PREFIX}.stained-glass`]:
-        'Stained Glass Window',
-      [`${I18N_DEFAULT_PREFIX}.japanese`]:
-        'Japanese Woodblock Print'
+      [`${I18N_DEFAULT_PREFIX}.stained-glass`]: 'Stained Glass Window',
+      [`${I18N_DEFAULT_PREFIX}.japanese`]: 'Japanese Woodblock Print'
     }
   });
 

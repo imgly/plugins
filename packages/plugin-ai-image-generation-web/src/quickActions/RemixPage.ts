@@ -30,18 +30,11 @@ export type InputType = {
 /**
  * Get i18n label with fallback keys.
  */
-function getI18nLabel(modelKey?: string, suffix?: string) {
+function getI18nLabel(modelKey: string, suffix?: string) {
   const basePath = `ly.img.plugin-ai-image-generation-web`;
   const actionPath = `quickAction.${ACTION_NAME}`;
   const fullPath = suffix ? `${actionPath}.${suffix}` : actionPath;
-  
-  if (!modelKey) {
-    return [
-      `${basePath}.${fullPath}`,
-      `${basePath}.defaults.${fullPath}`
-    ];
-  }
-  
+
   return [
     `${basePath}.${modelKey}.${fullPath}`,
     `${basePath}.${fullPath}`,
@@ -77,9 +70,9 @@ const RemixPage: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
     },
     scopes: ['lifecycle/duplicate'],
 
-    render: ({ builder, generate, engine, close }) => {
+    render: ({ builder, generate, engine, close, providerId }) => {
       builder.Button(`${ID}.button`, {
-        label: getI18nLabel(),
+        label: getI18nLabel(providerId),
         icon: '@imgly/Sparkle',
         labelAlignment: 'left',
         variant: 'plain',

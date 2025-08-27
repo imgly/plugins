@@ -1,5 +1,5 @@
 import { QuickActionDefinition } from '@imgly/plugin-ai-generation-web';
-import translate, { LANGUAGES, LOCALES } from '../prompts/translate';
+import translate, { LOCALES } from '../prompts/translate';
 import { GetQuickActionDefinition } from './types';
 
 /**
@@ -16,6 +16,23 @@ export const ID = `ly.img.${ACTION_NAME}`;
  * The i18n prefix for the quick action.
  */
 export const I18N_PREFIX = `ly.img.plugin-ai-text-generation-web.quickAction.${ACTION_NAME}`;
+export const I18N_DEFAULT_PREFIX = `ly.img.plugin-ai-text-generation-web.defaults.quickAction.${ACTION_NAME}`;
+
+/**
+ * Get i18n label with fallback keys.
+ */
+function getI18nLabel(modelKey?: string, suffix?: string) {
+  const basePath = `ly.img.plugin-ai-text-generation-web`;
+  const actionPath = `quickAction.${ACTION_NAME}`;
+  const fullPath = suffix ? `${actionPath}.${suffix}` : actionPath;
+
+  return [
+    `${basePath}.${modelKey}.${fullPath}`,
+    `${basePath}.${fullPath}`,
+    `${basePath}.${modelKey}.defaults.${fullPath}`,
+    `${basePath}.defaults.${fullPath}`
+  ];
+}
 
 /**
  * The input generated from this quick action which needs
@@ -27,14 +44,23 @@ export type InputType = {
 };
 
 const languageOptions = LOCALES.map((locale) => ({
-  id: locale,
-  label: LANGUAGES[locale]
+  id: locale
 }));
 
 const Translate: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
   cesdk.i18n.setTranslations({
     en: {
-      [`${I18N_PREFIX}`]: 'Translate'
+      [`${I18N_DEFAULT_PREFIX}`]: 'Translate',
+      [`${I18N_DEFAULT_PREFIX}.en_US`]: 'English (US)',
+      [`${I18N_DEFAULT_PREFIX}.en_UK`]: 'English (UK)',
+      [`${I18N_DEFAULT_PREFIX}.es`]: 'Spanish',
+      [`${I18N_DEFAULT_PREFIX}.fr`]: 'French',
+      [`${I18N_DEFAULT_PREFIX}.de`]: 'German',
+      [`${I18N_DEFAULT_PREFIX}.pt`]: 'Portuguese',
+      [`${I18N_DEFAULT_PREFIX}.it`]: 'Italian',
+      [`${I18N_DEFAULT_PREFIX}.ru`]: 'Russian',
+      [`${I18N_DEFAULT_PREFIX}.zh`]: 'Mandarin Chinese',
+      [`${I18N_DEFAULT_PREFIX}.ja`]: 'Japanese'
     }
   });
 
@@ -53,9 +79,16 @@ const Translate: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
       return engine.block.getType(blockId) === '//ly.img.ubq/text';
     },
 
-    render: ({ builder, generate, engine, close, experimental }) => {
+    render: ({
+      builder,
+      generate,
+      engine,
+      close,
+      experimental,
+      providerId
+    }) => {
       experimental.builder.Popover(`${ID}.popover`, {
-        label: `${I18N_PREFIX}`,
+        label: getI18nLabel(providerId),
         icon: '@imgly/Language',
         labelAlignment: 'left',
         variant: 'plain',
@@ -68,7 +101,7 @@ const Translate: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
                 children: () => {
                   languageOptions.forEach((option) => {
                     builder.Button(`${ID}.popover.menu.${option.id}`, {
-                      label: option.label,
+                      label: getI18nLabel(providerId, option.id),
                       labelAlignment: 'left',
                       variant: 'plain',
                       onClick: async () => {

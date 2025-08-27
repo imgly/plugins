@@ -34,18 +34,11 @@ export type InputType = {
 /**
  * Get i18n label with fallback keys.
  */
-function getI18nLabel(modelKey?: string, suffix?: string) {
+function getI18nLabel(modelKey: string, suffix?: string) {
   const basePath = `ly.img.plugin-ai-image-generation-web`;
   const actionPath = `quickAction.${ACTION_NAME}`;
   const fullPath = suffix ? `${actionPath}.${suffix}` : actionPath;
-  
-  if (!modelKey) {
-    return [
-      `${basePath}.${fullPath}`,
-      `${basePath}.defaults.${fullPath}`
-    ];
-  }
-  
+
   return [
     `${basePath}.${modelKey}.${fullPath}`,
     `${basePath}.${fullPath}`,
@@ -110,14 +103,15 @@ const CreateVariant: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
       generate,
       engine,
       state,
-      close
+      close,
+      providerId
     }) => {
       if (isExpanded) {
         const promptState = state(`${ID}.prompt`, '');
 
         builder.TextArea(`${ID}.prompt`, {
-          inputLabel: getI18nLabel(undefined, 'prompt'),
-          placeholder: getI18nLabel(undefined, 'prompt.placeholder')[0],
+          inputLabel: getI18nLabel(providerId, 'prompt'),
+          placeholder: getI18nLabel(providerId, 'prompt.placeholder')[1],
           ...promptState
         });
 
@@ -133,7 +127,7 @@ const CreateVariant: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
             });
 
             builder.Button(`${ID}.footer.apply`, {
-              label: getI18nLabel(undefined, 'apply'),
+              label: getI18nLabel(providerId, 'apply'),
               icon: '@imgly/MagicWand',
               color: 'accent',
               isDisabled: promptState.value.length === 0,
@@ -223,7 +217,7 @@ const CreateVariant: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
         });
       } else {
         builder.Button(`${ID}.button`, {
-          label: getI18nLabel(),
+          label: getI18nLabel(providerId),
           icon: '@imgly/ImageVariation',
           labelAlignment: 'left',
           variant: 'plain',
