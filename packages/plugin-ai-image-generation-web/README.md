@@ -401,12 +401,17 @@ cesdk.i18n.setTranslations({
 
 #### QuickAction Translations
 
-QuickActions (like "Edit Image", "Style Transfer", etc.) use their own translation keys:
+QuickActions (like "Edit Image", "Style Transfer", etc.) use their own translation keys with provider-specific overrides:
 
 ```typescript
 cesdk.i18n.setTranslations({
   en: {
-    // QuickAction button labels
+    // Provider-specific translations (highest priority)
+    'ly.img.plugin-ai-image-generation-web.fal-ai/gemini-flash-edit.quickAction.editImage': 'Edit with Gemini',
+    'ly.img.plugin-ai-image-generation-web.fal-ai/flux-pro/kontext.quickAction.styleTransfer': 'Style with Flux Pro Kontext',
+    'ly.img.plugin-ai-image-generation-web.open-ai/gpt-image-1/image2image.quickAction.editImage': 'Edit with GPT',
+
+    // Generic plugin translations
     'ly.img.plugin-ai-image-generation-web.quickAction.editImage': 'Edit Image...',
     'ly.img.plugin-ai-image-generation-web.quickAction.swapBackground': 'Swap Background...',
     'ly.img.plugin-ai-image-generation-web.quickAction.styleTransfer': 'Style Transfer...',
@@ -417,7 +422,6 @@ cesdk.i18n.setTranslations({
     'ly.img.plugin-ai-image-generation-web.quickAction.editImage.prompt': 'Edit Image...',
     'ly.img.plugin-ai-image-generation-web.quickAction.editImage.prompt.placeholder': 'e.g. "Add a sunset"',
     'ly.img.plugin-ai-image-generation-web.quickAction.editImage.apply': 'Change',
-    
     'ly.img.plugin-ai-image-generation-web.quickAction.swapBackground.prompt': 'Swap Background...',
     'ly.img.plugin-ai-image-generation-web.quickAction.swapBackground.prompt.placeholder': 'e.g. "Beach at sunset"',
     'ly.img.plugin-ai-image-generation-web.quickAction.swapBackground.apply': 'Swap'
@@ -425,7 +429,11 @@ cesdk.i18n.setTranslations({
 });
 ```
 
-**QuickAction Translation Structure:**
+**QuickAction Translation Priority:**
+1. Provider-specific: `ly.img.plugin-ai-image-generation-web.${provider}.quickAction.${action}.${field}`
+2. Generic plugin: `ly.img.plugin-ai-image-generation-web.quickAction.${action}.${field}`
+
+**Translation Structure:**
 - Base key (e.g., `.quickAction.editImage`): Button text when QuickAction is collapsed
 - `.prompt`: Label for input field when expanded
 - `.prompt.placeholder`: Placeholder text for input field
