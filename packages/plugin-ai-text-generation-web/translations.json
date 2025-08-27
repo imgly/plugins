@@ -38,6 +38,8 @@
     
     "ly.img.plugin-ai-text-generation-web.quickAction.changeTextTo": "Change Text To...",
     "ly.img.plugin-ai-text-generation-web.quickAction.changeTextTo.prompt": "Custom transformation",
-    "ly.img.plugin-ai-text-generation-web.quickAction.changeTextTo.apply": "Transform"
+    "ly.img.plugin-ai-text-generation-web.quickAction.changeTextTo.apply": "Transform",
+
+    "ly.img.plugin-ai-text-generation-web.quickAction.providerSelect.label": "Provider"
   }
 }

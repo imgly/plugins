@@ -50,6 +50,8 @@
 
     "ly.img.plugin-ai-video-generation-web.quickAction.createVideo": "Create Video",
     "ly.img.plugin-ai-video-generation-web.quickAction.createVideo.prompt": "Video description",
-    "ly.img.plugin-ai-video-generation-web.quickAction.createVideo.apply": "Generate Video"
+    "ly.img.plugin-ai-video-generation-web.quickAction.createVideo.apply": "Generate Video",
+
+    "ly.img.plugin-ai-video-generation-web.quickAction.providerSelect.label": "Provider"
   }
 }

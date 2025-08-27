@@ -92,6 +92,7 @@
 
     "ly.img.plugin-ai-image-generation-web.quickAction.editImage": "Edit Image",
     "ly.img.plugin-ai-image-generation-web.quickAction.editImage.prompt": "Describe your changes",
+    "ly.img.plugin-ai-image-generation-web.quickAction.editImage.prompt.placeholder": "e.g. 'Add a sunset'",
     "ly.img.plugin-ai-image-generation-web.quickAction.editImage.apply": "Apply Changes",
     
     "ly.img.plugin-ai-image-generation-web.quickAction.styleTransfer": "Style Transfer",
@@ -104,10 +105,12 @@
     
     "ly.img.plugin-ai-image-generation-web.quickAction.createVariant": "Create Variant",
     "ly.img.plugin-ai-image-generation-web.quickAction.createVariant.prompt": "Describe the variation",
+    "ly.img.plugin-ai-image-generation-web.quickAction.createVariant.prompt.placeholder": "e.g. 'Make it more colorful'",
     "ly.img.plugin-ai-image-generation-web.quickAction.createVariant.apply": "Create Variant",
     
     "ly.img.plugin-ai-image-generation-web.quickAction.swapBackground": "Swap Background",
     "ly.img.plugin-ai-image-generation-web.quickAction.swapBackground.prompt": "Describe the new background",
+    "ly.img.plugin-ai-image-generation-web.quickAction.swapBackground.prompt.placeholder": "e.g. 'A sunset over mountains'",
     "ly.img.plugin-ai-image-generation-web.quickAction.swapBackground.apply": "Swap Background",
     
     "ly.img.plugin-ai-image-generation-web.quickAction.combineImages": "Combine Images",
@@ -120,10 +123,34 @@
     
     "ly.img.plugin-ai-image-generation-web.quickAction.remixPageWithPrompt": "Remix Page with Prompt",
     "ly.img.plugin-ai-image-generation-web.quickAction.remixPageWithPrompt.prompt": "Custom remix instructions",
+    "ly.img.plugin-ai-image-generation-web.quickAction.remixPageWithPrompt.prompt.placeholder": "e.g. rearrange the layout to...",
     "ly.img.plugin-ai-image-generation-web.quickAction.remixPageWithPrompt.apply": "Remix",
 
     "ly.img.plugin-ai-image-generation-web.quickAction.gpt-image-1.changeStyleLibrary": "Change Style",
     "ly.img.plugin-ai-image-generation-web.quickAction.gpt-image-1.changeStyleLibrary.prompt": "Choose a style",
-    "ly.img.plugin-ai-image-generation-web.quickAction.gpt-image-1.changeStyleLibrary.apply": "Apply Style"
+    "ly.img.plugin-ai-image-generation-web.quickAction.gpt-image-1.changeStyleLibrary.apply": "Apply Style",
+
+    "ly.img.plugin-ai-image-generation-web.quickAction.artistTransfer.van-gogh": "Van Gogh",
+    "ly.img.plugin-ai-image-generation-web.quickAction.artistTransfer.monet": "Monet",
+    "ly.img.plugin-ai-image-generation-web.quickAction.artistTransfer.picasso": "Picasso",
+    "ly.img.plugin-ai-image-generation-web.quickAction.artistTransfer.dali": "Dalí",
+    "ly.img.plugin-ai-image-generation-web.quickAction.artistTransfer.matisse": "Matisse",
+    "ly.img.plugin-ai-image-generation-web.quickAction.artistTransfer.warhol": "Warhol",
+    "ly.img.plugin-ai-image-generation-web.quickAction.artistTransfer.michelangelo": "Michelangelo",
+    "ly.img.plugin-ai-image-generation-web.quickAction.artistTransfer.da-vinci": "Da Vinci",
+    "ly.img.plugin-ai-image-generation-web.quickAction.artistTransfer.rembrandt": "Rembrandt",
+    "ly.img.plugin-ai-image-generation-web.quickAction.artistTransfer.mondrian": "Mondrian",
+    "ly.img.plugin-ai-image-generation-web.quickAction.artistTransfer.kahlo": "Frida Kahlo",
+    "ly.img.plugin-ai-image-generation-web.quickAction.artistTransfer.hokusai": "Hokusai",
+
+    "ly.img.plugin-ai-image-generation-web.quickAction.styleTransfer.water": "Watercolor Painting",
+    "ly.img.plugin-ai-image-generation-web.quickAction.styleTransfer.oil": "Oil Painting",
+    "ly.img.plugin-ai-image-generation-web.quickAction.styleTransfer.charcoal": "Charcoal Drawing",
+    "ly.img.plugin-ai-image-generation-web.quickAction.styleTransfer.pencil": "Pencil Drawing",
+    "ly.img.plugin-ai-image-generation-web.quickAction.styleTransfer.pastel": "Pastel Artwork",
+    "ly.img.plugin-ai-image-generation-web.quickAction.styleTransfer.ink": "Ink Wash",
+    "ly.img.plugin-ai-image-generation-web.quickAction.styleTransfer.stained-glass": "Stained Glass Window",
+    "ly.img.plugin-ai-image-generation-web.quickAction.styleTransfer.japanese": "Japanese Woodblock Print",
+    "ly.img.plugin-ai-image-generation-web.quickAction.providerSelect.label": "Provider"
   }
 }

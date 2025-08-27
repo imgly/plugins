@@ -62,7 +62,8 @@ function createQuickActionMenuRenderFunction<
 
   context.cesdk.i18n.setTranslations({
     en: {
-      [`${prefix}.quickActionMenu.providerSelect.label`]: 'Provider'
+      [`ly.img.plugin-ai-generation-web.defaults.quickAction.providerSelect.label`]:
+        'Provider'
     }
   });
 
@@ -333,7 +334,10 @@ function createQuickActionMenuRenderFunction<
             builder.Section(`${prefix}.popover.expanded.header`, {
               children: () => {
                 builder.Select(`${prefix}.expanded.providerSelect.select`, {
-                  inputLabel: `${prefix}.quickActionMenu.providerSelect.label`,
+                  inputLabel: [
+                    `ly.img.plugin-ai-${context.kind}-generation-web.quickAction.providerSelect.label`,
+                    `ly.img.plugin-ai-generation-web.defaults.quickAction.providerSelect.label`
+                  ],
                   values: providerValuesForExpandedQuickAction,
                   ...currentProviderState
                 });
@@ -380,7 +384,10 @@ function createQuickActionMenuRenderFunction<
             builder.Section(`${prefix}.popover.header`, {
               children: () => {
                 builder.Select(`${prefix}.providerSelect.select`, {
-                  inputLabel: `${prefix}.quickActionMenu.providerSelect.label`,
+                  inputLabel: [
+                    `ly.img.plugin-ai-${context.kind}-generation-web.quickAction.providerSelect.label`,
+                    `ly.img.plugin-ai-generation-web.defaults.quickAction.providerSelect.label`
+                  ],
                   values: providerValues,
                   ...currentProviderState
                 });
