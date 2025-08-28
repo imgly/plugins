@@ -7,13 +7,14 @@ import {
 } from '@imgly/plugin-ai-generation-web';
 import schema from './NanoBananaEdit.json';
 import { getImageDimensionsFromURL } from '@imgly/plugin-utils';
-import CreativeEditorSDK from '@cesdk/cesdk-js';
+import CreativeEditorSDK, { MimeType } from '@cesdk/cesdk-js';
 import createImageProvider from './createImageProvider';
 
 type NanoBananaEditInput = {
   prompt: string;
   image_url?: string; // For UI compatibility
-  image_urls?: string[]; // For API compatibility
+  image_urls?: string[]; // For API compatibility (up to 10 images)
+  exportFromBlockIds?: number[]; // For combineImages quick action
 };
 
 export function NanoBananaEdit(
@@ -83,18 +84,49 @@ function getProvider(
             prompt: input.prompt,
             image_url: input.uri
           })
+        },
+        'ly.img.combineImages': {
+          mapInput: (input) => ({
+            prompt: input.prompt,
+            image_urls: input.uris,
+            exportFromBlockIds: input.exportFromBlockIds
+          })
         }
       },
       renderCustomProperty: CommonProperties.ImageUrl(modelKey, {
         cesdk
       }),
       middleware: [
-        // Convert image_url to image_urls array for this model
+        // Convert image_url to image_urls array and handle exportFromBlockIds for this model
         async (input, options, next) => {
           let processedInput = input;
 
+          // Handle exportFromBlockIds for combineImages quick action
+          if (input.exportFromBlockIds && input.exportFromBlockIds.length > 0) {
+            // Export blocks to image URLs
+            const imageUrls = await Promise.all(
+              input.exportFromBlockIds.map(async (blockId) => {
+                const exportedBlob = await cesdk.engine.block.export(
+                  blockId,
+                  MimeType.Jpeg,
+                  {
+                    targetHeight: 1024,
+                    targetWidth: 1024
+                  }
+                );
+                return URL.createObjectURL(exportedBlob);
+              })
+            );
+
+            processedInput = {
+              ...input,
+              image_urls: imageUrls
+            };
+            // Remove exportFromBlockIds since the API doesn't need it
+            delete processedInput.exportFromBlockIds;
+          }
           // Convert single image_url to image_urls array if needed
-          if (input.image_url && !input.image_urls) {
+          else if (input.image_url && !input.image_urls) {
             processedInput = {
               ...input,
               image_urls: [input.image_url]
@@ -119,6 +151,8 @@ function getProvider(
           throw new Error('No image URL provided');
         }
 
+        // For multiple images, use dimensions from the first image
+        // The model will generate output based on the combined/edited result
         const { width, height } = await getImageDimensionsFromURL(
           imageUrl,
           cesdk.engine
