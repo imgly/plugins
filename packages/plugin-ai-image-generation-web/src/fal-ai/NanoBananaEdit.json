@@ -1,0 +1,284 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Fal Queue API",
+    "version": "1.0.0",
+    "description": "The Fal Queue API."
+  },
+  "components": {
+    "securitySchemes": {
+      "apiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization",
+        "description": "Fal Key"
+      }
+    },
+    "schemas": {
+      "QueueStatus": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["IN_QUEUE", "IN_PROGRESS", "COMPLETED"]
+          },
+          "request_id": { "type": "string", "description": "The request id." },
+          "response_url": {
+            "type": "string",
+            "description": "The response url."
+          },
+          "status_url": { "type": "string", "description": "The status url." },
+          "cancel_url": { "type": "string", "description": "The cancel url." },
+          "logs": {
+            "type": "object",
+            "description": "The logs.",
+            "additionalProperties": true
+          },
+          "metrics": {
+            "type": "object",
+            "description": "The metrics.",
+            "additionalProperties": true
+          },
+          "queue_position": {
+            "type": "integer",
+            "description": "The queue position."
+          }
+        },
+        "required": ["status", "request_id"]
+      },
+      "NanoBananaEditInput": {
+        "title": "NanoBananaEditRequest",
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "maxLength": 5000,
+            "type": "string",
+            "title": "Prompt",
+            "minLength": 3,
+            "description": "The prompt for image editing",
+            "x-imgly-builder": { "component": "TextArea" }
+          },
+          "image_url": {
+            "title": "Image URL",
+            "type": "string",
+            "description": "Input image URL for editing"
+          },
+          "image_urls": {
+            "title": "Image URLs",
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Array of input image URLs for editing (up to 10 images)",
+            "minItems": 1,
+            "maxItems": 10
+          },
+          "strength": {
+            "title": "Edit Strength",
+            "type": "number",
+            "default": 0.75,
+            "minimum": 0.0,
+            "maximum": 1.0,
+            "description": "How much to change the image (0.0 = minimal changes, 1.0 = major changes)"
+          },
+          "guidance_scale": {
+            "title": "Guidance Scale",
+            "type": "number",
+            "default": 7.5,
+            "minimum": 1.0,
+            "maximum": 20.0,
+            "description": "How closely to follow the prompt"
+          },
+          "num_inference_steps": {
+            "title": "Inference Steps",
+            "type": "integer",
+            "default": 20,
+            "minimum": 1,
+            "maximum": 100,
+            "description": "Number of denoising steps"
+          },
+          "seed": {
+            "title": "Seed",
+            "type": "integer",
+            "description": "Random seed for reproducible results"
+          }
+        },
+        "x-fal-order-properties": ["image_url", "prompt"],
+        "required": ["prompt"]
+      },
+      "NanoBananaEditOutput": {
+        "title": "NanoBananaEditOutput",
+        "type": "object",
+        "properties": {
+          "images": {
+            "title": "Images",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Image"
+            },
+            "description": "The generated or edited images"
+          }
+        },
+        "x-fal-order-properties": ["images"],
+        "required": ["images"]
+      },
+      "Image": {
+        "title": "Image",
+        "type": "object",
+        "properties": {
+          "file_size": {
+            "anyOf": [{ "type": "integer" }, { "type": "null" }],
+            "title": "File Size",
+            "description": "The size of the file in bytes."
+          },
+          "height": {
+            "anyOf": [{ "type": "integer" }, { "type": "null" }],
+            "title": "Height",
+            "description": "The height of the image in pixels."
+          },
+          "file_name": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "File Name",
+            "description": "The name of the file. It will be auto-generated if not provided."
+          },
+          "content_type": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Content Type",
+            "description": "The mime type of the file."
+          },
+          "url": {
+            "title": "Url",
+            "type": "string",
+            "description": "The URL where the file can be downloaded from."
+          },
+          "width": {
+            "anyOf": [{ "type": "integer" }, { "type": "null" }],
+            "title": "Width",
+            "description": "The width of the image in pixels."
+          }
+        },
+        "description": "Represents an image file.",
+        "x-fal-order-properties": [
+          "url",
+          "content_type",
+          "file_name",
+          "file_size",
+          "width",
+          "height"
+        ],
+        "required": ["url"]
+      }
+    }
+  },
+  "paths": {
+    "/fal-ai/nano-banana/edit/requests/{request_id}/status": {
+      "get": {
+        "parameters": [
+          {
+            "name": "request_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "description": "Request ID" }
+          },
+          {
+            "name": "logs",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "description": "Whether to include logs (`1`) in the response or not (`0`)."
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request status.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/QueueStatus" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/fal-ai/nano-banana/edit/requests/{request_id}/cancel": {
+      "put": {
+        "parameters": [
+          {
+            "name": "request_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "description": "Request ID" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request was cancelled.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "description": "Whether the request was cancelled successfully."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/fal-ai/nano-banana/edit": {
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/NanoBananaEditInput" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The request status.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/QueueStatus" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/fal-ai/nano-banana/edit/requests/{request_id}": {
+      "get": {
+        "parameters": [
+          {
+            "name": "request_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "description": "Request ID" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Result of the request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NanoBananaEditOutput"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "servers": [{ "url": "https://queue.fal.run" }],
+  "security": [{ "apiKeyAuth": [] }]
+}

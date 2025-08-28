@@ -55,3 +55,16 @@ export async function uploadImageInputToFalIfNeeded(
 
   return imageUrl;
 }
+
+export async function uploadImageArrayToFalIfNeeded(
+  imageUrls?: string[],
+  cesdk?: CreativeEditorSDK
+): Promise<string[] | undefined> {
+  if (imageUrls == null || !Array.isArray(imageUrls)) return undefined;
+
+  const uploadedUrls = await Promise.all(
+    imageUrls.map((url) => uploadImageInputToFalIfNeeded(url, cesdk))
+  );
+
+  return uploadedUrls.filter((url): url is string => url != null);
+}

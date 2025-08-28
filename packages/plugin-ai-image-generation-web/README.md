@@ -106,6 +106,13 @@ CreativeEditorSDK.create(domElement, {
             'x-client-version': '1.0.0'
           }
         }),
+        FalAiImage.NanoBanana({
+          proxyUrl: 'http://your-proxy-server.com/api/proxy',
+          headers: {
+            'x-custom-header': 'value',
+            'x-client-version': '1.0.0'
+          }
+        }),
         FalAiImage.Recraft20b({
           proxyUrl: 'http://your-proxy-server.com/api/proxy',
           headers: {
@@ -125,6 +132,13 @@ CreativeEditorSDK.create(domElement, {
       // Multiple image-to-image providers (optional)
       image2image: [
         FalAiImage.GeminiFlashEdit({
+          proxyUrl: 'http://your-proxy-server.com/api/proxy',
+          headers: {
+            'x-custom-header': 'value',
+            'x-client-version': '1.0.0'
+          }
+        }),
+        FalAiImage.NanoBananaEdit({
           proxyUrl: 'http://your-proxy-server.com/api/proxy',
           headers: {
             'x-custom-header': 'value',
@@ -363,6 +377,73 @@ Key features:
 - Style transfer & artist presets
 - Maintains original dimensions
 - Canvas quick-action integration
+
+#### 9. NanoBanana (Text-to-Image)
+
+A fast and efficient text-to-image model from fal.ai that generates high-quality images:
+
+```typescript
+text2image: FalAiImage.NanoBanana({
+  proxyUrl: 'http://your-proxy-server.com/api/proxy',
+  headers: {
+    'x-custom-header': 'value',
+    'x-client-version': '1.0.0'
+  }
+})
+```
+
+Key features:
+- Fast generation times for quick prototyping
+- High-quality image output at 1024×1024 resolution
+- Simple prompt-based interface
+- Support for multiple output formats (JPEG, PNG)
+- Configurable number of images (1-4)
+- Supports page remixing with custom prompts
+- Custom headers support for API requests
+
+**Custom Translations:**
+```typescript
+cesdk.i18n.setTranslations({
+  en: {
+    'ly.img.plugin-ai-image-generation-web.fal-ai/nano-banana.property.prompt': 'Describe your image',
+    'ly.img.plugin-ai-image-generation-web.fal-ai/nano-banana.property.num_images': 'Number of Images',
+    'ly.img.plugin-ai-image-generation-web.fal-ai/nano-banana.property.output_format': 'Output Format'
+  }
+});
+```
+
+#### 10. NanoBananaEdit (Image-to-Image)
+
+An image editing model from fal.ai that transforms existing images using text prompts:
+
+```typescript
+image2image: FalAiImage.NanoBananaEdit({
+  proxyUrl: 'http://your-proxy-server.com/api/proxy',
+  headers: {
+    'x-custom-header': 'value',
+    'x-client-version': '1.0.0'
+  }
+})
+```
+
+Key features:
+- Edit existing images with text prompts
+- Supports combining multiple images (up to 10 images)
+- Maintains original image dimensions automatically
+- Supports all standard image editing quick actions
+- Fast processing times
+- Canvas quick-action integration
+- Custom headers support for API requests
+
+**Custom Translations:**
+```typescript
+cesdk.i18n.setTranslations({
+  en: {
+    'ly.img.plugin-ai-image-generation-web.fal-ai/nano-banana/edit.property.prompt': 'Edit instructions',
+    'ly.img.plugin-ai-image-generation-web.fal-ai/nano-banana/edit.property.image_url': 'Source Image'
+  }
+});
+```
 
 ### Customizing Labels and Translations
 
@@ -721,6 +802,26 @@ FalAiImage.FluxProKontextMaxEdit(config: {
 })
 ```
 
+#### NanoBanana
+
+```typescript
+FalAiImage.NanoBanana(config: {
+  proxyUrl: string;
+  headers?: Record<string, string>;
+  debug?: boolean;
+})
+```
+
+#### NanoBananaEdit
+
+```typescript
+FalAiImage.NanoBananaEdit(config: {
+  proxyUrl: string;
+  headers?: Record<string, string>;
+  debug?: boolean;
+})
+```
+
 ## UI Integration
 
 The plugin automatically registers the following UI components:
@@ -813,6 +914,8 @@ const myImageProvider = {
   - GptImage1.Image2Image: `ly.img.ai.open-ai/gpt-image-1/image2image`
   - FluxProKontextEdit: `ly.img.ai.fal-ai/flux-pro/kontext`
   - FluxProKontextMaxEdit: `ly.img.ai.fal-ai/flux-pro/kontext/max`
+  - NanoBanana: `ly.img.ai.fal-ai/nano-banana`
+  - NanoBananaEdit: `ly.img.ai.fal-ai/nano-banana/edit`
 
 ### Asset History
 
@@ -826,6 +929,8 @@ Generated images are automatically stored in asset sources with the following ID
 - GptImage1.Image2Image: `open-ai/gpt-image-1/image2image.history`
 - FluxProKontextEdit: `fal-ai/flux-pro/kontext.history`
 - FluxProKontextMaxEdit: `fal-ai/flux-pro/kontext/max.history`
+- NanoBanana: `fal-ai/nano-banana.history`
+- NanoBananaEdit: `fal-ai/nano-banana/edit.history`
 
 ### Dock Integration
 
