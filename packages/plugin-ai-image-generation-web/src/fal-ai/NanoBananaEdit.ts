@@ -91,6 +91,18 @@ function getProvider(
             image_urls: input.uris,
             exportFromBlockIds: input.exportFromBlockIds
           })
+        },
+        'ly.img.remixPage': {
+          mapInput: (input) => ({
+            prompt: input.prompt,
+            image_url: input.uri
+          })
+        },
+        'ly.img.remixPageWithPrompt': {
+          mapInput: (input) => ({
+            prompt: input.prompt,
+            image_url: input.uri
+          })
         }
       },
       renderCustomProperty: CommonProperties.ImageUrl(modelKey, {
