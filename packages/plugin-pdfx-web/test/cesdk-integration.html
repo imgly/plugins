@@ -138,7 +138,7 @@
 
     <script type="module">
       import CreativeEditorSDK from 'https://cdn.img.ly/packages/imgly/cesdk-js/1.56.0/index.js';
-      import PDFXPlugin from '/dist/index.mjs';
+      import { convertToPDF } from '/dist/index.mjs';
       
       // Load configuration (will read from environment variables if available)
       const CONFIG = {
@@ -157,6 +157,41 @@
       async function initializeEditor() {
         try {
           updateStatus('Loading CE.SDK...', 'loading');
+
+          // Helper function to export and download PDF
+          async function exportAndDownload(options, filename) {
+            try {
+              const sceneId = cesdk.engine.scene.get();
+              if (sceneId == null) {
+                return;
+              }
+
+              // Export as PDF using CE.SDK
+              const pdfBlob = await cesdk.engine.block.export(
+                sceneId,
+                'application/pdf'
+              );
+
+              // Convert to PDF/X-3 using our plugin
+              const convertedBlobs = await convertToPDF([pdfBlob], options);
+              const convertedBlob = convertedBlobs[0];
+
+              // Trigger download
+              const url = URL.createObjectURL(convertedBlob);
+              const link = document.createElement('a');
+              link.href = url;
+              link.download = `${filename}-${Date.now()}.pdf`;
+              link.style.display = 'none';
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
+              URL.revokeObjectURL(url);
+            } catch (error) {
+              console.error('Export failed:', error);
+              alert('Failed to export PDF/X. Please try again.');
+            }
+          }
+
           const config = {
             license: CONFIG.CESDK_LICENSE,
             baseURL: 'https://cdn.img.ly/packages/imgly/cesdk-js/1.56.0/assets',
@@ -176,7 +211,61 @@
                     save: true,
                     download: true,
                     load: true,
-                    export: true
+                    export: true,
+                    custom: [
+                      {
+                        label: 'PDF/X-3 (PSOCoated v3)',
+                        iconName: '@imgly/icons/Essentials/Download',
+                        callback: async () => {
+                          // Load ICC profile and export
+                          const iccProfilePath = '/src/assets/icc-profiles/PSOcoated_v3.icc';
+                          const iccProfileResponse = await fetch(iccProfilePath);
+                          
+                          if (!iccProfileResponse.ok) {
+                            throw new Error(`Failed to load ICC profile: ${iccProfileResponse.status} ${iccProfileResponse.statusText}`);
+                          }
+                          
+                          const iccProfileBlob = await iccProfileResponse.blob();
+                          
+                          // Validate the ICC profile size
+                          if (iccProfileBlob.size < 1000) {
+                            throw new Error(`ICC profile is too small (${iccProfileBlob.size} bytes). Expected at least 1KB.`);
+                          }
+
+                          await exportAndDownload({ iccProfile: iccProfileBlob }, 'design-pdfx3');
+                        }
+                      },
+                      {
+                        label: 'PDF/X-3 (No ICC Profile)',
+                        iconName: '@imgly/icons/Essentials/Download',
+                        callback: () => exportAndDownload({}, 'design-pdfx3-no-icc')
+                      },
+                      {
+                        label: 'PDF/X-3 (Device CMYK)',
+                        iconName: '@imgly/icons/Essentials/Download',
+                        callback: () => exportAndDownload({ 
+                          colorConversionStrategy: 'CMYK', 
+                          overrideICC: false, 
+                          preserveBlack: true 
+                        }, 'design-pdfx3-device-cmyk')
+                      },
+                      {
+                        label: 'PDF/X-3 (High GCR/UCR)',
+                        iconName: '@imgly/icons/Essentials/Download',
+                        callback: () => exportAndDownload({ 
+                          blackGeneration: 'High', 
+                          underColorRemoval: 'High', 
+                          preserveBlack: true 
+                        }, 'design-pdfx3-high-gcr')
+                      },
+                      {
+                        label: 'PDF/X-3 (Leave Color Unchanged)',
+                        iconName: '@imgly/icons/Essentials/Download',
+                        callback: () => exportAndDownload({ 
+                          colorConversionStrategy: 'LeaveColorUnchanged' 
+                        }, 'design-pdfx3-unchanged')
+                      }
+                    ]
                 }
                 }
             }
@@ -187,37 +276,12 @@
           cesdk = await CreativeEditorSDK.create('#cesdk_container', config);
           window.cesdk = cesdk; // Make it globally accessible for debugging
 
-          updateStatus('Adding PDFX plugin...', 'loading');
-          // Load ICC profile and add PDFX plugin
-          const iccProfilePath = '/src/assets/icc-profiles/PSOcoated_v3.icc';
-          const iccProfileResponse = await fetch(iccProfilePath);
-          
-          if (!iccProfileResponse.ok) {
-            throw new Error(`Failed to load ICC profile: ${iccProfileResponse.status} ${iccProfileResponse.statusText}`);
-          }
-          
-          const iccProfileBlob = await iccProfileResponse.blob();
-          
-          // Validate the ICC profile size
-          if (iccProfileBlob.size < 1000) {
-            throw new Error(`ICC profile is too small (${iccProfileBlob.size} bytes). Expected at least 1KB.`);
-          }
-          
-          cesdk.addPlugin(PDFXPlugin({
-            iccProfile: iccProfileBlob,
-          }));
-
           updateStatus('Adding asset sources...', 'loading');
           cesdk.addDefaultAssetSources();
           cesdk.addDemoAssetSources({ sceneMode: 'Design' });
 
           updateStatus('Creating design scene...', 'loading');
           await cesdk.createDesignScene();
-
-          updateStatus('Configuring navigation bar...', 'loading');
-          
-          // Set the new navigation bar order
-          cesdk.ui.setNavigationBarOrder([...cesdk.ui.getNavigationBarOrder(), 'pdfx.export']);
 
           // Hide loading overlay
           loadingEl.style.display = 'none';
