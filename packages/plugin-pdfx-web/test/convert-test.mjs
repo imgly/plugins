@@ -18,13 +18,13 @@ async function testConversion() {
     console.log('🔧 Testing PDF/X conversion...');
 
     // Import the conversion function from the built module
-    const { convertToPDFX3, getDefaultCMYKProfile } = await import('../dist/index.mjs');
+    const { convertToPDFX3 } = await import('../dist/index.mjs');
 
     // Load test PDF
     const inputPath = process.argv[2] || join(__dirname, 'sample-rgb.pdf');
     const outputPath =
       process.argv[3] || join(__dirname, 'converted-pdfx3.pdf');
-    const useCustomProfile = process.argv[4]; // Optional custom profile path
+    const profileType = process.argv[4] || 'fogra39'; // Optional profile preset
 
     if (!existsSync(inputPath)) {
       console.error(`❌ Input PDF not found: ${inputPath}`);
@@ -39,25 +39,16 @@ async function testConversion() {
     const pdfBlob = new Blob([pdfData], { type: 'application/pdf' });
 
     console.log(`📊 Input PDF size: ${pdfData.length} bytes`);
-
-    // Load ICC profile (default or custom)
-    let iccBlob;
-    if (useCustomProfile && existsSync(useCustomProfile)) {
-      console.log(`🎨 Loading custom ICC profile: ${useCustomProfile}`);
-      const iccData = readFileSync(useCustomProfile);
-      iccBlob = new Blob([iccData]);
-      console.log(`📊 ICC profile size: ${iccData.length} bytes`);
-    } else {
-      console.log('🎨 Using default CMYK profile');
-      iccBlob = getDefaultCMYKProfile();
-      console.log(`📊 Default profile size: ${iccBlob.size} bytes`);
-    }
+    console.log(`🎨 Using profile: ${profileType}`);
 
     // Test conversion
     console.log('🔄 Starting conversion...');
     const startTime = Date.now();
 
-    const resultBlob = await convertToPDFX3(pdfBlob, { iccProfile: iccBlob });
+    const resultBlob = await convertToPDFX3(pdfBlob, { 
+      outputProfile: profileType,
+      title: 'Test Conversion'
+    });
 
     const duration = Date.now() - startTime;
 

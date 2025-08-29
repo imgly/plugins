@@ -165,12 +165,6 @@
         
         const {
           convertToPDFX3,
-          getDefaultCMYKProfile,
-          GhostscriptLoader,
-          VirtualFileSystem,
-          CommandBuilder,
-          BrowserDetection,
-          Logger,
         } = module;
 
         // Make functions available globally for Playwright tests
@@ -550,17 +544,15 @@
         convertedPDFBlob = null;
 
         progressDiv.innerHTML =
-          '<div class="test-result loading">Converting with default CMYK profile...</div>';
+          '<div class="test-result loading">Converting with FOGRA39 profile...</div>';
 
         try {
           const startTime = Date.now();
 
-          // Use the default CMYK profile
-          const defaultProfile = getDefaultCMYKProfile();
-
-          // Convert using the simplified API with default profile
+          // Convert using the simplified API with FOGRA39 profile
           convertedPDFBlob = await convertToPDFX3(uploadedPDFBlob, {
-            iccProfile: defaultProfile,
+            outputProfile: 'fogra39',
+            title: 'Test Conversion'
           });
 
           const totalTime = Date.now() - startTime;
