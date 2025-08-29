@@ -139,6 +139,11 @@
     <script type="module">
       import CreativeEditorSDK from 'https://cdn.img.ly/packages/imgly/cesdk-js/1.56.0/index.js';
       import PDFXPlugin from '/dist/index.mjs';
+      
+      // Load configuration (will read from environment variables if available)
+      const CONFIG = {
+        CESDK_LICENSE: '%CESDK_LICENSE%' // This will be replaced by the server script
+      };
 
       let cesdk = null;
       const statusEl = document.getElementById('status');
@@ -152,10 +157,8 @@
       async function initializeEditor() {
         try {
           updateStatus('Loading CE.SDK...', 'loading');
-
           const config = {
-            license:
-              'yDDwCZO23aFG8Ag3i5j81fgUeVGOHNkgKUgW_uczN5p0bJaftF_5LzHd7DpMEAAF',
+            license: CONFIG.CESDK_LICENSE,
             baseURL: 'https://cdn.img.ly/packages/imgly/cesdk-js/1.56.0/assets',
             callbacks: {
               onUpload: 'local',

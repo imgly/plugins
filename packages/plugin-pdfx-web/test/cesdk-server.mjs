@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+import { config } from 'dotenv';
 import { createServer } from 'http';
 import { readFile, stat } from 'fs/promises';
 import { join, extname, dirname } from 'path';
@@ -8,6 +9,9 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const projectRoot = join(__dirname, '..');
+
+// Load environment variables from .env file
+config({ path: join(projectRoot, '.env') });
 
 const PORT = 3001;
 
@@ -35,8 +39,17 @@ function getMimeType(filePath) {
 
 async function serveFile(filePath, res) {
   try {
-    const content = await readFile(filePath);
+    let content = await readFile(filePath, 'utf8');
     const mimeType = getMimeType(filePath);
+
+    // Replace environment variables in HTML files
+    if (filePath.endsWith('.html')) {
+      content = content.replace('%CESDK_LICENSE%', process.env.CESDK_LICENSE || '');
+      
+      if (!process.env.CESDK_LICENSE) {
+        console.warn('Warning: CESDK_LICENSE not found in environment variables. Please set it in your .env file.');
+      }
+    }
 
     res.writeHead(200, {
       'Content-Type': mimeType,
