@@ -20,25 +20,92 @@ async function testConversion() {
     // Import the conversion function from the built module
     const { convertToPDFX3 } = await import('../dist/index.mjs');
 
-    // Load test PDF
-    const inputPath = process.argv[2] || join(__dirname, 'sample-rgb.pdf');
+    // Test PDF setup
+    const inputPath = process.argv[2]; // Optional custom PDF path
     const outputPath =
       process.argv[3] || join(__dirname, 'converted-pdfx3.pdf');
     const profileType = process.argv[4] || 'fogra39'; // Optional profile preset
 
-    if (!existsSync(inputPath)) {
-      console.error(`❌ Input PDF not found: ${inputPath}`);
-      console.log(
-        '💡 Run "pnpm run test:generate" first to create a sample PDF'
-      );
-      process.exit(1);
+    let pdfBlob;
+    
+    if (inputPath && existsSync(inputPath)) {
+      // Use provided PDF file
+      console.log(`📄 Loading PDF: ${inputPath}`);
+      const pdfData = readFileSync(inputPath);
+      pdfBlob = new Blob([pdfData], { type: 'application/pdf' });
+    } else {
+      // Create a simple test PDF inline
+      console.log('📄 Creating test PDF with colored rectangles...');
+      const testPDFContent = `%PDF-1.4
+1 0 obj
+<<
+/Type /Catalog
+/Pages 2 0 R
+>>
+endobj
+
+2 0 obj
+<<
+/Type /Pages
+/Kids [3 0 R]
+/Count 1
+>>
+endobj
+
+3 0 obj
+<<
+/Type /Page
+/Parent 2 0 R
+/MediaBox [0 0 612 792]
+/Contents 4 0 R
+/Resources <<
+  /ProcSet [/PDF]
+>>
+>>
+endobj
+
+4 0 obj
+<<
+/Length 200
+>>
+stream
+BT
+/F1 24 Tf
+100 700 Td
+(Test PDF for RGB to CMYK Conversion) Tj
+ET
+1 0 0 rg
+100 600 100 50 re
+f
+0 1 0 rg
+220 600 100 50 re
+f
+0 0 1 rg
+340 600 100 50 re
+f
+endstream
+endobj
+
+xref
+0 5
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000244 00000 n 
+trailer
+<<
+/Size 5
+/Root 1 0 R
+>>
+startxref
+495
+%%EOF`;
+      
+      pdfBlob = new Blob([testPDFContent], { type: 'application/pdf' });
     }
 
-    console.log(`📄 Loading PDF: ${inputPath}`);
-    const pdfData = readFileSync(inputPath);
-    const pdfBlob = new Blob([pdfData], { type: 'application/pdf' });
-
-    console.log(`📊 Input PDF size: ${pdfData.length} bytes`);
+    console.log(`📊 Input PDF size: ${pdfBlob.size} bytes`);
     console.log(`🎨 Using profile: ${profileType}`);
 
     // Test conversion
@@ -60,10 +127,10 @@ async function testConversion() {
     console.log(`⏱️  Duration: ${duration}ms`);
     console.log(`📄 Output: ${outputPath}`);
     console.log(`📊 Results:`);
-    console.log(`   Original size: ${pdfData.length} bytes`);
+    console.log(`   Original size: ${pdfBlob.size} bytes`);
     console.log(`   Converted size: ${resultBlob.size} bytes`);
     console.log(
-      `   Compression ratio: ${(pdfData.length / resultBlob.size).toFixed(2)}x`
+      `   Compression ratio: ${(pdfBlob.size / resultBlob.size).toFixed(2)}x`
     );
   } catch (error) {
     console.error('❌ Conversion test failed:', error.message);

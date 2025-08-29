@@ -54,11 +54,10 @@
     "check:types": "tsc --noEmit",
     "types:create": "tsc --emitDeclarationOnly",
     "_syncPnpm": "pnpm sync-dependencies-meta-injected",
-    "test:generate": "node test/generate-sample.mjs",
     "test:convert": "node test/convert-test.mjs",
     "test:browser": "pnpm run build && playwright test test/browser-test.spec.ts",
     "test:cesdk": "node test/cesdk-server.mjs",
-    "test": "pnpm run build && pnpm run test:generate && pnpm run test:browser"
+    "test": "pnpm run test:browser"
   },
   "devDependencies": {
     "@cesdk/cesdk-js": "~1.37.0",

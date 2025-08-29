@@ -170,7 +170,6 @@
         // Make functions available globally for Playwright tests
         window.PDFXPlugin = {
           convertToPDFX3,
-          loadGhostscript: () => GhostscriptLoader.load(),
         };
 
         console.log('✅ PDFXPlugin loaded successfully:', Object.keys(window.PDFXPlugin));
@@ -181,12 +180,6 @@
         window.PDFXPlugin = null;
       }
 
-      // Set debug logging (if Logger is available)
-      if (typeof Logger !== 'undefined') {
-        Logger.setLogLevel('debug');
-      }
-
-      let ghostscriptModule = null;
       let uploadedPDFBlob = null;
       let convertedPDFBlob = null;
 
