@@ -796,27 +796,31 @@ cesdk.i18n.setTranslations({
 
 ### QuickAction Translations
 
-QuickActions (like "Edit Image", "Style Transfer", etc.) use their own translation keys:
+QuickActions use their own translation keys with provider-specific overrides:
 
 ```typescript
 cesdk.i18n.setTranslations({
   en: {
-    // Image generation QuickActions
+    // Provider-specific translations (highest priority)
+    'ly.img.plugin-ai-image-generation-web.fal-ai/gemini-flash-edit.quickAction.editImage': 'Edit with Gemini',
+    'ly.img.plugin-ai-text-generation-web.anthropic.quickAction.improve': 'Improve with Claude',
+
+    // Generic plugin translations
     'ly.img.plugin-ai-image-generation-web.quickAction.editImage': 'Edit Image...',
     'ly.img.plugin-ai-image-generation-web.quickAction.editImage.prompt': 'Edit Image...',
     'ly.img.plugin-ai-image-generation-web.quickAction.editImage.apply': 'Change',
-
-    // Text generation QuickActions  
     'ly.img.plugin-ai-text-generation-web.quickAction.improve': 'Improve Text',
     'ly.img.plugin-ai-text-generation-web.quickAction.translate': 'Translate Text',
-
-    // Video generation QuickActions
     'ly.img.plugin-ai-video-generation-web.quickAction.createVideo': 'Create Video'
   }
 });
 ```
 
-**QuickAction Translation Structure:**
+**QuickAction Translation Priority:**
+1. Provider-specific: `ly.img.plugin-ai-${kind}-generation-web.${provider}.quickAction.${action}.${field}`
+2. Generic plugin: `ly.img.plugin-ai-${kind}-generation-web.quickAction.${action}.${field}`
+
+**Translation Structure:**
 - Base key (e.g., `.quickAction.editImage`): Button text when QuickAction is collapsed
 - `.prompt`: Label for input field when expanded
 - `.prompt.placeholder`: Placeholder text for input field
