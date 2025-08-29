@@ -17,9 +17,9 @@ const Plugin = (pluginConfiguration?: PluginConfiguration) => ({
 export default Plugin;
 
 // Export the helper functions directly for use in applications
-export { convertToPDF, convertToPDFX3 } from './pdfx';
+export { convertToPDFX3 } from './pdfx';
 export { getDefaultCMYKProfile } from './assets/default-cmyk-profile';
 export type {
   PluginConfiguration,
-  ConversionOptions,
+  PDFX3Options,
 } from './types';

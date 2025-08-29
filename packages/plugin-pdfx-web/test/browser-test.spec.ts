@@ -147,8 +147,13 @@ test.describe('PDF/X Conversion Browser Tests', () => {
       ];
 
       try {
-        // Test batch conversion without ICC profile (should return originals)
-        const results = await window.PDFXPlugin.convertToPDF(testBlobs);
+        // Test batch conversion using Promise.all with convertToPDFX3
+        const results = await Promise.all(
+          testBlobs.map(blob => window.PDFXPlugin.convertToPDFX3(blob, {
+            outputProfile: 'srgb',
+            title: 'Test Document'
+          }))
+        );
 
         return {
           success: true,

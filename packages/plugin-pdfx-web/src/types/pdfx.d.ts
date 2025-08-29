@@ -1,11 +1,8 @@
-export interface ConversionOptions {
-  iccProfile?: Blob;
-  colorConversionStrategy?: 'CMYK' | 'Gray' | 'RGB' | 'UseDeviceIndependentColor' | 'LeaveColorUnchanged';
-  renderingIntent?: 'Default' | 'Perceptual' | 'Saturation' | 'RelativeColorimetric' | 'AbsoluteColorimetric';
-  blackGeneration?: 'Default' | 'None' | 'Low' | 'Medium' | 'High';
-  underColorRemoval?: 'Default' | 'None' | 'Low' | 'Medium' | 'High';
-  transferFunction?: 'Default' | 'Apply' | 'Remove' | 'Preserve';
-  preserveBlack?: boolean;
-  preserveOverprint?: boolean;
-  overrideICC?: boolean;
+export interface PDFX3Options {
+  // Required
+  outputProfile: 'gracol' | 'fogra39' | 'srgb' | 'custom';
+  customProfile?: Blob;        // Only if outputProfile is 'custom'
+  
+  // Optional (with sensible defaults)
+  title?: string;              // Document title (default: use existing)
 }

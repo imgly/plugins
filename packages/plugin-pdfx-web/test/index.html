@@ -165,7 +165,6 @@
         
         const {
           convertToPDFX3,
-          convertToPDF,
           getDefaultCMYKProfile,
           GhostscriptLoader,
           VirtualFileSystem,
@@ -177,7 +176,6 @@
         // Make functions available globally for Playwright tests
         window.PDFXPlugin = {
           convertToPDFX3,
-          convertToPDF,
           loadGhostscript: () => GhostscriptLoader.load(),
         };
 

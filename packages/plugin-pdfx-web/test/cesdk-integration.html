@@ -138,7 +138,7 @@
 
     <script type="module">
       import CreativeEditorSDK from 'https://cdn.img.ly/packages/imgly/cesdk-js/1.56.0/index.js';
-      import { convertToPDF } from '/dist/index.mjs';
+      import { convertToPDFX3 } from '/dist/index.mjs';
       
       // Load configuration (will read from environment variables if available)
       const CONFIG = {
@@ -173,8 +173,7 @@
               );
 
               // Convert to PDF/X-3 using our plugin
-              const convertedBlobs = await convertToPDF([pdfBlob], options);
-              const convertedBlob = convertedBlobs[0];
+              const convertedBlob = await convertToPDFX3(pdfBlob, options);
 
               // Trigger download
               const url = URL.createObjectURL(convertedBlob);
@@ -208,62 +207,34 @@
                 },
                 navigation: {
                 action: {
-                    save: true,
-                    download: true,
+                    save: false,
+                    download: false,
                     load: true,
                     export: true,
                     custom: [
                       {
-                        label: 'PDF/X-3 (PSOCoated v3)',
-                        iconName: '@imgly/icons/Essentials/Download',
-                        callback: async () => {
-                          // Load ICC profile and export
-                          const iccProfilePath = '/src/assets/icc-profiles/PSOcoated_v3.icc';
-                          const iccProfileResponse = await fetch(iccProfilePath);
-                          
-                          if (!iccProfileResponse.ok) {
-                            throw new Error(`Failed to load ICC profile: ${iccProfileResponse.status} ${iccProfileResponse.statusText}`);
-                          }
-                          
-                          const iccProfileBlob = await iccProfileResponse.blob();
-                          
-                          // Validate the ICC profile size
-                          if (iccProfileBlob.size < 1000) {
-                            throw new Error(`ICC profile is too small (${iccProfileBlob.size} bytes). Expected at least 1KB.`);
-                          }
-
-                          await exportAndDownload({ iccProfile: iccProfileBlob }, 'design-pdfx3');
-                        }
-                      },
-                      {
-                        label: 'PDF/X-3 (No ICC Profile)',
-                        iconName: '@imgly/icons/Essentials/Download',
-                        callback: () => exportAndDownload({}, 'design-pdfx3-no-icc')
-                      },
-                      {
-                        label: 'PDF/X-3 (Device CMYK)',
+                        label: 'Export PDF/X-3 (FOGRA39)',
                         iconName: '@imgly/icons/Essentials/Download',
                         callback: () => exportAndDownload({ 
-                          colorConversionStrategy: 'CMYK', 
-                          overrideICC: false, 
-                          preserveBlack: true 
-                        }, 'design-pdfx3-device-cmyk')
+                          outputProfile: 'fogra39',
+                          title: 'Design Export - FOGRA39' 
+                        }, 'design-pdfx3-fogra39')
                       },
                       {
-                        label: 'PDF/X-3 (High GCR/UCR)',
+                        label: 'Export PDF/X-3 (GRACoL 2013)',
                         iconName: '@imgly/icons/Essentials/Download',
                         callback: () => exportAndDownload({ 
-                          blackGeneration: 'High', 
-                          underColorRemoval: 'High', 
-                          preserveBlack: true 
-                        }, 'design-pdfx3-high-gcr')
+                          outputProfile: 'gracol',
+                          title: 'Design Export - GRACoL 2013' 
+                        }, 'design-pdfx3-gracol')
                       },
                       {
-                        label: 'PDF/X-3 (Leave Color Unchanged)',
+                        label: 'Export PDF/X-3 (sRGB)',
                         iconName: '@imgly/icons/Essentials/Download',
                         callback: () => exportAndDownload({ 
-                          colorConversionStrategy: 'LeaveColorUnchanged' 
-                        }, 'design-pdfx3-unchanged')
+                          outputProfile: 'srgb',
+                          title: 'Design Export - sRGB' 
+                        }, 'design-pdfx3-srgb')
                       }
                     ]
                 }
