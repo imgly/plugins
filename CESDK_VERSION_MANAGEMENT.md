@@ -63,23 +63,32 @@ catalog:
 
 ### Automated Method (Recommended)
 
-Use the pnpm task in one of two ways:
+Use the pnpm task in one of three ways:
 
 #### Interactive Mode
 ```bash
 pnpm cesdk:version
 ```
-- Shows the current CESDK version
-- Prompts for a new version
+- Shows current version and latest available version
+- Accepts version number, 'latest', or 'list' as input
+- Validates version exists before updating
 - Asks for confirmation before updating
 
 #### Direct Mode
 ```bash
 pnpm cesdk:version 1.50.0
 ```
-- Immediately updates to the specified version
+- Validates and immediately updates to the specified version
+- Shows error if version doesn't exist
 
-The script updates both the catalog and overrides automatically.
+#### List Available Versions
+```bash
+pnpm cesdk:version --list
+```
+- Shows recent stable versions
+- Displays the latest version
+
+The script updates both the catalog and overrides automatically with validation.
 
 Note: You can also run the script directly with `./scripts/change-examples-cesdk-version.sh`
 
