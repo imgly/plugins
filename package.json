@@ -9,7 +9,8 @@
     "dev": "pnpm run --recursive --parallel dev",
     "test": "pnpm recursive run test",
     "check:all": "pnpm recursive run check:all",
-    "check:types": "pnpm recursive run check:types"
+    "check:types": "pnpm recursive run check:types",
+    "cesdk:version": "./scripts/change-examples-cesdk-version.sh"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^6.21.0",
@@ -35,6 +36,10 @@
     "onlyBuiltDependencies": [
       "esbuild",
       "protobufjs"
-    ]
+    ],
+    "overrides": {
+      "@cesdk/cesdk-js": "1.49.1",
+      "@cesdk/engine": "1.49.1"
+    }
   }
 }

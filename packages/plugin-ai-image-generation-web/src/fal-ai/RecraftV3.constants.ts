@@ -1,4 +1,4 @@
-import { RecraftV3Input } from '@fal-ai/client/endpoints';
+import { RecraftV3TextToImageInput } from '@fal-ai/client/endpoints';
 
 const ImageSizeEnumToSize: Record<string, { width: number; height: number }> = {
   square_hd: { width: 1024, height: 1024 },
@@ -16,7 +16,7 @@ export function getImageDimensions(id: string): {
   return ImageSizeEnumToSize[id];
 }
 
-export type StyleId = Extract<RecraftV3Input['style'], string>;
+export type StyleId = Extract<RecraftV3TextToImageInput['style'], string>;
 
 // prettier-ignore
 export const STYLES_IMAGE: { id: StyleId; label: string }[] = [
