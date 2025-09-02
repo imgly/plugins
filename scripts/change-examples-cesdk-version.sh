@@ -221,10 +221,21 @@ update_root_package_json
 echo ""
 echo -e "${GREEN}Successfully updated CESDK versions to $VERSION${NC}"
 echo ""
-echo "Next steps:"
-echo "1. Run 'pnpm install' to update dependencies"
-echo "2. Run 'pnpm check:types' to verify type checking"
-echo "3. Run your tests to ensure compatibility"
+
+# Run pnpm install to update dependencies
+echo "Installing dependencies with new CESDK version..."
+echo "----------------------------------------"
+if pnpm install; then
+    echo -e "${GREEN}✓ Dependencies installed successfully${NC}"
+    echo ""
+    echo "Next steps:"
+    echo "1. Run 'pnpm check:types' to verify type checking"
+    echo "2. Run your tests to ensure compatibility"
+else
+    echo -e "${RED}⚠ Warning: 'pnpm install' encountered issues${NC}"
+    echo "Please run 'pnpm install' manually to complete the update"
+fi
+
 echo ""
 echo -e "${YELLOW}Note: This updates the test/development versions only.${NC}"
 echo "Plugin peerDependencies (minimum versions) remain unchanged."

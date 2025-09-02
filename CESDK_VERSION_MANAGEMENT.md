@@ -119,9 +119,9 @@ catalog:
 
 To test plugins with a different CESDK version:
 1. Run `pnpm cesdk:version NEW_VERSION` (or use interactive mode with just `pnpm cesdk:version`)
-2. Run `pnpm install`
-3. Run `pnpm check:types` to verify compatibility
-4. Run your tests
+   - This automatically runs `pnpm install` after updating versions
+2. Run `pnpm check:types` to verify compatibility
+3. Run your tests
 
 ## Important Notes
 
