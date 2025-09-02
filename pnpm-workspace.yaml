@@ -1,3 +1,7 @@
 packages:
   - 'packages/*'
   - 'examples/*'
+
+catalog:
+  '@cesdk/cesdk-js': '1.49.1'
+  '@cesdk/engine': '1.49.1'

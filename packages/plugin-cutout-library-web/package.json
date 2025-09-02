@@ -55,7 +55,6 @@
     "types:create": "tsc --emitDeclarationOnly"
   },
   "devDependencies": {
-    "@cesdk/cesdk-js": "~1.38.0",
     "@types/ndarray": "^1.0.14",
     "chalk": "^5.4.1",
     "concurrently": "^8.2.2",

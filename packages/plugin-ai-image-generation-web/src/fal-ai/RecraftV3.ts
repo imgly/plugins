@@ -4,7 +4,7 @@ import {
   type Provider,
   getPanelId
 } from '@imgly/plugin-ai-generation-web';
-import { type RecraftV3Input } from '@fal-ai/client/endpoints';
+import { type RecraftV3TextToImageInput } from '@fal-ai/client/endpoints';
 import RecraftV3Schema from './RecraftV3.json';
 import CreativeEditorSDK, { AssetResult } from '@cesdk/cesdk-js';
 import {
@@ -21,7 +21,7 @@ type RecraftV3Output = {
   url: string;
 };
 
-export type StyleId = Extract<RecraftV3Input['style'], string>;
+export type StyleId = Extract<RecraftV3TextToImageInput['style'], string>;
 
 type GenerationType = 'image' | 'vector';
 
@@ -31,7 +31,10 @@ type StyleSelectionPayload = {
 };
 
 interface ProviderConfiguration
-  extends CommonProviderConfiguration<RecraftV3Input, RecraftV3Output> {
+  extends CommonProviderConfiguration<
+    RecraftV3TextToImageInput,
+    RecraftV3Output
+  > {
   /**
    * Base URL used for the UI assets used in the plugin.
    *
@@ -48,7 +51,7 @@ export function RecraftV3(
   config: ProviderConfiguration
 ): (context: {
   cesdk: CreativeEditorSDK;
-}) => Promise<Provider<'image', RecraftV3Input, RecraftV3Output>> {
+}) => Promise<Provider<'image', RecraftV3TextToImageInput, RecraftV3Output>> {
   return async ({ cesdk }: { cesdk: CreativeEditorSDK }) => {
     return getProvider(cesdk, config);
   };
@@ -57,7 +60,7 @@ export function RecraftV3(
 function getProvider(
   cesdk: CreativeEditorSDK,
   config: ProviderConfiguration
-): Provider<'image', RecraftV3Input, RecraftV3Output> {
+): Provider<'image', RecraftV3TextToImageInput, RecraftV3Output> {
   const modelKey = 'fal-ai/recraft-v3';
   const styleImageAssetSourceId = `${modelKey}/styles/image`;
   const styleVectorAssetSourceId = `${modelKey}/styles/vector`;
@@ -150,14 +153,14 @@ function getProvider(
           const typeState = state<GenerationType>('type', 'image');
 
           const styleImageState = state<{
-            id: RecraftV3Input['style'];
+            id: RecraftV3TextToImageInput['style'];
             label: string;
           }>('style/image', {
             id: 'realistic_image',
             label: 'Realistic Image'
           });
           const styleVectorState = state<{
-            id: RecraftV3Input['style'];
+            id: RecraftV3TextToImageInput['style'];
             label: string;
           }>('style/vector', {
             id: 'vector_illustration',

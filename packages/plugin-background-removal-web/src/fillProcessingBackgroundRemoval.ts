@@ -127,7 +127,9 @@ async function convertBufferURI(
     const mimeType = await cesdk.engine.editor.getMimeType(uri);
     const length = cesdk.engine.editor.getBufferLength(uri);
     const data = cesdk.engine.editor.getBufferData(uri, 0, length);
-    return new Blob([data], { type: mimeType });
+    // Create a new Uint8Array with a proper ArrayBuffer to avoid SharedArrayBuffer issues
+    const buffer = new Uint8Array(data);
+    return new Blob([buffer], { type: mimeType });
   } else {
     return uri;
   }
