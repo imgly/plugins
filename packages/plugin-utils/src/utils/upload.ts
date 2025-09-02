@@ -58,7 +58,8 @@ export async function bufferURIToObjectURL(
     const mimeType = await engine.editor.getMimeType(uri);
     const length = engine.editor.getBufferLength(uri);
     const data = engine.editor.getBufferData(uri, 0, length);
-    const blob = new Blob([data], { type: mimeType });
+    const buffer = new Uint8Array(data);
+    const blob = new Blob([buffer], { type: mimeType });
     return URL.createObjectURL(blob);
   } else {
     return uri;
