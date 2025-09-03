@@ -538,7 +538,7 @@ importers:
     devDependencies:
       '@fal-ai/client':
         specifier: ^1.3.0
-        version: 1.3.0
+        version: 1.6.2
       '@imgly/plugin-ai-generation-web':
         specifier: workspace:*
         version: file:packages/plugin-ai-generation-web(@cesdk/cesdk-js@1.49.1(react@18.3.1))
