@@ -46,9 +46,9 @@
     "start": "npm run watch",
     "clean": "pnpm exec rimraf dist",
     "purge": "pnpm exec rimraf node_modules",
-    "build": "pnpm run clean && pnpm _syncPnpm && pnpm exec node scripts/build.mjs",
+    "build": "pnpm run clean && pnpm exec node scripts/build.mjs",
     "test": "echo No tests",
-    "dev": "pnpm --filter \"${npm_package_name}^...\" --parallel run dev:wait && pnpm exec concurrently 'node scripts/watch.mjs' 'pnpm _syncPnpm --watch' --names 'build,sync deps'",
+    "dev": "node scripts/watch.mjs",
     "dev:wait": "pnpm exec wait-on ./dist/index.mjs ./dist/index.d.ts ./dist/fal-ai/index.mjs ./dist/fal-ai/index.d.ts --window 250 --timeout 60000",
     "dev:types": "tsc --emitDeclarationOnly --watch --preserveWatchOutput",
     "publish:latest": "pnpm run build && npm publish --tag latest --access public",
@@ -57,11 +57,13 @@
     "check:lint": "eslint --max-warnings 0 './src/**/*.{ts,tsx}'",
     "check:pretty": "prettier --list-different './src/**/*.{ts,tsx}'",
     "check:types": "tsc --noEmit",
-    "types:create": "tsc --emitDeclarationOnly",
-    "_syncPnpm": "pnpm sync-dependencies-meta-injected"
+    "types:create": "tsc --emitDeclarationOnly"
+  },
+  "dependencies": {
+    "@fal-ai/client": "^1.3.0",
+    "@imgly/plugin-ai-generation-web": "workspace:*"
   },
   "devDependencies": {
-    "@imgly/plugin-ai-generation-web": "workspace:*",
     "@imgly/plugin-utils": "workspace:*",
     "@types/ndarray": "^1.0.14",
     "chalk": "^5.3.0",
@@ -72,18 +74,7 @@
     "openapi-types": "^12.1.3",
     "typescript": "^5.3.3"
   },
-  "dependenciesMeta": {
-    "@imgly/plugin-utils": {
-      "injected": true
-    },
-    "@imgly/plugin-ai-generation-web": {
-      "injected": true
-    }
-  },
   "peerDependencies": {
     "@cesdk/cesdk-js": "^1.49.1"
-  },
-  "dependencies": {
-    "@fal-ai/client": "^1.3.0"
   }
 }
