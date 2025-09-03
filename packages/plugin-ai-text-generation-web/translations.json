@@ -38,6 +38,27 @@
     
     "ly.img.plugin-ai-text-generation-web.quickAction.changeTextTo": "Change Text To...",
     "ly.img.plugin-ai-text-generation-web.quickAction.changeTextTo.prompt": "Custom transformation",
-    "ly.img.plugin-ai-text-generation-web.quickAction.changeTextTo.apply": "Transform"
+    "ly.img.plugin-ai-text-generation-web.quickAction.changeTextTo.prompt.placeholder": "e.g. 'a list of bullet points', 'a formal announcement'",
+    "ly.img.plugin-ai-text-generation-web.quickAction.changeTextTo.apply": "Transform",
+
+    "ly.img.plugin-ai-text-generation-web.quickAction.providerSelect.label": "Provider",
+
+    "ly.img.plugin-ai-text-generation-web.quickAction.translate.en_US": "English (US)",
+    "ly.img.plugin-ai-text-generation-web.quickAction.translate.en_UK": "English (UK)",
+    "ly.img.plugin-ai-text-generation-web.quickAction.translate.es": "Spanish",
+    "ly.img.plugin-ai-text-generation-web.quickAction.translate.fr": "French",
+    "ly.img.plugin-ai-text-generation-web.quickAction.translate.de": "German",
+    "ly.img.plugin-ai-text-generation-web.quickAction.translate.pt": "Portuguese",
+    "ly.img.plugin-ai-text-generation-web.quickAction.translate.it": "Italian",
+    "ly.img.plugin-ai-text-generation-web.quickAction.translate.ru": "Russian",
+    "ly.img.plugin-ai-text-generation-web.quickAction.translate.zh": "Mandarin Chinese",
+    "ly.img.plugin-ai-text-generation-web.quickAction.translate.ja": "Japanese",
+
+    "ly.img.plugin-ai-text-generation-web.quickAction.changeTone.professional": "Professional",
+    "ly.img.plugin-ai-text-generation-web.quickAction.changeTone.casual": "Casual",
+    "ly.img.plugin-ai-text-generation-web.quickAction.changeTone.friendly": "Friendly",
+    "ly.img.plugin-ai-text-generation-web.quickAction.changeTone.serious": "Serious",
+    "ly.img.plugin-ai-text-generation-web.quickAction.changeTone.humorous": "Humorous",
+    "ly.img.plugin-ai-text-generation-web.quickAction.changeTone.optimistic": "Optimistic"
   }
 }

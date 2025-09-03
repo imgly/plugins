@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- **Translations**: Fixed translations for dropdown menus and added missing UI text translations
+
 ## [0.2.4] - 2025-08-07
 
 ### New Features
