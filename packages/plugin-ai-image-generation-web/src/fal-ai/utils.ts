@@ -1,6 +1,6 @@
-import { fal } from '@fal-ai/client';
 import { mimeTypeToExtension } from '@imgly/plugin-utils';
 import CreativeEditorSDK from '@cesdk/cesdk-js';
+import { FalClient } from './createFalClient';
 
 type CustomImageSize = {
   width: number;
@@ -19,6 +19,7 @@ export function isCustomImageSize(
 }
 
 export async function uploadImageInputToFalIfNeeded(
+  client: FalClient,
   imageUrl?: string,
   cesdk?: CreativeEditorSDK
 ): Promise<string | undefined> {
@@ -37,7 +38,7 @@ export async function uploadImageInputToFalIfNeeded(
         type: mimeType
       }
     );
-    return fal.storage.upload(imageUrlFile);
+    return client.storage.upload(imageUrlFile);
   }
   if (cesdk != null && imageUrl.startsWith('buffer:')) {
     const mimeType = await cesdk.engine.editor.getMimeType(imageUrl);
@@ -52,20 +53,21 @@ export async function uploadImageInputToFalIfNeeded(
         type: mimeType
       }
     );
-    return fal.storage.upload(imageUrlFile);
+    return client.storage.upload(imageUrlFile);
   }
 
   return imageUrl;
 }
 
 export async function uploadImageArrayToFalIfNeeded(
+  client: FalClient,
   imageUrls?: string[],
   cesdk?: CreativeEditorSDK
 ): Promise<string[] | undefined> {
   if (imageUrls == null || !Array.isArray(imageUrls)) return undefined;
 
   const uploadedUrls = await Promise.all(
-    imageUrls.map((url) => uploadImageInputToFalIfNeeded(url, cesdk))
+    imageUrls.map((url) => uploadImageInputToFalIfNeeded(client, url, cesdk))
   );
 
   return uploadedUrls.filter((url): url is string => url != null);
