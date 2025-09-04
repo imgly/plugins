@@ -86,6 +86,12 @@ const STYLE_OPTIONS = [
 ];
 
 const StyleTransfer: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
+  // Set feature default for this quick action
+  cesdk.feature.enable(
+    'ly.img.plugin-ai-image-generation-web.quickAction.styleTransfer',
+    true
+  );
+
   cesdk.i18n.setTranslations({
     en: {
       [`${I18N_DEFAULT_PREFIX}`]: 'Change Art Style',

@@ -192,6 +192,23 @@ cesdk.i18n.setTranslations({
 });
 ```
 
+### Feature Control
+
+You can control various aspects of the audio generation plugin using the Feature API:
+
+```typescript
+// Disable provider selection for speech
+cesdk.feature.enable('ly.img.plugin-ai-audio-generation-web.speech.providerSelect', false);
+
+// Disable provider selection for sound effects
+cesdk.feature.enable('ly.img.plugin-ai-audio-generation-web.sound.providerSelect', false);
+
+// Control individual provider visibility
+cesdk.feature.enable('ly.img.plugin-ai-audio-generation-web.providerSelect', false);
+```
+
+For more information about Feature API and available feature flags, see the [@imgly/plugin-ai-generation-web documentation](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-generation-web#available-feature-flags).
+
 ### Customizing Labels and Translations
 
 You can customize all labels and text in the AI audio generation interface using the translation system. This allows you to provide better labels for your users in any language.

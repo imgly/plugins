@@ -2,6 +2,13 @@
 
 ## [Unreleased]
 
+### New Features
+
+-   [all] **Feature API Integration**: Added comprehensive Feature API support across all AI plugins to control visibility and availability of features through feature flags. Core features include `providerSelect`, `quickAction`, `quickAction.providerSelect`, `fromText`, and `fromImage` flags.
+-   [all] **Quick Action Feature Flags**: Each quick action now automatically registers and respects its own feature flag (e.g., `ly.img.plugin-ai-image-generation-web.quickAction.editImage`), allowing fine-grained control over which quick actions are available to users.
+-   [image-generation] **Provider Style Group Control**: Added Feature API support for Recraft providers to control style group visibility. RecraftV3 supports `style.image` and `style.vector` flags, while Recraft20b adds `style.icon` flag for controlling icon style availability.
+-   [all] **Provider Selection Feature Flags**: Added support for controlling provider selection UI in both panels (`providerSelect`) and quick actions (`quickAction.providerSelect`), with proper handling when multiple providers are configured.
+
 ## [0.2.5] - 2025-09-03
 
 ### New Features

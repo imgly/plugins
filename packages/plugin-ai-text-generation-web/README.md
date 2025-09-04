@@ -215,6 +215,25 @@ cesdk.i18n.setTranslations({
 });
 ```
 
+### Feature Control
+
+You can control various aspects of the text generation plugin using the Feature API:
+
+```typescript
+// Disable provider selection dropdown
+cesdk.feature.enable('ly.img.plugin-ai-text-generation-web.providerSelect', false);
+
+// Disable all quick actions
+cesdk.feature.enable('ly.img.plugin-ai-text-generation-web.quickAction', false);
+
+// Disable specific quick actions
+cesdk.feature.enable('ly.img.plugin-ai-text-generation-web.quickAction.improve', false);
+cesdk.feature.enable('ly.img.plugin-ai-text-generation-web.quickAction.translate', false);
+cesdk.feature.enable('ly.img.plugin-ai-text-generation-web.quickAction.changeTone', false);
+```
+
+For more information about Feature API and available feature flags, see the [@imgly/plugin-ai-generation-web documentation](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-generation-web#available-feature-flags).
+
 ### Customizing Labels and Translations
 
 You can customize all labels and text in the AI text generation interface using the translation system. This allows you to provide better labels for your users in any language.

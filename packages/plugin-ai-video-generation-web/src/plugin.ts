@@ -25,6 +25,29 @@ export function VideoGeneration<I, O extends Output>(
       // Check AI plugin version consistency
       checkAiPluginVersion(cesdk, PLUGIN_ID, PLUGIN_VERSION);
 
+      // Initialize Feature API for video generation plugin
+      // Enable all features by default for backward compatibility
+      cesdk.feature.enable(
+        'ly.img.plugin-ai-video-generation-web.fromText',
+        true
+      );
+      cesdk.feature.enable(
+        'ly.img.plugin-ai-video-generation-web.fromImage',
+        true
+      );
+      cesdk.feature.enable(
+        'ly.img.plugin-ai-video-generation-web.providerSelect',
+        true
+      );
+      cesdk.feature.enable(
+        'ly.img.plugin-ai-video-generation-web.quickAction',
+        true
+      );
+      cesdk.feature.enable(
+        'ly.img.plugin-ai-video-generation-web.quickAction.providerSelect',
+        true
+      );
+
       cesdk.setTranslations({
         en: {
           [`panel.${VIDEO_GENERATION_PANEL_ID}`]: 'Video Generation',

@@ -48,6 +48,12 @@ function getI18nLabel(modelKey: string, suffix?: string) {
 }
 
 const EditImage: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
+  // Set feature default for this quick action
+  cesdk.feature.enable(
+    'ly.img.plugin-ai-image-generation-web.quickAction.editImage',
+    true
+  );
+
   cesdk.i18n.setTranslations({
     en: {
       [`${I18N_DEFAULT_PREFIX}`]: 'Edit Image...',

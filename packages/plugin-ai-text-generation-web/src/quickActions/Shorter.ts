@@ -43,6 +43,12 @@ export type InputType = {
 };
 
 const Shorter: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
+  // Set feature default for this quick action
+  cesdk.feature.enable(
+    'ly.img.plugin-ai-text-generation-web.quickAction.shorter',
+    true
+  );
+
   cesdk.i18n.setTranslations({
     en: {
       [`${I18N_DEFAULT_PREFIX}`]: 'Make Shorter'
