@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [0.2.5] - 2025-09-03
+
 ### New Features
 
 -   [image-generation] **NanoBanana Provider**: Added NanoBanana text-to-image provider via fal.ai with fast generation times, 1024×1024 resolution, support for multiple output formats (JPEG, PNG), configurable number of images (1-4), and remixPageWithPrompt quick action
