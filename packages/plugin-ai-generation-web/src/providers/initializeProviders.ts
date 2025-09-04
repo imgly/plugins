@@ -190,11 +190,11 @@ function getBuilderRenderFunctionByFromType<
     const { builder, experimental, engine } = context;
 
     // Check if text and image input are enabled via Feature API
-    const textInputFeatureId = `ly.img.plugin-ai-${kind}-generation-web.input.text`;
+    const textInputFeatureId = `ly.img.plugin-ai-${kind}-generation-web.fromText`;
     const isTextInputEnabled = cesdk.feature.isEnabled(textInputFeatureId, {
       engine
     });
-    const imageInputFeatureId = `ly.img.plugin-ai-${kind}-generation-web.input.image`;
+    const imageInputFeatureId = `ly.img.plugin-ai-${kind}-generation-web.fromImage`;
     const isImageInputEnabled = cesdk.feature.isEnabled(imageInputFeatureId, {
       engine
     });
@@ -270,7 +270,7 @@ function getBuilderRenderFunctionByFromType<
         : undefined;
 
     // Check if provider selector is enabled via Feature API
-    const providerFeatureId = `ly.img.plugin-ai-${kind}-generation-web.provider`;
+    const providerFeatureId = `ly.img.plugin-ai-${kind}-generation-web.providerSelect`;
     const isProviderSelectorEnabled = cesdk.feature.isEnabled(
       providerFeatureId,
       { engine }
@@ -414,13 +414,13 @@ function getBuilderRenderFunctionByProvider<
 
     // Check if provider selector is enabled via Feature API
     // Audio plugin has special cases for speech and sound providers
-    let providerFeatureId = `ly.img.plugin-ai-${kind}-generation-web.provider`;
+    let providerFeatureId = `ly.img.plugin-ai-${kind}-generation-web.providerSelect`;
     // For audio, we check prefix to determine if it's speech or sound
     if (kind === 'audio' && prefix) {
       if (prefix.includes('speech')) {
-        providerFeatureId = `ly.img.plugin-ai-audio-generation-web.speech.provider`;
+        providerFeatureId = `ly.img.plugin-ai-audio-generation-web.speech.providerSelect`;
       } else if (prefix.includes('sound')) {
-        providerFeatureId = `ly.img.plugin-ai-audio-generation-web.sound.provider`;
+        providerFeatureId = `ly.img.plugin-ai-audio-generation-web.sound.providerSelect`;
       }
     }
     const isProviderSelectorEnabled = cesdk.feature.isEnabled(

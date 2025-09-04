@@ -28,15 +28,15 @@ export function VideoGeneration<I, O extends Output>(
       // Initialize Feature API for video generation plugin
       // Enable all features by default for backward compatibility
       cesdk.feature.enable(
-        'ly.img.plugin-ai-video-generation-web.input.text',
+        'ly.img.plugin-ai-video-generation-web.fromText',
         true
       );
       cesdk.feature.enable(
-        'ly.img.plugin-ai-video-generation-web.input.image',
+        'ly.img.plugin-ai-video-generation-web.fromImage',
         true
       );
       cesdk.feature.enable(
-        'ly.img.plugin-ai-video-generation-web.provider',
+        'ly.img.plugin-ai-video-generation-web.providerSelect',
         true
       );
       cesdk.feature.enable(
@@ -44,7 +44,7 @@ export function VideoGeneration<I, O extends Output>(
         true
       );
       cesdk.feature.enable(
-        'ly.img.plugin-ai-video-generation-web.quickAction.provider',
+        'ly.img.plugin-ai-video-generation-web.quickAction.providerSelect',
         true
       );
 

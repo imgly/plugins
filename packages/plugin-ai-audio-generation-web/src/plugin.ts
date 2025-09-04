@@ -28,11 +28,11 @@ export function AudioGeneration<I, O extends Output>(
       // Initialize Feature API for audio generation plugin
       // Enable all features by default for backward compatibility
       cesdk.feature.enable(
-        'ly.img.plugin-ai-audio-generation-web.speech.provider',
+        'ly.img.plugin-ai-audio-generation-web.speech.providerSelect',
         true
       );
       cesdk.feature.enable(
-        'ly.img.plugin-ai-audio-generation-web.sound.provider',
+        'ly.img.plugin-ai-audio-generation-web.sound.providerSelect',
         true
       );
 

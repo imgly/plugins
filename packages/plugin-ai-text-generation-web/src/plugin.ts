@@ -34,7 +34,7 @@ export function TextGeneration<I, O extends Output>(
       // Initialize Feature API for text generation plugin
       // Enable all features by default for backward compatibility
       cesdk.feature.enable(
-        'ly.img.plugin-ai-text-generation-web.provider',
+        'ly.img.plugin-ai-text-generation-web.providerSelect',
         true
       );
       cesdk.feature.enable(
@@ -42,7 +42,7 @@ export function TextGeneration<I, O extends Output>(
         true
       );
       cesdk.feature.enable(
-        'ly.img.plugin-ai-text-generation-web.quickAction.provider',
+        'ly.img.plugin-ai-text-generation-web.quickAction.providerSelect',
         true
       );
 

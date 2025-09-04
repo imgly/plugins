@@ -360,7 +360,7 @@ function createQuickActionMenuRenderFunction<
               }));
 
           // Check if provider selector is enabled via Feature API
-          const providerFeatureId = `ly.img.plugin-ai-${context.kind}-generation-web.quickAction.provider`;
+          const providerFeatureId = `ly.img.plugin-ai-${context.kind}-generation-web.quickAction.providerSelect`;
           const isProviderSelectorEnabled = context.cesdk.feature.isEnabled(
             providerFeatureId,
             {
@@ -422,7 +422,7 @@ function createQuickActionMenuRenderFunction<
           // === RENDER REGULAR QUICK ACTIONS MENU ===
           // =========================================
           // Check if provider selector is enabled via Feature API
-          const providerFeatureId = `ly.img.plugin-ai-${context.kind}-generation-web.quickAction.provider`;
+          const providerFeatureId = `ly.img.plugin-ai-${context.kind}-generation-web.quickAction.providerSelect`;
           const isProviderSelectorEnabled = context.cesdk.feature.isEnabled(
             providerFeatureId,
             {

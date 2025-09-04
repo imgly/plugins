@@ -38,15 +38,15 @@ export function ImageGeneration<I, O extends Output>(
       // Initialize Feature API for image generation plugin
       // Enable all features by default for backward compatibility
       cesdk.feature.enable(
-        'ly.img.plugin-ai-image-generation-web.input.text',
+        'ly.img.plugin-ai-image-generation-web.fromText',
         true
       );
       cesdk.feature.enable(
-        'ly.img.plugin-ai-image-generation-web.input.image',
+        'ly.img.plugin-ai-image-generation-web.fromImage',
         true
       );
       cesdk.feature.enable(
-        'ly.img.plugin-ai-image-generation-web.provider',
+        'ly.img.plugin-ai-image-generation-web.providerSelect',
         true
       );
       cesdk.feature.enable(
@@ -54,7 +54,7 @@ export function ImageGeneration<I, O extends Output>(
         true
       );
       cesdk.feature.enable(
-        'ly.img.plugin-ai-image-generation-web.quickAction.provider',
+        'ly.img.plugin-ai-image-generation-web.quickAction.providerSelect',
         true
       );
 

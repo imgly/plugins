@@ -28,7 +28,7 @@ export function StickerGeneration<I, O extends Output>(
       // Initialize Feature API for sticker generation plugin
       // Enable all features by default for backward compatibility
       cesdk.feature.enable(
-        'ly.img.plugin-ai-sticker-generation-web.provider',
+        'ly.img.plugin-ai-sticker-generation-web.providerSelect',
         true
       );
 
