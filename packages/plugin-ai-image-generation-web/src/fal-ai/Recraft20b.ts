@@ -2,7 +2,8 @@ import { Icons, CustomAssetSource } from '@imgly/plugin-utils';
 import {
   CommonProviderConfiguration,
   type Provider,
-  getPanelId
+  getPanelId,
+  createTranslationCallback
 } from '@imgly/plugin-ai-generation-web';
 import Recraft20bSchema from './Recraft20b.json';
 import CreativeEditorSDK, { AssetResult } from '@cesdk/cesdk-js';
@@ -88,7 +89,15 @@ function getProvider(
       id,
       label,
       thumbUri: getStyleThumbnail(id, baseURL)
-    }))
+    })),
+    {
+      translateLabel: createTranslationCallback(
+        cesdk,
+        modelKey,
+        'style',
+        'image'
+      )
+    }
   );
   vectorStyleAssetSource = new CustomAssetSource(
     styleVectorAssetSourceId,
@@ -96,7 +105,15 @@ function getProvider(
       id,
       label,
       thumbUri: getStyleThumbnail(id, baseURL)
-    }))
+    })),
+    {
+      translateLabel: createTranslationCallback(
+        cesdk,
+        modelKey,
+        'style',
+        'image'
+      )
+    }
   );
   iconStyleAssetSource = new CustomAssetSource(
     styleIconAssetSourceId,
@@ -104,7 +121,15 @@ function getProvider(
       id,
       label,
       thumbUri: getStyleThumbnail(id, baseURL)
-    }))
+    })),
+    {
+      translateLabel: createTranslationCallback(
+        cesdk,
+        modelKey,
+        'style',
+        'image'
+      )
+    }
   );
 
   imageStyleAssetSource.setAssetActive('realistic_image');
@@ -163,10 +188,35 @@ function getProvider(
     }
   );
 
+  // Build default translations from constants
+  const styleTranslations: Record<string, string> = {};
+
+  // Add all image style translations
+  STYLES_IMAGE.forEach(({ id, label }) => {
+    styleTranslations[
+      `ly.img.plugin-ai-image-generation-web.${modelKey}.property.style.${id}`
+    ] = label;
+  });
+
+  // Add all vector style translations
+  STYLES_VECTOR.forEach(({ id, label }) => {
+    styleTranslations[
+      `ly.img.plugin-ai-image-generation-web.${modelKey}.property.style.${id}`
+    ] = label;
+  });
+
+  // Add all icon style translations
+  STYLES_ICON.forEach(({ id, label }) => {
+    styleTranslations[
+      `ly.img.plugin-ai-image-generation-web.${modelKey}.property.style.${id}`
+    ] = label;
+  });
+
   cesdk.i18n.setTranslations({
     en: {
       [`panel.${getPanelId('fal-ai/recraft/v2/text-to-image')}.styleSelection`]:
-        'Style Selection'
+        'Style Selection',
+      ...styleTranslations
     }
   });
 

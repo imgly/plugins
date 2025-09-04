@@ -6,7 +6,11 @@ const Icons = {
 
 export { Icons };
 
-export { CustomAssetSource } from './assetSources/CustomAssetSource';
+export { 
+  CustomAssetSource,
+  type CustomAssetSourceOptions,
+  type SelectValue
+} from './assetSources/CustomAssetSource';
 
 export { IndexedDBAssetSource } from './assetSources/IndexedDBAssetSource';
 
@@ -49,3 +53,8 @@ export {
 export { default as isDefined } from './utils/isDefined';
 
 export { default as toArray } from './utils/toArray';
+
+export { 
+  supportsTranslateAPI,
+  hasTranslateAPI
+} from './translationHelpers';

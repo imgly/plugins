@@ -1,7 +1,8 @@
 import { Icons, CustomAssetSource } from '@imgly/plugin-utils';
 import {
   CommonProviderConfiguration,
-  getPanelId
+  getPanelId,
+  createTranslationCallback
 } from '@imgly/plugin-ai-generation-web';
 import Recraft20bSchema from './Recraft20b.json';
 import CreativeEditorSDK, { AssetResult } from '@cesdk/cesdk-js';
@@ -72,7 +73,15 @@ function getProvider(
       id,
       label,
       thumbUri: getStyleThumbnail(id, baseURL)
-    }))
+    })),
+    {
+      translateLabel: createTranslationCallback(
+        cesdk,
+        modelKey,
+        'style',
+        'sticker'
+      )
+    }
   );
 
   iconStyleAssetSource.setAssetActive('icon/broken_line');
@@ -102,11 +111,22 @@ function getProvider(
     }
   );
 
+  // Build default translations from constants
+  const styleTranslations: Record<string, string> = {};
+
+  // Add all icon style translations
+  STYLES_ICON.forEach(({ id, label }) => {
+    styleTranslations[
+      `ly.img.plugin-ai-sticker-generation-web.${modelKey}.property.style.${id}`
+    ] = label;
+  });
+
   cesdk.i18n.setTranslations({
     en: {
       [`panel.${getPanelId(
         'fal-ai/recraft/v2/text-to-sticker'
-      )}.styleSelection`]: 'Style Selection'
+      )}.styleSelection`]: 'Style Selection',
+      ...styleTranslations
     }
   });
 
