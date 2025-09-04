@@ -2,9 +2,17 @@
 
 ## [Unreleased]
 
-### Fixed
+## [0.2.5] - 2025-09-03
 
-- **Translations**: Fixed translations for dropdown menus and added missing UI text translations
+### New Features
+
+-   [image-generation] **NanoBanana Provider**: Added NanoBanana text-to-image provider via fal.ai with fast generation times, 1024×1024 resolution, support for multiple output formats (JPEG, PNG), configurable number of images (1-4), and remixPageWithPrompt quick action
+-   [image-generation] **NanoBananaEdit Provider**: Added NanoBananaEdit image-to-image provider via fal.ai for editing existing images with text prompts, supporting all standard quick actions (editImage, swapBackground, styleTransfer, artistTransfer, createVariant, combineImages with up to 10 images, remixPage, remixPageWithPrompt)
+
+### Bug Fixes
+
+-   [all] **fal.ai Provider Configuration**: Fixed singleton configuration conflict when using multiple fal.ai providers with different proxy URLs. Each provider now maintains its own client instance instead of overwriting a global configuration
+-   [video-generation] **Missing Dependency**: Added missing `@fal-ai/client` dependency to plugin-ai-video-generation-web package.json to ensure the package works correctly when installed independently
 
 ## [0.2.4] - 2025-08-07
 
