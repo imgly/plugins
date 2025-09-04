@@ -31,6 +31,21 @@ export function TextGeneration<I, O extends Output>(
       // Check AI plugin version consistency
       checkAiPluginVersion(cesdk, PLUGIN_ID, PLUGIN_VERSION);
 
+      // Initialize Feature API for text generation plugin
+      // Enable all features by default for backward compatibility
+      cesdk.feature.enable(
+        'ly.img.plugin-ai-text-generation-web.provider',
+        true
+      );
+      cesdk.feature.enable(
+        'ly.img.plugin-ai-text-generation-web.quickAction',
+        true
+      );
+      cesdk.feature.enable(
+        'ly.img.plugin-ai-text-generation-web.quickAction.provider',
+        true
+      );
+
       cesdk.ui.addIconSet(PLUGIN_ICON_SET_ID, iconSprite);
       cesdk.i18n.setTranslations({
         en: {

@@ -35,6 +35,29 @@ export function ImageGeneration<I, O extends Output>(
       // Check AI plugin version consistency
       checkAiPluginVersion(cesdk, PLUGIN_ID, PLUGIN_VERSION);
 
+      // Initialize Feature API for image generation plugin
+      // Enable all features by default for backward compatibility
+      cesdk.feature.enable(
+        'ly.img.plugin-ai-image-generation-web.input.text',
+        true
+      );
+      cesdk.feature.enable(
+        'ly.img.plugin-ai-image-generation-web.input.image',
+        true
+      );
+      cesdk.feature.enable(
+        'ly.img.plugin-ai-image-generation-web.provider',
+        true
+      );
+      cesdk.feature.enable(
+        'ly.img.plugin-ai-image-generation-web.quickAction',
+        true
+      );
+      cesdk.feature.enable(
+        'ly.img.plugin-ai-image-generation-web.quickAction.provider',
+        true
+      );
+
       const registry = ActionRegistry.get();
 
       const disposeApp = registry.register({
