@@ -143,27 +143,6 @@ await cesdk.addPlugin(SoundstripePlugin({
 
 **Note:** Either `apiKey` or `baseUrl` must be provided. You cannot omit both parameters.
 
-### Proxy Configuration Example
-
-For production environments, configure your proxy server to handle Soundstripe API requests:
-
-```javascript
-// Example Node.js proxy endpoint
-app.use('/api/soundstripe', async (req, res) => {
-  const response = await fetch(`https://api.soundstripe.com/v1${req.path}`, {
-    headers: {
-      'Authorization': `Bearer ${process.env.SOUNDSTRIPE_API_KEY}`,
-      'Accept': 'application/vnd.api+json',
-      'Content-Type': 'application/vnd.api+json'
-    }
-  });
-  
-  const data = await response.json();
-  res.json(data);
-});
-```
-
-Then modify the plugin to use your proxy endpoint instead of direct API calls.
 
 ## API Reference
 
