@@ -104,20 +104,44 @@ You can also manually trigger a refresh using the exported utility function:
 import { refreshSoundstripeAudioURIs } from '@imgly/plugin-soundstripe-web';
 
 // Manually refresh all Soundstripe audio URIs in the current scene
-await refreshSoundstripeAudioURIs(apiKey, cesdk.engine);
+await refreshSoundstripeAudioURIs(cesdk.engine, { apiKey });
+
+// Or when using a proxy server
+await refreshSoundstripeAudioURIs(cesdk.engine, { baseUrl: 'https://your-proxy.com' });
 ```
 
 ## Configuration
 
 ### Plugin Configuration
 
+The plugin can be configured in two ways depending on your setup:
+
+#### Option 1: Direct API Access (Development)
 ```typescript
 import SoundstripePlugin from '@imgly/plugin-soundstripe-web';
 
 await cesdk.addPlugin(SoundstripePlugin({
-  apiKey: 'your-soundstripe-api-key', // Required: Your Soundstripe API key
+  apiKey: 'your-soundstripe-api-key' // Your Soundstripe API key
 }))
 ```
+
+#### Option 2: Proxy Server (Production - Recommended)
+```typescript
+import SoundstripePlugin from '@imgly/plugin-soundstripe-web';
+
+await cesdk.addPlugin(SoundstripePlugin({
+  baseUrl: 'https://your-proxy-server.com' // Your proxy server URL
+}))
+```
+
+#### Configuration Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `apiKey` | `string` | Conditional | Your Soundstripe API key. Required when using direct API access (Option 1). |
+| `baseUrl` | `string` | Conditional | Your proxy server base URL. Required when using proxy server (Option 2). |
+
+**Note:** Either `apiKey` or `baseUrl` must be provided. You cannot omit both parameters.
 
 ### Proxy Configuration Example
 
@@ -148,18 +172,23 @@ Then modify the plugin to use your proxy endpoint instead of direct API calls.
 Creates a new Soundstripe plugin instance.
 
 #### Parameters
-- `configuration.apiKey` (string, required): Your Soundstripe API key
+- `configuration.apiKey` (string, optional): Your Soundstripe API key. Required when using direct API access.
+- `configuration.baseUrl` (string, optional): Your proxy server base URL. Required when using proxy server.
+
+**Note:** Either `apiKey` or `baseUrl` must be provided.
 
 #### Returns
 A plugin object compatible with CE.SDK's plugin system
 
-### `refreshSoundstripeAudioURIs(apiKey, engine)`
+### `refreshSoundstripeAudioURIs(engine, config)`
 
 Manually refreshes all Soundstripe audio URIs in the current scene.
 
 #### Parameters
-- `apiKey` (string, required): Your Soundstripe API key
 - `engine` (CreativeEngine, required): The CE.SDK engine instance
+- `config` (object, optional): Configuration object with the following properties:
+  - `apiKey` (string, optional): Your Soundstripe API key. Optional when using proxy server.
+  - `baseUrl` (string, optional): Your proxy server base URL
 
 #### Returns
 Promise<void>

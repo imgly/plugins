@@ -7,19 +7,23 @@ export const SoundstripePlugin = (
 ): Omit<EditorPlugin, 'name' | 'version'> => {
   const { apiKey, baseUrl } = pluginConfiguration;
 
+  // Validate configuration: either apiKey (for direct API) or baseUrl (for proxy) must be provided
+  if (!apiKey && !baseUrl) {
+    throw new Error('Soundstripe Plugin: Either apiKey or baseUrl must be provided');
+  }
+
   return {
     async initialize({ engine, cesdk }) {
       try {
         const soundstripeSource = createSoundstripeSource(
-          apiKey,
           engine as CreativeEngine,
-          baseUrl
+          { apiKey, baseUrl }
         );
         engine.asset.addSource(soundstripeSource);
 
         // Refresh all soundstripe urls when a scene is loaded
         engine.scene.onActiveChanged(() => {
-          refreshSoundstripeAudioURIs(apiKey, engine as CreativeEngine, baseUrl);
+          refreshSoundstripeAudioURIs(engine as CreativeEngine, { apiKey, baseUrl });
         });
         if (cesdk) {
           cesdk.setTranslations({
@@ -37,6 +41,6 @@ export const SoundstripePlugin = (
 };
 
 export interface SoundstripePluginConfiguration {
-  apiKey: string;
-  baseUrl?: string; // Optional base URL for proxy server
+  apiKey?: string; // Optional API key (required when using direct API access)
+  baseUrl?: string; // Optional base URL for proxy server (required when using proxy)
 }

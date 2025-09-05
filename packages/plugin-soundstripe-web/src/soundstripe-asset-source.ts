@@ -20,11 +20,16 @@ const EMPTY_RESULT: AssetsQueryResult = {
   total: 0
 };
 
+interface SoundstripeSourceConfig {
+  apiKey?: string;
+  baseUrl?: string;
+}
+
 function createSoundstripeSource(
-  apiKey: string,
   engine: CreativeEngine,
-  baseUrl?: string
+  config: SoundstripeSourceConfig
 ): AssetSource {
+  const { apiKey, baseUrl } = config;
   const fetchSoundstripeAssets = async (
     query?: string,
     page?: number,
@@ -37,13 +42,20 @@ function createSoundstripeSource(
     if (page) url.searchParams.set('page[number]', page.toString());
     if (perPage) url.searchParams.set('page[size]', perPage.toString());
 
-    const response = await fetch(url.toString(), {
-      headers: {
-        Accept: 'application/vnd.api+json',
-        'Content-Type': 'application/vnd.api+json',
-        Authorization: `Bearer ${apiKey}`
-      }
-    });
+    const headers: Record<string, string> = {
+      Accept: 'application/vnd.api+json',
+      'Content-Type': 'application/vnd.api+json'
+    };
+
+    // Only add Authorization header if apiKey is provided (not needed for proxy)
+    if (apiKey) {
+      console.warn(
+        'Using direct Soundstripe API access, this is not recommended for production use. Instead, consider using a proxy server.'
+      );
+      headers.Authorization = `Bearer ${apiKey}`;
+    }
+
+    const response = await fetch(url.toString(), { headers });
 
     if (!response.ok) {
       throw new Error(

@@ -1,30 +1,41 @@
 import { CreativeEngine } from '@cesdk/cesdk-js';
 import { SoundstripeSingleAssetResponse, SoundstripeAudioFile } from './types';
 
+interface RefreshAudioConfig {
+  apiKey?: string;
+  baseUrl?: string;
+}
+
 /**
  * Refreshes expired Soundstripe audio URIs in the current scene
- * @param apiKey - Your Soundstripe API key
  * @param engine - The CESDK engine instance
- * @param baseUrl - Optional base URL for proxy server
+ * @param config - Configuration object with apiKey and baseUrl
  */
 export async function refreshSoundstripeAudioURIs(
-  apiKey: string,
   engine: CreativeEngine,
-  baseUrl?: string
+  config: RefreshAudioConfig = {}
 ): Promise<void> {
+  const { apiKey, baseUrl } = config;
   const fetchSoundstripeSong = async (
     songId: string
   ): Promise<SoundstripeSingleAssetResponse> => {
     const apiBaseUrl = baseUrl || 'https://api.soundstripe.com';
     const url = new URL(`${apiBaseUrl}/v1/songs/${songId}`);
 
-    const response = await fetch(url.toString(), {
-      headers: {
-        Accept: 'application/vnd.api+json',
-        'Content-Type': 'application/vnd.api+json',
-        Authorization: `Bearer ${apiKey}`
-      }
-    });
+    const headers: Record<string, string> = {
+      Accept: 'application/vnd.api+json',
+      'Content-Type': 'application/vnd.api+json'
+    };
+
+    // Only add Authorization header if apiKey is provided (not needed for proxy)
+    if (apiKey) {
+      console.warn(
+        'Using direct Soundstripe API access for refresh, this is not recommended for production use. Instead, consider using a proxy server.'
+      );
+      headers.Authorization = `Bearer ${apiKey}`;
+    }
+
+    const response = await fetch(url.toString(), { headers });
 
     if (!response.ok) {
       throw new Error(
