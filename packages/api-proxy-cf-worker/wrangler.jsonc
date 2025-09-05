@@ -28,7 +28,7 @@
 	"vars": {
 		"REWRITTEN_HOSTNAME": "api.soundstripe.com",
 		"WHITELISTED_PATHS": "[\"/v1/songs\"]",
-		"ALLOWED_REQUEST_HOSTNAMES": "[\"localhost:8787\"]"
+		"ALLOWED_REQUEST_HOSTNAMES": "[\"http://localhost:5173\"]"
 	}
 	/**
 	 * Note: Use secrets to store sensitive data.
