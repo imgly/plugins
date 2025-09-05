@@ -22,14 +22,16 @@ const EMPTY_RESULT: AssetsQueryResult = {
 
 function createSoundstripeSource(
   apiKey: string,
-  engine: CreativeEngine
+  engine: CreativeEngine,
+  baseUrl?: string
 ): AssetSource {
   const fetchSoundstripeAssets = async (
     query?: string,
     page?: number,
     perPage?: number
   ): Promise<SoundstripeApiResponse> => {
-    const url = new URL('https://api.soundstripe.com/v1/songs');
+    const apiBaseUrl = baseUrl || 'https://api.soundstripe.com';
+    const url = new URL(`${apiBaseUrl}/v1/songs`);
 
     if (query) url.searchParams.set('filter[q]', query);
     if (page) url.searchParams.set('page[number]', page.toString());

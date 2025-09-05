@@ -5,15 +5,18 @@ import { SoundstripeSingleAssetResponse, SoundstripeAudioFile } from './types';
  * Refreshes expired Soundstripe audio URIs in the current scene
  * @param apiKey - Your Soundstripe API key
  * @param engine - The CESDK engine instance
+ * @param baseUrl - Optional base URL for proxy server
  */
 export async function refreshSoundstripeAudioURIs(
   apiKey: string,
-  engine: CreativeEngine
+  engine: CreativeEngine,
+  baseUrl?: string
 ): Promise<void> {
   const fetchSoundstripeSong = async (
     songId: string
   ): Promise<SoundstripeSingleAssetResponse> => {
-    const url = new URL(`https://api.soundstripe.com/v1/songs/${songId}`);
+    const apiBaseUrl = baseUrl || 'https://api.soundstripe.com';
+    const url = new URL(`${apiBaseUrl}/v1/songs/${songId}`);
 
     const response = await fetch(url.toString(), {
       headers: {
