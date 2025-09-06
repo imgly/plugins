@@ -88,17 +88,16 @@ export async function convertToPDFX3(
     const pdfxDefinition = generatePDFXDef(options);
     vfs.writeText(pdfxDefPath, pdfxDefinition);
 
-    // Execute Ghostscript conversion with minimal configuration
+    // Execute Ghostscript conversion
     const gsArgs = [
       '-dPDFX',
       '-dBATCH', 
       '-dNOPAUSE',
       '-dNOOUTERSAVE',
       '-sDEVICE=pdfwrite',
-      '-sColorConversionStrategy=UseDeviceIndependentColor',
+      '-sColorConversionStrategy=CMYK',
       '-dProcessColorModel=/DeviceCMYK',
       '-sPDFXSetBleedBoxToMediaBox=true',
-      // Removed -dUseCIEColor as it's deprecated in newer Ghostscript versions
       `-sOutputFile=${outputPath}`,
       pdfxDefPath,
       inputPath
@@ -113,7 +112,9 @@ export async function convertToPDFX3(
 
     // Read output
     const outputData = vfs.readFile(outputPath);
-    const outputPDF = new Blob([outputData as Uint8Array], { type: 'application/pdf' });
+    // Create a copy of the data to ensure it's an ArrayBuffer, not SharedArrayBuffer
+    const outputBuffer = new Uint8Array(outputData);
+    const outputPDF = new Blob([outputBuffer], { type: 'application/pdf' });
 
     // Cleanup
     vfs.cleanup();
@@ -145,9 +146,26 @@ const PROFILE_PRESETS = {
 };
 
 function generatePDFXDef(options: PDFX3Options): string {
-  // Use simple, known-working PDF/X-3 pdfmark syntax
+  // Generate PDF/X-3 definition with proper output intent for spot colors
+  const profileInfo = options.outputProfile === 'custom' 
+    ? { identifier: 'Custom Profile', info: 'Custom ICC Profile' }
+    : PROFILE_PRESETS[options.outputProfile as keyof typeof PROFILE_PRESETS];
+    
   return `%!
+% PDF/X-3 Definition File
 [ /Title (${options.title || 'Untitled'}) /DOCINFO pdfmark
-[ /GTS_PDFXVersion (PDF/X-3:2003) /GTS_PDFXConformance (PDF/X-3:2003) /DOCINFO pdfmark`;
+
+% Set PDF/X-3 conformance
+[ /GTS_PDFXVersion (PDF/X-3:2003) /GTS_PDFXConformance (PDF/X-3:2003) /DOCINFO pdfmark
+
+% Define output intent for proper color management
+% This is crucial for spot color preservation
+[ /OutputIntent <<
+  /Type /OutputIntent
+  /S /GTS_PDFX
+  /OutputConditionIdentifier (${profileInfo.identifier})
+  /Info (${profileInfo.info})
+  /RegistryName (http://www.color.org)
+>> /DOCINFO pdfmark`;
 }
 

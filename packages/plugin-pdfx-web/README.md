@@ -184,16 +184,40 @@ The test interface includes:
 - Navigation bar with print-ready export options
 - Real-time conversion and download
 
+## Known Limitations
+
+- **Spot Colors**: Currently, spot colors (Pantone, custom inks) are converted to CMYK during the PDF/X-3 conversion process. This is a limitation of the current Ghostscript WASM implementation. If preserving spot colors is critical for your workflow, consider server-side PDF processing solutions.
+
 ## License Considerations
 
-This plugin uses components licensed under **AGPL-3.0**:
+This plugin uses Ghostscript WebAssembly (AGPL-3.0 licensed) with **client-side browser execution**:
 
-- ✅ **Free for open source projects**
-- ✅ **Free for internal/private applications**
-- ⚠️ **Commercial distribution** may require license compliance
-- ⚠️ **SaaS applications** may need to provide source access
+### How It Works
+- Ghostscript WASM loads dynamically in the user's browser
+- All PDF processing happens client-side on the user's device
+- No AGPL code runs on your servers
+- Similar to users installing a browser extension
 
-For commercial licensing guidance, consult with legal counsel or contact IMG.LY support.
+### Usage Guidelines
+
+✅ **Generally Safe For:**
+- Open source projects
+- Internal/private applications
+- Commercial websites (processing happens in user's browser)
+- SaaS applications (no server-side AGPL code execution)
+
+⚠️ **Considerations:**
+- If you bundle/modify the WASM module directly
+- If you prevent users from accessing the source
+- If you process PDFs server-side
+
+### Why Browser Execution Matters
+Since the AGPL-licensed Ghostscript runs entirely in the end user's browser rather than as a network service:
+1. Your servers never execute AGPL code
+2. You're not providing a "network service" under AGPL terms
+3. The architecture is similar to CDN-delivered JavaScript libraries
+
+For specific legal guidance, consult with legal counsel. For technical questions, contact IMG.LY support.
 
 ## Support
 

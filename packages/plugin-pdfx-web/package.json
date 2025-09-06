@@ -11,7 +11,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/imgly/plugins.git"
+    "url": "git+https://github.com/imgly/plugin-pdfx-web.git"
   },
   "license": "SEE LICENSE IN LICENSE.md",
   "author": {
@@ -36,14 +36,15 @@
     "LICENSE.md",
     "README.md",
     "CHANGELOG.md",
-    "dist/"
+    "dist/",
+    "src/wasm/"
   ],
   "scripts": {
     "start": "pnpm dev",
     "clean": "pnpm exec rimraf dist",
     "purge": "pnpm exec rimraf node_modules",
     "build": "pnpm run clean && pnpm _syncPnpm && pnpm exec node scripts/build.mjs",
-    "dev": "pnpm --filter \"${npm_package_name}^...\" --parallel run dev:wait && pnpm exec concurrently 'node scripts/watch.mjs' 'pnpm _syncPnpm --watch' --names 'build,sync deps'",
+    "dev": "pnpm exec concurrently 'node scripts/watch.mjs' 'pnpm _syncPnpm --watch' --names 'build,sync deps'",
     "dev:wait": "pnpm exec wait-on ./dist/index.mjs ./dist/index.d.ts --window 250 --timeout 60000",
     "dev:types": "tsc --emitDeclarationOnly --watch --preserveWatchOutput",
     "publish:latest": "pnpm run build && pnpm publish --tag latest --access public",
@@ -54,6 +55,8 @@
     "check:types": "tsc --noEmit",
     "types:create": "tsc --emitDeclarationOnly",
     "_syncPnpm": "pnpm sync-dependencies-meta-injected",
+    "demo:build": "pnpm run build && node scripts/build-demo.mjs",
+    "demo:dev": "pnpm run build && node scripts/build-demo.mjs && cd demo-bundle && python3 -m http.server 8080",
     "test:convert": "node test/convert-test.mjs",
     "test:browser": "pnpm run build && playwright test test/browser-test.spec.ts",
     "test:cesdk": "node test/cesdk-server.mjs",
@@ -75,9 +78,8 @@
     "playwright": "^1.54.1",
     "pnpm-sync-dependencies-meta-injected": "^0.0.14",
     "prettier": "^2.8.8",
-    "rollup": "^4.46.1",
     "typescript": "^5.7.3",
-    "vite": "^5.4.14"
+    "wait-on": "8.0.2"
   },
   "dependenciesMeta": {
     "@imgly/plugin-utils": {
@@ -86,8 +88,5 @@
   },
   "peerDependencies": {
     "@cesdk/cesdk-js": "^1.37.0"
-  },
-  "dependencies": {
-    "@privyid/ghostscript": "0.1.0-alpha.1"
   }
 }
