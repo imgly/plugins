@@ -13,7 +13,10 @@ import { useRef } from 'react';
 import { rateLimitMiddleware } from '@imgly/plugin-ai-generation-web';
 import { Middleware } from '@imgly/plugin-ai-generation-web';
 import { RateLimitOptions } from '@imgly/plugin-ai-generation-web';
-import { testAllTranslations, resetTranslations } from '../utils/testTranslations';
+import {
+  testAllTranslations,
+  resetTranslations
+} from '../utils/testTranslations';
 
 function App() {
   const cesdk = useRef<CreativeEditorSDK>();
@@ -279,6 +282,17 @@ function App() {
               ...instance.ui.getNavigationBarOrder()
             ]);
 
+            const gitBranch = import.meta.env.VITE_GIT_BRANCH;
+            if (gitBranch) {
+              instance.ui.registerComponent(
+                'ly.img.title.navigationBar',
+                ({ builder }) => {
+                  builder.Heading('gitBranchDisplay', {
+                    content: gitBranch
+                  });
+                }
+              );
+            }
             instance.ui.registerComponent('sceneModeToggle', ({ builder }) => {
               builder.Button('sceneModeToggle', {
                 label: archiveType === 'video' ? 'Video Mode' : 'Design Mode',
