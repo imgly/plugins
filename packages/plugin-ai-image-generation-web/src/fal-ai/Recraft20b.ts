@@ -132,9 +132,11 @@ function getProvider(
     }
   );
 
-  imageStyleAssetSource.setAssetActive('realistic_image');
-  vectorStyleAssetSource.setAssetActive('vector_illustration');
-  iconStyleAssetSource.setAssetActive('icon/broken_line');
+  // Assets are automatically set as active (first asset) in CustomAssetSource constructor
+  // Get initial values from asset sources with proper translation
+  const initialImageStyle = imageStyleAssetSource.getActiveSelectValue();
+  const initialVectorStyle = vectorStyleAssetSource.getActiveSelectValue();
+  const initialIconStyle = iconStyleAssetSource.getActiveSelectValue();
 
   cesdk.engine.asset.addSource(imageStyleAssetSource);
   cesdk.engine.asset.addSource(vectorStyleAssetSource);
@@ -234,27 +236,24 @@ function getProvider(
         style: ({ builder, state }, property) => {
           const typeState = state<GenerationType>('type', 'image');
 
-          const styleImageState = state<{
-            id: Recraft20bInput['style'];
-            label: string;
-          }>('style/image', {
-            id: 'realistic_image',
-            label: 'Realistic Image'
-          });
-          const styleVectorState = state<{
-            id: Recraft20bInput['style'];
-            label: string;
-          }>('style/vector', {
-            id: 'vector_illustration',
-            label: 'Vector Illustration'
-          });
-          const styleIconState = state<{
-            id: Recraft20bInput['style'];
-            label: string;
-          }>('style/icon', {
-            id: 'icon/broken_line',
-            label: 'Broken Line'
-          });
+          const styleImageState = state<Recraft20bInput['style']>(
+            'style/image',
+            initialImageStyle
+              ? (initialImageStyle.id as Recraft20bInput['style'])
+              : 'realistic_image'
+          );
+          const styleVectorState = state<Recraft20bInput['style']>(
+            'style/vector',
+            initialVectorStyle
+              ? (initialVectorStyle.id as Recraft20bInput['style'])
+              : 'vector_illustration'
+          );
+          const styleIconState = state<Recraft20bInput['style']>(
+            'style/icon',
+            initialIconStyle
+              ? (initialIconStyle.id as Recraft20bInput['style'])
+              : 'icon/broken_line'
+          );
 
           const styleState =
             typeState.value === 'image'
@@ -314,7 +313,18 @@ function getProvider(
             ],
             icon: '@imgly/Appearance',
             trailingIcon: '@imgly/ChevronRight',
-            label: styleState.value.label,
+            label: (() => {
+              const currentStyleId = styleState.value || 'realistic_image';
+              const assetSource =
+                typeState.value === 'image'
+                  ? imageStyleAssetSource
+                  : typeState.value === 'vector'
+                  ? vectorStyleAssetSource
+                  : iconStyleAssetSource;
+              return (
+                assetSource.getTranslatedLabel(currentStyleId) || currentStyleId
+              );
+            })(),
             labelAlignment: 'left',
             onClick: () => {
               const payload: StyleSelectionPayload = {
@@ -324,23 +334,20 @@ function getProvider(
                     return;
                   }
 
-                  const newValue: { id: StyleId; label: string } = {
-                    id: asset.id as StyleId,
-                    label: asset.label ?? asset.id
-                  };
+                  const styleId = asset.id as StyleId;
 
                   if (typeState.value === 'image') {
                     imageStyleAssetSource.clearActiveAssets();
                     imageStyleAssetSource.setAssetActive(asset.id);
-                    styleImageState.setValue(newValue);
+                    styleImageState.setValue(styleId);
                   } else if (typeState.value === 'vector') {
                     vectorStyleAssetSource.clearActiveAssets();
                     vectorStyleAssetSource.setAssetActive(asset.id);
-                    styleVectorState.setValue(newValue);
+                    styleVectorState.setValue(styleId);
                   } else if (typeState.value === 'icon') {
                     iconStyleAssetSource.clearActiveAssets();
                     iconStyleAssetSource.setAssetActive(asset.id);
-                    styleIconState.setValue(newValue);
+                    styleIconState.setValue(styleId);
                   }
 
                   cesdk.ui.closePanel(`${getPanelId(modelKey)}.styleSelection`);
@@ -357,7 +364,7 @@ function getProvider(
             return {
               id: property.id,
               type: 'string',
-              value: styleState.value.id ?? 'realistic_image'
+              value: styleState.value ?? 'realistic_image'
             };
           };
         }

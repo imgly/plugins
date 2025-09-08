@@ -104,8 +104,10 @@ function getProvider(
     }
   );
 
-  imageStyleAssetSource.setAssetActive('realistic_image');
-  vectorStyleAssetSource.setAssetActive('vector_illustration');
+  // Assets are automatically set as active (first asset) in CustomAssetSource constructor
+  // Get initial values from asset sources with proper translation
+  const initialImageStyle = imageStyleAssetSource.getActiveSelectValue();
+  const initialVectorStyle = vectorStyleAssetSource.getActiveSelectValue();
 
   cesdk.engine.asset.addSource(imageStyleAssetSource);
   cesdk.engine.asset.addSource(vectorStyleAssetSource);
@@ -188,20 +190,18 @@ function getProvider(
         style: ({ builder, state }, property) => {
           const typeState = state<GenerationType>('type', 'image');
 
-          const styleImageState = state<{
-            id: RecraftV3TextToImageInput['style'];
-            label: string;
-          }>('style/image', {
-            id: 'realistic_image',
-            label: 'Realistic Image'
-          });
-          const styleVectorState = state<{
-            id: RecraftV3TextToImageInput['style'];
-            label: string;
-          }>('style/vector', {
-            id: 'vector_illustration',
-            label: 'Vector Illustration'
-          });
+          const styleImageState = state<RecraftV3TextToImageInput['style']>(
+            'style/image',
+            initialImageStyle
+              ? (initialImageStyle.id as RecraftV3TextToImageInput['style'])
+              : 'realistic_image'
+          );
+          const styleVectorState = state<RecraftV3TextToImageInput['style']>(
+            'style/vector',
+            initialVectorStyle
+              ? (initialVectorStyle.id as RecraftV3TextToImageInput['style'])
+              : 'vector_illustration'
+          );
 
           const styleState =
             typeState.value === 'image' ? styleImageState : styleVectorState;
@@ -247,7 +247,16 @@ function getProvider(
             ],
             icon: '@imgly/Appearance',
             trailingIcon: '@imgly/ChevronRight',
-            label: styleState.value.label,
+            label: (() => {
+              const currentStyleId = styleState.value || 'realistic_image';
+              const assetSource =
+                typeState.value === 'image'
+                  ? imageStyleAssetSource
+                  : vectorStyleAssetSource;
+              return (
+                assetSource.getTranslatedLabel(currentStyleId) || currentStyleId
+              );
+            })(),
             labelAlignment: 'left',
             onClick: () => {
               const payload: StyleSelectionPayload = {
@@ -257,19 +266,16 @@ function getProvider(
                     return;
                   }
 
-                  const newValue: { id: StyleId; label: string } = {
-                    id: asset.id as StyleId,
-                    label: asset.label ?? asset.id
-                  };
+                  const styleId = asset.id as StyleId;
 
                   if (typeState.value === 'image') {
                     imageStyleAssetSource.clearActiveAssets();
                     imageStyleAssetSource.setAssetActive(asset.id);
-                    styleImageState.setValue(newValue);
+                    styleImageState.setValue(styleId);
                   } else if (typeState.value === 'vector') {
                     vectorStyleAssetSource.clearActiveAssets();
                     vectorStyleAssetSource.setAssetActive(asset.id);
-                    styleVectorState.setValue(newValue);
+                    styleVectorState.setValue(styleId);
                   }
 
                   cesdk.ui.closePanel(`${getPanelId(modelKey)}.styleSelection`);
@@ -286,7 +292,7 @@ function getProvider(
             return {
               id: property.id,
               type: 'string',
-              value: styleState.value.id ?? 'realistic_image'
+              value: styleState.value ?? 'realistic_image'
             };
           };
         }

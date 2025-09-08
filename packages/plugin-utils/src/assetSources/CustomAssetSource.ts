@@ -27,7 +27,11 @@ export interface CustomAssetSourceOptions {
    * @param locale - The current locale
    * @returns The translated label or fallback
    */
-  translateLabel?: (assetId: string, fallbackLabel: string, locale: string) => string;
+  translateLabel?: (
+    assetId: string,
+    fallbackLabel: string,
+    locale: string
+  ) => string;
 }
 
 /**
@@ -46,7 +50,11 @@ export class CustomAssetSource implements AssetSource {
   private activeAssetIds: Set<string>;
 
   /** Optional translation callback function */
-  private translateLabel?: (assetId: string, fallbackLabel: string, locale: string) => string;
+  private translateLabel?: (
+    assetId: string,
+    fallbackLabel: string,
+    locale: string
+  ) => string;
 
   /**
    * Creates a new instance of CustomAssetSource
@@ -84,6 +92,11 @@ export class CustomAssetSource implements AssetSource {
       return asset as AssetDefinition;
     });
     this.activeAssetIds = new Set<string>();
+
+    // Automatically set first asset as active if available
+    if (this.assets.length > 0) {
+      this.activeAssetIds.add(this.assets[0].id);
+    }
   }
 
   /**
@@ -252,11 +265,57 @@ export class CustomAssetSource implements AssetSource {
   getAssetSelectValue(assetId: string): SelectValue | undefined {
     const asset = this.assets.find(({ id }) => id === assetId);
     if (asset) {
+      // Get translated label if translation callback is available
+      const label = this.translateLabel
+        ? this.translateLabel(asset.id, asset.label?.en || '', '')
+        : asset.label?.en || '';
+
       return {
         id: asset.id,
-        label: asset.label?.en || '',
+        label,
         thumbUri: asset.meta?.thumbUri
       };
+    }
+    return undefined;
+  }
+
+  /**
+   * Get the currently active asset as a SelectValue
+   *
+   * @returns The SelectValue object for the active asset or undefined if no asset is active
+   */
+  getActiveSelectValue(): SelectValue | undefined {
+    const activeIds = this.getActiveAssetIds();
+    if (activeIds.length > 0) {
+      const asset = this.assets.find(({ id }) => id === activeIds[0]);
+      if (asset) {
+        // Get translated label if translation callback is available
+        const label = this.translateLabel
+          ? this.translateLabel(asset.id, asset.label?.en || '', '')
+          : asset.label?.en || '';
+
+        return {
+          id: asset.id,
+          label,
+          thumbUri: asset.meta?.thumbUri
+        };
+      }
+    }
+    return undefined;
+  }
+
+  /**
+   * Get the translated label for an asset by its ID
+   *
+   * @param assetId - The ID of the asset
+   * @returns The translated label or undefined if asset not found
+   */
+  getTranslatedLabel(assetId: string): string | undefined {
+    const asset = this.assets.find(({ id }) => id === assetId);
+    if (asset) {
+      return this.translateLabel
+        ? this.translateLabel(asset.id, asset.label?.en || '', '')
+        : asset.label?.en || '';
     }
     return undefined;
   }
