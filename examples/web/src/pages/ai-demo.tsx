@@ -281,14 +281,17 @@ function App() {
               ...instance.ui.getNavigationBarOrder()
             ]);
 
-            instance.ui.registerComponent(
-              'ly.img.title.navigationBar',
-              ({ builder }) => {
-                builder.Heading('gitBranchDisplay', {
-                  content: import.meta.env.VITE_GIT_BRANCH || 'unknown'
-                });
-              }
-            );
+            const gitBranch = import.meta.env.VITE_GIT_BRANCH;
+            if (gitBranch) {
+              instance.ui.registerComponent(
+                'ly.img.title.navigationBar',
+                ({ builder }) => {
+                  builder.Heading('gitBranchDisplay', {
+                    content: gitBranch
+                  });
+                }
+              );
+            }
             instance.ui.registerComponent('sceneModeToggle', ({ builder }) => {
               builder.Button('sceneModeToggle', {
                 label: archiveType === 'video' ? 'Video Mode' : 'Design Mode',

@@ -7,10 +7,10 @@ import * as packageJson from './package.json';
 function getGitBranch() {
   try {
     const branch = execSync('git branch --show-current', { encoding: 'utf8' }).trim();
-    return branch || 'unknown';
+    return branch || '';
   } catch (error) {
     console.warn('Failed to get git branch:', error);
-    return 'unknown';
+    return '';
   }
 }
 
