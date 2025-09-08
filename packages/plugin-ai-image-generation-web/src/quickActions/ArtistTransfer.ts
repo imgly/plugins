@@ -114,6 +114,12 @@ const ARTIST_OPTIONS = [
 ];
 
 const ArtistTransfer: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
+  // Set feature default for this quick action
+  cesdk.feature.enable(
+    'ly.img.plugin-ai-image-generation-web.quickAction.artistTransfer',
+    true
+  );
+
   cesdk.i18n.setTranslations({
     en: {
       [`${I18N_DEFAULT_PREFIX}`]: 'Painted By',

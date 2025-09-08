@@ -48,6 +48,12 @@ function getI18nLabel(modelKey: string, suffix?: string) {
 }
 
 const CreateVariant: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
+  // Set feature default for this quick action
+  cesdk.feature.enable(
+    'ly.img.plugin-ai-image-generation-web.quickAction.createVariant',
+    true
+  );
+
   cesdk.i18n.setTranslations({
     en: {
       [`${I18N_DEFAULT_PREFIX}`]: 'Create Variant...',
