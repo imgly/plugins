@@ -44,6 +44,12 @@ function getI18nLabel(modelKey: string, suffix?: string) {
 }
 
 const RemixPage: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
+  // Set feature default for this quick action
+  cesdk.feature.enable(
+    'ly.img.plugin-ai-image-generation-web.quickAction.remixPage',
+    true
+  );
+
   cesdk.i18n.setTranslations({
     en: {
       [`${I18N_DEFAULT_PREFIX}`]: 'Turn Page into Image'

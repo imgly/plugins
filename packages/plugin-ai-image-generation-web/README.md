@@ -187,6 +187,17 @@ Key features:
 - Adjustable quality settings
 - Custom headers support for API requests
 
+**Style Group Control:**
+You can control which style groups (image/vector) are available using the Feature API:
+
+```typescript
+// Disable vector styles, only allow image styles
+cesdk.feature.enable('ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.style.vector', false);
+
+// Or disable image styles, only allow vector styles
+cesdk.feature.enable('ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.style.image', false);
+```
+
 **Custom Translations:**
 ```typescript
 cesdk.i18n.setTranslations({
@@ -220,6 +231,20 @@ Key features:
 - Three-way style selection (image/vector/icon)
 - Same image size presets and custom dimensions support
 - Cost-effective alternative to RecraftV3
+
+**Style Group Control:**
+You can control which style groups (image/vector/icon) are available using the Feature API:
+
+```typescript
+// Only allow icon styles
+cesdk.feature.enable('ly.img.plugin-ai-image-generation-web.fal-ai/recraft/v2/text-to-image.style.image', false);
+cesdk.feature.enable('ly.img.plugin-ai-image-generation-web.fal-ai/recraft/v2/text-to-image.style.vector', false);
+
+// Only allow image and vector styles (disable icon)
+cesdk.feature.enable('ly.img.plugin-ai-image-generation-web.fal-ai/recraft/v2/text-to-image.style.icon', false);
+```
+
+Note: When all style groups are disabled, the provider automatically falls back to the 'any' style.
 
 **Custom Translations:**
 ```typescript

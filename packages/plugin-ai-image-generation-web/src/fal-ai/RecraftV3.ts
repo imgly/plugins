@@ -69,6 +69,16 @@ function getProvider(
     config.baseURL ??
     'https://cdn.img.ly/assets/plugins/plugin-ai-image-generation-web/v1/recraft-v3/';
 
+  // Initialize feature flags for style groups
+  cesdk.feature.enable(
+    `ly.img.plugin-ai-image-generation-web.${modelKey}.style.image`,
+    true
+  );
+  cesdk.feature.enable(
+    `ly.img.plugin-ai-image-generation-web.${modelKey}.style.vector`,
+    true
+  );
+
   cesdk.ui.addIconSet('@imgly/plugin/formats', Icons.Formats);
 
   imageStyleAssetSource = new CustomAssetSource(
@@ -187,8 +197,29 @@ function getProvider(
       headers: config.headers,
       userFlow: 'placeholder',
       renderCustomProperty: {
-        style: ({ builder, state }, property) => {
-          const typeState = state<GenerationType>('type', 'image');
+        style: ({ builder, state, engine }, property) => {
+          // Check which style groups are enabled
+          const isImageStyleEnabled = cesdk.feature.isEnabled(
+            `ly.img.plugin-ai-image-generation-web.${modelKey}.style.image`,
+            { engine }
+          );
+          const isVectorStyleEnabled = cesdk.feature.isEnabled(
+            `ly.img.plugin-ai-image-generation-web.${modelKey}.style.vector`,
+            { engine }
+          );
+
+          // If no style groups are enabled, return 'any'
+          if (!isImageStyleEnabled && !isVectorStyleEnabled) {
+            return () => ({
+              id: property.id,
+              type: 'string',
+              value: 'any'
+            });
+          }
+
+          // Determine default type based on what's enabled
+          const defaultType = isImageStyleEnabled ? 'image' : 'vector';
+          const typeState = state<GenerationType>('type', defaultType);
 
           const styleImageState = state<RecraftV3TextToImageInput['style']>(
             'style/image',
@@ -206,36 +237,43 @@ function getProvider(
           const styleState =
             typeState.value === 'image' ? styleImageState : styleVectorState;
 
-          builder.ButtonGroup(`${property.id}.type`, {
-            inputLabel: [
-              `ly.img.plugin-ai-image-generation-web.${modelKey}.property.${property.id}.type`,
-              `ly.img.plugin-ai-generation-web.property.${property.id}.type`,
-              `ly.img.plugin-ai-image-generation-web.${modelKey}.defaults.property.${property.id}.type`,
-              `ly.img.plugin-ai-generation-web.defaults.property.${property.id}.type`
-            ],
-            children: () => {
-              builder.Button(`${property.id}.type.image`, {
-                label: [
-                  `ly.img.plugin-ai-image-generation-web.${modelKey}.property.${property.id}.type.image`,
-                  `ly.img.plugin-ai-generation-web.property.${property.id}.type.image`,
-                  `ly.img.plugin-ai-image-generation-web.${modelKey}.defaults.property.${property.id}.type.image`,
-                  `ly.img.plugin-ai-generation-web.defaults.property.${property.id}.type.image`
-                ],
-                isActive: typeState.value === 'image',
-                onClick: () => typeState.setValue('image')
-              });
-              builder.Button(`${property.id}.type.vector`, {
-                label: [
-                  `ly.img.plugin-ai-image-generation-web.${modelKey}.property.${property.id}.type.vector`,
-                  `ly.img.plugin-ai-generation-web.property.${property.id}.type.vector`,
-                  `ly.img.plugin-ai-image-generation-web.${modelKey}.defaults.property.${property.id}.type.vector`,
-                  `ly.img.plugin-ai-generation-web.defaults.property.${property.id}.type.vector`
-                ],
-                isActive: typeState.value === 'vector',
-                onClick: () => typeState.setValue('vector')
-              });
-            }
-          });
+          // Only show button group if both style types are enabled
+          if (isImageStyleEnabled && isVectorStyleEnabled) {
+            builder.ButtonGroup(`${property.id}.type`, {
+              inputLabel: [
+                `ly.img.plugin-ai-image-generation-web.${modelKey}.property.${property.id}.type`,
+                `ly.img.plugin-ai-generation-web.property.${property.id}.type`,
+                `ly.img.plugin-ai-image-generation-web.${modelKey}.defaults.property.${property.id}.type`,
+                `ly.img.plugin-ai-generation-web.defaults.property.${property.id}.type`
+              ],
+              children: () => {
+                if (isImageStyleEnabled) {
+                  builder.Button(`${property.id}.type.image`, {
+                    label: [
+                      `ly.img.plugin-ai-image-generation-web.${modelKey}.property.${property.id}.type.image`,
+                      `ly.img.plugin-ai-generation-web.property.${property.id}.type.image`,
+                      `ly.img.plugin-ai-image-generation-web.${modelKey}.defaults.property.${property.id}.type.image`,
+                      `ly.img.plugin-ai-generation-web.defaults.property.${property.id}.type.image`
+                    ],
+                    isActive: typeState.value === 'image',
+                    onClick: () => typeState.setValue('image')
+                  });
+                }
+                if (isVectorStyleEnabled) {
+                  builder.Button(`${property.id}.type.vector`, {
+                    label: [
+                      `ly.img.plugin-ai-image-generation-web.${modelKey}.property.${property.id}.type.vector`,
+                      `ly.img.plugin-ai-generation-web.property.${property.id}.type.vector`,
+                      `ly.img.plugin-ai-image-generation-web.${modelKey}.defaults.property.${property.id}.type.vector`,
+                      `ly.img.plugin-ai-generation-web.defaults.property.${property.id}.type.vector`
+                    ],
+                    isActive: typeState.value === 'vector',
+                    onClick: () => typeState.setValue('vector')
+                  });
+                }
+              }
+            });
+          }
 
           // Show the style library for the selected type.
           builder.Button(`${property.id}`, {
@@ -259,8 +297,19 @@ function getProvider(
             })(),
             labelAlignment: 'left',
             onClick: () => {
+              // Only allow selection for enabled style types
+              let effectiveType = typeState.value;
+              if (typeState.value === 'image' && !isImageStyleEnabled) {
+                effectiveType = 'vector';
+              } else if (
+                typeState.value === 'vector' &&
+                !isVectorStyleEnabled
+              ) {
+                effectiveType = 'image';
+              }
+
               const payload: StyleSelectionPayload = {
-                generationType: typeState.value,
+                generationType: effectiveType,
                 onSelect: async (asset) => {
                   if (asset.id === 'back') {
                     return;
@@ -268,11 +317,11 @@ function getProvider(
 
                   const styleId = asset.id as StyleId;
 
-                  if (typeState.value === 'image') {
+                  if (effectiveType === 'image') {
                     imageStyleAssetSource.clearActiveAssets();
                     imageStyleAssetSource.setAssetActive(asset.id);
                     styleImageState.setValue(styleId);
-                  } else if (typeState.value === 'vector') {
+                  } else if (effectiveType === 'vector') {
                     vectorStyleAssetSource.clearActiveAssets();
                     vectorStyleAssetSource.setAssetActive(asset.id);
                     styleVectorState.setValue(styleId);
