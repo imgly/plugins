@@ -59,7 +59,7 @@ describe('Quick Action Menu Feature Flags', () => {
         actions: any[],
         pluginType: string = 'image'
       ) => {
-        return actions.filter(action => {
+        return actions.filter((action) => {
           const actionName = action.id.replace('ly.img.', '');
           const featureKey = `ly.img.plugin-ai-${pluginType}-generation-web.quickAction.${actionName}`;
           return cesdk.feature.isEnabled(featureKey, { engine: mockEngine });
@@ -107,7 +107,9 @@ describe('Quick Action Menu Feature Flags', () => {
         if (key === 'ly.img.plugin-ai-image-generation-web.quickAction') {
           return false; // Main disabled
         }
-        if (key === 'ly.img.plugin-ai-image-generation-web.quickAction.editImage') {
+        if (
+          key === 'ly.img.plugin-ai-image-generation-web.quickAction.editImage'
+        ) {
           return true; // Individual enabled
         }
         return false;
@@ -167,7 +169,7 @@ describe('Quick Action Menu Feature Flags', () => {
     ];
 
     it('should generate correct feature flag keys for text quick actions', () => {
-      textQuickActions.forEach(action => {
+      textQuickActions.forEach((action) => {
         const expectedKey = `ly.img.plugin-ai-text-generation-web.quickAction.${action.name}`;
         expect(expectedKey).toMatch(
           /^ly\.img\.plugin-ai-text-generation-web\.quickAction\.\w+$/
@@ -181,13 +183,13 @@ describe('Quick Action Menu Feature Flags', () => {
         return key.includes('translate') || key.includes('changeTone');
       });
 
-      const filtered = textQuickActions.filter(action => {
+      const filtered = textQuickActions.filter((action) => {
         const featureKey = `ly.img.plugin-ai-text-generation-web.quickAction.${action.name}`;
         return mockCesdk.feature.isEnabled(featureKey, { engine: mockEngine });
       });
 
       expect(filtered).toHaveLength(2);
-      expect(filtered.map(a => a.name)).toEqual(['translate', 'changeTone']);
+      expect(filtered.map((a) => a.name)).toEqual(['translate', 'changeTone']);
     });
   });
 
@@ -210,7 +212,7 @@ describe('Quick Action Menu Feature Flags', () => {
 
   describe('Dynamic quick action visibility', () => {
     it('should dynamically update when feature flags change', () => {
-      let flagsState = {
+      const flagsState = {
         editImage: true,
         swapBackground: false,
         styleTransfer: true
@@ -224,17 +226,19 @@ describe('Quick Action Menu Feature Flags', () => {
       });
 
       const getVisibleActions = () => {
-        return mockQuickActions.filter(action => {
+        return mockQuickActions.filter((action) => {
           const actionName = action.id.replace('ly.img.', '');
           const featureKey = `ly.img.plugin-ai-image-generation-web.quickAction.${actionName}`;
-          return mockCesdk.feature.isEnabled(featureKey, { engine: mockEngine });
+          return mockCesdk.feature.isEnabled(featureKey, {
+            engine: mockEngine
+          });
         });
       };
 
       let visible = getVisibleActions();
       expect(visible).toHaveLength(2);
-      expect(visible.map(a => a.id)).toContain('ly.img.editImage');
-      expect(visible.map(a => a.id)).toContain('ly.img.styleTransfer');
+      expect(visible.map((a) => a.id)).toContain('ly.img.editImage');
+      expect(visible.map((a) => a.id)).toContain('ly.img.styleTransfer');
 
       // Change flags
       flagsState.editImage = false;
@@ -242,8 +246,8 @@ describe('Quick Action Menu Feature Flags', () => {
 
       visible = getVisibleActions();
       expect(visible).toHaveLength(2);
-      expect(visible.map(a => a.id)).toContain('ly.img.swapBackground');
-      expect(visible.map(a => a.id)).toContain('ly.img.styleTransfer');
+      expect(visible.map((a) => a.id)).toContain('ly.img.swapBackground');
+      expect(visible.map((a) => a.id)).toContain('ly.img.styleTransfer');
     });
   });
 });

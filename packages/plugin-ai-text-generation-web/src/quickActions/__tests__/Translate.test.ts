@@ -45,11 +45,16 @@ describe('Translate Quick Action', () => {
 
     expect(mockCesdk.i18n.setTranslations).toHaveBeenCalledWith({
       en: expect.objectContaining({
-        'ly.img.plugin-ai-text-generation-web.defaults.quickAction.translate': 'Translate',
-        'ly.img.plugin-ai-text-generation-web.defaults.quickAction.translate.en_US': 'English (US)',
-        'ly.img.plugin-ai-text-generation-web.defaults.quickAction.translate.es': 'Spanish',
-        'ly.img.plugin-ai-text-generation-web.defaults.quickAction.translate.fr': 'French',
-        'ly.img.plugin-ai-text-generation-web.defaults.quickAction.translate.de': 'German'
+        'ly.img.plugin-ai-text-generation-web.defaults.quickAction.translate':
+          'Translate',
+        'ly.img.plugin-ai-text-generation-web.defaults.quickAction.translate.en_US':
+          'English (US)',
+        'ly.img.plugin-ai-text-generation-web.defaults.quickAction.translate.es':
+          'Spanish',
+        'ly.img.plugin-ai-text-generation-web.defaults.quickAction.translate.fr':
+          'French',
+        'ly.img.plugin-ai-text-generation-web.defaults.quickAction.translate.de':
+          'German'
       })
     });
   });
@@ -69,14 +74,24 @@ describe('Translate Quick Action', () => {
     };
 
     const quickAction = Translate({ cesdk: mockCesdk as any });
-    const enableResult = quickAction.enable({ engine: mockCesdk.engine as any });
-    
+    const enableResult =
+      typeof quickAction.enable === 'function'
+        ? quickAction.enable({
+            engine: mockCesdk.engine as any
+          })
+        : quickAction.enable;
+
     expect(enableResult).toBe(true);
-    
+
     // Test with non-text block
     mockCesdk.engine.block.getType.mockReturnValue('//ly.img.ubq/graphic');
-    const disableResult = quickAction.enable({ engine: mockCesdk.engine as any });
-    
+    const disableResult =
+      typeof quickAction.enable === 'function'
+        ? quickAction.enable({
+            engine: mockCesdk.engine as any
+          })
+        : quickAction.enable;
+
     expect(disableResult).toBe(false);
   });
 });

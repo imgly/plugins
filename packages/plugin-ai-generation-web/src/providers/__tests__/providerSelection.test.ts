@@ -99,16 +99,18 @@ describe('Provider Selection Feature Flags', () => {
 
     it('should respect hierarchy - hide when parent quickAction is disabled', () => {
       // Mock returns for different feature flags
-      mockCesdk.feature.isEnabled
-        .mockImplementation((key: string) => {
-          if (key === 'ly.img.plugin-ai-image-generation-web.quickAction') {
-            return false; // Parent disabled
-          }
-          if (key === 'ly.img.plugin-ai-image-generation-web.quickAction.providerSelect') {
-            return true; // Child enabled but should be overridden
-          }
-          return true;
-        });
+      mockCesdk.feature.isEnabled.mockImplementation((key: string) => {
+        if (key === 'ly.img.plugin-ai-image-generation-web.quickAction') {
+          return false; // Parent disabled
+        }
+        if (
+          key ===
+          'ly.img.plugin-ai-image-generation-web.quickAction.providerSelect'
+        ) {
+          return true; // Child enabled but should be overridden
+        }
+        return true;
+      });
 
       // Check parent first
       const quickActionEnabled = mockCesdk.feature.isEnabled(
@@ -123,10 +125,9 @@ describe('Provider Selection Feature Flags', () => {
 
   describe('fromText and fromImage feature flags', () => {
     it('should disable text-to-image generation when fromText is disabled', () => {
-      mockCesdk.feature.isEnabled
-        .mockImplementation((key: string) => {
-          return key !== 'ly.img.plugin-ai-image-generation-web.fromText';
-        });
+      mockCesdk.feature.isEnabled.mockImplementation((key: string) => {
+        return key !== 'ly.img.plugin-ai-image-generation-web.fromText';
+      });
 
       const fromTextEnabled = mockCesdk.feature.isEnabled(
         'ly.img.plugin-ai-image-generation-web.fromText',
@@ -137,10 +138,9 @@ describe('Provider Selection Feature Flags', () => {
     });
 
     it('should disable image-to-image generation when fromImage is disabled', () => {
-      mockCesdk.feature.isEnabled
-        .mockImplementation((key: string) => {
-          return key !== 'ly.img.plugin-ai-image-generation-web.fromImage';
-        });
+      mockCesdk.feature.isEnabled.mockImplementation((key: string) => {
+        return key !== 'ly.img.plugin-ai-image-generation-web.fromImage';
+      });
 
       const fromImageEnabled = mockCesdk.feature.isEnabled(
         'ly.img.plugin-ai-image-generation-web.fromImage',
@@ -171,22 +171,35 @@ describe('Provider Selection Feature Flags', () => {
     it('should use correct pattern for video generation', () => {
       mockCesdk.feature.isEnabled.mockReturnValue(true);
 
-      const videoProviderSelect = 'ly.img.plugin-ai-video-generation-web.providerSelect';
+      const videoProviderSelect =
+        'ly.img.plugin-ai-video-generation-web.providerSelect';
       const videoFromText = 'ly.img.plugin-ai-video-generation-web.fromText';
       const videoFromImage = 'ly.img.plugin-ai-video-generation-web.fromImage';
 
       // Check the patterns are correct
-      expect(videoProviderSelect).toMatch(/^ly\.img\.plugin-ai-video-generation-web\.providerSelect$/);
-      expect(videoFromText).toMatch(/^ly\.img\.plugin-ai-video-generation-web\.fromText$/);
-      expect(videoFromImage).toMatch(/^ly\.img\.plugin-ai-video-generation-web\.fromImage$/);
+      expect(videoProviderSelect).toMatch(
+        /^ly\.img\.plugin-ai-video-generation-web\.providerSelect$/
+      );
+      expect(videoFromText).toMatch(
+        /^ly\.img\.plugin-ai-video-generation-web\.fromText$/
+      );
+      expect(videoFromImage).toMatch(
+        /^ly\.img\.plugin-ai-video-generation-web\.fromImage$/
+      );
     });
 
     it('should use correct pattern for text generation', () => {
-      const textProviderSelect = 'ly.img.plugin-ai-text-generation-web.providerSelect';
-      const textQuickAction = 'ly.img.plugin-ai-text-generation-web.quickAction';
+      const textProviderSelect =
+        'ly.img.plugin-ai-text-generation-web.providerSelect';
+      const textQuickAction =
+        'ly.img.plugin-ai-text-generation-web.quickAction';
 
-      expect(textProviderSelect).toMatch(/^ly\.img\.plugin-ai-text-generation-web\.providerSelect$/);
-      expect(textQuickAction).toMatch(/^ly\.img\.plugin-ai-text-generation-web\.quickAction$/);
+      expect(textProviderSelect).toMatch(
+        /^ly\.img\.plugin-ai-text-generation-web\.providerSelect$/
+      );
+      expect(textQuickAction).toMatch(
+        /^ly\.img\.plugin-ai-text-generation-web\.quickAction$/
+      );
     });
   });
 });

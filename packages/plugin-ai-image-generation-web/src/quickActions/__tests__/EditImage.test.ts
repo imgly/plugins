@@ -45,11 +45,16 @@ describe('EditImage Quick Action', () => {
 
     expect(mockCesdk.i18n.setTranslations).toHaveBeenCalledWith({
       en: expect.objectContaining({
-        'ly.img.plugin-ai-image-generation-web.defaults.quickAction.editImage': 'Edit Image...',
-        'ly.img.plugin-ai-image-generation-web.defaults.quickAction.editImage.description': 'Change image based on description',
-        'ly.img.plugin-ai-image-generation-web.defaults.quickAction.editImage.prompt': 'Edit Image...',
-        'ly.img.plugin-ai-image-generation-web.quickAction.editImage.prompt.placeholder': 'e.g. "Add a sunset"',
-        'ly.img.plugin-ai-image-generation-web.defaults.quickAction.editImage.apply': 'Change'
+        'ly.img.plugin-ai-image-generation-web.defaults.quickAction.editImage':
+          'Edit Image...',
+        'ly.img.plugin-ai-image-generation-web.defaults.quickAction.editImage.description':
+          'Change image based on description',
+        'ly.img.plugin-ai-image-generation-web.defaults.quickAction.editImage.prompt':
+          'Edit Image...',
+        'ly.img.plugin-ai-image-generation-web.quickAction.editImage.prompt.placeholder':
+          'e.g. "Add a sunset"',
+        'ly.img.plugin-ai-image-generation-web.defaults.quickAction.editImage.apply':
+          'Change'
       })
     });
   });

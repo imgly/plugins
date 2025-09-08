@@ -8,7 +8,7 @@ describe('RecraftV3 Style Group Feature Flags', () => {
     mockEngine = {
       asset: {
         addSource: jest.fn(),
-        findAssets: jest.fn().mockResolvedValue([])
+        findAssets: jest.fn()
       },
       block: {
         findAllSelected: jest.fn().mockReturnValue([]),
@@ -42,7 +42,7 @@ describe('RecraftV3 Style Group Feature Flags', () => {
       // Since we can't easily import and test the internal function,
       // we'll test the behavior through the renderCustomProperty
       const renderCustomProperty = {
-        style: ({ state, engine }: any, property: any) => {
+        style: ({ engine }: any, property: any) => {
           const isImageStyleEnabled = mockCesdk.feature.isEnabled(
             `ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.style.image`,
             { engine }
@@ -65,12 +65,12 @@ describe('RecraftV3 Style Group Feature Flags', () => {
       };
 
       const result = renderCustomProperty.style(
-        { state: jest.fn(), engine: mockEngine },
+        { engine: mockEngine },
         { id: 'style' }
       );
 
       expect(result).toBeDefined();
-      expect(result()).toEqual({
+      expect(result?.()).toEqual({
         id: 'style',
         type: 'string',
         value: 'any'
@@ -89,17 +89,11 @@ describe('RecraftV3 Style Group Feature Flags', () => {
     it('should use image styles when vector styles are disabled', () => {
       // Mock that image styles are enabled, vector styles are disabled
       mockCesdk.feature.isEnabled
-        .mockReturnValueOnce(true)  // image styles enabled
+        .mockReturnValueOnce(true) // image styles enabled
         .mockReturnValueOnce(false); // vector styles disabled
 
-      const stateValue = { current: 'image' };
-      const mockState = jest.fn((key: string, defaultValue: any) => ({
-        value: defaultValue,
-        set: (v: any) => { stateValue.current = v; }
-      }));
-
       const renderCustomProperty = {
-        style: ({ state, engine }: any, property: any) => {
+        style: ({ engine }: any, property: any) => {
           const isImageStyleEnabled = mockCesdk.feature.isEnabled(
             `ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.style.image`,
             { engine }
@@ -119,22 +113,25 @@ describe('RecraftV3 Style Group Feature Flags', () => {
 
           // Determine default type based on what's enabled
           const defaultType = isImageStyleEnabled ? 'image' : 'vector';
-          
+
           return () => ({
             id: property.id,
             type: 'string',
-            value: defaultType === 'image' ? 'realistic_image' : 'vector_illustration'
+            value:
+              defaultType === 'image'
+                ? 'realistic_image'
+                : 'vector_illustration'
           });
         }
       };
 
       const result = renderCustomProperty.style(
-        { state: mockState, engine: mockEngine },
+        { engine: mockEngine },
         { id: 'style' }
       );
 
       expect(result).toBeDefined();
-      expect(result()).toEqual({
+      expect(result?.()).toEqual({
         id: 'style',
         type: 'string',
         value: 'realistic_image'
@@ -148,7 +145,7 @@ describe('RecraftV3 Style Group Feature Flags', () => {
         .mockReturnValueOnce(true); // vector styles enabled
 
       const renderCustomProperty = {
-        style: ({ state, engine }: any, property: any) => {
+        style: ({ engine }: any, property: any) => {
           const isImageStyleEnabled = mockCesdk.feature.isEnabled(
             `ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.style.image`,
             { engine }
@@ -168,22 +165,25 @@ describe('RecraftV3 Style Group Feature Flags', () => {
 
           // Determine default type based on what's enabled
           const defaultType = isImageStyleEnabled ? 'image' : 'vector';
-          
+
           return () => ({
             id: property.id,
             type: 'string',
-            value: defaultType === 'image' ? 'realistic_image' : 'vector_illustration'
+            value:
+              defaultType === 'image'
+                ? 'realistic_image'
+                : 'vector_illustration'
           });
         }
       };
 
       const result = renderCustomProperty.style(
-        { state: jest.fn(), engine: mockEngine },
+        { engine: mockEngine },
         { id: 'style' }
       );
 
       expect(result).toBeDefined();
-      expect(result()).toEqual({
+      expect(result?.()).toEqual({
         id: 'style',
         type: 'string',
         value: 'vector_illustration'
@@ -193,12 +193,18 @@ describe('RecraftV3 Style Group Feature Flags', () => {
 
   describe('Feature flag key patterns', () => {
     it('should use correct feature flag keys for RecraftV3', () => {
-      const expectedImageKey = 'ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.style.image';
-      const expectedVectorKey = 'ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.style.vector';
+      const expectedImageKey =
+        'ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.style.image';
+      const expectedVectorKey =
+        'ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.style.vector';
 
       // Verify the keys match the expected pattern
-      expect(expectedImageKey).toMatch(/^ly\.img\.plugin-ai-image-generation-web\.[^.]+\.style\.(image|vector)$/);
-      expect(expectedVectorKey).toMatch(/^ly\.img\.plugin-ai-image-generation-web\.[^.]+\.style\.(image|vector)$/);
+      expect(expectedImageKey).toMatch(
+        /^ly\.img\.plugin-ai-image-generation-web\.[^.]+\.style\.(image|vector)$/
+      );
+      expect(expectedVectorKey).toMatch(
+        /^ly\.img\.plugin-ai-image-generation-web\.[^.]+\.style\.(image|vector)$/
+      );
     });
   });
 });

@@ -25,33 +25,41 @@ describe('Feature Flag Key Generation', () => {
 
   describe('Panel feature key generation', () => {
     it('should generate correct providerSelect keys for all plugin types', () => {
-      expect(getPanelFeatureKey('image', 'providerSelect'))
-        .toBe('ly.img.plugin-ai-image-generation-web.providerSelect');
-      
-      expect(getPanelFeatureKey('video', 'providerSelect'))
-        .toBe('ly.img.plugin-ai-video-generation-web.providerSelect');
-      
-      expect(getPanelFeatureKey('text', 'providerSelect'))
-        .toBe('ly.img.plugin-ai-text-generation-web.providerSelect');
-      
-      expect(getPanelFeatureKey('audio', 'providerSelect'))
-        .toBe('ly.img.plugin-ai-audio-generation-web.providerSelect');
+      expect(getPanelFeatureKey('image', 'providerSelect')).toBe(
+        'ly.img.plugin-ai-image-generation-web.providerSelect'
+      );
+
+      expect(getPanelFeatureKey('video', 'providerSelect')).toBe(
+        'ly.img.plugin-ai-video-generation-web.providerSelect'
+      );
+
+      expect(getPanelFeatureKey('text', 'providerSelect')).toBe(
+        'ly.img.plugin-ai-text-generation-web.providerSelect'
+      );
+
+      expect(getPanelFeatureKey('audio', 'providerSelect')).toBe(
+        'ly.img.plugin-ai-audio-generation-web.providerSelect'
+      );
     });
 
     it('should generate correct fromText keys for image and video', () => {
-      expect(getPanelFeatureKey('image', 'fromText'))
-        .toBe('ly.img.plugin-ai-image-generation-web.fromText');
-      
-      expect(getPanelFeatureKey('video', 'fromText'))
-        .toBe('ly.img.plugin-ai-video-generation-web.fromText');
+      expect(getPanelFeatureKey('image', 'fromText')).toBe(
+        'ly.img.plugin-ai-image-generation-web.fromText'
+      );
+
+      expect(getPanelFeatureKey('video', 'fromText')).toBe(
+        'ly.img.plugin-ai-video-generation-web.fromText'
+      );
     });
 
     it('should generate correct fromImage keys for image and video', () => {
-      expect(getPanelFeatureKey('image', 'fromImage'))
-        .toBe('ly.img.plugin-ai-image-generation-web.fromImage');
-      
-      expect(getPanelFeatureKey('video', 'fromImage'))
-        .toBe('ly.img.plugin-ai-video-generation-web.fromImage');
+      expect(getPanelFeatureKey('image', 'fromImage')).toBe(
+        'ly.img.plugin-ai-image-generation-web.fromImage'
+      );
+
+      expect(getPanelFeatureKey('video', 'fromImage')).toBe(
+        'ly.img.plugin-ai-video-generation-web.fromImage'
+      );
     });
   });
 
@@ -68,10 +76,14 @@ describe('Feature Flag Key Generation', () => {
         'remixPageWithPrompt'
       ];
 
-      imageActions.forEach(action => {
+      imageActions.forEach((action) => {
         const key = getQuickActionFeatureKey('image', action);
-        expect(key).toBe(`ly.img.plugin-ai-image-generation-web.quickAction.${action}`);
-        expect(key).toMatch(/^ly\.img\.plugin-ai-image-generation-web\.quickAction\.\w+$/);
+        expect(key).toBe(
+          `ly.img.plugin-ai-image-generation-web.quickAction.${action}`
+        );
+        expect(key).toMatch(
+          /^ly\.img\.plugin-ai-image-generation-web\.quickAction\.\w+$/
+        );
       });
     });
 
@@ -86,42 +98,74 @@ describe('Feature Flag Key Generation', () => {
         'shorter'
       ];
 
-      textActions.forEach(action => {
+      textActions.forEach((action) => {
         const key = getQuickActionFeatureKey('text', action);
-        expect(key).toBe(`ly.img.plugin-ai-text-generation-web.quickAction.${action}`);
-        expect(key).toMatch(/^ly\.img\.plugin-ai-text-generation-web\.quickAction\.\w+$/);
+        expect(key).toBe(
+          `ly.img.plugin-ai-text-generation-web.quickAction.${action}`
+        );
+        expect(key).toMatch(
+          /^ly\.img\.plugin-ai-text-generation-web\.quickAction\.\w+$/
+        );
       });
     });
 
     it('should generate correct keys for video quick actions', () => {
       const key = getQuickActionFeatureKey('video', 'createVideo');
-      expect(key).toBe('ly.img.plugin-ai-video-generation-web.quickAction.createVideo');
+      expect(key).toBe(
+        'ly.img.plugin-ai-video-generation-web.quickAction.createVideo'
+      );
     });
 
     it('should handle quick action provider select key', () => {
       const key = `ly.img.plugin-ai-image-generation-web.quickAction.providerSelect`;
-      expect(key).toMatch(/^ly\.img\.plugin-ai-\w+-generation-web\.quickAction\.providerSelect$/);
+      expect(key).toMatch(
+        /^ly\.img\.plugin-ai-\w+-generation-web\.quickAction\.providerSelect$/
+      );
     });
   });
 
   describe('Provider style feature key generation', () => {
     it('should generate correct keys for RecraftV3 styles', () => {
-      expect(getProviderStyleFeatureKey('fal-ai/recraft-v3', 'style.image'))
-        .toBe('ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.style.image');
-      
-      expect(getProviderStyleFeatureKey('fal-ai/recraft-v3', 'style.vector'))
-        .toBe('ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.style.vector');
+      expect(
+        getProviderStyleFeatureKey('fal-ai/recraft-v3', 'style.image')
+      ).toBe(
+        'ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.style.image'
+      );
+
+      expect(
+        getProviderStyleFeatureKey('fal-ai/recraft-v3', 'style.vector')
+      ).toBe(
+        'ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.style.vector'
+      );
     });
 
     it('should generate correct keys for Recraft20b styles', () => {
-      expect(getProviderStyleFeatureKey('fal-ai/recraft/v2/text-to-image', 'style.image'))
-        .toBe('ly.img.plugin-ai-image-generation-web.fal-ai/recraft/v2/text-to-image.style.image');
-      
-      expect(getProviderStyleFeatureKey('fal-ai/recraft/v2/text-to-image', 'style.vector'))
-        .toBe('ly.img.plugin-ai-image-generation-web.fal-ai/recraft/v2/text-to-image.style.vector');
-      
-      expect(getProviderStyleFeatureKey('fal-ai/recraft/v2/text-to-image', 'style.icon'))
-        .toBe('ly.img.plugin-ai-image-generation-web.fal-ai/recraft/v2/text-to-image.style.icon');
+      expect(
+        getProviderStyleFeatureKey(
+          'fal-ai/recraft/v2/text-to-image',
+          'style.image'
+        )
+      ).toBe(
+        'ly.img.plugin-ai-image-generation-web.fal-ai/recraft/v2/text-to-image.style.image'
+      );
+
+      expect(
+        getProviderStyleFeatureKey(
+          'fal-ai/recraft/v2/text-to-image',
+          'style.vector'
+        )
+      ).toBe(
+        'ly.img.plugin-ai-image-generation-web.fal-ai/recraft/v2/text-to-image.style.vector'
+      );
+
+      expect(
+        getProviderStyleFeatureKey(
+          'fal-ai/recraft/v2/text-to-image',
+          'style.icon'
+        )
+      ).toBe(
+        'ly.img.plugin-ai-image-generation-web.fal-ai/recraft/v2/text-to-image.style.icon'
+      );
     });
   });
 
@@ -135,7 +179,7 @@ describe('Feature Flag Key Generation', () => {
         'ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.style.image'
       ];
 
-      validKeys.forEach(key => {
+      validKeys.forEach((key) => {
         // Check it starts with correct prefix
         expect(key).toMatch(/^ly\.img\.plugin-ai-/);
         // Check it contains generation-web
@@ -147,7 +191,8 @@ describe('Feature Flag Key Generation', () => {
 
     it('should maintain consistency between i18n keys and feature flags', () => {
       // Feature flags should match i18n key patterns
-      const featureKey = 'ly.img.plugin-ai-image-generation-web.quickAction.editImage';
+      const featureKey =
+        'ly.img.plugin-ai-image-generation-web.quickAction.editImage';
       const i18nKey = featureKey; // Should be the same
 
       expect(featureKey).toBe(i18nKey);
@@ -157,10 +202,11 @@ describe('Feature Flag Key Generation', () => {
   describe('Hierarchical key relationships', () => {
     it('should maintain parent-child relationships', () => {
       const parentKey = 'ly.img.plugin-ai-image-generation-web.quickAction';
-      const childKey = 'ly.img.plugin-ai-image-generation-web.quickAction.editImage';
+      const childKey =
+        'ly.img.plugin-ai-image-generation-web.quickAction.editImage';
 
       expect(childKey).toContain(parentKey);
-      expect(childKey.startsWith(parentKey + '.')).toBe(true);
+      expect(childKey.startsWith(`${parentKey}.`)).toBe(true);
     });
 
     it('should have consistent depth for similar features', () => {
@@ -170,7 +216,7 @@ describe('Feature Flag Key Generation', () => {
         'ly.img.plugin-ai-video-generation-web.quickAction.createVideo'
       ];
 
-      keys.forEach(key => {
+      keys.forEach((key) => {
         const parts = key.split('.');
         expect(parts).toHaveLength(5); // All quick action keys should have same depth
         expect(parts[3]).toBe('quickAction'); // quickAction should be at same position
@@ -182,7 +228,7 @@ describe('Feature Flag Key Generation', () => {
     it('should handle provider IDs with slashes correctly', () => {
       const providerId = 'fal-ai/recraft/v2/text-to-image';
       const key = getProviderStyleFeatureKey(providerId, 'style.icon');
-      
+
       // Should preserve slashes in provider ID
       expect(key).toContain('fal-ai/recraft/v2/text-to-image');
       // Should end with the style group
