@@ -83,3 +83,9 @@ export { default as initializeQuickActionComponents } from './ui/quickActions/in
 export { extractAndSetSchemaTranslations } from './openapi/extractSchemaTranslations';
 
 export { AI_EDIT_MODE, AI_METADATA_KEY } from './ui/quickActions/utils';
+
+// Export AI-specific translation helpers
+export {
+  createTranslationCallback,
+  buildTranslationKeys
+} from './utils/translationHelpers';

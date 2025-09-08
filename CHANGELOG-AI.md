@@ -15,6 +15,7 @@
 
 -   [image-generation] **NanoBanana Provider**: Added NanoBanana text-to-image provider via fal.ai with fast generation times, 1024×1024 resolution, support for multiple output formats (JPEG, PNG), configurable number of images (1-4), and remixPageWithPrompt quick action
 -   [image-generation] **NanoBananaEdit Provider**: Added NanoBananaEdit image-to-image provider via fal.ai for editing existing images with text prompts, supporting all standard quick actions (editImage, swapBackground, styleTransfer, artistTransfer, createVariant, combineImages with up to 10 images, remixPage, remixPageWithPrompt)
+-   [all] **AI Style Asset Library Translations**: AI style presets in asset libraries now automatically use localized names and descriptions from provider translation files, eliminating the need for manual translation configuration
 
 ### Bug Fixes
 
