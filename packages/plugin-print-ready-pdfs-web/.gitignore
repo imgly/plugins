@@ -29,3 +29,4 @@ pnpm-debug.log*
 # Test outputs
 test/converted-pdfx3.pdf
 test-results/
+.vercel

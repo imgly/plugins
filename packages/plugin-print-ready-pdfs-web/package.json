@@ -63,8 +63,8 @@
     "test": "pnpm run test:browser"
   },
   "devDependencies": {
-    "@cesdk/cesdk-js": "~1.37.0",
-    "@cesdk/engine": "~1.37.0",
+    "@cesdk/cesdk-js": "~1.59.0",
+    "@cesdk/engine": "~1.59.0",
     "@imgly/plugin-utils": "workspace:*",
     "@playwright/test": "^1.54.1",
     "@types/emscripten": "^1.40.1",
@@ -87,6 +87,6 @@
     }
   },
   "peerDependencies": {
-    "@cesdk/cesdk-js": "^1.37.0"
+    "@cesdk/cesdk-js": "^1.59.0"
   }
 }

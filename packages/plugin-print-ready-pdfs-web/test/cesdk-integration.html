@@ -332,8 +332,10 @@
     </div>
 
     <script type="module">
-      import CreativeEditorSDK from 'https://cdn.img.ly/packages/imgly/cesdk-js/1.37.0/index.js';
-      import { convertToPDFX3 } from '/dist/index.mjs';
+      import CreativeEditorSDK from 'https://cdn.img.ly/packages/imgly/cesdk-js/1.59.0/index.js';
+      // Use /dist/index.mjs for local development, ./index.mjs for production deployment
+      const pluginPath = window.location.hostname === 'localhost' ? '/dist/index.mjs' : './index.mjs';
+      const { convertToPDFX3 } = await import(pluginPath);
       
       // Load configuration (will read from environment variables if available)
       const CONFIG = {
@@ -392,7 +394,7 @@
 
           const config = {
             license: CONFIG.CESDK_LICENSE,
-            baseURL: 'https://cdn.img.ly/packages/imgly/cesdk-js/1.37.0/assets',
+            baseURL: 'https://cdn.img.ly/packages/imgly/cesdk-js/1.59.0/assets',
             callbacks: {
               onUpload: 'local',
               onLoadArchive: 'local',

@@ -28,13 +28,12 @@ const htmlContent = fs.readFileSync(htmlPath, 'utf8');
 // Replace the license placeholder with the actual license
 // Use the same environment variable as the main examples (VITE_CESDK_LICENSE_KEY)
 // This allows reusing the same Vercel secret across all demos
-const license = process.env.VITE_CESDK_LICENSE_KEY || 
-                process.env.CESDK_LICENSE || 
-                'yDDwCZO23aFG8Ag3i5j81fgUeVGOHNkgKUgW_uczN5p0bJaftF_5LzHd7DpMEAAF';
+const license = process.env.VITE_CESDK_LICENSE_KEY;
 
+// Replace %CESDK_LICENSE% placeholder with the actual license
 const htmlWithLicense = htmlContent.replace(
-  /license:\s*'[^']*'/,
-  `license: '${license}'`
+  '%CESDK_LICENSE%',
+  license || ''
 );
 
 // Write the modified HTML to demo-dist
@@ -46,6 +45,25 @@ const assetsDir = path.join(__dirname, '../src/assets');
 const destAssetsDir = path.join('demo-dist', 'assets');
 if (fs.existsSync(assetsDir)) {
   fs.cpSync(assetsDir, destAssetsDir, { recursive: true });
+}
+
+// Copy the built plugin files from dist to demo-dist
+const distDir = path.join(__dirname, '../dist');
+if (fs.existsSync(distDir)) {
+  // Copy index.mjs (the main plugin file)
+  const srcPlugin = path.join(distDir, 'index.mjs');
+  if (fs.existsSync(srcPlugin)) {
+    fs.copyFileSync(srcPlugin, path.join('demo-dist', 'index.mjs'));
+  }
+  
+  // Copy WASM files
+  const wasmFiles = ['gs.wasm', 'gs.js'];
+  wasmFiles.forEach(file => {
+    const src = path.join(distDir, file);
+    if (fs.existsSync(src)) {
+      fs.copyFileSync(src, path.join('demo-dist', file));
+    }
+  });
 }
 
 console.log('Demo build complete in demo-dist/');

@@ -638,14 +638,14 @@ importers:
         injected: true
     devDependencies:
       '@cesdk/cesdk-js':
-        specifier: ~1.37.0
-        version: 1.37.0(react@18.3.1)
+        specifier: ~1.59.0
+        version: 1.59.1(react@18.3.1)
       '@cesdk/engine':
-        specifier: ~1.37.0
-        version: 1.37.0(react@18.3.1)
+        specifier: ~1.59.0
+        version: 1.59.1(react@18.3.1)
       '@imgly/plugin-utils':
         specifier: workspace:*
-        version: file:packages/plugin-utils(@cesdk/cesdk-js@1.37.0(react@18.3.1))
+        version: file:packages/plugin-utils(@cesdk/cesdk-js@1.59.1(react@18.3.1))
       '@playwright/test':
         specifier: ^1.54.1
         version: 1.54.1
@@ -1025,6 +1025,17 @@ packages:
   '@cesdk/cesdk-js@1.49.1':
     resolution: {integrity: sha512-dLx6iNF6rJQHDng/kMyCRM3y0f3j2yO6moO2Mk1ZxRT4LJcF6LTIPqhd+GOLx2WC6rQ03kibfAQ4N1EH3Jmy0A==}
 
+  '@cesdk/cesdk-js@1.59.1':
+    resolution: {integrity: sha512-Ha6h4uXEdbmUqytvvfpvM6y0y48Z6nUF97w6fvgkvuMBtWJhUPUiJ4/c2LeXsc/+ith6xWMz6/H4//ic01glZQ==}
+    peerDependencies:
+      react: '>16'
+      vue: ^3.0.0
+    peerDependenciesMeta:
+      react:
+        optional: true
+      vue:
+        optional: true
+
   '@cesdk/engine@1.37.0':
     resolution: {integrity: sha512-7UsBukfoQ6MVrHU7q3lBposcXTmtF32wuSPV0kwtDqkHdYC1CJ61jJLs2FbVb3yqtecI/AUxdzH3/RblTXeU6w==}
     peerDependencies:
@@ -1043,6 +1054,14 @@ packages:
 
   '@cesdk/engine@1.49.1':
     resolution: {integrity: sha512-Ugt2Hb/UKCl1so1YCZggZpmMW4zx22xcWKhbcR/XzYxb68fnllgV6w4jS3tgK4/1wA0bx0nyFreZ9e3ml2suYA==}
+    peerDependencies:
+      react: '>16'
+    peerDependenciesMeta:
+      react:
+        optional: true
+
+  '@cesdk/engine@1.59.1':
+    resolution: {integrity: sha512-8cAM24IUiQhwC2EQjO2kRuaS9CDQopaxP9nk063HBX6AlSFCSRQ3CkrA+yT/uxpKIpCfUjXUdAy+LHCs19lTGA==}
     peerDependencies:
       react: '>16'
     peerDependenciesMeta:
@@ -4953,6 +4972,12 @@ snapshots:
     transitivePeerDependencies:
       - react
 
+  '@cesdk/cesdk-js@1.59.1(react@18.3.1)':
+    dependencies:
+      '@cesdk/engine': 1.59.1(react@18.3.1)
+    optionalDependencies:
+      react: 18.3.1
+
   '@cesdk/engine@1.37.0(react@18.3.1)':
     optionalDependencies:
       react: 18.3.1
@@ -4962,6 +4987,10 @@ snapshots:
       react: 18.3.1
 
   '@cesdk/engine@1.49.1(react@18.3.1)':
+    optionalDependencies:
+      react: 18.3.1
+
+  '@cesdk/engine@1.59.1(react@18.3.1)':
     optionalDependencies:
       react: 18.3.1
 
@@ -5233,6 +5262,11 @@ snapshots:
   '@imgly/plugin-utils@file:packages/plugin-utils(@cesdk/cesdk-js@1.49.1(react@18.3.1))':
     dependencies:
       '@cesdk/cesdk-js': 1.49.1(react@18.3.1)
+      lodash-es: 4.17.21
+
+  '@imgly/plugin-utils@file:packages/plugin-utils(@cesdk/cesdk-js@1.59.1(react@18.3.1))':
+    dependencies:
+      '@cesdk/cesdk-js': 1.59.1(react@18.3.1)
       lodash-es: 4.17.21
 
   '@imgly/plugin-vectorizer-web@file:packages/plugin-vectorizer-web(@cesdk/cesdk-js@1.49.1(react@18.3.1))':

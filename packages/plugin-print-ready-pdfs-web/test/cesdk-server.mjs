@@ -10,8 +10,10 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const projectRoot = join(__dirname, '..');
 
-// Load environment variables from .env file
+// Load environment variables from .env and .env.local files
+// Use same pattern as examples/web for consistency
 config({ path: join(projectRoot, '.env') });
+config({ path: join(projectRoot, '.env.local') });
 
 const PORT = 3001;
 
@@ -52,10 +54,11 @@ async function serveFile(filePath, res) {
       
       // Replace environment variables in HTML files
       if (filePath.endsWith('.html')) {
-        content = content.replace('%CESDK_LICENSE%', process.env.CESDK_LICENSE || '');
+        // Use same env var as examples/web for consistency
+        content = content.replace('%CESDK_LICENSE%', process.env.VITE_CESDK_LICENSE_KEY || '');
         
-        if (!process.env.CESDK_LICENSE) {
-          console.warn('Warning: CESDK_LICENSE not found in environment variables. Please set it in your .env file.');
+        if (!process.env.VITE_CESDK_LICENSE_KEY) {
+          console.warn('Warning: VITE_CESDK_LICENSE_KEY not found in environment variables. Please set it in your .env.local file.');
         }
       }
     }
