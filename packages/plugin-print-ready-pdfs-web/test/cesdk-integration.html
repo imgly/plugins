@@ -413,28 +413,20 @@
                     export: true,
                     custom: [
                       {
-                        label: 'Export Print-Ready PDF (FOGRA39)',
-                        iconName: '@imgly/icons/Download',
+                        label: 'Export CMYK PDF (FOGRA39)',
+                        icon: '@imgly/Download',
                         callback: () => exportAndDownload({ 
                           outputProfile: 'fogra39',
-                          title: 'Print-Ready PDF - FOGRA39' 
+                          title: 'CE.SDK Export - FOGRA39' 
                         }, 'print-ready-fogra39')
                       },
                       {
-                        label: 'Export Print-Ready PDF (GRACoL)',
-                        iconName: '@imgly/icons/Download',
+                        label: 'Export CMYK PDF (GRACoL)',
+                        icon: '@imgly/Download',
                         callback: () => exportAndDownload({ 
                           outputProfile: 'gracol',
-                          title: 'Print-Ready PDF - GRACoL' 
+                          title: 'CE.SDK Export - GRACoL' 
                         }, 'print-ready-gracol')
-                      },
-                      {
-                        label: 'Export PDF (sRGB)',
-                        iconName: '@imgly/icons/Download',
-                        callback: () => exportAndDownload({ 
-                          outputProfile: 'srgb',
-                          title: 'Digital PDF - sRGB' 
-                        }, 'digital-srgb')
                       }
                     ]
                 }
