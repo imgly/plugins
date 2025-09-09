@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Print Ready PDF Plugin Preview</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui,
+          sans-serif;
+        background: #f5f5f5;
+      }
+
+      .header {
+        background: white;
+        padding: 2rem 3rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      }
+
+      .header-content {
+        max-width: 1400px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+      }
+
+      .header-left {
+        flex: 1;
+      }
+
+      .back-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        background: #f5f5f7;
+        border: 1px solid #e5e5e7;
+        border-radius: 0.5rem;
+        text-decoration: none;
+        color: #1a1a1a;
+        font-size: 0.875rem;
+        font-weight: 500;
+        margin-bottom: 1.5rem;
+        transition: all 0.2s;
+      }
+
+      .back-button:hover {
+        background: #ebebed;
+        transform: translateX(-2px);
+      }
+
+      .title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin: 0 0 0.75rem 0;
+        letter-spacing: -0.02em;
+      }
+
+      .description {
+        font-size: 1.125rem;
+        line-height: 1.6;
+        color: #4a4a4a;
+        max-width: 700px;
+        margin-bottom: 1.5rem;
+      }
+
+      .features {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 2rem;
+        margin-top: 1.5rem;
+      }
+
+      .feature-group {
+        min-width: 200px;
+      }
+
+      .feature-label {
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: #6a6a6a;
+        margin-bottom: 0.75rem;
+      }
+
+      .feature-items {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+
+      .feature-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        background: white;
+        border: 1px solid #e5e5e7;
+        border-radius: 0.5rem;
+        font-size: 0.875rem;
+        color: #1a1a1a;
+      }
+
+      .feature-badge.active {
+        background: #1a1a1a;
+        color: white;
+        border-color: #1a1a1a;
+      }
+
+      .logo-section {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .logo-img {
+        height: 30px;
+        color: #1a1a1a;
+      }
+
+      .plugin-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 0.5rem;
+        font-size: 0.875rem;
+        font-weight: 600;
+      }
+
+      .export-controls {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+      }
+
+      .btn {
+        background: #007bff;
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.9rem;
+      }
+
+      .btn:hover {
+        background: #0056b3;
+      }
+
+      .btn:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+      }
+
+      .status {
+        margin-left: 1rem;
+        padding: 0.25rem 0.75rem;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        font-weight: 500;
+      }
+
+      .status.loading {
+        background: #fff3cd;
+        color: #856404;
+      }
+
+      .status.ready {
+        background: #d4edda;
+        color: #155724;
+      }
+
+      .status.error {
+        background: #f8d7da;
+        color: #721c24;
+      }
+
+      .main-content {
+        flex: 1;
+        padding: 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+      }
+
+      .editor-container {
+        width: 100%;
+        max-width: 1400px;
+        height: calc(100vh - 400px);
+        min-height: 600px;
+        background: white;
+        border-radius: 1rem;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        position: relative;
+      }
+
+      #cesdk_container {
+        width: 100%;
+        height: 100%;
+      }
+
+      .status-bar {
+        position: absolute;
+        bottom: 1rem;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 0.75rem 1.5rem;
+        background: white;
+        border-radius: 0.5rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        font-size: 0.875rem;
+        display: none;
+        z-index: 100;
+        transition: all 0.3s;
+      }
+
+      .status-bar.visible {
+        display: block;
+      }
+
+      .status-bar.success {
+        background: #4ade80;
+        color: white;
+      }
+
+      .status-bar.error {
+        background: #f87171;
+        color: white;
+      }
+
+      .status-bar.loading {
+        background: #60a5fa;
+        color: white;
+      }
+
+      .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255, 255, 255, 0.9);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+      }
+
+      .loading-content {
+        text-align: center;
+      }
+
+      .spinner {
+        width: 40px;
+        height: 40px;
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #007bff;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 1rem;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <div class="header-content">
+        <div class="header-left">
+          <svg class="logo-img" width="142" height="30" viewBox="0 0 142 30" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="IMG.LY Logo" style="margin-bottom: 1.5rem;">
+            <title>IMG.LY</title>
+            <path d="M0.44 29H8.84V0.999998H0.44V29ZM46.5213 0.999998H36.2013L30.2413 19.08L24.3213 0.999998H13.7213V29H21.8013V11.64L27.2013 29H33.3613L38.4413 11.64V29H46.5213V0.999998ZM66.0166 18.96H70.6566C70.2566 21.16 68.4966 22.92 65.3766 22.92C60.7766 22.92 58.5366 19.48 58.5366 15.12C58.5366 11.16 60.3766 7.36 64.8566 7.36C67.7766 7.36 69.3766 9.12 69.6566 10.72H78.8566C78.3366 5.04 73.0566 0.239998 64.9366 0.239998C55.5366 0.239998 50.0566 7.32 50.0566 15C50.0566 23.04 55.3766 29.76 64.9766 29.76C73.2166 29.76 78.0566 25.4 79.0966 18.96H81.7766V13.48H66.0166V18.96ZM105.948 21.88V0.999998H97.6275V29H113.268V21.88H105.948ZM141.93 0.999998H132.65L128.41 10.96L123.89 0.999998H114.13L123.53 19.12L118.69 29H128.05L141.93 0.999998Z" fill="currentColor"></path>
+            <path d="M83.8188 24.68C83.8188 27.32 85.9388 29.48 88.6588 29.48C91.4588 29.48 93.5788 27.32 93.5788 24.68C93.5788 22.04 91.4588 19.88 88.6588 19.88C85.9388 19.88 83.8188 22.04 83.8188 24.68Z" fill="#471AFF"></path>
+          </svg>
+          <h1 class="title">Print-Ready Ready PDFs<span style="font-size: 0.5em; font-weight: 400; color: #666; vertical-align: middle; margin-left: 0.5rem; padding: 0.25rem 0.5rem; background: #e5e5e7; border-radius: 0.25rem;">PREVIEW</span></h1>
+          
+          <p class="description" style="margin-bottom: 1.5rem;">
+            This plugin enables exporting print-ready CMYK PDFs from CE.SDK by transforming the PDF generated by CE.SDK in a post-processing step. 
+            The conversion yields a CMYK PDF conforming to the PDF/X-3 standard with embedded color profiles. 
+            Everything runs entirely in the browser with no server backend required.
+          </p>
+          
+          <div class="features" style="display: flex; gap: 3rem; margin-top: 2rem;">
+            <div style="flex: 1;">
+              <ul style="list-style: none; padding: 0; margin: 0; font-size: 1rem; line-height: 1.8;">
+                <li style="padding-left: 1.5rem; text-indent: -1.5rem;"><strong>CMYK Color Space</strong> - Converts RGB to CMYK using professional ICC profiles</li>
+                <li style="padding-left: 1.5rem; text-indent: -1.5rem;"><strong>PDF/X Standards</strong> - Generates PDF/X-3 compliant files for commercial printing</li>
+                <li style="padding-left: 1.5rem; text-indent: -1.5rem;"><strong>Color Profile Support</strong> - Embeds industry-standard or custom ICC profiles</li>
+              </ul>
+            </div>
+            <div style="flex: 1;">
+              <ul style="list-style: none; padding: 0; margin: 0; font-size: 1rem; line-height: 1.8;">
+                <li style="padding-left: 1.5rem; text-indent: -1.5rem;"><strong>100% Client-Side</strong> - Everything runs in the browser—zero backend infrastructure</li>
+                <li style="padding-left: 1.5rem; text-indent: -1.5rem;"><strong>Drop-in Integration</strong> - One function call transforms any PDF</li>
+                <li style="padding-left: 1.5rem; text-indent: -1.5rem;"><strong>Production Ready</strong> - Handles large files with comprehensive error handling</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="main-content">
+      <div class="editor-container">
+        <div id="cesdk_container"></div>
+        <div id="status" class="status-bar"></div>
+      </div>
+    </div>
+
+    <div id="loading" class="loading-overlay">
+      <div class="loading-content">
+        <div class="spinner"></div>
+        <p>Loading Creative Editor</p>
+        <p style="font-size: 0.875rem; color: #666; margin-top: 0.5rem;">Initializing print-ready PDF capabilities...</p>
+      </div>
+    </div>
+
+    <script type="module">
+      import CreativeEditorSDK from 'https://cdn.img.ly/packages/imgly/cesdk-js/1.37.0/index.js';
+      import { convertToPDFX3 } from '/dist/index.mjs';
+      
+      // Load configuration (will read from environment variables if available)
+      const CONFIG = {
+        CESDK_LICENSE: '%CESDK_LICENSE%' // This will be replaced by the server script
+      };
+
+      let cesdk = null;
+      const statusEl = document.getElementById('status');
+      const loadingEl = document.getElementById('loading');
+
+      function updateStatus(message, type = 'loading') {
+        statusEl.textContent = message;
+        statusEl.className = `status ${type}`;
+      }
+
+      // Helper function to export and download PDF - moved outside for scope
+      async function exportAndDownload(options, filename) {
+        if (!cesdk) {
+          alert('Editor not initialized yet');
+          return;
+        }
+        try {
+          const sceneId = cesdk.engine.scene.get();
+          if (sceneId == null) {
+            return;
+          }
+
+          // Export as PDF using CE.SDK
+          const pdfBlob = await cesdk.engine.block.export(
+            sceneId,
+            'application/pdf'
+          );
+
+          // Convert to PDF/X-3 using our plugin
+          const convertedBlob = await convertToPDFX3(pdfBlob, options);
+
+          // Trigger download
+          const url = URL.createObjectURL(convertedBlob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = `${filename}-${Date.now()}.pdf`;
+          link.style.display = 'none';
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          URL.revokeObjectURL(url);
+        } catch (error) {
+          console.error('Export failed:', error);
+          alert('Failed to export PDF/X. Please try again.');
+        }
+      }
+
+      async function initializeEditor() {
+        try {
+          updateStatus('Loading CE.SDK...', 'loading');
+
+          const config = {
+            license: CONFIG.CESDK_LICENSE,
+            baseURL: 'https://cdn.img.ly/packages/imgly/cesdk-js/1.37.0/assets',
+            callbacks: {
+              onUpload: 'local',
+              onLoadArchive: 'local',
+              onLoad: 'local',
+              onExport: 'download'
+            },
+            ui: {
+            elements: {
+                view: 'default',
+                panels: {
+                settings: true
+                },
+                navigation: {
+                action: {
+                    save: false,
+                    download: false,
+                    load: true,
+                    export: true,
+                    custom: [
+                      {
+                        label: 'Export Print-Ready PDF (FOGRA39)',
+                        iconName: '@imgly/icons/Download',
+                        callback: () => exportAndDownload({ 
+                          outputProfile: 'fogra39',
+                          title: 'Print-Ready PDF - FOGRA39' 
+                        }, 'print-ready-fogra39')
+                      },
+                      {
+                        label: 'Export Print-Ready PDF (GRACoL)',
+                        iconName: '@imgly/icons/Download',
+                        callback: () => exportAndDownload({ 
+                          outputProfile: 'gracol',
+                          title: 'Print-Ready PDF - GRACoL' 
+                        }, 'print-ready-gracol')
+                      },
+                      {
+                        label: 'Export PDF (sRGB)',
+                        iconName: '@imgly/icons/Download',
+                        callback: () => exportAndDownload({ 
+                          outputProfile: 'srgb',
+                          title: 'Digital PDF - sRGB' 
+                        }, 'digital-srgb')
+                      }
+                    ]
+                }
+                }
+            }
+        }
+          };
+
+          updateStatus('Creating editor instance...', 'loading');
+          cesdk = await CreativeEditorSDK.create('#cesdk_container', config);
+          window.cesdk = cesdk; // Make it globally accessible for debugging
+
+          updateStatus('Adding asset sources...', 'loading');
+          cesdk.addDefaultAssetSources();
+          cesdk.addDemoAssetSources({ sceneMode: 'Design' });
+
+          updateStatus('Creating design scene...', 'loading');
+          await cesdk.createDesignScene();
+
+          // Hide loading overlay
+          loadingEl.style.display = 'none';
+
+          updateStatus('Ready', 'ready');
+        } catch (error) {
+          console.error('Failed to initialize CE.SDK:', error);
+          updateStatus(`Error: ${error.message}`, 'error');
+          loadingEl.style.display = 'none';
+        }
+      }
+
+      // Initialize on load
+      initializeEditor();
+    </script>
+  </body>
+</html>

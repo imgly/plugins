@@ -39,15 +39,24 @@ function getMimeType(filePath) {
 
 async function serveFile(filePath, res) {
   try {
-    let content = await readFile(filePath, 'utf8');
     const mimeType = getMimeType(filePath);
-
-    // Replace environment variables in HTML files
-    if (filePath.endsWith('.html')) {
-      content = content.replace('%CESDK_LICENSE%', process.env.CESDK_LICENSE || '');
+    let content;
+    
+    // Read binary files as buffers, text files as UTF-8
+    const isBinary = ['.wasm', '.pdf', '.png', '.jpg', '.jpeg', '.gif', '.ico', '.icc'].some(ext => filePath.endsWith(ext));
+    
+    if (isBinary) {
+      content = await readFile(filePath);
+    } else {
+      content = await readFile(filePath, 'utf8');
       
-      if (!process.env.CESDK_LICENSE) {
-        console.warn('Warning: CESDK_LICENSE not found in environment variables. Please set it in your .env file.');
+      // Replace environment variables in HTML files
+      if (filePath.endsWith('.html')) {
+        content = content.replace('%CESDK_LICENSE%', process.env.CESDK_LICENSE || '');
+        
+        if (!process.env.CESDK_LICENSE) {
+          console.warn('Warning: CESDK_LICENSE not found in environment variables. Please set it in your .env file.');
+        }
       }
     }
 

@@ -1,7 +1,7 @@
 {
-  "name": "@imgly/plugin-pdfx-web",
+  "name": "@imgly/plugin-print-ready-pdfs-web",
   "version": "0.1.0",
-  "description": "PDFX plugin for CE.SDK editor - PDF conversion and export functionality. Contains AGPL-3.0 licensed Ghostscript WASM.",
+  "description": "Print-Ready PDFs plugin for CE.SDK editor - PDF/X conversion and export functionality. Contains AGPL-3.0 licensed Ghostscript WASM.",
   "keywords": [
     "CE.SDK",
     "plugin",
@@ -11,7 +11,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/imgly/plugin-pdfx-web.git"
+    "url": "git+https://github.com/imgly/plugin-print-ready-pdfs-web.git"
   },
   "license": "SEE LICENSE IN LICENSE.md",
   "author": {
