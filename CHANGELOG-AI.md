@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [0.2.6] - 2025-09-09
+
 ### New Features
 
 -   [all] **Feature API Integration**: Added comprehensive Feature API support across all AI plugins to control visibility and availability of features through feature flags. Core features include `providerSelect`, `quickAction`, `quickAction.providerSelect`, `fromText`, and `fromImage` flags.
