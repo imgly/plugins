@@ -11,7 +11,6 @@ import {
   SoundstripeArtist,
   SoundstripeAudioFile
 } from './types';
-import { refreshSoundstripeAudioURIs } from './refresh-audio-uris';
 
 const EMPTY_RESULT: AssetsQueryResult = {
   assets: [],

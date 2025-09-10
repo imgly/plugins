@@ -9,32 +9,32 @@ export const SoundstripePlugin = (
 
   // Validate configuration: either apiKey (for direct API) or baseUrl (for proxy) must be provided
   if (!apiKey && !baseUrl) {
-    throw new Error('Soundstripe Plugin: Either apiKey or baseUrl must be provided');
+    throw new Error(
+      'Soundstripe Plugin: Either apiKey or baseUrl must be provided'
+    );
   }
 
   return {
     async initialize({ engine, cesdk }) {
-      try {
-        const soundstripeSource = createSoundstripeSource(
-          engine as CreativeEngine,
-          { apiKey, baseUrl }
-        );
-        engine.asset.addSource(soundstripeSource);
+      const soundstripeSource = createSoundstripeSource(
+        engine as CreativeEngine,
+        { apiKey, baseUrl }
+      );
+      engine.asset.addSource(soundstripeSource);
 
-        // Refresh all soundstripe urls when a scene is loaded
-        engine.scene.onActiveChanged(() => {
-          refreshSoundstripeAudioURIs(engine as CreativeEngine, { apiKey, baseUrl });
+      // Refresh all soundstripe urls when a scene is loaded
+      engine.scene.onActiveChanged(() => {
+        refreshSoundstripeAudioURIs(engine as CreativeEngine, {
+          apiKey,
+          baseUrl
         });
-        if (cesdk) {
-          cesdk.setTranslations({
-            en: {
-              [`libraries.${soundstripeSource.id}.label`]: 'Soundstripe'
-            }
-          });
-        }
-      } catch (error) {
-        console.error('🎵 Soundstripe Plugin: Initialization failed:', error);
-        throw error;
+      });
+      if (cesdk) {
+        cesdk.setTranslations({
+          en: {
+            [`libraries.${soundstripeSource.id}.label`]: 'Soundstripe'
+          }
+        });
       }
     }
   };
