@@ -1,8 +1,14 @@
 {
   "name": "@imgly/plugin-ai-text-generation-web",
-  "version": "0.2.4",
+  "version": "0.2.6",
   "description": "AI text generation plugin for the CE.SDK editor",
-  "keywords": ["CE.SDK", "plugin", "AI", "text generation", "llm"],
+  "keywords": [
+    "CE.SDK",
+    "plugin",
+    "AI",
+    "text generation",
+    "llm"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/imgly/plugins.git"
@@ -34,7 +40,13 @@
     }
   },
   "homepage": "https://img.ly/products/creative-sdk",
-  "files": ["LICENSE.md", "README.md", "CHANGELOG.md", "dist/", "bin/"],
+  "files": [
+    "LICENSE.md",
+    "README.md",
+    "CHANGELOG.md",
+    "dist/",
+    "bin/"
+  ],
   "scripts": {
     "start": "npm run watch",
     "clean": "pnpm exec rimraf dist",
@@ -54,8 +66,9 @@
     "_syncPnpm": "pnpm sync-dependencies-meta-injected"
   },
   "devDependencies": {
-    "@imgly/plugin-utils": "workspace:*",
     "@imgly/plugin-ai-generation-web": "workspace:*",
+    "@imgly/plugin-utils": "workspace:*",
+    "@types/jest": "^30.0.0",
     "@types/ndarray": "^1.0.14",
     "chalk": "^5.3.0",
     "concurrently": "^8.2.2",

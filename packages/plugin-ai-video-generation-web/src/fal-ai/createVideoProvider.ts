@@ -10,7 +10,7 @@ import {
   Middleware,
   mergeQuickActionsConfig
 } from '@imgly/plugin-ai-generation-web';
-import { fal } from '@fal-ai/client';
+import { createFalClient, FalClient } from './createFalClient';
 import { VideoQuickActionSupportMap } from '../types';
 
 type VideoProviderConfiguration = {
@@ -70,24 +70,14 @@ function createVideoProvider<I extends Record<string, any>>(
   const middleware =
     options.middleware ?? config.middlewares ?? config.middleware ?? [];
 
+  let falClient: FalClient | null = null;
+
   const provider: Provider<'video', I, VideoOutput> = {
     id: options.modelKey,
     name: options.name ?? options.modelKey,
     kind: 'video',
     initialize: async (context) => {
-      fal.config({
-        proxyUrl: config.proxyUrl,
-        requestMiddleware: async (request) => {
-          return {
-            ...request,
-            headers: {
-              ...request.headers,
-              ...(options.headers ?? {})
-            }
-          };
-        }
-      });
-
+      falClient = createFalClient(config.proxyUrl, options.headers);
       options.initialize?.(context);
     },
     input: {
@@ -123,12 +113,17 @@ function createVideoProvider<I extends Record<string, any>>(
         input: I,
         { abortSignal }: { abortSignal?: AbortSignal }
       ) => {
+        if (!falClient) {
+          throw new Error('Provider not initialized');
+        }
+
         const image_url = await uploadImageInputToFalIfNeeded(
+          falClient,
           input.image_url,
           options.cesdk
         );
 
-        const response = await fal.subscribe(options.modelKey, {
+        const response = await falClient.subscribe(options.modelKey, {
           abortSignal,
           input: image_url != null ? { ...input, image_url } : input,
           logs: true

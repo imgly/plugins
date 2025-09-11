@@ -20,6 +20,7 @@ export const ID = `ly.img.${ACTION_NAME}`;
  * The i18n prefix for the quick action.
  */
 export const I18N_PREFIX = `ly.img.plugin-ai-image-generation-web.quickAction.${ACTION_NAME}`;
+export const I18N_DEFAULT_PREFIX = `ly.img.plugin-ai-image-generation-web.defaults.quickAction.${ACTION_NAME}`;
 
 /**
  * The input generated from this quick action which needs
@@ -31,17 +32,19 @@ export type InputType = {
 };
 
 /**
- * Get i18n label for style.
+ * Get i18n label with fallback keys.
  */
-function getStyleLabel(modelKey: string, styleId: string) {
-  const styleLabel = [
-    `${I18N_PREFIX}.${modelKey}.property.style.${styleId}`,
-    `${I18N_PREFIX}.property.style.${styleId}`,
-    `${I18N_PREFIX}.${modelKey}.defaults.property.style.${styleId}`,
-    `${I18N_PREFIX}.defaults.property.style.${styleId}`
-  ];
+function getI18nLabel(modelKey: string, suffix?: string) {
+  const basePath = `ly.img.plugin-ai-image-generation-web`;
+  const actionPath = `quickAction.${ACTION_NAME}`;
+  const fullPath = suffix ? `${actionPath}.${suffix}` : actionPath;
 
-  return styleLabel;
+  return [
+    `${basePath}.${modelKey}.${fullPath}`,
+    `${basePath}.${fullPath}`,
+    `${basePath}.${modelKey}.defaults.${fullPath}`,
+    `${basePath}.defaults.${fullPath}`
+  ];
 }
 
 /**
@@ -83,23 +86,27 @@ const STYLE_OPTIONS = [
 ];
 
 const StyleTransfer: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
+  // Set feature default for this quick action
+  cesdk.feature.enable(
+    'ly.img.plugin-ai-image-generation-web.quickAction.styleTransfer',
+    true
+  );
+
   cesdk.i18n.setTranslations({
     en: {
-      [`${I18N_PREFIX}`]: 'Change Art Style',
-      [`${I18N_PREFIX}.description`]:
+      [`${I18N_DEFAULT_PREFIX}`]: 'Change Art Style',
+      [`${I18N_DEFAULT_PREFIX}.description`]:
         'Transform image into different art styles',
 
       // StyleTransfer style translations
-      [`${I18N_PREFIX}.defaults.property.style.water`]: 'Watercolor Painting',
-      [`${I18N_PREFIX}.defaults.property.style.oil`]: 'Oil Painting',
-      [`${I18N_PREFIX}.defaults.property.style.charcoal`]: 'Charcoal Sketch',
-      [`${I18N_PREFIX}.defaults.property.style.pencil`]: 'Pencil Drawing',
-      [`${I18N_PREFIX}.defaults.property.style.pastel`]: 'Pastel Artwork',
-      [`${I18N_PREFIX}.defaults.property.style.ink`]: 'Ink Wash',
-      [`${I18N_PREFIX}.defaults.property.style.stained-glass`]:
-        'Stained Glass Window',
-      [`${I18N_PREFIX}.defaults.property.style.japanese`]:
-        'Japanese Woodblock Print'
+      [`${I18N_DEFAULT_PREFIX}.water`]: 'Watercolor Painting',
+      [`${I18N_DEFAULT_PREFIX}.oil`]: 'Oil Painting',
+      [`${I18N_DEFAULT_PREFIX}.charcoal`]: 'Charcoal Sketch',
+      [`${I18N_DEFAULT_PREFIX}.pencil`]: 'Pencil Drawing',
+      [`${I18N_DEFAULT_PREFIX}.pastel`]: 'Pastel Artwork',
+      [`${I18N_DEFAULT_PREFIX}.ink`]: 'Ink Wash',
+      [`${I18N_DEFAULT_PREFIX}.stained-glass`]: 'Stained Glass Window',
+      [`${I18N_DEFAULT_PREFIX}.japanese`]: 'Japanese Woodblock Print'
     }
   });
 
@@ -121,7 +128,7 @@ const StyleTransfer: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
       providerId
     }) => {
       experimental.builder.Popover(`${ID}.popover`, {
-        label: `${I18N_PREFIX}`,
+        label: getI18nLabel(providerId),
         icon: '@imgly/Appearance',
         labelAlignment: 'left',
         variant: 'plain',
@@ -134,7 +141,7 @@ const StyleTransfer: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
                 children: () => {
                   STYLE_OPTIONS.forEach((style) => {
                     builder.Button(`${ID}.popover.menu.${style.id}`, {
-                      label: getStyleLabel(providerId, style.id),
+                      label: getI18nLabel(providerId, style.id),
                       labelAlignment: 'left',
                       variant: 'plain',
                       onClick: async () => {

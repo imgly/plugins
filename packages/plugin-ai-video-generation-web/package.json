@@ -1,6 +1,6 @@
 {
   "name": "@imgly/plugin-ai-video-generation-web",
-  "version": "0.2.4",
+  "version": "0.2.6",
   "description": "AI video generation plugin for the CE.SDK editor",
   "keywords": ["CE.SDK", "plugin", "AI", "video-generation"],
   "repository": {
@@ -50,6 +50,7 @@
     "_syncPnpm": "pnpm sync-dependencies-meta-injected"
   },
   "devDependencies": {
+    "@fal-ai/client": "^1.3.0",
     "@imgly/plugin-utils": "workspace:*",
     "@imgly/plugin-ai-generation-web": "workspace:*",
     "@types/ndarray": "^1.0.14",

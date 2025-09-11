@@ -258,6 +258,26 @@ Key features:
 -   Fixed duration of 8 seconds
 -   Optional audio generation via `generate_audio`
 
+### Feature Control
+
+You can control various aspects of the video generation plugin using the Feature API:
+
+```typescript
+// Disable text-to-video generation
+cesdk.feature.enable('ly.img.plugin-ai-video-generation-web.fromText', false);
+
+// Disable image-to-video generation  
+cesdk.feature.enable('ly.img.plugin-ai-video-generation-web.fromImage', false);
+
+// Disable provider selection
+cesdk.feature.enable('ly.img.plugin-ai-video-generation-web.providerSelect', false);
+
+// Disable specific quick actions
+cesdk.feature.enable('ly.img.plugin-ai-video-generation-web.quickAction.createVideo', false);
+```
+
+For more information about Feature API and available feature flags, see the [@imgly/plugin-ai-generation-web documentation](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-generation-web#available-feature-flags).
+
 ### Customizing Labels and Translations
 
 You can customize all labels and text in the AI video generation interface using the translation system. This allows you to provide better labels for your users in any language.
@@ -292,23 +312,29 @@ cesdk.i18n.setTranslations({
 
 #### QuickAction Translations
 
-Video QuickActions (like "Create Video from Image") use their own translation keys:
+Video QuickActions (like "Create Video from Image") use their own translation keys with provider-specific overrides:
 
 ```typescript
 cesdk.i18n.setTranslations({
   en: {
-    // QuickAction button labels
-    'ly.img.plugin-ai-video-generation-web.quickAction.createVideo': 'Create Video...',
+    // Provider-specific translations (highest priority)
+    'ly.img.plugin-ai-video-generation-web.fal-ai/minimax/video-01-live.quickAction.createVideo': 'Generate Minimax Video...',
+    'ly.img.plugin-ai-video-generation-web.fal-ai/minimax/video-01-live.quickAction.createVideo.prompt': 'Minimax Video Prompt',
     
-    // QuickAction input fields and buttons
-    'ly.img.plugin-ai-video-generation-web.quickAction.createVideo.prompt': 'Create Video...',
+    // Generic plugin translations
+    'ly.img.plugin-ai-video-generation-web.quickAction.createVideo': 'Create Video...',
+    'ly.img.plugin-ai-video-generation-web.quickAction.createVideo.prompt': 'Video Prompt',
     'ly.img.plugin-ai-video-generation-web.quickAction.createVideo.prompt.placeholder': 'e.g. "Make the image move slowly"',
     'ly.img.plugin-ai-video-generation-web.quickAction.createVideo.apply': 'Generate'
   }
 });
 ```
 
-**QuickAction Translation Structure:**
+**QuickAction Translation Priority:**
+1. Provider-specific: `ly.img.plugin-ai-video-generation-web.${provider}.quickAction.${action}.${field}`
+2. Generic plugin: `ly.img.plugin-ai-video-generation-web.quickAction.${action}.${field}`
+
+**Translation Structure:**
 - Base key (e.g., `.quickAction.createVideo`): Button text when QuickAction is collapsed
 - `.prompt`: Label for input field when expanded
 - `.prompt.placeholder`: Placeholder text for input field

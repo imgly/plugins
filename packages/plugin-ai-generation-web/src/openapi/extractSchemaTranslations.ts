@@ -35,60 +35,63 @@ export function extractAndSetSchemaTranslations<
 ): void {
   const translations: Record<string, string> = {};
 
+  const createTranslationKey = (propertyId: string, valueId?: string): string =>
+    `ly.img.plugin-ai-${kind}-generation-web.${
+      provider.id
+    }.defaults.property.${propertyId}${valueId ? `.${valueId}` : ''}`;
+
+  const extractEnumLabels = (schema: any): Record<string, string> =>
+    'x-imgly-enum-labels' in schema &&
+    typeof schema['x-imgly-enum-labels'] === 'object'
+      ? (schema['x-imgly-enum-labels'] as Record<string, string>)
+      : {};
+
+  const addEnumTranslations = (
+    enumValues: any[],
+    propertyId: string,
+    enumLabels: Record<string, string>
+  ): void => {
+    enumValues.forEach((enumValue) => {
+      const valueId = String(enumValue);
+      const labelValue = enumLabels[valueId] || formatEnumLabel(valueId);
+      translations[createTranslationKey(propertyId, valueId)] = labelValue;
+    });
+  };
+
   properties.forEach((property) => {
-    // Add schema title translations
     if (property.schema?.title) {
-      translations[
-        `ly.img.plugin-ai-${kind}-generation-web.${provider.id}.defaults.property.${property.id}`
-      ] = property.schema.title;
+      translations[createTranslationKey(property.id)] = property.schema.title;
     }
 
-    // Add enum labels translations
     if (property.schema?.enum) {
-      const enumLabels: Record<string, string> =
-        'x-imgly-enum-labels' in property.schema &&
-        typeof property.schema['x-imgly-enum-labels'] === 'object'
-          ? (property.schema['x-imgly-enum-labels'] as Record<string, string>)
-          : {};
-
-      property.schema.enum.forEach((enumValue) => {
-        const valueId = String(enumValue);
-        // Set translation either from enumLabels or fallback to formatted valueId
-        const labelValue = enumLabels[valueId] || formatEnumLabel(valueId);
-        translations[
-          `ly.img.plugin-ai-${kind}-generation-web.${provider.id}.defaults.property.${property.id}.${valueId}`
-        ] = labelValue;
-      });
+      const enumLabels = extractEnumLabels(property.schema);
+      addEnumTranslations(property.schema.enum, property.id, enumLabels);
     }
 
-    // Add anyOf enum labels translations
     if (property.schema?.anyOf && Array.isArray(property.schema.anyOf)) {
-      const enumLabels: Record<string, string> =
-        'x-imgly-enum-labels' in property.schema &&
-        typeof property.schema['x-imgly-enum-labels'] === 'object'
-          ? (property.schema['x-imgly-enum-labels'] as Record<string, string>)
-          : {};
+      const enumLabels = extractEnumLabels(property.schema);
 
       property.schema.anyOf.forEach((anySchema) => {
         const schema = anySchema as any;
         if (schema.enum && Array.isArray(schema.enum)) {
-          schema.enum.forEach((enumValue: any) => {
-            const valueId = String(enumValue);
-            // Set translation either from enumLabels or fallback to formatted valueId
-            const labelValue = enumLabels[valueId] || formatEnumLabel(valueId);
-            translations[
-              `ly.img.plugin-ai-${kind}-generation-web.defaults.property.${provider.id}.${property.id}.${valueId}`
-            ] = labelValue;
-          });
+          addEnumTranslations(schema.enum, property.id, enumLabels);
+        } else if (schema.$ref) {
+          const refName = schema.$ref.split('/').pop();
+          if (refName && enumLabels[refName]) {
+            translations[createTranslationKey(property.id, refName)] =
+              enumLabels[refName];
+          }
+        } else if (schema.title) {
+          const refName = schema.title;
+          const labelValue = enumLabels[refName] || formatEnumLabel(refName);
+          translations[createTranslationKey(property.id, refName)] = labelValue;
         }
       });
     }
   });
 
-  // Merge schema translations with default translations (schema translations take precedence)
   const allTranslations = { ...defaultTranslations, ...translations };
 
-  // Set translations if any were found
   if (Object.keys(allTranslations).length > 0) {
     options.cesdk.i18n.setTranslations({
       en: allTranslations

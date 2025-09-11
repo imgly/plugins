@@ -2,9 +2,27 @@
 
 ## [Unreleased]
 
-### Fixed
+## [0.2.6] - 2025-09-09
 
--   **QuickAction Button Translations**: Artist Transfer and Style Transfer quick actions now use proper i18n key lookup patterns for localization instead of hardcoded labels.
+### New Features
+
+-   [all] **Feature API Integration**: Added comprehensive Feature API support across all AI plugins to control visibility and availability of features through feature flags. Core features include `providerSelect`, `quickAction`, `quickAction.providerSelect`, `fromText`, and `fromImage` flags.
+-   [all] **Quick Action Feature Flags**: Each quick action now automatically registers and respects its own feature flag (e.g., `ly.img.plugin-ai-image-generation-web.quickAction.editImage`), allowing fine-grained control over which quick actions are available to users.
+-   [image-generation] **Provider Style Group Control**: Added Feature API support for Recraft providers to control style group visibility. RecraftV3 supports `style.image` and `style.vector` flags, while Recraft20b adds `style.icon` flag for controlling icon style availability.
+-   [all] **Provider Selection Feature Flags**: Added support for controlling provider selection UI in both panels (`providerSelect`) and quick actions (`quickAction.providerSelect`), with proper handling when multiple providers are configured.
+
+## [0.2.5] - 2025-09-03
+
+### New Features
+
+-   [image-generation] **NanoBanana Provider**: Added NanoBanana text-to-image provider via fal.ai with fast generation times, 1024×1024 resolution, support for multiple output formats (JPEG, PNG), configurable number of images (1-4), and remixPageWithPrompt quick action
+-   [image-generation] **NanoBananaEdit Provider**: Added NanoBananaEdit image-to-image provider via fal.ai for editing existing images with text prompts, supporting all standard quick actions (editImage, swapBackground, styleTransfer, artistTransfer, createVariant, combineImages with up to 10 images, remixPage, remixPageWithPrompt)
+-   [all] **AI Style Asset Library Translations**: AI style presets in asset libraries now automatically use localized names and descriptions from provider translation files, eliminating the need for manual translation configuration
+
+### Bug Fixes
+
+-   [all] **fal.ai Provider Configuration**: Fixed singleton configuration conflict when using multiple fal.ai providers with different proxy URLs. Each provider now maintains its own client instance instead of overwriting a global configuration
+-   [video-generation] **Missing Dependency**: Added missing `@fal-ai/client` dependency to plugin-ai-video-generation-web package.json to ensure the package works correctly when installed independently
 
 ## [0.2.4] - 2025-08-07
 

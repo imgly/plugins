@@ -9,7 +9,7 @@ import {
   Middleware,
   mergeQuickActionsConfig
 } from '@imgly/plugin-ai-generation-web';
-import { fal } from '@fal-ai/client';
+import { createFalClient, FalClient } from './createFalClient';
 import {
   isCustomImageSize,
   uploadImageInputToFalIfNeeded,
@@ -74,24 +74,15 @@ function createImageProvider<
 ): Provider<'image', I, { kind: 'image'; url: string }> {
   const middleware =
     options.middleware ?? config.middlewares ?? config.middleware ?? [];
+
+  let falClient: FalClient | null = null;
+
   const provider: Provider<'image', I, ImageOutput> = {
     id: options.modelKey,
     kind: 'image',
     name: options.name,
     initialize: async (context) => {
-      fal.config({
-        proxyUrl: config.proxyUrl,
-        requestMiddleware: async (request) => {
-          return {
-            ...request,
-            headers: {
-              ...request.headers,
-              ...(options.headers ?? {})
-            }
-          };
-        }
-      });
-
+      falClient = createFalClient(config.proxyUrl, options.headers);
       options.initialize?.(context);
     },
     input: {
@@ -159,13 +150,19 @@ function createImageProvider<
         input: I,
         { abortSignal }: { abortSignal?: AbortSignal }
       ) => {
+        if (!falClient) {
+          throw new Error('Provider not initialized');
+        }
+
         // Handle both image_url and image_urls
         const image_url = await uploadImageInputToFalIfNeeded(
+          falClient,
           input.image_url,
           options.cesdk
         );
 
         const image_urls = await uploadImageArrayToFalIfNeeded(
+          falClient,
           input.image_urls,
           options.cesdk
         );
@@ -179,7 +176,7 @@ function createImageProvider<
           processedInput = { ...processedInput, image_urls };
         }
 
-        const response = await fal.subscribe(options.modelKey, {
+        const response = await falClient.subscribe(options.modelKey, {
           abortSignal,
           input: processedInput,
           logs: true

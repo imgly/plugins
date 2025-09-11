@@ -187,6 +187,17 @@ Key features:
 - Adjustable quality settings
 - Custom headers support for API requests
 
+**Style Group Control:**
+You can control which style groups (image/vector) are available using the Feature API:
+
+```typescript
+// Disable vector styles, only allow image styles
+cesdk.feature.enable('ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.style.vector', false);
+
+// Or disable image styles, only allow vector styles
+cesdk.feature.enable('ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.style.image', false);
+```
+
 **Custom Translations:**
 ```typescript
 cesdk.i18n.setTranslations({
@@ -220,6 +231,20 @@ Key features:
 - Three-way style selection (image/vector/icon)
 - Same image size presets and custom dimensions support
 - Cost-effective alternative to RecraftV3
+
+**Style Group Control:**
+You can control which style groups (image/vector/icon) are available using the Feature API:
+
+```typescript
+// Only allow icon styles
+cesdk.feature.enable('ly.img.plugin-ai-image-generation-web.fal-ai/recraft/v2/text-to-image.style.image', false);
+cesdk.feature.enable('ly.img.plugin-ai-image-generation-web.fal-ai/recraft/v2/text-to-image.style.vector', false);
+
+// Only allow image and vector styles (disable icon)
+cesdk.feature.enable('ly.img.plugin-ai-image-generation-web.fal-ai/recraft/v2/text-to-image.style.icon', false);
+```
+
+Note: When all style groups are disabled, the provider automatically falls back to the 'any' style.
 
 **Custom Translations:**
 ```typescript
@@ -482,12 +507,17 @@ cesdk.i18n.setTranslations({
 
 #### QuickAction Translations
 
-QuickActions (like "Edit Image", "Style Transfer", etc.) use their own translation keys:
+QuickActions (like "Edit Image", "Style Transfer", etc.) use their own translation keys with provider-specific overrides:
 
 ```typescript
 cesdk.i18n.setTranslations({
   en: {
-    // QuickAction button labels
+    // Provider-specific translations (highest priority)
+    'ly.img.plugin-ai-image-generation-web.fal-ai/gemini-flash-edit.quickAction.editImage': 'Edit with Gemini',
+    'ly.img.plugin-ai-image-generation-web.fal-ai/flux-pro/kontext.quickAction.styleTransfer': 'Style with Flux Pro Kontext',
+    'ly.img.plugin-ai-image-generation-web.open-ai/gpt-image-1/image2image.quickAction.editImage': 'Edit with GPT',
+
+    // Generic plugin translations
     'ly.img.plugin-ai-image-generation-web.quickAction.editImage': 'Edit Image...',
     'ly.img.plugin-ai-image-generation-web.quickAction.swapBackground': 'Swap Background...',
     'ly.img.plugin-ai-image-generation-web.quickAction.styleTransfer': 'Style Transfer...',
@@ -498,7 +528,6 @@ cesdk.i18n.setTranslations({
     'ly.img.plugin-ai-image-generation-web.quickAction.editImage.prompt': 'Edit Image...',
     'ly.img.plugin-ai-image-generation-web.quickAction.editImage.prompt.placeholder': 'e.g. "Add a sunset"',
     'ly.img.plugin-ai-image-generation-web.quickAction.editImage.apply': 'Change',
-    
     'ly.img.plugin-ai-image-generation-web.quickAction.swapBackground.prompt': 'Swap Background...',
     'ly.img.plugin-ai-image-generation-web.quickAction.swapBackground.prompt.placeholder': 'e.g. "Beach at sunset"',
     'ly.img.plugin-ai-image-generation-web.quickAction.swapBackground.apply': 'Swap'
@@ -506,7 +535,11 @@ cesdk.i18n.setTranslations({
 });
 ```
 
-**QuickAction Translation Structure:**
+**QuickAction Translation Priority:**
+1. Provider-specific: `ly.img.plugin-ai-image-generation-web.${provider}.quickAction.${action}.${field}`
+2. Generic plugin: `ly.img.plugin-ai-image-generation-web.quickAction.${action}.${field}`
+
+**Translation Structure:**
 - Base key (e.g., `.quickAction.editImage`): Button text when QuickAction is collapsed
 - `.prompt`: Label for input field when expanded
 - `.prompt.placeholder`: Placeholder text for input field

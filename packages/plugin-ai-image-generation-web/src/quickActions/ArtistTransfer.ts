@@ -20,6 +20,7 @@ export const ID = `ly.img.${ACTION_NAME}`;
  * The i18n prefix for the quick action.
  */
 export const I18N_PREFIX = `ly.img.plugin-ai-image-generation-web.quickAction.${ACTION_NAME}`;
+export const I18N_DEFAULT_PREFIX = `ly.img.plugin-ai-image-generation-web.defaults.quickAction.${ACTION_NAME}`;
 
 /**
  * The input generated from this quick action which needs
@@ -31,17 +32,19 @@ export type InputType = {
 };
 
 /**
- * Get i18n label for artist.
+ * Get i18n label with fallback keys.
  */
-function getArtistLabel(modelKey: string, artistId: string) {
-  const artistLabel = [
-    `${I18N_PREFIX}.${modelKey}.property.artist.${artistId}`,
-    `${I18N_PREFIX}.property.artist.${artistId}`,
-    `${I18N_PREFIX}.${modelKey}.defaults.property.artist.${artistId}`,
-    `${I18N_PREFIX}.defaults.property.artist.${artistId}`
-  ];
+function getI18nLabel(modelKey: string, suffix?: string) {
+  const basePath = `ly.img.plugin-ai-image-generation-web`;
+  const actionPath = `quickAction.${ACTION_NAME}`;
+  const fullPath = suffix ? `${actionPath}.${suffix}` : actionPath;
 
-  return artistLabel;
+  return [
+    `${basePath}.${modelKey}.${fullPath}`,
+    `${basePath}.${fullPath}`,
+    `${basePath}.${modelKey}.defaults.${fullPath}`,
+    `${basePath}.defaults.${fullPath}`
+  ];
 }
 
 /**
@@ -111,25 +114,31 @@ const ARTIST_OPTIONS = [
 ];
 
 const ArtistTransfer: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
+  // Set feature default for this quick action
+  cesdk.feature.enable(
+    'ly.img.plugin-ai-image-generation-web.quickAction.artistTransfer',
+    true
+  );
+
   cesdk.i18n.setTranslations({
     en: {
-      [`${I18N_PREFIX}`]: 'Painted By',
-      [`${I18N_PREFIX}.description`]:
+      [`${I18N_DEFAULT_PREFIX}`]: 'Painted By',
+      [`${I18N_DEFAULT_PREFIX}.description`]:
         'Transform image in the style of famous artists',
 
       // ArtistTransfer artist translations
-      [`${I18N_PREFIX}.defaults.property.artist.van-gogh`]: 'Van Gogh',
-      [`${I18N_PREFIX}.defaults.property.artist.monet`]: 'Monet',
-      [`${I18N_PREFIX}.defaults.property.artist.picasso`]: 'Picasso',
-      [`${I18N_PREFIX}.defaults.property.artist.dali`]: 'Dalí',
-      [`${I18N_PREFIX}.defaults.property.artist.matisse`]: 'Matisse',
-      [`${I18N_PREFIX}.defaults.property.artist.warhol`]: 'Warhol',
-      [`${I18N_PREFIX}.defaults.property.artist.michelangelo`]: 'Michelangelo',
-      [`${I18N_PREFIX}.defaults.property.artist.da-vinci`]: 'Da Vinci',
-      [`${I18N_PREFIX}.defaults.property.artist.rembrandt`]: 'Rembrandt',
-      [`${I18N_PREFIX}.defaults.property.artist.mondrian`]: 'Mondrian',
-      [`${I18N_PREFIX}.defaults.property.artist.kahlo`]: 'Frida Kahlo',
-      [`${I18N_PREFIX}.defaults.property.artist.hokusai`]: 'Hokusai'
+      [`${I18N_DEFAULT_PREFIX}.van-gogh`]: 'Van Gogh',
+      [`${I18N_DEFAULT_PREFIX}.monet`]: 'Monet',
+      [`${I18N_DEFAULT_PREFIX}.picasso`]: 'Picasso',
+      [`${I18N_DEFAULT_PREFIX}.dali`]: 'Dalí',
+      [`${I18N_DEFAULT_PREFIX}.matisse`]: 'Matisse',
+      [`${I18N_DEFAULT_PREFIX}.warhol`]: 'Warhol',
+      [`${I18N_DEFAULT_PREFIX}.michelangelo`]: 'Michelangelo',
+      [`${I18N_DEFAULT_PREFIX}.da-vinci`]: 'Da Vinci',
+      [`${I18N_DEFAULT_PREFIX}.rembrandt`]: 'Rembrandt',
+      [`${I18N_DEFAULT_PREFIX}.mondrian`]: 'Mondrian',
+      [`${I18N_DEFAULT_PREFIX}.kahlo`]: 'Frida Kahlo',
+      [`${I18N_DEFAULT_PREFIX}.hokusai`]: 'Hokusai'
     }
   });
 
@@ -151,7 +160,7 @@ const ArtistTransfer: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
       providerId
     }) => {
       experimental.builder.Popover(`${ID}.popover`, {
-        label: `${I18N_PREFIX}`,
+        label: getI18nLabel(providerId),
         icon: '@imgly/Appearance',
         labelAlignment: 'left',
         variant: 'plain',
@@ -164,7 +173,7 @@ const ArtistTransfer: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
                 children: () => {
                   ARTIST_OPTIONS.forEach((artist) => {
                     builder.Button(`${ID}.popover.menu.${artist.id}`, {
-                      label: getArtistLabel(providerId, artist.id),
+                      label: getI18nLabel(providerId, artist.id),
                       labelAlignment: 'left',
                       variant: 'plain',
                       onClick: async () => {

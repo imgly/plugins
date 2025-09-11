@@ -6,7 +6,7 @@ import {
   Middleware,
   mergeQuickActionsConfig
 } from '@imgly/plugin-ai-generation-web';
-import { fal } from '@fal-ai/client';
+import { createFalClient, FalClient } from './createFalClient';
 import { isCustomImageSize, uploadImageInputToFalIfNeeded } from './utils';
 import { getImageDimensions } from './Recraft20b.constants';
 import { StickerQuickActionSupportMap } from '../types';
@@ -66,24 +66,15 @@ function createStickerProvider<I extends Record<string, any>>(
 ): any {
   const middleware =
     options.middleware ?? config.middlewares ?? config.middleware ?? [];
+
+  let falClient: FalClient | null = null;
+
   const provider: any = {
     id: options.modelKey,
     kind: 'sticker',
     name: options.name,
     initialize: async (context: any) => {
-      fal.config({
-        proxyUrl: config.proxyUrl,
-        requestMiddleware: async (request) => {
-          return {
-            ...request,
-            headers: {
-              ...request.headers,
-              ...(options.headers ?? {})
-            }
-          };
-        }
-      });
-
+      falClient = createFalClient(config.proxyUrl, options.headers);
       options.initialize?.(context);
     },
     input: {
@@ -151,12 +142,17 @@ function createStickerProvider<I extends Record<string, any>>(
         input: I,
         { abortSignal }: { abortSignal?: AbortSignal }
       ) => {
+        if (!falClient) {
+          throw new Error('Provider not initialized');
+        }
+
         const image_url = await uploadImageInputToFalIfNeeded(
+          falClient,
           input.image_url,
           options.cesdk
         );
 
-        const response = await fal.subscribe(
+        const response = await falClient.subscribe(
           options.falKey ?? options.modelKey,
           {
             abortSignal,
