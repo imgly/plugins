@@ -48,6 +48,7 @@ function createSoundstripeSource(
 
     // Only add Authorization header if apiKey is provided (not needed for proxy)
     if (apiKey) {
+      // eslint-disable-next-line no-console
       console.warn(
         'Using direct Soundstripe API access, this is not recommended for production use. Instead, consider using a proxy server.'
       );

@@ -29,6 +29,7 @@ export async function refreshSoundstripeAudioURIs(
 
     // Only add Authorization header if apiKey is provided (not needed for proxy)
     if (apiKey) {
+      // eslint-disable-next-line no-console
       console.warn(
         'Using direct Soundstripe API access for refresh, this is not recommended for production use. Instead, consider using a proxy server.'
       );
@@ -67,6 +68,7 @@ export async function refreshSoundstripeAudioURIs(
             'ly.img.audio.soundstripe.songId'
           );
           if (!metadata) {
+            // eslint-disable-next-line no-console
             console.warn(
               `No metadata found for Soundstripe audio block ${blockId}`
             );
@@ -87,6 +89,7 @@ export async function refreshSoundstripeAudioURIs(
             engine.block.setString(blockId, 'audio/fileURI', newUri);
           }
         } catch (error) {
+          // eslint-disable-next-line no-console
           console.warn(
             `Failed to refresh URI for Soundstripe audio block ${blockId}:`,
             error
@@ -95,6 +98,7 @@ export async function refreshSoundstripeAudioURIs(
       })
     );
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.warn('Failed to refresh Soundstripe audio URIs:', error);
   }
 }
