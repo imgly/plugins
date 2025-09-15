@@ -336,10 +336,10 @@
       // Use /dist/index.mjs for local development, ./index.mjs for production deployment
       const pluginPath = window.location.hostname === 'localhost' ? '/dist/index.mjs' : './index.mjs';
       const { convertToPDFX3 } = await import(pluginPath);
-      
+
       // Load configuration (will read from environment variables if available)
       const CONFIG = {
-        CESDK_LICENSE: '%CESDK_LICENSE%' // This will be replaced by the server script
+        CESDK_LICENSE: '%CESDK_LICENSE%' // This will be replaced by the build script
       };
 
       let cesdk = null;
@@ -397,10 +397,11 @@
             baseURL: 'https://cdn.img.ly/packages/imgly/cesdk-js/1.59.0/assets',
             callbacks: {
               onUpload: 'local',
-              onLoadArchive: 'local',
-              onLoad: 'local',
-              onExport: 'download'
+              onLoadArchive: 'uploadArchive',
+              onLoad: 'upload',
+              onExport: 'download',
             },
+            featureFlags: { archiveSceneEnabled: true },
             ui: {
             elements: {
                 view: 'default',
@@ -412,6 +413,7 @@
                     save: false,
                     download: false,
                     load: true,
+                    loadArchive: true,
                     export: true,
                     custom: [
                       {
