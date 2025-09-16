@@ -90,27 +90,43 @@ function getProvider(
         }
       },
       getBlockInput: async (input) => {
-        const imageDimension = await getImageDimensionsFromURL(
-          input.image_url as string,
-          cesdk.engine
-        );
+        let width: number;
+        let height: number;
 
-        // Calculate video dimensions based on resolution and aspect ratio
-        let width = imageDimension.width ?? 1920;
-        let height = imageDimension.height ?? 1080;
+        // Determine base resolution from input.resolution or default to 1080p
+        const resolutionMap = {
+          '480p': { height: 480 },
+          '720p': { height: 720 },
+          '1080p': { height: 1080 }
+        };
+        const targetResolution = input.resolution ?? '1080p';
+        const baseHeight = resolutionMap[targetResolution].height;
 
-        // Apply resolution scaling if specified
-        if (input.resolution) {
-          const resolutionMap = {
-            '480p': { height: 480 },
-            '720p': { height: 720 },
-            '1080p': { height: 1080 }
-          };
+        // Handle aspect ratio selection
+        if (input.aspect_ratio && input.aspect_ratio !== 'auto') {
+          // User selected a specific aspect ratio
+          const [widthRatio, heightRatio] = input.aspect_ratio
+            .split(':')
+            .map(Number);
 
-          const targetHeight = resolutionMap[input.resolution].height;
-          const aspectRatio = width / height;
-          height = targetHeight;
-          width = Math.round(height * aspectRatio);
+          // Calculate width based on the aspect ratio and target height
+          height = baseHeight;
+          width = Math.round((height * widthRatio) / heightRatio);
+        } else {
+          // Use image dimensions (auto mode or no aspect ratio specified)
+          const imageDimension = await getImageDimensionsFromURL(
+            input.image_url as string,
+            cesdk.engine
+          );
+
+          // Use image dimensions as base
+          const imageWidth = imageDimension.width ?? 1920;
+          const imageHeight = imageDimension.height ?? 1080;
+
+          // Scale to target resolution while maintaining image aspect ratio
+          const imageAspectRatio = imageWidth / imageHeight;
+          height = baseHeight;
+          width = Math.round(height * imageAspectRatio);
         }
 
         return Promise.resolve({

@@ -241,7 +241,25 @@ Key features:
 -   Canvas quick-action integration
 -   Selectable durations (5 s or 10 s)
 
-#### 6. Veo3TextToVideo (Text-to-Video)
+#### 6. ByteDanceSeedanceV1ProImageToVideo (Image-to-Video)
+
+A model that transforms images into videos using ByteDance Seedance v1 Pro:
+
+```typescript
+image2video: FalAiVideo.ByteDanceSeedanceV1ProImageToVideo({
+    proxyUrl: 'http://your-proxy-server.com/api/proxy'
+});
+```
+
+Key features:
+
+-   Transform existing images into dynamic videos
+-   Multiple aspect ratio options (21:9, 16:9, 4:3, 1:1, 3:4, 9:16, or auto from image)
+-   Adjustable duration (3-12 seconds, default 5)
+-   Resolution options (480p, 720p, 1080p)
+-   Maintains image quality while adding motion
+
+#### 7. Veo3TextToVideo (Text-to-Video)
 
 An advanced text-to-video model:
 
@@ -512,6 +530,15 @@ FalAiVideo.KlingVideoV21MasterImageToVideo(config: {
 }): AiVideoProvider
 ```
 
+#### ByteDanceSeedanceV1ProImageToVideo
+
+```typescript
+FalAiVideo.ByteDanceSeedanceV1ProImageToVideo(config: {
+  proxyUrl: string;
+  debug?: boolean;
+}): AiVideoProvider
+```
+
 #### Veo3TextToVideo
 
 ```typescript
@@ -540,6 +567,7 @@ The plugin automatically registers the following UI components:
     -   PixverseV35TextToVideo: `ly.img.ai.fal-ai/pixverse/v3.5/text-to-video`
     -   KlingVideoV21MasterTextToVideo: `ly.img.ai.fal-ai/kling-video/v2.1/master/text-to-video`
     -   KlingVideoV21MasterImageToVideo: `ly.img.ai.fal-ai/kling-video/v2.1/master/image-to-video`
+    -   ByteDanceSeedanceV1ProImageToVideo: `ly.img.ai.fal-ai/bytedance/seedance/v1/pro/image-to-video`
     -   Veo3TextToVideo: `ly.img.ai.fal-ai/veo3`
 
 ### Asset History
@@ -551,6 +579,7 @@ Generated videos are automatically stored in asset sources with the following ID
 -   PixverseV35TextToVideo: `fal-ai/pixverse/v3.5/text-to-video.history`
 -   KlingVideoV21MasterTextToVideo: `fal-ai/kling-video/v2.1/master/text-to-video.history`
 -   KlingVideoV21MasterImageToVideo: `fal-ai/kling-video/v2.1/master/image-to-video.history`
+-   ByteDanceSeedanceV1ProImageToVideo: `fal-ai/bytedance/seedance/v1/pro/image-to-video.history`
 -   Veo3TextToVideo: `fal-ai/veo3.history`
 
 ### Dock Integration

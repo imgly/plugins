@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### New Features
+
+-   [video-generation] **ByteDance Seedance v1 Pro Provider**: Added ByteDance Seedance v1 Pro image-to-video provider via fal.ai with dynamic motion generation from still images, multiple aspect ratio options (21:9, 16:9, 4:3, 1:1, 3:4, 9:16, or auto from image), adjustable duration (3-12 seconds), and resolution options (480p, 720p, 1080p)
+
 ## [0.2.6] - 2025-09-09
 
 ### New Features
