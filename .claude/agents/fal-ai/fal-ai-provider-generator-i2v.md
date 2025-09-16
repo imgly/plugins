@@ -15,25 +15,62 @@ When given a model identifier (e.g., `fal-ai/minimax/video-01-live/image-to-vide
    - Derive Schema URL: `https://fal.ai/api/openapi/queue/openapi.json?endpoint_id={model-name}`
    - Fetch and analyze the OpenAPI schema
 
-2. **Schema Analysis**:
-   - Identify input properties (image_url, prompt, duration, aspect_ratio, etc.)
+2. **Schema Analysis & Parameter Gathering**:
+   - **GATHER ALL** input properties from the schema (image_url, prompt, duration, aspect_ratio, resolution, fps, quality, camera_fixed, seed, cfg_scale, negative_prompt, etc.)
+   - Document ALL available parameters with their types, descriptions, and constraints
    - Determine output structure (single video object vs array)
    - Map required vs optional fields
    - Extract enum values and descriptions
    - Identify video dimensions and duration parameters
    - Analyze image-to-video specific properties (image input handling)
+   - Compare with existing i2v providers in the codebase (MinimaxVideo01LiveImageToVideo, KlingVideoV21MasterImageToVideo, ByteDanceSeedanceV1ProImageToVideo)
 
-3. **UI Parameter Selection** (CRITICAL for i2v):
-   - **ALWAYS include**: `image_url` (required), `prompt` (required)
-   - **CONDITIONALLY include**: `duration` (if customizable), `aspect_ratio` (if model supports it and doesn't derive from source image)
-   - **NEVER include in UI**: `fps`, `quality`, `num_frames`, `guidance_scale`, `num_inference_steps`, `seed`, `negative_prompt`, `cfg_scale`, `sync_mode`, `safety_checker`, or other technical parameters
-   - **IMPORTANT**: Most video models have fixed technical parameters (fps=24, quality=high) that should be set as defaults
-   - Technical parameters can exist in TypeScript types but must be excluded from UI schema
-   - **IMAGE DIMENSIONS**: If model derives dimensions from source image, don't include aspect_ratio in UI
+3. **Parameter Proposal & User Confirmation**:
+   - **PRESENT TO USER** a comprehensive analysis:
+     ```
+     === PARAMETER ANALYSIS FOR {model-name} ===
+
+     ALL AVAILABLE PARAMETERS:
+     - image_url: {type, description, required/optional}
+     - prompt: {type, description, required/optional}
+     - duration: {type, range, default}
+     - aspect_ratio: {enum values if available}
+     - [list ALL other parameters found]
+
+     PROPOSED UI PARAMETERS (based on similar providers):
+     ✅ image_url - Source image selection (required)
+     ✅ prompt - Motion description (required)
+     ✅ aspect_ratio - Output video aspect ratio
+     ✅ duration - Video length in seconds
+
+     EXCLUDED FROM UI (technical/advanced):
+     ❌ fps - Fixed at 24fps
+     ❌ quality - Always set to "high"
+     ❌ cfg_scale - Technical parameter
+     ❌ camera_fixed - Advanced motion control
+     ❌ seed - For reproducibility
+     ❌ [list all excluded parameters]
+
+     COMPARISON WITH EXISTING PROVIDERS:
+     - MinimaxVideo01LiveImageToVideo uses: image_url, prompt
+     - KlingVideoV21MasterImageToVideo uses: image_url, prompt, duration, negative_prompt, cfg_scale
+     - ByteDanceSeedanceV1ProImageToVideo uses: image_url, prompt, aspect_ratio, duration
+
+     NOTE ON ASPECT RATIO:
+     - If "auto" option exists, it means dimensions from source image
+     - Include aspect_ratio in UI if model supports different output ratios
+     - Exclude if model always preserves source image dimensions
+
+     Do you approve this UI parameter selection? (yes/no/modify)
+     If modify, specify which parameters to add or remove.
+     ```
+   - **WAIT for user confirmation** before proceeding
+   - Adjust parameter selection based on user feedback
+   - Document the final decision for reference
 
 ## File Generation Requirements
 
-Generate exactly these 3 files:
+After user approval, generate exactly these 5 files/updates:
 
 ### A) `{ProviderName}.ts`
 - Import dependencies from appropriate video generation modules including `getImageDimensionsFromURL`
@@ -67,11 +104,50 @@ Generate exactly these 3 files:
 ### C) `{ProviderName}.json`
 - OpenAPI 3.0.0 format with complete component schemas
 - Include UI-specific properties: `x-imgly-builder`, `x-imgly-enum-labels`, `x-fal-order-properties`
-- **CRITICAL**: `x-fal-order-properties` must contain UI parameters in proper order: `["image_url", "prompt"]` or `["image_url", "prompt", "duration"]`
+- **CRITICAL**: `x-fal-order-properties` must contain UI parameters in proper order: `["image_url", "prompt"]` or `["image_url", "prompt", "aspect_ratio", "duration"]`
 - **NEVER include**: fps, quality, num_frames, cfg_scale, or other technical video parameters in UI
-- **DO NOT include** `"aspect_ratio"` in UI if model derives dimensions from source image
+- **Include `"aspect_ratio"`** in UI if model supports different aspect ratios (even for i2v)
 - Output should reference single video object, not array
 - Ensure `image_url` is marked as required for i2v functionality
+
+### D) Update `translations.json`
+- Add translations for all UI-visible properties
+- Pattern: `"ly.img.plugin-ai-video-generation-web.{model-key}.property.{property-name}": "Label"`
+- For enum values: `"ly.img.plugin-ai-video-generation-web.{model-key}.property.{property-name}.{enum-value}": "Label"`
+- Example translations to add:
+  ```json
+  "ly.img.plugin-ai-video-generation-web.fal-ai/model-name.property.prompt": "Prompt",
+  "ly.img.plugin-ai-video-generation-web.fal-ai/model-name.property.aspect_ratio": "Aspect Ratio",
+  "ly.img.plugin-ai-video-generation-web.fal-ai/model-name.property.aspect_ratio.16:9": "16:9 (Landscape)",
+  "ly.img.plugin-ai-video-generation-web.fal-ai/model-name.property.aspect_ratio.auto": "Auto (From Image)",
+  "ly.img.plugin-ai-video-generation-web.fal-ai/model-name.property.duration": "Duration"
+  ```
+
+### E) Update `README.md`
+- Add a new section in the Providers section (maintain numerical order)
+- Include provider description with TypeScript usage example
+- List key features (aspect ratios, duration ranges, resolution, image transformation)
+- Add entry to API Reference section with proper TypeScript signature
+- Add Panel ID to the Panel IDs list: `ly.img.ai.{model-key}`
+- Add Asset History ID to the list: `{model-key}.history`
+- Template for README section:
+  ```markdown
+  #### X. {ProviderName} (Image-to-Video)
+
+  A model that transforms images into videos using {provider-description}:
+
+  \`\`\`typescript
+  image2video: FalAiVideo.{ProviderName}({
+      proxyUrl: 'http://your-proxy-server.com/api/proxy'
+  });
+  \`\`\`
+
+  Key features:
+
+  - Transform existing images into dynamic videos
+  - {List specific features like aspect ratios, duration, resolution}
+  - {Any unique capabilities}
+  \`\`\`
 
 ## Image-to-Video Specific Considerations
 
@@ -89,8 +165,23 @@ Generate exactly these 3 files:
 
 3. **Dimension Handling**:
    - **CRITICAL**: Use `getImageDimensionsFromURL` to get source image dimensions
-   - Preserve source image aspect ratio for video output
-   - Set fallback dimensions if image dimensions cannot be determined (1280x720)
+   - **ASPECT RATIO HANDLING**:
+     - If user selects a specific aspect ratio, calculate dimensions based on that ratio
+     - If "auto" or no aspect ratio selected, use source image dimensions
+     - Example implementation pattern:
+       ```typescript
+       if (input.aspect_ratio && input.aspect_ratio !== 'auto') {
+         const [widthRatio, heightRatio] = input.aspect_ratio.split(':').map(Number);
+         height = baseHeight;
+         width = Math.round((height * widthRatio) / heightRatio);
+       } else {
+         // Use image dimensions
+         const imageDimension = await getImageDimensionsFromURL(input.image_url, cesdk.engine);
+         width = imageDimension.width ?? 1920;
+         height = imageDimension.height ?? 1080;
+       }
+       ```
+   - Set fallback dimensions if image dimensions cannot be determined (1920x1080)
    - Duration typically ranges from 3-10 seconds for most models
 
 4. **Technical Parameters**:
@@ -120,7 +211,10 @@ After generating files:
 1. Place files in `/packages/plugin-ai-video-generation-web/src/fal-ai/` directory
 2. Add export to `/packages/plugin-ai-video-generation-web/src/fal-ai/index.ts`
 3. **MANDATORY**: Add the new provider to the AI demo in `@examples/web/src/pages/ai-demo.tsx` in the `image2video` provider section with proper middleware configuration using `videoRateLimitMiddleware`
-4. Provide testing guidance for different image input types and video generation scenarios
+4. Update `/packages/plugin-ai-video-generation-web/translations.json` with all UI property translations
+5. Update `/packages/plugin-ai-video-generation-web/README.md` with provider documentation
+6. Update `/CHANGELOG-AI.md` in the Unreleased section under New Features
+7. Provide testing guidance for different image input types and video generation scenarios
 
 ## Video Provider Template Structure
 
