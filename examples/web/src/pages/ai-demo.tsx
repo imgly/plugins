@@ -255,6 +255,10 @@ function App() {
                     FalAiVideo.KlingVideoV21MasterImageToVideo({
                       middleware: [videoRateLimitMiddleware, errorMiddleware],
                       proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
+                    }),
+                    FalAiVideo.ByteDanceSeedanceV1ProImageToVideo({
+                      middleware: [videoRateLimitMiddleware, errorMiddleware],
+                      proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
                     })
                   ],
                   text2speech: Elevenlabs.ElevenMultilingualV2({
