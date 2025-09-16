@@ -40,6 +40,25 @@
     "ly.img.plugin-ai-video-generation-web.fal-ai/veo3.property.duration": "Duration",
     "ly.img.plugin-ai-video-generation-web.fal-ai/veo3.property.duration.8s": "8 seconds",
     "ly.img.plugin-ai-video-generation-web.fal-ai/veo3.property.generate_audio": "Generate Audio",
-    "ly.img.plugin-ai-video-generation-web.fal-ai/veo3.property.prompt": "Prompt"
+    "ly.img.plugin-ai-video-generation-web.fal-ai/veo3.property.prompt": "Prompt",
+    "ly.img.plugin-ai-video-generation-web.fal-ai/bytedance/seedance/v1/pro/image-to-video.property.prompt": "Prompt",
+    "ly.img.plugin-ai-video-generation-web.fal-ai/bytedance/seedance/v1/pro/image-to-video.property.aspect_ratio": "Aspect Ratio",
+    "ly.img.plugin-ai-video-generation-web.fal-ai/bytedance/seedance/v1/pro/image-to-video.property.aspect_ratio.21:9": "21:9 (Ultra Wide)",
+    "ly.img.plugin-ai-video-generation-web.fal-ai/bytedance/seedance/v1/pro/image-to-video.property.aspect_ratio.16:9": "16:9 (Landscape)",
+    "ly.img.plugin-ai-video-generation-web.fal-ai/bytedance/seedance/v1/pro/image-to-video.property.aspect_ratio.4:3": "4:3 (Standard)",
+    "ly.img.plugin-ai-video-generation-web.fal-ai/bytedance/seedance/v1/pro/image-to-video.property.aspect_ratio.1:1": "1:1 (Square)",
+    "ly.img.plugin-ai-video-generation-web.fal-ai/bytedance/seedance/v1/pro/image-to-video.property.aspect_ratio.3:4": "3:4 (Portrait)",
+    "ly.img.plugin-ai-video-generation-web.fal-ai/bytedance/seedance/v1/pro/image-to-video.property.aspect_ratio.9:16": "9:16 (Vertical)",
+    "ly.img.plugin-ai-video-generation-web.fal-ai/bytedance/seedance/v1/pro/image-to-video.property.aspect_ratio.auto": "Auto (From Image)",
+    "ly.img.plugin-ai-video-generation-web.fal-ai/bytedance/seedance/v1/pro/image-to-video.property.duration": "Duration",
+    "ly.img.plugin-ai-video-generation-web.fal-ai/bytedance/seedance/v1/pro/text-to-video.property.prompt": "Prompt",
+    "ly.img.plugin-ai-video-generation-web.fal-ai/bytedance/seedance/v1/pro/text-to-video.property.aspect_ratio": "Aspect Ratio",
+    "ly.img.plugin-ai-video-generation-web.fal-ai/bytedance/seedance/v1/pro/text-to-video.property.aspect_ratio.21:9": "21:9 (Ultra Wide)",
+    "ly.img.plugin-ai-video-generation-web.fal-ai/bytedance/seedance/v1/pro/text-to-video.property.aspect_ratio.16:9": "16:9 (Landscape)",
+    "ly.img.plugin-ai-video-generation-web.fal-ai/bytedance/seedance/v1/pro/text-to-video.property.aspect_ratio.4:3": "4:3 (Standard)",
+    "ly.img.plugin-ai-video-generation-web.fal-ai/bytedance/seedance/v1/pro/text-to-video.property.aspect_ratio.1:1": "1:1 (Square)",
+    "ly.img.plugin-ai-video-generation-web.fal-ai/bytedance/seedance/v1/pro/text-to-video.property.aspect_ratio.3:4": "3:4 (Portrait)",
+    "ly.img.plugin-ai-video-generation-web.fal-ai/bytedance/seedance/v1/pro/text-to-video.property.aspect_ratio.9:16": "9:16 (Vertical)",
+    "ly.img.plugin-ai-video-generation-web.fal-ai/bytedance/seedance/v1/pro/text-to-video.property.duration": "Duration"
   }
 }

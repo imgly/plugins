@@ -15,24 +15,54 @@ When given a model identifier (e.g., `fal-ai/minimax/video-01-live`, `fal-ai/kli
    - Derive Schema URL: `https://fal.ai/api/openapi/queue/openapi.json?endpoint_id={model-name}`
    - Fetch and analyze the OpenAPI schema
 
-2. **Schema Analysis**:
-   - Identify input properties (prompt, style, duration, fps, etc.)
+2. **Schema Analysis & Parameter Gathering**:
+   - **GATHER ALL** input properties from the schema (prompt, style, duration, fps, aspect_ratio, resolution, quality, num_frames, guidance_scale, seed, negative_prompt, camera motion, etc.)
+   - Document ALL available parameters with their types, descriptions, and constraints
    - Determine output structure (single video object vs array)
    - Map required vs optional fields
    - Extract enum values and descriptions
    - Identify video dimensions and duration parameters
    - Analyze video-specific properties (fps, quality, format)
+   - Compare with existing t2v providers in the codebase (MinimaxVideo01Live, PixverseV35TextToVideo, KlingVideoV21MasterTextToVideo, Veo3TextToVideo, ByteDanceSeedanceV1ProTextToVideo)
 
-3. **UI Parameter Selection** (CRITICAL for t2v):
-   - **ALWAYS include**: `prompt` (required)
-   - **CONDITIONALLY include**: `style` (only if model genuinely supports styles), `duration` (if customizable), `aspect_ratio` (if model supports it)
-   - **NEVER include in UI**: `fps`, `quality`, `num_frames`, `guidance_scale`, `num_inference_steps`, `seed`, `negative_prompt`, `sync_mode`, `safety_checker`, or other technical parameters
-   - **IMPORTANT**: Most video models have fixed technical parameters (fps=24, quality=high) that should be set as defaults
-   - Technical parameters can exist in TypeScript types but must be excluded from UI schema
+3. **Parameter Proposal & User Confirmation**:
+   - **PRESENT TO USER** a comprehensive analysis:
+     ```
+     === PARAMETER ANALYSIS FOR {model-name} ===
+
+     ALL AVAILABLE PARAMETERS:
+     - prompt: {type, description, required/optional}
+     - duration: {type, range, default}
+     - aspect_ratio: {enum values if available}
+     - [list ALL other parameters found]
+
+     PROPOSED UI PARAMETERS (based on similar providers):
+     ✅ prompt - Text description for video
+     ✅ aspect_ratio - Video aspect ratio selection
+     ✅ duration - Video length in seconds
+
+     EXCLUDED FROM UI (technical/advanced):
+     ❌ fps - Fixed at 24fps
+     ❌ quality - Always set to "high"
+     ❌ guidance_scale - Technical parameter
+     ❌ seed - For reproducibility
+     ❌ [list all excluded parameters]
+
+     COMPARISON WITH EXISTING PROVIDERS:
+     - MinimaxVideo01Live uses: prompt only
+     - PixverseV35TextToVideo uses: prompt, aspect_ratio, resolution, duration, style
+     - ByteDanceSeedanceV1ProTextToVideo uses: prompt, aspect_ratio, duration
+
+     Do you approve this UI parameter selection? (yes/no/modify)
+     If modify, specify which parameters to add or remove.
+     ```
+   - **WAIT for user confirmation** before proceeding
+   - Adjust parameter selection based on user feedback
+   - Document the final decision for reference
 
 ## File Generation Requirements
 
-Generate exactly these 3 files:
+After user approval, generate exactly these 5 files/updates:
 
 ### A) `{ProviderName}.ts`
 - Import dependencies from appropriate video generation modules
@@ -58,6 +88,44 @@ Generate exactly these 3 files:
 - Add `"style"` to the list ONLY if model supports style options
 - **NEVER include**: fps, quality, num_frames, or other technical video parameters in UI
 - Output should reference single video object, not array
+
+### D) Update `translations.json`
+- Add translations for all UI-visible properties
+- Pattern: `"ly.img.plugin-ai-video-generation-web.{model-key}.property.{property-name}": "Label"`
+- For enum values: `"ly.img.plugin-ai-video-generation-web.{model-key}.property.{property-name}.{enum-value}": "Label"`
+- Example translations to add:
+  ```json
+  "ly.img.plugin-ai-video-generation-web.fal-ai/model-name.property.prompt": "Prompt",
+  "ly.img.plugin-ai-video-generation-web.fal-ai/model-name.property.aspect_ratio": "Aspect Ratio",
+  "ly.img.plugin-ai-video-generation-web.fal-ai/model-name.property.aspect_ratio.16:9": "16:9 (Landscape)",
+  "ly.img.plugin-ai-video-generation-web.fal-ai/model-name.property.duration": "Duration"
+  ```
+
+### E) Update `README.md`
+- Add a new section in the Providers section (maintain numerical order)
+- Include provider description with TypeScript usage example
+- List key features (aspect ratios, duration ranges, resolution, etc.)
+- Add entry to API Reference section with proper TypeScript signature
+- Add Panel ID to the Panel IDs list: `ly.img.ai.{model-key}`
+- Add Asset History ID to the list: `{model-key}.history`
+- Template for README section:
+  ```markdown
+  #### X. {ProviderName} (Text-to-Video)
+
+  A model that generates videos from text using {provider-description}:
+
+  \`\`\`typescript
+  text2video: FalAiVideo.{ProviderName}({
+      proxyUrl: 'http://your-proxy-server.com/api/proxy'
+  });
+  \`\`\`
+
+  Key features:
+
+  - Generate videos from text descriptions
+  - {List specific features like aspect ratios, duration, resolution}
+  - {Any unique capabilities}
+  \`\`\`
 
 ## Video-Specific Considerations
 
@@ -90,7 +158,10 @@ After generating files:
 1. Place files in `/packages/plugin-ai-video-generation-web/src/fal-ai/` directory (NOTE: different from image generation!)
 2. Add export to `/packages/plugin-ai-video-generation-web/src/fal-ai/index.ts`
 3. **MANDATORY**: Add the new provider to the AI demo in `@examples/web/src/pages/ai-demo.tsx` in the `text2video` provider section with proper middleware configuration using `videoRateLimitMiddleware`
-4. Provide testing guidance for different prompt types and video generation scenarios
+4. Update `/packages/plugin-ai-video-generation-web/translations.json` with all UI property translations
+5. Update `/packages/plugin-ai-video-generation-web/README.md` with provider documentation
+6. Update `/CHANGELOG-AI.md` in the Unreleased section under New Features
+7. Provide testing guidance for different prompt types and video generation scenarios
 
 ## Video Provider Template Structure
 

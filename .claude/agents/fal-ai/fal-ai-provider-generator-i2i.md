@@ -19,25 +19,66 @@ When given a model identifier (e.g., `fal-ai/flux-img2img`, `fal-ai/sd-turbo-img
      - `fal-ai/flux-pro-kontext-edit` → Provider name should be `FluxProKontextEdit`
      - Use only the part after the slash, properly formatted in PascalCase
 
-2. **Schema Analysis**:
-   - Identify input properties (image_url, prompt, strength, style, etc.)
+2. **Schema Analysis & Parameter Gathering**:
+   - **GATHER ALL** input properties from the schema (image_url, prompt, strength, style, reference_image, mask_image, image_size, aspect_ratio, guidance_scale, num_inference_steps, seed, negative_prompt, auto_mask_generation, control_net_conditioning_scale, etc.)
+   - Document ALL available parameters with their types, descriptions, and constraints
    - Determine output structure (images array vs single image)
    - Map required vs optional fields
    - Extract enum values and descriptions
    - Identify image size/aspect ratio handling patterns
    - Analyze image-to-image specific parameters (strength, guidance, etc.)
+   - Compare with existing i2i providers in the codebase (look for common UI patterns)
 
-3. **UI Parameter Selection** (CRITICAL for i2i):
-   - **ALWAYS include**: `image_url` (required), `prompt` (required)
-   - **CONDITIONALLY include**:  `style` (only if model genuinely supports styles)
-   - **NEVER include in UI**: `strength` (for controlling edit intensity), `reference_image`, `mask_image`, `image_size`, `aspect_ratio` (dimensions come from source image), negative_prompt, num_images, guidance_scale, num_inference_steps, seed, lora_scale, safety_checker, sync_mode, or other technical parameters
-   - **IMPORTANT**: `strength` parameters should be set to sensible defaults (e.g., 0.75) in the provider implementation but NEVER exposed in the UI
-   - **AUTO-ENABLE invisibly**: Parameters like `auto_mask_generation` should be automatically enabled in the provider implementation but not shown in UI
-   - Technical parameters can exist in TypeScript types but must be excluded from UI schema
+3. **Parameter Proposal & User Confirmation**:
+   - **PRESENT TO USER** a comprehensive analysis:
+     ```
+     === PARAMETER ANALYSIS FOR {model-name} ===
+
+     ALL AVAILABLE PARAMETERS:
+     - image_url: {type, description, required/optional}
+     - prompt: {type, description, required/optional}
+     - strength: {type, range, default}
+     - style: {enum values if available}
+     - reference_image: {type, description}
+     - mask_image: {type, description}
+     - [list ALL other parameters found]
+
+     PROPOSED UI PARAMETERS (based on similar providers):
+     ✅ image_url - Source image selection (required)
+     ✅ prompt - Edit description (required)
+     ✅ style - Style selection (if supported by model)
+
+     EXCLUDED FROM UI (technical/advanced):
+     ❌ strength - Set to 0.75 internally (edit intensity)
+     ❌ reference_image - Advanced feature
+     ❌ mask_image - Advanced masking
+     ❌ image_size/aspect_ratio - Preserves source dimensions
+     ❌ guidance_scale - Technical parameter
+     ❌ num_inference_steps - Performance parameter
+     ❌ negative_prompt - Advanced prompt control
+     ❌ auto_mask_generation - Auto-enabled internally
+     ❌ [list all excluded parameters]
+
+     COMPARISON WITH EXISTING PROVIDERS:
+     - Most i2i providers use: image_url, prompt only
+     - Style-focused providers add: style parameter
+     - Advanced providers might include: additional creative controls
+
+     QUICK ACTIONS RECOMMENDATION:
+     Based on model name/description, suggest appropriate quick actions:
+     - General models: All actions (editImage, swapBackground, styleTransfer, etc.)
+     - Specialized models: Relevant subset based on capabilities
+
+     Do you approve this UI parameter selection? (yes/no/modify)
+     If modify, specify which parameters to add or remove.
+     ```
+   - **WAIT for user confirmation** before proceeding
+   - Adjust parameter selection based on user feedback
+   - Document the final decision for reference
 
 ## File Generation Requirements
 
-Generate exactly these 3 files:
+After user approval, generate exactly these 5 files/updates:
 
 ### A) `{ProviderName}.ts`
 - Import dependencies from appropriate modules including `getImageDimensionsFromURL` and `CommonProperties`
@@ -93,6 +134,45 @@ Generate exactly these 3 files:
 - Exclude all technical parameters from UI schema
 - Ensure `image_url` is marked as required for i2i functionality
 
+### D) Update `translations.json`
+- Add translations for all UI-visible properties
+- Pattern: `"ly.img.plugin-ai-image-generation-web.{model-key}.property.{property-name}": "Label"`
+- For enum values: `"ly.img.plugin-ai-image-generation-web.{model-key}.property.{property-name}.{enum-value}": "Label"`
+- Example translations to add:
+  ```json
+  "ly.img.plugin-ai-image-generation-web.fal-ai/model-name.property.prompt": "Prompt",
+  "ly.img.plugin-ai-image-generation-web.fal-ai/model-name.property.style": "Style",
+  "ly.img.plugin-ai-image-generation-web.fal-ai/model-name.property.style.realistic": "Realistic"
+  ```
+
+### E) Update `README.md`
+- Add a new section in the Providers section (maintain numerical order)
+- Include provider description with TypeScript usage example
+- List key features (editing capabilities, style transfer, background replacement, etc.)
+- List supported quick actions
+- Add entry to API Reference section with proper TypeScript signature
+- Add Panel ID to the Panel IDs list: `ly.img.ai.{model-key}`
+- Add Asset History ID to the list: `{model-key}.history`
+- Template for README section:
+  ```markdown
+  #### X. {ProviderName} (Image-to-Image)
+
+  A model that edits images using {provider-description}:
+
+  \`\`\`typescript
+  image2image: FalAiImage.{ProviderName}({
+      proxyUrl: 'http://your-proxy-server.com/api/proxy'
+  });
+  \`\`\`
+
+  Key features:
+
+  - Edit existing images with text prompts
+  - {List specific features like style transfer, background replacement}
+  - Supports quick actions: {list supported quick actions}
+  - {Any unique capabilities}
+  \`\`\`
+
 ## Image-to-Image Specific Considerations
 
 1. **Image Input Handling**:
@@ -128,10 +208,13 @@ Generate exactly these 3 files:
 ## Integration Instructions
 
 After generating files:
-1. Place files in `/src/fal-ai/` directory
-2. Add export to `/src/fal-ai/index.ts`
+1. Place files in `/packages/plugin-ai-image-generation-web/src/fal-ai/` directory
+2. Add export to `/packages/plugin-ai-image-generation-web/src/fal-ai/index.ts`
 3. **MANDATORY**: Add the new provider to the AI demo in `@examples/web/src/pages/ai-demo.tsx` in the `image2image` provider section with proper middleware configuration
-4. Provide testing guidance for different input combinations and image editing scenarios
+4. Update `/packages/plugin-ai-image-generation-web/translations.json` with all UI property translations
+5. Update `/packages/plugin-ai-image-generation-web/README.md` with provider documentation
+6. Update `/CHANGELOG-AI.md` in the Unreleased section under New Features
+7. Provide testing guidance for different input combinations and image editing scenarios
 
 ## Quality Assurance
 

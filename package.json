@@ -10,6 +10,8 @@
     "test": "pnpm recursive run test",
     "check:all": "pnpm recursive run check:all",
     "check:types": "pnpm recursive run check:types",
+    "check:lint": "pnpm recursive run check:lint",
+    "check:pretty": "pnpm recursive run check:pretty",
     "cesdk:version": "./scripts/change-examples-cesdk-version.sh"
   },
   "devDependencies": {
@@ -38,8 +40,8 @@
       "protobufjs"
     ],
     "overrides": {
-      "@cesdk/cesdk-js": "1.49.1",
-      "@cesdk/engine": "1.49.1"
+      "@cesdk/cesdk-js": "1.59.2",
+      "@cesdk/engine": "1.59.2"
     }
   }
 }

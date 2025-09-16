@@ -15,22 +15,57 @@ When given a model identifier (e.g., `fal-ai/flux-general`, `fal-ai/ideogram/v3`
    - Derive Schema URL: `https://fal.ai/api/openapi/queue/openapi.json?endpoint_id={model-name}`
    - Fetch and analyze the OpenAPI schema
 
-2. **Schema Analysis**:
-   - Identify input properties (prompt, style, image_size, etc.)
+2. **Schema Analysis & Parameter Gathering**:
+   - **GATHER ALL** input properties from the schema (prompt, image_size, aspect_ratio, style, num_images, guidance_scale, num_inference_steps, seed, negative_prompt, lora_scale, safety_checker, format, scheduler, etc.)
+   - Document ALL available parameters with their types, descriptions, and constraints
    - Determine output structure (images array vs single image)
    - Map required vs optional fields
    - Extract enum values and descriptions
    - Identify image size/aspect ratio handling patterns
+   - Compare with existing t2i providers in the codebase (check similar fal.ai providers for patterns)
 
-3. **UI Parameter Selection** (CRITICAL):
-   - **ALWAYS include**: `prompt` (required), `image_size` or `aspect_ratio` (optional)
-   - **CONDITIONALLY include**: `style` (only if model genuinely supports styles), `image_url` (for image-to-image models)
-   - **NEVER include in UI**: negative_prompt, num_images, guidance_scale, num_inference_steps, seed, lora_scale, safety_checker, sync_mode, or other technical parameters
-   - Technical parameters can exist in TypeScript types but must be excluded from UI schema
+3. **Parameter Proposal & User Confirmation**:
+   - **PRESENT TO USER** a comprehensive analysis:
+     ```
+     === PARAMETER ANALYSIS FOR {model-name} ===
+
+     ALL AVAILABLE PARAMETERS:
+     - prompt: {type, description, required/optional}
+     - image_size: {enum values or dimensions}
+     - aspect_ratio: {enum values if available}
+     - style: {enum values if available}
+     - num_images: {type, range, default}
+     - [list ALL other parameters found]
+
+     PROPOSED UI PARAMETERS (based on similar providers):
+     ✅ prompt - Text description for image (required)
+     ✅ image_size/aspect_ratio - Image dimensions selection
+     ✅ style - Style selection (if supported)
+
+     EXCLUDED FROM UI (technical/advanced):
+     ❌ num_images - Fixed at 1 for simplicity
+     ❌ guidance_scale - Technical parameter
+     ❌ num_inference_steps - Performance parameter
+     ❌ negative_prompt - Advanced prompt control
+     ❌ seed - For reproducibility
+     ❌ lora_scale - Model tuning parameter
+     ❌ [list all excluded parameters]
+
+     COMPARISON WITH EXISTING PROVIDERS:
+     - Most t2i providers use: prompt, image_size
+     - Style-focused providers add: style parameter
+     - Advanced providers may include: aspect_ratio instead of fixed sizes
+
+     Do you approve this UI parameter selection? (yes/no/modify)
+     If modify, specify which parameters to add or remove.
+     ```
+   - **WAIT for user confirmation** before proceeding
+   - Adjust parameter selection based on user feedback
+   - Document the final decision for reference
 
 ## File Generation Requirements
 
-Generate exactly these 3 files:
+After user approval, generate exactly these 5 files/updates:
 
 ### A) `{ProviderName}.ts`
 - Import dependencies from appropriate modules
@@ -54,6 +89,44 @@ Generate exactly these 3 files:
 - Add `"style"` to the list ONLY if model supports style options
 - Exclude all technical parameters from UI schema
 
+### D) Update `translations.json`
+- Add translations for all UI-visible properties
+- Pattern: `"ly.img.plugin-ai-image-generation-web.{model-key}.property.{property-name}": "Label"`
+- For enum values: `"ly.img.plugin-ai-image-generation-web.{model-key}.property.{property-name}.{enum-value}": "Label"`
+- Example translations to add:
+  ```json
+  "ly.img.plugin-ai-image-generation-web.fal-ai/model-name.property.prompt": "Prompt",
+  "ly.img.plugin-ai-image-generation-web.fal-ai/model-name.property.image_size": "Image Size",
+  "ly.img.plugin-ai-image-generation-web.fal-ai/model-name.property.image_size.1024x1024": "Square (1024×1024)",
+  "ly.img.plugin-ai-image-generation-web.fal-ai/model-name.property.style": "Style"
+  ```
+
+### E) Update `README.md`
+- Add a new section in the Providers section (maintain numerical order)
+- Include provider description with TypeScript usage example
+- List key features (resolution, styles, supported formats, etc.)
+- Add entry to API Reference section with proper TypeScript signature
+- Add Panel ID to the Panel IDs list: `ly.img.ai.{model-key}`
+- Add Asset History ID to the list: `{model-key}.history`
+- Template for README section:
+  ```markdown
+  #### X. {ProviderName} (Text-to-Image)
+
+  A model that generates images from text using {provider-description}:
+
+  \`\`\`typescript
+  text2image: FalAiImage.{ProviderName}({
+      proxyUrl: 'http://your-proxy-server.com/api/proxy'
+  });
+  \`\`\`
+
+  Key features:
+
+  - Generate images from text descriptions
+  - {List specific features like resolution, styles, formats}
+  - {Any unique capabilities}
+  \`\`\`
+
 ## Image Size Handling Strategy
 
 1. **Analyze schema** for `image_size`, `aspect_ratio`, or `format` properties
@@ -65,10 +138,13 @@ Generate exactly these 3 files:
 ## Integration Instructions
 
 After generating files:
-1. Place files in `/src/fal-ai/` directory
-2. Add export to `/src/fal-ai/index.ts`
-3. **MANDATORY**: Add the new provider to the AI demo in `@examples/web/src/pages/ai-demo.tsx` in the appropriate provider section (text2image, image2image, etc.) with proper middleware configuration
-4. Provide testing guidance for different input combinations
+1. Place files in `/packages/plugin-ai-image-generation-web/src/fal-ai/` directory
+2. Add export to `/packages/plugin-ai-image-generation-web/src/fal-ai/index.ts`
+3. **MANDATORY**: Add the new provider to the AI demo in `@examples/web/src/pages/ai-demo.tsx` in the text2image provider section with proper middleware configuration
+4. Update `/packages/plugin-ai-image-generation-web/translations.json` with all UI property translations
+5. Update `/packages/plugin-ai-image-generation-web/README.md` with provider documentation
+6. Update `/CHANGELOG-AI.md` in the Unreleased section under New Features
+7. Provide testing guidance for different input combinations
 
 ## Quality Assurance
 
