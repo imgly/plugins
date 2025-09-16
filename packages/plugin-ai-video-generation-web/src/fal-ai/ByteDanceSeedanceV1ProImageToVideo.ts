@@ -20,16 +20,6 @@ interface ByteDanceSeedanceV1ProImageToVideoInput {
   enable_safety_checker?: boolean;
 }
 
-interface ByteDanceSeedanceV1ProImageToVideoOutput {
-  video: {
-    url: string;
-    content_type?: string;
-    file_name?: string;
-    file_size?: number;
-  };
-  seed: number;
-}
-
 interface ProviderConfiguration
   extends CommonProviderConfiguration<
     ByteDanceSeedanceV1ProImageToVideoInput,
