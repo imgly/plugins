@@ -4,7 +4,13 @@
 
 ### New Features
 
--   [video-generation] **ByteDance Seedance v1 Pro Provider**: Added ByteDance Seedance v1 Pro image-to-video provider via fal.ai with dynamic motion generation from still images, multiple aspect ratio options (21:9, 16:9, 4:3, 1:1, 3:4, 9:16, or auto from image), adjustable duration (3-12 seconds), and resolution options (480p, 720p, 1080p)
+-   [video-generation] **ByteDance Seedance v1 Pro Providers**: Added ByteDance Seedance v1 Pro text-to-video and image-to-video providers via fal.ai with:
+    - Text-to-video generation from text descriptions with customizable aspect ratios
+    - Image-to-video transformation with dynamic motion generation from still images
+    - Multiple aspect ratio options (21:9, 16:9, 4:3, 1:1, 3:4, 9:16, or auto from image for i2v)
+    - Adjustable duration (3-12 seconds, default 5)
+    - Resolution options (480p, 720p, 1080p)
+    - Proper aspect ratio handling in placeholder blocks based on user selection
 
 ## [0.2.6] - 2025-09-09
 
