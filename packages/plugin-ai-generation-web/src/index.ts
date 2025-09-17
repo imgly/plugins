@@ -32,6 +32,23 @@ export {
   type InternalPluginConfiguration
 } from './types';
 
+export type {
+  PropertyContext,
+  PropertyConfig,
+  PropertiesConfiguration,
+  ExtendPropertyContexts
+} from './core/propertyConfiguration';
+
+export {
+  buildPropertyContext,
+  PropertyContextCache
+} from './utils/propertyContext';
+
+export {
+  resolvePropertyDefault,
+  resolvePropertyDefaults
+} from './utils/propertyResolver';
+
 export { default as integrateIntoDefaultAssetLibraryEntry } from './assets/integrateIntoDefaultAssetLibraryEntry';
 export {
   ActionRegistry,

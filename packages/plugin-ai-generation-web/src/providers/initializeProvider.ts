@@ -59,7 +59,8 @@ async function initializeProvider<K extends OutputKind, I, O extends Output>(
       cesdk: options.cesdk,
       engine: options.cesdk.engine
     },
-    config: internalConfig
+    config: internalConfig,
+    providerConfig: provider.configuration
   };
 
   await provider.initialize?.({ ...options, engine: options.cesdk.engine });
