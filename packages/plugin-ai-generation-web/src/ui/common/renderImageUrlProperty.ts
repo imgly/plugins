@@ -34,7 +34,27 @@ function renderImageUrlProperty(
         experimental: { global },
         payload
       } = context;
-      const defaultUrl = payload?.url ?? options.defaultUrl;
+
+      // Check for provider configuration defaults
+      let configuredDefault: string | undefined;
+      const providerConfig = (context as any).providerConfig;
+      const pluginConfig = (context as any).config;
+
+      // Check provider config first, then plugin config
+      const propertyConfig = providerConfig?.properties?.[property.id] ??
+                            (pluginConfig as any)?.properties?.[property.id];
+
+      if (propertyConfig?.default) {
+        if (typeof propertyConfig.default === 'function') {
+          // If it's a function, call it with a basic context
+          configuredDefault = propertyConfig.default({}) as string;
+        } else {
+          configuredDefault = propertyConfig.default as string;
+        }
+      }
+
+      // Use configured default, then payload url, then static default
+      const defaultUrl = configuredDefault ?? payload?.url ?? options.defaultUrl;
       const stateValue = global<string>(
         `${provderId}.${property.id}`,
         defaultUrl
