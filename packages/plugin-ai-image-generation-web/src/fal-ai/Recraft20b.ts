@@ -1,6 +1,5 @@
 import { Icons, CustomAssetSource } from '@imgly/plugin-utils';
 import {
-  CommonProviderConfiguration,
   type Provider,
   getPanelId,
   createTranslationCallback
@@ -17,6 +16,11 @@ import {
 } from './Recraft20b.constants';
 import createImageProvider from './createImageProvider';
 import { isCustomImageSize } from './utils';
+import type { Recraft20bConfiguration } from './recraftTypes';
+import {
+  initializeStyleAssetSourceRecraft20b,
+  resolveStyleDefaultRecraft20b
+} from './recraftUtils';
 
 type Recraft20bOutput = {
   kind: 'image';
@@ -33,7 +37,7 @@ type Recraft20bInput = {
     | 'landscape_4_3'
     | 'landscape_16_9'
     | { width: number; height: number };
-  style?: StyleId;
+  style?: string;  // Use string to match schema
   colors?: Array<{ r: number; g: number; b: number }>;
 };
 
@@ -44,23 +48,15 @@ type StyleSelectionPayload = {
   generationType: GenerationType;
 };
 
-interface ProviderConfiguration
-  extends CommonProviderConfiguration<Recraft20bInput, Recraft20bOutput> {
-  /**
-   * Base URL used for the UI assets used in the plugin.
-   *
-   * By default, we load the assets from the IMG.LY CDN You can copy the assets.
-   * from the `/assets` folder to your own server and set the base URL to your server.
-   */
-  baseURL?: string;
-}
+// Using Recraft20bConfiguration from recraftTypes which extends CommonProviderConfiguration
+// with property configuration support and extended context for style property
 
 let imageStyleAssetSource: CustomAssetSource;
 let vectorStyleAssetSource: CustomAssetSource;
 let iconStyleAssetSource: CustomAssetSource;
 
 export function Recraft20b(
-  config: ProviderConfiguration
+  config: Recraft20bConfiguration
 ): (context: {
   cesdk: CreativeEditorSDK;
 }) => Promise<Provider<'image', Recraft20bInput, Recraft20bOutput>> {
@@ -71,7 +67,7 @@ export function Recraft20b(
 
 function getProvider(
   cesdk: CreativeEditorSDK,
-  config: ProviderConfiguration
+  config: Recraft20bConfiguration
 ): Provider<'image', Recraft20bInput, Recraft20bOutput> {
   const modelKey = 'fal-ai/recraft/v2/text-to-image';
   const styleImageAssetSourceId = `${modelKey}/styles/image`;
@@ -97,53 +93,35 @@ function getProvider(
 
   cesdk.ui.addIconSet('@imgly/plugin/formats', Icons.Formats);
 
-  imageStyleAssetSource = new CustomAssetSource(
+  // Initialize style asset sources with property configuration support
+  imageStyleAssetSource = initializeStyleAssetSourceRecraft20b(
+    cesdk,
+    config,
+    'image',
+    STYLES_IMAGE,
     styleImageAssetSourceId,
-    STYLES_IMAGE.map(({ id, label }) => ({
-      id,
-      label,
-      thumbUri: getStyleThumbnail(id, baseURL)
-    })),
-    {
-      translateLabel: createTranslationCallback(
-        cesdk,
-        modelKey,
-        'style',
-        'image'
-      )
-    }
+    (id) => getStyleThumbnail(id as StyleId, baseURL) ?? '',
+    createTranslationCallback(cesdk, modelKey, 'style', 'image')
   );
-  vectorStyleAssetSource = new CustomAssetSource(
+
+  vectorStyleAssetSource = initializeStyleAssetSourceRecraft20b(
+    cesdk,
+    config,
+    'vector',
+    STYLES_VECTOR,
     styleVectorAssetSourceId,
-    STYLES_VECTOR.map(({ id, label }) => ({
-      id,
-      label,
-      thumbUri: getStyleThumbnail(id, baseURL)
-    })),
-    {
-      translateLabel: createTranslationCallback(
-        cesdk,
-        modelKey,
-        'style',
-        'image'
-      )
-    }
+    (id) => getStyleThumbnail(id as StyleId, baseURL) ?? '',
+    createTranslationCallback(cesdk, modelKey, 'style', 'image')
   );
-  iconStyleAssetSource = new CustomAssetSource(
+
+  iconStyleAssetSource = initializeStyleAssetSourceRecraft20b(
+    cesdk,
+    config,
+    'icon',
+    STYLES_ICON,
     styleIconAssetSourceId,
-    STYLES_ICON.map(({ id, label }) => ({
-      id,
-      label,
-      thumbUri: getStyleThumbnail(id, baseURL)
-    })),
-    {
-      translateLabel: createTranslationCallback(
-        cesdk,
-        modelKey,
-        'style',
-        'image'
-      )
-    }
+    (id) => getStyleThumbnail(id as StyleId, baseURL) ?? '',
+    createTranslationCallback(cesdk, modelKey, 'style', 'image')
   );
 
   // Assets are automatically set as active (first asset) in CustomAssetSource constructor
@@ -275,31 +253,49 @@ function getProvider(
             });
           }
 
-          // Determine default type based on what's enabled
-          const defaultType = isImageStyleEnabled
-            ? 'image'
-            : isVectorStyleEnabled
-            ? 'vector'
-            : 'icon';
+          // Resolve default styles from provider configuration
+          const resolvedImageDefault = resolveStyleDefaultRecraft20b(config, cesdk, 'image');
+          const resolvedVectorDefault = resolveStyleDefaultRecraft20b(config, cesdk, 'vector');
+          const resolvedIconDefault = resolveStyleDefaultRecraft20b(config, cesdk, 'icon');
+
+          // Determine default type based on resolved defaults
+          let defaultType: GenerationType = 'image';
+          if (resolvedVectorDefault) {
+            defaultType = 'vector';
+          } else if (resolvedIconDefault) {
+            defaultType = 'icon';
+          } else if (!resolvedImageDefault) {
+            // No specific default, use first enabled type
+            defaultType = isImageStyleEnabled
+              ? 'image'
+              : isVectorStyleEnabled
+              ? 'vector'
+              : 'icon';
+          }
+
           const typeState = state<GenerationType>('type', defaultType);
 
+          // Use resolved defaults or fall back to initial values from asset sources
           const styleImageState = state<Recraft20bInput['style']>(
             'style/image',
-            initialImageStyle
-              ? (initialImageStyle.id as Recraft20bInput['style'])
-              : 'realistic_image'
+            resolvedImageDefault ||
+              (initialImageStyle
+                ? (initialImageStyle.id as Recraft20bInput['style'])
+                : 'realistic_image')
           );
           const styleVectorState = state<Recraft20bInput['style']>(
             'style/vector',
-            initialVectorStyle
-              ? (initialVectorStyle.id as Recraft20bInput['style'])
-              : 'vector_illustration'
+            resolvedVectorDefault ||
+              (initialVectorStyle
+                ? (initialVectorStyle.id as Recraft20bInput['style'])
+                : 'vector_illustration')
           );
           const styleIconState = state<Recraft20bInput['style']>(
             'style/icon',
-            initialIconStyle
-              ? (initialIconStyle.id as Recraft20bInput['style'])
-              : 'icon/broken_line'
+            resolvedIconDefault ||
+              (initialIconStyle
+                ? (initialIconStyle.id as Recraft20bInput['style'])
+                : 'icon/broken_line')
           );
 
           const styleState =
