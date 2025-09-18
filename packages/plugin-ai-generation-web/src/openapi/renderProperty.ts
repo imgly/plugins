@@ -74,7 +74,10 @@ function renderProperty<K extends OutputKind, I, O extends Output>(
         providerConfig,
         config
       };
-      return panelInput.renderCustomProperty[property.id](extendedContext, property);
+      return panelInput.renderCustomProperty[property.id](
+        extendedContext,
+        property
+      );
     } else {
       return undefined;
     }
@@ -92,7 +95,10 @@ function renderProperty<K extends OutputKind, I, O extends Output>(
       providerConfig,
       config
     };
-    return panelInput.renderCustomProperty[property.id](extendedContext, property);
+    return panelInput.renderCustomProperty[property.id](
+      extendedContext,
+      property
+    );
   }
 
   switch (type) {
@@ -251,8 +257,9 @@ function renderStringProperty<K extends OutputKind, I, O extends Output>(
 
   // Resolve default value from property configuration
   const propertyContext = buildPropertyContext(engine, options.cesdk);
-  const propertyConfig = providerConfig?.properties?.[propertyId] ??
-                        (config as any).properties?.[propertyId];
+  const propertyConfig =
+    providerConfig?.properties?.[propertyId] ??
+    (config as any).properties?.[propertyId];
   const defaultValue = resolvePropertyDefault(
     propertyId,
     propertyConfig,
@@ -312,8 +319,9 @@ function renderEnumProperty<K extends OutputKind, I, O extends Output>(
 
   // Resolve default value from property configuration
   const propertyContext = buildPropertyContext(engine, options.cesdk);
-  const propertyConfig = providerConfig?.properties?.[propertyId] ??
-                        (config as any).properties?.[propertyId];
+  const propertyConfig =
+    providerConfig?.properties?.[propertyId] ??
+    (config as any).properties?.[propertyId];
   const resolvedDefault = resolvePropertyDefault(
     propertyId,
     propertyConfig,
@@ -364,8 +372,9 @@ function renderBooleanProperty<K extends OutputKind, I, O extends Output>(
 
   // Resolve default value from property configuration
   const propertyContext = buildPropertyContext(engine, options.cesdk);
-  const propertyConfig = providerConfig?.properties?.[propertyId] ??
-                        (config as any).properties?.[propertyId];
+  const propertyConfig =
+    providerConfig?.properties?.[propertyId] ??
+    (config as any).properties?.[propertyId];
   const defaultValue = !!resolvePropertyDefault(
     propertyId,
     propertyConfig,
@@ -412,8 +421,9 @@ function renderIntegerProperty<K extends OutputKind, I, O extends Output>(
 
   // Resolve default value from property configuration
   const propertyContext = buildPropertyContext(engine, options.cesdk);
-  const propertyConfig = providerConfig?.properties?.[propertyId] ??
-                        (config as any).properties?.[propertyId];
+  const propertyConfig =
+    providerConfig?.properties?.[propertyId] ??
+    (config as any).properties?.[propertyId];
   let schemaDefault = property.schema.default;
   if (schemaDefault == null) {
     if (minValue != null) {
@@ -494,8 +504,9 @@ function renderAnyOfProperty<K extends OutputKind, I, O extends Output>(
 
   // Resolve default value from property configuration
   const propertyContext = buildPropertyContext(engine, options.cesdk);
-  const propertyConfig = providerConfig?.properties?.[propertyId] ??
-                        (config as any).properties?.[propertyId];
+  const propertyConfig =
+    providerConfig?.properties?.[propertyId] ??
+    (config as any).properties?.[propertyId];
 
   const renderFunctionMap: Record<string, Function> = {
     string: renderStringProperty,

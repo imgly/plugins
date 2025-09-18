@@ -101,7 +101,11 @@ export function initializeStyleAssetSourceV3(
   styles: Array<{ id: string; label: string }>,
   sourceId: string,
   getStyleThumbnail: (id: string) => string,
-  translateLabel?: (assetId: string, fallbackLabel: string, locale: string) => string
+  translateLabel?: (
+    assetId: string,
+    fallbackLabel: string,
+    locale: string
+  ) => string
 ): CustomAssetSource {
   // Create the asset source with default first selection
   const assetSource = new CustomAssetSource(
@@ -139,7 +143,11 @@ export function initializeStyleAssetSourceRecraft20b(
   styles: Array<{ id: string; label: string }>,
   sourceId: string,
   getStyleThumbnail: (id: string) => string,
-  translateLabel?: (assetId: string, fallbackLabel: string, locale: string) => string
+  translateLabel?: (
+    assetId: string,
+    fallbackLabel: string,
+    locale: string
+  ) => string
 ): CustomAssetSource {
   // Create the asset source with default first selection
   const assetSource = new CustomAssetSource(

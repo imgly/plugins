@@ -37,7 +37,7 @@ type Recraft20bInput = {
     | 'landscape_4_3'
     | 'landscape_16_9'
     | { width: number; height: number };
-  style?: string;  // Use string to match schema
+  style?: string; // Use string to match schema
   colors?: Array<{ r: number; g: number; b: number }>;
 };
 
@@ -254,9 +254,21 @@ function getProvider(
           }
 
           // Resolve default styles from provider configuration
-          const resolvedImageDefault = resolveStyleDefaultRecraft20b(config, cesdk, 'image');
-          const resolvedVectorDefault = resolveStyleDefaultRecraft20b(config, cesdk, 'vector');
-          const resolvedIconDefault = resolveStyleDefaultRecraft20b(config, cesdk, 'icon');
+          const resolvedImageDefault = resolveStyleDefaultRecraft20b(
+            config,
+            cesdk,
+            'image'
+          );
+          const resolvedVectorDefault = resolveStyleDefaultRecraft20b(
+            config,
+            cesdk,
+            'vector'
+          );
+          const resolvedIconDefault = resolveStyleDefaultRecraft20b(
+            config,
+            cesdk,
+            'icon'
+          );
 
           // Determine default type based on resolved defaults
           let defaultType: GenerationType = 'image';

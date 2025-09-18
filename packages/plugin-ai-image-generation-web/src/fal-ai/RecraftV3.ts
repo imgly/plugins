@@ -196,17 +196,18 @@ function getProvider(
           }
 
           // Get all available styles to determine type from configured default
-          const allImageStyles = STYLES_IMAGE.map(s => s.id);
-          const allVectorStyles = STYLES_VECTOR.map(s => s.id);
+          const allImageStyles = STYLES_IMAGE.map((s) => s.id);
+          const allVectorStyles = STYLES_VECTOR.map((s) => s.id);
 
           // Check if there's a configured default style
           const configuredStyleDefault = config.properties?.style?.default;
           let inferredTypeFromDefault: GenerationType | null = null;
 
           if (configuredStyleDefault) {
-            const resolvedDefault = typeof configuredStyleDefault === 'string'
-              ? configuredStyleDefault
-              : null; // For now, just handle static defaults for type inference
+            const resolvedDefault =
+              typeof configuredStyleDefault === 'string'
+                ? configuredStyleDefault
+                : null; // For now, just handle static defaults for type inference
 
             if (resolvedDefault) {
               if (allImageStyles.includes(resolvedDefault)) {
@@ -218,7 +219,9 @@ function getProvider(
           }
 
           // Determine default type based on configured default or what's enabled
-          const defaultType = inferredTypeFromDefault ?? (isImageStyleEnabled ? 'image' : 'vector');
+          const defaultType =
+            inferredTypeFromDefault ??
+            (isImageStyleEnabled ? 'image' : 'vector');
           const typeState = state<GenerationType>('type', defaultType);
 
           const styleImageState = state<RecraftV3TextToImageInput['style']>(

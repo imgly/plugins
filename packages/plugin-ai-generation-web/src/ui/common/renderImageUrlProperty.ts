@@ -41,8 +41,9 @@ function renderImageUrlProperty(
       const pluginConfig = (context as any).config;
 
       // Check provider config first, then plugin config
-      const propertyConfig = providerConfig?.properties?.[property.id] ??
-                            (pluginConfig as any)?.properties?.[property.id];
+      const propertyConfig =
+        providerConfig?.properties?.[property.id] ??
+        (pluginConfig as any)?.properties?.[property.id];
 
       if (propertyConfig?.default) {
         if (typeof propertyConfig.default === 'function') {
@@ -54,7 +55,8 @@ function renderImageUrlProperty(
       }
 
       // Use configured default, then payload url, then static default
-      const defaultUrl = configuredDefault ?? payload?.url ?? options.defaultUrl;
+      const defaultUrl =
+        configuredDefault ?? payload?.url ?? options.defaultUrl;
       const stateValue = global<string>(
         `${provderId}.${property.id}`,
         defaultUrl
