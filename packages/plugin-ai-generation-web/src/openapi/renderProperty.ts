@@ -16,6 +16,8 @@ import { UIOptions, CommonConfiguration } from '../types';
 import { OpenAPIV3 } from 'openapi-types';
 import getProperties from './getProperties';
 import { getLabelFromId } from '../utils/utils';
+import { buildPropertyContext } from '../utils/propertyContext';
+import { resolvePropertyDefault } from '../utils/propertyResolver';
 
 function createInputLabelArray<K extends OutputKind, I, O extends Output>(
   property: Property,
@@ -58,14 +60,21 @@ function renderProperty<K extends OutputKind, I, O extends Output>(
   panelInput: PanelInputSchema<K, I>,
   options: UIOptions,
   config: CommonConfiguration<I, O>,
-  kind: K
+  kind: K,
+  providerConfig?: any
 ): GetPropertyInput | undefined {
   if (property.schema == null) {
     if (
       panelInput.renderCustomProperty != null &&
       panelInput.renderCustomProperty[property.id] != null
     ) {
-      return panelInput.renderCustomProperty[property.id](context, property);
+      // Extend context with provider configuration for custom properties
+      const extendedContext = {
+        ...context,
+        providerConfig,
+        config
+      };
+      return panelInput.renderCustomProperty[property.id](extendedContext, property);
     } else {
       return undefined;
     }
@@ -77,7 +86,13 @@ function renderProperty<K extends OutputKind, I, O extends Output>(
     panelInput.renderCustomProperty != null &&
     panelInput.renderCustomProperty[property.id] != null
   ) {
-    return panelInput.renderCustomProperty[property.id](context, property);
+    // Extend context with provider configuration for custom properties
+    const extendedContext = {
+      ...context,
+      providerConfig,
+      config
+    };
+    return panelInput.renderCustomProperty[property.id](extendedContext, property);
   }
 
   switch (type) {
@@ -90,7 +105,8 @@ function renderProperty<K extends OutputKind, I, O extends Output>(
           panelInput,
           options,
           config,
-          kind
+          kind,
+          providerConfig
         );
       } else {
         return renderStringProperty(
@@ -100,7 +116,8 @@ function renderProperty<K extends OutputKind, I, O extends Output>(
           panelInput,
           options,
           config,
-          kind
+          kind,
+          providerConfig
         );
       }
     }
@@ -113,7 +130,8 @@ function renderProperty<K extends OutputKind, I, O extends Output>(
         panelInput,
         options,
         config,
-        kind
+        kind,
+        providerConfig
       );
     }
 
@@ -126,7 +144,8 @@ function renderProperty<K extends OutputKind, I, O extends Output>(
         panelInput,
         options,
         config,
-        kind
+        kind,
+        providerConfig
       );
     }
 
@@ -138,7 +157,8 @@ function renderProperty<K extends OutputKind, I, O extends Output>(
         panelInput,
         options,
         config,
-        kind
+        kind,
+        providerConfig
       );
     }
 
@@ -159,7 +179,8 @@ function renderProperty<K extends OutputKind, I, O extends Output>(
           panelInput,
           options,
           config,
-          kind
+          kind,
+          providerConfig
         );
       }
       break;
@@ -179,7 +200,8 @@ function renderObjectProperty<K extends OutputKind, I, O extends Output>(
   panelInput: PanelInputSchema<K, I>,
   options: UIOptions,
   config: CommonConfiguration<I, O>,
-  kind: K
+  kind: K,
+  providerConfig?: any
 ): GetPropertyInput {
   const properties = getProperties(property.schema ?? {}, panelInput);
 
@@ -191,7 +213,8 @@ function renderObjectProperty<K extends OutputKind, I, O extends Output>(
       panelInput,
       options,
       config,
-      kind
+      kind,
+      providerConfig
     );
     if (getInput != null) {
       acc[childProperty.id] = getInput();
@@ -213,18 +236,32 @@ function renderStringProperty<K extends OutputKind, I, O extends Output>(
   panelInput: PanelInputSchema<K, I>,
   options: UIOptions,
   config: CommonConfiguration<I, O>,
-  kind: K
+  kind: K,
+  providerConfig?: any
 ): GetPropertyInput {
   const {
     builder,
-    experimental: { global }
+    experimental: { global },
+    engine
   } = context;
   const { id: propertyId } = property;
 
   const id = `${provider.id}.${propertyId}`;
   const inputLabel = createInputLabelArray(property, provider, kind);
 
-  const propertyState = global(id, property.schema.default ?? '');
+  // Resolve default value from property configuration
+  const propertyContext = buildPropertyContext(engine, options.cesdk);
+  const propertyConfig = providerConfig?.properties?.[propertyId] ??
+                        (config as any).properties?.[propertyId];
+  const defaultValue = resolvePropertyDefault(
+    propertyId,
+    propertyConfig,
+    propertyContext,
+    property.schema.default,
+    ''
+  );
+
+  const propertyState = global(id, defaultValue);
 
   const extension = getImglyExtensionBuilder(property.schema);
   const builderComponent =
@@ -252,11 +289,13 @@ function renderEnumProperty<K extends OutputKind, I, O extends Output>(
   panelInput: PanelInputSchema<K, I>,
   options: UIOptions,
   config: CommonConfiguration<I, O>,
-  kind: K
+  kind: K,
+  providerConfig?: any
 ): GetPropertyInput {
   const {
     builder,
-    experimental: { global }
+    experimental: { global },
+    engine
   } = context;
   const { id: propertyId } = property;
 
@@ -270,9 +309,22 @@ function renderEnumProperty<K extends OutputKind, I, O extends Output>(
     label: createInputLabelArray(property, provider, kind, valueId),
     icon: icons[valueId]
   }));
+
+  // Resolve default value from property configuration
+  const propertyContext = buildPropertyContext(engine, options.cesdk);
+  const propertyConfig = providerConfig?.properties?.[propertyId] ??
+                        (config as any).properties?.[propertyId];
+  const resolvedDefault = resolvePropertyDefault(
+    propertyId,
+    propertyConfig,
+    propertyContext,
+    property.schema.default,
+    values[0]?.id
+  );
+
   const defaultValue =
-    property.schema.default != null
-      ? values.find((v) => v.id === property.schema.default) ?? values[0]
+    resolvedDefault != null
+      ? values.find((v) => v.id === resolvedDefault) ?? values[0]
       : values[0];
 
   const propertyState = global<EnumValue>(id, defaultValue);
@@ -297,18 +349,30 @@ function renderBooleanProperty<K extends OutputKind, I, O extends Output>(
   panelInput: PanelInputSchema<K, I>,
   options: UIOptions,
   config: CommonConfiguration<I, O>,
-  kind: K
+  kind: K,
+  providerConfig?: any
 ): GetPropertyInput {
   const {
     builder,
-    experimental: { global }
+    experimental: { global },
+    engine
   } = context;
   const { id: propertyId } = property;
 
   const id = `${provider.id}.${propertyId}`;
   const inputLabel = createInputLabelArray(property, provider, kind);
 
-  const defaultValue = !!property.schema.default;
+  // Resolve default value from property configuration
+  const propertyContext = buildPropertyContext(engine, options.cesdk);
+  const propertyConfig = providerConfig?.properties?.[propertyId] ??
+                        (config as any).properties?.[propertyId];
+  const defaultValue = !!resolvePropertyDefault(
+    propertyId,
+    propertyConfig,
+    propertyContext,
+    property.schema.default,
+    false
+  );
   const propertyState = global<boolean>(id, defaultValue);
 
   builder.Checkbox(id, {
@@ -330,11 +394,13 @@ function renderIntegerProperty<K extends OutputKind, I, O extends Output>(
   panelInput: PanelInputSchema<K, I>,
   options: UIOptions,
   config: CommonConfiguration<I, O>,
-  kind: K
+  kind: K,
+  providerConfig?: any
 ): GetPropertyInput {
   const {
     builder,
-    experimental: { global }
+    experimental: { global },
+    engine
   } = context;
   const { id: propertyId } = property;
 
@@ -344,16 +410,27 @@ function renderIntegerProperty<K extends OutputKind, I, O extends Output>(
   const minValue = property.schema.minimum;
   const maxValue = property.schema.maximum;
 
-  let defaultValue = property.schema.default;
-  if (defaultValue == null) {
+  // Resolve default value from property configuration
+  const propertyContext = buildPropertyContext(engine, options.cesdk);
+  const propertyConfig = providerConfig?.properties?.[propertyId] ??
+                        (config as any).properties?.[propertyId];
+  let schemaDefault = property.schema.default;
+  if (schemaDefault == null) {
     if (minValue != null) {
-      defaultValue = minValue;
+      schemaDefault = minValue;
     } else if (maxValue != null) {
-      defaultValue = maxValue;
+      schemaDefault = maxValue;
     } else {
-      defaultValue = 0;
+      schemaDefault = 0;
     }
   }
+  const defaultValue = resolvePropertyDefault(
+    propertyId,
+    propertyConfig,
+    propertyContext,
+    schemaDefault,
+    schemaDefault
+  );
 
   const propertyState = global<number>(id, defaultValue);
 
@@ -396,11 +473,13 @@ function renderAnyOfProperty<K extends OutputKind, I, O extends Output>(
   panelInput: PanelInputSchema<K, I>,
   options: UIOptions,
   config: CommonConfiguration<I, O>,
-  kind: K
+  kind: K,
+  providerConfig?: any
 ): GetPropertyInput | undefined {
   const {
     builder,
-    experimental: { global }
+    experimental: { global },
+    engine
   } = context;
   const { id: propertyId } = property;
 
@@ -412,6 +491,11 @@ function renderAnyOfProperty<K extends OutputKind, I, O extends Output>(
   const conditionalRender: Record<string, () => GetPropertyInput> = {};
   const conditionalInputs: Record<string, () => PropertyInput> = {};
   const { labels, icons } = extractEnumMetadata(property.schema);
+
+  // Resolve default value from property configuration
+  const propertyContext = buildPropertyContext(engine, options.cesdk);
+  const propertyConfig = providerConfig?.properties?.[propertyId] ??
+                        (config as any).properties?.[propertyId];
 
   const renderFunctionMap: Record<string, Function> = {
     string: renderStringProperty,
@@ -450,7 +534,8 @@ function renderAnyOfProperty<K extends OutputKind, I, O extends Output>(
           panelInput,
           options,
           config,
-          kind
+          kind,
+          providerConfig
         );
 
       values.push(createEnumValue(schemaId, refName));
@@ -468,7 +553,8 @@ function renderAnyOfProperty<K extends OutputKind, I, O extends Output>(
           panelInput,
           options,
           config,
-          kind
+          kind,
+          providerConfig
         );
 
       const valueId = extractValueId(anySchema, schemaId);
@@ -485,10 +571,18 @@ function renderAnyOfProperty<K extends OutputKind, I, O extends Output>(
     }
   });
 
+  // Resolve the default using property configuration
+  const resolvedDefault = resolvePropertyDefault(
+    propertyId,
+    propertyConfig,
+    propertyContext,
+    property.schema.default,
+    null
+  );
+
   const defaultValue =
-    property.schema.default != null
-      ? values.find((value) => value.id === property.schema.default) ??
-        values[0]
+    resolvedDefault != null
+      ? values.find((value) => value.id === resolvedDefault) ?? values[0]
       : values[0];
 
   const propertyState = global<EnumValue>(id, defaultValue);
