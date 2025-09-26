@@ -210,6 +210,9 @@ interface CommonProviderConfiguration<I, O extends Output> {
     supportedQuickActions?: {
         [quickActionId: string]: Partial<QuickActionSupport<I>> | false | null;
     };
+
+    // Configure default property values
+    properties?: PropertiesConfiguration;
 }
 ```
 
@@ -282,6 +285,53 @@ const provider = createMyImageProvider({
 - `true`: Keep the provider's default implementation
 - Object with `mapInput`: Override the quick action with custom input mapping
 - Object with other properties: Override with custom configuration
+
+#### Property Configuration
+
+The `properties` field allows you to define default values for any provider property. These defaults can be static values or dynamic functions that receive context:
+
+```typescript
+const provider = createMyImageProvider({
+    proxyUrl: 'https://proxy.example.com',
+
+    // Configure default property values
+    properties: {
+        // Static default value
+        image_size: 'square_hd',
+
+        // Dynamic default based on context
+        style: (context) => {
+            // Context includes: engine, cesdk, locale
+            const locale = context.locale;
+
+            // Return different defaults for different locales
+            if (locale === 'de') {
+                return 'realistic';
+            }
+            return 'digital_illustration';
+        },
+
+        // Dynamic default based on design state
+        resolution: (context) => {
+            const engine = context.engine;
+            const scene = engine.scene.get();
+            const width = engine.block.getFloat(scene, 'scene/frame/width');
+
+            // Choose resolution based on canvas size
+            if (width > 1920) {
+                return '1080p';
+            }
+            return '720p';
+        }
+    }
+});
+```
+
+**Property Configuration Features:**
+- **Static Defaults**: Simple values that apply to all users
+- **Dynamic Defaults**: Functions that return values based on context (engine state, locale, etc.)
+- **Context Available**: `engine`, `cesdk`, `locale` for making informed decisions
+- **Fallback Chain**: Properties use configured value → schema default → undefined
 
 ### Headers Configuration
 

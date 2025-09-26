@@ -48,6 +48,12 @@ CreativeEditorSDK.create(domElement, {
                 headers: {
                     'x-custom-header': 'value',
                     'x-client-version': '1.0.0'
+                },
+                // Optional: Configure default property values
+                properties: {
+                    voice_id: 'pNInz6obpgDQGcFmaJgB',  // Default voice (Adam)
+                    voice_settings_stability: 0.5,
+                    voice_settings_similarity_boost: 0.75
                 }
             }),
 
@@ -135,6 +141,12 @@ text2speech: Elevenlabs.ElevenMultilingualV2({
     headers: {
         'x-custom-header': 'value',
         'x-client-version': '1.0.0'
+    },
+    // Optional: Configure default property values
+    properties: {
+        voice_id: 'pNInz6obpgDQGcFmaJgB',  // Default voice (Adam)
+        voice_settings_stability: 0.5,       // Voice stability (0.0-1.0)
+        voice_settings_similarity_boost: 0.75 // Voice similarity (0.0-1.0)
     }
 });
 ```
@@ -169,6 +181,11 @@ text2sound: Elevenlabs.ElevenSoundEffects({
     headers: {
         'x-custom-header': 'value',
         'x-client-version': '1.0.0'
+    },
+    // Optional: Configure default property values
+    properties: {
+        duration_seconds: 10,     // Duration of sound effect
+        prompt_influence: 0.3     // How much the prompt influences generation
     }
 });
 ```

@@ -48,6 +48,11 @@ CreativeEditorSDK.create(domElement, {
                 headers: {
                     'x-custom-header': 'value',
                     'x-client-version': '1.0.0'
+                },
+                // Optional: Configure default property values
+                properties: {
+                    duration: 5,  // Default duration in seconds
+                    aspect_ratio: '16:9'  // Default aspect ratio
                 }
             }),
 
@@ -134,6 +139,10 @@ text2video: FalAiVideo.MinimaxVideo01Live({
     headers: {
         'x-custom-header': 'value',
         'x-client-version': '1.0.0'
+    },
+    // Optional: Configure default property values
+    properties: {
+        prompt_optimizer: true  // Enable automatic prompt enhancement
     }
 });
 ```
@@ -165,6 +174,10 @@ image2video: FalAiVideo.MinimaxVideo01LiveImageToVideo({
     headers: {
         'x-custom-header': 'value',
         'x-client-version': '1.0.0'
+    },
+    // Optional: Configure default property values
+    properties: {
+        prompt_optimizer: true  // Enable automatic prompt enhancement
     }
 });
 ```
@@ -186,6 +199,10 @@ text2video: FalAiVideo.PixverseV35TextToVideo({
     headers: {
         'x-custom-header': 'value',
         'x-client-version': '1.0.0'
+    },
+    // Optional: Configure default property values
+    properties: {
+        seed: 42  // Fixed seed for reproducible generation
     }
 });
 ```
@@ -201,7 +218,12 @@ A model based on KlingVideo V2.1 that generates videos from text prompts:
 
 ```typescript
 text2video: FalAiVideo.KlingVideoV21MasterTextToVideo({
-    proxyUrl: 'http://your-proxy-server.com/api/proxy'
+    proxyUrl: 'http://your-proxy-server.com/api/proxy',
+    // Optional: Configure default property values
+    properties: {
+        aspect_ratio: '16:9',  // Options: '16:9', '9:16', '1:1'
+        duration: '5s'         // Options: '5s', '10s'
+    }
 });
 ```
 
@@ -230,7 +252,11 @@ A model that converts still images into videos using KlingVideo V2.1:
 
 ```typescript
 image2video: FalAiVideo.KlingVideoV21MasterImageToVideo({
-    proxyUrl: 'http://your-proxy-server.com/api/proxy'
+    proxyUrl: 'http://your-proxy-server.com/api/proxy',
+    // Optional: Configure default property values
+    properties: {
+        duration: '5s'  // Options: '5s', '10s'
+    }
 });
 ```
 
@@ -247,7 +273,13 @@ A model that transforms images into videos using ByteDance Seedance v1 Pro:
 
 ```typescript
 image2video: FalAiVideo.ByteDanceSeedanceV1ProImageToVideo({
-    proxyUrl: 'http://your-proxy-server.com/api/proxy'
+    proxyUrl: 'http://your-proxy-server.com/api/proxy',
+    // Optional: Configure default property values
+    properties: {
+        aspect_ratio: 'auto',     // Options: '21:9', '16:9', '4:3', '1:1', '3:4', '9:16', 'auto'
+        duration: 5,              // Duration in seconds (3-12)
+        resolution: '720p'        // Options: '480p', '720p', '1080p'
+    }
 });
 ```
 
@@ -265,7 +297,13 @@ A model that generates videos from text using ByteDance Seedance v1 Pro:
 
 ```typescript
 text2video: FalAiVideo.ByteDanceSeedanceV1ProTextToVideo({
-    proxyUrl: 'http://your-proxy-server.com/api/proxy'
+    proxyUrl: 'http://your-proxy-server.com/api/proxy',
+    // Optional: Configure default property values
+    properties: {
+        aspect_ratio: '16:9',     // Options: '21:9', '16:9', '4:3', '1:1', '3:4', '9:16'
+        duration: 5,              // Duration in seconds (3-12)
+        resolution: '720p'        // Options: '480p', '720p', '1080p'
+    }
 });
 ```
 
@@ -283,7 +321,12 @@ An advanced text-to-video model:
 
 ```typescript
 text2video: FalAiVideo.Veo3TextToVideo({
-    proxyUrl: 'http://your-proxy-server.com/api/proxy'
+    proxyUrl: 'http://your-proxy-server.com/api/proxy',
+    // Optional: Configure default property values
+    properties: {
+        aspect_ratio: '16:9',     // Options: '16:9', '9:16', '1:1'
+        duration: 8               // Fixed at 8 seconds for this provider
+    }
 });
 ```
 

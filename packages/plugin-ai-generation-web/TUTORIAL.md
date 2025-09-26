@@ -126,6 +126,9 @@ interface CommonProviderConfiguration<I, O extends Output> {
     supportedQuickActions?: {
         [quickActionId: string]: Partial<QuickActionSupport<I>> | false | null;
     };
+
+    // Configure default property values
+    properties?: PropertiesConfiguration;
 }
 ```
 
@@ -153,6 +156,13 @@ The `supportedQuickActions` property allows you to customize which quick actions
 - `true`: Keep the provider's default implementation
 - Object with `mapInput`: Override the quick action with custom input mapping
 - Object with other properties: Override with custom configuration
+
+#### Property Configuration
+The `properties` property allows you to define default values for any provider property:
+
+- Static values: Simple default values that apply to all users
+- Dynamic functions: Return values based on context (engine, cesdk, locale)
+- Context includes `engine`, `cesdk`, and `locale` for making informed decisions
 
 ## 5. Creating a Schema-Based Image Provider
 

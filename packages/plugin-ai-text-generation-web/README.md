@@ -52,6 +52,11 @@ CreativeEditorSDK.create(domElement, {
                 headers: {
                     'x-custom-header': 'value',
                     'x-client-version': '1.0.0'
+                },
+                // Optional: Configure default property values
+                properties: {
+                    temperature: 0.7,
+                    max_tokens: 500
                 }
             }),
 
@@ -128,17 +133,23 @@ A versatile text generation model that handles various text transformations:
 ```typescript
 provider: Anthropic.AnthropicProvider({
     proxyUrl: 'http://your-proxy-server.com/api/proxy',
-    
+
     // Optional model selection (this is also the default)
     model: 'claude-3-7-sonnet-20250219',
-    
+
     // Optional custom headers for API requests
     headers: {
         'x-custom-header': 'value',
         'x-client-version': '1.0.0',
         'x-request-source': 'cesdk-plugin'
     },
-    
+
+    // Optional: Configure default property values
+    properties: {
+        temperature: 0.7,    // Creativity level (0.0-1.0)
+        max_tokens: 500      // Maximum response length
+    },
+
     // Optional debug mode
     debug: false
 });
@@ -175,17 +186,24 @@ A powerful text generation model that handles various text transformations:
 ```typescript
 provider: OpenAIText.OpenAIProvider({
     proxyUrl: 'http://your-proxy-server.com/api/proxy',
-    
+
     // Optional model selection (this is also the default)
     model: 'gpt-4o-mini',
-    
+
     // Optional custom headers for API requests
     headers: {
         'x-custom-header': 'value',
         'x-client-version': '1.0.0',
         'x-request-source': 'cesdk-plugin'
     },
-    
+
+    // Optional: Configure default property values
+    properties: {
+        temperature: 0.7,    // Creativity level (0.0-2.0)
+        max_tokens: 500,     // Maximum response length
+        top_p: 1.0          // Nucleus sampling (0.0-1.0)
+    },
+
     // Optional debug mode
     debug: false
 });
