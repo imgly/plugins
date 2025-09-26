@@ -1,6 +1,6 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "ui": "tui",
+  "ui": "stream",
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
@@ -10,6 +10,11 @@
       "cache": false,
       "persistent": true,
       "dependsOn": ["^dev:wait"]
+    },
+    "dev:types": {
+      "cache": false,
+      "persistent": true,
+      "dependsOn": ["^build"]
     },
     "dev:wait": {
       "cache": false,

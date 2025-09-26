@@ -4,6 +4,9 @@ import reporterPlugin from './plugin-reporter.mjs';
 /** @import { BuildOptions } from 'esbuild' */
 
 export default ({ isDevelopment, pluginVersion, pluginName, external }) => {
+  // Skip type generation only in development mode when SKIP_DTS is set
+  const skipDts = isDevelopment && process.env.SKIP_DTS === 'true';
+  
   /** @type { BuildOptions } */
   const config = {
     entryPoints: ['src/index.ts'],
@@ -18,7 +21,7 @@ export default ({ isDevelopment, pluginVersion, pluginName, external }) => {
     format: 'esm',
     outfile: 'dist/index.mjs',
     external,
-    plugins: [dtsPlugin, reporterPlugin].filter(Boolean)
+    plugins: [!skipDts && dtsPlugin, reporterPlugin].filter(Boolean)
   };
   return config;
 };
