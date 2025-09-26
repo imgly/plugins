@@ -503,7 +503,35 @@ middleware: [
 ]
 ```
 
-## 6. Using Proxy Services
+## 6. Controlling Features with Feature API
+
+You can control which AI features are available to users using CE.SDK's Feature API. This is useful for:
+- Creating different feature tiers for different user groups
+- Simplifying the UI by hiding unused features
+- Temporarily disabling features during maintenance
+
+### Basic Feature Control
+
+```typescript
+// Disable specific quick actions
+cesdk.feature.enable('ly.img.plugin-ai-image-generation-web.quickAction.editImage', false);
+cesdk.feature.enable('ly.img.plugin-ai-text-generation-web.quickAction.translate', false);
+
+// Control input types for image/video generation
+cesdk.feature.enable('ly.img.plugin-ai-image-generation-web.fromText', true);
+cesdk.feature.enable('ly.img.plugin-ai-image-generation-web.fromImage', false);
+
+// Hide provider selection dropdowns
+cesdk.feature.enable('ly.img.plugin-ai-image-generation-web.providerSelect', false);
+
+// Control style groups for specific providers (e.g., RecraftV3, Recraft20b)
+cesdk.feature.enable('ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.style.vector', false);
+cesdk.feature.enable('ly.img.plugin-ai-image-generation-web.fal-ai/recraft/v2/text-to-image.style.icon', false);
+```
+
+For more details on available feature flags, see the [@imgly/plugin-ai-generation-web documentation](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-generation-web#available-feature-flags).
+
+## 7. Using Proxy Services
 
 For security reasons, you should never include your AI service API keys directly in client-side code. Instead, you should set up proxy services that securely forward requests to AI providers while keeping your API keys secure on the server side.
 

@@ -24,7 +24,7 @@ export function testAllTranslations(cesdk: CreativeEditorSDK) {
   // Process image generation translations (provider-specific) with @ prefix
   Object.entries(imageTranslations.en).forEach(([key, value]) => {
     // Check if it's a provider-specific translation
-    if (key.includes('.fal-ai/') || key.includes('.open-ai/') || key.includes('quickAction')) {
+    if (key.includes('.fal-ai/') || key.includes('.open-ai/')) {
       allTranslations[key] = `@${value}`;
     } else {
       // Generic property that might be redefined
@@ -34,7 +34,7 @@ export function testAllTranslations(cesdk: CreativeEditorSDK) {
 
   // Process video generation translations (provider-specific) with @ prefix
   Object.entries(videoTranslations.en).forEach(([key, value]) => {
-    if (key.includes('.fal-ai/') || key.includes('quickAction')) {
+    if (key.includes('.fal-ai/')) {
       allTranslations[key] = `@${value}`;
     } else {
       allTranslations[key] = `&${value}`;
@@ -52,7 +52,7 @@ export function testAllTranslations(cesdk: CreativeEditorSDK) {
 
   // Process text generation translations (provider-specific) with @ prefix
   Object.entries(textTranslations.en).forEach(([key, value]) => {
-    if (key.includes('.anthropic.') || key.includes('.openai.') || key.includes('quickAction')) {
+    if (key.includes('.anthropic.') || key.includes('.openai.')) {
       allTranslations[key] = `@${value}`;
     } else {
       allTranslations[key] = `&${value}`;
@@ -61,7 +61,7 @@ export function testAllTranslations(cesdk: CreativeEditorSDK) {
 
   // Process sticker generation translations (provider-specific) with @ prefix
   Object.entries(stickerTranslations.en).forEach(([key, value]) => {
-    if (key.includes('.fal-ai/') || key.includes('quickAction')) {
+    if (key.includes('.fal-ai/')) {
       allTranslations[key] = `@${value}`;
     } else {
       allTranslations[key] = `&${value}`;

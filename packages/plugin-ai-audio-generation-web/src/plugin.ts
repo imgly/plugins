@@ -25,6 +25,17 @@ export function AudioGeneration<I, O extends Output>(
       // Check AI plugin version consistency
       checkAiPluginVersion(cesdk, PLUGIN_ID, PLUGIN_VERSION);
 
+      // Initialize Feature API for audio generation plugin
+      // Enable all features by default for backward compatibility
+      cesdk.feature.enable(
+        'ly.img.plugin-ai-audio-generation-web.speech.providerSelect',
+        true
+      );
+      cesdk.feature.enable(
+        'ly.img.plugin-ai-audio-generation-web.sound.providerSelect',
+        true
+      );
+
       cesdk.setTranslations({
         en: {
           [`panel.${SPEECH_GENERATION_PANEL_ID}`]: 'AI Voice',

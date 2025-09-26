@@ -263,7 +263,43 @@ Key features:
 -   Canvas quick-action integration
 -   Selectable durations (5 s or 10 s)
 
-#### 7. Veo3TextToVideo (Text-to-Video)
+#### 6. ByteDanceSeedanceV1ProImageToVideo (Image-to-Video)
+
+A model that transforms images into videos using ByteDance Seedance v1 Pro:
+
+```typescript
+image2video: FalAiVideo.ByteDanceSeedanceV1ProImageToVideo({
+    proxyUrl: 'http://your-proxy-server.com/api/proxy'
+});
+```
+
+Key features:
+
+-   Transform existing images into dynamic videos
+-   Multiple aspect ratio options (21:9, 16:9, 4:3, 1:1, 3:4, 9:16, or auto from image)
+-   Adjustable duration (3-12 seconds, default 5)
+-   Resolution options (480p, 720p, 1080p)
+-   Maintains image quality while adding motion
+
+#### 7. ByteDanceSeedanceV1ProTextToVideo (Text-to-Video)
+
+A model that generates videos from text using ByteDance Seedance v1 Pro:
+
+```typescript
+text2video: FalAiVideo.ByteDanceSeedanceV1ProTextToVideo({
+    proxyUrl: 'http://your-proxy-server.com/api/proxy'
+});
+```
+
+Key features:
+
+-   Generate videos from text descriptions
+-   Multiple aspect ratio options (21:9, 16:9, 4:3, 1:1, 3:4, 9:16)
+-   Adjustable duration (3-12 seconds, default 5)
+-   Resolution options (480p, 720p, 1080p)
+-   High-quality motion synthesis from text prompts
+
+#### 8. Veo3TextToVideo (Text-to-Video)
 
 An advanced text-to-video model:
 
@@ -279,6 +315,26 @@ Key features:
 -   Supports aspect ratios 16:9, 9:16 and 1:1 (defaults to 16:9)
 -   Fixed duration of 8 seconds
 -   Optional audio generation via `generate_audio`
+
+### Feature Control
+
+You can control various aspects of the video generation plugin using the Feature API:
+
+```typescript
+// Disable text-to-video generation
+cesdk.feature.enable('ly.img.plugin-ai-video-generation-web.fromText', false);
+
+// Disable image-to-video generation  
+cesdk.feature.enable('ly.img.plugin-ai-video-generation-web.fromImage', false);
+
+// Disable provider selection
+cesdk.feature.enable('ly.img.plugin-ai-video-generation-web.providerSelect', false);
+
+// Disable specific quick actions
+cesdk.feature.enable('ly.img.plugin-ai-video-generation-web.quickAction.createVideo', false);
+```
+
+For more information about Feature API and available feature flags, see the [@imgly/plugin-ai-generation-web documentation](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-generation-web#available-feature-flags).
 
 ### Customizing Labels and Translations
 
@@ -314,23 +370,29 @@ cesdk.i18n.setTranslations({
 
 #### QuickAction Translations
 
-Video QuickActions (like "Create Video from Image") use their own translation keys:
+Video QuickActions (like "Create Video from Image") use their own translation keys with provider-specific overrides:
 
 ```typescript
 cesdk.i18n.setTranslations({
   en: {
-    // QuickAction button labels
-    'ly.img.plugin-ai-video-generation-web.quickAction.createVideo': 'Create Video...',
+    // Provider-specific translations (highest priority)
+    'ly.img.plugin-ai-video-generation-web.fal-ai/minimax/video-01-live.quickAction.createVideo': 'Generate Minimax Video...',
+    'ly.img.plugin-ai-video-generation-web.fal-ai/minimax/video-01-live.quickAction.createVideo.prompt': 'Minimax Video Prompt',
     
-    // QuickAction input fields and buttons
-    'ly.img.plugin-ai-video-generation-web.quickAction.createVideo.prompt': 'Create Video...',
+    // Generic plugin translations
+    'ly.img.plugin-ai-video-generation-web.quickAction.createVideo': 'Create Video...',
+    'ly.img.plugin-ai-video-generation-web.quickAction.createVideo.prompt': 'Video Prompt',
     'ly.img.plugin-ai-video-generation-web.quickAction.createVideo.prompt.placeholder': 'e.g. "Make the image move slowly"',
     'ly.img.plugin-ai-video-generation-web.quickAction.createVideo.apply': 'Generate'
   }
 });
 ```
 
-**QuickAction Translation Structure:**
+**QuickAction Translation Priority:**
+1. Provider-specific: `ly.img.plugin-ai-video-generation-web.${provider}.quickAction.${action}.${field}`
+2. Generic plugin: `ly.img.plugin-ai-video-generation-web.quickAction.${action}.${field}`
+
+**Translation Structure:**
 - Base key (e.g., `.quickAction.createVideo`): Button text when QuickAction is collapsed
 - `.prompt`: Label for input field when expanded
 - `.prompt.placeholder`: Placeholder text for input field
@@ -518,6 +580,24 @@ FalAiVideo.KlingVideoV21MasterImageToVideo(config: {
 }): AiVideoProvider
 ```
 
+#### ByteDanceSeedanceV1ProImageToVideo
+
+```typescript
+FalAiVideo.ByteDanceSeedanceV1ProImageToVideo(config: {
+  proxyUrl: string;
+  debug?: boolean;
+}): AiVideoProvider
+```
+
+#### ByteDanceSeedanceV1ProTextToVideo
+
+```typescript
+FalAiVideo.ByteDanceSeedanceV1ProTextToVideo(config: {
+  proxyUrl: string;
+  debug?: boolean;
+}): AiVideoProvider
+```
+
 #### Veo3TextToVideo
 
 ```typescript
@@ -547,6 +627,8 @@ The plugin automatically registers the following UI components:
     -   PixverseV35TextToVideo: `ly.img.ai.fal-ai/pixverse/v3.5/text-to-video`
     -   KlingVideoV21MasterTextToVideo: `ly.img.ai.fal-ai/kling-video/v2.1/master/text-to-video`
     -   KlingVideoV21MasterImageToVideo: `ly.img.ai.fal-ai/kling-video/v2.1/master/image-to-video`
+    -   ByteDanceSeedanceV1ProImageToVideo: `ly.img.ai.fal-ai/bytedance/seedance/v1/pro/image-to-video`
+    -   ByteDanceSeedanceV1ProTextToVideo: `ly.img.ai.fal-ai/bytedance/seedance/v1/pro/text-to-video`
     -   Veo3TextToVideo: `ly.img.ai.fal-ai/veo3`
 
 ### Asset History
@@ -559,6 +641,8 @@ Generated videos are automatically stored in asset sources with the following ID
 -   PixverseV35TextToVideo: `fal-ai/pixverse/v3.5/text-to-video.history`
 -   KlingVideoV21MasterTextToVideo: `fal-ai/kling-video/v2.1/master/text-to-video.history`
 -   KlingVideoV21MasterImageToVideo: `fal-ai/kling-video/v2.1/master/image-to-video.history`
+-   ByteDanceSeedanceV1ProImageToVideo: `fal-ai/bytedance/seedance/v1/pro/image-to-video.history`
+-   ByteDanceSeedanceV1ProTextToVideo: `fal-ai/bytedance/seedance/v1/pro/text-to-video.history`
 -   Veo3TextToVideo: `fal-ai/veo3.history`
 
 ### Dock Integration

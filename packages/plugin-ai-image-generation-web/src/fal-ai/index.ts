@@ -5,6 +5,9 @@ import { FluxProKontextEdit } from './FluxProKontextEdit';
 import { FluxProKontextMaxEdit } from './FluxProKontextMaxEdit';
 import { IdeogramV3 } from './IdeogramV3';
 import { IdeogramV3Remix } from './IdeogramV3Remix';
+import { QwenImageEdit } from './QwenImageEdit';
+import { NanoBanana } from './NanoBanana';
+import { NanoBananaEdit } from './NanoBananaEdit';
 
 const FalAi = {
   FluxProKontextEdit,
@@ -12,6 +15,9 @@ const FalAi = {
   GeminiFlashEdit,
   IdeogramV3,
   IdeogramV3Remix,
+  QwenImageEdit,
+  NanoBanana,
+  NanoBananaEdit,
   Recraft20b,
   RecraftV3
 };

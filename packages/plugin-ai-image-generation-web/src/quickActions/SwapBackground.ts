@@ -19,6 +19,7 @@ export const ID = `ly.img.${ACTION_NAME}`;
  * The i18n prefix for the quick action.
  */
 export const I18N_PREFIX = `ly.img.plugin-ai-image-generation-web.quickAction.${ACTION_NAME}`;
+export const I18N_DEFAULT_PREFIX = `ly.img.plugin-ai-image-generation-web.defaults.quickAction.${ACTION_NAME}`;
 
 /**
  * The input generated from this quick action which needs
@@ -29,14 +30,37 @@ export type InputType = {
   uri: string;
 };
 
+/**
+ * Get i18n label with fallback keys.
+ */
+function getI18nLabel(modelKey: string, suffix?: string) {
+  const basePath = `ly.img.plugin-ai-image-generation-web`;
+  const actionPath = `quickAction.${ACTION_NAME}`;
+  const fullPath = suffix ? `${actionPath}.${suffix}` : actionPath;
+
+  return [
+    `${basePath}.${modelKey}.${fullPath}`,
+    `${basePath}.${fullPath}`,
+    `${basePath}.${modelKey}.defaults.${fullPath}`,
+    `${basePath}.defaults.${fullPath}`
+  ];
+}
+
 const SwapBackground: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
+  // Set feature default for this quick action
+  cesdk.feature.enable(
+    'ly.img.plugin-ai-image-generation-web.quickAction.swapBackground',
+    true
+  );
+
   cesdk.i18n.setTranslations({
     en: {
-      [`${I18N_PREFIX}`]: 'Swap Background...',
-      [`${I18N_PREFIX}.description`]: 'Change the background of the image',
-      [`${I18N_PREFIX}.prompt`]: 'Swap Background...',
+      [`${I18N_DEFAULT_PREFIX}`]: 'Swap Background...',
+      [`${I18N_DEFAULT_PREFIX}.description`]:
+        'Change the background of the image',
+      [`${I18N_DEFAULT_PREFIX}.prompt`]: 'Swap Background...',
       [`${I18N_PREFIX}.prompt.placeholder`]: 'e.g. "A sunset over mountains"',
-      [`${I18N_PREFIX}.apply`]: 'Change'
+      [`${I18N_DEFAULT_PREFIX}.apply`]: 'Change'
     }
   });
 
@@ -57,14 +81,15 @@ const SwapBackground: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
       generate,
       engine,
       state,
-      close
+      close,
+      providerId
     }) => {
       if (isExpanded) {
         const promptState = state(`${ID}.prompt`, '');
 
         builder.TextArea(`${ID}.prompt`, {
-          inputLabel: `${I18N_PREFIX}.prompt`,
-          placeholder: `${I18N_PREFIX}.prompt.placeholder`,
+          inputLabel: getI18nLabel(providerId, 'prompt'),
+          placeholder: getI18nLabel(providerId, 'prompt.placeholder')[1],
           ...promptState
         });
 
@@ -80,7 +105,7 @@ const SwapBackground: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
             });
 
             builder.Button(`${ID}.footer.apply`, {
-              label: `${I18N_PREFIX}.apply`,
+              label: getI18nLabel(providerId, 'apply'),
               icon: '@imgly/MagicWand',
               color: 'accent',
               isDisabled: promptState.value.length === 0,
@@ -118,7 +143,7 @@ const SwapBackground: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
         });
       } else {
         builder.Button(`${ID}.button`, {
-          label: `${I18N_PREFIX}`,
+          label: getI18nLabel(providerId),
           icon: '@imgly/plugin-ai-generation/image',
           labelAlignment: 'left',
           variant: 'plain',

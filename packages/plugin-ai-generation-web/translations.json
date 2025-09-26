@@ -1,5 +1,9 @@
 {
   "en": {
+    "ly.img.plugin-ai-generation-web.providerSelect.label": "Provider",
+    "ly.img.plugin-ai-generation-web.fromType.label": "Input",
+    "ly.img.plugin-ai-generation-web.fromText.label": "Text",
+    "ly.img.plugin-ai-generation-web.fromImage.label": "Image",
     "ly.img.plugin-ai-generation-web.property.prompt": "Prompt",
     "ly.img.plugin-ai-generation-web.property.style": "Style",
     "ly.img.plugin-ai-generation-web.property.image_size": "Image Size",
@@ -37,6 +41,7 @@
     "ly.img.plugin-ai-generation-web.property.image_size.landscape": "Landscape",
     "ly.img.plugin-ai-generation-web.property.image_size.landscape_4_3": "Landscape 4:3",
     "ly.img.plugin-ai-generation-web.property.image_size.landscape_16_9": "Landscape 16:9",
+    "ly.img.plugin-ai-generation-web.property.image_size.ImageSize": "Custom",
     "ly.img.plugin-ai-generation-web.property.background.auto": "Auto",
     "ly.img.plugin-ai-generation-web.property.background.transparent": "Transparent",
     "ly.img.plugin-ai-generation-web.property.background.opaque": "Opaque",
@@ -59,7 +64,6 @@
     "ly.img.plugin-ai-generation-web.property.resolution.1080p": "1080p Full HD",
     "ly.img.plugin-ai-generation-web.property.rendering_speed.TURBO": "Turbo",
     "ly.img.plugin-ai-generation-web.property.rendering_speed.BALANCED": "Balanced",
-    "ly.img.plugin-ai-generation-web.property.rendering_speed.QUALITY": "Quality",
-    "ly.img.plugin-ai-generation-web.property.cfg_scale": "CFG Scale"
+    "ly.img.plugin-ai-generation-web.property.rendering_speed.QUALITY": "Quality"
   }
 }

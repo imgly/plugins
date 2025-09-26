@@ -1,7 +1,8 @@
-import { fal } from '@fal-ai/client';
 import CreativeEditorSDK from '@cesdk/cesdk-js';
+import { FalClient } from './createFalClient';
 
 export async function uploadImageInputToFalIfNeeded(
+  client: FalClient,
   imageUrl?: string,
   cesdk?: CreativeEditorSDK
 ): Promise<string | undefined> {
@@ -12,16 +13,18 @@ export async function uploadImageInputToFalIfNeeded(
     const imageUrlFile = new File([imageUrlBlob], 'image.png', {
       type: 'image/png'
     });
-    return fal.storage.upload(imageUrlFile);
+    return client.storage.upload(imageUrlFile);
   }
   if (cesdk != null && imageUrl.startsWith('buffer:')) {
     const mimeType = await cesdk.engine.editor.getMimeType(imageUrl);
     const length = cesdk.engine.editor.getBufferLength(imageUrl);
     const data = cesdk.engine.editor.getBufferData(imageUrl, 0, length);
-    const imageUrlFile = new File([data], 'image.png', {
+    // Create a new Uint8Array with a proper ArrayBuffer to avoid SharedArrayBuffer issues
+    const buffer = new Uint8Array(data);
+    const imageUrlFile = new File([buffer], 'image.png', {
       type: mimeType
     });
-    return fal.storage.upload(imageUrlFile);
+    return client.storage.upload(imageUrlFile);
   }
 
   return imageUrl;

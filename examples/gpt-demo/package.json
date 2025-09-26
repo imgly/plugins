@@ -78,8 +78,8 @@
     }
   },
   "dependencies": {
-    "@cesdk/cesdk-js": "^1.49.1",
-    "@cesdk/engine": "^1.49.1",
+    "@cesdk/cesdk-js": "catalog:",
+    "@cesdk/engine": "catalog:",
     "@imgly/plugin-ai-apps-web": "workspace:*",
     "@imgly/plugin-ai-audio-generation-web": "workspace:*",
     "@imgly/plugin-ai-generation-web": "workspace:*",

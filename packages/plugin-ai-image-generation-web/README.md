@@ -106,6 +106,13 @@ CreativeEditorSDK.create(domElement, {
             'x-client-version': '1.0.0'
           }
         }),
+        FalAiImage.NanoBanana({
+          proxyUrl: 'http://your-proxy-server.com/api/proxy',
+          headers: {
+            'x-custom-header': 'value',
+            'x-client-version': '1.0.0'
+          }
+        }),
         FalAiImage.Recraft20b({
           proxyUrl: 'http://your-proxy-server.com/api/proxy',
           headers: {
@@ -125,6 +132,13 @@ CreativeEditorSDK.create(domElement, {
       // Multiple image-to-image providers (optional)
       image2image: [
         FalAiImage.GeminiFlashEdit({
+          proxyUrl: 'http://your-proxy-server.com/api/proxy',
+          headers: {
+            'x-custom-header': 'value',
+            'x-client-version': '1.0.0'
+          }
+        }),
+        FalAiImage.NanoBananaEdit({
           proxyUrl: 'http://your-proxy-server.com/api/proxy',
           headers: {
             'x-custom-header': 'value',
@@ -173,6 +187,17 @@ Key features:
 - Adjustable quality settings
 - Custom headers support for API requests
 
+**Style Group Control:**
+You can control which style groups (image/vector) are available using the Feature API:
+
+```typescript
+// Disable vector styles, only allow image styles
+cesdk.feature.enable('ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.style.vector', false);
+
+// Or disable image styles, only allow vector styles
+cesdk.feature.enable('ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.style.image', false);
+```
+
 **Custom Translations:**
 ```typescript
 cesdk.i18n.setTranslations({
@@ -206,6 +231,20 @@ Key features:
 - Three-way style selection (image/vector/icon)
 - Same image size presets and custom dimensions support
 - Cost-effective alternative to RecraftV3
+
+**Style Group Control:**
+You can control which style groups (image/vector/icon) are available using the Feature API:
+
+```typescript
+// Only allow icon styles
+cesdk.feature.enable('ly.img.plugin-ai-image-generation-web.fal-ai/recraft/v2/text-to-image.style.image', false);
+cesdk.feature.enable('ly.img.plugin-ai-image-generation-web.fal-ai/recraft/v2/text-to-image.style.vector', false);
+
+// Only allow image and vector styles (disable icon)
+cesdk.feature.enable('ly.img.plugin-ai-image-generation-web.fal-ai/recraft/v2/text-to-image.style.icon', false);
+```
+
+Note: When all style groups are disabled, the provider automatically falls back to the 'any' style.
 
 **Custom Translations:**
 ```typescript
@@ -333,7 +372,29 @@ Key features:
 - Multiple image size presets: square HD, square, portrait 4:3/16:9, landscape 4:3/16:9
 - Custom dimensions support (64x64 to 14142x14142 pixels)
 
-#### 7. FluxProKontextEdit (Image-to-Image)
+#### 7. QwenImageEdit (Image-to-Image)
+
+A powerful image editing model with superior text editing capabilities from fal.ai:
+
+```typescript
+image2image: FalAiImage.QwenImageEdit({
+  proxyUrl: 'http://your-proxy-server.com/api/proxy',
+  headers: {
+    'x-custom-header': 'value',
+    'x-client-version': '1.0.0'
+  }
+})
+```
+
+Key features:
+- **Superior text editing capabilities** for image transformation
+- Transform existing images with detailed text prompts
+- Available through all canvas quick actions (edit, background swap, style transfer, artist styles, variants)
+- Maintains original image dimensions
+- Custom headers support for API requests
+```
+
+#### 8. FluxProKontextEdit (Image-to-Image)
 
 A versatile image editing model that applies stylistic changes and transformations:
 
@@ -348,7 +409,7 @@ Key features:
 - Built-in quick actions for style transfer, artist styles, background swapping, and variants
 - Keeps original image dimensions
 
-#### 8. FluxProKontextMaxEdit (Image-to-Image)
+#### 9. FluxProKontextMaxEdit (Image-to-Image)
 
 A high-quality variant of FluxProKontext offering more detailed results:
 
@@ -363,6 +424,73 @@ Key features:
 - Style transfer & artist presets
 - Maintains original dimensions
 - Canvas quick-action integration
+
+#### 9. NanoBanana (Text-to-Image)
+
+A fast and efficient text-to-image model from fal.ai that generates high-quality images:
+
+```typescript
+text2image: FalAiImage.NanoBanana({
+  proxyUrl: 'http://your-proxy-server.com/api/proxy',
+  headers: {
+    'x-custom-header': 'value',
+    'x-client-version': '1.0.0'
+  }
+})
+```
+
+Key features:
+- Fast generation times for quick prototyping
+- High-quality image output at 1024×1024 resolution
+- Simple prompt-based interface
+- Support for multiple output formats (JPEG, PNG)
+- Configurable number of images (1-4)
+- Supports page remixing with custom prompts
+- Custom headers support for API requests
+
+**Custom Translations:**
+```typescript
+cesdk.i18n.setTranslations({
+  en: {
+    'ly.img.plugin-ai-image-generation-web.fal-ai/nano-banana.property.prompt': 'Describe your image',
+    'ly.img.plugin-ai-image-generation-web.fal-ai/nano-banana.property.num_images': 'Number of Images',
+    'ly.img.plugin-ai-image-generation-web.fal-ai/nano-banana.property.output_format': 'Output Format'
+  }
+});
+```
+
+#### 10. NanoBananaEdit (Image-to-Image)
+
+An image editing model from fal.ai that transforms existing images using text prompts:
+
+```typescript
+image2image: FalAiImage.NanoBananaEdit({
+  proxyUrl: 'http://your-proxy-server.com/api/proxy',
+  headers: {
+    'x-custom-header': 'value',
+    'x-client-version': '1.0.0'
+  }
+})
+```
+
+Key features:
+- Edit existing images with text prompts
+- Supports combining multiple images (up to 10 images)
+- Maintains original image dimensions automatically
+- Supports all standard image editing quick actions
+- Fast processing times
+- Canvas quick-action integration
+- Custom headers support for API requests
+
+**Custom Translations:**
+```typescript
+cesdk.i18n.setTranslations({
+  en: {
+    'ly.img.plugin-ai-image-generation-web.fal-ai/nano-banana/edit.property.prompt': 'Edit instructions',
+    'ly.img.plugin-ai-image-generation-web.fal-ai/nano-banana/edit.property.image_url': 'Source Image'
+  }
+});
+```
 
 ### Customizing Labels and Translations
 
@@ -401,22 +529,27 @@ cesdk.i18n.setTranslations({
 
 #### QuickAction Translations
 
-QuickActions (like "Edit Image", "Style Transfer", etc.) use their own translation keys:
+QuickActions (like "Edit Image", "Style Transfer", etc.) use their own translation keys with provider-specific overrides:
 
 ```typescript
 cesdk.i18n.setTranslations({
   en: {
-    // QuickAction button labels
+    // Provider-specific translations (highest priority)
+    'ly.img.plugin-ai-image-generation-web.fal-ai/gemini-flash-edit.quickAction.editImage': 'Edit with Gemini',
+    'ly.img.plugin-ai-image-generation-web.fal-ai/flux-pro/kontext.quickAction.styleTransfer': 'Style with Flux Pro Kontext',
+    'ly.img.plugin-ai-image-generation-web.open-ai/gpt-image-1/image2image.quickAction.editImage': 'Edit with GPT',
+
+    // Generic plugin translations
     'ly.img.plugin-ai-image-generation-web.quickAction.editImage': 'Edit Image...',
     'ly.img.plugin-ai-image-generation-web.quickAction.swapBackground': 'Swap Background...',
     'ly.img.plugin-ai-image-generation-web.quickAction.styleTransfer': 'Style Transfer...',
     'ly.img.plugin-ai-image-generation-web.quickAction.createVariant': 'Create Variant...',
+    'ly.img.plugin-ai-image-generation-web.quickAction.artistTransfer': 'Painted By...',
     
     // QuickAction input fields and buttons
     'ly.img.plugin-ai-image-generation-web.quickAction.editImage.prompt': 'Edit Image...',
     'ly.img.plugin-ai-image-generation-web.quickAction.editImage.prompt.placeholder': 'e.g. "Add a sunset"',
     'ly.img.plugin-ai-image-generation-web.quickAction.editImage.apply': 'Change',
-    
     'ly.img.plugin-ai-image-generation-web.quickAction.swapBackground.prompt': 'Swap Background...',
     'ly.img.plugin-ai-image-generation-web.quickAction.swapBackground.prompt.placeholder': 'e.g. "Beach at sunset"',
     'ly.img.plugin-ai-image-generation-web.quickAction.swapBackground.apply': 'Swap'
@@ -424,11 +557,58 @@ cesdk.i18n.setTranslations({
 });
 ```
 
-**QuickAction Translation Structure:**
+**QuickAction Translation Priority:**
+1. Provider-specific: `ly.img.plugin-ai-image-generation-web.${provider}.quickAction.${action}.${field}`
+2. Generic plugin: `ly.img.plugin-ai-image-generation-web.quickAction.${action}.${field}`
+
+**Translation Structure:**
 - Base key (e.g., `.quickAction.editImage`): Button text when QuickAction is collapsed
 - `.prompt`: Label for input field when expanded
 - `.prompt.placeholder`: Placeholder text for input field
 - `.apply`: Text for action/submit button
+
+#### QuickAction Dropdown Options
+
+Some QuickActions like Artist Transfer and Style Transfer include dropdown menus with predefined options. You can customize these dropdown labels using provider-specific translation keys:
+
+```typescript
+cesdk.i18n.setTranslations({
+  en: {
+    // Artist Transfer dropdown options (provider-specific)
+    'ly.img.plugin-ai-image-generation-web.quickAction.artistTransfer.fal-ai/gemini-flash-edit.property.artist.van-gogh': 'Van Gogh',
+    'ly.img.plugin-ai-image-generation-web.quickAction.artistTransfer.fal-ai/gemini-flash-edit.property.artist.monet': 'Monet',
+    'ly.img.plugin-ai-image-generation-web.quickAction.artistTransfer.fal-ai/gemini-flash-edit.property.artist.picasso': 'Picasso',
+    'ly.img.plugin-ai-image-generation-web.quickAction.artistTransfer.fal-ai/gemini-flash-edit.property.artist.dali': 'Dalí',
+    'ly.img.plugin-ai-image-generation-web.quickAction.artistTransfer.fal-ai/gemini-flash-edit.property.artist.matisse': 'Matisse',
+    'ly.img.plugin-ai-image-generation-web.quickAction.artistTransfer.fal-ai/gemini-flash-edit.property.artist.warhol': 'Warhol',
+    'ly.img.plugin-ai-image-generation-web.quickAction.artistTransfer.fal-ai/gemini-flash-edit.property.artist.michelangelo': 'Michelangelo',
+    'ly.img.plugin-ai-image-generation-web.quickAction.artistTransfer.fal-ai/gemini-flash-edit.property.artist.da-vinci': 'Da Vinci',
+    'ly.img.plugin-ai-image-generation-web.quickAction.artistTransfer.fal-ai/gemini-flash-edit.property.artist.rembrandt': 'Rembrandt',
+    'ly.img.plugin-ai-image-generation-web.quickAction.artistTransfer.fal-ai/gemini-flash-edit.property.artist.mondrian': 'Mondrian',
+    'ly.img.plugin-ai-image-generation-web.quickAction.artistTransfer.fal-ai/gemini-flash-edit.property.artist.kahlo': 'Frida Kahlo',
+    'ly.img.plugin-ai-image-generation-web.quickAction.artistTransfer.fal-ai/gemini-flash-edit.property.artist.hokusai': 'Hokusai',
+    
+    // Style Transfer dropdown options (provider-specific)  
+    'ly.img.plugin-ai-image-generation-web.quickAction.styleTransfer.fal-ai/gemini-flash-edit.property.style.water': 'Watercolor Painting',
+    'ly.img.plugin-ai-image-generation-web.quickAction.styleTransfer.fal-ai/gemini-flash-edit.property.style.oil': 'Oil Painting',
+    'ly.img.plugin-ai-image-generation-web.quickAction.styleTransfer.fal-ai/gemini-flash-edit.property.style.charcoal': 'Charcoal Sketch',
+    'ly.img.plugin-ai-image-generation-web.quickAction.styleTransfer.fal-ai/gemini-flash-edit.property.style.pencil': 'Pencil Drawing',
+    'ly.img.plugin-ai-image-generation-web.quickAction.styleTransfer.fal-ai/gemini-flash-edit.property.style.pastel': 'Pastel Artwork',
+    'ly.img.plugin-ai-image-generation-web.quickAction.styleTransfer.fal-ai/gemini-flash-edit.property.style.ink': 'Ink Wash',
+    'ly.img.plugin-ai-image-generation-web.quickAction.styleTransfer.fal-ai/gemini-flash-edit.property.style.stained-glass': 'Stained Glass Window',
+    'ly.img.plugin-ai-image-generation-web.quickAction.styleTransfer.fal-ai/gemini-flash-edit.property.style.japanese': 'Japanese Woodblock Print',
+    
+    // Generic fallback options (applies to all providers)
+    'ly.img.plugin-ai-image-generation-web.quickAction.artistTransfer.property.artist.van-gogh': 'Van Gogh',
+    'ly.img.plugin-ai-image-generation-web.quickAction.styleTransfer.property.style.water': 'Watercolor Painting'
+  }
+});
+```
+
+The system checks for translations in this order (highest to lowest priority):
+
+1. **Provider-specific**: `ly.img.plugin-ai-image-generation-web.quickAction.${actionName}.${providerId}.property.${field}.${option}` - Override labels for a specific AI provider
+2. **Generic**: `ly.img.plugin-ai-image-generation-web.quickAction.${actionName}.property.${field}.${option}` - Override labels for all AI plugins  
 
 ### Configuration Options
 
@@ -637,6 +817,16 @@ FalAiImage.GeminiFlashEdit(config: {
 })
 ```
 
+#### QwenImageEdit
+
+```typescript
+FalAiImage.QwenImageEdit(config: {
+  proxyUrl: string;
+  headers?: Record<string, string>;
+  debug?: boolean;
+})
+```
+
 ### OpenAI Providers
 
 #### GptImage1.Text2Image
@@ -673,6 +863,26 @@ FalAiImage.FluxProKontextEdit(config: {
 ```typescript
 FalAiImage.FluxProKontextMaxEdit(config: {
   proxyUrl: string;
+  debug?: boolean;
+})
+```
+
+#### NanoBanana
+
+```typescript
+FalAiImage.NanoBanana(config: {
+  proxyUrl: string;
+  headers?: Record<string, string>;
+  debug?: boolean;
+})
+```
+
+#### NanoBananaEdit
+
+```typescript
+FalAiImage.NanoBananaEdit(config: {
+  proxyUrl: string;
+  headers?: Record<string, string>;
   debug?: boolean;
 })
 ```
@@ -765,10 +975,13 @@ const myImageProvider = {
   - IdeogramV3: `ly.img.ai.fal-ai/ideogram/v3`
   - IdeogramV3Remix: `ly.img.ai.fal-ai/ideogram/v3/remix`
   - GeminiFlashEdit: `ly.img.ai.fal-ai/gemini-flash-edit`
+  - QwenImageEdit: `ly.img.ai.fal-ai/qwen-image-edit`
   - GptImage1.Text2Image: `ly.img.ai.open-ai/gpt-image-1/text2image`
   - GptImage1.Image2Image: `ly.img.ai.open-ai/gpt-image-1/image2image`
   - FluxProKontextEdit: `ly.img.ai.fal-ai/flux-pro/kontext`
   - FluxProKontextMaxEdit: `ly.img.ai.fal-ai/flux-pro/kontext/max`
+  - NanoBanana: `ly.img.ai.fal-ai/nano-banana`
+  - NanoBananaEdit: `ly.img.ai.fal-ai/nano-banana/edit`
 
 ### Asset History
 
@@ -778,10 +991,13 @@ Generated images are automatically stored in asset sources with the following ID
 - IdeogramV3: `fal-ai/ideogram/v3.history`
 - IdeogramV3Remix: `fal-ai/ideogram/v3/remix.history`
 - GeminiFlashEdit: `fal-ai/gemini-flash-edit.history`
+- QwenImageEdit: `fal-ai/qwen-image-edit.history`
 - GptImage1.Text2Image: `open-ai/gpt-image-1/text2image.history`
 - GptImage1.Image2Image: `open-ai/gpt-image-1/image2image.history`
 - FluxProKontextEdit: `fal-ai/flux-pro/kontext.history`
 - FluxProKontextMaxEdit: `fal-ai/flux-pro/kontext/max.history`
+- NanoBanana: `fal-ai/nano-banana.history`
+- NanoBananaEdit: `fal-ai/nano-banana/edit.history`
 
 ### Dock Integration
 

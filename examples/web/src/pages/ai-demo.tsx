@@ -13,7 +13,10 @@ import { useRef } from 'react';
 import { rateLimitMiddleware } from '@imgly/plugin-ai-generation-web';
 import { Middleware } from '@imgly/plugin-ai-generation-web';
 import { RateLimitOptions } from '@imgly/plugin-ai-generation-web';
-import { testAllTranslations, resetTranslations } from '../utils/testTranslations';
+import {
+  testAllTranslations,
+  resetTranslations
+} from '../utils/testTranslations';
 
 function App() {
   const cesdk = useRef<CreativeEditorSDK>();
@@ -187,6 +190,10 @@ function App() {
                       middleware: [imageRateLimitMiddleware, errorMiddleware],
                       proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
                     }),
+                    FalAiImage.NanoBanana({
+                      middleware: [imageRateLimitMiddleware, errorMiddleware],
+                      proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
+                    }),
                     OpenAiImage.GptImage1.Text2Image({
                       middleware: [imageRateLimitMiddleware, errorMiddleware],
                       proxyUrl: import.meta.env.VITE_OPENAI_PROXY_URL
@@ -201,6 +208,10 @@ function App() {
                       middleware: [imageRateLimitMiddleware, errorMiddleware],
                       proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
                     }),
+                    FalAiImage.NanoBananaEdit({
+                      middleware: [imageRateLimitMiddleware, errorMiddleware],
+                      proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
+                    }),
                     OpenAiImage.GptImage1.Image2Image({
                       middleware: [imageRateLimitMiddleware, errorMiddleware],
                       proxyUrl: import.meta.env.VITE_OPENAI_PROXY_URL
@@ -210,6 +221,10 @@ function App() {
                       proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
                     }),
                     FalAiImage.FluxProKontextMaxEdit({
+                      middleware: [imageRateLimitMiddleware, errorMiddleware],
+                      proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
+                    }),
+                    FalAiImage.QwenImageEdit({
                       middleware: [imageRateLimitMiddleware, errorMiddleware],
                       proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
                     }),
@@ -234,6 +249,10 @@ function App() {
                     FalAiVideo.PixverseV35TextToVideo({
                       middleware: [videoRateLimitMiddleware, errorMiddleware],
                       proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
+                    }),
+                    FalAiVideo.ByteDanceSeedanceV1ProTextToVideo({
+                      middleware: [videoRateLimitMiddleware, errorMiddleware],
+                      proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
                     })
                   ],
                   image2video: [
@@ -246,6 +265,10 @@ function App() {
                       proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
                     }),
                     FalAiVideo.MinimaxHailuo02StandardImageToVideo({
+                      middleware: [videoRateLimitMiddleware, errorMiddleware],
+                      proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
+                    }),
+                    FalAiVideo.ByteDanceSeedanceV1ProImageToVideo({
                       middleware: [videoRateLimitMiddleware, errorMiddleware],
                       proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
                     })
@@ -271,9 +294,21 @@ function App() {
             instance.ui.setNavigationBarOrder([
               'sceneModeToggle',
               'testTranslations',
+              'featureApiCustomizations',
               ...instance.ui.getNavigationBarOrder()
             ]);
 
+            const gitBranch = import.meta.env.VITE_GIT_BRANCH;
+            if (gitBranch) {
+              instance.ui.registerComponent(
+                'ly.img.title.navigationBar',
+                ({ builder }) => {
+                  builder.Heading('gitBranchDisplay', {
+                    content: gitBranch
+                  });
+                }
+              );
+            }
             instance.ui.registerComponent('sceneModeToggle', ({ builder }) => {
               builder.Button('sceneModeToggle', {
                 label: archiveType === 'video' ? 'Video Mode' : 'Design Mode',
@@ -298,6 +333,326 @@ function App() {
                   // Expose reset function for debugging
                   // @ts-ignore
                   window.resetTranslations = () => resetTranslations(instance);
+                }
+              });
+            });
+            
+            instance.ui.registerComponent('featureApiCustomizations', ({ builder }) => {
+              const isFeatureEnabled = (featureId: string) => {
+                try {
+                  return instance.feature.isEnabled(featureId, { engine: instance.engine });
+                } catch {
+                  return false;
+                }
+              };
+
+              builder.Dropdown('featureApiCustomizations', {
+                label: 'Feature API',
+                icon: '@imgly/Settings',
+                variant: 'regular',
+                children: () => {
+                  // Core Features
+                  builder.Dropdown('coreFeatures', {
+                    label: 'Core Features',
+                    children: () => {
+                      builder.Button('providerSelect', {
+                        label: 'ly.img.plugin-ai-image-generation-web.providerSelect',
+                        icon: isFeatureEnabled('ly.img.plugin-ai-image-generation-web.providerSelect') ? '@imgly/ToggleIconOn' : '@imgly/ToggleIconOff',
+                        onClick: () => {
+                          const key = 'ly.img.plugin-ai-image-generation-web.providerSelect';
+                          const enabled = !isFeatureEnabled(key);
+                          instance.feature.enable(key, enabled);
+                          console.log(`Feature ${key}: ${enabled ? 'ON' : 'OFF'}`);
+                        }
+                      });
+                      builder.Button('quickAction', {
+                        label: 'ly.img.plugin-ai-image-generation-web.quickAction',
+                        icon: isFeatureEnabled('ly.img.plugin-ai-image-generation-web.quickAction') ? '@imgly/ToggleIconOn' : '@imgly/ToggleIconOff',
+                        onClick: () => {
+                          const key = 'ly.img.plugin-ai-image-generation-web.quickAction';
+                          const enabled = !isFeatureEnabled(key);
+                          instance.feature.enable(key, enabled);
+                          console.log(`Feature ${key}: ${enabled ? 'ON' : 'OFF'}`);
+                        }
+                      });
+                      builder.Button('quickActionProviderSelect', {
+                        label: 'ly.img.plugin-ai-image-generation-web.quickAction.providerSelect',
+                        icon: isFeatureEnabled('ly.img.plugin-ai-image-generation-web.quickAction.providerSelect') ? '@imgly/ToggleIconOn' : '@imgly/ToggleIconOff',
+                        onClick: () => {
+                          const key = 'ly.img.plugin-ai-image-generation-web.quickAction.providerSelect';
+                          const enabled = !isFeatureEnabled(key);
+                          instance.feature.enable(key, enabled);
+                          console.log(`Feature ${key}: ${enabled ? 'ON' : 'OFF'}`);
+                        }
+                      });
+                      builder.Button('fromText', {
+                        label: 'ly.img.plugin-ai-image-generation-web.fromText',
+                        icon: isFeatureEnabled('ly.img.plugin-ai-image-generation-web.fromText') ? '@imgly/ToggleIconOn' : '@imgly/ToggleIconOff',
+                        onClick: () => {
+                          const key = 'ly.img.plugin-ai-image-generation-web.fromText';
+                          const enabled = !isFeatureEnabled(key);
+                          instance.feature.enable(key, enabled);
+                          console.log(`Feature ${key}: ${enabled ? 'ON' : 'OFF'}`);
+                        }
+                      });
+                      builder.Button('fromImage', {
+                        label: 'ly.img.plugin-ai-image-generation-web.fromImage',
+                        icon: isFeatureEnabled('ly.img.plugin-ai-image-generation-web.fromImage') ? '@imgly/ToggleIconOn' : '@imgly/ToggleIconOff',
+                        onClick: () => {
+                          const key = 'ly.img.plugin-ai-image-generation-web.fromImage';
+                          const enabled = !isFeatureEnabled(key);
+                          instance.feature.enable(key, enabled);
+                          console.log(`Feature ${key}: ${enabled ? 'ON' : 'OFF'}`);
+                        }
+                      });
+                    }
+                  });
+
+                  // Image Quick Actions
+                  builder.Dropdown('imageQuickActions', {
+                    label: 'Image Quick Actions',
+                    children: () => {
+                      builder.Button('editImage', {
+                        label: 'ly.img.plugin-ai-image-generation-web.quickAction.editImage',
+                        icon: isFeatureEnabled('ly.img.plugin-ai-image-generation-web.quickAction.editImage') ? '@imgly/ToggleIconOn' : '@imgly/ToggleIconOff',
+                        onClick: () => {
+                          const key = 'ly.img.plugin-ai-image-generation-web.quickAction.editImage';
+                          const enabled = !isFeatureEnabled(key);
+                          instance.feature.enable(key, enabled);
+                          console.log(`Feature ${key}: ${enabled ? 'ON' : 'OFF'}`);
+                        }
+                      });
+                      builder.Button('swapBackground', {
+                        label: 'ly.img.plugin-ai-image-generation-web.quickAction.swapBackground',
+                        icon: isFeatureEnabled('ly.img.plugin-ai-image-generation-web.quickAction.swapBackground') ? '@imgly/ToggleIconOn' : '@imgly/ToggleIconOff',
+                        onClick: () => {
+                          const key = 'ly.img.plugin-ai-image-generation-web.quickAction.swapBackground';
+                          const enabled = !isFeatureEnabled(key);
+                          instance.feature.enable(key, enabled);
+                          console.log(`Feature ${key}: ${enabled ? 'ON' : 'OFF'}`);
+                        }
+                      });
+                      builder.Button('styleTransfer', {
+                        label: 'ly.img.plugin-ai-image-generation-web.quickAction.styleTransfer',
+                        icon: isFeatureEnabled('ly.img.plugin-ai-image-generation-web.quickAction.styleTransfer') ? '@imgly/ToggleIconOn' : '@imgly/ToggleIconOff',
+                        onClick: () => {
+                          const key = 'ly.img.plugin-ai-image-generation-web.quickAction.styleTransfer';
+                          const enabled = !isFeatureEnabled(key);
+                          instance.feature.enable(key, enabled);
+                          console.log(`Feature ${key}: ${enabled ? 'ON' : 'OFF'}`);
+                        }
+                      });
+                      builder.Button('createVariant', {
+                        label: 'ly.img.plugin-ai-image-generation-web.quickAction.createVariant',
+                        icon: isFeatureEnabled('ly.img.plugin-ai-image-generation-web.quickAction.createVariant') ? '@imgly/ToggleIconOn' : '@imgly/ToggleIconOff',
+                        onClick: () => {
+                          const key = 'ly.img.plugin-ai-image-generation-web.quickAction.createVariant';
+                          const enabled = !isFeatureEnabled(key);
+                          instance.feature.enable(key, enabled);
+                          console.log(`Feature ${key}: ${enabled ? 'ON' : 'OFF'}`);
+                        }
+                      });
+                      builder.Button('artistTransfer', {
+                        label: 'ly.img.plugin-ai-image-generation-web.quickAction.artistTransfer',
+                        icon: isFeatureEnabled('ly.img.plugin-ai-image-generation-web.quickAction.artistTransfer') ? '@imgly/ToggleIconOn' : '@imgly/ToggleIconOff',
+                        onClick: () => {
+                          const key = 'ly.img.plugin-ai-image-generation-web.quickAction.artistTransfer';
+                          const enabled = !isFeatureEnabled(key);
+                          instance.feature.enable(key, enabled);
+                          console.log(`Feature ${key}: ${enabled ? 'ON' : 'OFF'}`);
+                        }
+                      });
+                      builder.Button('combineImages', {
+                        label: 'ly.img.plugin-ai-image-generation-web.quickAction.combineImages',
+                        icon: isFeatureEnabled('ly.img.plugin-ai-image-generation-web.quickAction.combineImages') ? '@imgly/ToggleIconOn' : '@imgly/ToggleIconOff',
+                        onClick: () => {
+                          const key = 'ly.img.plugin-ai-image-generation-web.quickAction.combineImages';
+                          const enabled = !isFeatureEnabled(key);
+                          instance.feature.enable(key, enabled);
+                          console.log(`Feature ${key}: ${enabled ? 'ON' : 'OFF'}`);
+                        }
+                      });
+                      builder.Button('remixPage', {
+                        label: 'ly.img.plugin-ai-image-generation-web.quickAction.remixPage',
+                        icon: isFeatureEnabled('ly.img.plugin-ai-image-generation-web.quickAction.remixPage') ? '@imgly/ToggleIconOn' : '@imgly/ToggleIconOff',
+                        onClick: () => {
+                          const key = 'ly.img.plugin-ai-image-generation-web.quickAction.remixPage';
+                          const enabled = !isFeatureEnabled(key);
+                          instance.feature.enable(key, enabled);
+                          console.log(`Feature ${key}: ${enabled ? 'ON' : 'OFF'}`);
+                        }
+                      });
+                      builder.Button('remixPageWithPrompt', {
+                        label: 'ly.img.plugin-ai-image-generation-web.quickAction.remixPageWithPrompt',
+                        icon: isFeatureEnabled('ly.img.plugin-ai-image-generation-web.quickAction.remixPageWithPrompt') ? '@imgly/ToggleIconOn' : '@imgly/ToggleIconOff',
+                        onClick: () => {
+                          const key = 'ly.img.plugin-ai-image-generation-web.quickAction.remixPageWithPrompt';
+                          const enabled = !isFeatureEnabled(key);
+                          instance.feature.enable(key, enabled);
+                          console.log(`Feature ${key}: ${enabled ? 'ON' : 'OFF'}`);
+                        }
+                      });
+                    }
+                  });
+
+                  // Text Quick Actions
+                  builder.Dropdown('textQuickActions', {
+                    label: 'Text Quick Actions',
+                    children: () => {
+                      builder.Button('translate', {
+                        label: 'ly.img.plugin-ai-text-generation-web.quickAction.translate',
+                        icon: isFeatureEnabled('ly.img.plugin-ai-text-generation-web.quickAction.translate') ? '@imgly/ToggleIconOn' : '@imgly/ToggleIconOff',
+                        onClick: () => {
+                          const key = 'ly.img.plugin-ai-text-generation-web.quickAction.translate';
+                          const enabled = !isFeatureEnabled(key);
+                          instance.feature.enable(key, enabled);
+                          console.log(`Feature ${key}: ${enabled ? 'ON' : 'OFF'}`);
+                        }
+                      });
+                      builder.Button('changeTone', {
+                        label: 'ly.img.plugin-ai-text-generation-web.quickAction.changeTone',
+                        icon: isFeatureEnabled('ly.img.plugin-ai-text-generation-web.quickAction.changeTone') ? '@imgly/ToggleIconOn' : '@imgly/ToggleIconOff',
+                        onClick: () => {
+                          const key = 'ly.img.plugin-ai-text-generation-web.quickAction.changeTone';
+                          const enabled = !isFeatureEnabled(key);
+                          instance.feature.enable(key, enabled);
+                          console.log(`Feature ${key}: ${enabled ? 'ON' : 'OFF'}`);
+                        }
+                      });
+                      builder.Button('changeTextTo', {
+                        label: 'ly.img.plugin-ai-text-generation-web.quickAction.changeTextTo',
+                        icon: isFeatureEnabled('ly.img.plugin-ai-text-generation-web.quickAction.changeTextTo') ? '@imgly/ToggleIconOn' : '@imgly/ToggleIconOff',
+                        onClick: () => {
+                          const key = 'ly.img.plugin-ai-text-generation-web.quickAction.changeTextTo';
+                          const enabled = !isFeatureEnabled(key);
+                          instance.feature.enable(key, enabled);
+                          console.log(`Feature ${key}: ${enabled ? 'ON' : 'OFF'}`);
+                        }
+                      });
+                      builder.Button('fix', {
+                        label: 'ly.img.plugin-ai-text-generation-web.quickAction.fix',
+                        icon: isFeatureEnabled('ly.img.plugin-ai-text-generation-web.quickAction.fix') ? '@imgly/ToggleIconOn' : '@imgly/ToggleIconOff',
+                        onClick: () => {
+                          const key = 'ly.img.plugin-ai-text-generation-web.quickAction.fix';
+                          const enabled = !isFeatureEnabled(key);
+                          instance.feature.enable(key, enabled);
+                          console.log(`Feature ${key}: ${enabled ? 'ON' : 'OFF'}`);
+                        }
+                      });
+                      builder.Button('improve', {
+                        label: 'ly.img.plugin-ai-text-generation-web.quickAction.improve',
+                        icon: isFeatureEnabled('ly.img.plugin-ai-text-generation-web.quickAction.improve') ? '@imgly/ToggleIconOn' : '@imgly/ToggleIconOff',
+                        onClick: () => {
+                          const key = 'ly.img.plugin-ai-text-generation-web.quickAction.improve';
+                          const enabled = !isFeatureEnabled(key);
+                          instance.feature.enable(key, enabled);
+                          console.log(`Feature ${key}: ${enabled ? 'ON' : 'OFF'}`);
+                        }
+                      });
+                      builder.Button('longer', {
+                        label: 'ly.img.plugin-ai-text-generation-web.quickAction.longer',
+                        icon: isFeatureEnabled('ly.img.plugin-ai-text-generation-web.quickAction.longer') ? '@imgly/ToggleIconOn' : '@imgly/ToggleIconOff',
+                        onClick: () => {
+                          const key = 'ly.img.plugin-ai-text-generation-web.quickAction.longer';
+                          const enabled = !isFeatureEnabled(key);
+                          instance.feature.enable(key, enabled);
+                          console.log(`Feature ${key}: ${enabled ? 'ON' : 'OFF'}`);
+                        }
+                      });
+                      builder.Button('shorter', {
+                        label: 'ly.img.plugin-ai-text-generation-web.quickAction.shorter',
+                        icon: isFeatureEnabled('ly.img.plugin-ai-text-generation-web.quickAction.shorter') ? '@imgly/ToggleIconOn' : '@imgly/ToggleIconOff',
+                        onClick: () => {
+                          const key = 'ly.img.plugin-ai-text-generation-web.quickAction.shorter';
+                          const enabled = !isFeatureEnabled(key);
+                          instance.feature.enable(key, enabled);
+                          console.log(`Feature ${key}: ${enabled ? 'ON' : 'OFF'}`);
+                        }
+                      });
+                    }
+                  });
+
+                  // Video Quick Actions
+                  builder.Dropdown('videoQuickActions', {
+                    label: 'Video Quick Actions',
+                    children: () => {
+                      builder.Button('createVideo', {
+                        label: 'ly.img.plugin-ai-video-generation-web.quickAction.createVideo',
+                        icon: isFeatureEnabled('ly.img.plugin-ai-video-generation-web.quickAction.createVideo') ? '@imgly/ToggleIconOn' : '@imgly/ToggleIconOff',
+                        onClick: () => {
+                          const key = 'ly.img.plugin-ai-video-generation-web.quickAction.createVideo';
+                          const enabled = !isFeatureEnabled(key);
+                          instance.feature.enable(key, enabled);
+                          console.log(`Feature ${key}: ${enabled ? 'ON' : 'OFF'}`);
+                        }
+                      });
+                    }
+                  });
+
+                  builder.Separator('providerSeparator');
+
+                  // Provider-specific Features
+                  builder.Dropdown('recraftV3Features', {
+                    label: 'RecraftV3 Provider',
+                    children: () => {
+                      builder.Button('recraftV3ImageStyle', {
+                        label: 'ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.style.image',
+                        icon: isFeatureEnabled('ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.style.image') ? '@imgly/ToggleIconOn' : '@imgly/ToggleIconOff',
+                        onClick: () => {
+                          const key = 'ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.style.image';
+                          const enabled = !isFeatureEnabled(key);
+                          instance.feature.enable(key, enabled);
+                          console.log(`Feature ${key}: ${enabled ? 'ON' : 'OFF'}`);
+                        }
+                      });
+                      builder.Button('recraftV3VectorStyle', {
+                        label: 'ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.style.vector',
+                        icon: isFeatureEnabled('ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.style.vector') ? '@imgly/ToggleIconOn' : '@imgly/ToggleIconOff',
+                        onClick: () => {
+                          const key = 'ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.style.vector';
+                          const enabled = !isFeatureEnabled(key);
+                          instance.feature.enable(key, enabled);
+                          console.log(`Feature ${key}: ${enabled ? 'ON' : 'OFF'}`);
+                        }
+                      });
+                    }
+                  });
+
+                  builder.Dropdown('recraft20bFeatures', {
+                    label: 'Recraft20b Provider',
+                    children: () => {
+                      builder.Button('recraft20bImageStyle', {
+                        label: 'ly.img.plugin-ai-image-generation-web.fal-ai/recraft/v2/text-to-image.style.image',
+                        icon: isFeatureEnabled('ly.img.plugin-ai-image-generation-web.fal-ai/recraft/v2/text-to-image.style.image') ? '@imgly/ToggleIconOn' : '@imgly/ToggleIconOff',
+                        onClick: () => {
+                          const key = 'ly.img.plugin-ai-image-generation-web.fal-ai/recraft/v2/text-to-image.style.image';
+                          const enabled = !isFeatureEnabled(key);
+                          instance.feature.enable(key, enabled);
+                          console.log(`Feature ${key}: ${enabled ? 'ON' : 'OFF'}`);
+                        }
+                      });
+                      builder.Button('recraft20bVectorStyle', {
+                        label: 'ly.img.plugin-ai-image-generation-web.fal-ai/recraft/v2/text-to-image.style.vector',
+                        icon: isFeatureEnabled('ly.img.plugin-ai-image-generation-web.fal-ai/recraft/v2/text-to-image.style.vector') ? '@imgly/ToggleIconOn' : '@imgly/ToggleIconOff',
+                        onClick: () => {
+                          const key = 'ly.img.plugin-ai-image-generation-web.fal-ai/recraft/v2/text-to-image.style.vector';
+                          const enabled = !isFeatureEnabled(key);
+                          instance.feature.enable(key, enabled);
+                          console.log(`Feature ${key}: ${enabled ? 'ON' : 'OFF'}`);
+                        }
+                      });
+                      builder.Button('recraft20bIconStyle', {
+                        label: 'ly.img.plugin-ai-image-generation-web.fal-ai/recraft/v2/text-to-image.style.icon',
+                        icon: isFeatureEnabled('ly.img.plugin-ai-image-generation-web.fal-ai/recraft/v2/text-to-image.style.icon') ? '@imgly/ToggleIconOn' : '@imgly/ToggleIconOff',
+                        onClick: () => {
+                          const key = 'ly.img.plugin-ai-image-generation-web.fal-ai/recraft/v2/text-to-image.style.icon';
+                          const enabled = !isFeatureEnabled(key);
+                          instance.feature.enable(key, enabled);
+                          console.log(`Feature ${key}: ${enabled ? 'ON' : 'OFF'}`);
+                        }
+                      });
+                    }
+                  });
                 }
               });
             });

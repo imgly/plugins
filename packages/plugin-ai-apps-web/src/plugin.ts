@@ -320,7 +320,9 @@ function overrideAssetLibraryDockComponent(cesdk: CreativeEditorSDK) {
             // and 1.52.0 onwards will accept an object with sourceId.
             // @ts-ignore
             const sourceSceneMode = entrySceneMode(
-              cesdk.version.startsWith('1.51.') ? sourceId : { sourceId }
+              cesdk.version.startsWith('1.51.')
+                ? (sourceId as any)
+                : { sourceId }
             );
             // @ts-ignore
             return sourceSceneMode === sceneMode || sourceSceneMode === 'All';

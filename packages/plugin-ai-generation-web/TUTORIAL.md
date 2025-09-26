@@ -599,6 +599,22 @@ The new architecture includes:
 -   **Enhanced Type Safety**: Improved TypeScript support with better provider interfaces
 -   **Cross-plugin Support**: Actions can work across different AI generation plugins
 
+### Controlling Features with Feature API
+
+You can control which UI elements and features are available to users using CE.SDK's Feature API:
+
+```typescript
+// Disable provider selection dropdown if you only want one provider visible
+cesdk.feature.enable('ly.img.plugin-ai-image-generation-web.providerSelect', false);
+
+// Control input type visibility (for providers that support both text and image input)
+cesdk.feature.enable('ly.img.plugin-ai-image-generation-web.fromText', true);
+cesdk.feature.enable('ly.img.plugin-ai-image-generation-web.fromImage', false);
+
+// Provider-specific style controls (e.g., for RecraftV3 or Recraft20b)
+cesdk.feature.enable('ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.style.vector', false);
+```
+
 Next steps:
 
 1. Explore more quick action IDs from the available list (editImage, swapBackground, createVariant, styleTransfer, etc.)
@@ -606,6 +622,7 @@ Next steps:
 3. Add custom middleware for request/response processing
 4. Implement proper error handling and retry logic
 5. Add custom asset sources for generated images
+6. Use Feature API to customize the UI experience for different user groups
 
 ## Additional Resources
 
