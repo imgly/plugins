@@ -8,7 +8,7 @@
     "clean": "pnpm exec rimraf dist",
     "purge": "pnpm exec rimraf node_modules",
     "dev": "vite --clearScreen=false --force",
-    "dev:wait": "echo 'Example ready to start'",
+    "dev:wait": "node ../../scripts/wait-for-deps.mjs",
     "check:types": "tsc --noEmit"
   },
   "dependencies": {
