@@ -8,6 +8,7 @@ import {
   QuickActionSupport
 } from './core/provider';
 import { Middleware } from './middleware/middleware';
+import type { PropertiesConfiguration } from './core/propertyConfiguration';
 
 /**
  * A common configuration used by the plugins and the provider.
@@ -95,6 +96,20 @@ export interface CommonProviderConfiguration<I, O extends Output>
   supportedQuickActions?: {
     [quickActionId: string]: Partial<QuickActionSupport<I>> | false | null;
   };
+
+  /**
+   * Configure property behavior and defaults
+   * @example
+   * ```typescript
+   * {
+   *   properties: {
+   *     style: { default: 'realistic_image' },
+   *     prompt: { default: (ctx) => ctx.locale === 'de' ? 'Erstelle...' : 'Create...' }
+   *   }
+   * }
+   * ```
+   */
+  properties?: PropertiesConfiguration<I>;
 }
 
 /**
@@ -131,6 +146,7 @@ export type InitializationContext<
   panelInput?: P;
   options: UIOptions;
   config: InternalPluginConfiguration<K, I, O>;
+  providerConfig?: any;
 };
 
 /**

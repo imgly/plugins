@@ -180,6 +180,31 @@ cesdk.addPlugin(
 );
 ```
 
+### Property Configuration
+
+Providers support configuring default values for their properties. These defaults can be static or dynamic based on context:
+
+```typescript
+cesdk.addPlugin(
+  AiApps({
+    providers: {
+      text2image: FalAiImage.RecraftV3({
+        proxyUrl: 'http://your-proxy-server.com/api/proxy',
+        properties: {
+          // Static default
+          image_size: 'square_hd',
+
+          // Dynamic default based on locale
+          style: (context) => {
+            return context.locale === 'ja' ? 'anime' : 'realistic';
+          }
+        }
+      })
+    }
+  })
+);
+```
+
 ## UI Integration
 
 The plugin adds the following UI components to CreativeEditor SDK:

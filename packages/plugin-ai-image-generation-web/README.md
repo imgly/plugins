@@ -176,6 +176,11 @@ text2image: FalAiImage.RecraftV3({
   headers: {
     'x-custom-header': 'value',
     'x-client-version': '1.0.0'
+  },
+  // Optional: Configure default property values
+  properties: {
+    style: 'realistic_image',  // Default style
+    image_size: 'square_hd'     // Default size
   }
 })
 ```
@@ -186,6 +191,95 @@ Key features:
 - Custom dimensions support
 - Adjustable quality settings
 - Custom headers support for API requests
+
+**Available Property Values:**
+
+```typescript
+// image_size options:
+'square_hd'      // 1024x1024 (default)
+'square'         // 512x512
+'portrait_4_3'   // 768x1024
+'portrait_16_9'  // 576x1024
+'landscape_4_3'  // 1024x768
+'landscape_16_9' // 1024x576
+
+// style options (grouped by category):
+// Base styles:
+'any'                  // Let model decide
+'realistic_image'      // Photorealistic (default)
+'digital_illustration' // Digital art
+'vector_illustration'  // Vector graphics
+
+// Realistic substyles:
+'realistic_image/b_and_w'           // Black and white
+'realistic_image/hard_flash'        // Hard flash photography
+'realistic_image/hdr'               // HDR photography
+'realistic_image/natural_light'     // Natural lighting
+'realistic_image/studio_portrait'   // Studio portrait
+'realistic_image/enterprise'        // Business/corporate
+'realistic_image/motion_blur'       // Motion blur effect
+'realistic_image/evening_light'     // Evening lighting
+'realistic_image/faded_nostalgia'   // Nostalgic/faded look
+'realistic_image/forest_life'       // Forest/nature
+'realistic_image/mystic_naturalism' // Mystic nature
+'realistic_image/natural_tones'     // Natural color tones
+'realistic_image/organic_calm'      // Organic/calm aesthetic
+'realistic_image/real_life_glow'    // Natural glow
+'realistic_image/retro_realism'     // Retro realistic
+'realistic_image/retro_snapshot'    // Retro photo
+'realistic_image/urban_drama'       // Urban/dramatic
+'realistic_image/village_realism'   // Village/rural
+'realistic_image/warm_folk'         // Warm/folk style
+
+// Digital illustration substyles:
+'digital_illustration/pixel_art'           // Pixel art
+'digital_illustration/hand_drawn'          // Hand-drawn
+'digital_illustration/grain'               // Grainy texture
+'digital_illustration/infantile_sketch'    // Child-like sketch
+'digital_illustration/2d_art_poster'       // 2D poster art
+'digital_illustration/handmade_3d'         // Handmade 3D look
+'digital_illustration/hand_drawn_outline'  // Hand-drawn outline
+'digital_illustration/engraving_color'     // Color engraving
+'digital_illustration/2d_art_poster_2'     // Alternative poster style
+'digital_illustration/antiquarian'         // Antique/vintage
+'digital_illustration/bold_fantasy'        // Bold fantasy art
+'digital_illustration/child_book'          // Children's book
+'digital_illustration/child_books'         // Children's book alt
+'digital_illustration/cover'               // Book/album cover
+'digital_illustration/crosshatch'          // Crosshatching
+'digital_illustration/digital_engraving'   // Digital engraving
+'digital_illustration/expressionism'       // Expressionist
+// ... and many more digital illustration styles
+
+// Vector illustration substyles:
+'vector_illustration/cartoon'              // Cartoon style
+'vector_illustration/kawaii'               // Kawaii/cute
+'vector_illustration/comic'                // Comic book
+'vector_illustration/line_art'             // Line art
+'vector_illustration/noir_silhouette'      // Noir silhouette
+```
+
+**Configuration Example with All Properties:**
+
+```typescript
+text2image: FalAiImage.RecraftV3({
+  proxyUrl: 'http://your-proxy-server.com/api/proxy',
+  properties: {
+    prompt: '',  // User will fill this
+    style: 'realistic_image/natural_light',
+    image_size: 'landscape_16_9',
+
+    // Dynamic style based on context
+    style: (context) => {
+      const hour = new Date().getHours();
+      if (hour < 6 || hour > 18) {
+        return 'realistic_image/evening_light';
+      }
+      return 'realistic_image/natural_light';
+    }
+  }
+})
+```
 
 **Style Group Control:**
 You can control which style groups (image/vector) are available using the Feature API:
@@ -221,6 +315,17 @@ text2image: FalAiImage.Recraft20b({
   headers: {
     'x-custom-header': 'value',
     'x-client-version': '1.0.0'
+  },
+  // Optional: Configure default property values
+  properties: {
+    // Dynamic style defaults based on style type
+    style: (context) => {
+      // Different defaults for different style categories
+      // This is handled internally by the provider
+      return 'broken_line';  // Default for icon styles
+    },
+    image_size: 'square_hd',
+    n_colors: 4  // Default color count for icon styles
   }
 })
 ```
@@ -231,6 +336,65 @@ Key features:
 - Three-way style selection (image/vector/icon)
 - Same image size presets and custom dimensions support
 - Cost-effective alternative to RecraftV3
+
+**Available Property Values:**
+
+```typescript
+// image_size options (same as RecraftV3):
+'square_hd'      // 1024x1024 (default)
+'square'         // 512x512
+'portrait_4_3'   // 768x1024
+'portrait_16_9'  // 576x1024
+'landscape_4_3'  // 1024x768
+'landscape_16_9' // 1024x576
+
+// style options - includes all RecraftV3 styles PLUS icon styles:
+// All RecraftV3 styles are supported (see RecraftV3 above)
+
+// Additional Icon styles (unique to Recraft20b):
+'icon/broken_line'            // Broken line icon style
+'icon/colored_outline'        // Colored outline icons
+'icon/colored_shapes'         // Solid colored shapes
+'icon/colored_shapes_gradient' // Gradient colored shapes
+'icon/doodle_fill'           // Doodle-filled icons
+'icon/doodle_offset_fill'    // Offset doodle fill
+'icon/offset_fill'           // Offset fill style
+'icon/outline'               // Simple outline
+'icon/outline_gradient'      // Gradient outline
+'icon/uneven_fill'          // Uneven/artistic fill
+
+// Logo styles:
+'logo'                       // Logo design
+
+// n_colors options (for icon styles):
+1  // Monochrome
+2  // Two colors (default)
+3  // Three colors
+4  // Four colors
+// ... up to any reasonable number
+```
+
+**Configuration Example with All Properties:**
+
+```typescript
+text2image: FalAiImage.Recraft20b({
+  proxyUrl: 'http://your-proxy-server.com/api/proxy',
+  properties: {
+    prompt: '',  // User will fill this
+    style: 'icon/colored_outline',  // Default to icon style
+    image_size: 'square',
+    n_colors: 3,  // Number of colors for icon styles
+
+    // Dynamic style based on use case
+    style: (context) => {
+      // You could check block type or other context
+      const engine = context.engine;
+      // Return appropriate style
+      return 'icon/broken_line';
+    }
+  }
+})
+```
 
 **Style Group Control:**
 You can control which style groups (image/vector/icon) are available using the Feature API:
@@ -270,6 +434,12 @@ text2image: OpenAiImage.GptImage1.Text2Image({
   headers: {
     'x-api-key': 'your-key',
     'x-request-source': 'cesdk-plugin'
+  },
+  // Optional: Configure default property values
+  properties: {
+    size: '1024x1024',  // Options: '1024x1024', '1792x1024', '1024x1792'
+    quality: 'standard', // Options: 'standard', 'hd'
+    style: 'vivid'      // Options: 'vivid', 'natural'
   }
 })
 ```
@@ -291,6 +461,12 @@ image2image: FalAiImage.GeminiFlashEdit({
   headers: {
     'x-custom-header': 'value',
     'x-client-version': '1.0.0'
+  },
+  // Optional: Configure default property values
+  properties: {
+    strength: 0.8,        // Transformation strength (0.0-1.0)
+    guidance_scale: 7.5,  // Guidance scale (0-20)
+    num_inference_steps: 50  // Number of inference steps
   }
 })
 ```
@@ -343,6 +519,12 @@ text2image: FalAiImage.IdeogramV3({
   headers: {
     'x-custom-header': 'value',
     'x-client-version': '1.0.0'
+  },
+  // Optional: Configure default property values
+  properties: {
+    style: 'GENERAL',    // Options: 'AUTO', 'GENERAL', 'REALISTIC', 'DESIGN'
+    image_size: 'square_hd', // Same options as Recraft
+    seed: 12345         // Fixed seed for reproducibility
   }
 })
 ```
@@ -362,6 +544,12 @@ image2image: FalAiImage.IdeogramV3Remix({
   headers: {
     'x-custom-header': 'value',
     'x-client-version': '1.0.0'
+  },
+  // Optional: Configure default property values
+  properties: {
+    style: 'AUTO',       // Options: 'AUTO', 'GENERAL', 'REALISTIC', 'DESIGN'
+    image_size: 'square_hd',
+    remix_strength: 0.7  // How much to transform (0.0-1.0)
   }
 })
 ```
@@ -382,6 +570,11 @@ image2image: FalAiImage.QwenImageEdit({
   headers: {
     'x-custom-header': 'value',
     'x-client-version': '1.0.0'
+  },
+  // Optional: Configure default property values
+  properties: {
+    seed: 12345,         // Fixed seed for reproducibility
+    guidance_scale: 7.5  // Guidance strength (0-20)
   }
 })
 ```
@@ -435,6 +628,10 @@ text2image: FalAiImage.NanoBanana({
   headers: {
     'x-custom-header': 'value',
     'x-client-version': '1.0.0'
+  },
+  // Optional: Configure default property values
+  properties: {
+    output_format: 'PNG'  // Options: 'PNG', 'JPEG'
   }
 })
 ```
@@ -469,6 +666,11 @@ image2image: FalAiImage.NanoBananaEdit({
   headers: {
     'x-custom-header': 'value',
     'x-client-version': '1.0.0'
+  },
+  // Optional: Configure default property values
+  properties: {
+    strength: 0.7,        // Edit strength (0.0-1.0)
+    output_format: 'PNG'  // Options: 'PNG', 'JPEG'
   }
 })
 ```

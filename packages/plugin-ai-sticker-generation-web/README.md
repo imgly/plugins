@@ -47,6 +47,12 @@ CreativeEditorSDK.create(domElement, {
         headers: {
           'x-custom-header': 'value',
           'x-client-version': '1.0.0'
+        },
+        // Optional: Configure default property values
+        properties: {
+          style: 'broken_line',  // Default icon style for stickers
+          image_size: 'square',  // Default size
+          n_colors: 2  // Default color count
         }
       }),
       

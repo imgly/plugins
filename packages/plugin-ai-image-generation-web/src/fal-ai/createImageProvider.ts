@@ -81,6 +81,7 @@ function createImageProvider<
     id: options.modelKey,
     kind: 'image',
     name: options.name,
+    configuration: config,
     initialize: async (context) => {
       falClient = createFalClient(config.proxyUrl, options.headers);
       options.initialize?.(context);

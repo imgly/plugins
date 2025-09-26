@@ -14,6 +14,10 @@
     - Resolution options (480p, 720p, 1080p)
     - Proper aspect ratio handling in placeholder blocks based on user selection
 
+-   [all] **Property Configuration System**: Providers can now define default values for their properties. Defaults can be static values or dynamic based on context (language, design state, etc.)
+
+-   [image-generation] **Recraft Provider Defaults**: Recraft providers (V3 and 20b) now support configurable default values for all properties, including dynamic style defaults based on the selected style type
+
 ## [0.2.6] - 2025-09-09
 
 ### New Features

@@ -1,6 +1,5 @@
 import { Icons, CustomAssetSource } from '@imgly/plugin-utils';
 import {
-  CommonProviderConfiguration,
   type Provider,
   getPanelId,
   createTranslationCallback
@@ -16,6 +15,8 @@ import {
 } from './RecraftV3.constants';
 import createImageProvider from './createImageProvider';
 import { isCustomImageSize } from './utils';
+import type { RecraftV3Configuration } from './recraftTypes';
+import { initializeStyleAssetSourceV3 } from './recraftUtils';
 
 type RecraftV3Output = {
   kind: 'image';
@@ -31,25 +32,14 @@ type StyleSelectionPayload = {
   generationType: GenerationType;
 };
 
-interface ProviderConfiguration
-  extends CommonProviderConfiguration<
-    RecraftV3TextToImageInput,
-    RecraftV3Output
-  > {
-  /**
-   * Base URL used for the UI assets used in the plugin.
-   *
-   * By default, we load the assets from the IMG.LY CDN You can copy the assets.
-   * from the `/assets` folder to your own server and set the base URL to your server.
-   */
-  baseURL?: string;
-}
+// Using RecraftV3Configuration from recraftTypes which extends CommonProviderConfiguration
+// with property configuration support and extended context for style property
 
 let imageStyleAssetSource: CustomAssetSource;
 let vectorStyleAssetSource: CustomAssetSource;
 
 export function RecraftV3(
-  config: ProviderConfiguration
+  config: RecraftV3Configuration
 ): (context: {
   cesdk: CreativeEditorSDK;
 }) => Promise<Provider<'image', RecraftV3TextToImageInput, RecraftV3Output>> {
@@ -60,7 +50,7 @@ export function RecraftV3(
 
 function getProvider(
   cesdk: CreativeEditorSDK,
-  config: ProviderConfiguration
+  config: RecraftV3Configuration
 ): Provider<'image', RecraftV3TextToImageInput, RecraftV3Output> {
   const modelKey = 'fal-ai/recraft-v3';
   const styleImageAssetSourceId = `${modelKey}/styles/image`;
@@ -81,37 +71,25 @@ function getProvider(
 
   cesdk.ui.addIconSet('@imgly/plugin/formats', Icons.Formats);
 
-  imageStyleAssetSource = new CustomAssetSource(
+  // Initialize style asset sources with property configuration support
+  imageStyleAssetSource = initializeStyleAssetSourceV3(
+    cesdk,
+    config,
+    'image',
+    STYLES_IMAGE,
     styleImageAssetSourceId,
-    STYLES_IMAGE.map(({ id, label }) => ({
-      id,
-      label,
-      thumbUri: getStyleThumbnail(id, baseURL)
-    })),
-    {
-      translateLabel: createTranslationCallback(
-        cesdk,
-        modelKey,
-        'style',
-        'image'
-      )
-    }
+    (id) => getStyleThumbnail(id as StyleId, baseURL) ?? '',
+    createTranslationCallback(cesdk, modelKey, 'style', 'image')
   );
-  vectorStyleAssetSource = new CustomAssetSource(
+
+  vectorStyleAssetSource = initializeStyleAssetSourceV3(
+    cesdk,
+    config,
+    'vector',
+    STYLES_VECTOR,
     styleVectorAssetSourceId,
-    STYLES_VECTOR.map(({ id, label }) => ({
-      id,
-      label,
-      thumbUri: getStyleThumbnail(id, baseURL)
-    })),
-    {
-      translateLabel: createTranslationCallback(
-        cesdk,
-        modelKey,
-        'style',
-        'image'
-      )
-    }
+    (id) => getStyleThumbnail(id as StyleId, baseURL) ?? '',
+    createTranslationCallback(cesdk, modelKey, 'style', 'image')
   );
 
   // Assets are automatically set as active (first asset) in CustomAssetSource constructor
@@ -217,8 +195,33 @@ function getProvider(
             });
           }
 
-          // Determine default type based on what's enabled
-          const defaultType = isImageStyleEnabled ? 'image' : 'vector';
+          // Get all available styles to determine type from configured default
+          const allImageStyles = STYLES_IMAGE.map((s) => s.id);
+          const allVectorStyles = STYLES_VECTOR.map((s) => s.id);
+
+          // Check if there's a configured default style
+          const configuredStyleDefault = config.properties?.style?.default;
+          let inferredTypeFromDefault: GenerationType | null = null;
+
+          if (configuredStyleDefault) {
+            const resolvedDefault =
+              typeof configuredStyleDefault === 'string'
+                ? configuredStyleDefault
+                : null; // For now, just handle static defaults for type inference
+
+            if (resolvedDefault) {
+              if (allImageStyles.includes(resolvedDefault)) {
+                inferredTypeFromDefault = 'image';
+              } else if (allVectorStyles.includes(resolvedDefault)) {
+                inferredTypeFromDefault = 'vector';
+              }
+            }
+          }
+
+          // Determine default type based on configured default or what's enabled
+          const defaultType =
+            inferredTypeFromDefault ??
+            (isImageStyleEnabled ? 'image' : 'vector');
           const typeState = state<GenerationType>('type', defaultType);
 
           const styleImageState = state<RecraftV3TextToImageInput['style']>(

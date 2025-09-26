@@ -103,6 +103,11 @@ function App() {
                                         headers: {
                                             'x-client-version': '1.0.0',
                                             'x-request-source': 'cesdk-tutorial'
+                                        },
+                                        // Optional: Configure default property values
+                                        properties: {
+                                            temperature: 0.7,
+                                            max_tokens: 500
                                         }
                                     }),
 
@@ -143,6 +148,11 @@ function App() {
                                             headers: {
                                                 'x-client-version': '1.0.0',
                                                 'x-request-source': 'cesdk-tutorial'
+                                            },
+                                            // Configure dynamic defaults based on style type
+                                            properties: {
+                                                style: 'broken_line',
+                                                image_size: 'square_hd'
                                             }
                                         }),
                                         // Additional image provider for user selection
