@@ -199,6 +199,11 @@ image2video: FalAiVideo.MinimaxHailuo02StandardImageToVideo({
     headers: {
         'x-custom-header': 'value',
         'x-client-version': '1.0.0'
+    },
+    // Optional: Configure default property values
+    properties: {
+        resolution: '768P',  // Options: '512P' (912×512), '768P' (1280×720)
+        duration: 6          // Duration in seconds (6 or 10)
     }
 });
 ```

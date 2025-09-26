@@ -570,6 +570,11 @@ image2image: FalAiImage.QwenImageEdit({
   headers: {
     'x-custom-header': 'value',
     'x-client-version': '1.0.0'
+  },
+  // Optional: Configure default property values
+  properties: {
+    seed: 12345,         // Fixed seed for reproducibility
+    guidance_scale: 7.5  // Guidance strength (0-20)
   }
 })
 ```
