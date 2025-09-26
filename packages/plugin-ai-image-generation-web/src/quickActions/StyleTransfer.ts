@@ -20,6 +20,7 @@ export const ID = `ly.img.${ACTION_NAME}`;
  * The i18n prefix for the quick action.
  */
 export const I18N_PREFIX = `ly.img.plugin-ai-image-generation-web.quickAction.${ACTION_NAME}`;
+export const I18N_DEFAULT_PREFIX = `ly.img.plugin-ai-image-generation-web.defaults.quickAction.${ACTION_NAME}`;
 
 /**
  * The input generated from this quick action which needs
@@ -31,57 +32,81 @@ export type InputType = {
 };
 
 /**
+ * Get i18n label with fallback keys.
+ */
+function getI18nLabel(modelKey: string, suffix?: string) {
+  const basePath = `ly.img.plugin-ai-image-generation-web`;
+  const actionPath = `quickAction.${ACTION_NAME}`;
+  const fullPath = suffix ? `${actionPath}.${suffix}` : actionPath;
+
+  return [
+    `${basePath}.${modelKey}.${fullPath}`,
+    `${basePath}.${fullPath}`,
+    `${basePath}.${modelKey}.defaults.${fullPath}`,
+    `${basePath}.defaults.${fullPath}`
+  ];
+}
+
+/**
  * Available art styles for style transfer.
  */
 const STYLE_OPTIONS = [
   {
     id: 'water',
-    label: 'Watercolor Painting',
     prompt: 'Convert to watercolor painting.'
   },
   {
     id: 'oil',
-    label: 'Oil Painting',
     prompt: 'Render in oil painting style.'
   },
   {
     id: 'charcoal',
-    label: 'Charcoal Sketch',
     prompt: 'Transform into a charcoal sketch.'
   },
   {
     id: 'pencil',
-    label: 'Pencil Drawing',
     prompt: 'Apply pencil drawing effect.'
   },
   {
     id: 'pastel',
-    label: 'Pastel Artwork',
     prompt: 'Make it look like a pastel artwork.'
   },
   {
     id: 'ink',
-    label: 'Ink Wash',
     prompt: 'Turn into a classic ink wash painting.'
   },
   {
     id: 'stained-glass',
-    label: 'Stained Glass Window',
     prompt: 'Stylize as a stained glass window.'
   },
   {
     id: 'japanese',
-    label: 'Japanese Woodblock Print',
     prompt: 'Repaint as a traditional Japanese woodblock print.'
   }
 ];
 
 const StyleTransfer: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
+  // Set feature default for this quick action
+  cesdk.feature.enable(
+    'ly.img.plugin-ai-image-generation-web.quickAction.styleTransfer',
+    true
+  );
+
   cesdk.i18n.setTranslations({
     en: {
-      [`${I18N_PREFIX}`]: 'Change Art Style',
-      [`${I18N_PREFIX}.description`]:
-        'Transform image into different art styles'
+      [`${I18N_DEFAULT_PREFIX}`]: 'Change Art Style',
+      [`${I18N_DEFAULT_PREFIX}.description`]:
+        'Transform image into different art styles',
+
+      // StyleTransfer style translations
+      [`${I18N_DEFAULT_PREFIX}.water`]: 'Watercolor Painting',
+      [`${I18N_DEFAULT_PREFIX}.oil`]: 'Oil Painting',
+      [`${I18N_DEFAULT_PREFIX}.charcoal`]: 'Charcoal Sketch',
+      [`${I18N_DEFAULT_PREFIX}.pencil`]: 'Pencil Drawing',
+      [`${I18N_DEFAULT_PREFIX}.pastel`]: 'Pastel Artwork',
+      [`${I18N_DEFAULT_PREFIX}.ink`]: 'Ink Wash',
+      [`${I18N_DEFAULT_PREFIX}.stained-glass`]: 'Stained Glass Window',
+      [`${I18N_DEFAULT_PREFIX}.japanese`]: 'Japanese Woodblock Print'
     }
   });
 
@@ -94,9 +119,16 @@ const StyleTransfer: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
     enable: enableQuickActionForImageFill(),
     scopes: ['fill/change'],
 
-    render: ({ builder, experimental, generate, engine, close }) => {
+    render: ({
+      builder,
+      experimental,
+      generate,
+      engine,
+      close,
+      providerId
+    }) => {
       experimental.builder.Popover(`${ID}.popover`, {
-        label: `${I18N_PREFIX}`,
+        label: getI18nLabel(providerId),
         icon: '@imgly/Appearance',
         labelAlignment: 'left',
         variant: 'plain',
@@ -109,7 +141,7 @@ const StyleTransfer: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
                 children: () => {
                   STYLE_OPTIONS.forEach((style) => {
                     builder.Button(`${ID}.popover.menu.${style.id}`, {
-                      label: style.label,
+                      label: getI18nLabel(providerId, style.id),
                       labelAlignment: 'left',
                       variant: 'plain',
                       onClick: async () => {

@@ -63,7 +63,9 @@ export async function processVectorization(
         const mimeType = await cesdk.engine.editor.getMimeType(input);
         const length = cesdk.engine.editor.getBufferLength(input);
         const data = cesdk.engine.editor.getBufferData(input, 0, length);
-        inputBlob = new Blob([data], { type: mimeType });
+        // Create a new Uint8Array with a proper ArrayBuffer to avoid SharedArrayBuffer issues
+        const buffer = new Uint8Array(data);
+        inputBlob = new Blob([buffer], { type: mimeType });
       } else {
         inputBlob = await fetchImageBlob(input);
       }

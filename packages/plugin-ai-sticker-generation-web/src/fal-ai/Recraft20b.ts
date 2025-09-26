@@ -1,7 +1,8 @@
 import { Icons, CustomAssetSource } from '@imgly/plugin-utils';
 import {
   CommonProviderConfiguration,
-  getPanelId
+  getPanelId,
+  createTranslationCallback
 } from '@imgly/plugin-ai-generation-web';
 import Recraft20bSchema from './Recraft20b.json';
 import CreativeEditorSDK, { AssetResult } from '@cesdk/cesdk-js';
@@ -72,10 +73,20 @@ function getProvider(
       id,
       label,
       thumbUri: getStyleThumbnail(id, baseURL)
-    }))
+    })),
+    {
+      translateLabel: createTranslationCallback(
+        cesdk,
+        modelKey,
+        'style',
+        'sticker'
+      )
+    }
   );
 
-  iconStyleAssetSource.setAssetActive('icon/broken_line');
+  // Assets are automatically set as active (first asset) in CustomAssetSource constructor
+  // Get initial values from asset sources with proper translation
+  const initialIconStyle = iconStyleAssetSource.getActiveSelectValue();
 
   cesdk.engine.asset.addSource(iconStyleAssetSource);
 
@@ -102,11 +113,22 @@ function getProvider(
     }
   );
 
+  // Build default translations from constants
+  const styleTranslations: Record<string, string> = {};
+
+  // Add all icon style translations
+  STYLES_ICON.forEach(({ id, label }) => {
+    styleTranslations[
+      `ly.img.plugin-ai-sticker-generation-web.${modelKey}.property.style.${id}`
+    ] = label;
+  });
+
   cesdk.i18n.setTranslations({
     en: {
       [`panel.${getPanelId(
         'fal-ai/recraft/v2/text-to-sticker'
-      )}.styleSelection`]: 'Style Selection'
+      )}.styleSelection`]: 'Style Selection',
+      ...styleTranslations
     }
   });
 
@@ -123,13 +145,12 @@ function getProvider(
       userFlow: 'placeholder',
       renderCustomProperty: {
         style: ({ builder, state }, property) => {
-          const styleIconState = state<{
-            id: Recraft20bInput['style'];
-            label: string;
-          }>('style/icon', {
-            id: 'icon/broken_line',
-            label: 'Broken Line'
-          });
+          const styleIconState = state<Recraft20bInput['style']>(
+            'style/icon',
+            initialIconStyle
+              ? (initialIconStyle.id as Recraft20bInput['style'])
+              : 'icon/broken_line'
+          );
 
           // Show the style library for icon type.
           builder.Button(`${property.id}`, {
@@ -141,7 +162,12 @@ function getProvider(
             ],
             icon: '@imgly/Appearance',
             trailingIcon: '@imgly/ChevronRight',
-            label: styleIconState.value.label,
+            label:
+              iconStyleAssetSource.getTranslatedLabel(
+                styleIconState.value || 'icon/broken_line'
+              ) ||
+              styleIconState.value ||
+              'icon/broken_line',
             labelAlignment: 'left',
             onClick: () => {
               const payload: StyleSelectionPayload = {
@@ -150,14 +176,11 @@ function getProvider(
                     return;
                   }
 
-                  const newValue: { id: StyleId; label: string } = {
-                    id: asset.id as StyleId,
-                    label: asset.label ?? asset.id
-                  };
+                  const styleId = asset.id as StyleId;
 
                   iconStyleAssetSource.clearActiveAssets();
                   iconStyleAssetSource.setAssetActive(asset.id);
-                  styleIconState.setValue(newValue);
+                  styleIconState.setValue(styleId);
 
                   cesdk.ui.closePanel(`${getPanelId(modelKey)}.styleSelection`);
                 }
@@ -173,7 +196,7 @@ function getProvider(
             return {
               id: property.id,
               type: 'string',
-              value: styleIconState.value.id ?? 'icon/broken_line'
+              value: styleIconState.value ?? 'icon/broken_line'
             };
           };
         }

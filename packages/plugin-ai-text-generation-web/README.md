@@ -215,6 +215,25 @@ cesdk.i18n.setTranslations({
 });
 ```
 
+### Feature Control
+
+You can control various aspects of the text generation plugin using the Feature API:
+
+```typescript
+// Disable provider selection dropdown
+cesdk.feature.enable('ly.img.plugin-ai-text-generation-web.providerSelect', false);
+
+// Disable all quick actions
+cesdk.feature.enable('ly.img.plugin-ai-text-generation-web.quickAction', false);
+
+// Disable specific quick actions
+cesdk.feature.enable('ly.img.plugin-ai-text-generation-web.quickAction.improve', false);
+cesdk.feature.enable('ly.img.plugin-ai-text-generation-web.quickAction.translate', false);
+cesdk.feature.enable('ly.img.plugin-ai-text-generation-web.quickAction.changeTone', false);
+```
+
+For more information about Feature API and available feature flags, see the [@imgly/plugin-ai-generation-web documentation](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-generation-web#available-feature-flags).
+
 ### Customizing Labels and Translations
 
 You can customize all labels and text in the AI text generation interface using the translation system. This allows you to provide better labels for your users in any language.
@@ -252,12 +271,17 @@ cesdk.i18n.setTranslations({
 
 #### QuickAction Translations
 
-Text QuickActions (like "Improve Writing", "Fix Grammar", etc.) use their own translation keys:
+Text QuickActions (like "Improve Writing", "Fix Grammar", etc.) use their own translation keys with provider-specific overrides:
 
 ```typescript
 cesdk.i18n.setTranslations({
   en: {
-    // QuickAction button labels
+    // Provider-specific translations (highest priority)
+    'ly.img.plugin-ai-text-generation-web.anthropic.quickAction.improve': 'Improve with Claude',
+    'ly.img.plugin-ai-text-generation-web.anthropic.quickAction.fix': 'Fix with Claude',
+    'ly.img.plugin-ai-text-generation-web.openai.quickAction.translate': 'Translate with GPT',
+    
+    // Generic plugin translations
     'ly.img.plugin-ai-text-generation-web.quickAction.improve': 'Improve Writing',
     'ly.img.plugin-ai-text-generation-web.quickAction.fix': 'Fix Grammar',
     'ly.img.plugin-ai-text-generation-web.quickAction.shorter': 'Make Shorter',
@@ -270,14 +294,17 @@ cesdk.i18n.setTranslations({
     'ly.img.plugin-ai-text-generation-web.quickAction.changeTextTo.prompt': 'Transform Text...',
     'ly.img.plugin-ai-text-generation-web.quickAction.changeTextTo.prompt.placeholder': 'e.g. "Convert to bullet points"',
     'ly.img.plugin-ai-text-generation-web.quickAction.changeTextTo.apply': 'Transform',
-    
     'ly.img.plugin-ai-text-generation-web.quickAction.translate.language': 'Target Language',
     'ly.img.plugin-ai-text-generation-web.quickAction.translate.apply': 'Translate'
   }
 });
 ```
 
-**QuickAction Translation Structure:**
+**QuickAction Translation Priority:**
+1. Provider-specific: `ly.img.plugin-ai-text-generation-web.${provider}.quickAction.${action}.${field}`
+2. Generic plugin: `ly.img.plugin-ai-text-generation-web.quickAction.${action}.${field}`
+
+**Translation Structure:**
 - Base key (e.g., `.quickAction.improve`): Button text when QuickAction is collapsed
 - `.prompt`: Label for input field when expanded
 - `.prompt.placeholder`: Placeholder text for input field

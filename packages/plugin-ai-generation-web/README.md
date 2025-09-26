@@ -796,27 +796,31 @@ cesdk.i18n.setTranslations({
 
 ### QuickAction Translations
 
-QuickActions (like "Edit Image", "Style Transfer", etc.) use their own translation keys:
+QuickActions use their own translation keys with provider-specific overrides:
 
 ```typescript
 cesdk.i18n.setTranslations({
   en: {
-    // Image generation QuickActions
+    // Provider-specific translations (highest priority)
+    'ly.img.plugin-ai-image-generation-web.fal-ai/gemini-flash-edit.quickAction.editImage': 'Edit with Gemini',
+    'ly.img.plugin-ai-text-generation-web.anthropic.quickAction.improve': 'Improve with Claude',
+
+    // Generic plugin translations
     'ly.img.plugin-ai-image-generation-web.quickAction.editImage': 'Edit Image...',
     'ly.img.plugin-ai-image-generation-web.quickAction.editImage.prompt': 'Edit Image...',
     'ly.img.plugin-ai-image-generation-web.quickAction.editImage.apply': 'Change',
-
-    // Text generation QuickActions  
     'ly.img.plugin-ai-text-generation-web.quickAction.improve': 'Improve Text',
     'ly.img.plugin-ai-text-generation-web.quickAction.translate': 'Translate Text',
-
-    // Video generation QuickActions
     'ly.img.plugin-ai-video-generation-web.quickAction.createVideo': 'Create Video'
   }
 });
 ```
 
-**QuickAction Translation Structure:**
+**QuickAction Translation Priority:**
+1. Provider-specific: `ly.img.plugin-ai-${kind}-generation-web.${provider}.quickAction.${action}.${field}`
+2. Generic plugin: `ly.img.plugin-ai-${kind}-generation-web.quickAction.${action}.${field}`
+
+**Translation Structure:**
 - Base key (e.g., `.quickAction.editImage`): Button text when QuickAction is collapsed
 - `.prompt`: Label for input field when expanded
 - `.prompt.placeholder`: Placeholder text for input field
@@ -897,6 +901,161 @@ For example:
 - Video quick actions: `ly.img.plugin-ai-video-generation-web.canvasMenu`
 - Audio quick actions: `ly.img.plugin-ai-audio-generation-web.canvasMenu`
 - Text quick actions: `ly.img.plugin-ai-text-generation-web.canvasMenu`
+
+### Customizing Quick Action Availability
+
+You can control which quick actions appear in your application using the Feature API. This is useful when you want to:
+- Show only specific AI capabilities to certain user groups
+- Simplify the UI by hiding advanced features
+- Create different feature sets for different subscription tiers
+- Disable actions that aren't relevant to your use case
+
+#### Disabling Specific Quick Actions
+
+All quick actions are enabled by default. To hide specific quick actions from the UI:
+
+```typescript
+// Hide the "Edit Image" quick action from users
+cesdk.feature.enable(
+  'ly.img.plugin-ai-image-generation-web.quickAction.editImage',
+  false
+);
+
+// Hide multiple text quick actions for a simpler experience
+cesdk.feature.enable('ly.img.plugin-ai-text-generation-web.quickAction.changeTone', false);
+cesdk.feature.enable('ly.img.plugin-ai-text-generation-web.quickAction.translate', false);
+```
+
+#### Dynamic Feature Control
+
+You can also pass a function to dynamically control feature availability based on context. This is powerful for implementing complex business logic, time-based features, or context-sensitive UI. See the [CE.SDK Feature API documentation](https://img.ly/docs/cesdk/js/user-interface/customization/disable-or-enable-f058e2/) for more details.
+
+```typescript
+// Show advanced AI features only during business hours
+cesdk.feature.enable(
+  'ly.img.plugin-ai-image-generation-web.quickAction.artistTransfer',
+  ({ isPreviousEnable }) => {
+    const hour = new Date().getHours();
+    const isBusinessHours = hour >= 9 && hour < 18;
+    return isBusinessHours && isPreviousEnable();
+  }
+);
+
+// Disable certain quick actions based on selected content
+cesdk.feature.enable(
+  'ly.img.plugin-ai-text-generation-web.quickAction.translate',
+  ({ engine, isPreviousEnable }) => {
+    const selectedBlocks = engine.block.findAllSelected();
+    if (selectedBlocks.length === 0) return false;
+    
+    const blockId = selectedBlocks[0];
+    const textContent = engine.block.getString(blockId, 'text/text');
+    
+    // Only show translate if text is long enough
+    const hasEnoughText = textContent && textContent.length > 20;
+    return hasEnoughText && isPreviousEnable();
+  }
+);
+```
+
+#### Creating Feature Sets for Different User Tiers
+
+```typescript
+// Configure features based on user subscription
+function configureAIFeatures(cesdk, userTier) {
+  if (userTier === 'basic') {
+    // Basic users only get simple text improvements
+    cesdk.feature.enable('ly.img.plugin-ai-text-generation-web.quickAction.improve', true);
+    cesdk.feature.enable('ly.img.plugin-ai-text-generation-web.quickAction.fix', true);
+    cesdk.feature.enable('ly.img.plugin-ai-text-generation-web.quickAction.translate', false);
+    cesdk.feature.enable('ly.img.plugin-ai-text-generation-web.quickAction.changeTone', false);
+    
+    // Disable advanced image features
+    cesdk.feature.enable('ly.img.plugin-ai-image-generation-web.quickAction.artistTransfer', false);
+    cesdk.feature.enable('ly.img.plugin-ai-image-generation-web.quickAction.styleTransfer', false);
+  } else if (userTier === 'premium') {
+    // Premium users get all features (default behavior)
+    // All quick actions are enabled by default
+  }
+}
+```
+
+#### Available Feature Flags
+
+##### Core Plugin Features
+
+These feature flags control the main functionality of each AI plugin:
+
+**General Features:**
+- `ly.img.plugin-ai-{kind}-generation-web.providerSelect` - Enable/disable provider selection dropdown in panels
+- `ly.img.plugin-ai-{kind}-generation-web.quickAction` - Enable/disable all quick actions for a plugin
+- `ly.img.plugin-ai-{kind}-generation-web.quickAction.providerSelect` - Enable/disable provider selection dropdown in quick actions
+
+**Input Type Features (Image & Video only):**
+- `ly.img.plugin-ai-image-generation-web.fromText` - Enable/disable text-to-image generation
+- `ly.img.plugin-ai-image-generation-web.fromImage` - Enable/disable image-to-image generation
+- `ly.img.plugin-ai-video-generation-web.fromText` - Enable/disable text-to-video generation
+- `ly.img.plugin-ai-video-generation-web.fromImage` - Enable/disable image-to-video generation
+
+**Usage Examples:**
+
+```typescript
+// Hide provider selection dropdown in video generation panel
+cesdk.feature.enable('ly.img.plugin-ai-video-generation-web.providerSelect', false);
+
+// Only allow text-to-image, disable image-to-image editing
+cesdk.feature.enable('ly.img.plugin-ai-image-generation-web.fromImage', false);
+cesdk.feature.enable('ly.img.plugin-ai-image-generation-web.fromText', true);
+
+// Hide provider selection dropdown in quick actions (use default provider only)
+cesdk.feature.enable('ly.img.plugin-ai-image-generation-web.quickAction.providerSelect', false);
+
+// Disable all quick actions but keep panel generation available
+cesdk.feature.enable('ly.img.plugin-ai-image-generation-web.quickAction', false);
+```
+
+##### Quick Action Features
+
+The quick action feature flags follow this pattern: `ly.img.plugin-ai-{kind}-generation-web.quickAction.{actionName}`
+
+**Image Quick Actions:**
+- `ly.img.plugin-ai-image-generation-web.quickAction.editImage`
+- `ly.img.plugin-ai-image-generation-web.quickAction.swapBackground`
+- `ly.img.plugin-ai-image-generation-web.quickAction.styleTransfer`
+- `ly.img.plugin-ai-image-generation-web.quickAction.artistTransfer`
+- `ly.img.plugin-ai-image-generation-web.quickAction.createVariant`
+- `ly.img.plugin-ai-image-generation-web.quickAction.combineImages`
+- `ly.img.plugin-ai-image-generation-web.quickAction.remixPage`
+- `ly.img.plugin-ai-image-generation-web.quickAction.remixPageWithPrompt`
+
+**Text Quick Actions:**
+- `ly.img.plugin-ai-text-generation-web.quickAction.improve`
+- `ly.img.plugin-ai-text-generation-web.quickAction.fix`
+- `ly.img.plugin-ai-text-generation-web.quickAction.shorter`
+- `ly.img.plugin-ai-text-generation-web.quickAction.longer`
+- `ly.img.plugin-ai-text-generation-web.quickAction.changeTone`
+- `ly.img.plugin-ai-text-generation-web.quickAction.translate`
+- `ly.img.plugin-ai-text-generation-web.quickAction.changeTextTo`
+
+**Video Quick Actions:**
+- `ly.img.plugin-ai-video-generation-web.quickAction.createVideo`
+
+**Note:** Quick actions are automatically enabled when their plugin is loaded. Each quick action manages its own feature flag internally, ensuring proper initialization and registration.
+
+##### Provider-Specific Style Features
+
+Some providers (like RecraftV3 and Recraft20b) support style groups that can be controlled independently:
+
+**RecraftV3 Style Groups:**
+- `ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.style.image` - Enable/disable image styles (realistic, digital illustration)
+- `ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.style.vector` - Enable/disable vector styles (vector illustration and variants)
+
+**Recraft20b Style Groups:**
+- `ly.img.plugin-ai-image-generation-web.fal-ai/recraft/v2/text-to-image.style.image` - Enable/disable image styles
+- `ly.img.plugin-ai-image-generation-web.fal-ai/recraft/v2/text-to-image.style.vector` - Enable/disable vector styles
+- `ly.img.plugin-ai-image-generation-web.fal-ai/recraft/v2/text-to-image.style.icon` - Enable/disable icon styles
+
+When all style groups are disabled for a provider, it automatically falls back to the 'any' style. For more details on style control, see the [@imgly/plugin-ai-image-generation-web documentation](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-image-generation-web).
 
 ### Using with Existing AI Generation Plugins
 

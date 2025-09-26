@@ -55,8 +55,6 @@
     "_syncPnpm": "pnpm sync-dependencies-meta-injected"
   },
   "devDependencies": {
-    "@cesdk/cesdk-js": "~1.37.0",
-    "@cesdk/engine": "~1.37.0",
     "@imgly/plugin-utils": "workspace:*",
     "@types/ndarray": "^1.0.14",
     "chalk": "^5.4.1",
