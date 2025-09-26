@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    "incremental": true,
+    "tsBuildInfoFile": "./dist/.tsbuildinfo",
     "strict": true,
     "target": "es2017",
     "module": "es2020",
