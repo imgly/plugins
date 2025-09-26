@@ -51,8 +51,8 @@ CreativeEditorSDK.create(domElement, {
                 },
                 // Optional: Configure default property values
                 properties: {
-                    duration: 5,  // Default duration in seconds
-                    aspect_ratio: '16:9'  // Default aspect ratio
+                    duration: { default: 5 },  // Default duration in seconds
+                    aspect_ratio: { default: '16:9' }  // Default aspect ratio
                 }
             }),
 
@@ -142,7 +142,7 @@ text2video: FalAiVideo.MinimaxVideo01Live({
     },
     // Optional: Configure default property values
     properties: {
-        prompt_optimizer: true  // Enable automatic prompt enhancement
+        prompt_optimizer: { default: true }  // Enable automatic prompt enhancement
     }
 });
 ```
@@ -177,7 +177,7 @@ image2video: FalAiVideo.MinimaxVideo01LiveImageToVideo({
     },
     // Optional: Configure default property values
     properties: {
-        prompt_optimizer: true  // Enable automatic prompt enhancement
+        prompt_optimizer: { default: true }  // Enable automatic prompt enhancement
     }
 });
 ```
@@ -202,8 +202,8 @@ image2video: FalAiVideo.MinimaxHailuo02StandardImageToVideo({
     },
     // Optional: Configure default property values
     properties: {
-        resolution: '768P',  // Options: '512P' (912×512), '768P' (1280×720)
-        duration: 6          // Duration in seconds (6 or 10)
+        resolution: { default: '768P' },  // Options: '512P' (912×512), '768P' (1280×720)
+        duration: { default: 6 }          // Duration in seconds (6 or 10)
     }
 });
 ```
@@ -229,7 +229,7 @@ text2video: FalAiVideo.PixverseV35TextToVideo({
     },
     // Optional: Configure default property values
     properties: {
-        seed: 42  // Fixed seed for reproducible generation
+        seed: { default: 42 }  // Fixed seed for reproducible generation
     }
 });
 ```
@@ -248,8 +248,8 @@ text2video: FalAiVideo.KlingVideoV21MasterTextToVideo({
     proxyUrl: 'http://your-proxy-server.com/api/proxy',
     // Optional: Configure default property values
     properties: {
-        aspect_ratio: '16:9',  // Options: '16:9', '9:16', '1:1'
-        duration: '5s'         // Options: '5s', '10s'
+        aspect_ratio: { default: '16:9' },  // Options: '16:9', '9:16', '1:1'
+        duration: { default: '5s' }         // Options: '5s', '10s'
     }
 });
 ```
@@ -282,7 +282,7 @@ image2video: FalAiVideo.KlingVideoV21MasterImageToVideo({
     proxyUrl: 'http://your-proxy-server.com/api/proxy',
     // Optional: Configure default property values
     properties: {
-        duration: '5s'  // Options: '5s', '10s'
+        duration: { default: '5s' }  // Options: '5s', '10s'
     }
 });
 ```
@@ -303,9 +303,9 @@ image2video: FalAiVideo.ByteDanceSeedanceV1ProImageToVideo({
     proxyUrl: 'http://your-proxy-server.com/api/proxy',
     // Optional: Configure default property values
     properties: {
-        aspect_ratio: 'auto',     // Options: '21:9', '16:9', '4:3', '1:1', '3:4', '9:16', 'auto'
-        duration: 5,              // Duration in seconds (3-12)
-        resolution: '720p'        // Options: '480p', '720p', '1080p'
+        aspect_ratio: { default: 'auto' },     // Options: '21:9', '16:9', '4:3', '1:1', '3:4', '9:16', 'auto'
+        duration: { default: 5 },              // Duration in seconds (3-12)
+        resolution: { default: '720p' }        // Options: '480p', '720p', '1080p'
     }
 });
 ```
@@ -327,9 +327,9 @@ text2video: FalAiVideo.ByteDanceSeedanceV1ProTextToVideo({
     proxyUrl: 'http://your-proxy-server.com/api/proxy',
     // Optional: Configure default property values
     properties: {
-        aspect_ratio: '16:9',     // Options: '21:9', '16:9', '4:3', '1:1', '3:4', '9:16'
-        duration: 5,              // Duration in seconds (3-12)
-        resolution: '720p'        // Options: '480p', '720p', '1080p'
+        aspect_ratio: { default: '16:9' },     // Options: '21:9', '16:9', '4:3', '1:1', '3:4', '9:16'
+        duration: { default: 5 },              // Duration in seconds (3-12)
+        resolution: { default: '720p' }        // Options: '480p', '720p', '1080p'
     }
 });
 ```
@@ -351,8 +351,8 @@ text2video: FalAiVideo.Veo3TextToVideo({
     proxyUrl: 'http://your-proxy-server.com/api/proxy',
     // Optional: Configure default property values
     properties: {
-        aspect_ratio: '16:9',     // Options: '16:9', '9:16', '1:1'
-        duration: 8               // Fixed at 8 seconds for this provider
+        aspect_ratio: { default: '16:9' },     // Options: '16:9', '9:16', '1:1'
+        duration: { default: 8 }               // Fixed at 8 seconds for this provider
     }
 });
 ```

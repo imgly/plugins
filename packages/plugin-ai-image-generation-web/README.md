@@ -179,8 +179,8 @@ text2image: FalAiImage.RecraftV3({
   },
   // Optional: Configure default property values
   properties: {
-    style: 'realistic_image',  // Default style
-    image_size: 'square_hd'     // Default size
+    style: { default: 'realistic_image' },  // Default style
+    image_size: { default: 'square_hd' }     // Default size
   }
 })
 ```
@@ -265,17 +265,19 @@ Key features:
 text2image: FalAiImage.RecraftV3({
   proxyUrl: 'http://your-proxy-server.com/api/proxy',
   properties: {
-    prompt: '',  // User will fill this
-    style: 'realistic_image/natural_light',
-    image_size: 'landscape_16_9',
+    prompt: { default: '' },  // User will fill this
+    style: { default: 'realistic_image/natural_light' },
+    image_size: { default: 'landscape_16_9' },
 
     // Dynamic style based on context
-    style: (context) => {
-      const hour = new Date().getHours();
-      if (hour < 6 || hour > 18) {
-        return 'realistic_image/evening_light';
+    style: {
+      default: (context) => {
+        const hour = new Date().getHours();
+        if (hour < 6 || hour > 18) {
+          return 'realistic_image/evening_light';
+        }
+        return 'realistic_image/natural_light';
       }
-      return 'realistic_image/natural_light';
     }
   }
 })
@@ -319,13 +321,15 @@ text2image: FalAiImage.Recraft20b({
   // Optional: Configure default property values
   properties: {
     // Dynamic style defaults based on style type
-    style: (context) => {
-      // Different defaults for different style categories
-      // This is handled internally by the provider
-      return 'broken_line';  // Default for icon styles
+    style: {
+      default: (context) => {
+        // Different defaults for different style categories
+        // This is handled internally by the provider
+        return 'broken_line';  // Default for icon styles
+      }
     },
-    image_size: 'square_hd',
-    n_colors: 4  // Default color count for icon styles
+    image_size: { default: 'square_hd' },
+    n_colors: { default: 4 }  // Default color count for icon styles
   }
 })
 ```
@@ -380,17 +384,19 @@ Key features:
 text2image: FalAiImage.Recraft20b({
   proxyUrl: 'http://your-proxy-server.com/api/proxy',
   properties: {
-    prompt: '',  // User will fill this
-    style: 'icon/colored_outline',  // Default to icon style
-    image_size: 'square',
-    n_colors: 3,  // Number of colors for icon styles
+    prompt: { default: '' },  // User will fill this
+    style: { default: 'icon/colored_outline' },  // Default to icon style
+    image_size: { default: 'square' },
+    n_colors: { default: 3 },  // Number of colors for icon styles
 
     // Dynamic style based on use case
-    style: (context) => {
-      // You could check block type or other context
-      const engine = context.engine;
-      // Return appropriate style
-      return 'icon/broken_line';
+    style: {
+      default: (context) => {
+        // You could check block type or other context
+        const engine = context.engine;
+        // Return appropriate style
+        return 'icon/broken_line';
+      }
     }
   }
 })
@@ -437,9 +443,9 @@ text2image: OpenAiImage.GptImage1.Text2Image({
   },
   // Optional: Configure default property values
   properties: {
-    size: '1024x1024',  // Options: '1024x1024', '1792x1024', '1024x1792'
-    quality: 'standard', // Options: 'standard', 'hd'
-    style: 'vivid'      // Options: 'vivid', 'natural'
+    size: { default: '1024x1024' },  // Options: '1024x1024', '1792x1024', '1024x1792'
+    quality: { default: 'standard' }, // Options: 'standard', 'hd'
+    style: { default: 'vivid' }      // Options: 'vivid', 'natural'
   }
 })
 ```
@@ -464,9 +470,9 @@ image2image: FalAiImage.GeminiFlashEdit({
   },
   // Optional: Configure default property values
   properties: {
-    strength: 0.8,        // Transformation strength (0.0-1.0)
-    guidance_scale: 7.5,  // Guidance scale (0-20)
-    num_inference_steps: 50  // Number of inference steps
+    strength: { default: 0.8 },        // Transformation strength (0.0-1.0)
+    guidance_scale: { default: 7.5 },  // Guidance scale (0-20)
+    num_inference_steps: { default: 50 }  // Number of inference steps
   }
 })
 ```
@@ -522,9 +528,9 @@ text2image: FalAiImage.IdeogramV3({
   },
   // Optional: Configure default property values
   properties: {
-    style: 'GENERAL',    // Options: 'AUTO', 'GENERAL', 'REALISTIC', 'DESIGN'
-    image_size: 'square_hd', // Same options as Recraft
-    seed: 12345         // Fixed seed for reproducibility
+    style: { default: 'GENERAL' },    // Options: 'AUTO', 'GENERAL', 'REALISTIC', 'DESIGN'
+    image_size: { default: 'square_hd' }, // Same options as Recraft
+    seed: { default: 12345 }         // Fixed seed for reproducibility
   }
 })
 ```
@@ -547,9 +553,9 @@ image2image: FalAiImage.IdeogramV3Remix({
   },
   // Optional: Configure default property values
   properties: {
-    style: 'AUTO',       // Options: 'AUTO', 'GENERAL', 'REALISTIC', 'DESIGN'
-    image_size: 'square_hd',
-    remix_strength: 0.7  // How much to transform (0.0-1.0)
+    style: { default: 'AUTO' },       // Options: 'AUTO', 'GENERAL', 'REALISTIC', 'DESIGN'
+    image_size: { default: 'square_hd' },
+    remix_strength: { default: 0.7 }  // How much to transform (0.0-1.0)
   }
 })
 ```
@@ -573,8 +579,8 @@ image2image: FalAiImage.QwenImageEdit({
   },
   // Optional: Configure default property values
   properties: {
-    seed: 12345,         // Fixed seed for reproducibility
-    guidance_scale: 7.5  // Guidance strength (0-20)
+    seed: { default: 12345 },         // Fixed seed for reproducibility
+    guidance_scale: { default: 7.5 }  // Guidance strength (0-20)
   }
 })
 ```
@@ -631,7 +637,7 @@ text2image: FalAiImage.NanoBanana({
   },
   // Optional: Configure default property values
   properties: {
-    output_format: 'PNG'  // Options: 'PNG', 'JPEG'
+    output_format: { default: 'PNG' }  // Options: 'PNG', 'JPEG'
   }
 })
 ```
@@ -669,8 +675,8 @@ image2image: FalAiImage.NanoBananaEdit({
   },
   // Optional: Configure default property values
   properties: {
-    strength: 0.7,        // Edit strength (0.0-1.0)
-    output_format: 'PNG'  // Options: 'PNG', 'JPEG'
+    strength: { default: 0.7 },        // Edit strength (0.0-1.0)
+    output_format: { default: 'PNG' }  // Options: 'PNG', 'JPEG'
   }
 })
 ```

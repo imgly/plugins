@@ -184,7 +184,12 @@ function App() {
                   text2image: [
                     FalAiImage.RecraftV3({
                       middleware: [imageRateLimitMiddleware, errorMiddleware],
-                      proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
+                      proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL,
+                      properties: {
+                        style: {
+                          default: "realistic_image/b_and_w"
+                        }
+                      }
                     }),
                     FalAiImage.Recraft20b({
                       middleware: [imageRateLimitMiddleware, errorMiddleware],

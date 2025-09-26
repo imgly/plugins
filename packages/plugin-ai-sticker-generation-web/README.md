@@ -50,9 +50,9 @@ CreativeEditorSDK.create(domElement, {
         },
         // Optional: Configure default property values
         properties: {
-          style: 'broken_line',  // Default icon style for stickers
-          image_size: 'square',  // Default size
-          n_colors: 2  // Default color count
+          style: { default: 'broken_line' },  // Default icon style for stickers
+          image_size: { default: 'square' },  // Default size
+          n_colors: { default: 2 }  // Default color count
         }
       }),
       

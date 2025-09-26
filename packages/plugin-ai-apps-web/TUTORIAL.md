@@ -106,8 +106,8 @@ function App() {
                                         },
                                         // Optional: Configure default property values
                                         properties: {
-                                            temperature: 0.7,
-                                            max_tokens: 500
+                                            temperature: { default: 0.7 },
+                                            max_tokens: { default: 500 }
                                         }
                                     }),
 
@@ -151,8 +151,8 @@ function App() {
                                             },
                                             // Configure dynamic defaults based on style type
                                             properties: {
-                                                style: 'broken_line',
-                                                image_size: 'square_hd'
+                                                style: { default: 'broken_line' },
+                                                image_size: { default: 'square_hd' }
                                             }
                                         }),
                                         // Additional image provider for user selection

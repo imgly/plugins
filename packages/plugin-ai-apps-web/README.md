@@ -192,11 +192,13 @@ cesdk.addPlugin(
         proxyUrl: 'http://your-proxy-server.com/api/proxy',
         properties: {
           // Static default
-          image_size: 'square_hd',
+          image_size: { default: 'square_hd' },
 
           // Dynamic default based on locale
-          style: (context) => {
-            return context.locale === 'ja' ? 'anime' : 'realistic';
+          style: {
+            default: (context) => {
+              return context.locale === 'ja' ? 'anime' : 'realistic';
+            }
           }
         }
       })

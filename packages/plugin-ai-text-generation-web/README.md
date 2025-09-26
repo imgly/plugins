@@ -55,8 +55,8 @@ CreativeEditorSDK.create(domElement, {
                 },
                 // Optional: Configure default property values
                 properties: {
-                    temperature: 0.7,
-                    max_tokens: 500
+                    temperature: { default: 0.7 },
+                    max_tokens: { default: 500 }
                 }
             }),
 
@@ -146,8 +146,8 @@ provider: Anthropic.AnthropicProvider({
 
     // Optional: Configure default property values
     properties: {
-        temperature: 0.7,    // Creativity level (0.0-1.0)
-        max_tokens: 500      // Maximum response length
+        temperature: { default: 0.7 },    // Creativity level (0.0-1.0)
+        max_tokens: { default: 500 }      // Maximum response length
     },
 
     // Optional debug mode
@@ -199,9 +199,9 @@ provider: OpenAIText.OpenAIProvider({
 
     // Optional: Configure default property values
     properties: {
-        temperature: 0.7,    // Creativity level (0.0-2.0)
-        max_tokens: 500,     // Maximum response length
-        top_p: 1.0          // Nucleus sampling (0.0-1.0)
+        temperature: { default: 0.7 },    // Creativity level (0.0-2.0)
+        max_tokens: { default: 500 },     // Maximum response length
+        top_p: { default: 1.0 }          // Nucleus sampling (0.0-1.0)
     },
 
     // Optional debug mode
