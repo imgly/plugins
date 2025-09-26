@@ -264,6 +264,10 @@ function App() {
                       middleware: [videoRateLimitMiddleware, errorMiddleware],
                       proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
                     }),
+                    FalAiVideo.MinimaxHailuo02StandardImageToVideo({
+                      middleware: [videoRateLimitMiddleware, errorMiddleware],
+                      proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
+                    }),
                     FalAiVideo.ByteDanceSeedanceV1ProImageToVideo({
                       middleware: [videoRateLimitMiddleware, errorMiddleware],
                       proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
