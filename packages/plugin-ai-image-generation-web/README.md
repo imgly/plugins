@@ -560,7 +560,29 @@ Key features:
 - Multiple image size presets: square HD, square, portrait 4:3/16:9, landscape 4:3/16:9
 - Custom dimensions support (64x64 to 14142x14142 pixels)
 
-#### 7. FluxProKontextEdit (Image-to-Image)
+#### 7. QwenImageEdit (Image-to-Image)
+
+A powerful image editing model with superior text editing capabilities from fal.ai:
+
+```typescript
+image2image: FalAiImage.QwenImageEdit({
+  proxyUrl: 'http://your-proxy-server.com/api/proxy',
+  headers: {
+    'x-custom-header': 'value',
+    'x-client-version': '1.0.0'
+  }
+})
+```
+
+Key features:
+- **Superior text editing capabilities** for image transformation
+- Transform existing images with detailed text prompts
+- Available through all canvas quick actions (edit, background swap, style transfer, artist styles, variants)
+- Maintains original image dimensions
+- Custom headers support for API requests
+```
+
+#### 8. FluxProKontextEdit (Image-to-Image)
 
 A versatile image editing model that applies stylistic changes and transformations:
 
@@ -575,7 +597,7 @@ Key features:
 - Built-in quick actions for style transfer, artist styles, background swapping, and variants
 - Keeps original image dimensions
 
-#### 8. FluxProKontextMaxEdit (Image-to-Image)
+#### 9. FluxProKontextMaxEdit (Image-to-Image)
 
 A high-quality variant of FluxProKontext offering more detailed results:
 
@@ -992,6 +1014,16 @@ FalAiImage.GeminiFlashEdit(config: {
 })
 ```
 
+#### QwenImageEdit
+
+```typescript
+FalAiImage.QwenImageEdit(config: {
+  proxyUrl: string;
+  headers?: Record<string, string>;
+  debug?: boolean;
+})
+```
+
 ### OpenAI Providers
 
 #### GptImage1.Text2Image
@@ -1140,6 +1172,7 @@ const myImageProvider = {
   - IdeogramV3: `ly.img.ai.fal-ai/ideogram/v3`
   - IdeogramV3Remix: `ly.img.ai.fal-ai/ideogram/v3/remix`
   - GeminiFlashEdit: `ly.img.ai.fal-ai/gemini-flash-edit`
+  - QwenImageEdit: `ly.img.ai.fal-ai/qwen-image-edit`
   - GptImage1.Text2Image: `ly.img.ai.open-ai/gpt-image-1/text2image`
   - GptImage1.Image2Image: `ly.img.ai.open-ai/gpt-image-1/image2image`
   - FluxProKontextEdit: `ly.img.ai.fal-ai/flux-pro/kontext`
@@ -1155,6 +1188,7 @@ Generated images are automatically stored in asset sources with the following ID
 - IdeogramV3: `fal-ai/ideogram/v3.history`
 - IdeogramV3Remix: `fal-ai/ideogram/v3/remix.history`
 - GeminiFlashEdit: `fal-ai/gemini-flash-edit.history`
+- QwenImageEdit: `fal-ai/qwen-image-edit.history`
 - GptImage1.Text2Image: `open-ai/gpt-image-1/text2image.history`
 - GptImage1.Image2Image: `open-ai/gpt-image-1/image2image.history`
 - FluxProKontextEdit: `fal-ai/flux-pro/kontext.history`

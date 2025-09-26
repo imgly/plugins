@@ -4,6 +4,8 @@
 
 ### New Features
 
+-   [image-generation] **QwenImageEdit Provider**: Added Qwen image editing provider via fal.ai for advanced image-to-image transformation with text prompts, supporting all standard quick actions
+-   [video-generation] **MinimaxHailuo02StandardImageToVideo Provider**: Added Minimax Hailuo-02 Standard image-to-video provider via fal.ai for transforming still images into videos with selectable resolutions (512P: 912×512, 768P: 1280×720) and adjustable durations (6 or 10 seconds)
 -   [video-generation] **ByteDance Seedance v1 Pro Providers**: Added ByteDance Seedance v1 Pro text-to-video and image-to-video providers via fal.ai with:
     - Text-to-video generation from text descriptions with customizable aspect ratios
     - Image-to-video transformation with dynamic motion generation from still images

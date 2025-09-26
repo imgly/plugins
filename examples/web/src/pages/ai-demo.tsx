@@ -224,6 +224,10 @@ function App() {
                       middleware: [imageRateLimitMiddleware, errorMiddleware],
                       proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
                     }),
+                    FalAiImage.QwenImageEdit({
+                      middleware: [imageRateLimitMiddleware, errorMiddleware],
+                      proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
+                    }),
                     FalAiImage.IdeogramV3Remix({
                       middleware: [imageRateLimitMiddleware, errorMiddleware],
                       proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
@@ -257,6 +261,10 @@ function App() {
                       proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
                     }),
                     FalAiVideo.KlingVideoV21MasterImageToVideo({
+                      middleware: [videoRateLimitMiddleware, errorMiddleware],
+                      proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
+                    }),
+                    FalAiVideo.MinimaxHailuo02StandardImageToVideo({
                       middleware: [videoRateLimitMiddleware, errorMiddleware],
                       proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
                     }),
