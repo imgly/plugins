@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [0.2.7] - 2025-09-26
+
 ### New Features
 
 -   [image-generation] **QwenImageEdit Provider**: Added Qwen image editing provider via fal.ai for advanced image-to-image transformation with text prompts, supporting all standard quick actions
