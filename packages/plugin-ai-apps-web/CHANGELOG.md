@@ -2,6 +2,24 @@
 
 ## [Unreleased]
 
+## [0.2.7] - 2025-09-26
+
+### New Features
+
+-   [image-generation] **QwenImageEdit Provider**: Added Qwen image editing provider via fal.ai for advanced image-to-image transformation with text prompts, supporting all standard quick actions
+-   [video-generation] **MinimaxHailuo02StandardImageToVideo Provider**: Added Minimax Hailuo-02 Standard image-to-video provider via fal.ai for transforming still images into videos with selectable resolutions (512P: 912×512, 768P: 1280×720) and adjustable durations (6 or 10 seconds)
+-   [video-generation] **ByteDance Seedance v1 Pro Providers**: Added ByteDance Seedance v1 Pro text-to-video and image-to-video providers via fal.ai with:
+    - Text-to-video generation from text descriptions with customizable aspect ratios
+    - Image-to-video transformation with dynamic motion generation from still images
+    - Multiple aspect ratio options (21:9, 16:9, 4:3, 1:1, 3:4, 9:16, or auto from image for i2v)
+    - Adjustable duration (3-12 seconds, default 5)
+    - Resolution options (480p, 720p, 1080p)
+    - Proper aspect ratio handling in placeholder blocks based on user selection
+
+-   [all] **Property Configuration System**: Providers can now define default values for their properties. Defaults can be static values or dynamic based on context (language, design state, etc.)
+
+-   [image-generation] **Recraft Provider Defaults**: Recraft providers (V3 and 20b) now support configurable default values for all properties, including dynamic style defaults based on the selected style type
+
 ## [0.2.6] - 2025-09-09
 
 ### New Features
