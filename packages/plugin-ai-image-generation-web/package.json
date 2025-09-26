@@ -63,11 +63,10 @@
     "check:types": "tsc --noEmit",
     "types:create": "tsc --emitDeclarationOnly"
   },
-  "dependencies": {
-    "@imgly/plugin-ai-generation-web": "workspace:*",
-    "@fal-ai/client": "^1.3.0"
-  },
+  "dependencies": {},
   "devDependencies": {
+    "@imgly/plugin-ai-generation-web": "workspace:*",
+    "@fal-ai/client": "^1.3.0",
     "@imgly/plugin-utils": "workspace:*",
     "@types/jest": "^30.0.0",
     "@types/ndarray": "^1.0.14",
