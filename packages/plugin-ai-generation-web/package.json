@@ -42,20 +42,20 @@
     "start": "pnpm run watch",
     "clean": "pnpm exec rimraf dist",
     "purge": "pnpm exec rimraf node_modules",
-    "build": "pnpm run clean && pnpm _syncPnpm && pnpm exec node scripts/build.mjs",
+    "build": "pnpm run clean && pnpm exec node scripts/build.mjs",
     "publish:latest": "pnpm run build && npm publish --tag latest --access public",
     "publish:next": "pnpm run build && npm publish --tag next --access public",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "dev": "pnpm --filter \"${npm_package_name}^...\" --parallel run dev:wait && node scripts/watch.mjs",
-    "dev:wait": "pnpm exec wait-on ./dist/index.mjs ./dist/index.d.ts --window 250 --timeout 60000",
+    "dev": "SKIP_DTS=true node scripts/watch.mjs",
+    "dev:wait": "node ../../scripts/dev-wait.mjs",
+    "dev:types": "tsc --emitDeclarationOnly --watch --preserveWatchOutput --incremental",
     "check:all": "concurrently -n lint,type,pretty \"pnpm run check:lint\" \"pnpm run check:types\" \"pnpm run check:pretty\"",
     "check:lint": "eslint --max-warnings 0 './src/**/*.{ts,tsx}'",
     "check:pretty": "prettier --list-different './src/**/*.{ts,tsx}'",
     "check:types": "tsc --noEmit",
-    "types:create": "tsc --emitDeclarationOnly",
-    "_syncPnpm": "pnpm sync-dependencies-meta-injected"
+    "types:create": "tsc --emitDeclarationOnly"
   },
   "devDependencies": {
     "@imgly/plugin-utils": "workspace:*",
@@ -66,11 +66,6 @@
     "openapi-types": "^12.1.3",
     "ts-jest": "^29.1.2",
     "ts-node": "^10.9.2"
-  },
-  "dependenciesMeta": {
-    "@imgly/plugin-utils": {
-      "injected": true
-    }
   },
   "peerDependencies": {
     "@cesdk/cesdk-js": "^1.49.1"

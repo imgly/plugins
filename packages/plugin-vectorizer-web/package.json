@@ -42,8 +42,9 @@
   "scripts": {
     "start": "pnpm run watch",
     "clean": "pnpm exec rimraf dist",
-    "build": "pnpm run clean && pnpm _syncPnpm && pnpm exec node scripts/build.mjs",
-    "dev": "pnpm --filter \"${npm_package_name}^...\" --parallel run dev:wait && pnpm exec concurrently 'node scripts/watch.mjs' 'pnpm _syncPnpm --watch' --names 'build,sync deps'",
+    "build": "pnpm run clean && pnpm exec node scripts/build.mjs",
+    "dev": "SKIP_DTS=true node scripts/watch.mjs",
+    "dev:wait": "node ../../scripts/dev-wait.mjs",
     "dev:types": "tsc --emitDeclarationOnly --watch --preserveWatchOutput",
     "publish:latest": "pnpm run build && pnpm publish --tag latest --access public",
     "publish:next": "pnpm run build && pnpm publish --tag next --access public",
@@ -51,8 +52,7 @@
     "check:lint": "eslint --max-warnings 0 './src/**/*.{ts,tsx}'",
     "check:pretty": "prettier --list-different './src/**/*.{ts,tsx}'",
     "check:types": "tsc --noEmit",
-    "types:create": "tsc --emitDeclarationOnly",
-    "_syncPnpm": "pnpm sync-dependencies-meta-injected"
+    "types:create": "tsc --emitDeclarationOnly"
   },
   "devDependencies": {
     "@imgly/plugin-utils": "workspace:*",
@@ -63,11 +63,6 @@
     "eslint": "^8.57.1",
     "lodash-es": "^4.17.21",
     "typescript": "^5.7.3"
-  },
-  "dependenciesMeta": {
-    "@imgly/plugin-utils": {
-      "injected": true
-    }
   },
   "peerDependencies": {
     "@cesdk/cesdk-js": "^1.32.0"

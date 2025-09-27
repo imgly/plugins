@@ -4,12 +4,12 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "build": "pnpm _syncPnpm && tsc && vite build",
+    "build": "tsc && vite build",
     "clean": "pnpm exec rimraf dist",
     "purge": "pnpm exec rimraf node_modules",
-    "dev": "pnpm --filter \"${npm_package_name}^...\" --parallel run dev:wait && pnpm exec concurrently 'vite --clearScreen=false --force' 'pnpm _syncPnpm --watch' --names 'build,sync deps'",
-    "check:types": "tsc --noEmit",
-    "_syncPnpm": "pnpm sync-dependencies-meta-injected"
+    "dev": "vite --clearScreen=false --force",
+    "dev:wait": "node ../../scripts/wait-for-deps.mjs",
+    "check:types": "tsc --noEmit"
   },
   "dependencies": {
     "@cesdk/cesdk-js": "catalog:",
@@ -32,47 +32,6 @@
     "react-dom": "^18.3.1",
     "react-router-dom": "^7.3.0"
   },
-  "dependenciesMeta": {
-    "@imgly/plugin-ai-apps-web": {
-      "injected": true
-    },
-    "@imgly/plugin-ai-generation-web": {
-      "injected": true
-    },
-    "@imgly/plugin-ai-text-generation-web": {
-      "injected": true
-    },
-    "@imgly/plugin-ai-image-generation-web": {
-      "injected": true
-    },
-    "@imgly/plugin-ai-video-generation-web": {
-      "injected": true
-    },
-    "@imgly/plugin-ai-audio-generation-web": {
-      "injected": true
-    },
-    "@imgly/plugin-background-removal-web": {
-      "injected": true
-    },
-    "@imgly/plugin-cutout-library-web": {
-      "injected": true
-    },
-    "@imgly/plugin-remote-asset-source-web": {
-      "injected": true
-    },
-    "@imgly/plugin-soundstripe-web": {
-      "injected": true
-    },
-    "@imgly/plugin-utils": {
-      "injected": true
-    },
-    "@imgly/plugin-vectorizer-web": {
-      "injected": true
-    },
-    "@imgly/plugin-qr-code-web": {
-      "injected": true
-    }
-  },
   "devDependencies": {
     "@types/react": "^18.3.18",
     "@types/react-dom": "^18.3.5",
@@ -82,7 +41,6 @@
     "eslint": "^8.57.1",
     "eslint-plugin-react-hooks": "^4.6.2",
     "eslint-plugin-react-refresh": "^0.4.19",
-    "pnpm-sync-dependencies-meta-injected": "^0.0.14",
     "typescript": "^5.7.3",
     "vite": "^5.4.14"
   }
