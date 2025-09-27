@@ -21,29 +21,6 @@ export default defineConfig({
   },
   plugins: [
     react(),
-    // https://github.com/vitejs/vite/issues/8619#issuecomment-2606507049
-    {
-      name: 'watch-workspace-packages',
-      configureServer(server) {
-        server.watcher.options = {
-          ...server.watcher.options,
-          ignored: [
-            (path) => {
-              const isNodeModules = path.includes('node_modules/');
-              const isWorkspace = Object.keys(
-                packageJson.dependenciesMeta
-              ).some(
-                (pkgName) =>
-                  path.includes(pkgName) ||
-                  path.includes(pkgName.replace('/', '+'))
-              );
-              return isNodeModules && !isWorkspace;
-            },
-            '**/.git/**'
-          ]
-        };
-      }
-    },
     {
       name: 'custom-urls',
       configureServer(server) {
@@ -52,7 +29,7 @@ export default defineConfig({
           originalPrintUrls();
           const protocol = server.config.server.https ? 'https' : 'http';
           const port = server.config.server.port || 5173;
-          
+
           // Compact display
           console.log('');
           console.log('  \x1b[35m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\x1b[0m');
@@ -72,8 +49,5 @@ export default defineConfig({
       'Cross-Origin-Opener-Policy': 'same-origin',
       'Cross-Origin-Embedder-Policy': 'credentialless'
     }
-  },
-  optimizeDeps: {
-    exclude: Object.keys(packageJson.dependenciesMeta)
   }
 });

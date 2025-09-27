@@ -3,15 +3,15 @@
   "name": "imgly-plugins",
   "version": "0.0.0",
   "scripts": {
-    "build": "pnpm recursive run build",
-    "clean": "pnpm recursive run clean",
+    "build": "turbo run build",
+    "clean": "turbo run clean",
     "purge": "pnpm exec rimraf node_modules && pnpm recursive run purge",
-    "dev": "pnpm run --recursive --parallel dev",
-    "test": "pnpm recursive run test",
-    "check:all": "pnpm recursive run check:all",
-    "check:types": "pnpm recursive run check:types",
-    "check:lint": "pnpm recursive run check:lint",
-    "check:pretty": "pnpm recursive run check:pretty",
+    "dev": "turbo run dev --concurrency=20",
+    "test": "turbo run test",
+    "check:all": "turbo run check:all",
+    "check:types": "turbo run check:types",
+    "check:lint": "turbo run check:lint",
+    "check:pretty": "turbo run check:pretty",
     "cesdk:version": "./scripts/change-examples-cesdk-version.sh"
   },
   "devDependencies": {
@@ -30,6 +30,7 @@
     "prettier-plugin-organize-imports": "^3.2.4",
     "pretty-quick": "^3.3.1",
     "rimraf": "6.0.1",
+    "turbo": "^2.5.6",
     "typescript": "^5.7.3",
     "wait-on": "8.0.2"
   },
