@@ -16,15 +16,17 @@ import { RateLimitOptions } from '@imgly/plugin-ai-generation-web';
 import {
   testAllTranslations,
   resetTranslations
-} from '../utils/testTranslations';
+} from './utils/testTranslations';
 
 function App() {
   const cesdk = useRef<CreativeEditorSDK>();
+  console.log('App component rendering...');
   return (
     <div
       style={{ width: '100vw', height: '100vh' }}
       ref={(domElement) => {
         if (domElement != null) {
+          console.log('Creating CreativeEditorSDK...');
           CreativeEditorSDK.create(domElement, {
             license: import.meta.env.VITE_CESDK_LICENSE_KEY,
             userId: 'plugins-vercel',
@@ -661,6 +663,9 @@ function App() {
                 }
               });
             });
+          }).catch((error) => {
+            console.error('Failed to create CreativeEditorSDK:', error);
+            alert('Failed to initialize the editor. Please check the console for details.');
           });
         } else if (cesdk.current != null) {
           cesdk.current.dispose();

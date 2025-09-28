@@ -67,6 +67,76 @@ importers:
         specifier: 8.0.2
         version: 8.0.2
 
+  examples/ai:
+    dependencies:
+      '@cesdk/cesdk-js':
+        specifier: 1.59.2
+        version: 1.59.2(react@18.3.1)
+      '@cesdk/engine':
+        specifier: 1.59.2
+        version: 1.59.2(react@18.3.1)
+      '@imgly/plugin-ai-apps-web':
+        specifier: workspace:*
+        version: link:../../packages/plugin-ai-apps-web
+      '@imgly/plugin-ai-audio-generation-web':
+        specifier: workspace:*
+        version: link:../../packages/plugin-ai-audio-generation-web
+      '@imgly/plugin-ai-generation-web':
+        specifier: workspace:*
+        version: link:../../packages/plugin-ai-generation-web
+      '@imgly/plugin-ai-image-generation-web':
+        specifier: workspace:*
+        version: link:../../packages/plugin-ai-image-generation-web
+      '@imgly/plugin-ai-sticker-generation-web':
+        specifier: workspace:*
+        version: link:../../packages/plugin-ai-sticker-generation-web
+      '@imgly/plugin-ai-text-generation-web':
+        specifier: workspace:*
+        version: link:../../packages/plugin-ai-text-generation-web
+      '@imgly/plugin-ai-video-generation-web':
+        specifier: workspace:*
+        version: link:../../packages/plugin-ai-video-generation-web
+      '@imgly/plugin-utils':
+        specifier: workspace:*
+        version: link:../../packages/plugin-utils
+      react:
+        specifier: ^18.3.1
+        version: 18.3.1
+      react-dom:
+        specifier: ^18.3.1
+        version: 18.3.1(react@18.3.1)
+    devDependencies:
+      '@types/react':
+        specifier: ^18.3.18
+        version: 18.3.24
+      '@types/react-dom':
+        specifier: ^18.3.5
+        version: 18.3.7(@types/react@18.3.24)
+      '@typescript-eslint/eslint-plugin':
+        specifier: ^6.21.0
+        version: 6.21.0(@typescript-eslint/parser@6.21.0(eslint@8.57.1)(typescript@5.9.2))(eslint@8.57.1)(typescript@5.9.2)
+      '@typescript-eslint/parser':
+        specifier: ^6.21.0
+        version: 6.21.0(eslint@8.57.1)(typescript@5.9.2)
+      '@vitejs/plugin-react':
+        specifier: ^4.3.4
+        version: 4.7.0(vite@5.4.19(@types/node@24.3.0))
+      eslint:
+        specifier: ^8.57.1
+        version: 8.57.1
+      eslint-plugin-react-hooks:
+        specifier: ^4.6.2
+        version: 4.6.2(eslint@8.57.1)
+      eslint-plugin-react-refresh:
+        specifier: ^0.4.19
+        version: 0.4.20(eslint@8.57.1)
+      typescript:
+        specifier: ^5.7.3
+        version: 5.9.2
+      vite:
+        specifier: ^5.4.14
+        version: 5.4.19(@types/node@24.3.0)
+
   examples/gpt-demo:
     dependencies:
       '@cesdk/cesdk-js':
@@ -130,24 +200,6 @@ importers:
       '@cesdk/engine':
         specifier: 1.59.2
         version: 1.59.2(react@18.3.1)
-      '@imgly/plugin-ai-apps-web':
-        specifier: workspace:*
-        version: link:../../packages/plugin-ai-apps-web
-      '@imgly/plugin-ai-audio-generation-web':
-        specifier: workspace:*
-        version: link:../../packages/plugin-ai-audio-generation-web
-      '@imgly/plugin-ai-generation-web':
-        specifier: workspace:*
-        version: link:../../packages/plugin-ai-generation-web
-      '@imgly/plugin-ai-image-generation-web':
-        specifier: workspace:*
-        version: link:../../packages/plugin-ai-image-generation-web
-      '@imgly/plugin-ai-text-generation-web':
-        specifier: workspace:*
-        version: link:../../packages/plugin-ai-text-generation-web
-      '@imgly/plugin-ai-video-generation-web':
-        specifier: workspace:*
-        version: link:../../packages/plugin-ai-video-generation-web
       '@imgly/plugin-background-removal-web':
         specifier: workspace:*
         version: link:../../packages/plugin-background-removal-web

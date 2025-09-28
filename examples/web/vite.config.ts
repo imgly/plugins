@@ -35,7 +35,6 @@ export default defineConfig({
           console.log('  \x1b[35m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\x1b[0m');
           console.log('  \x1b[1m\x1b[33m🚀 IMG.LY Plugin Examples\x1b[0m');
           console.log('  \x1b[35m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\x1b[0m');
-          console.log(`  \x1b[32m📱 AI Demo:\x1b[0m        \x1b[1m\x1b[36m${protocol}://localhost:${port}/ai-demo\x1b[0m`);
           console.log(`  \x1b[32m🎨 AI Photo:\x1b[0m       \x1b[1m\x1b[36m${protocol}://localhost:${port}/ai-photoeditor\x1b[0m`);
           console.log(`  \x1b[32m🏠 Root:\x1b[0m           \x1b[1m\x1b[36m${protocol}://localhost:${port}/\x1b[0m`);
           console.log('  \x1b[35m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\x1b[0m');
