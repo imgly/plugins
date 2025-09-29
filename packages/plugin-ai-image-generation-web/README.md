@@ -662,7 +662,53 @@ cesdk.i18n.setTranslations({
 });
 ```
 
-#### 10. NanoBananaEdit (Image-to-Image)
+#### 10. SeedreamV4 (Text-to-Image)
+
+A powerful text-to-image model from ByteDance's Seedream 4.0 available through fal.ai:
+
+```typescript
+text2image: FalAiImage.SeedreamV4({
+  proxyUrl: 'http://your-proxy-server.com/api/proxy',
+  headers: {
+    'x-custom-header': 'value',
+    'x-client-version': '1.0.0'
+  },
+  // Optional: Configure default property values
+  properties: {
+    image_size: { default: 'square_hd' }  // Options: square_hd, square, portrait/landscape variants
+  }
+})
+```
+
+Key features:
+- High-quality image generation with ByteDance's Seedream 4.0 model
+- Multiple image size presets: square HD (2048×2048), square (1024×1024), portrait 4:3/16:9, landscape 4:3/16:9
+- Custom dimensions support (1024-4096 pixels)
+- Fast generation times
+- Safety checker enabled by default
+
+#### 11. SeedreamV4Edit (Image-to-Image)
+
+An advanced image editing model from ByteDance's Seedream 4.0 for transforming existing images:
+
+```typescript
+image2image: FalAiImage.SeedreamV4Edit({
+  proxyUrl: 'http://your-proxy-server.com/api/proxy',
+  headers: {
+    'x-custom-header': 'value',
+    'x-client-version': '1.0.0'
+  }
+})
+```
+
+Key features:
+- Unified architecture for both generation and editing
+- Supports multiple input images (up to 10)
+- Full canvas quick actions support: edit image, swap background, style transfer, artist styles, create variants, combine images, remix page
+- Maintains original image dimensions
+- Custom headers support for API requests
+
+#### 12. NanoBananaEdit (Image-to-Image)
 
 An image editing model from fal.ai that transforms existing images using text prompts:
 
@@ -1095,6 +1141,26 @@ FalAiImage.NanoBananaEdit(config: {
 })
 ```
 
+#### SeedreamV4
+
+```typescript
+FalAiImage.SeedreamV4(config: {
+  proxyUrl: string;
+  headers?: Record<string, string>;
+  debug?: boolean;
+})
+```
+
+#### SeedreamV4Edit
+
+```typescript
+FalAiImage.SeedreamV4Edit(config: {
+  proxyUrl: string;
+  headers?: Record<string, string>;
+  debug?: boolean;
+})
+```
+
 ## UI Integration
 
 The plugin automatically registers the following UI components:
@@ -1190,6 +1256,8 @@ const myImageProvider = {
   - FluxProKontextMaxEdit: `ly.img.ai.fal-ai/flux-pro/kontext/max`
   - NanoBanana: `ly.img.ai.fal-ai/nano-banana`
   - NanoBananaEdit: `ly.img.ai.fal-ai/nano-banana/edit`
+  - SeedreamV4: `ly.img.ai.fal-ai/bytedance/seedream/v4/text-to-image`
+  - SeedreamV4Edit: `ly.img.ai.fal-ai/bytedance/seedream/v4/edit`
 
 ### Asset History
 
@@ -1206,6 +1274,8 @@ Generated images are automatically stored in asset sources with the following ID
 - FluxProKontextMaxEdit: `fal-ai/flux-pro/kontext/max.history`
 - NanoBanana: `fal-ai/nano-banana.history`
 - NanoBananaEdit: `fal-ai/nano-banana/edit.history`
+- SeedreamV4: `fal-ai/bytedance/seedream/v4/text-to-image.history`
+- SeedreamV4Edit: `fal-ai/bytedance/seedream/v4/edit.history`
 
 ### Dock Integration
 

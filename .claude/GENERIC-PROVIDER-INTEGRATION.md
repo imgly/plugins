@@ -356,7 +356,7 @@ src/
 
 3. **Add to Demo**
    ```typescript
-   // In ai-demo.tsx appropriate category
+   // In examples/ai/src/App.tsx appropriate category
    {Provider}{MediaType}.{Model}.{Type}({
      middleware: [{type}RateLimitMiddleware, errorMiddleware],
      proxyUrl: import.meta.env.VITE_{PROVIDER}_PROXY_URL,

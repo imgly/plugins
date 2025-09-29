@@ -63,7 +63,7 @@ The router outputs: `ROUTE_TO_AGENT: {agent-name}`
 IMMEDIATELY use Task tool with:
 - subagent_type: "pnpm-workflow-fixer"
 - description: "Fix integration"
-- prompt: "Verify and fix integration for [EXACT_MODEL_NAME]. Ensure provider is added to index.ts and ai-demo.tsx. Run pnpm build to verify."
+- prompt: "Verify and fix integration for [EXACT_MODEL_NAME]. Ensure provider is added to index.ts and examples/ai/src/App.tsx. Run pnpm build to verify."
 ```
 
 ⚠️ **CRITICAL**: Even if you don't see the ROUTE_TO_AGENT output clearly, ALWAYS run pnpm-workflow-fixer after the generator completes. This is NON-NEGOTIABLE.
@@ -90,7 +90,7 @@ You IMMEDIATELY:
 
 The pnpm-workflow-fixer will automatically:
 - Add provider to `/src/fal-ai/index.ts` exports
-- Add provider to `ai-demo.tsx` with proper middleware
+- Add provider to `examples/ai/src/App.tsx` with proper middleware
 - Run `pnpm build` to verify no errors
 - Fix any integration issues found
 
