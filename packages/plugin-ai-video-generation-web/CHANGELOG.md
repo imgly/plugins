@@ -2,6 +2,17 @@
 
 ## [Unreleased]
 
+## [0.2.8] - 2025-09-29
+
+### New Features
+
+-   [image-generation] **SeedreamV4 Provider**: Added ByteDance Seedream 4.0 text-to-image provider via fal.ai for high-quality image generation with multiple size presets (square HD 2048×2048, square 1024×1024, portrait/landscape variants), custom dimensions support (1024-4096 pixels), and safety checker enabled by default
+-   [image-generation] **SeedreamV4Edit Provider**: Added ByteDance Seedream 4.0 image-to-image provider via fal.ai for advanced image editing with unified generation/editing architecture, support for multiple input images (up to 10), and full canvas quick actions support (editImage, swapBackground, styleTransfer, artistTransfer, createVariant, combineImages, remixPage, remixPageWithPrompt)
+
+### Fixed
+
+-   [sticker-generation] **Fixed Input Types Not Enabled**: Fixed an issue where the sticker generation panel would show "No input types are enabled" error by properly enabling the `fromText` and `fromImage` feature flags during plugin initialization
+
 ## [0.2.7] - 2025-09-26
 
 ### New Features
