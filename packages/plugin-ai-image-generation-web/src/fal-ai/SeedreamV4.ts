@@ -1,4 +1,7 @@
-import { type Provider, type CommonProviderConfiguration } from '@imgly/plugin-ai-generation-web';
+import {
+  type Provider,
+  type CommonProviderConfiguration
+} from '@imgly/plugin-ai-generation-web';
 import SeedreamV4Schema from './SeedreamV4.json';
 import CreativeEditorSDK from '@cesdk/cesdk-js';
 import { getImageDimensions } from './SeedreamV4.constants';
@@ -32,7 +35,10 @@ type SeedreamV4Output = {
 };
 
 export function SeedreamV4(
-  config: CommonProviderConfiguration<SeedreamV4TextToImageInput, SeedreamV4Output>
+  config: CommonProviderConfiguration<
+    SeedreamV4TextToImageInput,
+    SeedreamV4Output
+  >
 ): (context: {
   cesdk: CreativeEditorSDK;
 }) => Promise<Provider<'image', SeedreamV4TextToImageInput, SeedreamV4Output>> {
@@ -43,7 +49,10 @@ export function SeedreamV4(
 
 function getProvider(
   cesdk: CreativeEditorSDK,
-  config: CommonProviderConfiguration<SeedreamV4TextToImageInput, SeedreamV4Output>
+  config: CommonProviderConfiguration<
+    SeedreamV4TextToImageInput,
+    SeedreamV4Output
+  >
 ): Provider<'image', SeedreamV4TextToImageInput, SeedreamV4Output> {
   const modelKey = 'fal-ai/bytedance/seedream/v4/text-to-image';
 

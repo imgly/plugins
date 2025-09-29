@@ -112,7 +112,7 @@ function getProvider(
         }
       },
       renderCustomProperty: CommonProperties.ImageUrl(modelKey, {
-        cesdk: cesdk,
+        cesdk,
         propertyKey: 'image_url'
       }),
       middleware: [
