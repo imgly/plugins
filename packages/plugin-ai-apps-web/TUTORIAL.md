@@ -52,28 +52,23 @@ function App() {
             ref={(domElement) => {
                 if (domElement != null) {
                     CreativeEditorSDK.create(domElement, {
-                        license: 'your-license-key',
-                        callbacks: {
-                            onUpload: 'local',
-                            onExport: 'download'
-                        },
-                        ui: {
-                            elements: {
-                                navigation: {
-                                    action: {
-                                        load: true,
-                                        export: true
-                                    }
-                                }
-                            }
-                        }
+                        license: 'your-license-key'
                     }).then(async (instance) => {
                         cesdk.current = instance;
+
+                        // Add navigation bar actions
+                        instance.ui.insertNavigationBarOrderComponent('last', {
+                            id: 'ly.img.actions.navigationBar',
+                            children: [
+                                'ly.img.importScene.navigationBar',
+                                'ly.img.exportImage.navigationBar'
+                            ]
+                        });
 
                         // Add asset sources
                         await Promise.all([
                             instance.addDefaultAssetSources(),
-                            instance.addDemoAssetSources({ sceneMode: 'Video' })
+                            instance.addDemoAssetSources({ sceneMode: 'Video', withUploadAssetSources: true })
                         ]);
 
                         // Configure AI Apps dock position
