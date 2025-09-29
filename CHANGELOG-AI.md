@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [0.2.8] - 2025-09-29
+
 ### New Features
 
 -   [image-generation] **SeedreamV4 Provider**: Added ByteDance Seedream 4.0 text-to-image provider via fal.ai for high-quality image generation with multiple size presets (square HD 2048×2048, square 1024×1024, portrait/landscape variants), custom dimensions support (1024-4096 pixels), and safety checker enabled by default
