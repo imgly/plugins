@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed
+
+-   [sticker-generation] **Fixed Input Types Not Enabled**: Fixed an issue where the sticker generation panel would show "No input types are enabled" error by properly enabling the `fromText` and `fromImage` feature flags during plugin initialization
+
 ## [0.2.7] - 2025-09-26
 
 ### New Features

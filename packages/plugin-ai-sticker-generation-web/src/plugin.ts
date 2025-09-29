@@ -31,6 +31,14 @@ export function StickerGeneration<I, O extends Output>(
         'ly.img.plugin-ai-sticker-generation-web.providerSelect',
         true
       );
+      cesdk.feature.enable(
+        'ly.img.plugin-ai-sticker-generation-web.fromText',
+        true
+      );
+      cesdk.feature.enable(
+        'ly.img.plugin-ai-sticker-generation-web.fromImage',
+        true
+      );
 
       const registry = ActionRegistry.get();
 
