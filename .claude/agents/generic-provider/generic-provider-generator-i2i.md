@@ -233,7 +233,7 @@ getActionConfig: (action) => {
    - Export in main plugin
 
 3. **Demo Integration**:
-   - Add to `image2image` section in ai-demo.tsx
+   - Add to `image2image` section in examples/ai/src/App.tsx
    - Configure with image rate limiting middleware
    - Set up environment variables
 

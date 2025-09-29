@@ -247,7 +247,7 @@ async function pollForCompletion(taskId: string, config: any) {
    - Export in main plugin
 
 3. **Demo Integration**:
-   - Add to `text2video` section in ai-demo.tsx
+   - Add to `text2video` section in examples/ai/src/App.tsx
    - Configure with video rate limiting middleware (typically stricter)
    - Set up environment variables for API keys
 
