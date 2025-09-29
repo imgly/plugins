@@ -10,6 +10,13 @@ print_header() {
   echo
 }
 
+# Check for --force flag
+FORCE_MODE=false
+if [[ "$1" == "--force" ]]; then
+  FORCE_MODE=true
+  echo "Running in force mode - skipping all confirmations"
+fi
+
 # Store the root directory path
 ROOT_DIR=$(cd "$(dirname "$0")/../.." && pwd)
 
@@ -18,7 +25,12 @@ print_header "CHANGELOG-AI.md Content"
 if [ -f "$ROOT_DIR/CHANGELOG-AI.md" ]; then
   cat "$ROOT_DIR/CHANGELOG-AI.md"
   echo
-  read -p "Should this changelog be copied to all AI packages about to be published? (y/n): " copy_changelog
+  if [ "$FORCE_MODE" = true ]; then
+    copy_changelog="y"
+    echo "Force mode: Automatically copying changelog to all packages"
+  else
+    read -p "Should this changelog be copied to all AI packages about to be published? (y/n): " copy_changelog
+  fi
 else
   echo "CHANGELOG-AI.md not found"
   copy_changelog="n"
@@ -47,11 +59,15 @@ for pkg_dir in "$ROOT_DIR"/packages/plugin-ai-*/; do
     cp "$ROOT_DIR/CHANGELOG-AI.md" "$pkg_dir/CHANGELOG.md"
   fi
   
-  # Ask for confirmation
-  read -p "Publish this package? (y/n): " confirm
-  if [[ $confirm != [yY] ]]; then
-    echo "Skipping $pkg_name"
-    continue
+  # Ask for confirmation unless in force mode
+  if [ "$FORCE_MODE" = true ]; then
+    echo "Force mode: Publishing $pkg_name"
+  else
+    read -p "Publish this package? (y/n): " confirm
+    if [[ $confirm != [yY] ]]; then
+      echo "Skipping $pkg_name"
+      continue
+    fi
   fi
   
   # Navigate to the package directory
