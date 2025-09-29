@@ -8,6 +8,7 @@ import Elevenlabs from '@imgly/plugin-ai-audio-generation-web/elevenlabs';
 import Anthropic from '@imgly/plugin-ai-text-generation-web/anthropic';
 import OpenAIText from '@imgly/plugin-ai-text-generation-web/open-ai';
 import FalAiSticker from '@imgly/plugin-ai-sticker-generation-web/fal-ai';
+import PhotoEditorPlugin from './pages/PhotoEditorPlugin';
 
 import { useRef } from 'react';
 import { rateLimitMiddleware } from '@imgly/plugin-ai-generation-web';
@@ -16,15 +17,17 @@ import { RateLimitOptions } from '@imgly/plugin-ai-generation-web';
 import {
   testAllTranslations,
   resetTranslations
-} from '../utils/testTranslations';
+} from './utils/testTranslations';
 
 function App() {
   const cesdk = useRef<CreativeEditorSDK>();
+  console.log('App component rendering...');
   return (
     <div
       style={{ width: '100vw', height: '100vh' }}
       ref={(domElement) => {
         if (domElement != null) {
+          console.log('Creating CreativeEditorSDK...');
           CreativeEditorSDK.create(domElement, {
             license: import.meta.env.VITE_CESDK_LICENSE_KEY,
             userId: 'plugins-vercel',
@@ -92,12 +95,30 @@ function App() {
               window.history.replaceState({}, '', newUrl);
             }
 
-            const archiveUrl =
-              archiveType === 'video'
-                ? 'https://img.ly/showcases/cesdk/cases/ai-editor/ai_editor_video.archive'
-                : 'https://img.ly/showcases/cesdk/cases/ai-editor/ai_editor_design.archive';
+            // Handle photo editor mode
+            if (archiveType === 'photoeditor') {
+              instance.ui.setDockOrder(['ly.img.ai.photoeditor']);
+              await setupPhotoEditingScene(
+                instance,
+                'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&dl=dom-hill-nimElTcTNyY-unsplash.jpg&w=1920'
+              );
 
-            await instance.engine.scene.loadFromArchiveURL(archiveUrl);
+              instance.addPlugin(
+                PhotoEditorPlugin({
+                  image2image: OpenAiImage.GptImage1.Image2Image({
+                    proxyUrl: import.meta.env.VITE_OPENAI_PROXY_URL
+                  })
+                })
+              );
+            } else {
+              // Original video/design mode
+              const archiveUrl =
+                archiveType === 'video'
+                  ? 'https://img.ly/showcases/cesdk/cases/ai-editor/ai_editor_video.archive'
+                  : 'https://img.ly/showcases/cesdk/cases/ai-editor/ai_editor_design.archive';
+
+              await instance.engine.scene.loadFromArchiveURL(archiveUrl);
+            }
 
             const onRateLimitExceeded: RateLimitOptions<any>['onRateLimitExceeded'] =
               () => {
@@ -112,7 +133,9 @@ function App() {
                 return false;
               };
 
-            const rateLimitMiddlewareConfig = {
+            // Only add AI Apps plugin for non-photoeditor modes
+            if (archiveType !== 'photoeditor') {
+              const rateLimitMiddlewareConfig = {
               timeWindowMs: 24 * 60 * 60 * 1000,
               onRateLimitExceeded,
               disable: true
@@ -158,8 +181,8 @@ function App() {
               });
             };
 
-            instance.addPlugin(
-              AiApps({
+              instance.addPlugin(
+                AiApps({
                 debug: true,
                 dryRun: false,
                 providers: {
@@ -293,8 +316,9 @@ function App() {
                     proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
                   })
                 }
-              })
-            );
+                })
+              );
+            }
 
             instance.ui.setNavigationBarOrder([
               'sceneModeToggle',
@@ -315,16 +339,32 @@ function App() {
               );
             }
             instance.ui.registerComponent('sceneModeToggle', ({ builder }) => {
-              builder.Button('sceneModeToggle', {
-                label: archiveType === 'video' ? 'Video Mode' : 'Design Mode',
+              builder.Dropdown('sceneModeToggle', {
+                label: archiveType === 'video' ? 'Video Mode' : (archiveType === 'photoeditor' ? 'Photo Editor' : 'Design Mode'),
                 icon: '@imgly/Replace',
                 variant: 'regular',
-                onClick: () => {
-                  if (archiveType === 'video') {
-                    window.location.search = '?archive=design';
-                  } else {
-                    window.location.search = '?archive=video';
-                  }
+                children: () => {
+                  builder.Button('designMode', {
+                    label: 'Design Mode',
+                    isSelected: archiveType === 'design',
+                    onClick: () => {
+                      window.location.search = '?archive=design';
+                    }
+                  });
+                  builder.Button('videoMode', {
+                    label: 'Video Mode',
+                    isSelected: archiveType === 'video',
+                    onClick: () => {
+                      window.location.search = '?archive=video';
+                    }
+                  });
+                  builder.Button('photoEditor', {
+                    label: 'Photo Editor',
+                    isSelected: archiveType === 'photoeditor',
+                    onClick: () => {
+                      window.location.search = '?archive=photoeditor';
+                    }
+                  });
                 }
               });
             });
@@ -341,8 +381,10 @@ function App() {
                 }
               });
             });
-            
-            instance.ui.registerComponent('featureApiCustomizations', ({ builder }) => {
+
+            // Only show Feature API dropdown for non-photoeditor modes
+            if (archiveType !== 'photoeditor') {
+              instance.ui.registerComponent('featureApiCustomizations', ({ builder }) => {
               const isFeatureEnabled = (featureId: string) => {
                 try {
                   return instance.feature.isEnabled(featureId, { engine: instance.engine });
@@ -661,6 +703,10 @@ function App() {
                 }
               });
             });
+            }
+          }).catch((error) => {
+            console.error('Failed to create CreativeEditorSDK:', error);
+            alert('Failed to initialize the editor. Please check the console for details.');
           });
         } else if (cesdk.current != null) {
           cesdk.current.dispose();
@@ -668,6 +714,146 @@ function App() {
       }}
     ></div>
   );
+}
+
+async function setupPhotoEditingScene(
+  instance: CreativeEditorSDK,
+  uri: string
+) {
+  const engine = instance.engine;
+  const size = await getImageSize(uri);
+  if (!size || !size.width || !size.height) {
+    throw new Error('Could not get image size');
+  }
+  const { width, height } = size;
+  // hide page title:
+  engine.editor.setSettingBool('page/title/show', false);
+
+  const scene = engine.scene.create('Free');
+  engine.scene.setDesignUnit('Pixel');
+  const page = engine.block.create('page');
+  // Add page to scene:
+  engine.block.appendChild(scene, page);
+  // Set page size:
+  engine.block.setWidth(page, width);
+  engine.block.setHeight(page, height);
+  // Create image fill"
+  const fill = engine.block.createFill('image');
+  // Set fill url:
+  engine.block.setSourceSet(fill, 'fill/image/sourceSet', [
+    { uri, width, height }
+  ]);
+  engine.block.setFill(page, fill);
+  // Set content fill mode to cover:
+  engine.block.setContentFillMode(page, 'Cover');
+  // Disable changing fill of page, hides e.g also the "replace" button
+  engine.block.setScopeEnabled(page, 'fill/change', false);
+  engine.block.setScopeEnabled(page, 'fill/changeType', false);
+  // Disable stroke of page, since it does not make sense with current wording and takes up to much space
+  engine.block.setScopeEnabled(page, 'stroke/change', false);
+  engine.editor.setSettingBool(
+    'ubq://page/moveChildrenWhenCroppingFill' as any,
+    true
+  );
+  engine.block.setClipped(page, true);
+
+  // only allow resizing and moving of page in crop mode
+  const unsubscribeStateChange = engine.editor.onStateChanged(() => {
+    const editMode = engine.editor.getEditMode();
+    const cropConstraint = getCropConstraintMetadata(engine);
+    if (editMode !== 'Crop') {
+      // close size preset panel
+      instance.ui.closePanel('ly.img.page-crop');
+      engine.editor.setSettingBool(
+        'ubq://page/allowResizeInteraction' as any,
+        false
+      );
+      return;
+    }
+    if (cropConstraint === 'none') {
+      engine.editor.setSettingBool(
+        'ubq://page/restrictResizeInteractionToFixedAspectRatio' as any,
+        false
+      );
+      engine.editor.setSettingBool(
+        'ubq://page/allowResizeInteraction' as any,
+        true
+      );
+    } else if (cropConstraint === 'aspect-ratio') {
+      engine.editor.setSettingBool(
+        'ubq://page/restrictResizeInteractionToFixedAspectRatio' as any,
+        true
+      );
+      engine.editor.setSettingBool(
+        'ubq://page/allowResizeInteraction' as any,
+        true
+      );
+    } else if (cropConstraint === 'resolution') {
+      engine.editor.setSettingBool(
+        'ubq://page/allowResizeInteraction' as any,
+        false
+      );
+      engine.editor.setSettingBool(
+        'ubq://page/restrictResizeInteractionToFixedAspectRatio' as any,
+        false
+      );
+    }
+  });
+
+  // If nothing is selected: select page by listening to selection changes
+  const unsubscribeSelectionChange = engine.block.onSelectionChanged(() => {
+    const selection = engine.block.findAllSelected();
+    if (selection.length === 0) {
+      const page = engine.scene.getCurrentPage();
+      engine.block.select(page!);
+    }
+  });
+
+  // Initially select the page
+  engine.block.select(page);
+  return () => {
+    unsubscribeSelectionChange();
+    unsubscribeStateChange();
+  };
+}
+
+function getImageSize(url: string): Promise<{ width: number; height: number }> {
+  const img = document.createElement('img');
+
+  const promise = new Promise<{ width: number; height: number }>(
+    (resolve, reject) => {
+      img.onload = () => {
+        // Natural size is the actual image size regardless of rendering.
+        // The 'normal' `width`/`height` are for the **rendered** size.
+        const width = img.naturalWidth;
+        const height = img.naturalHeight;
+
+        // Resolve promise with the width and height
+        resolve({ width, height });
+      };
+
+      // Reject promise on error
+      img.onerror = reject;
+    }
+  );
+
+  // Setting the source makes it start downloading and eventually call `onload`
+  img.src = url;
+
+  return promise;
+}
+
+const ALL_CROP_CONSTRAINTS = ['none', 'aspect-ratio', 'resolution'] as const;
+type CropConstraint = (typeof ALL_CROP_CONSTRAINTS)[number];
+
+export function getCropConstraintMetadata(
+  engine: any
+): CropConstraint {
+  const page = engine.scene.getCurrentPage();
+  if (!page || !engine.block.findAllMetadata(page).includes('cropConstraint')) {
+    return 'none';
+  }
+  return engine.block.getMetadata(page, 'cropConstraint') as CropConstraint;
 }
 
 export default App;

@@ -7,6 +7,7 @@
     "clean": "turbo run clean",
     "purge": "pnpm exec rimraf node_modules && pnpm recursive run purge",
     "dev": "turbo run dev --concurrency=20",
+    "dev:ai": "turbo run dev --filter=@imgly/plugin-ai-example",
     "test": "turbo run test",
     "check:all": "turbo run check:all",
     "check:types": "turbo run check:types",

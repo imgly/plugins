@@ -1,5 +1,5 @@
 {
-  "name": "@imgly/plugin-example",
+  "name": "@imgly/plugin-ai-example",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -14,17 +14,16 @@
   "dependencies": {
     "@cesdk/cesdk-js": "catalog:",
     "@cesdk/engine": "catalog:",
+    "@imgly/plugin-ai-generation-web": "workspace:*",
+    "@imgly/plugin-ai-apps-web": "workspace:*",
     "@imgly/plugin-utils": "workspace:*",
-    "@imgly/plugin-background-removal-web": "workspace:*",
-    "@imgly/plugin-cutout-library-web": "workspace:*",
-    "@imgly/plugin-qr-code-web": "workspace:*",
-    "@imgly/plugin-remote-asset-source-web": "workspace:*",
-    "@imgly/plugin-soundstripe-web": "workspace:*",
-    "@imgly/plugin-vectorizer-web": "workspace:*",
-    "onnxruntime-web": "1.21.0",
+    "@imgly/plugin-ai-text-generation-web": "workspace:*",
+    "@imgly/plugin-ai-image-generation-web": "workspace:*",
+    "@imgly/plugin-ai-video-generation-web": "workspace:*",
+    "@imgly/plugin-ai-audio-generation-web": "workspace:*",
+    "@imgly/plugin-ai-sticker-generation-web": "workspace:*",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-router-dom": "^7.3.0"
+    "react-dom": "^18.3.1"
   },
   "devDependencies": {
     "@types/react": "^18.3.18",
