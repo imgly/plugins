@@ -166,6 +166,7 @@ function generatePDFXDef(options: PDFX3Options): string {
   return `%!
 % PDF/X-3 Definition File
 [ /Title (${options.title || 'Untitled'}) /DOCINFO pdfmark
+[ /Trapped /Unknown /DOCINFO pdfmark
 
 % Set PDF/X-3 conformance
 [ /GTS_PDFXVersion (PDF/X-3:2003) /GTS_PDFXConformance (PDF/X-3:2003) /DOCINFO pdfmark
