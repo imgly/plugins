@@ -89,19 +89,29 @@ export async function convertToPDFX3(
 
     // Determine ICC profile path and metadata for Ghostscript
     let iccProfilePath: string;
-    let profileInfo: { identifier: string; info: string };
+    let outputConditionIdentifier: string;
+    let outputCondition: string;
 
     if (options.outputProfile === 'custom') {
       iccProfilePath = customProfilePath;
-      profileInfo = { identifier: 'Custom Profile', info: 'Custom ICC Profile' };
+      // Use custom values or defaults
+      outputConditionIdentifier = options.outputConditionIdentifier || 'Custom Profile';
+      outputCondition = options.outputCondition || 'Custom ICC Profile';
     } else {
       const preset = PROFILE_PRESETS[options.outputProfile as keyof typeof PROFILE_PRESETS];
       iccProfilePath = `/tmp/${preset.file}`;
-      profileInfo = { identifier: preset.identifier, info: preset.info };
+      // Allow overriding preset values
+      outputConditionIdentifier = options.outputConditionIdentifier || preset.identifier;
+      outputCondition = options.outputCondition || preset.info;
     }
 
-    // Generate PDF/X-3 definition with ICC profile path
-    const pdfxDefinition = generatePDFXDef(options, iccProfilePath);
+    // Generate PDF/X-3 definition with ICC profile path and metadata
+    const pdfxDefinition = generatePDFXDef(
+      options,
+      iccProfilePath,
+      outputConditionIdentifier,
+      outputCondition
+    );
     vfs.writeText(pdfxDefPath, pdfxDefinition);
 
     // Execute Ghostscript conversion
@@ -165,12 +175,12 @@ const PROFILE_PRESETS = {
   }
 };
 
-function generatePDFXDef(options: PDFX3Options, iccProfilePath: string): string {
-  // Generate PDF/X-3 definition with proper output intent for spot colors
-  const profileInfo = options.outputProfile === 'custom'
-    ? { identifier: 'Custom Profile', info: 'Custom ICC Profile' }
-    : PROFILE_PRESETS[options.outputProfile as keyof typeof PROFILE_PRESETS];
-
+function generatePDFXDef(
+  options: PDFX3Options,
+  iccProfilePath: string,
+  outputConditionIdentifier: string,
+  outputCondition: string
+): string {
   return `%!
 % PDF/X-3 Definition File
 [ /Title (${options.title || 'Untitled'}) /DOCINFO pdfmark
@@ -189,9 +199,8 @@ function generatePDFXDef(options: PDFX3Options, iccProfilePath: string): string 
 [{OutputIntent_PDFX} <<
   /Type /OutputIntent
   /S /GTS_PDFX
-  /OutputCondition (${profileInfo.info})
-  /OutputConditionIdentifier (${profileInfo.identifier})
-  /RegistryName (http://www.color.org)
+  /OutputCondition (${outputCondition})
+  /OutputConditionIdentifier (${outputConditionIdentifier})
   /DestOutputProfile {icc_PDFX}
 >> /PUT pdfmark
 
