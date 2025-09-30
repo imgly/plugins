@@ -71,32 +71,40 @@ export async function convertToPDFX3(
     if (options.outputProfile === 'custom' && options.customProfile) {
       await vfs.writeBlob(customProfilePath, options.customProfile);
     } else if (options.outputProfile !== 'custom') {
-      // TODO: Implement proper ICC profile loading for both browser and Node.js
-      // For now, create a minimal valid ICC profile placeholder
+      // Load the bundled ICC profile
       const profileInfo = PROFILE_PRESETS[options.outputProfile as keyof typeof PROFILE_PRESETS];
       const profilePath = `/tmp/${profileInfo.file}`;
-      
-      // Create a minimal ICC profile header that Ghostscript can recognize
-      const minimalProfile = new Uint8Array(128);
-      minimalProfile.set([0x41, 0x44, 0x42, 0x45], 0); // 'ADBE' signature
-      minimalProfile.set([0x00, 0x00, 0x00, 0x80], 4); // Profile size (128 bytes)
-      
-      await vfs.writeBlob(profilePath, new Blob([minimalProfile]));
+
+      // Import and load the actual ICC profile from assets
+      const profileModule = await import(`../assets/icc-profiles/${profileInfo.file}?url`);
+      const profileResponse = await fetch(profileModule.default);
+      const profileBlob = await profileResponse.blob();
+
+      await vfs.writeBlob(profilePath, profileBlob);
     }
 
     // Generate PDF/X-3 definition based on output profile
     const pdfxDefinition = generatePDFXDef(options);
     vfs.writeText(pdfxDefPath, pdfxDefinition);
 
+    // Determine ICC profile path for Ghostscript
+    const profileInfo = options.outputProfile === 'custom'
+      ? null
+      : PROFILE_PRESETS[options.outputProfile as keyof typeof PROFILE_PRESETS];
+    const iccProfilePath = options.outputProfile === 'custom'
+      ? customProfilePath
+      : `/tmp/${profileInfo!.file}`;
+
     // Execute Ghostscript conversion
     const gsArgs = [
       '-dPDFX',
-      '-dBATCH', 
+      '-dBATCH',
       '-dNOPAUSE',
       '-dNOOUTERSAVE',
       '-sDEVICE=pdfwrite',
       '-sColorConversionStrategy=CMYK',
       '-dProcessColorModel=/DeviceCMYK',
+      `-sOutputICCProfile=${iccProfilePath}`,
       '-sPDFXSetBleedBoxToMediaBox=true',
       `-sOutputFile=${outputPath}`,
       pdfxDefPath,
@@ -147,10 +155,10 @@ const PROFILE_PRESETS = {
 
 function generatePDFXDef(options: PDFX3Options): string {
   // Generate PDF/X-3 definition with proper output intent for spot colors
-  const profileInfo = options.outputProfile === 'custom' 
+  const profileInfo = options.outputProfile === 'custom'
     ? { identifier: 'Custom Profile', info: 'Custom ICC Profile' }
     : PROFILE_PRESETS[options.outputProfile as keyof typeof PROFILE_PRESETS];
-    
+
   return `%!
 % PDF/X-3 Definition File
 [ /Title (${options.title || 'Untitled'}) /DOCINFO pdfmark
@@ -163,9 +171,9 @@ function generatePDFXDef(options: PDFX3Options): string {
 [ /OutputIntent <<
   /Type /OutputIntent
   /S /GTS_PDFX
+  /OutputCondition (${profileInfo.info})
   /OutputConditionIdentifier (${profileInfo.identifier})
-  /Info (${profileInfo.info})
   /RegistryName (http://www.color.org)
->> /DOCINFO pdfmark`;
+>> /PUT pdfmark`;
 }
 
