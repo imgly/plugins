@@ -2,10 +2,11 @@ import {
   ImageOutput,
   type Provider,
   type CommonProviderConfiguration,
-  getPanelId
+  getPanelId,
+  addIconSetOnce
 } from '@imgly/plugin-ai-generation-web';
+import { Icons, getImageDimensionsFromURL } from '@imgly/plugin-utils';
 import schema from './QwenImageEdit.json';
-import { getImageDimensionsFromURL } from '@imgly/plugin-utils';
 import CreativeEditorSDK from '@cesdk/cesdk-js';
 import createImageProvider from './createImageProvider';
 
@@ -51,6 +52,9 @@ function getProvider(
   config: CommonProviderConfiguration<QwenImageEditInput, ImageOutput>
 ): Provider<'image', QwenImageEditInput, ImageOutput> {
   const modelKey = 'fal-ai/qwen-image-edit';
+
+  // Add aspect ratio icons
+  addIconSetOnce(cesdk, '@imgly/plugin/formats', Icons.Formats);
 
   return createImageProvider(
     {

@@ -3,10 +3,11 @@ import {
   type Provider,
   type CommonProviderConfiguration,
   getPanelId,
-  CommonProperties
+  CommonProperties,
+  addIconSetOnce
 } from '@imgly/plugin-ai-generation-web';
+import { Icons, getImageDimensionsFromURL } from '@imgly/plugin-utils';
 import schema from './SeedreamV4Edit.json';
-import { getImageDimensionsFromURL } from '@imgly/plugin-utils';
 import CreativeEditorSDK, { MimeType } from '@cesdk/cesdk-js';
 import createImageProvider from './createImageProvider';
 
@@ -51,6 +52,9 @@ function getProvider(
   config: CommonProviderConfiguration<SeedreamV4EditInput, ImageOutput>
 ): Provider<'image', SeedreamV4EditInput, ImageOutput> {
   const modelKey = 'fal-ai/bytedance/seedream/v4/edit';
+
+  // Add aspect ratio icons
+  addIconSetOnce(cesdk, '@imgly/plugin/formats', Icons.Formats);
 
   return createImageProvider(
     {
