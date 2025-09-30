@@ -120,18 +120,22 @@ function initialize(
                 middleware: [errorMiddleware],
                 proxyUrl: process.env.FAL_AI_PROXY_URL
               }),
-              image2image: [FalAiImage.SeedreamV4Edit({
-                middleware: [errorMiddleware],
-                proxyUrl: process.env.FAL_AI_PROXY_URL
-              })],
+              image2image: [
+                FalAiImage.SeedreamV4Edit({
+                  middleware: [errorMiddleware],
+                  proxyUrl: process.env.FAL_AI_PROXY_URL
+                })
+              ],
               text2video: FalAiVideo.ByteDanceSeedanceV1ProTextToVideo({
                 middleware: [errorMiddleware],
                 proxyUrl: process.env.FAL_AI_PROXY_URL
               }),
-              image2video: [FalAiVideo.ByteDanceSeedanceV1ProImageToVideo({
-                middleware: [errorMiddleware],
-                proxyUrl: process.env.FAL_AI_PROXY_URL
-              })]
+              image2video: [
+                FalAiVideo.ByteDanceSeedanceV1ProImageToVideo({
+                  middleware: [errorMiddleware],
+                  proxyUrl: process.env.FAL_AI_PROXY_URL
+                })
+              ]
             }
           })
         );
