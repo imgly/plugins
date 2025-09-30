@@ -87,10 +87,6 @@ export async function convertToPDFX3(
       await vfs.writeBlob(profilePath, profileBlob);
     }
 
-    // Generate PDF/X-3 definition based on output profile
-    const pdfxDefinition = generatePDFXDef(options);
-    vfs.writeText(pdfxDefPath, pdfxDefinition);
-
     // Determine ICC profile path and metadata for Ghostscript
     let iccProfilePath: string;
     let profileInfo: { identifier: string; info: string };
@@ -103,6 +99,10 @@ export async function convertToPDFX3(
       iccProfilePath = `/tmp/${preset.file}`;
       profileInfo = { identifier: preset.identifier, info: preset.info };
     }
+
+    // Generate PDF/X-3 definition with ICC profile path
+    const pdfxDefinition = generatePDFXDef(options, iccProfilePath);
+    vfs.writeText(pdfxDefPath, pdfxDefinition);
 
     // Execute Ghostscript conversion
     const gsArgs = [
@@ -117,10 +117,6 @@ export async function convertToPDFX3(
       '-sColorConversionStrategy=CMYK',
       '-dProcessColorModel=/DeviceCMYK',
       '-dConvertCMYKImagesToRGB=false',
-      `-sOutputICCProfile=${iccProfilePath}`,
-      `-sOutputConditionIdentifier=${profileInfo.identifier}`,
-      `-sOutputCondition=${profileInfo.info}`,
-      '-sRegistryName=http://www.color.org',
       '-sPDFXSetBleedBoxToMediaBox=true',
       `-sOutputFile=${outputPath}`,
       pdfxDefPath,
@@ -169,7 +165,7 @@ const PROFILE_PRESETS = {
   }
 };
 
-function generatePDFXDef(options: PDFX3Options): string {
+function generatePDFXDef(options: PDFX3Options, iccProfilePath: string): string {
   // Generate PDF/X-3 definition with proper output intent for spot colors
   const profileInfo = options.outputProfile === 'custom'
     ? { identifier: 'Custom Profile', info: 'Custom ICC Profile' }
@@ -183,8 +179,23 @@ function generatePDFXDef(options: PDFX3Options): string {
 % Set PDF/X-3 conformance
 [ /GTS_PDFXVersion (PDF/X-3:2003) /GTS_PDFXConformance (PDF/X-3:2003) /DOCINFO pdfmark
 
-% OutputIntent is automatically created by Ghostscript via -sOutputICCProfile parameter
-% with OutputConditionIdentifier: ${profileInfo.identifier}
-% and OutputCondition: ${profileInfo.info}`;
+% Load ICC profile as a stream
+[/_objdef {icc_PDFX} /type /stream /OBJ pdfmark
+[{icc_PDFX} <</N 4>> /PUT pdfmark
+[{icc_PDFX} (${iccProfilePath}) (r) file /PUT pdfmark
+
+% Define OutputIntent with embedded ICC profile
+[/_objdef {OutputIntent_PDFX} /type /dict /OBJ pdfmark
+[{OutputIntent_PDFX} <<
+  /Type /OutputIntent
+  /S /GTS_PDFX
+  /OutputCondition (${profileInfo.info})
+  /OutputConditionIdentifier (${profileInfo.identifier})
+  /RegistryName (http://www.color.org)
+  /DestOutputProfile {icc_PDFX}
+>> /PUT pdfmark
+
+% Add OutputIntent to Catalog
+[{Catalog} <</OutputIntents [{OutputIntent_PDFX}]>> /PUT pdfmark`;
 }
 
