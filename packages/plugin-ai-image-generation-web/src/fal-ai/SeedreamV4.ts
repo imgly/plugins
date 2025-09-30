@@ -1,7 +1,9 @@
 import {
   type Provider,
-  type CommonProviderConfiguration
+  type CommonProviderConfiguration,
+  addIconSetOnce
 } from '@imgly/plugin-ai-generation-web';
+import { Icons } from '@imgly/plugin-utils';
 import SeedreamV4Schema from './SeedreamV4.json';
 import CreativeEditorSDK from '@cesdk/cesdk-js';
 import { getImageDimensions } from './SeedreamV4.constants';
@@ -55,6 +57,9 @@ function getProvider(
   >
 ): Provider<'image', SeedreamV4TextToImageInput, SeedreamV4Output> {
   const modelKey = 'fal-ai/bytedance/seedream/v4/text-to-image';
+
+  // Add aspect ratio icons
+  addIconSetOnce(cesdk, '@imgly/plugin/formats', Icons.Formats);
 
   return createImageProvider(
     {
