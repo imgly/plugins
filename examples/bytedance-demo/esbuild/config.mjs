@@ -16,10 +16,15 @@ if (!process.env.CI && !process.env.VERCEL) {
   dotenv.config({ path: '.env.local' });
 }
 
-// Debug: Log environment variable status
+// Debug: Log ALL environment variables to diagnose Vercel issue
+console.log('[esbuild config] All env vars:', Object.keys(process.env).filter(k =>
+  k.includes('CESDK') || k.includes('PROXY') || k.includes('FAL') || k.includes('ANTHROPIC')
+).reduce((acc, k) => ({ ...acc, [k]: process.env[k]?.substring(0, 50) + '...' }), {}));
+
 console.log('[esbuild config] Environment check:', {
   CI: process.env.CI,
   VERCEL: process.env.VERCEL,
+  VERCEL_ENV: process.env.VERCEL_ENV,
   hasCESDKLicense: !!process.env.CESDK_LICENSE,
   licenseLength: process.env.CESDK_LICENSE?.length,
   hasFalAiProxy: !!process.env.FAL_AI_PROXY_URL,
