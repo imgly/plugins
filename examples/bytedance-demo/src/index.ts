@@ -4,6 +4,7 @@ import FalAiImage from '@imgly/plugin-ai-image-generation-web/fal-ai';
 import FalAiVideo from '@imgly/plugin-ai-video-generation-web/fal-ai';
 import Anthropic from '@imgly/plugin-ai-text-generation-web/anthropic';
 import { Middleware } from '@imgly/plugin-ai-generation-web';
+import { Icons } from '@imgly/plugin-utils';
 
 function initialize(
   selector: string,
@@ -79,6 +80,9 @@ function initialize(
         instance.i18n.setTranslations({
           en: {}
         });
+
+        // Add format icons for aspect ratio/size selection
+        instance.ui.addIconSet('@imgly/plugin/formats', Icons.Formats);
 
         const errorMiddleware: Middleware<any, any> = async (
           input,
