@@ -5,8 +5,8 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  '@cesdk/cesdk-js': 1.60.0
-  '@cesdk/engine': 1.60.0
+  '@cesdk/cesdk-js': 1.59.2
+  '@cesdk/engine': 1.59.2
 
 importers:
 
@@ -70,11 +70,11 @@ importers:
   examples/ai:
     dependencies:
       '@cesdk/cesdk-js':
-        specifier: 1.60.0
-        version: 1.60.0(react@18.3.1)
+        specifier: 1.59.2
+        version: 1.59.2(react@18.3.1)
       '@cesdk/engine':
-        specifier: 1.60.0
-        version: 1.60.0(react@18.3.1)
+        specifier: 1.59.2
+        version: 1.59.2(react@18.3.1)
       '@imgly/plugin-ai-apps-web':
         specifier: workspace:*
         version: link:../../packages/plugin-ai-apps-web
@@ -140,11 +140,11 @@ importers:
   examples/bytedance-demo:
     dependencies:
       '@cesdk/cesdk-js':
-        specifier: 1.60.0
-        version: 1.60.0(react@18.3.1)
+        specifier: 1.59.2
+        version: 1.59.2(react@18.3.1)
       '@cesdk/engine':
-        specifier: 1.60.0
-        version: 1.60.0(react@18.3.1)
+        specifier: 1.59.2
+        version: 1.59.2(react@18.3.1)
       '@imgly/plugin-ai-apps-web':
         specifier: workspace:*
         version: link:../../packages/plugin-ai-apps-web
@@ -192,11 +192,11 @@ importers:
   examples/gpt-demo:
     dependencies:
       '@cesdk/cesdk-js':
-        specifier: 1.60.0
-        version: 1.60.0(react@18.3.1)
+        specifier: 1.59.2
+        version: 1.59.2(react@18.3.1)
       '@cesdk/engine':
-        specifier: 1.60.0
-        version: 1.60.0(react@18.3.1)
+        specifier: 1.59.2
+        version: 1.59.2(react@18.3.1)
       '@imgly/plugin-ai-apps-web':
         specifier: workspace:*
         version: link:../../packages/plugin-ai-apps-web
@@ -247,11 +247,11 @@ importers:
   examples/web:
     dependencies:
       '@cesdk/cesdk-js':
-        specifier: 1.60.0
-        version: 1.60.0(react@18.3.1)
+        specifier: 1.59.2
+        version: 1.59.2(react@18.3.1)
       '@cesdk/engine':
-        specifier: 1.60.0
-        version: 1.60.0(react@18.3.1)
+        specifier: 1.59.2
+        version: 1.59.2(react@18.3.1)
       '@imgly/plugin-background-removal-web':
         specifier: workspace:*
         version: link:../../packages/plugin-background-removal-web
@@ -332,8 +332,8 @@ importers:
   packages/plugin-ai-apps-web:
     dependencies:
       '@cesdk/cesdk-js':
-        specifier: 1.60.0
-        version: 1.60.0(react@18.3.1)
+        specifier: 1.59.2
+        version: 1.59.2(react@18.3.1)
     devDependencies:
       '@imgly/plugin-ai-audio-generation-web':
         specifier: workspace:*
@@ -381,8 +381,8 @@ importers:
   packages/plugin-ai-audio-generation-web:
     dependencies:
       '@cesdk/cesdk-js':
-        specifier: 1.60.0
-        version: 1.60.0(react@18.3.1)
+        specifier: 1.59.2
+        version: 1.59.2(react@18.3.1)
     devDependencies:
       '@imgly/plugin-ai-generation-web':
         specifier: workspace:*
@@ -418,8 +418,8 @@ importers:
   packages/plugin-ai-generation-web:
     dependencies:
       '@cesdk/cesdk-js':
-        specifier: 1.60.0
-        version: 1.60.0(react@18.3.1)
+        specifier: 1.59.2
+        version: 1.59.2(react@18.3.1)
     devDependencies:
       '@imgly/plugin-utils':
         specifier: workspace:*
@@ -449,8 +449,8 @@ importers:
   packages/plugin-ai-image-generation-web:
     dependencies:
       '@cesdk/cesdk-js':
-        specifier: 1.60.0
-        version: 1.60.0(react@18.3.1)
+        specifier: 1.59.2
+        version: 1.59.2(react@18.3.1)
     devDependencies:
       '@fal-ai/client':
         specifier: ^1.3.0
@@ -492,8 +492,8 @@ importers:
   packages/plugin-ai-sticker-generation-web:
     dependencies:
       '@cesdk/cesdk-js':
-        specifier: 1.60.0
-        version: 1.60.0(react@18.3.1)
+        specifier: 1.59.2
+        version: 1.59.2(react@18.3.1)
     devDependencies:
       '@fal-ai/client':
         specifier: ^1.3.0
@@ -532,8 +532,8 @@ importers:
   packages/plugin-ai-text-generation-web:
     dependencies:
       '@cesdk/cesdk-js':
-        specifier: 1.60.0
-        version: 1.60.0(react@18.3.1)
+        specifier: 1.59.2
+        version: 1.59.2(react@18.3.1)
     devDependencies:
       '@anthropic-ai/sdk':
         specifier: ^0.39.0
@@ -578,8 +578,8 @@ importers:
   packages/plugin-ai-video-generation-web:
     dependencies:
       '@cesdk/cesdk-js':
-        specifier: 1.60.0
-        version: 1.60.0(react@18.3.1)
+        specifier: 1.59.2
+        version: 1.59.2(react@18.3.1)
     devDependencies:
       '@fal-ai/client':
         specifier: ^1.3.0
@@ -618,8 +618,8 @@ importers:
   packages/plugin-background-removal-web:
     dependencies:
       '@cesdk/cesdk-js':
-        specifier: 1.60.0
-        version: 1.60.0(react@18.3.1)
+        specifier: 1.59.2
+        version: 1.59.2(react@18.3.1)
       '@imgly/background-removal':
         specifier: 1.7.0
         version: 1.7.0(onnxruntime-web@1.21.0)
@@ -658,8 +658,8 @@ importers:
   packages/plugin-cutout-library-web:
     dependencies:
       '@cesdk/cesdk-js':
-        specifier: 1.60.0
-        version: 1.60.0(react@18.3.1)
+        specifier: 1.59.2
+        version: 1.59.2(react@18.3.1)
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
@@ -686,8 +686,8 @@ importers:
   packages/plugin-qr-code-web:
     dependencies:
       '@cesdk/cesdk-js':
-        specifier: 1.60.0
-        version: 1.60.0(react@18.3.1)
+        specifier: 1.59.2
+        version: 1.59.2(react@18.3.1)
     devDependencies:
       '@imgly/plugin-utils':
         specifier: workspace:*
@@ -717,8 +717,8 @@ importers:
   packages/plugin-remote-asset-source-web:
     dependencies:
       '@cesdk/cesdk-js':
-        specifier: 1.60.0
-        version: 1.60.0(react@18.3.1)
+        specifier: 1.59.2
+        version: 1.59.2(react@18.3.1)
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
@@ -748,12 +748,12 @@ importers:
   packages/plugin-soundstripe-web:
     dependencies:
       '@cesdk/cesdk-js':
-        specifier: 1.60.0
-        version: 1.60.0(react@18.3.1)
+        specifier: 1.59.2
+        version: 1.59.2(react@18.3.1)
     devDependencies:
       '@cesdk/engine':
-        specifier: 1.60.0
-        version: 1.60.0(react@18.3.1)
+        specifier: 1.59.2
+        version: 1.59.2(react@18.3.1)
       chalk:
         specifier: ^5.4.1
         version: 5.6.0
@@ -776,8 +776,8 @@ importers:
   packages/plugin-utils:
     dependencies:
       '@cesdk/cesdk-js':
-        specifier: 1.60.0
-        version: 1.60.0(react@18.3.1)
+        specifier: 1.59.2
+        version: 1.59.2(react@18.3.1)
       lodash-es:
         specifier: ^4.17.21
         version: 4.17.21
@@ -807,8 +807,8 @@ importers:
   packages/plugin-vectorizer-web:
     dependencies:
       '@cesdk/cesdk-js':
-        specifier: 1.60.0
-        version: 1.60.0(react@18.3.1)
+        specifier: 1.59.2
+        version: 1.59.2(react@18.3.1)
       '@imgly/vectorizer':
         specifier: 1.0.0
         version: 1.0.0
@@ -1028,25 +1028,19 @@ packages:
   '@bcoe/v8-coverage@0.2.3':
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
 
-  '@cesdk/cesdk-js@1.60.0':
-    resolution: {integrity: sha512-A4HJ8DHZ1szNxpf5yG5/NIlFdExzwDXwBJPGBV4/HoNqgjMS0IibCruLClz9qVFquX1c27sCmO9/+B61tP9z2g==}
+  '@cesdk/cesdk-js@1.59.2':
+    resolution: {integrity: sha512-eIiVq14ddz816RFhih5nzMik5h+S90K8OcAOjRvM/4E8hqDTKi3TyJBVHRu1VWB7Y/Yc/5yVhyGbgjn/tYYzEA==}
     peerDependencies:
-      '@angular/common': '>=14.0.0'
-      '@angular/core': '>=14.0.0'
       react: '>16'
       vue: ^3.0.0
     peerDependenciesMeta:
-      '@angular/common':
-        optional: true
-      '@angular/core':
-        optional: true
       react:
         optional: true
       vue:
         optional: true
 
-  '@cesdk/engine@1.60.0':
-    resolution: {integrity: sha512-e0k9SK0iheuCtcDJPPh7vquO/h/RkrWgJ8391fjBPKIA/J0k9msJCQPVJR0iGmJpNEM3TIFRGreWqU1nFqgcaA==}
+  '@cesdk/engine@1.59.2':
+    resolution: {integrity: sha512-q1OJXx2dG7TThN26LTm2p5sKquNlDIpUSDoncX5w/eLMOndx5vjQFIgYkv6WR8upJGKtwzexOQxaTJ/WGjmkcQ==}
     peerDependencies:
       react: '>16'
     peerDependenciesMeta:
@@ -5085,13 +5079,13 @@ snapshots:
 
   '@bcoe/v8-coverage@0.2.3': {}
 
-  '@cesdk/cesdk-js@1.60.0(react@18.3.1)':
+  '@cesdk/cesdk-js@1.59.2(react@18.3.1)':
     dependencies:
-      '@cesdk/engine': 1.60.0(react@18.3.1)
+      '@cesdk/engine': 1.59.2(react@18.3.1)
     optionalDependencies:
       react: 18.3.1
 
-  '@cesdk/engine@1.60.0(react@18.3.1)':
+  '@cesdk/engine@1.59.2(react@18.3.1)':
     optionalDependencies:
       react: 18.3.1
 
