@@ -1,6 +1,11 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "ui": "stream",
+  "globalEnv": [
+    "CESDK_LICENSE",
+    "FAL_AI_PROXY_URL",
+    "ANTHROPIC_PROXY_URL"
+  ],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
