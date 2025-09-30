@@ -1,7 +1,6 @@
 {
   "buildCommand": "pnpm build",
   "installCommand": "pnpm install",
-  "outputDirectory": "examples/web/dist",
   "headers": [
     {
       "source": "/",
