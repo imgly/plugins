@@ -1,4 +1,5 @@
-import CreativeEditorSDK, { EditorPlugin } from '@cesdk/cesdk-js';
+import CreativeEditorSDK from '@cesdk/cesdk-js';
+import type { EditorPlugin } from '@cesdk/cesdk-js';
 import {
   ImageOutput,
   initializeProvider,

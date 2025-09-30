@@ -17,3 +17,31 @@ For more information about the particular plugins, please visit the according pa
 - [QR Codes](packages/plugin-qr-code-web/)
 - [Remote Asset Source](packages/plugin-remote-asset-source-web/)
 - [Vectorizer](packages/plugin-vectorizer-web/)
+- [AI Generation](packages/plugin-ai-generation-web/)
+- [AI Apps](packages/plugin-ai-apps-web/)
+- [AI Text Generation](packages/plugin-ai-text-generation-web/)
+- [AI Image Generation](packages/plugin-ai-image-generation-web/)
+- [AI Video Generation](packages/plugin-ai-video-generation-web/)
+- [AI Audio Generation](packages/plugin-ai-audio-generation-web/)
+- [AI Sticker Generation](packages/plugin-ai-sticker-generation-web/)
+
+# Examples
+
+This repository includes example applications demonstrating plugin usage:
+
+- [examples/ai](examples/ai/) - Dedicated demo application for AI plugins
+- [examples/web](examples/web/) - General plugin demonstrations
+- [examples/gpt-demo](examples/gpt-demo/) - GPT integration example
+
+## Running Examples
+
+```bash
+# Install dependencies
+pnpm install
+
+# Run AI plugins demo
+pnpm dev:ai
+
+# Run all examples
+pnpm dev
+```

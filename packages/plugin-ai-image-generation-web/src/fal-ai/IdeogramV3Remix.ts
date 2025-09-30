@@ -1,7 +1,9 @@
 import {
   CommonProviderConfiguration,
-  type Provider
+  type Provider,
+  addIconSetOnce
 } from '@imgly/plugin-ai-generation-web';
+import { Icons } from '@imgly/plugin-utils';
 import IdeogramV3RemixSchema from './IdeogramV3Remix.json';
 import CreativeEditorSDK from '@cesdk/cesdk-js';
 import { getImageDimensions } from './IdeogramV3Remix.constants';
@@ -45,6 +47,9 @@ function getProvider(
   config: ProviderConfiguration
 ): Provider<'image', IdeogramV3RemixUIInput, IdeogramV3RemixOutput> {
   const modelKey = 'fal-ai/ideogram/v3/remix';
+
+  // Add aspect ratio icons
+  addIconSetOnce(cesdk, '@imgly/plugin/formats', Icons.Formats);
 
   return createImageProvider(
     {

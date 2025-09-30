@@ -288,7 +288,7 @@ async function prepareImageForAPI(imageUrl: string, requirements: any) {
    - Export in main plugin
 
 3. **Demo Integration**:
-   - Add to `image2video` section in ai-demo.tsx
+   - Add to `image2video` section in examples/ai/src/App.tsx
    - Configure with video rate limiting middleware
    - Set up environment variables
 

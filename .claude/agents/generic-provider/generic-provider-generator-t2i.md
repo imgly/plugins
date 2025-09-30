@@ -160,7 +160,7 @@ export const {ModelName} = createImageProvider<{ModelName}Input>({
    - Export in main plugin index
 
 3. **Demo Integration**:
-   - Add provider to `examples/web/src/pages/ai-demo.tsx`
+   - Add provider to `examples/ai/src/App.tsx`
    - Configure with appropriate middleware
    - Set up proxy URL environment variables
 

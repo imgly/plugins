@@ -210,7 +210,7 @@ After user approval, generate exactly these 5 files/updates:
 After generating files:
 1. Place files in `/packages/plugin-ai-video-generation-web/src/fal-ai/` directory
 2. Add export to `/packages/plugin-ai-video-generation-web/src/fal-ai/index.ts`
-3. **MANDATORY**: Add the new provider to the AI demo in `@examples/web/src/pages/ai-demo.tsx` in the `image2video` provider section with proper middleware configuration using `videoRateLimitMiddleware`
+3. **MANDATORY**: Add the new provider to the AI demo in `@examples/ai/src/App.tsx` in the `image2video` provider section with proper middleware configuration using `videoRateLimitMiddleware`
 4. Update `/packages/plugin-ai-video-generation-web/translations.json` with all UI property translations
 5. Update `/packages/plugin-ai-video-generation-web/README.md` with provider documentation
 6. Update `/CHANGELOG-AI.md` in the Unreleased section under New Features
@@ -276,7 +276,7 @@ ROUTE_TO_AGENT: pnpm-workflow-fixer
 
 This ensures automatic workflow continuation for integration validation and build checks. The pnpm-workflow-fixer will:
 - Verify the provider was added to index.ts
-- Ensure the provider is configured in ai-demo.tsx in the image2video section
+- Ensure the provider is configured in examples/ai/src/App.tsx in the image2video section
 - Run pnpm build to check for errors
 - Fix any integration issues
 

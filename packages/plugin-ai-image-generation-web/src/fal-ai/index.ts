@@ -8,6 +8,8 @@ import { IdeogramV3Remix } from './IdeogramV3Remix';
 import { QwenImageEdit } from './QwenImageEdit';
 import { NanoBanana } from './NanoBanana';
 import { NanoBananaEdit } from './NanoBananaEdit';
+import { SeedreamV4 } from './SeedreamV4';
+import { SeedreamV4Edit } from './SeedreamV4Edit';
 
 const FalAi = {
   FluxProKontextEdit,
@@ -19,6 +21,8 @@ const FalAi = {
   NanoBanana,
   NanoBananaEdit,
   Recraft20b,
-  RecraftV3
+  RecraftV3,
+  SeedreamV4,
+  SeedreamV4Edit
 };
 export default FalAi;
