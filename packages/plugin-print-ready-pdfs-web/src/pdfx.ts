@@ -75,9 +75,13 @@ export async function convertToPDFX3(
       const profileInfo = PROFILE_PRESETS[options.outputProfile as keyof typeof PROFILE_PRESETS];
       const profilePath = `/tmp/${profileInfo.file}`;
 
-      // Import and load the actual ICC profile from assets
-      const profileModule = await import(`../assets/icc-profiles/${profileInfo.file}?url`);
-      const profileResponse = await fetch(profileModule.default);
+      // Load ICC profile from bundled assets
+      // The profile will be in the same directory as the built module
+      const profileUrl = new URL(profileInfo.file, import.meta.url).href;
+      const profileResponse = await fetch(profileUrl);
+      if (!profileResponse.ok) {
+        throw new Error(`Failed to load ICC profile ${profileInfo.file}: ${profileResponse.statusText}`);
+      }
       const profileBlob = await profileResponse.blob();
 
       await vfs.writeBlob(profilePath, profileBlob);
