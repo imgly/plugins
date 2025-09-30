@@ -11,7 +11,10 @@ const packageJson = JSON.parse(
   await readFile(new URL('../package.json', import.meta.url))
 );
 
-dotenv.config({ path: '.env.local' });
+// Load .env.local only in local development (not in CI/Vercel)
+if (!process.env.CI && !process.env.VERCEL) {
+  dotenv.config({ path: '.env.local' });
+}
 
 export default ({ isDevelopment }) => {
   log(
