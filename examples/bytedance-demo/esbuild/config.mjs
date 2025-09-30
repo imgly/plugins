@@ -16,6 +16,18 @@ if (!process.env.CI && !process.env.VERCEL) {
   dotenv.config({ path: '.env.local' });
 }
 
+// Debug: Log environment variable status
+console.log('[esbuild config] Environment check:', {
+  CI: process.env.CI,
+  VERCEL: process.env.VERCEL,
+  hasCESDKLicense: !!process.env.CESDK_LICENSE,
+  licenseLength: process.env.CESDK_LICENSE?.length,
+  hasFalAiProxy: !!process.env.FAL_AI_PROXY_URL,
+  falAiProxyUrl: process.env.FAL_AI_PROXY_URL,
+  hasAnthropicProxy: !!process.env.ANTHROPIC_PROXY_URL,
+  anthropicProxyUrl: process.env.ANTHROPIC_PROXY_URL
+});
+
 export default ({ isDevelopment }) => {
   log(
     `${chalk.yellow('Building version:')} ${chalk.bold(packageJson.version)}`
