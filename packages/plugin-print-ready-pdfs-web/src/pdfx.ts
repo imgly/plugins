@@ -91,13 +91,18 @@ export async function convertToPDFX3(
     const pdfxDefinition = generatePDFXDef(options);
     vfs.writeText(pdfxDefPath, pdfxDefinition);
 
-    // Determine ICC profile path for Ghostscript
-    const profileInfo = options.outputProfile === 'custom'
-      ? null
-      : PROFILE_PRESETS[options.outputProfile as keyof typeof PROFILE_PRESETS];
-    const iccProfilePath = options.outputProfile === 'custom'
-      ? customProfilePath
-      : `/tmp/${profileInfo!.file}`;
+    // Determine ICC profile path and metadata for Ghostscript
+    let iccProfilePath: string;
+    let profileInfo: { identifier: string; info: string };
+
+    if (options.outputProfile === 'custom') {
+      iccProfilePath = customProfilePath;
+      profileInfo = { identifier: 'Custom Profile', info: 'Custom ICC Profile' };
+    } else {
+      const preset = PROFILE_PRESETS[options.outputProfile as keyof typeof PROFILE_PRESETS];
+      iccProfilePath = `/tmp/${preset.file}`;
+      profileInfo = { identifier: preset.identifier, info: preset.info };
+    }
 
     // Execute Ghostscript conversion
     const gsArgs = [
@@ -113,6 +118,9 @@ export async function convertToPDFX3(
       '-dProcessColorModel=/DeviceCMYK',
       '-dConvertCMYKImagesToRGB=false',
       `-sOutputICCProfile=${iccProfilePath}`,
+      `-sOutputConditionIdentifier=${profileInfo.identifier}`,
+      `-sOutputCondition=${profileInfo.info}`,
+      '-sRegistryName=http://www.color.org',
       '-sPDFXSetBleedBoxToMediaBox=true',
       `-sOutputFile=${outputPath}`,
       pdfxDefPath,
@@ -170,7 +178,7 @@ function generatePDFXDef(options: PDFX3Options): string {
   return `%!
 % PDF/X-3 Definition File
 [ /Title (${options.title || 'Untitled'}) /DOCINFO pdfmark
-[ /Trapped /Unknown /DOCINFO pdfmark
+[ /Trapped /False /DOCINFO pdfmark
 
 % Set PDF/X-3 conformance
 [ /GTS_PDFXVersion (PDF/X-3:2003) /GTS_PDFXConformance (PDF/X-3:2003) /DOCINFO pdfmark
