@@ -175,14 +175,8 @@ function generatePDFXDef(options: PDFX3Options): string {
 % Set PDF/X-3 conformance
 [ /GTS_PDFXVersion (PDF/X-3:2003) /GTS_PDFXConformance (PDF/X-3:2003) /DOCINFO pdfmark
 
-% Define output intent for proper color management
-% This is crucial for spot color preservation
-[ /OutputIntent <<
-  /Type /OutputIntent
-  /S /GTS_PDFX
-  /OutputCondition (${profileInfo.info})
-  /OutputConditionIdentifier (${profileInfo.identifier})
-  /RegistryName (http://www.color.org)
->> /PUT pdfmark`;
+% OutputIntent is automatically created by Ghostscript via -sOutputICCProfile parameter
+% with OutputConditionIdentifier: ${profileInfo.identifier}
+% and OutputCondition: ${profileInfo.info}`;
 }
 
