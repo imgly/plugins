@@ -8,6 +8,8 @@
     "purge": "pnpm exec rimraf node_modules && pnpm recursive run purge",
     "dev": "turbo run dev --concurrency=20",
     "dev:ai": "turbo run dev --filter=@imgly/plugin-ai-example",
+    "dev:bytedance": "turbo run dev --filter=@imgly/plugin-bytedance-demo-web",
+    "dev:gpt": "turbo run dev --filter=@imgly/plugin-gpt-demo-web",
     "test": "turbo run test",
     "check:all": "turbo run check:all",
     "check:types": "turbo run check:types",
@@ -42,8 +44,8 @@
       "protobufjs"
     ],
     "overrides": {
-      "@cesdk/cesdk-js": "1.59.2",
-      "@cesdk/engine": "1.59.2"
+      "@cesdk/cesdk-js": "1.60.0",
+      "@cesdk/engine": "1.60.0"
     }
   }
 }
