@@ -11,7 +11,7 @@ const packageJson = JSON.parse(
   await readFile(new URL('../package.json', import.meta.url))
 );
 
-dotenv.config();
+dotenv.config({ path: '.env.local' });
 
 export default ({ isDevelopment }) => {
   log(
@@ -37,8 +37,14 @@ export default ({ isDevelopment }) => {
   config.define = {
     ...config.define,
     'process.env.CESDK_LICENSE': JSON.stringify(
-      isDevelopment && 'CESDK_LICENSE' in process.env
-        ? process.env.CESDK_LICENSE
+      'CESDK_LICENSE' in process.env ? process.env.CESDK_LICENSE : ''
+    ),
+    'process.env.FAL_AI_PROXY_URL': JSON.stringify(
+      'FAL_AI_PROXY_URL' in process.env ? process.env.FAL_AI_PROXY_URL : ''
+    ),
+    'process.env.ANTHROPIC_PROXY_URL': JSON.stringify(
+      'ANTHROPIC_PROXY_URL' in process.env
+        ? process.env.ANTHROPIC_PROXY_URL
         : ''
     )
   };

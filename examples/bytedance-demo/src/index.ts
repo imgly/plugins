@@ -57,10 +57,10 @@ function initialize(
 
         instance.ui.setCanvasMenuOrder([
           {
-            id: 'ly.img.ai.image.canvasMenu'
+            id: 'ly.img.ai.text.canvasMenu'
           },
           {
-            id: 'ly.img.ai.video.canvasMenu'
+            id: 'ly.img.ai.image.canvasMenu'
           },
           {
             id: 'ly.img.separator'
@@ -114,23 +114,23 @@ function initialize(
             providers: {
               text2text: Anthropic.AnthropicProvider({
                 middleware: [errorMiddleware],
-                proxyUrl: 'https://imgly-proxy.vercel.app/api/proxy/anthropic'
+                proxyUrl: process.env.ANTHROPIC_PROXY_URL
               }),
               text2image: FalAiImage.SeedreamV4({
                 middleware: [errorMiddleware],
-                proxyUrl: 'https://proxy.img.ly/api/proxy/fal'
+                proxyUrl: process.env.FAL_AI_PROXY_URL
               }),
               image2image: [FalAiImage.SeedreamV4Edit({
                 middleware: [errorMiddleware],
-                proxyUrl: 'https://proxy.img.ly/api/proxy/fal'
+                proxyUrl: process.env.FAL_AI_PROXY_URL
               })],
               text2video: FalAiVideo.ByteDanceSeedanceV1ProTextToVideo({
                 middleware: [errorMiddleware],
-                proxyUrl: 'https://proxy.img.ly/api/proxy/fal'
+                proxyUrl: process.env.FAL_AI_PROXY_URL
               }),
               image2video: [FalAiVideo.ByteDanceSeedanceV1ProImageToVideo({
                 middleware: [errorMiddleware],
-                proxyUrl: 'https://proxy.img.ly/api/proxy/fal'
+                proxyUrl: process.env.FAL_AI_PROXY_URL
               })]
             }
           })
