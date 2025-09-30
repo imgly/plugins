@@ -122,17 +122,21 @@ export async function convertToPDFX3(
       '-dNOOUTERSAVE',
       '-sDEVICE=pdfwrite',
       // Font and text preservation
-      '-dNOCACHE',                                // Prevent character caching/rasterization
-      '-dEmbedAllFonts=true',                     // Embed all fonts
-      '-dSubsetFonts=true',                       // Allow font subsetting
-      '-dCompressFonts=true',                     // Compress embedded fonts
-      // Color conversion settings
+      '-dEmbedAllFonts=true',
+      '-dSubsetFonts=true',
+      '-dCompressFonts=true',
+      '-dPreserveCopyPage=false',
+      '-dPreserveAnnots=false',
+      // Color conversion settings - use DEVICE color conversion to preserve vectors
       '-dCompatibilityLevel=1.4',
-      '-sColorConversionStrategy=CMYK',
-      '-dProcessColorModel=/DeviceCMYK',
-      '-dConvertCMYKImagesToRGB=false',
-      // Device N and spot color preservation
+      '-sColorConversionStrategy=UseDeviceIndependentColor',
+      '-sDefaultRGBProfile=' + iccProfilePath,
+      '-sDefaultCMYKProfile=' + iccProfilePath,
+      '-dOverrideICC=true',
+      '-dRenderIntent=0',
+      // Preserve DeviceN colors and spot colors
       '-dPreserveDeviceN=true',
+      '-dPreserveSeparation=true',
       // PDF/X settings
       '-sPDFXSetBleedBoxToMediaBox=true',
       `-sOutputFile=${outputPath}`,
