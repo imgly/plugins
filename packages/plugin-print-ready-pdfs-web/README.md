@@ -115,11 +115,24 @@ Converts a standard PDF to print-ready format.
 
 ```typescript
 interface PDFX3Options {
+  // Required
   outputProfile: 'gracol' | 'fogra39' | 'srgb' | 'custom';
-  customProfile?: Blob; // Required only if outputProfile is 'custom'
-  title?: string; // Optional document title
+
+  // Optional
+  customProfile?: Blob;                   // Required only if outputProfile is 'custom'
+  title?: string;                         // Document title
+  outputConditionIdentifier?: string;     // ICC profile identifier for OutputIntent
+  outputCondition?: string;               // Human-readable output condition description
 }
 ```
+
+**OutputIntent Metadata:**
+
+The `outputConditionIdentifier` and `outputCondition` fields control the PDF/X-3 OutputIntent metadata:
+
+- **Built-in profiles** (fogra39, gracol, srgb): Use preset values automatically (e.g., "FOGRA39", "ISO Coated v2 (ECI)")
+- **Custom profiles**: Specify your own identifiers and descriptions
+- Both fields are optional and have sensible defaults
 
 ### Included Color Profiles
 
@@ -169,6 +182,8 @@ const euPrintReady = await convertToPDFX3(pdfBlob, {
 
 ### Custom Color Profiles
 
+Bring your own ICC profile for specialized printing requirements:
+
 ```javascript
 // Load a specific ICC profile for exact color requirements
 const customProfile = await fetch('/profiles/custom-cmyk-profile.icc').then(
@@ -179,9 +194,24 @@ const printReadyPDF = await convertToPDFX3(pdfBlob, {
   outputProfile: 'custom',
   customProfile: customProfile,
   title: 'Specialized Print Output',
+  outputConditionIdentifier: 'Custom_Newsprint_CMYK',
+  outputCondition: 'Custom newsprint profile for high-speed web press'
 });
 
-// PDF now uses your exact CMYK color profile
+// PDF now uses your exact CMYK color profile with custom metadata
+```
+
+**Override Built-in Profile Metadata:**
+
+You can also override the metadata for built-in profiles:
+
+```javascript
+const printReadyPDF = await convertToPDFX3(pdfBlob, {
+  outputProfile: 'fogra39',
+  title: 'Custom FOGRA39 Variant',
+  outputConditionIdentifier: 'FOGRA39_Modified',
+  outputCondition: 'Modified ISO Coated v2 for specific press'
+});
 ```
 
 ### Batch Processing
@@ -216,6 +246,28 @@ The test interface includes:
 - Live CE.SDK editor
 - Navigation bar with print-ready export options
 - Real-time conversion and download
+
+## PDF/X-3 Compliance Details
+
+The plugin ensures full PDF/X-3:2003 compliance by:
+
+### OutputIntent
+
+Every converted PDF includes a properly configured OutputIntent entry with:
+- **DestOutputProfile**: The embedded ICC profile data
+- **OutputConditionIdentifier**: Standard identifier (e.g., "FOGRA39", "GRACoL 2013")
+- **OutputCondition**: Human-readable description of the printing condition
+- **S**: Set to `/GTS_PDFX` for PDF/X-3 standard
+
+### Trapped Entry
+
+The `/Trapped` field is automatically set to `/False` in the PDF document info dictionary, indicating that trapping operations have not been performed. This is the correct value since the plugin performs color conversion but does not apply trapping.
+
+Per the PDF/X-3 specification, this field must be set to either `/True` or `/False` (not `/Unknown`).
+
+### Text and Vector Preservation
+
+Text and vector graphics are preserved in their original vector format during conversion. Only the color space is converted from RGB to CMYK—no rasterization occurs.
 
 ## Known Limitations
 
