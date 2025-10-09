@@ -48,10 +48,13 @@ export function VideoGeneration<I, O extends Output>(
         true
       );
 
+      const ACTION_LABEL_KEY = `${PLUGIN_ID}.action.label`;
+
       cesdk.setTranslations({
         en: {
           [`panel.${VIDEO_GENERATION_PANEL_ID}`]: 'Video Generation',
-          [`${VIDEO_GENERATION_PANEL_ID}.dock.label`]: 'AI Video'
+          [`${VIDEO_GENERATION_PANEL_ID}.dock.label`]: 'AI Video',
+          [ACTION_LABEL_KEY]: 'Generate Video'
         }
       });
 
@@ -65,7 +68,7 @@ export function VideoGeneration<I, O extends Output>(
         id: PLUGIN_ID,
         pluginId: PLUGIN_ID,
 
-        label: 'Generate Video',
+        label: cesdk.i18n.translate(ACTION_LABEL_KEY),
         meta: { panelId: VIDEO_GENERATION_PANEL_ID },
 
         execute: () => {

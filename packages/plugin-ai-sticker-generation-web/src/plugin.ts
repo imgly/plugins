@@ -41,6 +41,16 @@ export function StickerGeneration<I, O extends Output>(
       );
 
       const registry = ActionRegistry.get();
+      const ACTION_LABEL_KEY = `${PLUGIN_ID}.action.label`;
+
+      cesdk.ui.addIconSet(PLUGIN_ICON_SET_ID, iconSprite);
+      cesdk.i18n.setTranslations({
+        en: {
+          [`panel.${STICKER_GENERATION_PANEL_ID}`]: 'Sticker Generation',
+          [`${STICKER_GENERATION_PANEL_ID}.dock.label`]: 'AI Sticker',
+          [ACTION_LABEL_KEY]: 'Generate Sticker'
+        }
+      });
 
       const disposeApp = registry.register({
         type: 'plugin',
@@ -49,7 +59,7 @@ export function StickerGeneration<I, O extends Output>(
         id: PLUGIN_ID,
         pluginId: PLUGIN_ID,
 
-        label: 'Generate Sticker',
+        label: cesdk.i18n.translate(ACTION_LABEL_KEY),
         meta: { panelId: STICKER_GENERATION_PANEL_ID },
 
         execute: () => {
@@ -58,14 +68,6 @@ export function StickerGeneration<I, O extends Output>(
           } else {
             cesdk.ui.openPanel(STICKER_GENERATION_PANEL_ID);
           }
-        }
-      });
-
-      cesdk.ui.addIconSet(PLUGIN_ICON_SET_ID, iconSprite);
-      cesdk.i18n.setTranslations({
-        en: {
-          [`panel.${STICKER_GENERATION_PANEL_ID}`]: 'Sticker Generation',
-          [`${STICKER_GENERATION_PANEL_ID}.dock.label`]: 'AI Sticker'
         }
       });
 

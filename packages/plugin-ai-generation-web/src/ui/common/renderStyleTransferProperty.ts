@@ -68,7 +68,21 @@ function renderStyleTransferProperty(
   cesdk.i18n.setTranslations({
     en: {
       [`panel.${panelIdForStyleSelection}`]: 'Select Style',
-      [`${providerId}.${propertyKey}`]: 'Style'
+      [`${providerId}.${propertyKey}`]: 'Style',
+      'ly.img.ai.styleTransfer.none': 'None',
+      'ly.img.ai.styleTransfer.anime': 'Anime',
+      'ly.img.ai.styleTransfer.cyberpunk': 'Cyberpunk',
+      'ly.img.ai.styleTransfer.kodak400': 'Kodak 400',
+      'ly.img.ai.styleTransfer.watercolor': 'Watercolor',
+      'ly.img.ai.styleTransfer.darkFantasy': 'Dark Fantasy',
+      'ly.img.ai.styleTransfer.vaporwave': 'Vaporwave',
+      'ly.img.ai.styleTransfer.vectorFlat': 'Vector Flat',
+      'ly.img.ai.styleTransfer.3dAnimation': '3D Animation',
+      'ly.img.ai.styleTransfer.ukiyoe': 'Ukiyo‑e',
+      'ly.img.ai.styleTransfer.surreal': 'Surreal',
+      'ly.img.ai.styleTransfer.steampunk': 'Steampunk',
+      'ly.img.ai.styleTransfer.nightBokeh': 'Night Bokeh',
+      'ly.img.ai.styleTransfer.popArt': 'Pop Art'
     }
   });
 
@@ -76,7 +90,8 @@ function renderStyleTransferProperty(
     baseURL:
       options.baseURL ??
       'https://cdn.img.ly/assets/plugins/plugin-ai-image-generation-web/v1/gpt-image-1/',
-    includeNone: true
+    includeNone: true,
+    cesdk
   });
   let styles = defaultStyles;
   if (options.styles != null) {
@@ -217,86 +232,86 @@ function getStyleSelectionPanelId(providerId: string) {
   return `ly.img.ai.${providerId}.styleSelection`;
 }
 
-const STYLES: Omit<Style, 'thumbUri'>[] = [
+const STYLES: (Omit<Style, 'thumbUri' | 'label'> & { labelKey: string })[] = [
   {
     id: 'none',
-    label: 'None',
+    labelKey: 'ly.img.ai.styleTransfer.none',
     prompt: ''
   },
   {
     id: 'anime-celshaded',
-    label: 'Anime',
+    labelKey: 'ly.img.ai.styleTransfer.anime',
     prompt:
       'anime cel‑shaded, bright pastel palette, expressive eyes, clean line art '
   },
   {
     id: 'cyberpunk-neon',
-    label: 'Cyberpunk',
+    labelKey: 'ly.img.ai.styleTransfer.cyberpunk',
     prompt:
       'cyberpunk cityscape, glowing neon signage, reflective puddles, dark atmosphere'
   },
   {
     id: 'kodak-portra-400',
-    label: 'Kodak 400',
+    labelKey: 'ly.img.ai.styleTransfer.kodak400',
     prompt:
       'shot on Kodak Portra 400, soft grain, golden‑hour warmth, 35 mm photo'
   },
   {
     id: 'watercolor-storybook',
-    label: 'Watercolor',
+    labelKey: 'ly.img.ai.styleTransfer.watercolor',
     prompt: 'loose watercolor washes, gentle gradients, dreamy storybook feel'
   },
   {
     id: 'dark-fantasy-realism',
-    label: 'Dark Fantasy',
+    labelKey: 'ly.img.ai.styleTransfer.darkFantasy',
     prompt:
       'dark fantasy realm, moody chiaroscuro lighting, hyper‑real textures'
   },
   {
     id: 'vaporwave-retrofuturism',
-    label: 'Vaporwave',
+    labelKey: 'ly.img.ai.styleTransfer.vaporwave',
     prompt:
       'retro‑futuristic vaporwave, pastel sunset gradient, chrome text, VHS scanlines'
   },
   {
     id: 'minimal-vector-flat',
-    label: 'Vector Flat',
+    labelKey: 'ly.img.ai.styleTransfer.vectorFlat',
     prompt:
       'minimalist flat vector illustration, bold geometry, two‑tone palette'
   },
   {
     id: 'pixarstyle-3d-render',
-    label: '3D Animation',
+    labelKey: 'ly.img.ai.styleTransfer.3dAnimation',
     prompt:
       'Pixar‑style 3D render, oversized eyes, subtle subsurface scattering, cinematic lighting'
   },
   {
     id: 'ukiyoe-woodblock',
-    label: 'Ukiyo‑e',
+    labelKey: 'ly.img.ai.styleTransfer.ukiyoe',
     prompt:
       'ukiyo‑e woodblock print, Edo‑period style, visible washi texture, limited color ink'
   },
   {
     id: 'surreal-dreamscape',
-    label: 'Surreal',
+    labelKey: 'ly.img.ai.styleTransfer.surreal',
     prompt:
       'surreal dreamscape, floating objects, impossible architecture, vivid clouds'
   },
   {
     id: 'steampunk-victorian',
-    label: 'Steampunk',
+    labelKey: 'ly.img.ai.styleTransfer.steampunk',
     prompt:
       'Victorian steampunk world, ornate brass gears, leather attire, atmospheric fog'
   },
   {
     id: 'nightstreet-photo-bokeh',
-    label: 'Night Bokeh',
+    labelKey: 'ly.img.ai.styleTransfer.nightBokeh',
     prompt:
       'night‑time street shot, large aperture bokeh lights, candid urban mood'
   },
   {
     id: 'comicbook-pop-art',
-    label: 'Pop Art',
+    labelKey: 'ly.img.ai.styleTransfer.popArt',
     prompt:
       'classic comic‑book panel, halftone shading, exaggerated action lines, CMYK pop colors'
   }
@@ -305,6 +320,7 @@ const STYLES: Omit<Style, 'thumbUri'>[] = [
 function getDefaultStyles(options: {
   baseURL: string;
   includeNone?: boolean;
+  cesdk?: CreativeEditorSDK;
 }): Style[] {
   return STYLES.map((style) => {
     if (style.id === 'none') {
@@ -312,12 +328,16 @@ function getDefaultStyles(options: {
         return undefined;
       }
       return {
-        ...style,
+        id: style.id,
+        label: (options.cesdk ? options.cesdk.i18n.translate(style.labelKey) : style.labelKey),
+        prompt: style.prompt,
         thumbUri: `${options.baseURL}/thumbnails/None.svg`
       };
     }
     return {
-      ...style,
+      id: style.id,
+      label: (options.cesdk ? options.cesdk.i18n.translate(style.labelKey) : style.labelKey),
+      prompt: style.prompt,
       thumbUri: `${options.baseURL}/thumbnails/${style.id}.jpeg`
     };
   }).filter(isDefined);

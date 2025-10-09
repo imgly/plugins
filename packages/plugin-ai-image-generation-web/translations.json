@@ -1,5 +1,12 @@
 {
   "en": {
+    "panel.ly.img.ai.image-generation": "Image Generation",
+    "ly.img.ai.image-generation.dock.label": "AI Image",
+    "panel.ly.img.panel.fal-ai.recraft-v3.styleSelection": "Style Selection",
+    "panel.ly.img.panel.fal-ai.recraft.v2.text-to-image.styleSelection": "Style Selection",
+    "panel.gpt-image-1.imageSelection": "Select Image To Change",
+    "panel.gpt-image-1.styleSelection": "Style Selection",
+    "libraries.ly.img.panel.fal-ai.recraft-v3.history.label": "Generated From Text",
     "ly.img.plugin-ai-image-generation-web.quickAction.artistTransfer": "Artist Style",
     "ly.img.plugin-ai-image-generation-web.quickAction.artistTransfer.apply": "Apply Artist Style",
     "ly.img.plugin-ai-image-generation-web.quickAction.artistTransfer.da-vinci": "Da Vinci",

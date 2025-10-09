@@ -146,8 +146,7 @@ function createVideoProvider<I extends Record<string, any>>(
         );
         throw new Error('Cannot find generated video');
       },
-      generationHintText:
-        "Video generation may take up to a few minutes. This panel can be closed and you'll be notified when it's ready."
+      generationHintText: 'ly.img.ai.video.generation.hint'
     }
   };
 
