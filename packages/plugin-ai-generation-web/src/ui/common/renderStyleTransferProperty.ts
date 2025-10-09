@@ -329,14 +329,18 @@ function getDefaultStyles(options: {
       }
       return {
         id: style.id,
-        label: (options.cesdk ? options.cesdk.i18n.translate(style.labelKey) : style.labelKey),
+        label: options.cesdk
+          ? options.cesdk.i18n.translate(style.labelKey)
+          : style.labelKey,
         prompt: style.prompt,
         thumbUri: `${options.baseURL}/thumbnails/None.svg`
       };
     }
     return {
       id: style.id,
-      label: (options.cesdk ? options.cesdk.i18n.translate(style.labelKey) : style.labelKey),
+      label: options.cesdk
+        ? options.cesdk.i18n.translate(style.labelKey)
+        : style.labelKey,
       prompt: style.prompt,
       thumbUri: `${options.baseURL}/thumbnails/${style.id}.jpeg`
     };
