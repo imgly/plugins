@@ -1,6 +1,11 @@
 import CreativeEditorSDK, { AssetResult } from '@cesdk/cesdk-js';
 import { RenderCustomProperty } from '../../core/provider';
-import { CustomAssetSource, isDefined } from '@imgly/plugin-utils';
+import {
+  CustomAssetSource,
+  isDefined,
+  supportsTranslateAPI,
+  hasTranslateAPI
+} from '@imgly/plugin-utils';
 import { SelectValue } from '@imgly/plugin-utils/dist/assetSources/CustomAssetSource';
 
 type StyleSelectionPayload = {
@@ -322,6 +327,23 @@ function getDefaultStyles(options: {
   includeNone?: boolean;
   cesdk?: CreativeEditorSDK;
 }): Style[] {
+  // Helper function to safely translate label keys
+  const translateLabel = (labelKey: string): string => {
+    if (!options.cesdk) {
+      return labelKey;
+    }
+
+    // Check if CE.SDK supports translation API (version 1.59.0+)
+    if (
+      supportsTranslateAPI(options.cesdk) &&
+      hasTranslateAPI(options.cesdk.i18n)
+    ) {
+      return options.cesdk.i18n.translate(labelKey);
+    }
+
+    return labelKey;
+  };
+
   return STYLES.map((style) => {
     if (style.id === 'none') {
       if (!options.includeNone) {
@@ -329,18 +351,14 @@ function getDefaultStyles(options: {
       }
       return {
         id: style.id,
-        label: options.cesdk
-          ? options.cesdk.i18n.translate(style.labelKey)
-          : style.labelKey,
+        label: translateLabel(style.labelKey),
         prompt: style.prompt,
         thumbUri: `${options.baseURL}/thumbnails/None.svg`
       };
     }
     return {
       id: style.id,
-      label: options.cesdk
-        ? options.cesdk.i18n.translate(style.labelKey)
-        : style.labelKey,
+      label: translateLabel(style.labelKey),
       prompt: style.prompt,
       thumbUri: `${options.baseURL}/thumbnails/${style.id}.jpeg`
     };
