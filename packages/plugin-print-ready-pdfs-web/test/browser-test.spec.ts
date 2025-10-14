@@ -3,27 +3,50 @@ import { readFileSync } from 'fs';
 import { join } from 'path';
 
 test.describe('PDF/X Conversion Browser Tests', () => {
+  let consoleMessages: string[] = [];
+  let errors: string[] = [];
+
   test.beforeEach(async ({ page }) => {
+    // Reset message arrays
+    consoleMessages = [];
+    errors = [];
+
+    // Set up console listeners BEFORE navigating
+    page.on('console', (msg) => {
+      const text = msg.text();
+      consoleMessages.push(`${msg.type()}: ${text}`);
+      if (msg.type() === 'error') {
+        errors.push(text);
+      }
+    });
+
+    page.on('pageerror', (error) => {
+      errors.push(`Page error: ${error.message}`);
+    });
+
+    // Track failed requests
+    page.on('requestfailed', (request) => {
+      const failure = request.failure();
+      errors.push(`Request failed: ${request.url()} - ${failure?.errorText || 'Unknown error'}`);
+    });
+
+    page.on('response', (response) => {
+      if (response.status() >= 400) {
+        errors.push(`HTTP ${response.status()}: ${response.url()}`);
+      }
+    });
+
     // Navigate to test page via HTTP server
     await page.goto('/test/index.html');
 
     // Wait for the page to load
     await page.waitForLoadState('networkidle');
+
+    // Give module time to load
+    await page.waitForTimeout(1000);
   });
 
   test('should load PDF/X plugin successfully', async ({ page }) => {
-    // Check if the plugin loaded without errors
-    const errors = [];
-    const consoleMessages = [];
-    page.on('console', (msg) => {
-      consoleMessages.push(`${msg.type()}: ${msg.text()}`);
-      if (msg.type() === 'error') {
-        errors.push(msg.text());
-      }
-    });
-
-    // Wait a bit for any async loading
-    await page.waitForTimeout(2000);
 
     // Debug: Check what's available on window
     const windowDebug = await page.evaluate(() => {
