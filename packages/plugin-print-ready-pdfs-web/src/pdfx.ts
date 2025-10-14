@@ -123,6 +123,7 @@ export async function convertToPDFX3(
     let iccProfilePath: string;
     let outputConditionIdentifier: string;
     let outputCondition: string;
+    let profileComponents: number; // Number of color components (3 for RGB, 4 for CMYK)
 
     if (options.outputProfile === 'custom') {
       iccProfilePath = customProfilePath;
@@ -130,6 +131,8 @@ export async function convertToPDFX3(
       outputConditionIdentifier =
         options.outputConditionIdentifier || 'Custom Profile';
       outputCondition = options.outputCondition || 'Custom ICC Profile';
+      // Assume CMYK for custom profiles (can be extended later)
+      profileComponents = 4;
     } else {
       const preset =
         PROFILE_PRESETS[options.outputProfile as keyof typeof PROFILE_PRESETS];
@@ -138,45 +141,64 @@ export async function convertToPDFX3(
       outputConditionIdentifier =
         options.outputConditionIdentifier || preset.identifier;
       outputCondition = options.outputCondition || preset.info;
+      profileComponents = preset.components;
     }
 
-    // Generate PDF/X-3 definition with ICC profile path and metadata
+    // Read ICC profile data into memory for embedding
+    const iccProfileData = vfs.readFile(iccProfilePath);
+
+    // Generate PDF/X-3 definition with ICC profile data and metadata
     const pdfxDefinition = generatePDFXDef(
       options,
-      iccProfilePath,
+      iccProfileData,
       outputConditionIdentifier,
-      outputCondition
+      outputCondition,
+      profileComponents
     );
     vfs.writeText(pdfxDefPath, pdfxDefinition);
 
+    // Determine color conversion strategy based on profile type
+    const isRGBProfile = profileComponents === 3;
+    const colorModel = isRGBProfile ? '/DeviceRGB' : '/DeviceCMYK';
+    const conversionStrategy = isRGBProfile ? '/RGB' : '/CMYK';
+
     // Execute Ghostscript conversion
     const gsArgs = [
-      '-dPDFX',
       '-dBATCH',
       '-dNOPAUSE',
       '-dNOOUTERSAVE',
       '-sDEVICE=pdfwrite',
-      // Font and text preservation
+      // PDF/X compatibility
+      '-dCompatibilityLevel=1.4',
+      '-dPDFX',
+      // Font embedding (required for PDF/X)
       '-dEmbedAllFonts=true',
       '-dSubsetFonts=true',
       '-dCompressFonts=true',
+      // Preserve content
       '-dPreserveCopyPage=false',
       '-dPreserveAnnots=false',
-      // Color conversion settings - use DEVICE color conversion to preserve vectors
-      '-dCompatibilityLevel=1.4',
-      '-sColorConversionStrategy=UseDeviceIndependentColor',
+      // Color handling
+      `-dColorConversionStrategy=${conversionStrategy}`,
       `-sDefaultRGBProfile=${iccProfilePath}`,
       `-sDefaultCMYKProfile=${iccProfilePath}`,
-      '-dOverrideICC=true',
-      '-dRenderIntent=0',
-      // Preserve DeviceN colors and spot colors
+      `-sOutputICCProfile=${iccProfilePath}`,
+      `-dProcessColorModel=${colorModel}`,
+      '-dRenderIntent=1',
+      // Preserve images
+      '-dPassThroughJPEGImages=true',
+      '-dDoThumbnails=false',
+      // Preserve spot colors
       '-dPreserveDeviceN=true',
       '-dPreserveSeparation=true',
+      '-dPreserveHalftoneInfo=true',
+      '-dPreserveOPIComments=true',
       // PDF/X settings
+      '-dPDFACompatibilityPolicy=1',
       '-sPDFXSetBleedBoxToMediaBox=true',
       `-sOutputFile=${outputPath}`,
-      pdfxDefPath,
       inputPath,
+      pdfxDefPath,
     ];
 
     const exitCode = await module.callMain(gsArgs);
@@ -208,37 +230,50 @@ const PROFILE_PRESETS = {
     file: 'GRACoL2013_CRPC6.icc',
     identifier: 'CGATS 21.2',
     info: 'GRACoL 2013 CRPC6',
+    components: 4, // CMYK
   },
   fogra39: {
     file: 'ISOcoated_v2_eci.icc',
     identifier: 'FOGRA39',
     info: 'ISO Coated v2 (ECI)',
+    components: 4, // CMYK
   },
   srgb: {
     file: 'sRGB_IEC61966-2-1.icc',
     identifier: 'sRGB IEC61966-2.1',
     info: 'sRGB IEC61966-2.1',
+    components: 3, // RGB
   },
 };
 
 function generatePDFXDef(
   options: PDFX3Options,
-  iccProfilePath: string,
+  iccProfileData: Uint8Array,
   outputConditionIdentifier: string,
-  outputCondition: string
+  outputCondition: string,
+  profileComponents: number
 ): string {
+  // Use provided title or default to "Untitled"
+  const title = options.title || 'Untitled';
+
+  // Convert ICC profile data to hex string for embedding
+  const hexString = Array.from(iccProfileData)
+    .map(byte => byte.toString(16).padStart(2, '0'))
+    .join('');
+
+  // Combine all DOCINFO entries into a single pdfmark to ensure they're processed together
   return `%!
 % PDF/X-3 Definition File
-[ /Title (${options.title || 'Untitled'}) /DOCINFO pdfmark
-[ /Trapped /False /DOCINFO pdfmark
+% Set all document info in one pdfmark to prevent override
+[ /Title (${title})
+  /Trapped /False
+  /GTS_PDFXVersion (PDF/X-3:2003)
+  /DOCINFO pdfmark
 
-% Set PDF/X-3 conformance
-[ /GTS_PDFXVersion (PDF/X-3:2003) /GTS_PDFXConformance (PDF/X-3:2003) /DOCINFO pdfmark
-
-% Load ICC profile as a stream
+% Embed ICC profile as inline hex data
 [/_objdef {icc_PDFX} /type /stream /OBJ pdfmark
-[{icc_PDFX} <</N 4>> /PUT pdfmark
-[{icc_PDFX} (${iccProfilePath}) (r) file /PUT pdfmark
+[{icc_PDFX} <</N ${profileComponents}>> /PUT pdfmark
+[{icc_PDFX} <${hexString}> /PUT pdfmark
 
 % Define OutputIntent with embedded ICC profile
 [/_objdef {OutputIntent_PDFX} /type /dict /OBJ pdfmark

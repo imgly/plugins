@@ -65,7 +65,8 @@
     "test:profiles": "pnpm run build && vitest run profile-conversion",
     "test:metadata": "pnpm run build && vitest run metadata-validation",
     "test:content": "pnpm run build && vitest run content-preservation",
-    "test:all": "pnpm run test:browser && pnpm run test:integration"
+    "test:all": "pnpm run test:browser && pnpm run test:integration",
+    "test:visual": "pnpm run build && node test/visual-test.mjs"
   },
   "devDependencies": {
     "@cesdk/cesdk-js": "~1.59.0",

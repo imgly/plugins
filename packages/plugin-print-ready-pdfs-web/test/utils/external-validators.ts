@@ -164,10 +164,18 @@ export class ExternalValidators {
     const tempPath = await this.blobToTempFile(pdfBlob, 'test.pdf');
 
     try {
+      // Use qpdf to get the trailer which contains /Size (total object count)
       const { stdout } = await execAsync(
-        `qpdf --show-object=trailer "${tempPath}" 2>/dev/null | grep -c " obj" || echo 0`
+        `qpdf --show-object=trailer "${tempPath}" 2>/dev/null`
       );
-      return parseInt(stdout.trim()) || 0;
+
+      // Extract /Size value from trailer dictionary
+      const sizeMatch = stdout.match(/\/Size\s+(\d+)/);
+      if (sizeMatch) {
+        return parseInt(sizeMatch[1]);
+      }
+
+      return 0;
     } catch {
       return 0;
     } finally {
@@ -192,13 +200,16 @@ export class ExternalValidators {
       if (!line.trim()) continue;
 
       const parts = line.trim().split(/\s+/);
-      if (parts.length < 4) continue;
+      if (parts.length < 6) continue;
+
+      // Font type can be multi-word (e.g., "CID TrueType"), so combine parts[1] and parts[2]
+      const type = `${parts[1]} ${parts[2]}`;
 
       fonts.push({
         name: parts[0],
-        type: parts[1],
-        embedded: parts[2] === 'yes',
-        subset: parts[3] === 'yes'
+        type: type,
+        embedded: parts[4] === 'yes',
+        subset: parts[5] === 'yes'
       });
     }
 
@@ -236,6 +247,11 @@ export class ExternalValidators {
     };
 
     for (const line of output.split('\n')) {
+      // Skip indented lines (metadata from nested structures like PDF subtype)
+      if (line.startsWith('    ') || line.startsWith('\t')) {
+        continue;
+      }
+
       const [key, ...valueParts] = line.split(':');
       const value = valueParts.join(':').trim();
 

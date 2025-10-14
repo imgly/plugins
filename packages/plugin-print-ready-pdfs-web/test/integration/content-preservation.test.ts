@@ -34,12 +34,17 @@ describe('Content Preservation Tests', () => {
     // (would indicate rasterization of vectors)
     expect(outputImages.length).toBeLessThanOrEqual(inputImages.length + 2);
 
-    // Check for large images that would indicate rasterization
-    const largeImages = outputImages.filter(
+    // Check if NEW large images appeared (comparing input vs output)
+    // Large images in input are OK (they were embedded), but NEW large images would indicate rasterization
+    const inputLargeImages = inputImages.filter(
+      (img) => img.width > 1000 || img.height > 1000
+    );
+    const outputLargeImages = outputImages.filter(
       (img) => img.width > 1000 || img.height > 1000
     );
 
-    expect(largeImages.length).toBe(0);
+    // Output should not have MORE large images than input
+    expect(outputLargeImages.length).toBeLessThanOrEqual(inputLargeImages.length);
   });
 
   test('should preserve text as searchable', async () => {

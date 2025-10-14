@@ -83,7 +83,7 @@ describe('ICC Profile Conversion Tests', () => {
 
       // Use one of the bundled profiles as a "custom" profile for testing
       const customProfile = new Blob([
-        readFileSync('src/wasm/profiles/GRACoL2013_CRPC6.icc'),
+        readFileSync(join(testDir, '../../dist/GRACoL2013_CRPC6.icc')),
       ]);
 
       const outputPDF = await convertToPDFX3(inputPDF, {

@@ -68,6 +68,19 @@ if (fs.existsSync(distDir)) {
       fs.copyFileSync(src, path.join('demo-dist', file));
     }
   });
+
+  // Copy ICC profiles
+  const iccFiles = [
+    'GRACoL2013_CRPC6.icc',
+    'ISOcoated_v2_eci.icc',
+    'sRGB_IEC61966-2-1.icc'
+  ];
+  iccFiles.forEach(file => {
+    const src = path.join(distDir, file);
+    if (fs.existsSync(src)) {
+      fs.copyFileSync(src, path.join('demo-dist', file));
+    }
+  });
 }
 
 console.log('Demo build complete in demo-dist/');
