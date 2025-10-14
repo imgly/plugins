@@ -56,7 +56,7 @@
     "types:create": "tsc --emitDeclarationOnly",
     "_syncPnpm": "pnpm sync-dependencies-meta-injected",
     "demo:build": "pnpm run build && node scripts/build-demo.mjs",
-    "demo:dev": "pnpm run build && node scripts/build-demo.mjs && cd demo-bundle && python3 -m http.server 8080",
+    "demo:dev": "pnpm run build && node scripts/build-demo.mjs && cd demo-dist && python3 -m http.server 8080",
     "test:convert": "node test/convert-test.mjs",
     "test:browser": "pnpm run build && playwright test test/browser-test.spec.ts",
     "test:node": "pnpm run build && node test/node-test.mjs",

@@ -4,8 +4,12 @@ import getConfig from '../esbuild/config.mjs';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { config as loadEnv } from 'dotenv';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+// Load environment variables from .env.local
+loadEnv({ path: path.join(__dirname, '../.env.local') });
 
 // Get the config
 const config = getConfig({ isDevelopment: false });

@@ -333,9 +333,8 @@
 
     <script type="module">
       import CreativeEditorSDK from 'https://cdn.img.ly/packages/imgly/cesdk-js/1.59.0/index.js';
-      // Use /dist/index.mjs for local development, ./index.mjs for production deployment
-      const pluginPath = window.location.hostname === 'localhost' ? '/dist/index.mjs' : './index.mjs';
-      const { convertToPDFX3 } = await import(pluginPath);
+      // Import plugin from current directory (works for both local dev and production)
+      const { convertToPDFX3 } = await import('./index.mjs');
 
       // Load configuration (will read from environment variables if available)
       const CONFIG = {
