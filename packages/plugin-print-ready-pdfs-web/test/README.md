@@ -17,23 +17,9 @@ This installs PDF validation tools:
 - **QPDF** (PDF structure validation)
 - **Ghostscript** (PDF/X validation)
 
-### 2. Export Test PDFs
+### 2. Run Tests
 
-Generate test PDFs from CE.SDK archives:
-
-```bash
-# Start CE.SDK test server
-pnpm test:cesdk
-
-# Open export UI in browser
-open http://localhost:3001/export-archives.html
-
-# Click "Export" for each archive, move PDFs to test/fixtures/pdfs/
-```
-
-See `EXPORT_PDFS.md` for detailed instructions.
-
-### 3. Run Tests
+Test PDFs are included in the repository - no additional setup needed.
 
 ```bash
 # Quick smoke test
@@ -301,7 +287,6 @@ cd test && ./setup.sh
 ## Further Reading
 
 - [Node.js Testing Guide](./NODE_TESTING.md) - Complete Node.js test documentation
-- [PDF Export Guide](./EXPORT_PDFS.md) - How to generate test PDFs
 - [PDF/X-3 Specification](https://www.iso.org/standard/39940.html)
 - [Ghostscript PDF/X Documentation](https://www.ghostscript.com/doc/current/VectorDevices.htm#PDFX)
 - [Jest Documentation](https://jestjs.io/docs/getting-started)
