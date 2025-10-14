@@ -1,4 +1,12 @@
 export class BrowserDetection {
+  private get isNode(): boolean {
+    return (
+      typeof process !== 'undefined' &&
+      process.versions != null &&
+      process.versions.node != null
+    );
+  }
+
   supportsWebAssembly(): boolean {
     try {
       return (
@@ -11,6 +19,10 @@ export class BrowserDetection {
   }
 
   supportsWorkers(): boolean {
+    if (this.isNode) {
+      // Node.js has worker_threads but they work differently
+      return false;
+    }
     try {
       return typeof Worker !== 'undefined';
     } catch {
@@ -27,29 +39,47 @@ export class BrowserDetection {
   }
 
   getEstimatedMemoryLimit(): number {
+    // Node.js environment
+    if (this.isNode) {
+      try {
+        // Use dynamic import to avoid bundling 'os' module for browser builds
+        const os = require('os');
+        // Return free memory, capped at 4GB for safety
+        return Math.min(os.freemem(), 4 * 1024 * 1024 * 1024);
+      } catch {
+        // Fallback if 'os' module not available
+        return 2 * 1024 * 1024 * 1024; // 2GB default for Node.js
+      }
+    }
+
+    // Browser environment
     // Try to get memory info from performance API
-    const memory = (performance as any).memory;
-    if (memory && memory.jsHeapSizeLimit) {
-      return memory.jsHeapSizeLimit;
+    if (typeof performance !== 'undefined') {
+      const memory = (performance as any).memory;
+      if (memory && memory.jsHeapSizeLimit) {
+        return memory.jsHeapSizeLimit;
+      }
     }
 
     // Fallback estimates based on browser/platform
-    const userAgent = navigator.userAgent.toLowerCase();
+    if (typeof navigator !== 'undefined') {
+      const userAgent = navigator.userAgent.toLowerCase();
 
-    if (userAgent.includes('mobile')) {
-      return 512 * 1024 * 1024; // 512MB for mobile
-    }
+      if (userAgent.includes('mobile')) {
+        return 512 * 1024 * 1024; // 512MB for mobile
+      }
 
-    if (userAgent.includes('chrome')) {
-      return 4 * 1024 * 1024 * 1024; // 4GB for Chrome desktop
-    }
+      if (userAgent.includes('chrome')) {
+        return 4 * 1024 * 1024 * 1024; // 4GB for Chrome desktop
+      }
 
-    if (userAgent.includes('firefox')) {
-      return 2 * 1024 * 1024 * 1024; // 2GB for Firefox
-    }
+      if (userAgent.includes('firefox')) {
+        return 2 * 1024 * 1024 * 1024; // 2GB for Firefox
+      }
 
-    if (userAgent.includes('safari')) {
-      return 1 * 1024 * 1024 * 1024; // 1GB for Safari
+      if (userAgent.includes('safari')) {
+        return 1 * 1024 * 1024 * 1024; // 1GB for Safari
+      }
     }
 
     return 1 * 1024 * 1024 * 1024; // 1GB default
@@ -60,6 +90,24 @@ export class BrowserDetection {
     version: string;
     platform: string;
   } {
+    // Node.js environment
+    if (this.isNode) {
+      return {
+        name: 'Node.js',
+        version: process.version,
+        platform: process.platform,
+      };
+    }
+
+    // Browser environment
+    if (typeof navigator === 'undefined') {
+      return {
+        name: 'Unknown',
+        version: 'Unknown',
+        platform: 'Unknown',
+      };
+    }
+
     const userAgent = navigator.userAgent;
 
     let name = 'Unknown';

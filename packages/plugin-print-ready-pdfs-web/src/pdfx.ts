@@ -75,14 +75,32 @@ export async function convertToPDFX3(
       const profileInfo = PROFILE_PRESETS[options.outputProfile as keyof typeof PROFILE_PRESETS];
       const profilePath = `/tmp/${profileInfo.file}`;
 
-      // Load ICC profile from bundled assets
-      // The profile will be in the same directory as the built module
-      const profileUrl = new URL(profileInfo.file, import.meta.url).href;
-      const profileResponse = await fetch(profileUrl);
-      if (!profileResponse.ok) {
-        throw new Error(`Failed to load ICC profile ${profileInfo.file}: ${profileResponse.statusText}`);
+      // Load ICC profile - different approach for Node.js vs browser
+      const isNode = typeof process !== 'undefined' && process.versions?.node != null;
+
+      let profileBlob: Blob;
+
+      if (isNode) {
+        // Node.js: Load from filesystem using readFileSync
+        const { readFileSync } = await import('fs');
+        const { fileURLToPath } = await import('url');
+        const { dirname, join } = await import('path');
+
+        // Get the directory of the built module
+        const moduleDir = dirname(fileURLToPath(import.meta.url));
+        const profileFilePath = join(moduleDir, profileInfo.file);
+
+        const profileData = readFileSync(profileFilePath);
+        profileBlob = new Blob([profileData], { type: 'application/vnd.iccprofile' });
+      } else {
+        // Browser: Use fetch
+        const profileUrl = new URL(profileInfo.file, import.meta.url).href;
+        const profileResponse = await fetch(profileUrl);
+        if (!profileResponse.ok) {
+          throw new Error(`Failed to load ICC profile ${profileInfo.file}: ${profileResponse.statusText}`);
+        }
+        profileBlob = await profileResponse.blob();
       }
-      const profileBlob = await profileResponse.blob();
 
       await vfs.writeBlob(profilePath, profileBlob);
     }
