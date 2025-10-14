@@ -10,8 +10,11 @@ export interface FileEntry {
 
 export class VirtualFileSystem {
   private readonly fs: EmscriptenFS;
+
   private readonly logger: Logger;
+
   private readonly managedFiles: Set<string> = new Set();
+
   private readonly workingDir: string;
 
   constructor(

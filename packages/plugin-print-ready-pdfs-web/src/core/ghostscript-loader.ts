@@ -9,6 +9,7 @@ export interface LoaderOptions {
 
 export class GhostscriptLoader {
   private static instance: Promise<EmscriptenModule> | null = null;
+
   private static readonly TIMEOUT_MS = 30000;
 
   static async load(options: LoaderOptions = {}): Promise<EmscriptenModule> {
@@ -50,18 +51,18 @@ export class GhostscriptLoader {
   private static async loadFromBundle(): Promise<EmscriptenModule> {
     // Use the bundled WASM module with proper configuration
     const logger = new Logger('GhostscriptInit');
-    
+
     try {
       logger.info('Initializing Ghostscript module');
-      
+
       const module = await createGhostscriptModule();
-      
+
       logger.info('Ghostscript module initialized successfully', {
         version: module.version || 'unknown',
         hasFS: !!module.FS,
         hasCallMain: !!module.callMain,
       });
-      
+
       return module;
     } catch (error) {
       logger.error('Ghostscript initialization failed', { error });
@@ -71,19 +72,18 @@ export class GhostscriptLoader {
     }
   }
 
-
   private static async loadWithTimeout<T>(
     operation: () => Promise<T>,
     timeoutMs: number
   ): Promise<T> {
     return Promise.race([
       operation(),
-      new Promise<never>((_, reject) =>
+      new Promise<never>((_, reject) => {
         setTimeout(
           () => reject(new Error(`Loading timeout after ${timeoutMs}ms`)),
           timeoutMs
-        )
-      ),
+        );
+      }),
     ]);
   }
 

@@ -28,18 +28,26 @@ export async function convertToPDFX3(
 
   // Validate output profile is provided
   if (!options.outputProfile) {
-    throw new Error('outputProfile is required. Must be one of: "gracol", "fogra39", "srgb", "custom"');
+    throw new Error(
+      'outputProfile is required. Must be one of: "gracol", "fogra39", "srgb", "custom"'
+    );
   }
 
   // Validate output profile value
   const validProfiles = ['gracol', 'fogra39', 'srgb', 'custom'];
   if (!validProfiles.includes(options.outputProfile)) {
-    throw new Error(`Invalid outputProfile "${options.outputProfile}". Must be one of: ${validProfiles.join(', ')}`);
+    throw new Error(
+      `Invalid outputProfile "${
+        options.outputProfile
+      }". Must be one of: ${validProfiles.join(', ')}`
+    );
   }
 
   // Validate custom profile requirement
   if (options.outputProfile === 'custom' && !options.customProfile) {
-    throw new Error('customProfile Blob is required when outputProfile is "custom"');
+    throw new Error(
+      'customProfile Blob is required when outputProfile is "custom"'
+    );
   }
 
   // Validate custom profile if provided
@@ -72,11 +80,13 @@ export async function convertToPDFX3(
       await vfs.writeBlob(customProfilePath, options.customProfile);
     } else if (options.outputProfile !== 'custom') {
       // Load the bundled ICC profile
-      const profileInfo = PROFILE_PRESETS[options.outputProfile as keyof typeof PROFILE_PRESETS];
+      const profileInfo =
+        PROFILE_PRESETS[options.outputProfile as keyof typeof PROFILE_PRESETS];
       const profilePath = `/tmp/${profileInfo.file}`;
 
       // Load ICC profile - different approach for Node.js vs browser
-      const isNode = typeof process !== 'undefined' && process.versions?.node != null;
+      const isNode =
+        typeof process !== 'undefined' && process.versions?.node != null;
 
       let profileBlob: Blob;
 
@@ -91,13 +101,17 @@ export async function convertToPDFX3(
         const profileFilePath = join(moduleDir, profileInfo.file);
 
         const profileData = readFileSync(profileFilePath);
-        profileBlob = new Blob([profileData], { type: 'application/vnd.iccprofile' });
+        profileBlob = new Blob([profileData], {
+          type: 'application/vnd.iccprofile',
+        });
       } else {
         // Browser: Use fetch
         const profileUrl = new URL(profileInfo.file, import.meta.url).href;
         const profileResponse = await fetch(profileUrl);
         if (!profileResponse.ok) {
-          throw new Error(`Failed to load ICC profile ${profileInfo.file}: ${profileResponse.statusText}`);
+          throw new Error(
+            `Failed to load ICC profile ${profileInfo.file}: ${profileResponse.statusText}`
+          );
         }
         profileBlob = await profileResponse.blob();
       }
@@ -113,13 +127,16 @@ export async function convertToPDFX3(
     if (options.outputProfile === 'custom') {
       iccProfilePath = customProfilePath;
       // Use custom values or defaults
-      outputConditionIdentifier = options.outputConditionIdentifier || 'Custom Profile';
+      outputConditionIdentifier =
+        options.outputConditionIdentifier || 'Custom Profile';
       outputCondition = options.outputCondition || 'Custom ICC Profile';
     } else {
-      const preset = PROFILE_PRESETS[options.outputProfile as keyof typeof PROFILE_PRESETS];
+      const preset =
+        PROFILE_PRESETS[options.outputProfile as keyof typeof PROFILE_PRESETS];
       iccProfilePath = `/tmp/${preset.file}`;
       // Allow overriding preset values
-      outputConditionIdentifier = options.outputConditionIdentifier || preset.identifier;
+      outputConditionIdentifier =
+        options.outputConditionIdentifier || preset.identifier;
       outputCondition = options.outputCondition || preset.info;
     }
 
@@ -148,8 +165,8 @@ export async function convertToPDFX3(
       // Color conversion settings - use DEVICE color conversion to preserve vectors
       '-dCompatibilityLevel=1.4',
       '-sColorConversionStrategy=UseDeviceIndependentColor',
-      '-sDefaultRGBProfile=' + iccProfilePath,
-      '-sDefaultCMYKProfile=' + iccProfilePath,
+      `-sDefaultRGBProfile=${iccProfilePath}`,
+      `-sDefaultCMYKProfile=${iccProfilePath}`,
       '-dOverrideICC=true',
       '-dRenderIntent=0',
       // Preserve DeviceN colors and spot colors
@@ -159,7 +176,7 @@ export async function convertToPDFX3(
       '-sPDFXSetBleedBoxToMediaBox=true',
       `-sOutputFile=${outputPath}`,
       pdfxDefPath,
-      inputPath
+      inputPath,
     ];
 
     const exitCode = await module.callMain(gsArgs);
@@ -187,21 +204,21 @@ export async function convertToPDFX3(
 
 // Profile presets from the spec
 const PROFILE_PRESETS = {
-  'gracol': {
+  gracol: {
     file: 'GRACoL2013_CRPC6.icc',
     identifier: 'CGATS 21.2',
-    info: 'GRACoL 2013 CRPC6'
+    info: 'GRACoL 2013 CRPC6',
   },
-  'fogra39': {
+  fogra39: {
     file: 'ISOcoated_v2_eci.icc',
     identifier: 'FOGRA39',
-    info: 'ISO Coated v2 (ECI)'
+    info: 'ISO Coated v2 (ECI)',
   },
-  'srgb': {
+  srgb: {
     file: 'sRGB_IEC61966-2-1.icc',
     identifier: 'sRGB IEC61966-2.1',
-    info: 'sRGB IEC61966-2.1'
-  }
+    info: 'sRGB IEC61966-2.1',
+  },
 };
 
 function generatePDFXDef(
@@ -236,4 +253,3 @@ function generatePDFXDef(
 % Add OutputIntent to Catalog
 [{Catalog} <</OutputIntents [{OutputIntent_PDFX}]>> /PUT pdfmark`;
 }
-

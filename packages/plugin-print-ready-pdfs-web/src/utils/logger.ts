@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 export type LogLevel = 'debug' | 'info' | 'warn' | 'error';
 
 export interface LogEntry {
@@ -10,7 +11,9 @@ export interface LogEntry {
 
 export class Logger {
   private static globalLogLevel: LogLevel = 'info';
+
   private static logs: LogEntry[] = [];
+
   private static maxLogs = 1000;
 
   constructor(private component: string) {}
@@ -88,6 +91,9 @@ export class Logger {
         break;
       case 'error':
         console.error(prefix, logMessage);
+        break;
+      default:
+        // All log levels handled above
         break;
     }
   }
