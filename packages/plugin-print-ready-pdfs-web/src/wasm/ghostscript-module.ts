@@ -5,9 +5,35 @@ import type {
 } from '../types/ghostscript';
 
 export default async function createGhostscriptModule(): Promise<EmscriptenModule> {
-  // Dynamically import the gs.js module from dist
-  const moduleUrl = new URL('./gs.js', import.meta.url).href;
-  const GhostscriptModule = await import(/* webpackIgnore: true */ moduleUrl);
+  // Check if we're in Node.js
+  const isNode =
+    typeof process !== 'undefined' &&
+    process.versions != null &&
+    process.versions.node != null;
+
+  let GhostscriptModule: any;
+  let wasmPath: string;
+
+  if (isNode) {
+    // Node.js: Use require.resolve to find gs.js relative to this module
+    const { createRequire } = await import('module');
+    const { dirname, join } = await import('path');
+
+    const requireForESM = createRequire(import.meta.url);
+
+    // Resolve gs.js directly (it's copied to dist/ alongside the bundle)
+    const gsPath = requireForESM.resolve('./gs.js');
+    const moduleDir = dirname(gsPath);
+    wasmPath = join(moduleDir, 'gs.wasm');
+
+    GhostscriptModule = await import(gsPath);
+  } else {
+    // Browser: Use URL-based imports
+    const moduleUrl = new URL('./gs.js', import.meta.url).href;
+    GhostscriptModule = await import(/* webpackIgnore: true */ moduleUrl);
+    wasmPath = new URL('./gs.wasm', import.meta.url).href;
+  }
+
   const factory = (GhostscriptModule.default ||
     GhostscriptModule) as GhostscriptModuleFactory;
 
@@ -15,8 +41,7 @@ export default async function createGhostscriptModule(): Promise<EmscriptenModul
   const module = await factory({
     locateFile: (filename: string) => {
       if (filename === 'gs.wasm') {
-        // Return relative path - the WASM will be in the same directory
-        return new URL('./gs.wasm', import.meta.url).href;
+        return wasmPath;
       }
       return filename;
     },

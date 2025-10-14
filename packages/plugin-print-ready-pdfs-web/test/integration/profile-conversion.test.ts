@@ -1,9 +1,9 @@
-import { describe, test, expect, beforeAll } from '@jest/globals';
+import { describe, test, expect, beforeAll } from 'vitest';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const testFile = fileURLToPath(import.meta.url);
+const testDir = dirname(testFile);
 import { ExternalValidators } from '../utils/external-validators.js';
 import { convertToPDFX3 } from '../../dist/index.mjs';
 import { readFileSync, existsSync } from 'fs';
@@ -21,7 +21,7 @@ describe('ICC Profile Conversion Tests', () => {
   });
 
   const getTestPDF = (name: string): Blob => {
-    const path = join(__dirname, '../fixtures/pdfs', name);
+    const path = join(testDir, '../fixtures/pdfs', name);
     if (!existsSync(path)) {
       throw new Error(`Test PDF not found: ${path}. Export it from CE.SDK first.`);
     }

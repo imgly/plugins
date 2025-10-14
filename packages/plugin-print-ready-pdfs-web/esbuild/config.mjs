@@ -61,7 +61,7 @@ export default ({ isDevelopment }) => {
 
   const config = baseConfig({
     isDevelopment,
-    external: ['@cesdk/cesdk-js'],
+    external: ['@cesdk/cesdk-js', 'path', 'url', 'fs', 'os', 'module'],
     pluginVersion: packageJson.version
   });
 
