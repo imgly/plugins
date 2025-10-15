@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Added
+
+-   [generation-web] **Middleware preventDefault() API**: Added `options.preventDefault()` method to suppress default UI feedback (notifications, block states, console logging) when handling errors in custom middleware
+
 ### Improvements
 
 -   [all] **Internationalization Support**: All hardcoded strings across AI plugins have been removed and replaced with translation keys, enabling full localization support for plugin labels, actions, styles, and error messages
