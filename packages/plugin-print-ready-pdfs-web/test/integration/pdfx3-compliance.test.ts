@@ -292,6 +292,76 @@ describe('PDF/X-3:2003 Compliance Tests', () => {
       expect(pdfText).toContain('OutputIntent');
       expect(pdfText).toContain('Custom ICC Profile');
     });
+
+    test('should actually embed ICC profile binary data', async () => {
+      const inputPDF = getTestPDF('test-minimal.pdf');
+
+      // Load the FOGRA39 profile for testing
+      const iccProfilePath = join(testDir, '../../dist/ISOcoated_v2_eci.icc');
+      const originalProfileData = readFileSync(iccProfilePath);
+      const customProfile = new Blob([originalProfileData]);
+
+      const outputPDF = await convertToPDFX3(inputPDF, {
+        outputProfile: 'custom',
+        customProfile: customProfile,
+        outputConditionIdentifier: 'FOGRA39',
+        title: 'ICC Embedding Verification',
+      });
+
+      // Verify the ICC profile is embedded in the PDF
+      const pdfBuffer = Buffer.from(await outputPDF.arrayBuffer());
+      const pdfContent = pdfBuffer.toString('binary');
+
+      // Check OutputIntent is present with the identifier
+      expect(pdfContent).toContain('OutputIntent');
+      expect(pdfContent).toContain('DestOutputProfile');
+      expect(pdfContent).toContain('FOGRA39');
+
+      // Verify the file size increased significantly (profile was added)
+      // ICC profiles are 500KB+, so output should be much larger
+      const sizeIncrease = outputPDF.size - inputPDF.size;
+      expect(sizeIncrease).toBeGreaterThan(400000); // At least 400KB added
+
+      console.log(
+        `✓ Custom profile: Added ${Math.round(sizeIncrease / 1024)}KB to PDF`
+      );
+    });
+
+    test('should embed preset ICC profiles with correct metadata', async () => {
+      const inputPDF = getTestPDF('test-minimal.pdf');
+
+      // Test each preset profile
+      const profiles = [
+        { name: 'fogra39', identifier: 'FOGRA39', minSizeIncrease: 400000 },
+        { name: 'gracol', identifier: 'CGATS', minSizeIncrease: 400000 },
+        { name: 'srgb', identifier: 'sRGB', minSizeIncrease: null }, // sRGB is small (3KB), may result in net decrease
+      ] as const;
+
+      for (const profile of profiles) {
+        const outputPDF = await convertToPDFX3(inputPDF, {
+          outputProfile: profile.name,
+          title: `${profile.name} Embedding Test`,
+        });
+
+        const pdfBuffer = Buffer.from(await outputPDF.arrayBuffer());
+        const pdfContent = pdfBuffer.toString('binary');
+
+        // Should contain OutputIntent with profile identifier
+        expect(pdfContent).toContain('OutputIntent');
+        expect(pdfContent).toContain('DestOutputProfile');
+        expect(pdfContent).toContain(profile.identifier);
+
+        // File size check - CMYK profiles add significant size, sRGB is small
+        const sizeIncrease = outputPDF.size - inputPDF.size;
+        if (profile.minSizeIncrease !== null) {
+          expect(sizeIncrease).toBeGreaterThan(profile.minSizeIncrease);
+        }
+
+        console.log(
+          `✓ ${profile.name}: Embedded ICC profile (${sizeIncrease > 0 ? '+' : ''}${Math.round(sizeIncrease / 1024)}KB, total ${Math.round(outputPDF.size / 1024)}KB)`
+        );
+      }
+    });
   });
 
   describe('Requirement 5: Font Embedding', () => {
