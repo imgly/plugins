@@ -210,6 +210,7 @@ function handleGeneratePlaceholderUserFlow<
       });
 
       const result = await options.generate(input, {
+        blockIds: [placeholderBlock],
         middlewares: [...(options.middlewares ?? [])],
         debug: options.debug,
         dryRun: options.dryRun,

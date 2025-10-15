@@ -168,6 +168,7 @@ function handleGenerateFromQuickAction<
       const result = await options.providerInitializationResult.generate(
         mapInput(input),
         {
+          blockIds: targetBlockIds,
           middlewares: [...(options.middlewares ?? [])],
           debug: options.debug,
           dryRun: options.dryRun,
