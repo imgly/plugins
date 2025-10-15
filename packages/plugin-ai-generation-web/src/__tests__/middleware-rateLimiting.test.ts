@@ -101,7 +101,10 @@ describe('rateLimitMiddleware', () => {
       engine: {} as any,
       cesdk: {} as any,
       blockIds: [],
-      addDisposer: jest.fn()
+      addDisposer: jest.fn(),
+      _defaultPrevented: false,
+      preventDefault: jest.fn<() => void>(),
+      defaultPrevented: jest.fn<() => boolean>().mockReturnValue(false)
     };
 
     // Create a next function that's properly typed for our tests

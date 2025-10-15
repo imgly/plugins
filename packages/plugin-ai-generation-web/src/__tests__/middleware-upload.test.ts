@@ -52,7 +52,10 @@ describe('uploadMiddleware', () => {
       abortSignal: new AbortController().signal,
       engine: {} as any,
       cesdk: {} as any,
-      addDisposer: jest.fn()
+      addDisposer: jest.fn(),
+      _defaultPrevented: false,
+      preventDefault: jest.fn<() => void>(),
+      defaultPrevented: jest.fn<() => boolean>().mockReturnValue(false)
     };
     mockOutput = { kind: 'image', url: 'https://example.com/image.jpg' };
 
