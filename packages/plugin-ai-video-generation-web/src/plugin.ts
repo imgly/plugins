@@ -7,7 +7,7 @@ import {
   checkAiPluginVersion
 } from '@imgly/plugin-ai-generation-web';
 import { PluginConfiguration } from './types';
-import { toArray } from '@imgly/plugin-utils';
+import { toArray, translateWithFallback } from '@imgly/plugin-utils';
 import { PLUGIN_ID } from './constants';
 import CreateVideo from './quickActions/CreateVideo';
 
@@ -48,10 +48,15 @@ export function VideoGeneration<I, O extends Output>(
         true
       );
 
+      const ACTION_LABEL_KEY = `${PLUGIN_ID}.action.label`;
+
       cesdk.setTranslations({
         en: {
           [`panel.${VIDEO_GENERATION_PANEL_ID}`]: 'Video Generation',
-          [`${VIDEO_GENERATION_PANEL_ID}.dock.label`]: 'AI Video'
+          [`${VIDEO_GENERATION_PANEL_ID}.dock.label`]: 'AI Video',
+          [ACTION_LABEL_KEY]: 'Generate Video',
+          'ly.img.ai.video.generation.hint':
+            "Video generation may take up to a few minutes. This panel can be closed and you'll be notified when it's ready."
         }
       });
 
@@ -65,7 +70,7 @@ export function VideoGeneration<I, O extends Output>(
         id: PLUGIN_ID,
         pluginId: PLUGIN_ID,
 
-        label: 'Generate Video',
+        label: translateWithFallback(cesdk, ACTION_LABEL_KEY, 'Generate Video'),
         meta: { panelId: VIDEO_GENERATION_PANEL_ID },
 
         execute: () => {

@@ -154,7 +154,7 @@ function initializeAppLibrary(
       );
 
       builder.Button(`${AI_APP_ID}.dock.button`, {
-        label: 'AI',
+        label: 'ly.img.ai.apps.dock.label',
         isSelected: isOpen,
         icon: isGeneratingState.value
           ? '@imgly/LoadingSpinner'
@@ -391,6 +391,7 @@ function addTranslations(cesdk: CreativeEditorSDK) {
         'Are you sure you want to cancel the generation?',
       'panel.ly.img.ai.generation.confirmCancel.confirm': 'Cancel Generation',
       'panel.ly.img.ai.apps': 'AI',
+      'ly.img.ai.apps.dock.label': 'AI',
       'panel.ly.img.ai.demo.video': 'Generate Video',
       'panel.ly.img.ai.demo.image': 'Generate Image',
 

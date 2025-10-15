@@ -1,5 +1,7 @@
 {
   "en": {
+    "panel.ly.img.ai.speech-generation": "AI Voice",
+    "panel.ly.img.ai.sound-generation": "Sound Generation",
     "ly.img.plugin-ai-audio-generation-web.elevenlabs/monolingual/v1.property.prompt": "Prompt",
     "ly.img.plugin-ai-audio-generation-web.elevenlabs/monolingual/v1.property.voice_id": "Voice",
     "ly.img.plugin-ai-audio-generation-web.elevenlabs/monolingual/v1.property.speed": "Speech Speed",
