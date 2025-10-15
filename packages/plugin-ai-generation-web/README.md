@@ -1208,9 +1208,9 @@ const upload = uploadMiddleware(async (output) => {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(output)
   });
-  
+
   const result = await response.json();
-  
+
   // Return the output with the updated URL
   return {
     ...output,
@@ -1224,6 +1224,105 @@ const provider = {
   output: {
     middleware: [upload]
     // ...other output config
+  }
+};
+```
+
+#### Preventing Default Feedback
+
+Middleware can suppress default UI feedback behaviors (notifications, block states, console logging) using `options.preventDefault()`. This is useful when you want to handle success or error feedback yourself:
+
+```typescript
+const customErrorMiddleware: Middleware<any, any> = async (input, options, next) => {
+  try {
+    return await next(input, options);
+  } catch (error) {
+    // Prevent default error notification
+    options.preventDefault();
+
+    // Show custom notification
+    options.cesdk?.ui.showNotification({
+      type: 'error',
+      message: `Custom error: ${error.message}`,
+      duration: 5000,
+      action: {
+        label: 'Contact Support',
+        onClick: () => window.open('mailto:support@example.com')
+      }
+    });
+
+    throw error;
+  }
+};
+```
+
+**What gets prevented:**
+- Error/success notifications (toast messages)
+- Block error state (error icon)
+- Console error logging
+
+**What is NOT prevented:**
+- Pending → Ready transition (loading spinner always stops)
+
+**Common use cases:**
+
+**1. Custom Error Notifications:**
+```typescript
+const middleware = async (input, options, next) => {
+  try {
+    return await next(input, options);
+  } catch (error) {
+    options.preventDefault();
+    options.cesdk?.ui.showNotification({
+      type: 'error',
+      message: `Generation failed: ${error.message}`,
+      action: { label: 'Retry', onClick: () => retry() }
+    });
+    throw error;
+  }
+};
+```
+
+**2. Silent Failures with External Logging:**
+```typescript
+const middleware = async (input, options, next) => {
+  try {
+    return await next(input, options);
+  } catch (error) {
+    options.preventDefault();
+    errorTracker.capture({ error, context: { input, blockIds: options.blockIds } });
+    throw error;
+  }
+};
+```
+
+**3. Retry Logic:**
+```typescript
+const retryMiddleware = async (input, options, next) => {
+  const maxRetries = 3;
+  let attempt = 0;
+
+  while (attempt < maxRetries) {
+    try {
+      return await next(input, options);
+    } catch (error) {
+      attempt++;
+      if (attempt < maxRetries) {
+        options.preventDefault();
+        options.cesdk?.ui.showNotification({
+          type: 'info',
+          message: `Retrying... (${attempt}/${maxRetries})`
+        });
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      } else {
+        options.preventDefault();
+        options.cesdk?.ui.showNotification({
+          type: 'error',
+          message: `Failed after ${maxRetries} attempts`
+        });
+        throw error;
+      }
+    }
   }
 };
 ```

@@ -181,6 +181,48 @@ cesdk.addPlugin(
 );
 ```
 
+Built-in middleware options:
+
+- **loggingMiddleware**: Logs generation requests and responses
+- **rateLimitMiddleware**: Limits the number of generation requests in a time window
+
+#### Preventing Default Feedback
+
+Middleware can suppress default UI feedback behaviors using `options.preventDefault()`:
+
+```typescript
+const customErrorMiddleware = async (input, options, next) => {
+  try {
+    return await next(input, options);
+  } catch (error) {
+    // Prevent default error notification
+    options.preventDefault();
+
+    // Show custom error notification
+    options.cesdk?.ui.showNotification({
+      type: 'error',
+      message: `Sticker generation failed: ${error.message}`,
+      action: {
+        label: 'Try Again',
+        onClick: () => {/* retry logic */}
+      }
+    });
+
+    throw error;
+  }
+};
+```
+
+**What gets prevented:**
+- Error/success notifications
+- Block error state
+- Console error logging
+
+**What is NOT prevented:**
+- Pending → Ready transition (loading spinner always stops)
+
+For more details, see the [@imgly/plugin-ai-generation-web documentation](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-generation-web#preventing-default-feedback).
+
 ### Using a Proxy
 
 For security reasons, it's recommended to use a proxy server to handle API requests to fal.ai. The proxy URL is required when configuring providers:
