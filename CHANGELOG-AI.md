@@ -12,6 +12,15 @@
     -   Error messages and UI elements
 -   [all] **Backwards Compatibility**: Translation system automatically detects CE.SDK version and gracefully falls back to English strings for CE.SDK versions < 1.59.0, ensuring no breaking changes for existing integrations
 
+### Fixed
+
+-   [generation-web] **Placeholder Block Error State**: Fixed placeholder blocks getting stuck in Pending state when generation fails or is aborted. Blocks are now properly destroyed when generation is aborted, or moved to Error state when generation fails, preventing perpetual loading spinners in the UI.
+-   [generation-web] **Middleware Block Targeting**: Fixed middleware to correctly receive block IDs for placeholder blocks and quick action targets. Previously, middleware would fall back to `findAllSelected()` which could target incorrect blocks if the selection changed during generation. Now placeholder blocks created during panel generation and target blocks from quick actions are explicitly passed to middleware, ensuring operations like pending state, locking, and highlighting affect the correct blocks.
+
+### Changed
+
+-   [generation-web] **BlockIds Type Refinement**: Removed unused `| null` type from `blockIds` parameter in `GenerationOptions` and `Generate` function signature. The `null` value was documented but never implemented or used. Use an empty array `[]` instead of `null` to explicitly target no blocks.
+
 ## [0.2.8] - 2025-09-29
 
 ### New Features
