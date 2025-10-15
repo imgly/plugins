@@ -1,4 +1,8 @@
-import Provider, { Output, OutputKind } from '../core/provider';
+import Provider, {
+  GenerationOptions,
+  Output,
+  OutputKind
+} from '../core/provider';
 import { composeMiddlewares, Middleware } from '../middleware/middleware';
 import loggingMiddleware from '../middleware/loggingMiddleware';
 import dryRunMiddleware from '../middleware/dryRunMiddleware';
@@ -7,13 +11,23 @@ import { isAbortError, isAsyncGenerator } from '../utils/utils';
 import { ABORT_REASON_USER_CANCEL } from '../core/constants';
 
 export type ResultSuccess<O> =
-  | { status: 'success'; type: 'async'; output: AsyncGenerator<O> }
-  | { status: 'success'; type: 'sync'; output: O };
+  | {
+      status: 'success';
+      type: 'async';
+      output: AsyncGenerator<O>;
+      middlewareOptions?: GenerationOptions;
+    }
+  | {
+      status: 'success';
+      type: 'sync';
+      output: O;
+      middlewareOptions?: GenerationOptions;
+    };
 
 export type Result<O> =
   | ResultSuccess<O>
-  | { status: 'error'; message: string }
-  | { status: 'aborted' };
+  | { status: 'error'; message: string; middlewareOptions?: GenerationOptions }
+  | { status: 'aborted'; middlewareOptions?: GenerationOptions };
 
 export type Generate<I, O extends Output> = (
   input: I,
@@ -54,37 +68,63 @@ function createGenerateFunction<
       })
     ]);
 
+    // Create middleware options with preventDefault implementation
+    // Using closure instead of 'this' to ensure state is shared across middleware chain
+    const preventDefaultState = { prevented: false };
+    const middlewareOptions: GenerationOptions = {
+      blockIds: options?.blockIds,
+      abortSignal: options?.abortSignal,
+      engine: context.engine,
+      cesdk: context.cesdk,
+      _defaultPrevented: false, // Not used, kept for type compatibility
+      preventDefault: () => {
+        preventDefaultState.prevented = true;
+      },
+      defaultPrevented: () => {
+        return preventDefaultState.prevented;
+      }
+    };
+
     // Trigger the generation
     try {
       const { result: output } = await composedMiddlewares(
         context.provider.output.generate
-      )(input, {
-        blockIds: options?.blockIds,
-        abortSignal: options?.abortSignal,
-        engine: context.engine,
-        cesdk: context.cesdk
-      });
-      if (options?.abortSignal?.aborted) return { status: 'aborted' };
+      )(input, middlewareOptions);
+      if (options?.abortSignal?.aborted)
+        return { status: 'aborted', middlewareOptions };
       if (output instanceof Error)
-        return { status: 'error', message: output.message };
+        return {
+          status: 'error',
+          message: output.message,
+          middlewareOptions
+        };
       if (output == null)
-        return { status: 'error', message: 'No output generated' };
+        return {
+          status: 'error',
+          message: 'No output generated',
+          middlewareOptions
+        };
 
       if (isAsyncGenerator(output)) {
-        return { status: 'success', type: 'async', output };
+        return { status: 'success', type: 'async', output, middlewareOptions };
       } else {
-        return { status: 'success', type: 'sync', output };
+        return { status: 'success', type: 'sync', output, middlewareOptions };
       }
     } catch (error) {
       if (isAbortError(error)) {
-        return { status: 'aborted', message: error.message };
+        return {
+          status: 'aborted',
+          message: error.message,
+          middlewareOptions
+        };
       }
       if (error === ABORT_REASON_USER_CANCEL) {
-        return { status: 'aborted', message: error };
+        return { status: 'aborted', message: error, middlewareOptions };
       }
       return {
         status: 'error',
-        message: error instanceof Error ? error.message : String(error)
+        message: error instanceof Error ? error.message : String(error),
+        middlewareOptions
       };
     }
   };

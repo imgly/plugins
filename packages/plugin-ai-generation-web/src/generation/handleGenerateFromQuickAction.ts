@@ -256,8 +256,11 @@ function handleGenerateFromQuickAction<
               metadata.clear(blockId);
             }
           });
-          // eslint-disable-next-line no-console
-          console.error(`[Generate]: ${result.message}`);
+          // Check if default was prevented
+          if (!result.middlewareOptions?.defaultPrevented()) {
+            // eslint-disable-next-line no-console
+            console.error(`[Generate]: ${result.message}`);
+          }
           return result;
         }
 
@@ -266,6 +269,9 @@ function handleGenerateFromQuickAction<
         }
       }
     } catch (error) {
+      // Note: For exceptions thrown in middleware, we don't have access to middlewareOptions
+      // so we can't check defaultPrevented here. Middleware should handle errors in catch blocks
+      // and re-throw to use preventDefault properly.
       options.cesdk.ui.showNotification({
         type: 'error',
         message: 'A technical issue has occurred.'
