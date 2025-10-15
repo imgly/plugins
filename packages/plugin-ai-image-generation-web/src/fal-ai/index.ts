@@ -1,5 +1,7 @@
 import { RecraftV3 } from './RecraftV3';
 import { Recraft20b } from './Recraft20b';
+import { GeminiFlash25 } from './GeminiFlash25';
+import { Gemini25FlashImageEdit } from './Gemini25FlashImageEdit';
 import { GeminiFlashEdit } from './GeminiFlashEdit';
 import { FluxProKontextEdit } from './FluxProKontextEdit';
 import { FluxProKontextMaxEdit } from './FluxProKontextMaxEdit';
@@ -14,6 +16,8 @@ import { SeedreamV4Edit } from './SeedreamV4Edit';
 const FalAi = {
   FluxProKontextEdit,
   FluxProKontextMaxEdit,
+  Gemini25FlashImageEdit,
+  GeminiFlash25,
   GeminiFlashEdit,
   IdeogramV3,
   IdeogramV3Remix,

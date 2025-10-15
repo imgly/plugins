@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+### New Features
+
+-   [image-generation] **GeminiFlash25 Provider**: Added Google Gemini Flash 2.5 text-to-image provider via fal.ai with fast generation times, multiple aspect ratios (1:1, 3:4, 4:3, 9:16, 16:9), custom dimensions support, and multiple output formats (JPEG, PNG, WEBP)
+-   [image-generation] **Gemini25FlashImageEdit Provider**: Added Google Gemini 2.5 Flash Image Edit provider via fal.ai for advanced image editing with multi-image support (1-10 images), comprehensive quick actions support (editImage, swapBackground, styleTransfer, artistTransfer, createVariant, combineImages, remixPage, remixPageWithPrompt), text-based editing instructions, and fast processing times
+
 ## [0.2.8] - 2025-09-29
 
 ### New Features
