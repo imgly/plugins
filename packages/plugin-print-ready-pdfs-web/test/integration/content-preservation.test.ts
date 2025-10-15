@@ -50,9 +50,11 @@ describe('Content Preservation Tests', () => {
   test('should preserve text as searchable', async () => {
     const inputPDF = getTestPDF('test-text.pdf');
 
+    // Disable transparency flattening to preserve text
     const outputPDF = await convertToPDFX3(inputPDF, {
       outputProfile: 'srgb',
       title: 'Text Test',
+      flattenTransparency: false,
     });
 
     // Extract text from both PDFs
@@ -67,9 +69,11 @@ describe('Content Preservation Tests', () => {
   test('should embed all fonts', async () => {
     const inputPDF = getTestPDF('test-text.pdf');
 
+    // Disable transparency flattening to preserve fonts
     const outputPDF = await convertToPDFX3(inputPDF, {
       outputProfile: 'srgb',
       title: 'Font Embedding Test',
+      flattenTransparency: false,
     });
 
     const fonts = await ExternalValidators.validateFonts(outputPDF);
@@ -90,9 +94,11 @@ describe('Content Preservation Tests', () => {
   test('should maintain reasonable object count', async () => {
     const inputPDF = getTestPDF('test-complex.pdf');
 
+    // Disable transparency flattening to preserve objects
     const outputPDF = await convertToPDFX3(inputPDF, {
       outputProfile: 'srgb',
       title: 'Object Count Test',
+      flattenTransparency: false,
     });
 
     const inputObjects = await ExternalValidators.countPdfObjects(inputPDF);
@@ -107,9 +113,11 @@ describe('Content Preservation Tests', () => {
   test('should preserve images without re-encoding', async () => {
     const inputPDF = getTestPDF('test-images.pdf');
 
+    // Disable transparency flattening to preserve images
     const outputPDF = await convertToPDFX3(inputPDF, {
       outputProfile: 'srgb',
       title: 'Image Test',
+      flattenTransparency: false,
     });
 
     const inputImages = await ExternalValidators.listImages(inputPDF);
@@ -131,9 +139,11 @@ describe('Content Preservation Tests', () => {
   test('should handle mixed content without rasterizing', async () => {
     const inputPDF = getTestPDF('test-complex.pdf');
 
+    // Disable transparency flattening to preserve all content
     const outputPDF = await convertToPDFX3(inputPDF, {
       outputProfile: 'srgb',
       title: 'Mixed Content Test',
+      flattenTransparency: false,
     });
 
     // Validate overall structure
