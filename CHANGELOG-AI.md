@@ -2,6 +2,16 @@
 
 ## [Unreleased]
 
+### Improvements
+
+-   [all] **Internationalization Support**: All hardcoded strings across AI plugins have been removed and replaced with translation keys, enabling full localization support for plugin labels, actions, styles, and error messages
+-   [all] **Translation Keys Available**: Added comprehensive translation keys for:
+    -   Panel and dock labels (AI Image, AI Video, AI Sticker, AI Voice, Sound Generation)
+    -   Action labels (Generate Image, Generate Video, Generate Sticker)
+    -   Style transfer options (None, Anime, Cyberpunk, Kodak 400, Watercolor, Dark Fantasy, Vaporwave, Vector Flat, 3D Animation, Ukiyo-e, Surreal, Steampunk, Night Bokeh, Pop Art)
+    -   Error messages and UI elements
+-   [all] **Backwards Compatibility**: Translation system automatically detects CE.SDK version and gracefully falls back to English strings for CE.SDK versions < 1.59.0, ensuring no breaking changes for existing integrations
+
 ## [0.2.8] - 2025-09-29
 
 ### New Features
