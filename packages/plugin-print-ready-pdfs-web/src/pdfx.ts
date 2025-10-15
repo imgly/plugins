@@ -271,6 +271,7 @@ function generatePDFXDef(
   /S /GTS_PDFX
   /OutputCondition (${outputCondition})
   /OutputConditionIdentifier (${outputConditionIdentifier})
+  /RegistryName (http://www.color.org)
   /DestOutputProfile {icc_PDFX}
 >> /PUT pdfmark
 
