@@ -182,6 +182,16 @@ export type GenerationResult<O extends Output, C = O> =
  * The options for the generation function.
  */
 export type GenerationOptions = {
+  /**
+   * The block IDs that this generation is operating on.
+   * Middleware can use this to target specific blocks.
+   * - undefined: Middleware typically fall back to selected blocks
+   * - []: Explicitly target no blocks
+   * - [1, 2, 3]: Target specific blocks
+   *
+   * Note: This is passed through to middleware but not required by provider implementations.
+   */
+  blockIds?: number[];
   abortSignal?: AbortSignal;
   engine: CreativeEngine;
   cesdk?: CreativeEditorSDK;
