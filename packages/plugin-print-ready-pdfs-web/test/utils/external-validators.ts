@@ -337,6 +337,58 @@ export class ExternalValidators {
   }
 
   /**
+   * Extract ICC profile from PDF OutputIntent
+   * Returns the ICC profile data as a Buffer
+   */
+  static async extractICCProfile(pdfBlob: Blob): Promise<Buffer | null> {
+    const tempPath = await this.blobToTempFile(pdfBlob, 'test.pdf');
+
+    try {
+      // Parse the PDF to find OutputIntent and ICC profile object reference
+      const buffer = Buffer.from(await pdfBlob.arrayBuffer());
+      const pdfContent = buffer.toString('binary');
+
+      // Look for ICC profile stream marker with /N 4 (CMYK) or /N 3 (RGB)
+      // The pattern is: [/_objdef {icc_PDFX} ... <HEX_DATA> /PUT pdfmark
+
+      // Find the hex-encoded ICC profile between angle brackets
+      // It may span multiple lines, so we need to handle that
+      const hexPattern = /<([0-9a-fA-F\s\r\n]+)>/g;
+      const matches = [...pdfContent.matchAll(hexPattern)];
+
+      // Look for the largest hex block (ICC profiles are typically several KB)
+      let largestHexData = '';
+      for (const match of matches) {
+        const hexData = match[1].replace(/[\s\r\n]/g, ''); // Remove whitespace
+        if (hexData.length > largestHexData.length) {
+          largestHexData = hexData;
+        }
+      }
+
+      if (largestHexData.length > 2000) { // ICC profiles are at least 1KB, so >2000 hex chars
+        const bytes = [];
+        for (let i = 0; i < largestHexData.length; i += 2) {
+          bytes.push(parseInt(largestHexData.substring(i, i + 2), 16));
+        }
+        const profileBuffer = Buffer.from(bytes);
+
+        // Verify it's actually an ICC profile by checking the signature
+        const signature = profileBuffer.toString('binary', 36, 40);
+        if (signature === 'acsp') {
+          return profileBuffer;
+        }
+      }
+
+      return null;
+    } catch (error) {
+      console.warn('Failed to extract ICC profile:', error);
+      return null;
+    } finally {
+      unlinkSync(tempPath);
+    }
+  }
+
+  /**
    * Check if external tools are available
    */
   static async checkToolsAvailable(): Promise<Record<string, boolean>> {
