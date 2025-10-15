@@ -123,6 +123,7 @@ interface PDFX3Options {
   title?: string;                         // Document title
   outputConditionIdentifier?: string;     // ICC profile identifier for OutputIntent
   outputCondition?: string;               // Human-readable output condition description
+  flattenTransparency?: boolean;          // Flatten transparency (default: true for PDF/X-3)
 }
 ```
 
@@ -267,12 +268,52 @@ Per the PDF/X-3 specification, this field must be set to either `/True` or `/Fal
 
 ### Text and Vector Preservation
 
-Text and vector graphics are preserved in their original vector format during conversion. Only the color space is converted from RGB to CMYK—no rasterization occurs.
+Text and vector graphics are preserved in their original vector format during conversion. Only the color space is converted from RGB to CMYK—no rasterization occurs for non-transparent content.
+
+### Transparency Handling
+
+**Important:** PDF/X-3:2003 does not support transparency. By default, the plugin flattens all transparency to ensure compliance:
+
+```javascript
+// Default behavior - flattens transparency (PDF/X-3 compliant)
+const printReadyPDF = await convertToPDFX3(pdfBlob, {
+  outputProfile: 'fogra39',
+  title: 'Print Ready',
+  // flattenTransparency: true (default)
+});
+```
+
+**Transparency Flattening Behavior:**
+- **Pages with transparency** → Rasterized to bitmap at high resolution
+- **Pages without transparency** → Preserved as vectors (text, shapes remain editable)
+- **Mixed content** → Only transparent elements are rasterized
+
+**For Maximum Quality:**
+
+If your CE.SDK exports contain no transparency, you can disable flattening to preserve all vectors:
+
+```javascript
+// Disable flattening for transparent-free PDFs (best quality)
+const printReadyPDF = await convertToPDFX3(pdfBlob, {
+  outputProfile: 'fogra39',
+  title: 'Vector Preserved',
+  flattenTransparency: false, // Preserves vectors, but may not be PDF/X-3 compliant if transparency exists
+});
+```
+
+**⚠️ Important:** Only disable `flattenTransparency` if you're certain your PDFs contain no transparency. PDFs with transparency and `flattenTransparency: false` will fail PDF/X-3 validation.
+
+**Avoiding Transparency in CE.SDK:**
+- Use 100% opacity for all elements
+- Avoid alpha channel PNG images
+- Use solid fills instead of gradient opacity
+- Export without blend modes
 
 ## Known Limitations
 
+- **Transparency**: PDF/X-3:2003 does not support transparency. Pages containing transparency (alpha channels, soft masks, opacity < 1.0) will be rasterized to bitmaps during conversion to ensure compliance. To preserve vectors, avoid transparency in your CE.SDK designs.
 - **Spot Colors**: Currently, spot colors (Pantone, custom inks) are converted to CMYK during the PDF/X-3 conversion process. This is a limitation of the current Ghostscript WASM implementation. If preserving spot colors is critical for your workflow, consider server-side PDF processing solutions.
-- Only supports PDF/X-3 (not X-1a or X-4 yet)
+- **PDF/X Versions**: Only supports PDF/X-3:2003 (not X-1a or X-4 yet)
 
 ## License Considerations
 
