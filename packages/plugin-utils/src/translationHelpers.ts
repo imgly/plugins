@@ -31,3 +31,29 @@ export function supportsTranslateAPI(cesdk: any): boolean {
 export function hasTranslateAPI(i18n: any): i18n is TranslationAPI {
   return typeof i18n?.translate === 'function';
 }
+
+/**
+ * Safely translate a key with CE.SDK version compatibility check.
+ * Returns the translation if supported (CE.SDK >= 1.59.0), otherwise returns the fallback.
+ *
+ * @param cesdk - The CE.SDK instance
+ * @param translationKey - The translation key to translate
+ * @param fallback - The fallback value to use if translation is not supported or key is not found
+ * @returns The translated string or fallback
+ */
+export function translateWithFallback(
+  cesdk: any,
+  translationKey: string | string[],
+  fallback: string
+): string {
+  if (!cesdk) {
+    return fallback;
+  }
+
+  // Check if CE.SDK supports translation API (version 1.59.0+)
+  if (supportsTranslateAPI(cesdk) && hasTranslateAPI(cesdk.i18n)) {
+    return cesdk.i18n.translate(translationKey);
+  }
+
+  return fallback;
+}

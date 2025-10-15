@@ -24,15 +24,7 @@ export type Middleware<I, O extends Output> = (
   input: I,
   options: GenerationOptions & {
     /**
-     * The block ids the generation is applied on
-     * If this value is undefined, the selected blocks will be used.
-     * Setting this value to null will explicitly tell every
-     * middleware that no block shall be used.
-     */
-    blockIds?: number[] | null;
-
-    /**
-     * Adds a disposer function to this genereation which is called
+     * Adds a disposer function to this generation which is called
      * when the generation is cancelled or completely finished
      * including the confirmation of the generation if applicable.
      */

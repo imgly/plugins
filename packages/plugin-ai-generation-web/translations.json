@@ -64,6 +64,23 @@
     "ly.img.plugin-ai-generation-web.property.resolution.1080p": "1080p Full HD",
     "ly.img.plugin-ai-generation-web.property.rendering_speed.TURBO": "Turbo",
     "ly.img.plugin-ai-generation-web.property.rendering_speed.BALANCED": "Balanced",
-    "ly.img.plugin-ai-generation-web.property.rendering_speed.QUALITY": "Quality"
+    "ly.img.plugin-ai-generation-web.property.rendering_speed.QUALITY": "Quality",
+    "ly.img.ai.imageSelection.selectImage.label": "Select Image",
+    "ly.img.ai.imageSelection.error.svg": "SVG images are not supported. Please choose a different image.",
+    "ly.img.ai.imageSelection.error.invalidType": "Only images are supported. Found '{mimeType}'. Please choose a different image.",
+    "ly.img.ai.styleTransfer.none": "None",
+    "ly.img.ai.styleTransfer.anime": "Anime",
+    "ly.img.ai.styleTransfer.cyberpunk": "Cyberpunk",
+    "ly.img.ai.styleTransfer.kodak400": "Kodak 400",
+    "ly.img.ai.styleTransfer.watercolor": "Watercolor",
+    "ly.img.ai.styleTransfer.darkFantasy": "Dark Fantasy",
+    "ly.img.ai.styleTransfer.vaporwave": "Vaporwave",
+    "ly.img.ai.styleTransfer.vectorFlat": "Vector Flat",
+    "ly.img.ai.styleTransfer.3dAnimation": "3D Animation",
+    "ly.img.ai.styleTransfer.ukiyoe": "Ukiyo-e",
+    "ly.img.ai.styleTransfer.surreal": "Surreal",
+    "ly.img.ai.styleTransfer.steampunk": "Steampunk",
+    "ly.img.ai.styleTransfer.nightBokeh": "Night Bokeh",
+    "ly.img.ai.styleTransfer.popArt": "Pop Art"
   }
 }
