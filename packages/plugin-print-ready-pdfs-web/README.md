@@ -102,16 +102,35 @@ const cesdk = await CreativeEditorSDK.create('#editor', config);
 
 ## API Reference
 
-### `convertToPDFX3(pdf, options)`
+### `convertToPDFX3(pdf, options)` / `convertToPDFX3(pdfs, options)`
 
-Converts a standard PDF to print-ready format.
+Converts RGB PDF(s) to print-ready format. This function supports both single PDF conversion and batch processing through function overloading.
+
+**Single PDF Conversion:**
+
+```typescript
+convertToPDFX3(pdf: Blob, options: PDFX3Options): Promise<Blob>
+```
 
 **Parameters:**
-
 - `pdf` (Blob): Input PDF file as a Blob object
 - `options` (PDFX3Options): Conversion configuration
 
 **Returns:** Promise<Blob> - The print-ready PDF file
+
+**Batch Processing:**
+
+```typescript
+convertToPDFX3(pdfs: Blob[], options: PDFX3Options): Promise<Blob[]>
+```
+
+**Parameters:**
+- `pdfs` (Blob[]): Array of input PDF files as Blob objects
+- `options` (PDFX3Options): Conversion configuration (applied to all PDFs)
+
+**Returns:** Promise<Blob[]> - Array of print-ready PDF files
+
+**Options Interface:**
 
 ```typescript
 interface PDFX3Options {
@@ -126,6 +145,8 @@ interface PDFX3Options {
   flattenTransparency?: boolean;          // Flatten transparency (default: true for PDF/X-3)
 }
 ```
+
+**Note:** Batch processing handles each PDF sequentially to avoid overwhelming the WASM module.
 
 **OutputIntent Metadata:**
 
@@ -147,6 +168,36 @@ The plugin ships with industry-standard ICC profiles for immediate use:
 | `'custom'`  | Specific color requirements     | Load any ICC profile for exact color matching     |
 
 ## Real-World Usage
+
+### High-Level CE.SDK Export API
+
+The simplest way to integrate with CE.SDK's high-level export function:
+
+```javascript
+import CreativeEditorSDK from '@cesdk/cesdk-js';
+import { convertToPDFX3 } from '@imgly/plugin-print-ready-pdfs-web';
+
+const cesdk = await CreativeEditorSDK.create('#editor', config);
+
+// Export and convert to print-ready in one flow
+const { blobs } = await cesdk.export({
+  mimeType: 'application/pdf'
+});
+
+// Function overloading automatically handles array input
+const printReadyBlobs = await convertToPDFX3(blobs, {
+  outputProfile: 'fogra39',
+  title: 'Print-Ready Export',
+});
+
+// Download the first print-ready PDF
+const url = URL.createObjectURL(printReadyBlobs[0]);
+const link = document.createElement('a');
+link.href = url;
+link.download = 'design-print-ready.pdf';
+link.click();
+URL.revokeObjectURL(url);
+```
 
 ### Professional Printing Requirements
 
@@ -217,9 +268,18 @@ const printReadyPDF = await convertToPDFX3(pdfBlob, {
 
 ### Batch Processing
 
-Convert multiple PDFs at once:
+Process multiple PDFs using the overloaded function:
 
 ```javascript
+import { convertToPDFX3 } from '@imgly/plugin-print-ready-pdfs-web';
+
+// Array input automatically triggers batch processing (sequential)
+const printReadyPDFs = await convertToPDFX3(pdfBlobs, {
+  outputProfile: 'gracol',
+  title: 'Batch Export',
+});
+
+// Or process in parallel for maximum speed (use with caution for large files)
 const printReadyPDFs = await Promise.all(
   pdfBlobs.map((pdf) =>
     convertToPDFX3(pdf, {
@@ -229,6 +289,8 @@ const printReadyPDFs = await Promise.all(
   )
 );
 ```
+
+**Note:** When passing an array, PDFs are processed sequentially to avoid overwhelming the WASM module. For parallel processing, use `Promise.all` with individual calls. Sequential processing is recommended for reliability.
 
 ## Testing
 

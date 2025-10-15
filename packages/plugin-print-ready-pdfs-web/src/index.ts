@@ -5,7 +5,7 @@
  * Commercial users must ensure license compliance. See README.md for details.
  */
 
-// Export the main conversion function
+// Export the main conversion function (supports both single blob and array of blobs)
 export { convertToPDFX3 } from './pdfx';
 
 // Export types for TypeScript users

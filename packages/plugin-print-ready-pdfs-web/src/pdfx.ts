@@ -5,9 +5,62 @@ import { BlobUtils } from './utils/blob-utils';
 
 /**
  * PDF/X-3 conversion function
- * Converts a single RGB PDF to PDF/X-3 format using specified output profile
+ * Converts RGB PDF(s) to PDF/X-3 format using specified output profile
+ *
+ * @overload
+ * @param inputPDF Single PDF blob to convert
+ * @param options Conversion configuration
+ * @returns Promise resolving to converted PDF blob
+ *
+ * @overload
+ * @param inputPDFs Array of PDF blobs to convert
+ * @param options Conversion configuration
+ * @returns Promise resolving to array of converted PDF blobs
  */
+export function convertToPDFX3(
+  inputPDF: Blob,
+  options: PDFX3Options
+): Promise<Blob>;
+export function convertToPDFX3(
+  inputPDFs: Blob[],
+  options: PDFX3Options
+): Promise<Blob[]>;
 export async function convertToPDFX3(
+  input: Blob | Blob[],
+  options: PDFX3Options
+): Promise<Blob | Blob[]> {
+  // Handle array input (batch processing)
+  if (Array.isArray(input)) {
+    if (input.length === 0) {
+      return [];
+    }
+
+    // Process each blob sequentially to avoid overwhelming the WASM module
+    const results: Blob[] = [];
+    for (let i = 0; i < input.length; i++) {
+      try {
+        // eslint-disable-next-line no-await-in-loop
+        const converted = await convertToPDFX3Single(input[i], options);
+        results.push(converted);
+      } catch (error) {
+        throw new Error(
+          `Failed to convert PDF ${i + 1} of ${input.length}: ${
+            error instanceof Error ? error.message : String(error)
+          }`
+        );
+      }
+    }
+    return results;
+  }
+
+  // Handle single blob input
+  return convertToPDFX3Single(input, options);
+}
+
+/**
+ * Internal function to convert a single PDF
+ */
+async function convertToPDFX3Single(
   inputPDF: Blob,
   options: PDFX3Options
 ): Promise<Blob> {
