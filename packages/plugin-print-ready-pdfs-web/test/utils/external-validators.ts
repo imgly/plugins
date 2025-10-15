@@ -297,6 +297,46 @@ export class ExternalValidators {
   }
 
   /**
+   * Check if PDF contains transparency using qpdf
+   * Returns true if transparency features are detected
+   */
+  static async hasTransparency(pdfBlob: Blob): Promise<boolean> {
+    const tempPath = await this.blobToTempFile(pdfBlob, 'test.pdf');
+
+    try {
+      // Use qpdf to inspect PDF structure for transparency indicators
+      const { stdout } = await execAsync(
+        `qpdf --show-pages --show-page-images "${tempPath}" 2>&1`
+      );
+
+      // Check for transparency indicators:
+      // - SMask (soft mask for transparency)
+      // - /ca or /CA (constant alpha)
+      // - /ExtGState with transparency settings
+      const hasTransparencyMarkers =
+        stdout.includes('/SMask') ||
+        stdout.includes('/ca ') ||
+        stdout.includes('/CA ') ||
+        stdout.includes('Alpha') ||
+        stdout.includes('Transparency');
+
+      return hasTransparencyMarkers;
+    } catch (error: any) {
+      // If inspection fails, check the PDF content directly
+      const buffer = Buffer.from(await pdfBlob.arrayBuffer());
+      const pdfContent = buffer.toString('binary');
+
+      return (
+        pdfContent.includes('/SMask') ||
+        pdfContent.includes('/ca ') ||
+        pdfContent.includes('/CA ')
+      );
+    } finally {
+      unlinkSync(tempPath);
+    }
+  }
+
+  /**
    * Check if external tools are available
    */
   static async checkToolsAvailable(): Promise<Record<string, boolean>> {

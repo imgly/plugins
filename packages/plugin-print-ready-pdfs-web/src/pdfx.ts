@@ -165,18 +165,25 @@ export async function convertToPDFX3(
 
     // Execute Ghostscript conversion
     // For CMYK profiles, convert all colors to CMYK using the ICC profile
-    // Note: This will rasterize content but ensures PDF/X-3 compliance
+    // Note: Transparency flattening will rasterize transparent content
     const gsArgs = [
       '-dBATCH',
       '-dNOPAUSE',
       '-sDEVICE=pdfwrite',
       '-dCompatibilityLevel=1.4',
-      // Flatten transparency for PDF/X-3 compliance
-      '-dNOTRANSPARENCY',
-      // Set TrimBox and BleedBox
+      // PDF/X-3 settings
       '-dPDFSETTINGS=/prepress',
       '-dSetPageSize=false',
+      '-dAutoRotatePages=/None',
     ];
+
+    // Flatten transparency for PDF/X-3 compliance (default: true)
+    // HaveTransparency=false tells Ghostscript the target viewer cannot handle
+    // PDF 1.4 transparency, so pages with transparency are converted to bitmaps
+    const shouldFlattenTransparency = options.flattenTransparency !== false;
+    if (shouldFlattenTransparency) {
+      gsArgs.push('-dHaveTransparency=false');
+    }
 
     // Add color conversion for CMYK profiles
     if (isCMYKProfile) {
@@ -185,6 +192,9 @@ export async function convertToPDFX3(
         '-dProcessColorModel=/DeviceCMYK',
         '-dConvertCMYKImagesToRGB=false'
       );
+    } else {
+      // For RGB profiles, we still need a color conversion strategy
+      gsArgs.push('-sColorConversionStrategy=RGB');
     }
 
     // Add output file and input files

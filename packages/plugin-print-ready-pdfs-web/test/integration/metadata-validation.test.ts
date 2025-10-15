@@ -129,4 +129,62 @@ describe('PDF/X Metadata Validation', () => {
     const pdfText = await outputPDF.text();
     expect(pdfText).toContain(customIdentifier);
   });
+
+  test('should flatten transparency by default', async () => {
+    // Use test-images.pdf which likely contains transparency (images with alpha)
+    const inputPDF = getTestPDF('test-images.pdf');
+
+    // Convert with default settings (flattenTransparency should default to true)
+    const outputPDF = await convertToPDFX3(inputPDF, {
+      outputProfile: 'fogra39',
+      title: 'Transparency Flattening Test',
+    });
+
+    // Check that the output PDF does not contain transparency markers
+    const hasTransparency = await ExternalValidators.hasTransparency(outputPDF);
+
+    // After flattening, transparency should be removed
+    expect(hasTransparency).toBe(false);
+  });
+
+  test('should preserve transparency when flattenTransparency is false', async () => {
+    const inputPDF = getTestPDF('test-images.pdf');
+
+    // Check if input has transparency
+    const inputHasTransparency = await ExternalValidators.hasTransparency(inputPDF);
+
+    // Only run this test if the input actually has transparency
+    if (!inputHasTransparency) {
+      console.warn('Input PDF has no transparency, skipping preserve test');
+      return;
+    }
+
+    // Convert with flattenTransparency disabled
+    const outputPDF = await convertToPDFX3(inputPDF, {
+      outputProfile: 'srgb',
+      title: 'Preserve Transparency Test',
+      flattenTransparency: false,
+    });
+
+    // Check that transparency is preserved
+    const outputHasTransparency = await ExternalValidators.hasTransparency(outputPDF);
+
+    // Transparency should still be present when flattening is disabled
+    expect(outputHasTransparency).toBe(true);
+  });
+
+  test('should explicitly flatten when flattenTransparency is true', async () => {
+    const inputPDF = getTestPDF('test-images.pdf');
+
+    // Convert with explicit transparency flattening
+    const outputPDF = await convertToPDFX3(inputPDF, {
+      outputProfile: 'fogra39',
+      title: 'Explicit Flatten Test',
+      flattenTransparency: true,
+    });
+
+    // Verify transparency is removed
+    const hasTransparency = await ExternalValidators.hasTransparency(outputPDF);
+    expect(hasTransparency).toBe(false);
+  });
 });
