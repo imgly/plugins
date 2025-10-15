@@ -7,7 +7,7 @@ import {
   checkAiPluginVersion
 } from '@imgly/plugin-ai-generation-web';
 import { PluginConfiguration } from './types';
-import { toArray } from '@imgly/plugin-utils';
+import { toArray, translateWithFallback } from '@imgly/plugin-utils';
 import { PLUGIN_ID } from './constants';
 import CreateVideo from './quickActions/CreateVideo';
 
@@ -68,7 +68,7 @@ export function VideoGeneration<I, O extends Output>(
         id: PLUGIN_ID,
         pluginId: PLUGIN_ID,
 
-        label: cesdk.i18n.translate(ACTION_LABEL_KEY),
+        label: translateWithFallback(cesdk, ACTION_LABEL_KEY, 'Generate Video'),
         meta: { panelId: VIDEO_GENERATION_PANEL_ID },
 
         execute: () => {

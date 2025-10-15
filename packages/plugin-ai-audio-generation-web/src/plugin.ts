@@ -7,7 +7,7 @@ import {
   checkAiPluginVersion
 } from '@imgly/plugin-ai-generation-web';
 import { PluginConfiguration } from './types';
-import { toArray } from '@imgly/plugin-utils';
+import { toArray, translateWithFallback } from '@imgly/plugin-utils';
 import { PLUGIN_ID } from './constants';
 
 export { PLUGIN_ID } from './constants';
@@ -58,7 +58,11 @@ export function AudioGeneration<I, O extends Output>(
         id: `${PLUGIN_ID}/sound`,
         pluginId: PLUGIN_ID,
 
-        label: cesdk.i18n.translate(SOUND_ACTION_LABEL_KEY),
+        label: translateWithFallback(
+          cesdk,
+          SOUND_ACTION_LABEL_KEY,
+          'Generate Sound'
+        ),
         meta: { panelId: SOUND_GENERATION_PANEL_ID },
 
         execute: () => {
@@ -77,7 +81,11 @@ export function AudioGeneration<I, O extends Output>(
         id: `${PLUGIN_ID}/speech`,
         pluginId: PLUGIN_ID,
 
-        label: cesdk.i18n.translate(SPEECH_ACTION_LABEL_KEY),
+        label: translateWithFallback(
+          cesdk,
+          SPEECH_ACTION_LABEL_KEY,
+          'AI Voice'
+        ),
         meta: { panelId: SPEECH_GENERATION_PANEL_ID },
 
         execute: () => {

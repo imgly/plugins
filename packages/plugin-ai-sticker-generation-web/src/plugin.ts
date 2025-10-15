@@ -8,7 +8,7 @@ import {
 } from '@imgly/plugin-ai-generation-web';
 import { PluginConfiguration } from './types';
 import iconSprite, { PLUGIN_ICON_SET_ID } from './iconSprite';
-import { toArray } from '@imgly/plugin-utils';
+import { toArray, translateWithFallback } from '@imgly/plugin-utils';
 import { PLUGIN_ID } from './constants';
 
 export { PLUGIN_ID } from './constants';
@@ -59,7 +59,11 @@ export function StickerGeneration<I, O extends Output>(
         id: PLUGIN_ID,
         pluginId: PLUGIN_ID,
 
-        label: cesdk.i18n.translate(ACTION_LABEL_KEY),
+        label: translateWithFallback(
+          cesdk,
+          ACTION_LABEL_KEY,
+          'Generate Sticker'
+        ),
         meta: { panelId: STICKER_GENERATION_PANEL_ID },
 
         execute: () => {

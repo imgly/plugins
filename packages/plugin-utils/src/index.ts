@@ -54,4 +54,8 @@ export { default as isDefined } from './utils/isDefined';
 
 export { default as toArray } from './utils/toArray';
 
-export { supportsTranslateAPI, hasTranslateAPI } from './translationHelpers';
+export {
+  supportsTranslateAPI,
+  hasTranslateAPI,
+  translateWithFallback
+} from './translationHelpers';

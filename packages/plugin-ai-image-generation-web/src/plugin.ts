@@ -10,7 +10,7 @@ import {
 } from '@imgly/plugin-ai-generation-web';
 import { PluginConfiguration } from './types';
 import iconSprite, { PLUGIN_ICON_SET_ID } from './iconSprite';
-import { toArray } from '@imgly/plugin-utils';
+import { toArray, translateWithFallback } from '@imgly/plugin-utils';
 import { PLUGIN_ID, DEFAULT_IMAGE_QUICK_ACTION_ORDER } from './constants';
 import EditImage from './quickActions/EditImage';
 import SwapBackground from './quickActions/SwapBackground';
@@ -77,7 +77,7 @@ export function ImageGeneration<I, O extends Output>(
         id: PLUGIN_ID,
         pluginId: PLUGIN_ID,
 
-        label: cesdk.i18n.translate(ACTION_LABEL_KEY),
+        label: translateWithFallback(cesdk, ACTION_LABEL_KEY, 'Generate Image'),
         meta: { panelId: IMAGE_GENERATION_PANEL_ID },
 
         execute: () => {
