@@ -180,6 +180,33 @@ cesdk.addPlugin(
 );
 ```
 
+### Property Configuration
+
+Providers support configuring default values for their properties. These defaults can be static or dynamic based on context:
+
+```typescript
+cesdk.addPlugin(
+  AiApps({
+    providers: {
+      text2image: FalAiImage.RecraftV3({
+        proxyUrl: 'http://your-proxy-server.com/api/proxy',
+        properties: {
+          // Static default
+          image_size: { default: 'square_hd' },
+
+          // Dynamic default based on locale
+          style: {
+            default: (context) => {
+              return context.locale === 'ja' ? 'anime' : 'realistic';
+            }
+          }
+        }
+      })
+    }
+  })
+);
+```
+
 ## UI Integration
 
 The plugin adds the following UI components to CreativeEditor SDK:
@@ -511,6 +538,16 @@ CreativeEditorSDK.create(domElement, {
   ]);
 });
 ```
+
+## Translations
+
+The AI Apps plugin uses translations from individual AI generation plugins. For customization, refer to the respective translation files:
+
+- [Base translations](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-generation-web/translations.json) - Core translation keys
+- [Image generation translations](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-image-generation-web/translations.json) - Image generation interfaces
+- [Video generation translations](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-video-generation-web/translations.json) - Video generation interfaces
+- [Text generation translations](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-text-generation-web/translations.json) - Text generation interfaces
+- [Audio generation translations](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-audio-generation-web/translations.json) - Audio generation interfaces
 
 ## License
 

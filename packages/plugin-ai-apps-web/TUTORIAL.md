@@ -52,28 +52,23 @@ function App() {
             ref={(domElement) => {
                 if (domElement != null) {
                     CreativeEditorSDK.create(domElement, {
-                        license: 'your-license-key',
-                        callbacks: {
-                            onUpload: 'local',
-                            onExport: 'download'
-                        },
-                        ui: {
-                            elements: {
-                                navigation: {
-                                    action: {
-                                        load: true,
-                                        export: true
-                                    }
-                                }
-                            }
-                        }
+                        license: 'your-license-key'
                     }).then(async (instance) => {
                         cesdk.current = instance;
+
+                        // Add navigation bar actions
+                        instance.ui.insertNavigationBarOrderComponent('last', {
+                            id: 'ly.img.actions.navigationBar',
+                            children: [
+                                'ly.img.importScene.navigationBar',
+                                'ly.img.exportImage.navigationBar'
+                            ]
+                        });
 
                         // Add asset sources
                         await Promise.all([
                             instance.addDefaultAssetSources(),
-                            instance.addDemoAssetSources({ sceneMode: 'Video' })
+                            instance.addDemoAssetSources({ sceneMode: 'Video', withUploadAssetSources: true })
                         ]);
 
                         // Configure AI Apps dock position
@@ -103,6 +98,11 @@ function App() {
                                         headers: {
                                             'x-client-version': '1.0.0',
                                             'x-request-source': 'cesdk-tutorial'
+                                        },
+                                        // Optional: Configure default property values
+                                        properties: {
+                                            temperature: { default: 0.7 },
+                                            max_tokens: { default: 500 }
                                         }
                                     }),
 
@@ -143,6 +143,11 @@ function App() {
                                             headers: {
                                                 'x-client-version': '1.0.0',
                                                 'x-request-source': 'cesdk-tutorial'
+                                            },
+                                            // Configure dynamic defaults based on style type
+                                            properties: {
+                                                style: { default: 'broken_line' },
+                                                image_size: { default: 'square_hd' }
                                             }
                                         }),
                                         // Additional image provider for user selection
@@ -503,7 +508,35 @@ middleware: [
 ]
 ```
 
-## 6. Using Proxy Services
+## 6. Controlling Features with Feature API
+
+You can control which AI features are available to users using CE.SDK's Feature API. This is useful for:
+- Creating different feature tiers for different user groups
+- Simplifying the UI by hiding unused features
+- Temporarily disabling features during maintenance
+
+### Basic Feature Control
+
+```typescript
+// Disable specific quick actions
+cesdk.feature.enable('ly.img.plugin-ai-image-generation-web.quickAction.editImage', false);
+cesdk.feature.enable('ly.img.plugin-ai-text-generation-web.quickAction.translate', false);
+
+// Control input types for image/video generation
+cesdk.feature.enable('ly.img.plugin-ai-image-generation-web.fromText', true);
+cesdk.feature.enable('ly.img.plugin-ai-image-generation-web.fromImage', false);
+
+// Hide provider selection dropdowns
+cesdk.feature.enable('ly.img.plugin-ai-image-generation-web.providerSelect', false);
+
+// Control style groups for specific providers (e.g., RecraftV3, Recraft20b)
+cesdk.feature.enable('ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.style.vector', false);
+cesdk.feature.enable('ly.img.plugin-ai-image-generation-web.fal-ai/recraft/v2/text-to-image.style.icon', false);
+```
+
+For more details on available feature flags, see the [@imgly/plugin-ai-generation-web documentation](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-generation-web#available-feature-flags).
+
+## 7. Proxy Server Configuration
 
 For security reasons, you should never include your AI service API keys directly in client-side code. Instead, you should set up proxy services that securely forward requests to AI providers while keeping your API keys secure on the server side.
 
@@ -520,74 +553,7 @@ text2image: FalAiImage.RecraftV3({
 // });
 ```
 
-### Proxy Implementation Requirements
-
-Your proxy should implement specific requirements for each AI service:
-
-#### 1. Anthropic Proxy
-
-- **Target URL**: `https://api.anthropic.com/`
-- **Authentication Header**: Add `X-Api-Key` header with your Anthropic API key
-- **Request Handling**: Forward request body as-is to Anthropic API
-- **Response Handling**: Remove `content-encoding` headers to handle compressed responses correctly
-
-#### 2. fal.ai Proxy
-
-- **Dynamic URL**: Use a special header called `x-fal-target-url` to determine the actual endpoint
-- **Authentication Header**: Add `Authorization: Key YOUR_FAL_KEY` header
-- **Request Forwarding**: Preserve the complete request body and query parameters
-- For more information on the requirements, refer to fal.ai's [documentation](https://docs.fal.ai/model-endpoints/server-side/#the-proxy-formula).
-
-#### 3. ElevenLabs Proxy
-
-- **Target URL**: `https://api.elevenlabs.io/`
-- **Authentication Header**: Add `xi-api-key` header with your ElevenLabs API key
-- **Headers**: Add an `Accept: audio/mpeg` header for audio requests.
-- **Response Handling**: Remove `content-encoding` headers to handle compressed responses correctly
-
-#### 4. OpenAI Proxy
-
-- **Target URL**: `https://api.openai.com/v1/`
-- **Authentication Header**: Add `Authorization: Bearer YOUR_OPENAI_API_KEY` header
-- **Response Handling**: Remove `content-encoding` headers to handle compressed responses correctly
-- **Rate Limiting**: Implement rate limiting based on your OpenAI plan tier (recommended)
-- For more information on the requirements, refer to OpenAI's [documentation](https://platform.openai.com/docs/api-reference/debugging-requests)
-
-### Important Information for All Proxies
-
-**Response Streaming**
-
-To handle large responses efficiently, response streaming should be enabled for all proxies. Common approaches include:
-
--   **Axios**: `responseType: 'stream'`
--   **Fetch API**: Access `response.body` as a `ReadableStream`
--   **Node.js native HTTP clients**: Use stream-based responses
--   **Other HTTP clients**: Check documentation for streaming support
-
-
-### General Proxy Design
-
-A well-designed proxy service should:
-
-1. **Route requests** to the appropriate AI service based on the endpoint path
-2. **Add authentication** headers containing your API keys
-3. **Forward the request body** to maintain payload integrity
-4. **Handle response streaming** for services that support it (like Anthropic)
-5. **Implement proper CORS headers** to allow browser requests
-6. **Add appropriate error handling** and logging
-7. **Consider rate limiting** to protect your API keys from overuse
-
-### Security Considerations
-
-When implementing your proxy:
-
-- Store API keys securely as environment variables
-- Implement request validation to prevent abuse
-- Consider adding user authentication to your proxy endpoints
-- Monitor usage to detect unusual patterns
-- Implement proper error handling without leaking sensitive information
-
-This approach ensures your API keys remain secure while still allowing your application to utilize AI services. For a complete example of a proxy implementation, you can find various proxy templates online that can be adapted for your specific needs.
+Your proxy server should handle authentication, forward requests to the appropriate AI service providers, and manage response streaming for optimal performance.
 
 ## Conclusion
 

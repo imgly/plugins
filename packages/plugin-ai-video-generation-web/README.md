@@ -48,6 +48,11 @@ CreativeEditorSDK.create(domElement, {
                 headers: {
                     'x-custom-header': 'value',
                     'x-client-version': '1.0.0'
+                },
+                // Optional: Configure default property values
+                properties: {
+                    duration: { default: 5 },  // Default duration in seconds
+                    aspect_ratio: { default: '16:9' }  // Default aspect ratio
                 }
             }),
 
@@ -134,6 +139,10 @@ text2video: FalAiVideo.MinimaxVideo01Live({
     headers: {
         'x-custom-header': 'value',
         'x-client-version': '1.0.0'
+    },
+    // Optional: Configure default property values
+    properties: {
+        prompt_optimizer: { default: true }  // Enable automatic prompt enhancement
     }
 });
 ```
@@ -145,6 +154,16 @@ Key features:
 -   5-second video duration
 -   Custom headers support for API requests
 
+**Custom Translations:**
+
+```typescript
+cesdk.i18n.setTranslations({
+  en: {
+    'ly.img.plugin-ai-video-generation-web.fal-ai/minimax/video-01-live.property.prompt': 'Describe your Minimax video'
+  }
+});
+```
+
 #### 2. MinimaxVideo01LiveImageToVideo (Image-to-Video)
 
 A model that transforms still images into videos:
@@ -155,6 +174,10 @@ image2video: FalAiVideo.MinimaxVideo01LiveImageToVideo({
     headers: {
         'x-custom-header': 'value',
         'x-client-version': '1.0.0'
+    },
+    // Optional: Configure default property values
+    properties: {
+        prompt_optimizer: { default: true }  // Enable automatic prompt enhancement
     }
 });
 ```
@@ -166,7 +189,34 @@ Key features:
 -   Maintains original image aspect ratio
 -   Custom headers support for API requests
 
-#### 3. PixverseV35TextToVideo (Text-to-Video)
+#### 3. MinimaxHailuo02StandardImageToVideo (Image-to-Video)
+
+An advanced model that transforms still images into videos using Hailuo 02 Standard:
+
+```typescript
+image2video: FalAiVideo.MinimaxHailuo02StandardImageToVideo({
+    proxyUrl: 'http://your-proxy-server.com/api/proxy',
+    headers: {
+        'x-custom-header': 'value',
+        'x-client-version': '1.0.0'
+    },
+    // Optional: Configure default property values
+    properties: {
+        resolution: { default: '768P' },  // Options: '512P' (912×512), '768P' (1280×720)
+        duration: { default: 6 }          // Duration in seconds (6 or 10)
+    }
+});
+```
+
+Key features:
+
+-   Transform existing images into videos
+-   Available through canvas quick actions
+-   Selectable resolutions (512P: 912×512, 768P: 1280×720)
+-   Adjustable durations (6 or 10 seconds)
+-   Custom headers support for API requests
+
+#### 4. PixverseV35TextToVideo (Text-to-Video)
 
 An alternative text-to-video model:
 
@@ -176,6 +226,10 @@ text2video: FalAiVideo.PixverseV35TextToVideo({
     headers: {
         'x-custom-header': 'value',
         'x-client-version': '1.0.0'
+    },
+    // Optional: Configure default property values
+    properties: {
+        seed: { default: 42 }  // Fixed seed for reproducible generation
     }
 });
 ```
@@ -185,13 +239,18 @@ Key features:
 -   Alternative text-to-video generation
 -   Custom headers support for API requests
 
-#### 4. KlingVideoV21MasterTextToVideo (Text-to-Video)
+#### 5. KlingVideoV21MasterTextToVideo (Text-to-Video)
 
 A model based on KlingVideo V2.1 that generates videos from text prompts:
 
 ```typescript
 text2video: FalAiVideo.KlingVideoV21MasterTextToVideo({
-    proxyUrl: 'http://your-proxy-server.com/api/proxy'
+    proxyUrl: 'http://your-proxy-server.com/api/proxy',
+    // Optional: Configure default property values
+    properties: {
+        aspect_ratio: { default: '16:9' },  // Options: '16:9', '9:16', '1:1'
+        duration: { default: '5s' }         // Options: '5s', '10s'
+    }
 });
 ```
 
@@ -202,13 +261,29 @@ Key features:
 -   Selectable durations (5 s or 10 s)
 -   Adaptive resolution (height fixed at 720 px, width is calculated)
 
-#### 5. KlingVideoV21MasterImageToVideo (Image-to-Video)
+**Custom Translations:**
+
+```typescript
+cesdk.i18n.setTranslations({
+  en: {
+    'ly.img.plugin-ai-video-generation-web.fal-ai/kling-video/v2.1/master/text-to-video.property.prompt': 'Describe your KlingVideo',
+    'ly.img.plugin-ai-video-generation-web.fal-ai/kling-video/v2.1/master/text-to-video.property.aspect_ratio': 'Video Format',
+    'ly.img.plugin-ai-video-generation-web.fal-ai/kling-video/v2.1/master/text-to-video.property.duration': 'Video Length (seconds)'
+  }
+});
+```
+
+#### 6. KlingVideoV21MasterImageToVideo (Image-to-Video)
 
 A model that converts still images into videos using KlingVideo V2.1:
 
 ```typescript
 image2video: FalAiVideo.KlingVideoV21MasterImageToVideo({
-    proxyUrl: 'http://your-proxy-server.com/api/proxy'
+    proxyUrl: 'http://your-proxy-server.com/api/proxy',
+    // Optional: Configure default property values
+    properties: {
+        duration: { default: '5s' }  // Options: '5s', '10s'
+    }
 });
 ```
 
@@ -219,13 +294,66 @@ Key features:
 -   Canvas quick-action integration
 -   Selectable durations (5 s or 10 s)
 
-#### 6. Veo3TextToVideo (Text-to-Video)
+#### 6. ByteDanceSeedanceV1ProImageToVideo (Image-to-Video)
+
+A model that transforms images into videos using ByteDance Seedance v1 Pro:
+
+```typescript
+image2video: FalAiVideo.ByteDanceSeedanceV1ProImageToVideo({
+    proxyUrl: 'http://your-proxy-server.com/api/proxy',
+    // Optional: Configure default property values
+    properties: {
+        aspect_ratio: { default: 'auto' },     // Options: '21:9', '16:9', '4:3', '1:1', '3:4', '9:16', 'auto'
+        duration: { default: 5 },              // Duration in seconds (3-12)
+        resolution: { default: '720p' }        // Options: '480p', '720p', '1080p'
+    }
+});
+```
+
+Key features:
+
+-   Transform existing images into dynamic videos
+-   Multiple aspect ratio options (21:9, 16:9, 4:3, 1:1, 3:4, 9:16, or auto from image)
+-   Adjustable duration (3-12 seconds, default 5)
+-   Resolution options (480p, 720p, 1080p)
+-   Maintains image quality while adding motion
+
+#### 7. ByteDanceSeedanceV1ProTextToVideo (Text-to-Video)
+
+A model that generates videos from text using ByteDance Seedance v1 Pro:
+
+```typescript
+text2video: FalAiVideo.ByteDanceSeedanceV1ProTextToVideo({
+    proxyUrl: 'http://your-proxy-server.com/api/proxy',
+    // Optional: Configure default property values
+    properties: {
+        aspect_ratio: { default: '16:9' },     // Options: '21:9', '16:9', '4:3', '1:1', '3:4', '9:16'
+        duration: { default: 5 },              // Duration in seconds (3-12)
+        resolution: { default: '720p' }        // Options: '480p', '720p', '1080p'
+    }
+});
+```
+
+Key features:
+
+-   Generate videos from text descriptions
+-   Multiple aspect ratio options (21:9, 16:9, 4:3, 1:1, 3:4, 9:16)
+-   Adjustable duration (3-12 seconds, default 5)
+-   Resolution options (480p, 720p, 1080p)
+-   High-quality motion synthesis from text prompts
+
+#### 8. Veo3TextToVideo (Text-to-Video)
 
 An advanced text-to-video model:
 
 ```typescript
 text2video: FalAiVideo.Veo3TextToVideo({
-    proxyUrl: 'http://your-proxy-server.com/api/proxy'
+    proxyUrl: 'http://your-proxy-server.com/api/proxy',
+    // Optional: Configure default property values
+    properties: {
+        aspect_ratio: { default: '16:9' },     // Options: '16:9', '9:16', '1:1'
+        duration: { default: 8 }               // Fixed at 8 seconds for this provider
+    }
 });
 ```
 
@@ -235,6 +363,88 @@ Key features:
 -   Supports aspect ratios 16:9, 9:16 and 1:1 (defaults to 16:9)
 -   Fixed duration of 8 seconds
 -   Optional audio generation via `generate_audio`
+
+### Feature Control
+
+You can control various aspects of the video generation plugin using the Feature API:
+
+```typescript
+// Disable text-to-video generation
+cesdk.feature.enable('ly.img.plugin-ai-video-generation-web.fromText', false);
+
+// Disable image-to-video generation  
+cesdk.feature.enable('ly.img.plugin-ai-video-generation-web.fromImage', false);
+
+// Disable provider selection
+cesdk.feature.enable('ly.img.plugin-ai-video-generation-web.providerSelect', false);
+
+// Disable specific quick actions
+cesdk.feature.enable('ly.img.plugin-ai-video-generation-web.quickAction.createVideo', false);
+```
+
+For more information about Feature API and available feature flags, see the [@imgly/plugin-ai-generation-web documentation](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-generation-web#available-feature-flags).
+
+### Customizing Labels and Translations
+
+You can customize all labels and text in the AI video generation interface using the translation system. This allows you to provide better labels for your users in any language.
+
+#### Translation Key Structure
+
+The system checks for translations in this order (highest to lowest priority):
+
+1. **Provider-specific**: `ly.img.plugin-ai-video-generation-web.${provider}.property.${field}` - Override labels for a specific AI provider
+2. **Generic**: `ly.img.plugin-ai-generation-web.property.${field}` - Override labels for all AI plugins
+
+#### Basic Example
+
+```typescript
+// Customize labels for your AI video generation interface
+cesdk.i18n.setTranslations({
+  en: {
+    // Generic labels (applies to ALL AI plugins)
+    'ly.img.plugin-ai-generation-web.property.prompt': 'Describe what you want to create',
+    'ly.img.plugin-ai-generation-web.property.duration': 'Video Duration',
+
+    // Provider-specific for MinimaxVideo01Live
+    'ly.img.plugin-ai-video-generation-web.fal-ai/minimax/video-01-live.property.prompt': 'Describe your video',
+    'ly.img.plugin-ai-video-generation-web.fal-ai/minimax/video-01-live.property.duration': 'Video Length',
+
+    // Provider-specific for KlingVideoV21Master
+    'ly.img.plugin-ai-video-generation-web.fal-ai/kling-video/v2.1/master/text-to-video.property.aspect_ratio': 'Video Aspect Ratio',
+    'ly.img.plugin-ai-video-generation-web.fal-ai/kling-video/v2.1/master/text-to-video.property.duration': 'Video Duration (seconds)'
+  }
+});
+```
+
+#### QuickAction Translations
+
+Video QuickActions (like "Create Video from Image") use their own translation keys with provider-specific overrides:
+
+```typescript
+cesdk.i18n.setTranslations({
+  en: {
+    // Provider-specific translations (highest priority)
+    'ly.img.plugin-ai-video-generation-web.fal-ai/minimax/video-01-live.quickAction.createVideo': 'Generate Minimax Video...',
+    'ly.img.plugin-ai-video-generation-web.fal-ai/minimax/video-01-live.quickAction.createVideo.prompt': 'Minimax Video Prompt',
+    
+    // Generic plugin translations
+    'ly.img.plugin-ai-video-generation-web.quickAction.createVideo': 'Create Video...',
+    'ly.img.plugin-ai-video-generation-web.quickAction.createVideo.prompt': 'Video Prompt',
+    'ly.img.plugin-ai-video-generation-web.quickAction.createVideo.prompt.placeholder': 'e.g. "Make the image move slowly"',
+    'ly.img.plugin-ai-video-generation-web.quickAction.createVideo.apply': 'Generate'
+  }
+});
+```
+
+**QuickAction Translation Priority:**
+1. Provider-specific: `ly.img.plugin-ai-video-generation-web.${provider}.quickAction.${action}.${field}`
+2. Generic plugin: `ly.img.plugin-ai-video-generation-web.quickAction.${action}.${field}`
+
+**Translation Structure:**
+- Base key (e.g., `.quickAction.createVideo`): Button text when QuickAction is collapsed
+- `.prompt`: Label for input field when expanded
+- `.prompt.placeholder`: Placeholder text for input field
+- `.apply`: Text for action/submit button
 
 ### Configuration Options
 
@@ -380,6 +590,16 @@ FalAiVideo.MinimaxVideo01LiveImageToVideo(config: {
 }): AiVideoProvider
 ```
 
+#### MinimaxHailuo02StandardImageToVideo
+
+```typescript
+FalAiVideo.MinimaxHailuo02StandardImageToVideo(config: {
+  proxyUrl: string;
+  headers?: Record<string, string>;
+  debug?: boolean;
+}): AiVideoProvider
+```
+
 #### PixverseV35TextToVideo
 
 ```typescript
@@ -403,6 +623,24 @@ FalAiVideo.KlingVideoV21MasterTextToVideo(config: {
 
 ```typescript
 FalAiVideo.KlingVideoV21MasterImageToVideo(config: {
+  proxyUrl: string;
+  debug?: boolean;
+}): AiVideoProvider
+```
+
+#### ByteDanceSeedanceV1ProImageToVideo
+
+```typescript
+FalAiVideo.ByteDanceSeedanceV1ProImageToVideo(config: {
+  proxyUrl: string;
+  debug?: boolean;
+}): AiVideoProvider
+```
+
+#### ByteDanceSeedanceV1ProTextToVideo
+
+```typescript
+FalAiVideo.ByteDanceSeedanceV1ProTextToVideo(config: {
   proxyUrl: string;
   debug?: boolean;
 }): AiVideoProvider
@@ -433,9 +671,12 @@ The plugin automatically registers the following UI components:
 -   Provider-specific panels:
     -   MinimaxVideo01Live: `ly.img.ai.fal-ai/minimax/video-01-live`
     -   MinimaxVideo01LiveImageToVideo: `ly.img.ai.fal-ai/minimax/video-01-live/image-to-video`
+    -   MinimaxHailuo02StandardImageToVideo: `ly.img.ai.fal-ai/minimax/hailuo-02/standard/image-to-video`
     -   PixverseV35TextToVideo: `ly.img.ai.fal-ai/pixverse/v3.5/text-to-video`
     -   KlingVideoV21MasterTextToVideo: `ly.img.ai.fal-ai/kling-video/v2.1/master/text-to-video`
     -   KlingVideoV21MasterImageToVideo: `ly.img.ai.fal-ai/kling-video/v2.1/master/image-to-video`
+    -   ByteDanceSeedanceV1ProImageToVideo: `ly.img.ai.fal-ai/bytedance/seedance/v1/pro/image-to-video`
+    -   ByteDanceSeedanceV1ProTextToVideo: `ly.img.ai.fal-ai/bytedance/seedance/v1/pro/text-to-video`
     -   Veo3TextToVideo: `ly.img.ai.fal-ai/veo3`
 
 ### Asset History
@@ -444,9 +685,12 @@ Generated videos are automatically stored in asset sources with the following ID
 
 -   MinimaxVideo01Live: `fal-ai/minimax/video-01-live.history`
 -   MinimaxVideo01LiveImageToVideo: `fal-ai/minimax/video-01-live/image-to-video.history`
+-   MinimaxHailuo02StandardImageToVideo: `fal-ai/minimax/hailuo-02/standard/image-to-video.history`
 -   PixverseV35TextToVideo: `fal-ai/pixverse/v3.5/text-to-video.history`
 -   KlingVideoV21MasterTextToVideo: `fal-ai/kling-video/v2.1/master/text-to-video.history`
 -   KlingVideoV21MasterImageToVideo: `fal-ai/kling-video/v2.1/master/image-to-video.history`
+-   ByteDanceSeedanceV1ProImageToVideo: `fal-ai/bytedance/seedance/v1/pro/image-to-video.history`
+-   ByteDanceSeedanceV1ProTextToVideo: `fal-ai/bytedance/seedance/v1/pro/text-to-video.history`
 -   Veo3TextToVideo: `fal-ai/veo3.history`
 
 ### Dock Integration
@@ -465,6 +709,10 @@ const currentOrder = cesdk.ui.getDockOrder();
 currentOrder.splice(2, 0, 'ly.img.ai.video-generation.dock');
 cesdk.ui.setDockOrder(currentOrder);
 ```
+
+## Translations
+
+For customization and localization, see the [translations.json](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-video-generation-web/translations.json) file which contains provider-specific translation keys for video generation interfaces.
 
 ## Related Packages
 

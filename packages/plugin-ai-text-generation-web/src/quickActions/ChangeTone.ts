@@ -15,7 +15,24 @@ export const ID = `ly.img.${ACTION_NAME}`;
 /**
  * The i18n prefix for the quick action.
  */
-export const I18N_PREFIX = `ly.img.ai.quickAction.text.${ACTION_NAME}`;
+export const I18N_PREFIX = `ly.img.plugin-ai-text-generation-web.quickAction.${ACTION_NAME}`;
+export const I18N_DEFAULT_PREFIX = `ly.img.plugin-ai-text-generation-web.defaults.quickAction.${ACTION_NAME}`;
+
+/**
+ * Get i18n label with fallback keys.
+ */
+function getI18nLabel(modelKey?: string, suffix?: string) {
+  const basePath = `ly.img.plugin-ai-text-generation-web`;
+  const actionPath = `quickAction.${ACTION_NAME}`;
+  const fullPath = suffix ? `${actionPath}.${suffix}` : actionPath;
+
+  return [
+    `${basePath}.${modelKey}.${fullPath}`,
+    `${basePath}.${fullPath}`,
+    `${basePath}.${modelKey}.defaults.${fullPath}`,
+    `${basePath}.defaults.${fullPath}`
+  ];
+}
 
 /**
  * The input generated from this quick action which needs
@@ -27,24 +44,30 @@ export type InputType = {
 };
 
 const toneOptions = [
-  { id: 'professional', label: `${I18N_PREFIX}.type.professional` },
-  { id: 'casual', label: `${I18N_PREFIX}.type.casual` },
-  { id: 'friendly', label: `${I18N_PREFIX}.type.friendly` },
-  { id: 'serious', label: `${I18N_PREFIX}.type.serious` },
-  { id: 'humorous', label: `${I18N_PREFIX}.type.humorous` },
-  { id: 'optimistic', label: `${I18N_PREFIX}.type.optimistic` }
+  { id: 'professional' },
+  { id: 'casual' },
+  { id: 'friendly' },
+  { id: 'serious' },
+  { id: 'humorous' },
+  { id: 'optimistic' }
 ];
 
 const ChangeTone: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
+  // Set feature default for this quick action
+  cesdk.feature.enable(
+    'ly.img.plugin-ai-text-generation-web.quickAction.changeTone',
+    true
+  );
+
   cesdk.i18n.setTranslations({
     en: {
-      [`${I18N_PREFIX}.label`]: 'Change Tone',
-      [`${I18N_PREFIX}.type.professional`]: 'Professional',
-      [`${I18N_PREFIX}.type.casual`]: 'Casual',
-      [`${I18N_PREFIX}.type.friendly`]: 'Friendly',
-      [`${I18N_PREFIX}.type.serious`]: 'Serious',
-      [`${I18N_PREFIX}.type.humorous`]: 'Humorous',
-      [`${I18N_PREFIX}.type.optimistic`]: 'Optimistic'
+      [`${I18N_DEFAULT_PREFIX}`]: 'Change Tone',
+      [`${I18N_DEFAULT_PREFIX}.professional`]: 'Professional',
+      [`${I18N_DEFAULT_PREFIX}.casual`]: 'Casual',
+      [`${I18N_DEFAULT_PREFIX}.friendly`]: 'Friendly',
+      [`${I18N_DEFAULT_PREFIX}.serious`]: 'Serious',
+      [`${I18N_DEFAULT_PREFIX}.humorous`]: 'Humorous',
+      [`${I18N_DEFAULT_PREFIX}.optimistic`]: 'Optimistic'
     }
   });
 
@@ -55,8 +78,7 @@ const ChangeTone: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
 
     scopes: ['text/edit'],
 
-    label: `${I18N_PREFIX}.label`,
-    description: `${I18N_PREFIX}.label`,
+    label: `${I18N_PREFIX}`,
     enable: ({ engine }) => {
       const blockIds = engine.block.findAllSelected();
       if (blockIds == null || blockIds.length !== 1) return false;
@@ -64,9 +86,16 @@ const ChangeTone: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
       return engine.block.getType(blockId) === '//ly.img.ubq/text';
     },
 
-    render: ({ builder, generate, engine, close, experimental }) => {
+    render: ({
+      builder,
+      generate,
+      engine,
+      close,
+      experimental,
+      providerId
+    }) => {
       experimental.builder.Popover(`${ID}.popover`, {
-        label: `${I18N_PREFIX}.label`,
+        label: getI18nLabel(providerId),
         icon: '@imgly/Microphone',
         labelAlignment: 'left',
         variant: 'plain',
@@ -79,7 +108,7 @@ const ChangeTone: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
                 children: () => {
                   toneOptions.forEach((option) => {
                     builder.Button(`${ID}.popover.menu.${option.id}`, {
-                      label: option.label,
+                      label: getI18nLabel(providerId, option.id),
                       labelAlignment: 'left',
                       variant: 'plain',
                       onClick: async () => {

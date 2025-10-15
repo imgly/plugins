@@ -18,6 +18,13 @@ export type Result<O> =
 export type Generate<I, O extends Output> = (
   input: I,
   options?: {
+    /**
+     * The block IDs that this generation is operating on.
+     * - undefined: Middleware will fall back to selected blocks
+     * - []: Explicitly target no blocks
+     * - [1, 2, 3]: Target specific blocks (e.g., placeholder block)
+     */
+    blockIds?: number[];
     abortSignal?: AbortSignal;
     middlewares?: Middleware<I, O>[];
     debug?: boolean;
@@ -52,6 +59,7 @@ function createGenerateFunction<
       const { result: output } = await composedMiddlewares(
         context.provider.output.generate
       )(input, {
+        blockIds: options?.blockIds,
         abortSignal: options?.abortSignal,
         engine: context.engine,
         cesdk: context.cesdk

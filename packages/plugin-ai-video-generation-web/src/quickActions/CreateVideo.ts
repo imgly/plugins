@@ -19,7 +19,24 @@ export const ID = `ly.img.${ACTION_NAME}`;
 /**
  * The i18n prefix for the quick action.
  */
-export const I18N_PREFIX = `ly.img.ai.quickAction.video.${ACTION_NAME}`;
+export const I18N_PREFIX = `ly.img.plugin-ai-video-generation-web.quickAction.${ACTION_NAME}`;
+export const I18N_DEFAULT_PREFIX = `ly.img.plugin-ai-video-generation-web.defaults.quickAction.${ACTION_NAME}`;
+
+/**
+ * Get i18n label with fallback keys.
+ */
+function getI18nLabel(modelKey: string, suffix?: string) {
+  const basePath = `ly.img.plugin-ai-video-generation-web`;
+  const actionPath = `quickAction.${ACTION_NAME}`;
+  const fullPath = suffix ? `${actionPath}.${suffix}` : actionPath;
+
+  return [
+    `${basePath}.${modelKey}.${fullPath}`,
+    `${basePath}.${fullPath}`,
+    `${basePath}.${modelKey}.defaults.${fullPath}`,
+    `${basePath}.defaults.${fullPath}`
+  ];
+}
 
 /**
  * The input generated from this quick action which needs
@@ -30,10 +47,16 @@ export type InputType = {
 };
 
 const CreateVideo: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
+  // Set feature default for this quick action
+  cesdk.feature.enable(
+    'ly.img.plugin-ai-video-generation-web.quickAction.createVideo',
+    true
+  );
+
   cesdk.i18n.setTranslations({
     en: {
-      [`${I18N_PREFIX}.label`]: 'Create Video...',
-      [`${I18N_PREFIX}.description`]: 'Create a video from the image'
+      [`${I18N_DEFAULT_PREFIX}`]: 'Create Video...',
+      [`${I18N_DEFAULT_PREFIX}.description`]: 'Create a video from the image'
     }
   });
 
@@ -42,14 +65,13 @@ const CreateVideo: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
     type: 'quick',
     kind: 'image',
 
-    label: `${I18N_PREFIX}.label`,
-    description: `${I18N_PREFIX}.description`,
+    label: `${I18N_PREFIX}`,
     enable: enableQuickActionForImageFill(),
     scopes: [],
 
     render: ({ builder, engine, close, providerId }) => {
       builder.Button(`${ID}.button`, {
-        label: `${I18N_PREFIX}.label`,
+        label: getI18nLabel(providerId),
         icon: '@imgly/plugin-ai-generation/video',
         labelAlignment: 'left',
         variant: 'plain',

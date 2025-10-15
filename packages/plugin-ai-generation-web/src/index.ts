@@ -32,6 +32,23 @@ export {
   type InternalPluginConfiguration
 } from './types';
 
+export type {
+  PropertyContext,
+  PropertyConfig,
+  PropertiesConfiguration,
+  ExtendPropertyContexts
+} from './core/propertyConfiguration';
+
+export {
+  buildPropertyContext,
+  PropertyContextCache
+} from './utils/propertyContext';
+
+export {
+  resolvePropertyDefault,
+  resolvePropertyDefaults
+} from './utils/propertyResolver';
+
 export { default as integrateIntoDefaultAssetLibraryEntry } from './assets/integrateIntoDefaultAssetLibraryEntry';
 export {
   ActionRegistry,
@@ -48,6 +65,9 @@ export { ProviderRegistry } from './core/ProviderRegistry';
 export { composeMiddlewares, type Middleware } from './middleware/middleware';
 export { default as loggingMiddleware } from './middleware/loggingMiddleware';
 export { default as uploadMiddleware } from './middleware/uploadMiddleware';
+
+// Export utilities
+export { mergeQuickActionsConfig } from './utils/mergeQuickActionsConfig';
 export {
   default as rateLimitMiddleware,
   type RateLimitOptions
@@ -77,4 +97,12 @@ export { default as initializeProviders } from './providers/initializeProviders'
 export { default as initializeProvider } from './providers/initializeProvider';
 export { default as initializeQuickActionComponents } from './ui/quickActions/initializeQuickActionComponents';
 
+export { extractAndSetSchemaTranslations } from './openapi/extractSchemaTranslations';
+
 export { AI_EDIT_MODE, AI_METADATA_KEY } from './ui/quickActions/utils';
+
+// Export AI-specific translation helpers
+export {
+  createTranslationCallback,
+  buildTranslationKeys
+} from './utils/translationHelpers';

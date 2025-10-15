@@ -2,11 +2,74 @@
 
 ## [Unreleased]
 
+## [0.2.8] - 2025-09-29
+
+### New Features
+
+-   [image-generation] **SeedreamV4 Provider**: Added ByteDance Seedream 4.0 text-to-image provider via fal.ai for high-quality image generation with multiple size presets (square HD 2048×2048, square 1024×1024, portrait/landscape variants), custom dimensions support (1024-4096 pixels), and safety checker enabled by default
+-   [image-generation] **SeedreamV4Edit Provider**: Added ByteDance Seedream 4.0 image-to-image provider via fal.ai for advanced image editing with unified generation/editing architecture, support for multiple input images (up to 10), and full canvas quick actions support (editImage, swapBackground, styleTransfer, artistTransfer, createVariant, combineImages, remixPage, remixPageWithPrompt)
+
+### Fixed
+
+-   [sticker-generation] **Fixed Input Types Not Enabled**: Fixed an issue where the sticker generation panel would show "No input types are enabled" error by properly enabling the `fromText` and `fromImage` feature flags during plugin initialization
+
+## [0.2.7] - 2025-09-26
+
+### New Features
+
+-   [image-generation] **QwenImageEdit Provider**: Added Qwen image editing provider via fal.ai for advanced image-to-image transformation with text prompts, supporting all standard quick actions
+-   [video-generation] **MinimaxHailuo02StandardImageToVideo Provider**: Added Minimax Hailuo-02 Standard image-to-video provider via fal.ai for transforming still images into videos with selectable resolutions (512P: 912×512, 768P: 1280×720) and adjustable durations (6 or 10 seconds)
+-   [video-generation] **ByteDance Seedance v1 Pro Providers**: Added ByteDance Seedance v1 Pro text-to-video and image-to-video providers via fal.ai with:
+    - Text-to-video generation from text descriptions with customizable aspect ratios
+    - Image-to-video transformation with dynamic motion generation from still images
+    - Multiple aspect ratio options (21:9, 16:9, 4:3, 1:1, 3:4, 9:16, or auto from image for i2v)
+    - Adjustable duration (3-12 seconds, default 5)
+    - Resolution options (480p, 720p, 1080p)
+    - Proper aspect ratio handling in placeholder blocks based on user selection
+
+-   [all] **Property Configuration System**: Providers can now define default values for their properties. Defaults can be static values or dynamic based on context (language, design state, etc.)
+
+-   [image-generation] **Recraft Provider Defaults**: Recraft providers (V3 and 20b) now support configurable default values for all properties, including dynamic style defaults based on the selected style type
+
+## [0.2.6] - 2025-09-09
+
+### New Features
+
+-   [all] **Feature API Integration**: Added comprehensive Feature API support across all AI plugins to control visibility and availability of features through feature flags. Core features include `providerSelect`, `quickAction`, `quickAction.providerSelect`, `fromText`, and `fromImage` flags.
+-   [all] **Quick Action Feature Flags**: Each quick action now automatically registers and respects its own feature flag (e.g., `ly.img.plugin-ai-image-generation-web.quickAction.editImage`), allowing fine-grained control over which quick actions are available to users.
+-   [image-generation] **Provider Style Group Control**: Added Feature API support for Recraft providers to control style group visibility. RecraftV3 supports `style.image` and `style.vector` flags, while Recraft20b adds `style.icon` flag for controlling icon style availability.
+-   [all] **Provider Selection Feature Flags**: Added support for controlling provider selection UI in both panels (`providerSelect`) and quick actions (`quickAction.providerSelect`), with proper handling when multiple providers are configured.
+
+## [0.2.5] - 2025-09-03
+
+### New Features
+
+-   [image-generation] **NanoBanana Provider**: Added NanoBanana text-to-image provider via fal.ai with fast generation times, 1024×1024 resolution, support for multiple output formats (JPEG, PNG), configurable number of images (1-4), and remixPageWithPrompt quick action
+-   [image-generation] **NanoBananaEdit Provider**: Added NanoBananaEdit image-to-image provider via fal.ai for editing existing images with text prompts, supporting all standard quick actions (editImage, swapBackground, styleTransfer, artistTransfer, createVariant, combineImages with up to 10 images, remixPage, remixPageWithPrompt)
+-   [all] **AI Style Asset Library Translations**: AI style presets in asset libraries now automatically use localized names and descriptions from provider translation files, eliminating the need for manual translation configuration
+
+### Bug Fixes
+
+-   [all] **fal.ai Provider Configuration**: Fixed singleton configuration conflict when using multiple fal.ai providers with different proxy URLs. Each provider now maintains its own client instance instead of overwriting a global configuration
+-   [video-generation] **Missing Dependency**: Added missing `@fal-ai/client` dependency to plugin-ai-video-generation-web package.json to ensure the package works correctly when installed independently
+
+## [0.2.4] - 2025-08-07
+
+### New Features
+
+-   [all] **Provider Label Translations**: Added support for provider label translations
+-   [all] **Extended Provider Configuration**: Added support for `history` and `supportedQuickActions` configuration fields in `CommonProviderConfiguration`, allowing customers to:
+    -   Override provider's default history asset source (`history` field) - can be set to `false` to disable history, `'@imgly/local'` for temporary storage, `'@imgly/indexedDB'` for persistent browser storage, or any custom asset source ID
+    -   Configure supported quick actions (`supportedQuickActions` field) - can disable quick actions by setting to `false`/`null`, keep defaults with `true`, or override with custom mappings and configurations
+    -   Both fields are optional and maintain backward compatibility with existing provider configurations
+-   [generation-web] **Utility Function**: Added `mergeQuickActionsConfig` utility function for merging provider defaults with user configuration overrides, exported from `@imgly/plugin-ai-generation-web` with comprehensive Jest test coverage
+
 ## [0.2.3] - 2025-07-23
 
 -   [all] **Automatic History Asset Library Entries**: Composite history asset sources now automatically have corresponding asset library entries created with the same IDs (e.g., `ly.img.ai.image-generation.history`)
 -   [all] **Provider Selection in Expanded Quick Actions**: When a quick action is expanded, users can now switch between all providers that support that specific quick action, enhancing flexibility in provider selection
 -   [all] **Quick Action Can Disable Lock**: Some quick actions can now decide to not lock the block when operating on a block. Examples are `CreateVariant` and `CombineImages`.
+-   [image-generation] **Ideogram V3**: Added support for Ideogram V3 provider for image generation, which supports text-to-image and image-to-image generation
 
 ## [0.2.2] - 2025-07-16
 

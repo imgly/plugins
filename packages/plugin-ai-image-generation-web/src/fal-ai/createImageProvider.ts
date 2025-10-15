@@ -6,10 +6,15 @@ import {
   GetBlockInput,
   CommonProperties,
   Provider,
-  Middleware
+  Middleware,
+  mergeQuickActionsConfig
 } from '@imgly/plugin-ai-generation-web';
-import { fal } from '@fal-ai/client';
-import { isCustomImageSize, uploadImageInputToFalIfNeeded } from './utils';
+import { createFalClient, FalClient } from './createFalClient';
+import {
+  isCustomImageSize,
+  uploadImageInputToFalIfNeeded,
+  uploadImageArrayToFalIfNeeded
+} from './utils';
 import { getImageDimensions } from './RecraftV3.constants';
 import { ImageQuickActionSupportMap } from '../types';
 
@@ -21,13 +26,28 @@ type ImageProviderConfiguration = {
    * @deprecated Use `middlewares` instead.
    */
   middleware?: Middleware<any, any>[];
+  /**
+   * Override provider's default history asset source
+   */
+  history?: false | '@imgly/local' | '@imgly/indexedDB' | (string & {});
+  /**
+   * Configure supported quick actions
+   */
+  supportedQuickActions?: {
+    [quickActionId: string]:
+      | Partial<ImageQuickActionSupportMap<any>[string]>
+      | false
+      | null;
+  };
 };
 
 /**
  * Creates a base provider from schema. This should work out of the box
  * but may be rough around the edges and should/can be further customized.
  */
-function createImageProvider<I extends Record<string, any>>(
+function createImageProvider<
+  I extends Record<string, any> & { image_url?: string; image_urls?: string[] }
+>(
   options: {
     modelKey: string;
     name?: string;
@@ -54,29 +74,24 @@ function createImageProvider<I extends Record<string, any>>(
 ): Provider<'image', I, { kind: 'image'; url: string }> {
   const middleware =
     options.middleware ?? config.middlewares ?? config.middleware ?? [];
+
+  let falClient: FalClient | null = null;
+
   const provider: Provider<'image', I, ImageOutput> = {
     id: options.modelKey,
     kind: 'image',
     name: options.name,
+    configuration: config,
     initialize: async (context) => {
-      fal.config({
-        proxyUrl: config.proxyUrl,
-        requestMiddleware: async (request) => {
-          return {
-            ...request,
-            headers: {
-              ...request.headers,
-              ...(options.headers ?? {})
-            }
-          };
-        }
-      });
-
+      falClient = createFalClient(config.proxyUrl, options.headers);
       options.initialize?.(context);
     },
     input: {
       quickActions: {
-        supported: options.supportedQuickActions ?? {}
+        supported: mergeQuickActionsConfig(
+          options.supportedQuickActions ?? {},
+          config.supportedQuickActions
+        )
       },
       panel: {
         type: 'schema',
@@ -131,19 +146,40 @@ function createImageProvider<I extends Record<string, any>>(
     output: {
       abortable: true,
       middleware,
-      history: '@imgly/indexedDB',
+      history: config.history ?? '@imgly/indexedDB',
       generate: async (
         input: I,
         { abortSignal }: { abortSignal?: AbortSignal }
       ) => {
+        if (!falClient) {
+          throw new Error('Provider not initialized');
+        }
+
+        // Handle both image_url and image_urls
         const image_url = await uploadImageInputToFalIfNeeded(
+          falClient,
           input.image_url,
           options.cesdk
         );
 
-        const response = await fal.subscribe(options.modelKey, {
+        const image_urls = await uploadImageArrayToFalIfNeeded(
+          falClient,
+          input.image_urls,
+          options.cesdk
+        );
+
+        // Prepare the input with uploaded images
+        let processedInput = input;
+        if (image_url != null) {
+          processedInput = { ...input, image_url };
+        }
+        if (image_urls != null) {
+          processedInput = { ...processedInput, image_urls };
+        }
+
+        const response = await falClient.subscribe(options.modelKey, {
           abortSignal,
-          input: image_url != null ? { ...input, image_url } : input,
+          input: processedInput,
           logs: true
         });
 

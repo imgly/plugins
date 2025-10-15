@@ -1,0 +1,17 @@
+{
+  "en": {
+    "ly.img.plugin-ai-sticker-generation-web.fal-ai/recraft/v2/text-to-sticker.property.image_size": "Format",
+    "ly.img.plugin-ai-sticker-generation-web.fal-ai/recraft/v2/text-to-sticker.property.style": "Style",
+    
+    "ly.img.plugin-ai-sticker-generation-web.fal-ai/recraft/v2/text-to-sticker.property.style.icon/broken_line": "Broken Line",
+    "ly.img.plugin-ai-sticker-generation-web.fal-ai/recraft/v2/text-to-sticker.property.style.icon/colored_outline": "Colored Outline",
+    "ly.img.plugin-ai-sticker-generation-web.fal-ai/recraft/v2/text-to-sticker.property.style.icon/colored_shapes": "Colored Shapes",
+    "ly.img.plugin-ai-sticker-generation-web.fal-ai/recraft/v2/text-to-sticker.property.style.icon/colored_shapes_gradient": "Colored Shapes Gradient",
+    "ly.img.plugin-ai-sticker-generation-web.fal-ai/recraft/v2/text-to-sticker.property.style.icon/doodle_fill": "Doodle Fill",
+    "ly.img.plugin-ai-sticker-generation-web.fal-ai/recraft/v2/text-to-sticker.property.style.icon/doodle_offset_fill": "Doodle Offset Fill",
+    "ly.img.plugin-ai-sticker-generation-web.fal-ai/recraft/v2/text-to-sticker.property.style.icon/offset_fill": "Offset Fill",
+    "ly.img.plugin-ai-sticker-generation-web.fal-ai/recraft/v2/text-to-sticker.property.style.icon/outline": "Outline",
+    "ly.img.plugin-ai-sticker-generation-web.fal-ai/recraft/v2/text-to-sticker.property.style.icon/outline_gradient": "Outline Gradient",
+    "ly.img.plugin-ai-sticker-generation-web.fal-ai/recraft/v2/text-to-sticker.property.style.icon/uneven_fill": "Uneven Fill"
+  }
+}

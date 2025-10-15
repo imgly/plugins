@@ -13,6 +13,7 @@ import createGenerateFunction, {
   type Generate
 } from '../generation/createGenerateFunction';
 import { ProviderRegistry } from '../core/ProviderRegistry';
+import { ActionRegistry } from '../core/ActionRegistry';
 import { addIconSetOnce } from '../utils/utils';
 
 export type ProviderInitializationResult<
@@ -58,10 +59,33 @@ async function initializeProvider<K extends OutputKind, I, O extends Output>(
       cesdk: options.cesdk,
       engine: options.cesdk.engine
     },
-    config: internalConfig
+    config: internalConfig,
+    providerConfig: provider.configuration
   };
 
   await provider.initialize?.({ ...options, engine: options.cesdk.engine });
+
+  // Enable features for custom quick actions defined by this provider
+  // Only enable features for quick actions that are not already known/registered by plugins
+  if (provider.input?.quickActions?.supported) {
+    const kind = provider.kind;
+    const actionRegistry = ActionRegistry.get();
+
+    Object.keys(provider.input.quickActions.supported).forEach(
+      (quickActionId) => {
+        // Check if this is a custom quick action (not already registered by a plugin)
+        const existingAction = actionRegistry.getBy({
+          id: quickActionId,
+          type: 'quick'
+        })[0];
+        if (!existingAction) {
+          // This is a custom quick action from the provider, enable its feature
+          const featureId = `ly.img.plugin-ai-${kind}-generation-web.quickAction.${quickActionId}`;
+          options.cesdk.feature.enable(featureId, true);
+        }
+      }
+    );
+  }
 
   const historyAssetSourceId = initializeHistoryAssetSource(context);
   const historyAssetLibraryEntryId = initializeHistoryAssetLibraryEntry(

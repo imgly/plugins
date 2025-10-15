@@ -118,14 +118,51 @@ interface CommonProviderConfiguration<I, O extends Output> {
     
     // Custom headers to include in all API requests
     headers?: Record<string, string>;
+    
+    // Override provider's default history asset source
+    history?: false | '@imgly/local' | '@imgly/indexedDB' | (string & {});
+    
+    // Configure supported quick actions
+    supportedQuickActions?: {
+        [quickActionId: string]: Partial<QuickActionSupport<I>> | false | null;
+    };
+
+    // Configure default property values
+    properties?: PropertiesConfiguration;
 }
 ```
 
+### Extended Configuration Options
+
+#### Headers Configuration
 The `headers` property is particularly useful for:
 - Adding custom client identification headers
 - Including version information
 - Passing through metadata required by your API
 - Adding correlation IDs for request tracing
+
+#### History Configuration
+The `history` property allows you to override the provider's default history storage behavior:
+
+- `false`: Disable history storage entirely
+- `'@imgly/local'`: Use temporary local storage (not persistent across sessions)
+- `'@imgly/indexedDB'`: Use browser IndexedDB storage (persistent across sessions)
+- `string`: Use your own custom asset source ID
+
+#### Quick Actions Configuration
+The `supportedQuickActions` property allows you to customize which quick actions are supported and how they behave:
+
+- `false` or `null`: Remove the quick action entirely
+- `true`: Keep the provider's default implementation
+- Object with `mapInput`: Override the quick action with custom input mapping
+- Object with other properties: Override with custom configuration
+
+#### Property Configuration
+The `properties` property allows you to define default values for any provider property:
+
+- Static values: Simple default values that apply to all users
+- Dynamic functions: Return values based on context (engine, cesdk, locale)
+- Context includes `engine`, `cesdk`, and `locale` for making informed decisions
 
 ## 5. Creating a Schema-Based Image Provider
 
@@ -572,6 +609,22 @@ The new architecture includes:
 -   **Enhanced Type Safety**: Improved TypeScript support with better provider interfaces
 -   **Cross-plugin Support**: Actions can work across different AI generation plugins
 
+### Controlling Features with Feature API
+
+You can control which UI elements and features are available to users using CE.SDK's Feature API:
+
+```typescript
+// Disable provider selection dropdown if you only want one provider visible
+cesdk.feature.enable('ly.img.plugin-ai-image-generation-web.providerSelect', false);
+
+// Control input type visibility (for providers that support both text and image input)
+cesdk.feature.enable('ly.img.plugin-ai-image-generation-web.fromText', true);
+cesdk.feature.enable('ly.img.plugin-ai-image-generation-web.fromImage', false);
+
+// Provider-specific style controls (e.g., for RecraftV3 or Recraft20b)
+cesdk.feature.enable('ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.style.vector', false);
+```
+
 Next steps:
 
 1. Explore more quick action IDs from the available list (editImage, swapBackground, createVariant, styleTransfer, etc.)
@@ -579,6 +632,7 @@ Next steps:
 3. Add custom middleware for request/response processing
 4. Implement proper error handling and retry logic
 5. Add custom asset sources for generated images
+6. Use Feature API to customize the UI experience for different user groups
 
 ## Additional Resources
 

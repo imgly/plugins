@@ -15,7 +15,8 @@ export const ID = `ly.img.${ACTION_NAME}`;
 /**
  * The i18n prefix for the quick action.
  */
-export const I18N_PREFIX = `ly.img.ai.quickAction.${ACTION_NAME}`;
+export const I18N_PREFIX = `ly.img.plugin-ai-image-generation-web.quickAction.${ACTION_NAME}`;
+export const I18N_DEFAULT_PREFIX = `ly.img.plugin-ai-image-generation-web.defaults.quickAction.${ACTION_NAME}`;
 
 /**
  * The input generated from this quick action which needs
@@ -26,10 +27,32 @@ export type InputType = {
   uri: string;
 };
 
+/**
+ * Get i18n label with fallback keys.
+ */
+function getI18nLabel(modelKey: string, suffix?: string) {
+  const basePath = `ly.img.plugin-ai-image-generation-web`;
+  const actionPath = `quickAction.${ACTION_NAME}`;
+  const fullPath = suffix ? `${actionPath}.${suffix}` : actionPath;
+
+  return [
+    `${basePath}.${modelKey}.${fullPath}`,
+    `${basePath}.${fullPath}`,
+    `${basePath}.${modelKey}.defaults.${fullPath}`,
+    `${basePath}.defaults.${fullPath}`
+  ];
+}
+
 const RemixPage: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
+  // Set feature default for this quick action
+  cesdk.feature.enable(
+    'ly.img.plugin-ai-image-generation-web.quickAction.remixPage',
+    true
+  );
+
   cesdk.i18n.setTranslations({
     en: {
-      [`${I18N_PREFIX}`]: 'Turn Page into Image'
+      [`${I18N_DEFAULT_PREFIX}`]: 'Turn Page into Image'
     }
   });
 
@@ -44,7 +67,6 @@ const RemixPage: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
     },
 
     label: `${I18N_PREFIX}`,
-    description: 'Convert the page into a single image',
     enable: ({ engine }) => {
       const blockIds = engine.block.findAllSelected();
       if (blockIds.length !== 1) return false;
@@ -54,9 +76,9 @@ const RemixPage: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
     },
     scopes: ['lifecycle/duplicate'],
 
-    render: ({ builder, generate, engine, close }) => {
+    render: ({ builder, generate, engine, close, providerId }) => {
       builder.Button(`${ID}.button`, {
-        label: `${I18N_PREFIX}`,
+        label: getI18nLabel(providerId),
         icon: '@imgly/Sparkle',
         labelAlignment: 'left',
         variant: 'plain',

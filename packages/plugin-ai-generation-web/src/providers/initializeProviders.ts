@@ -12,6 +12,17 @@ import { CommonPluginConfiguration } from '../types';
 import initializeHistoryCompositeAssetSource from '../assets/initializeHistoryCompositeAssetSource';
 import { isDefined } from '@imgly/plugin-utils';
 
+function createLabelArray<K extends OutputKind>(
+  kind: K,
+  key: string
+): string[] {
+  return [
+    `ly.img.plugin-ai-${kind}-generation-web.${key}`,
+    `ly.img.plugin-ai-generation-web.${key}`,
+    `ly.img.plugin-ai-generation-web.defaults.${key}`
+  ];
+}
+
 export type ProvidersInitializationResult<
   K extends OutputKind,
   I,
@@ -59,6 +70,18 @@ async function initializeProviders<K extends OutputKind, I, O extends Output>(
   },
   config: CommonPluginConfiguration<K, I, O>
 ): Promise<ProvidersInitializationResult<K, I, O>> {
+  // Set default translations
+  const { cesdk } = options;
+  cesdk.setTranslations({
+    en: {
+      'ly.img.plugin-ai-generation-web.defaults.fromType.label': 'Input',
+      'ly.img.plugin-ai-generation-web.defaults.providerSelect.label':
+        'Provider',
+      'ly.img.plugin-ai-generation-web.defaults.fromText.label': 'Text',
+      'ly.img.plugin-ai-generation-web.defaults.fromImage.label': 'Image'
+    }
+  });
+
   let builderRenderFunction: BuilderRenderFunction | undefined;
 
   const providerResults: ProviderInitializationResult<K, I, O>[] = [];
@@ -78,9 +101,11 @@ async function initializeProviders<K extends OutputKind, I, O extends Output>(
     providerResults.push(...initializedFromImageProviders);
 
     builderRenderFunction = getBuilderRenderFunctionByFromType({
+      kind,
       prefix: `ly.img.ai.${kind}-generation`,
       initializedFromTextProviders,
-      initializedFromImageProviders
+      initializedFromImageProviders,
+      cesdk
     });
   } else {
     const results = await Promise.all(
@@ -91,8 +116,10 @@ async function initializeProviders<K extends OutputKind, I, O extends Output>(
     providerResults.push(...results);
 
     builderRenderFunction = getBuilderRenderFunctionByProvider({
+      kind,
       prefix: kind,
-      providerInitializationResults: providerResults
+      providerInitializationResults: providerResults,
+      cesdk
     });
   }
 
@@ -143,23 +170,56 @@ function getBuilderRenderFunctionByFromType<
   I,
   O extends Output
 >({
+  kind,
   prefix,
   initializedFromTextProviders,
-  initializedFromImageProviders
+  initializedFromImageProviders,
+  cesdk
 }: {
+  kind: K;
   prefix: string;
   initializedFromTextProviders: ProviderInitializationResult<K, I, O>[];
   initializedFromImageProviders: ProviderInitializationResult<K, I, O>[];
+  cesdk: CreativeEditorSDK;
 }): BuilderRenderFunction<{}> {
   const includeFromSwitch =
     initializedFromTextProviders.length > 0 &&
     initializedFromImageProviders.length > 0;
 
   const builderRenderFunction: BuilderRenderFunction = (context) => {
-    const { builder, experimental } = context;
+    const { builder, experimental, engine } = context;
+
+    // Check if text and image input are enabled via Feature API
+    const textInputFeatureId = `ly.img.plugin-ai-${kind}-generation-web.fromText`;
+    const isTextInputEnabled = cesdk.feature.isEnabled(textInputFeatureId, {
+      engine
+    });
+    const imageInputFeatureId = `ly.img.plugin-ai-${kind}-generation-web.fromImage`;
+    const isImageInputEnabled = cesdk.feature.isEnabled(imageInputFeatureId, {
+      engine
+    });
+
+    // Determine default input type based on what's enabled
+    let defaultInputType: 'fromText' | 'fromImage' | undefined;
+    if (
+      isTextInputEnabled &&
+      initializedFromTextProviders.length > 0 &&
+      (!isImageInputEnabled || initializedFromImageProviders.length === 0)
+    ) {
+      defaultInputType = 'fromText';
+    } else if (
+      isImageInputEnabled &&
+      initializedFromImageProviders.length > 0 &&
+      (!isTextInputEnabled || initializedFromTextProviders.length === 0)
+    ) {
+      defaultInputType = 'fromImage';
+    } else if (isTextInputEnabled && isImageInputEnabled && includeFromSwitch) {
+      defaultInputType = 'fromText';
+    }
+
     const inputTypeState = experimental.global<
       'fromText' | 'fromImage' | undefined
-    >(`${prefix}.fromType`, includeFromSwitch ? 'fromText' : undefined);
+    >(`${prefix}.fromType`, defaultInputType);
 
     const providerInitializationResults: ProviderInitializationResult<
       K,
@@ -209,50 +269,92 @@ function getBuilderRenderFunctionByFromType<
         ? providerStateFromImage
         : undefined;
 
-    if (includeFromSwitch || providerInitializationResults.length > 1) {
+    // Check if provider selector is enabled via Feature API
+    const providerFeatureId = `ly.img.plugin-ai-${kind}-generation-web.providerSelect`;
+    const isProviderSelectorEnabled = cesdk.feature.isEnabled(
+      providerFeatureId,
+      { engine }
+    );
+
+    // Check if neither text nor image input is enabled
+    if (!isTextInputEnabled && !isImageInputEnabled) {
+      builder.Section(`${prefix}.noInputWarning.section`, {
+        children: () => {
+          builder.Text(`${prefix}.noInputWarning.text`, {
+            content:
+              'No input types are enabled. Please enable at least one input type (text or image) via the Feature API.'
+          });
+        }
+      });
+      return; // Exit early, don't render anything else
+    }
+
+    // Determine if we need to show the input selector
+    // Only show if both types are enabled AND both have providers
+    const bothInputsEnabled =
+      isTextInputEnabled &&
+      isImageInputEnabled &&
+      initializedFromTextProviders.length > 0 &&
+      initializedFromImageProviders.length > 0;
+    const shouldShowInputSelector = includeFromSwitch && bothInputsEnabled;
+    const shouldShowProviderSelector =
+      providerInitializationResults.length > 1 && isProviderSelectorEnabled;
+
+    if (shouldShowInputSelector || shouldShowProviderSelector) {
       builder.Section(`${prefix}.providerSelection.section`, {
         children: () => {
-          // RENDER FROM SELECTION
-          if (includeFromSwitch) {
+          // RENDER FROM SELECTION - only if both input types are enabled
+          if (shouldShowInputSelector) {
             builder.ButtonGroup(`${prefix}.fromType.buttonGroup`, {
-              inputLabel: 'Input',
+              inputLabel: createLabelArray(kind, 'fromType.label'),
               children: () => {
-                builder.Button(`${prefix}.fromType.buttonGroup.fromText`, {
-                  label: 'Text',
-                  icon:
-                    inputTypeState.value !== 'fromText' &&
-                    isSomeProviderGenerating(
-                      initializedFromTextProviders,
-                      context
-                    )
-                      ? '@imgly/LoadingSpinner'
-                      : undefined,
-                  isActive: inputTypeState.value === 'fromText',
-                  onClick: () => {
-                    inputTypeState.setValue('fromText');
-                  }
-                });
-                builder.Button(`${prefix}.fromType.buttonGroup.fromImage`, {
-                  label: 'Image',
-                  icon:
-                    inputTypeState.value !== 'fromImage' &&
-                    isSomeProviderGenerating(
-                      initializedFromImageProviders,
-                      context
-                    )
-                      ? '@imgly/LoadingSpinner'
-                      : undefined,
-                  isActive: inputTypeState.value === 'fromImage',
-                  onClick: () => {
-                    inputTypeState.setValue('fromImage');
-                  }
-                });
+                if (
+                  isTextInputEnabled &&
+                  initializedFromTextProviders.length > 0
+                ) {
+                  builder.Button(`${prefix}.fromType.buttonGroup.fromText`, {
+                    label: createLabelArray(kind, 'fromText.label'),
+                    icon:
+                      inputTypeState.value !== 'fromText' &&
+                      isSomeProviderGenerating(
+                        initializedFromTextProviders,
+                        context
+                      )
+                        ? '@imgly/LoadingSpinner'
+                        : undefined,
+                    isActive: inputTypeState.value === 'fromText',
+                    onClick: () => {
+                      inputTypeState.setValue('fromText');
+                    }
+                  });
+                }
+
+                if (
+                  isImageInputEnabled &&
+                  initializedFromImageProviders.length > 0
+                ) {
+                  builder.Button(`${prefix}.fromType.buttonGroup.fromImage`, {
+                    label: createLabelArray(kind, 'fromImage.label'),
+                    icon:
+                      inputTypeState.value !== 'fromImage' &&
+                      isSomeProviderGenerating(
+                        initializedFromImageProviders,
+                        context
+                      )
+                        ? '@imgly/LoadingSpinner'
+                        : undefined,
+                    isActive: inputTypeState.value === 'fromImage',
+                    onClick: () => {
+                      inputTypeState.setValue('fromImage');
+                    }
+                  });
+                }
               }
             });
           }
 
           // RENDER PROVIDER SELECT
-          if (providerInitializationResults.length > 1) {
+          if (shouldShowProviderSelector) {
             const providerValues =
               inputTypeState.value === 'fromText'
                 ? providerValuesFromText
@@ -262,7 +364,7 @@ function getBuilderRenderFunctionByFromType<
 
             if (providerState != null) {
               builder.Select(`${prefix}.providerSelect.select`, {
-                inputLabel: 'Provider',
+                inputLabel: createLabelArray(kind, 'providerSelect.label'),
                 values: providerValues,
                 ...providerState
               });
@@ -296,15 +398,35 @@ function getBuilderRenderFunctionByProvider<
   I,
   O extends Output
 >({
+  kind,
   prefix,
-  providerInitializationResults
+  providerInitializationResults,
+  cesdk
 }: {
+  kind: K;
   prefix: string;
   providerInitializationResults: ProviderInitializationResult<K, I, O>[];
+  cesdk: CreativeEditorSDK;
 }): BuilderRenderFunction<{}> {
   const builderRenderFunction: BuilderRenderFunction = (context) => {
-    const { builder } = context;
+    const { builder, engine } = context;
     if (providerInitializationResults.length === 0) return;
+
+    // Check if provider selector is enabled via Feature API
+    // Audio plugin has special cases for speech and sound providers
+    let providerFeatureId = `ly.img.plugin-ai-${kind}-generation-web.providerSelect`;
+    // For audio, we check prefix to determine if it's speech or sound
+    if (kind === 'audio' && prefix) {
+      if (prefix.includes('speech')) {
+        providerFeatureId = `ly.img.plugin-ai-audio-generation-web.speech.providerSelect`;
+      } else if (prefix.includes('sound')) {
+        providerFeatureId = `ly.img.plugin-ai-audio-generation-web.sound.providerSelect`;
+      }
+    }
+    const isProviderSelectorEnabled = cesdk.feature.isEnabled(
+      providerFeatureId,
+      { engine }
+    );
 
     const providerValues: (SelectValue & {
       builderRenderFunction?: BuilderRenderFunction;
@@ -319,12 +441,12 @@ function getBuilderRenderFunctionByProvider<
       providerValues[0]
     );
 
-    if (providerInitializationResults.length > 1) {
+    if (providerInitializationResults.length > 1 && isProviderSelectorEnabled) {
       if (providerState != null) {
         builder.Section(`${prefix}.providerSelection.section`, {
           children: () => {
             builder.Select(`${prefix}.providerSelect.select`, {
-              inputLabel: 'Provider',
+              inputLabel: createLabelArray(kind, 'providerSelect.label'),
               values: providerValues,
               ...providerState
             });

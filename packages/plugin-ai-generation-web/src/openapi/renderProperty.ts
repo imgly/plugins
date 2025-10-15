@@ -16,6 +16,42 @@ import { UIOptions, CommonConfiguration } from '../types';
 import { OpenAPIV3 } from 'openapi-types';
 import getProperties from './getProperties';
 import { getLabelFromId } from '../utils/utils';
+import { buildPropertyContext } from '../utils/propertyContext';
+import { resolvePropertyDefault } from '../utils/propertyResolver';
+
+function createInputLabelArray<K extends OutputKind, I, O extends Output>(
+  property: Property,
+  provider: Provider<K, I, O>,
+  kind: K,
+  valueId?: string
+): string[] {
+  const baseKey = `property.${property.id}${valueId ? `.${valueId}` : ''}`;
+  return [
+    `ly.img.plugin-ai-${kind}-generation-web.${provider.id}.${baseKey}`,
+    `ly.img.plugin-ai-generation-web.${baseKey}`,
+    `ly.img.plugin-ai-${kind}-generation-web.${provider.id}.defaults.${baseKey}`,
+    `ly.img.plugin-ai-generation-web.defaults.${baseKey}`
+  ];
+}
+
+function extractEnumMetadata(schema: any): {
+  labels: Record<string, string>;
+  icons: Record<string, string>;
+} {
+  const labels =
+    'x-imgly-enum-labels' in schema &&
+    typeof schema['x-imgly-enum-labels'] === 'object'
+      ? (schema['x-imgly-enum-labels'] as Record<string, string>)
+      : {};
+
+  const icons =
+    'x-imgly-enum-icons' in schema &&
+    typeof schema['x-imgly-enum-icons'] === 'object'
+      ? (schema['x-imgly-enum-icons'] as Record<string, string>)
+      : {};
+
+  return { labels, icons };
+}
 
 function renderProperty<K extends OutputKind, I, O extends Output>(
   context: BuilderRenderFunctionContext<any>,
@@ -23,14 +59,25 @@ function renderProperty<K extends OutputKind, I, O extends Output>(
   provider: Provider<K, I, O>,
   panelInput: PanelInputSchema<K, I>,
   options: UIOptions,
-  config: CommonConfiguration<I, O>
+  config: CommonConfiguration<I, O>,
+  kind: K,
+  providerConfig?: any
 ): GetPropertyInput | undefined {
   if (property.schema == null) {
     if (
       panelInput.renderCustomProperty != null &&
       panelInput.renderCustomProperty[property.id] != null
     ) {
-      return panelInput.renderCustomProperty[property.id](context, property);
+      // Extend context with provider configuration for custom properties
+      const extendedContext = {
+        ...context,
+        providerConfig,
+        config
+      };
+      return panelInput.renderCustomProperty[property.id](
+        extendedContext,
+        property
+      );
     } else {
       return undefined;
     }
@@ -42,7 +89,16 @@ function renderProperty<K extends OutputKind, I, O extends Output>(
     panelInput.renderCustomProperty != null &&
     panelInput.renderCustomProperty[property.id] != null
   ) {
-    return panelInput.renderCustomProperty[property.id](context, property);
+    // Extend context with provider configuration for custom properties
+    const extendedContext = {
+      ...context,
+      providerConfig,
+      config
+    };
+    return panelInput.renderCustomProperty[property.id](
+      extendedContext,
+      property
+    );
   }
 
   switch (type) {
@@ -54,7 +110,9 @@ function renderProperty<K extends OutputKind, I, O extends Output>(
           provider,
           panelInput,
           options,
-          config
+          config,
+          kind,
+          providerConfig
         );
       } else {
         return renderStringProperty(
@@ -63,7 +121,9 @@ function renderProperty<K extends OutputKind, I, O extends Output>(
           provider,
           panelInput,
           options,
-          config
+          config,
+          kind,
+          providerConfig
         );
       }
     }
@@ -75,7 +135,9 @@ function renderProperty<K extends OutputKind, I, O extends Output>(
         provider,
         panelInput,
         options,
-        config
+        config,
+        kind,
+        providerConfig
       );
     }
 
@@ -87,7 +149,9 @@ function renderProperty<K extends OutputKind, I, O extends Output>(
         provider,
         panelInput,
         options,
-        config
+        config,
+        kind,
+        providerConfig
       );
     }
 
@@ -98,7 +162,9 @@ function renderProperty<K extends OutputKind, I, O extends Output>(
         provider,
         panelInput,
         options,
-        config
+        config,
+        kind,
+        providerConfig
       );
     }
 
@@ -118,7 +184,9 @@ function renderProperty<K extends OutputKind, I, O extends Output>(
           provider,
           panelInput,
           options,
-          config
+          config,
+          kind,
+          providerConfig
         );
       }
       break;
@@ -137,7 +205,9 @@ function renderObjectProperty<K extends OutputKind, I, O extends Output>(
   provider: Provider<K, I, O>,
   panelInput: PanelInputSchema<K, I>,
   options: UIOptions,
-  config: CommonConfiguration<I, O>
+  config: CommonConfiguration<I, O>,
+  kind: K,
+  providerConfig?: any
 ): GetPropertyInput {
   const properties = getProperties(property.schema ?? {}, panelInput);
 
@@ -148,7 +218,9 @@ function renderObjectProperty<K extends OutputKind, I, O extends Output>(
       provider,
       panelInput,
       options,
-      config
+      config,
+      kind,
+      providerConfig
     );
     if (getInput != null) {
       acc[childProperty.id] = getInput();
@@ -169,18 +241,34 @@ function renderStringProperty<K extends OutputKind, I, O extends Output>(
   provider: Provider<K, I, O>,
   panelInput: PanelInputSchema<K, I>,
   options: UIOptions,
-  config: CommonConfiguration<I, O>
+  config: CommonConfiguration<I, O>,
+  kind: K,
+  providerConfig?: any
 ): GetPropertyInput {
   const {
     builder,
-    experimental: { global }
+    experimental: { global },
+    engine
   } = context;
   const { id: propertyId } = property;
 
   const id = `${provider.id}.${propertyId}`;
-  const inputLabel = property.schema.title ?? id;
+  const inputLabel = createInputLabelArray(property, provider, kind);
 
-  const propertyState = global(id, property.schema.default ?? '');
+  // Resolve default value from property configuration
+  const propertyContext = buildPropertyContext(engine, options.cesdk);
+  const propertyConfig =
+    providerConfig?.properties?.[propertyId] ??
+    (config as any).properties?.[propertyId];
+  const defaultValue = resolvePropertyDefault(
+    propertyId,
+    propertyConfig,
+    propertyContext,
+    property.schema.default,
+    ''
+  );
+
+  const propertyState = global(id, defaultValue);
 
   const extension = getImglyExtensionBuilder(property.schema);
   const builderComponent =
@@ -207,41 +295,44 @@ function renderEnumProperty<K extends OutputKind, I, O extends Output>(
   provider: Provider<K, I, O>,
   panelInput: PanelInputSchema<K, I>,
   options: UIOptions,
-  config: CommonConfiguration<I, O>
+  config: CommonConfiguration<I, O>,
+  kind: K,
+  providerConfig?: any
 ): GetPropertyInput {
   const {
     builder,
-    experimental: { global }
+    experimental: { global },
+    engine
   } = context;
   const { id: propertyId } = property;
 
   const id = `${provider.id}.${propertyId}`;
-  const inputLabel = property.schema.title ?? id;
+  const inputLabel = createInputLabelArray(property, provider, kind);
 
-  const labels: Record<string, string> =
-    property.schema.enum != null &&
-    'x-imgly-enum-labels' in property.schema.enum &&
-    typeof property.schema.enum['x-imgly-enum-labels'] === 'object'
-      ? (property.schema.enum['x-imgly-enum-labels'] as Record<string, string>)
-      : 'x-imgly-enum-labels' in property.schema &&
-        typeof property.schema['x-imgly-enum-labels'] === 'object'
-      ? (property.schema['x-imgly-enum-labels'] as Record<string, string>)
-      : {};
-
-  const icons: Record<string, string> =
-    'x-imgly-enum-icons' in property.schema &&
-    typeof property.schema['x-imgly-enum-icons'] === 'object'
-      ? (property.schema['x-imgly-enum-icons'] as Record<string, string>)
-      : {};
+  const { labels: enumLabels, icons } = extractEnumMetadata(property.schema);
 
   const values: EnumValue[] = (property.schema.enum ?? []).map((valueId) => ({
     id: valueId,
-    label: labels[valueId] ?? getLabelFromId(valueId),
+    label: createInputLabelArray(property, provider, kind, valueId),
     icon: icons[valueId]
   }));
+
+  // Resolve default value from property configuration
+  const propertyContext = buildPropertyContext(engine, options.cesdk);
+  const propertyConfig =
+    providerConfig?.properties?.[propertyId] ??
+    (config as any).properties?.[propertyId];
+  const resolvedDefault = resolvePropertyDefault(
+    propertyId,
+    propertyConfig,
+    propertyContext,
+    property.schema.default,
+    values[0]?.id
+  );
+
   const defaultValue =
-    property.schema.default != null
-      ? values.find((v) => v.id === property.schema.default) ?? values[0]
+    resolvedDefault != null
+      ? values.find((v) => v.id === resolvedDefault) ?? values[0]
       : values[0];
 
   const propertyState = global<EnumValue>(id, defaultValue);
@@ -265,18 +356,32 @@ function renderBooleanProperty<K extends OutputKind, I, O extends Output>(
   provider: Provider<K, I, O>,
   panelInput: PanelInputSchema<K, I>,
   options: UIOptions,
-  config: CommonConfiguration<I, O>
+  config: CommonConfiguration<I, O>,
+  kind: K,
+  providerConfig?: any
 ): GetPropertyInput {
   const {
     builder,
-    experimental: { global }
+    experimental: { global },
+    engine
   } = context;
   const { id: propertyId } = property;
 
   const id = `${provider.id}.${propertyId}`;
-  const inputLabel = property.schema.title ?? id;
+  const inputLabel = createInputLabelArray(property, provider, kind);
 
-  const defaultValue = !!property.schema.default;
+  // Resolve default value from property configuration
+  const propertyContext = buildPropertyContext(engine, options.cesdk);
+  const propertyConfig =
+    providerConfig?.properties?.[propertyId] ??
+    (config as any).properties?.[propertyId];
+  const defaultValue = !!resolvePropertyDefault(
+    propertyId,
+    propertyConfig,
+    propertyContext,
+    property.schema.default,
+    false
+  );
   const propertyState = global<boolean>(id, defaultValue);
 
   builder.Checkbox(id, {
@@ -297,30 +402,45 @@ function renderIntegerProperty<K extends OutputKind, I, O extends Output>(
   provider: Provider<K, I, O>,
   panelInput: PanelInputSchema<K, I>,
   options: UIOptions,
-  config: CommonConfiguration<I, O>
+  config: CommonConfiguration<I, O>,
+  kind: K,
+  providerConfig?: any
 ): GetPropertyInput {
   const {
     builder,
-    experimental: { global }
+    experimental: { global },
+    engine
   } = context;
   const { id: propertyId } = property;
 
   const id = `${provider.id}.${propertyId}`;
-  const inputLabel = property.schema.title ?? id;
+  const inputLabel = createInputLabelArray(property, provider, kind);
 
   const minValue = property.schema.minimum;
   const maxValue = property.schema.maximum;
 
-  let defaultValue = property.schema.default;
-  if (defaultValue == null) {
+  // Resolve default value from property configuration
+  const propertyContext = buildPropertyContext(engine, options.cesdk);
+  const propertyConfig =
+    providerConfig?.properties?.[propertyId] ??
+    (config as any).properties?.[propertyId];
+  let schemaDefault = property.schema.default;
+  if (schemaDefault == null) {
     if (minValue != null) {
-      defaultValue = minValue;
+      schemaDefault = minValue;
     } else if (maxValue != null) {
-      defaultValue = maxValue;
+      schemaDefault = maxValue;
     } else {
-      defaultValue = 0;
+      schemaDefault = 0;
     }
   }
+  const defaultValue = resolvePropertyDefault(
+    propertyId,
+    propertyConfig,
+    propertyContext,
+    schemaDefault,
+    schemaDefault
+  );
 
   const propertyState = global<number>(id, defaultValue);
 
@@ -362,127 +482,118 @@ function renderAnyOfProperty<K extends OutputKind, I, O extends Output>(
   provider: Provider<K, I, O>,
   panelInput: PanelInputSchema<K, I>,
   options: UIOptions,
-  config: CommonConfiguration<I, O>
+  config: CommonConfiguration<I, O>,
+  kind: K,
+  providerConfig?: any
 ): GetPropertyInput | undefined {
   const {
     builder,
-    experimental: { global }
+    experimental: { global },
+    engine
   } = context;
   const { id: propertyId } = property;
 
   const id = `${provider.id}.${propertyId}`;
-  const inputLabel = property.schema.title ?? id;
+  const inputLabel = createInputLabelArray(property, provider, kind);
 
   const anyOf = (property.schema.anyOf ?? []) as OpenAPIV3.SchemaObject[];
-
   const values: EnumValue[] = [];
-
   const conditionalRender: Record<string, () => GetPropertyInput> = {};
   const conditionalInputs: Record<string, () => PropertyInput> = {};
+  const { labels, icons } = extractEnumMetadata(property.schema);
+
+  // Resolve default value from property configuration
+  const propertyContext = buildPropertyContext(engine, options.cesdk);
+  const propertyConfig =
+    providerConfig?.properties?.[propertyId] ??
+    (config as any).properties?.[propertyId];
+
+  const renderFunctionMap: Record<string, Function> = {
+    string: renderStringProperty,
+    boolean: renderBooleanProperty,
+    integer: renderIntegerProperty,
+    object: renderObjectProperty
+  };
+
+  const extractValueId = (anySchema: any, schemaId: string): string =>
+    (anySchema as any).$ref
+      ? (anySchema as any).$ref.split('/').pop()
+      : schemaId.split('.').pop() ?? schemaId;
+
+  const createEnumValue = (enumId: string, valueId: string): EnumValue => ({
+    id: enumId,
+    label: createInputLabelArray(property, provider, kind, valueId),
+    icon: icons[valueId] ?? icons[enumId]
+  });
 
   anyOf.forEach((anySchema, index) => {
-    const label = anySchema.title ?? 'common.custom';
     const schemaId = `${provider.id}.${propertyId}.anyOf[${index}]`;
 
-    const labels: Record<string, string> =
-      'x-imgly-enum-labels' in property.schema &&
-      typeof property.schema['x-imgly-enum-labels'] === 'object'
-        ? (property.schema['x-imgly-enum-labels'] as Record<string, string>)
-        : {};
+    if ((anySchema as any).$ref || anySchema.title) {
+      const refName = (anySchema as any).$ref
+        ? (anySchema as any).$ref.split('/').pop()
+        : anySchema.title;
 
-    const icons: Record<string, string> =
-      'x-imgly-enum-icons' in property.schema &&
-      typeof property.schema['x-imgly-enum-icons'] === 'object'
-        ? (property.schema['x-imgly-enum-icons'] as Record<string, string>)
-        : {};
-
-    if (anySchema.type === 'string') {
-      if (anySchema.enum != null) {
-        anySchema.enum.forEach((valueId) => {
-          values.push({
-            id: valueId,
-            label: labels[valueId] ?? getLabelFromId(valueId),
-            icon: icons[valueId]
-          });
-        });
-      } else {
-        conditionalRender[schemaId] = () => {
-          return renderStringProperty(
-            context,
-            { id: schemaId, schema: { ...anySchema, title: label } },
-            provider,
-            panelInput,
-            options,
-            config
-          );
-        };
-
-        values.push({
-          id: schemaId,
-          label: labels[label] ?? label,
-          icon: icons[label]
-        });
-      }
-    } else if (anySchema.type === 'boolean') {
-      conditionalRender[schemaId] = () => {
-        return renderBooleanProperty(
+      conditionalRender[schemaId] = () =>
+        renderObjectProperty(
           context,
-          { id: schemaId, schema: { ...anySchema, title: label } },
+          {
+            id: schemaId,
+            schema: { ...anySchema, title: labels[refName] || refName }
+          },
           provider,
           panelInput,
           options,
-          config
+          config,
+          kind,
+          providerConfig
         );
-      };
 
-      values.push({
-        id: schemaId,
-        label: labels[label] ?? label,
-        icon: icons[label]
+      values.push(createEnumValue(schemaId, refName));
+    } else if (anySchema.type === 'string' && anySchema.enum) {
+      anySchema.enum.forEach((valueId) => {
+        values.push(createEnumValue(valueId, valueId));
       });
-    } else if (anySchema.type === 'integer') {
-      conditionalRender[schemaId] = () => {
-        return renderIntegerProperty(
+    } else if (anySchema.type && renderFunctionMap[anySchema.type]) {
+      const renderFunction = renderFunctionMap[anySchema.type];
+      conditionalRender[schemaId] = () =>
+        renderFunction(
           context,
-          { id: schemaId, schema: { ...anySchema, title: label } },
+          { id: schemaId, schema: { ...anySchema, title: anySchema.title } },
           provider,
           panelInput,
           options,
-          config
+          config,
+          kind,
+          providerConfig
         );
-      };
 
-      values.push({
-        id: schemaId,
-        label: labels[label] ?? label,
-        icon: icons[label]
-      });
-    } else if (anySchema.type === 'array') {
-      // not supported yet
-    } else if (anySchema.type === 'object') {
-      conditionalRender[schemaId] = () => {
-        return renderObjectProperty(
-          context,
-          { id: schemaId, schema: { ...anySchema, title: label } },
-          provider,
-          panelInput,
-          options,
-          config
-        );
-      };
-
-      values.push({
-        id: schemaId,
-        label: labels[label] ?? label,
-        icon: icons[label]
-      });
+      const valueId = extractValueId(anySchema, schemaId);
+      values.push(
+        anySchema.type === 'string' && !anySchema.enum
+          ? {
+              id: schemaId,
+              label: anySchema.title || valueId,
+              icon:
+                (anySchema.title && icons[anySchema.title]) || icons[valueId]
+            }
+          : createEnumValue(schemaId, valueId)
+      );
     }
   });
 
+  // Resolve the default using property configuration
+  const resolvedDefault = resolvePropertyDefault(
+    propertyId,
+    propertyConfig,
+    propertyContext,
+    property.schema.default,
+    null
+  );
+
   const defaultValue =
-    property.schema.default != null
-      ? values.find((value) => value.id === property.schema.default) ??
-        values[0]
+    resolvedDefault != null
+      ? values.find((value) => value.id === resolvedDefault) ?? values[0]
       : values[0];
 
   const propertyState = global<EnumValue>(id, defaultValue);

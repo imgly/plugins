@@ -25,6 +25,21 @@ export function StickerGeneration<I, O extends Output>(
       // Check AI plugin version consistency
       checkAiPluginVersion(cesdk, PLUGIN_ID, PLUGIN_VERSION);
 
+      // Initialize Feature API for sticker generation plugin
+      // Enable all features by default for backward compatibility
+      cesdk.feature.enable(
+        'ly.img.plugin-ai-sticker-generation-web.providerSelect',
+        true
+      );
+      cesdk.feature.enable(
+        'ly.img.plugin-ai-sticker-generation-web.fromText',
+        true
+      );
+      cesdk.feature.enable(
+        'ly.img.plugin-ai-sticker-generation-web.fromImage',
+        true
+      );
+
       const registry = ActionRegistry.get();
 
       const disposeApp = registry.register({

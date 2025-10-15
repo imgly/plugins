@@ -47,6 +47,12 @@ CreativeEditorSDK.create(domElement, {
         headers: {
           'x-custom-header': 'value',
           'x-client-version': '1.0.0'
+        },
+        // Optional: Configure default property values
+        properties: {
+          style: { default: 'broken_line' },  // Default icon style for stickers
+          image_size: { default: 'square' },  // Default size
+          n_colors: { default: 2 }  // Default color count
         }
       }),
       
@@ -294,6 +300,10 @@ cesdk.addPlugin(
 ```
 
 When integrated with AI Apps, the sticker generation functionality appears in the main AI interface alongside other AI generation capabilities.
+
+## Translations
+
+For customization and localization, see the [translations.json](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-sticker-generation-web/translations.json) file which contains provider-specific translation keys for sticker generation interfaces.
 
 ## Related Packages
 

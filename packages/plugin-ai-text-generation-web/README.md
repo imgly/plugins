@@ -52,6 +52,11 @@ CreativeEditorSDK.create(domElement, {
                 headers: {
                     'x-custom-header': 'value',
                     'x-client-version': '1.0.0'
+                },
+                // Optional: Configure default property values
+                properties: {
+                    temperature: { default: 0.7 },
+                    max_tokens: { default: 500 }
                 }
             }),
 
@@ -128,17 +133,23 @@ A versatile text generation model that handles various text transformations:
 ```typescript
 provider: Anthropic.AnthropicProvider({
     proxyUrl: 'http://your-proxy-server.com/api/proxy',
-    
+
     // Optional model selection (this is also the default)
     model: 'claude-3-7-sonnet-20250219',
-    
+
     // Optional custom headers for API requests
     headers: {
         'x-custom-header': 'value',
         'x-client-version': '1.0.0',
         'x-request-source': 'cesdk-plugin'
     },
-    
+
+    // Optional: Configure default property values
+    properties: {
+        temperature: { default: 0.7 },    // Creativity level (0.0-1.0)
+        max_tokens: { default: 500 }      // Maximum response length
+    },
+
     // Optional debug mode
     debug: false
 });
@@ -156,6 +167,18 @@ Key features:
 -   Configurable model selection (Claude 3.5 Sonnet, Claude 3.7 Sonnet, etc.)
 -   Default model: Claude 3.7 Sonnet (2025-02-19)
 
+**Custom Translations:**
+
+```typescript
+cesdk.i18n.setTranslations({
+  en: {
+    'ly.img.plugin-ai-text-generation-web.anthropic.property.prompt': 'Enter your text transformation request',
+    'ly.img.plugin-ai-text-generation-web.anthropic.property.temperature': 'Claude Creativity Level',
+    'ly.img.plugin-ai-text-generation-web.anthropic.property.maxTokens': 'Claude Response Length'
+  }
+});
+```
+
 #### OpenAI GPT
 
 A powerful text generation model that handles various text transformations:
@@ -163,17 +186,24 @@ A powerful text generation model that handles various text transformations:
 ```typescript
 provider: OpenAIText.OpenAIProvider({
     proxyUrl: 'http://your-proxy-server.com/api/proxy',
-    
+
     // Optional model selection (this is also the default)
     model: 'gpt-4o-mini',
-    
+
     // Optional custom headers for API requests
     headers: {
         'x-custom-header': 'value',
         'x-client-version': '1.0.0',
         'x-request-source': 'cesdk-plugin'
     },
-    
+
+    // Optional: Configure default property values
+    properties: {
+        temperature: { default: 0.7 },    // Creativity level (0.0-2.0)
+        max_tokens: { default: 500 },     // Maximum response length
+        top_p: { default: 1.0 }          // Nucleus sampling (0.0-1.0)
+    },
+
     // Optional debug mode
     debug: false
 });
@@ -190,6 +220,114 @@ Key features:
 -   Custom headers support for API requests
 -   Configurable model selection (GPT-4o, GPT-4o-mini, GPT-3.5-turbo, etc.)
 -   Default model: GPT-4o-mini
+
+**Custom Translations:**
+
+```typescript
+cesdk.i18n.setTranslations({
+  en: {
+    'ly.img.plugin-ai-text-generation-web.openai.property.prompt': 'Enter your text transformation request',
+    'ly.img.plugin-ai-text-generation-web.openai.property.temperature': 'GPT Creativity Level',
+    'ly.img.plugin-ai-text-generation-web.openai.property.maxTokens': 'GPT Response Length'
+  }
+});
+```
+
+### Feature Control
+
+You can control various aspects of the text generation plugin using the Feature API:
+
+```typescript
+// Disable provider selection dropdown
+cesdk.feature.enable('ly.img.plugin-ai-text-generation-web.providerSelect', false);
+
+// Disable all quick actions
+cesdk.feature.enable('ly.img.plugin-ai-text-generation-web.quickAction', false);
+
+// Disable specific quick actions
+cesdk.feature.enable('ly.img.plugin-ai-text-generation-web.quickAction.improve', false);
+cesdk.feature.enable('ly.img.plugin-ai-text-generation-web.quickAction.translate', false);
+cesdk.feature.enable('ly.img.plugin-ai-text-generation-web.quickAction.changeTone', false);
+```
+
+For more information about Feature API and available feature flags, see the [@imgly/plugin-ai-generation-web documentation](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-generation-web#available-feature-flags).
+
+### Customizing Labels and Translations
+
+You can customize all labels and text in the AI text generation interface using the translation system. This allows you to provide better labels for your users in any language.
+
+#### Translation Key Structure
+
+The system checks for translations in this order (highest to lowest priority):
+
+1. **Provider-specific**: `ly.img.plugin-ai-text-generation-web.${provider}.property.${field}` - Override labels for a specific AI provider
+2. **Generic**: `ly.img.plugin-ai-generation-web.property.${field}` - Override labels for all AI plugins
+
+#### Basic Example
+
+```typescript
+// Customize labels for your AI text generation interface
+cesdk.i18n.setTranslations({
+  en: {
+    // Generic labels (applies to ALL AI plugins)
+    'ly.img.plugin-ai-generation-web.property.prompt': 'Describe what you want to create',
+    'ly.img.plugin-ai-generation-web.property.temperature': 'Creativity Level',
+    'ly.img.plugin-ai-generation-web.property.maxTokens': 'Maximum Response Length',
+
+    // Provider-specific for Anthropic
+    'ly.img.plugin-ai-text-generation-web.anthropic.property.prompt': 'Enter your text transformation prompt',
+    'ly.img.plugin-ai-text-generation-web.anthropic.property.temperature': 'Response Creativity',
+    'ly.img.plugin-ai-text-generation-web.anthropic.property.maxTokens': 'Max Response Length',
+
+    // Provider-specific for OpenAI
+    'ly.img.plugin-ai-text-generation-web.openai.property.prompt': 'Describe your text transformation',
+    'ly.img.plugin-ai-text-generation-web.openai.property.temperature': 'Creativity Setting',
+    'ly.img.plugin-ai-text-generation-web.openai.property.maxTokens': 'Response Limit'
+  }
+});
+```
+
+#### QuickAction Translations
+
+Text QuickActions (like "Improve Writing", "Fix Grammar", etc.) use their own translation keys with provider-specific overrides:
+
+```typescript
+cesdk.i18n.setTranslations({
+  en: {
+    // Provider-specific translations (highest priority)
+    'ly.img.plugin-ai-text-generation-web.anthropic.quickAction.improve': 'Improve with Claude',
+    'ly.img.plugin-ai-text-generation-web.anthropic.quickAction.fix': 'Fix with Claude',
+    'ly.img.plugin-ai-text-generation-web.openai.quickAction.translate': 'Translate with GPT',
+    
+    // Generic plugin translations
+    'ly.img.plugin-ai-text-generation-web.quickAction.improve': 'Improve Writing',
+    'ly.img.plugin-ai-text-generation-web.quickAction.fix': 'Fix Grammar',
+    'ly.img.plugin-ai-text-generation-web.quickAction.shorter': 'Make Shorter',
+    'ly.img.plugin-ai-text-generation-web.quickAction.longer': 'Make Longer',
+    'ly.img.plugin-ai-text-generation-web.quickAction.changeTone': 'Change Tone',
+    'ly.img.plugin-ai-text-generation-web.quickAction.translate': 'Translate',
+    'ly.img.plugin-ai-text-generation-web.quickAction.changeTextTo': 'Transform Text...',
+    
+    // QuickAction input fields and buttons
+    'ly.img.plugin-ai-text-generation-web.quickAction.changeTextTo.prompt': 'Transform Text...',
+    'ly.img.plugin-ai-text-generation-web.quickAction.changeTextTo.prompt.placeholder': 'e.g. "Convert to bullet points"',
+    'ly.img.plugin-ai-text-generation-web.quickAction.changeTextTo.apply': 'Transform',
+    'ly.img.plugin-ai-text-generation-web.quickAction.translate.language': 'Target Language',
+    'ly.img.plugin-ai-text-generation-web.quickAction.translate.apply': 'Translate'
+  }
+});
+```
+
+**QuickAction Translation Priority:**
+1. Provider-specific: `ly.img.plugin-ai-text-generation-web.${provider}.quickAction.${action}.${field}`
+2. Generic plugin: `ly.img.plugin-ai-text-generation-web.quickAction.${action}.${field}`
+
+**Translation Structure:**
+- Base key (e.g., `.quickAction.improve`): Button text when QuickAction is collapsed
+- `.prompt`: Label for input field when expanded
+- `.prompt.placeholder`: Placeholder text for input field
+- `.apply`: Text for action/submit button
+- Additional fields like `.language`: Custom field labels
 
 ### Configuration Options
 
@@ -409,6 +547,10 @@ cesdk.ui.setCanvasMenuOrder([
     ...cesdk.ui.getCanvasMenuOrder()
 ]);
 ```
+
+## Translations
+
+For customization and localization, see the [translations.json](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-text-generation-web/translations.json) file which contains provider-specific translation keys for text generation interfaces.
 
 ## Related Packages
 

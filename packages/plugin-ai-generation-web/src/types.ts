@@ -1,8 +1,14 @@
 import type CreativeEditorSDK from '@cesdk/cesdk-js';
 import { type CreativeEngine } from '@cesdk/cesdk-js';
 import type Provider from './core/provider';
-import { Output, OutputKind, PanelInput } from './core/provider';
+import {
+  Output,
+  OutputKind,
+  PanelInput,
+  QuickActionSupport
+} from './core/provider';
 import { Middleware } from './middleware/middleware';
+import type { PropertiesConfiguration } from './core/propertyConfiguration';
 
 /**
  * A common configuration used by the plugins and the provider.
@@ -71,6 +77,39 @@ export interface CommonProviderConfiguration<I, O extends Output>
    * @deprecated Use `middlewares` instead.
    */
   middleware?: Middleware<I, O>[];
+
+  /**
+   * Override provider's default history asset source that is used to show the generation history
+   *
+   * - false: Disable history storage
+   * - '@imgly/local': Use temporary local storage (not persistent)
+   * - '@imgly/indexedDB': Use browser storage that is persistent across sessions in the same browser
+   * - string: Use your own custom asset source ID
+   */
+  history?: false | '@imgly/local' | '@imgly/indexedDB' | (string & {});
+
+  /**
+   * Configure supported quick actions
+   * - Set to false/null to disable a quick action
+   * - Partial<QuickActionSupport<I>> to override the default configuration
+   */
+  supportedQuickActions?: {
+    [quickActionId: string]: Partial<QuickActionSupport<I>> | false | null;
+  };
+
+  /**
+   * Configure property behavior and defaults
+   * @example
+   * ```typescript
+   * {
+   *   properties: {
+   *     style: { default: 'realistic_image' },
+   *     prompt: { default: (ctx) => ctx.locale === 'de' ? 'Erstelle...' : 'Create...' }
+   *   }
+   * }
+   * ```
+   */
+  properties?: PropertiesConfiguration<I>;
 }
 
 /**
@@ -107,6 +146,7 @@ export type InitializationContext<
   panelInput?: P;
   options: UIOptions;
   config: InternalPluginConfiguration<K, I, O>;
+  providerConfig?: any;
 };
 
 /**

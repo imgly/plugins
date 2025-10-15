@@ -62,7 +62,8 @@ function createQuickActionMenuRenderFunction<
 
   context.cesdk.i18n.setTranslations({
     en: {
-      [`${prefix}.quickActionMenu.providerSelect.label`]: 'Provider'
+      [`ly.img.plugin-ai-generation-web.defaults.quickAction.providerSelect.label`]:
+        'Provider'
     }
   });
 
@@ -75,6 +76,20 @@ function createQuickActionMenuRenderFunction<
 
     const blockIds = builderContext.engine.block.findAllSelected();
     if (blockIds.length === 0) return;
+
+    // Check if the general quickAction feature is enabled
+    const quickActionFeatureId = `ly.img.plugin-ai-${context.kind}-generation-web.quickAction`;
+    const isQuickActionFeatureEnabled = context.cesdk.feature.isEnabled(
+      quickActionFeatureId,
+      {
+        engine: context.engine
+      }
+    );
+
+    if (!isQuickActionFeatureEnabled) {
+      // Quick actions are disabled for this plugin
+      return;
+    }
 
     const { payload } = builderContext;
     const order =
@@ -91,6 +106,21 @@ function createQuickActionMenuRenderFunction<
     const orderedQuickActions = getOrderedQuickActionDefinitions(order).filter(
       (quickActionDefinition) => {
         if (quickActionDefinition === 'ly.img.separator') return true;
+
+        // Check if this individual quick action is enabled via Feature API
+        // Remove the 'ly.img.' prefix from the action ID for the feature key
+        const actionName = quickActionDefinition.id.replace('ly.img.', '');
+        const individualQuickActionFeatureId = `ly.img.plugin-ai-${context.kind}-generation-web.quickAction.${actionName}`;
+        const isIndividualQuickActionEnabled = context.cesdk.feature.isEnabled(
+          individualQuickActionFeatureId,
+          {
+            engine: context.engine
+          }
+        );
+
+        if (!isIndividualQuickActionEnabled) {
+          return false;
+        }
 
         const scopes = quickActionDefinition.scopes;
         if (scopes != null && scopes.length > 0) {
@@ -329,11 +359,26 @@ function createQuickActionMenuRenderFunction<
                   providerInitializationResult.provider.id
               }));
 
-          if (providerValuesForExpandedQuickAction.length > 1) {
+          // Check if provider selector is enabled via Feature API
+          const providerFeatureId = `ly.img.plugin-ai-${context.kind}-generation-web.quickAction.providerSelect`;
+          const isProviderSelectorEnabled = context.cesdk.feature.isEnabled(
+            providerFeatureId,
+            {
+              engine: context.engine
+            }
+          );
+
+          if (
+            providerValuesForExpandedQuickAction.length > 1 &&
+            isProviderSelectorEnabled
+          ) {
             builder.Section(`${prefix}.popover.expanded.header`, {
               children: () => {
                 builder.Select(`${prefix}.expanded.providerSelect.select`, {
-                  inputLabel: `${prefix}.quickActionMenu.providerSelect.label`,
+                  inputLabel: [
+                    `ly.img.plugin-ai-${context.kind}-generation-web.quickAction.providerSelect.label`,
+                    `ly.img.plugin-ai-generation-web.defaults.quickAction.providerSelect.label`
+                  ],
                   values: providerValuesForExpandedQuickAction,
                   ...currentProviderState
                 });
@@ -376,11 +421,23 @@ function createQuickActionMenuRenderFunction<
           // =========================================
           // === RENDER REGULAR QUICK ACTIONS MENU ===
           // =========================================
-          if (providerValues.length > 1) {
+          // Check if provider selector is enabled via Feature API
+          const providerFeatureId = `ly.img.plugin-ai-${context.kind}-generation-web.quickAction.providerSelect`;
+          const isProviderSelectorEnabled = context.cesdk.feature.isEnabled(
+            providerFeatureId,
+            {
+              engine: context.engine
+            }
+          );
+
+          if (providerValues.length > 1 && isProviderSelectorEnabled) {
             builder.Section(`${prefix}.popover.header`, {
               children: () => {
                 builder.Select(`${prefix}.providerSelect.select`, {
-                  inputLabel: `${prefix}.quickActionMenu.providerSelect.label`,
+                  inputLabel: [
+                    `ly.img.plugin-ai-${context.kind}-generation-web.quickAction.providerSelect.label`,
+                    `ly.img.plugin-ai-generation-web.defaults.quickAction.providerSelect.label`
+                  ],
                   values: providerValues,
                   ...currentProviderState
                 });

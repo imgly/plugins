@@ -15,7 +15,24 @@ export const ID = `ly.img.${ACTION_NAME}`;
 /**
  * The i18n prefix for the quick action.
  */
-export const I18N_PREFIX = `ly.img.ai.quickAction.text.${ACTION_NAME}`;
+export const I18N_PREFIX = `ly.img.plugin-ai-text-generation-web.quickAction.${ACTION_NAME}`;
+export const I18N_DEFAULT_PREFIX = `ly.img.plugin-ai-text-generation-web.defaults.quickAction.${ACTION_NAME}`;
+
+/**
+ * Get i18n label with fallback keys.
+ */
+function getI18nLabel(modelKey?: string, suffix?: string) {
+  const basePath = `ly.img.plugin-ai-text-generation-web`;
+  const actionPath = `quickAction.${ACTION_NAME}`;
+  const fullPath = suffix ? `${actionPath}.${suffix}` : actionPath;
+
+  return [
+    `${basePath}.${modelKey}.${fullPath}`,
+    `${basePath}.${fullPath}`,
+    `${basePath}.${modelKey}.defaults.${fullPath}`,
+    `${basePath}.defaults.${fullPath}`
+  ];
+}
 
 /**
  * The input generated from this quick action which needs
@@ -27,10 +44,16 @@ export type InputType = {
 };
 
 const ChangeTextTo: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
+  // Set feature default for this quick action
+  cesdk.feature.enable(
+    'ly.img.plugin-ai-text-generation-web.quickAction.changeTextTo',
+    true
+  );
+
   cesdk.i18n.setTranslations({
     en: {
-      [`${I18N_PREFIX}.label`]: 'Change Text to...',
-      [`${I18N_PREFIX}.prompt.label`]: 'Change Text to...',
+      [`${I18N_DEFAULT_PREFIX}`]: 'Change Text to...',
+      [`${I18N_DEFAULT_PREFIX}.prompt`]: 'Change Text to...',
       [`${I18N_PREFIX}.prompt.placeholder`]:
         'e.g. "a list of bullet points", "a formal announcement"'
     }
@@ -43,8 +66,7 @@ const ChangeTextTo: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
 
     scopes: ['text/edit'],
 
-    label: `${I18N_PREFIX}.label`,
-    description: `${I18N_PREFIX}.label`,
+    label: `${I18N_PREFIX}`,
     enable: ({ engine }) => {
       const blockIds = engine.block.findAllSelected();
       if (blockIds == null || blockIds.length !== 1) return false;
@@ -60,14 +82,15 @@ const ChangeTextTo: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
       generate,
       engine,
       state,
-      close
+      close,
+      providerId
     }) => {
       if (isExpanded) {
         const promptState = state(`${ID}.prompt`, '');
 
         builder.TextArea(`${ID}.prompt`, {
-          inputLabel: `${I18N_PREFIX}.prompt.label`,
-          placeholder: `${I18N_PREFIX}.prompt.placeholder`,
+          inputLabel: getI18nLabel(providerId, 'prompt'),
+          placeholder: getI18nLabel(providerId, 'prompt.placeholder')[1],
           ...promptState
         });
 
@@ -122,7 +145,7 @@ const ChangeTextTo: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
         });
       } else {
         builder.Button(`${ID}.button`, {
-          label: `${I18N_PREFIX}.label`,
+          label: getI18nLabel(providerId),
           icon: '@imgly/MagicWand',
           labelAlignment: 'left',
           variant: 'plain',
