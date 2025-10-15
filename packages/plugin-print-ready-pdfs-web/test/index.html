@@ -173,11 +173,15 @@
         };
 
         console.log('✅ PDFXPlugin loaded successfully:', Object.keys(window.PDFXPlugin));
+
+        // Signal that module is ready
+        window.moduleLoaded = true;
       } catch (error) {
         console.error('❌ Failed to load PDFXPlugin:', error);
         window.moduleErrors = error.message;
         // Set a fallback object so tests can detect the error
         window.PDFXPlugin = null;
+        window.moduleLoaded = false;
       }
 
       let uploadedPDFBlob = null;

@@ -42,8 +42,11 @@ test.describe('PDF/X Conversion Browser Tests', () => {
     // Wait for the page to load
     await page.waitForLoadState('networkidle');
 
-    // Give module time to load
-    await page.waitForTimeout(1000);
+    // Wait for module to finish loading (or fail to load)
+    await page.waitForFunction(
+      () => (window as any).moduleLoaded !== undefined,
+      { timeout: 10000 }
+    );
   });
 
   test('should load PDF/X plugin successfully', async ({ page }) => {
