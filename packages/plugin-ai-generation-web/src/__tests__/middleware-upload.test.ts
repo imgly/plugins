@@ -17,7 +17,6 @@ type TestOutput = ImageOutput;
 
 // Custom test options with required middleware options
 interface TestOptions extends GenerationOptions {
-  blockIds?: number[] | null;
   addDisposer: (dispose: () => Promise<void>) => void;
 }
 

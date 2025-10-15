@@ -210,6 +210,7 @@ function handleGeneratePlaceholderUserFlow<
       });
 
       const result = await options.generate(input, {
+        blockIds: [placeholderBlock],
         middlewares: [...(options.middlewares ?? [])],
         debug: options.debug,
         dryRun: options.dryRun,
@@ -220,6 +221,20 @@ function handleGeneratePlaceholderUserFlow<
         return { status: 'aborted' };
 
       if (result.status !== 'success') {
+        // Update block state before returning to prevent stuck in Pending state
+        if (
+          placeholderBlock != null &&
+          cesdk.engine.block.isValid(placeholderBlock)
+        ) {
+          if (result.status === 'aborted') {
+            cesdk.engine.block.destroy(placeholderBlock);
+          } else {
+            cesdk.engine.block.setState(placeholderBlock, {
+              type: 'Error',
+              error: 'Unknown'
+            });
+          }
+        }
         return result;
       }
 
