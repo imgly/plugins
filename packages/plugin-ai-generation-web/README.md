@@ -1237,8 +1237,17 @@ const customErrorMiddleware: Middleware<any, any> = async (input, options, next)
   try {
     return await next(input, options);
   } catch (error) {
-    // Prevent default error notification
+    // Prevent default error notification and block error state
     options.preventDefault();
+
+    // Optional: Manually set block error state if desired
+    // options.blockIds?.forEach(blockId => {
+    //   if (options.engine.block.isValid(blockId)) {
+    //     options.engine.block.setState(blockId, { type: 'Error', error: 'Unknown' });
+    //     // Alternative: Delete the placeholder block
+    //     // options.engine.block.destroy(blockId);
+    //   }
+    // });
 
     // Show custom notification
     options.cesdk?.ui.showNotification({
@@ -1273,6 +1282,15 @@ const middleware = async (input, options, next) => {
     return await next(input, options);
   } catch (error) {
     options.preventDefault();
+
+    // Note: preventDefault() also prevents block error state
+    // Optionally set it manually or delete the block:
+    // options.blockIds?.forEach(blockId => {
+    //   if (options.engine.block.isValid(blockId)) {
+    //     options.engine.block.setState(blockId, { type: 'Error', error: 'Unknown' });
+    //   }
+    // });
+
     options.cesdk?.ui.showNotification({
       type: 'error',
       message: `Generation failed: ${error.message}`,
@@ -1316,6 +1334,14 @@ const retryMiddleware = async (input, options, next) => {
         await new Promise(resolve => setTimeout(resolve, 1000));
       } else {
         options.preventDefault();
+
+        // After final retry failure, optionally set block error state or delete:
+        // options.blockIds?.forEach(blockId => {
+        //   if (options.engine.block.isValid(blockId)) {
+        //     options.engine.block.destroy(blockId); // Remove failed placeholder
+        //   }
+        // });
+
         options.cesdk?.ui.showNotification({
           type: 'error',
           message: `Failed after ${maxRetries} attempts`

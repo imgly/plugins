@@ -948,8 +948,17 @@ const customErrorMiddleware = async (input, options, next) => {
   try {
     return await next(input, options);
   } catch (error) {
-    // Prevent default error notification
+    // Prevent default error notification and block error state
     options.preventDefault();
+
+    // Optional: Manually set block error state if desired
+    // options.blockIds?.forEach(blockId => {
+    //   if (options.engine.block.isValid(blockId)) {
+    //     options.engine.block.setState(blockId, { type: 'Error', error: 'Unknown' });
+    //     // Alternative: Delete the placeholder block
+    //     // options.engine.block.destroy(blockId);
+    //   }
+    // });
 
     // Show custom error notification
     options.cesdk?.ui.showNotification({
