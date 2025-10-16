@@ -76,6 +76,9 @@ function App() {
               {
                 id: `ly.img.ai.image.canvasMenu`
               },
+              {
+                id: `ly.img.ai.video.canvasMenu`
+              },
               ...instance.ui.getCanvasMenuOrder()
             ]);
 
@@ -640,6 +643,16 @@ function App() {
                         icon: isFeatureEnabled('ly.img.plugin-ai-video-generation-web.quickAction.createVideo') ? '@imgly/ToggleIconOn' : '@imgly/ToggleIconOff',
                         onClick: () => {
                           const key = 'ly.img.plugin-ai-video-generation-web.quickAction.createVideo';
+                          const enabled = !isFeatureEnabled(key);
+                          instance.feature.enable(key, enabled);
+                          console.log(`Feature ${key}: ${enabled ? 'ON' : 'OFF'}`);
+                        }
+                      });
+                      builder.Button('animateBetweenImages', {
+                        label: 'ly.img.plugin-ai-video-generation-web.quickAction.animateBetweenImages',
+                        icon: isFeatureEnabled('ly.img.plugin-ai-video-generation-web.quickAction.animateBetweenImages') ? '@imgly/ToggleIconOn' : '@imgly/ToggleIconOff',
+                        onClick: () => {
+                          const key = 'ly.img.plugin-ai-video-generation-web.quickAction.animateBetweenImages';
                           const enabled = !isFeatureEnabled(key);
                           instance.feature.enable(key, enabled);
                           console.log(`Feature ${key}: ${enabled ? 'ON' : 'OFF'}`);
