@@ -307,6 +307,10 @@ function App() {
                     FalAiVideo.ByteDanceSeedanceV1ProImageToVideo({
                       middleware: [videoRateLimitMiddleware, errorMiddleware],
                       proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
+                    }),
+                    FalAiVideo.Veo31ImageToVideo({
+                      middleware: [videoRateLimitMiddleware, errorMiddleware],
+                      proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
                     })
                   ],
                   text2speech: Elevenlabs.ElevenMultilingualV2({
