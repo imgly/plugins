@@ -1,6 +1,6 @@
 {
   "name": "@imgly/plugin-print-ready-pdfs-web",
-  "version": "0.1.0",
+  "version": "0.1.0-rc.1",
   "description": "Print-Ready PDFs plugin for CE.SDK editor - PDF/X conversion and export functionality. Contains AGPL-3.0 licensed Ghostscript WASM.",
   "keywords": [
     "CE.SDK",
