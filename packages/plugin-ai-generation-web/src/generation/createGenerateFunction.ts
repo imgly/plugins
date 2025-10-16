@@ -76,7 +76,6 @@ function createGenerateFunction<
       abortSignal: options?.abortSignal,
       engine: context.engine,
       cesdk: context.cesdk,
-      _defaultPrevented: false, // Not used, kept for type compatibility
       preventDefault: () => {
         preventDefaultState.prevented = true;
       },

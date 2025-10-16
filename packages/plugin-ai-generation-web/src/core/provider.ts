@@ -235,12 +235,6 @@ export type GenerationOptions = {
    * @internal
    */
   defaultPrevented(): boolean;
-
-  /**
-   * Internal state flag for preventDefault
-   * @internal
-   */
-  _defaultPrevented?: boolean;
 };
 
 export type RenderCustomProperty = {

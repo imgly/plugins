@@ -53,7 +53,6 @@ describe('uploadMiddleware', () => {
       engine: {} as any,
       cesdk: {} as any,
       addDisposer: jest.fn(),
-      _defaultPrevented: false,
       preventDefault: jest.fn<() => void>(),
       defaultPrevented: jest.fn<() => boolean>().mockReturnValue(false)
     };

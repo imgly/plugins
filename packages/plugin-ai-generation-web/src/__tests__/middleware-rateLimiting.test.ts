@@ -102,7 +102,6 @@ describe('rateLimitMiddleware', () => {
       cesdk: {} as any,
       blockIds: [],
       addDisposer: jest.fn(),
-      _defaultPrevented: false,
       preventDefault: jest.fn<() => void>(),
       defaultPrevented: jest.fn<() => boolean>().mockReturnValue(false)
     };
