@@ -10,7 +10,7 @@ import {
 } from '@imgly/plugin-ai-generation-web';
 import { PluginConfiguration } from './types';
 import iconSprite, { PLUGIN_ICON_SET_ID } from './iconSprite';
-import { toArray } from '@imgly/plugin-utils';
+import { toArray, translateWithFallback } from '@imgly/plugin-utils';
 import { PLUGIN_ID, DEFAULT_IMAGE_QUICK_ACTION_ORDER } from './constants';
 import EditImage from './quickActions/EditImage';
 import SwapBackground from './quickActions/SwapBackground';
@@ -59,6 +59,16 @@ export function ImageGeneration<I, O extends Output>(
       );
 
       const registry = ActionRegistry.get();
+      const ACTION_LABEL_KEY = `${PLUGIN_ID}.action.label`;
+
+      cesdk.ui.addIconSet(PLUGIN_ICON_SET_ID, iconSprite);
+      cesdk.i18n.setTranslations({
+        en: {
+          [`panel.${IMAGE_GENERATION_PANEL_ID}`]: 'Image Generation',
+          [`${IMAGE_GENERATION_PANEL_ID}.dock.label`]: 'AI Image',
+          [ACTION_LABEL_KEY]: 'Generate Image'
+        }
+      });
 
       const disposeApp = registry.register({
         type: 'plugin',
@@ -67,7 +77,7 @@ export function ImageGeneration<I, O extends Output>(
         id: PLUGIN_ID,
         pluginId: PLUGIN_ID,
 
-        label: 'Generate Image',
+        label: translateWithFallback(cesdk, ACTION_LABEL_KEY, 'Generate Image'),
         meta: { panelId: IMAGE_GENERATION_PANEL_ID },
 
         execute: () => {
@@ -76,14 +86,6 @@ export function ImageGeneration<I, O extends Output>(
           } else {
             cesdk.ui.openPanel(IMAGE_GENERATION_PANEL_ID);
           }
-        }
-      });
-
-      cesdk.ui.addIconSet(PLUGIN_ICON_SET_ID, iconSprite);
-      cesdk.i18n.setTranslations({
-        en: {
-          [`panel.${IMAGE_GENERATION_PANEL_ID}`]: 'Image Generation',
-          [`${IMAGE_GENERATION_PANEL_ID}.dock.label`]: 'AI Image'
         }
       });
 

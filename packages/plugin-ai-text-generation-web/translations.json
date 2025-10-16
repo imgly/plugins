@@ -1,5 +1,7 @@
 {
   "en": {
+    "common.apply": "Apply",
+    "common.back": "Back",
     "ly.img.plugin-ai-text-generation-web.quickAction.changeTextTo": "Change Text To...",
     "ly.img.plugin-ai-text-generation-web.quickAction.changeTextTo.apply": "Transform",
     "ly.img.plugin-ai-text-generation-web.quickAction.changeTextTo.prompt": "Custom transformation",

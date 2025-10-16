@@ -21,7 +21,12 @@ function renderImageUrlProperty(
 
   cesdk.i18n.setTranslations({
     en: {
-      [`panel.${panelIdForImageSelection}`]: 'Select Image To Change'
+      [`panel.${panelIdForImageSelection}`]: 'Select Image To Change',
+      'ly.img.ai.imageSelection.selectImage.label': 'Select Image',
+      'ly.img.ai.imageSelection.error.svg':
+        'SVG images are not supported. Please choose a different image.',
+      'ly.img.ai.imageSelection.error.invalidType':
+        "Only images are supported. Found '{mimeType}'. Please choose a different image."
     }
   });
 
@@ -68,7 +73,7 @@ function renderImageUrlProperty(
           uri: stateValue.value
         },
         action: {
-          label: 'Select Image',
+          label: 'ly.img.ai.imageSelection.selectImage.label',
           onClick: () => {
             if (cesdk == null) return;
 
@@ -114,8 +119,7 @@ function createPanels(providerId: string, cesdk?: CreativeEditorSDK) {
         if (mimeType === 'image/svg+xml') {
           cesdk.ui.showNotification({
             type: 'warning',
-            message:
-              'SVG images are not supported. Please choose a different image.'
+            message: 'ly.img.ai.imageSelection.error.svg'
           });
         } else if (mimeType.startsWith('image/')) {
           payload?.onSelect(asset);
@@ -123,7 +127,7 @@ function createPanels(providerId: string, cesdk?: CreativeEditorSDK) {
         } else {
           cesdk.ui.showNotification({
             type: 'warning',
-            message: `Only images are supported. Found '${mimeType}'. Please choose a different image.`
+            message: `ly.img.ai.imageSelection.error.invalidType`
           });
         }
       }

@@ -7,7 +7,7 @@ import {
   checkAiPluginVersion
 } from '@imgly/plugin-ai-generation-web';
 import { PluginConfiguration } from './types';
-import { toArray } from '@imgly/plugin-utils';
+import { toArray, translateWithFallback } from '@imgly/plugin-utils';
 import { PLUGIN_ID } from './constants';
 
 export { PLUGIN_ID } from './constants';
@@ -36,10 +36,15 @@ export function AudioGeneration<I, O extends Output>(
         true
       );
 
+      const SOUND_ACTION_LABEL_KEY = `${PLUGIN_ID}.sound.action.label`;
+      const SPEECH_ACTION_LABEL_KEY = `${PLUGIN_ID}.speech.action.label`;
+
       cesdk.setTranslations({
         en: {
           [`panel.${SPEECH_GENERATION_PANEL_ID}`]: 'AI Voice',
-          [`panel.${SOUND_GENERATION_PANEL_ID}`]: 'Sound Generation'
+          [`panel.${SOUND_GENERATION_PANEL_ID}`]: 'Sound Generation',
+          [SOUND_ACTION_LABEL_KEY]: 'Generate Sound',
+          [SPEECH_ACTION_LABEL_KEY]: 'AI Voice'
         }
       });
 
@@ -53,7 +58,11 @@ export function AudioGeneration<I, O extends Output>(
         id: `${PLUGIN_ID}/sound`,
         pluginId: PLUGIN_ID,
 
-        label: 'Generate Sound',
+        label: translateWithFallback(
+          cesdk,
+          SOUND_ACTION_LABEL_KEY,
+          'Generate Sound'
+        ),
         meta: { panelId: SOUND_GENERATION_PANEL_ID },
 
         execute: () => {
@@ -72,7 +81,11 @@ export function AudioGeneration<I, O extends Output>(
         id: `${PLUGIN_ID}/speech`,
         pluginId: PLUGIN_ID,
 
-        label: 'AI Voice',
+        label: translateWithFallback(
+          cesdk,
+          SPEECH_ACTION_LABEL_KEY,
+          'AI Voice'
+        ),
         meta: { panelId: SPEECH_GENERATION_PANEL_ID },
 
         execute: () => {

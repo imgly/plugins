@@ -1,5 +1,7 @@
 {
   "en": {
+    "panel.ly.img.ai.sticker-generation": "Sticker Generation",
+    "ly.img.ai.sticker-generation.dock.label": "AI Sticker",
     "ly.img.plugin-ai-sticker-generation-web.fal-ai/recraft/v2/text-to-sticker.property.image_size": "Format",
     "ly.img.plugin-ai-sticker-generation-web.fal-ai/recraft/v2/text-to-sticker.property.style": "Style",
     
