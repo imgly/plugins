@@ -2,6 +2,16 @@
 
 ## [Unreleased]
 
+### New Features
+
+-   [video-generation] **Veo31ImageToVideo Provider**: Added experimental Veo 3.1 dual-image transformation provider via fal.ai that creates videos by interpolating between two images (first frame and last frame) with:
+    - Dual image input UI (custom implementation for first_frame_url and last_frame_url)
+    - Multiple aspect ratio options (16:9, 9:16, 1:1, 4:3, 3:4)
+    - Resolution options (480p, 720p, 1080p)
+    - Adjustable duration (2-8 seconds, default 8)
+    - Optional prompt guidance for transition control
+    - Optional audio generation
+
 ### Improvements
 
 -   [all] **Internationalization Support**: All hardcoded strings across AI plugins have been removed and replaced with translation keys, enabling full localization support for plugin labels, actions, styles, and error messages

@@ -364,6 +364,34 @@ Key features:
 -   Fixed duration of 8 seconds
 -   Optional audio generation via `generate_audio`
 
+#### 9. Veo31ImageToVideo (Image-to-Video)
+
+An experimental dual-image transformation model using Veo 3.1 that creates videos by interpolating between two images:
+
+```typescript
+image2video: FalAiVideo.Veo31ImageToVideo({
+    proxyUrl: 'http://your-proxy-server.com/api/proxy',
+    // Optional: Configure default property values
+    properties: {
+        aspect_ratio: { default: 'auto' },     // Options: 'auto', '9:16', '16:9', '1:1'
+        resolution: { default: '720p' },       // Options: '720p', '1080p'
+        duration: { default: '8s' }            // Fixed at 8 seconds
+    }
+});
+```
+
+Key features:
+
+-   Transform two images (first frame and last frame) into smooth video transitions
+-   Multiple aspect ratio options (auto, 9:16, 16:9, 1:1)
+-   Resolution options (720p, 1080p)
+-   Fixed duration of 8 seconds
+-   Custom UI with dual image selectors for first and last frames
+-   Optional prompt guidance for transition control
+-   Optional audio generation
+
+**Note:** This provider uses a custom UI implementation with two image input fields (first_frame_url and last_frame_url) instead of the standard single image selector. This is a proof-of-concept implementation for handling multiple image inputs in video generation.
+
 ### Feature Control
 
 You can control various aspects of the video generation plugin using the Feature API:
@@ -655,6 +683,15 @@ FalAiVideo.Veo3TextToVideo(config: {
 }): AiVideoProvider
 ```
 
+#### Veo31ImageToVideo
+
+```typescript
+FalAiVideo.Veo31ImageToVideo(config: {
+  proxyUrl: string;
+  debug?: boolean;
+}): AiVideoProvider
+```
+
 ## UI Integration
 
 The plugin automatically registers the following UI components:
@@ -678,6 +715,7 @@ The plugin automatically registers the following UI components:
     -   ByteDanceSeedanceV1ProImageToVideo: `ly.img.ai.fal-ai/bytedance/seedance/v1/pro/image-to-video`
     -   ByteDanceSeedanceV1ProTextToVideo: `ly.img.ai.fal-ai/bytedance/seedance/v1/pro/text-to-video`
     -   Veo3TextToVideo: `ly.img.ai.fal-ai/veo3`
+    -   Veo31ImageToVideo: `ly.img.ai.fal-ai/veo3.1/fast/first-last-frame-to-video`
 
 ### Asset History
 
@@ -692,6 +730,7 @@ Generated videos are automatically stored in asset sources with the following ID
 -   ByteDanceSeedanceV1ProImageToVideo: `fal-ai/bytedance/seedance/v1/pro/image-to-video.history`
 -   ByteDanceSeedanceV1ProTextToVideo: `fal-ai/bytedance/seedance/v1/pro/text-to-video.history`
 -   Veo3TextToVideo: `fal-ai/veo3.history`
+-   Veo31ImageToVideo: `fal-ai/veo3.1/fast/first-last-frame-to-video.history`
 
 ### Dock Integration
 
