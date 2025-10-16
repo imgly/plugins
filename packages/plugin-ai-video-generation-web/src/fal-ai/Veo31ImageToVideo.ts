@@ -42,6 +42,7 @@ export function Veo31ImageToVideo(
           'Generated From Images',
         'ly.img.ai.veo31.firstFrame.label': 'First Frame',
         'ly.img.ai.veo31.lastFrame.label': 'Last Frame',
+        'ly.img.ai.veo31.swapFrames.label': 'Swap First and Last Frame',
         'ly.img.ai.imageSelection.selectImage.label': 'Select Image'
       }
     });
@@ -104,6 +105,12 @@ function getProvider(
               ''
             );
 
+            // Also get access to last frame state for swapping
+            const lastFrameState = global<string>(
+              `${modelKey}.last_frame_url`,
+              ''
+            );
+
             builder.MediaPreview(property.id, {
               preview: {
                 type: 'image',
@@ -123,6 +130,20 @@ function getProvider(
                     }
                   });
                 }
+              }
+            });
+
+            // Add swap button below the first frame preview
+            builder.Button(`${property.id}.swap`, {
+              label: 'ly.img.ai.veo31.swapFrames.label',
+              icon: '@imgly/Replace',
+              labelAlignment: 'center',
+              variant: 'regular',
+              onClick: () => {
+                // Swap the frame values
+                const temp = stateValue.value;
+                stateValue.setValue(lastFrameState.value);
+                lastFrameState.setValue(temp);
               }
             });
 

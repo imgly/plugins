@@ -107,7 +107,7 @@
             "description": "Whether to generate audio for the video"
           }
         },
-        "x-fal-order-properties": ["first_frame_url", "last_frame_url", "prompt", "aspect_ratio", "resolution", "duration"],
+        "x-fal-order-properties": ["first_frame_url", "last_frame_url", "prompt", "aspect_ratio", "resolution"],
         "required": ["prompt", "first_frame_url", "last_frame_url"]
       },
       "Veo31ImageToVideoOutput": {
