@@ -1,5 +1,10 @@
 import CreativeEditorSDK from '@cesdk/cesdk-js';
-import Provider, { GetInput, Output, OutputKind } from '../core/provider';
+import Provider, {
+  GenerationOptions,
+  GetInput,
+  Output,
+  OutputKind
+} from '../core/provider';
 import { extractErrorMessage } from '../utils/utils';
 
 function handleGenerationError<K extends OutputKind, I, O extends Output>(
@@ -8,9 +13,15 @@ function handleGenerationError<K extends OutputKind, I, O extends Output>(
     cesdk: CreativeEditorSDK;
     provider: Provider<K, I, O>;
     getInput?: GetInput<I>;
+    middlewareOptions?: GenerationOptions;
   }
 ) {
-  const { cesdk, provider, getInput } = options;
+  const { cesdk, provider, getInput, middlewareOptions } = options;
+
+  // Check if default was prevented
+  if (middlewareOptions?.defaultPrevented()) {
+    return; // Skip all default behavior (notifications + console logging)
+  }
 
   // eslint-disable-next-line no-console
   console.error('Generation failed:', error);

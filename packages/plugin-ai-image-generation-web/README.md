@@ -921,23 +921,69 @@ Custom middleware functions follow this pattern:
 const customMiddleware = async (input, options, next) => {
   // Pre-processing logic
   console.log('Before generation:', input);
-  
+
   // Add custom fields or modify the input if needed
   const modifiedInput = {
     ...input,
     customField: 'custom value'
   };
-  
+
   // Call the next middleware or generation function
   const result = await next(modifiedInput, options);
-  
+
   // Post-processing logic
   console.log('After generation:', result);
-  
+
   // You can also modify the result before returning it
   return result;
 };
 ```
+
+#### Preventing Default Feedback
+
+Middleware can suppress default UI feedback behaviors using `options.preventDefault()`:
+
+```typescript
+const customErrorMiddleware = async (input, options, next) => {
+  try {
+    return await next(input, options);
+  } catch (error) {
+    // Prevent default error notification and block error state
+    options.preventDefault();
+
+    // Optional: Manually set block error state if desired
+    // options.blockIds?.forEach(blockId => {
+    //   if (options.engine.block.isValid(blockId)) {
+    //     options.engine.block.setState(blockId, { type: 'Error', error: 'Unknown' });
+    //     // Alternative: Delete the placeholder block
+    //     // options.engine.block.destroy(blockId);
+    //   }
+    // });
+
+    // Show custom error notification
+    options.cesdk?.ui.showNotification({
+      type: 'error',
+      message: `Custom error: ${error.message}`,
+      action: {
+        label: 'Contact Support',
+        onClick: () => window.open('mailto:support@example.com')
+      }
+    });
+
+    throw error;
+  }
+};
+```
+
+**What gets prevented:**
+- Error/success notifications
+- Block error state
+- Console error logging
+
+**What is NOT prevented:**
+- Pending → Ready transition (loading spinner always stops)
+
+For more details, see the [@imgly/plugin-ai-generation-web documentation](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-generation-web#preventing-default-feedback).
 
 The middleware function signature is:
 
