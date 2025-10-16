@@ -258,6 +258,10 @@ function App() {
                       middleware: [imageRateLimitMiddleware, errorMiddleware],
                       proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
                     }),
+                    FalAiImage.GeminiFlash25({
+                      middleware: [imageRateLimitMiddleware, errorMiddleware],
+                      proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
+                    }),
                     FalAiImage.NanoBanana({
                       middleware: [imageRateLimitMiddleware, errorMiddleware],
                       proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
@@ -276,6 +280,10 @@ function App() {
                     })
                   ],
                   image2image: [
+                    FalAiImage.Gemini25FlashImageEdit({
+                      middleware: [imageRateLimitMiddleware, errorMiddleware],
+                      proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
+                    }),
                     FalAiImage.GeminiFlashEdit({
                       middleware: [imageRateLimitMiddleware, errorMiddleware],
                       proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL

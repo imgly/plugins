@@ -457,7 +457,62 @@ Key features:
 - Automatic prompt optimization
 - Custom headers support for API requests
 
-#### 4. GeminiFlashEdit (Image-to-Image)
+#### 4. GeminiFlash25 (Text-to-Image)
+
+A fast and efficient text-to-image model from Google's Gemini Flash 2.5 via fal.ai:
+
+```typescript
+text2image: FalAiImage.GeminiFlash25({
+  proxyUrl: 'http://your-proxy-server.com/api/proxy',
+  headers: {
+    'x-custom-header': 'value',
+    'x-client-version': '1.0.0'
+  },
+  // Optional: Configure default property values
+  properties: {
+    aspect_ratio: { default: '1:1' },  // Options: '1:1', '3:4', '4:3', '9:16', '16:9'
+    output_format: { default: 'jpeg' }  // Options: 'jpeg', 'png', 'webp'
+  }
+})
+```
+
+Key features:
+- Fast generation times with Google's Gemini Flash 2.5 model
+- Multiple aspect ratios: 1:1, 3:4, 4:3, 9:16, 16:9
+- Custom dimensions support
+- Multiple output formats (JPEG, PNG, WEBP)
+- Configurable number of images (1-4)
+- Custom headers support for API requests
+
+**Available Property Values:**
+
+```typescript
+// aspect_ratio options:
+'1:1'   // Square (1024×1024)
+'3:4'   // Portrait (768×1024)
+'4:3'   // Landscape (1024×768)
+'9:16'  // Tall Portrait (576×1024)
+'16:9'  // Wide Landscape (1024×576)
+
+// output_format options:
+'jpeg'  // JPEG format (default)
+'png'   // PNG format
+'webp'  // WebP format
+```
+
+**Custom Translations:**
+```typescript
+cesdk.i18n.setTranslations({
+  en: {
+    'ly.img.plugin-ai-image-generation-web.fal-ai/gemini-flash-2.5.property.prompt': 'Describe your image',
+    'ly.img.plugin-ai-image-generation-web.fal-ai/gemini-flash-2.5.property.aspect_ratio': 'Aspect Ratio',
+    'ly.img.plugin-ai-image-generation-web.fal-ai/gemini-flash-2.5.property.aspect_ratio.1:1': 'Square (1:1)',
+    'ly.img.plugin-ai-image-generation-web.fal-ai/gemini-flash-2.5.property.aspect_ratio.16:9': 'Wide (16:9)'
+  }
+});
+```
+
+#### 5. GeminiFlashEdit (Image-to-Image)
 
 An image modification model from fal.ai that transforms existing images:
 
@@ -479,9 +534,10 @@ image2image: FalAiImage.GeminiFlashEdit({
 
 Key features:
 - Transform existing images with text prompts
-- Available directly through canvas quick actions
+- Comprehensive quick actions support: edit image, swap background, style transfer, artist styles, create variants, upscale, outpaint, and combine images
 - Maintains original image dimensions
 - Includes style presets and artist-specific transformations
+- Supports multi-image inputs via combineImages quick action
 - Custom headers support for API requests
 
 **Custom Translations:**
@@ -951,12 +1007,17 @@ const customErrorMiddleware = async (input, options, next) => {
     // Prevent default error notification and block error state
     options.preventDefault();
 
-    // Optional: Manually set block error state if desired
+    // When preventDefault() is called, you need to handle the block state yourself.
+    // Here we set the error state to mimic the default behavior:
+    options.blockIds?.forEach(blockId => {
+      if (options.engine.block.isValid(blockId)) {
+        options.engine.block.setState(blockId, { type: 'Error', error: 'Unknown' });
+      }
+    });
+    // Alternative: Delete the placeholder block instead
     // options.blockIds?.forEach(blockId => {
     //   if (options.engine.block.isValid(blockId)) {
-    //     options.engine.block.setState(blockId, { type: 'Error', error: 'Unknown' });
-    //     // Alternative: Delete the placeholder block
-    //     // options.engine.block.destroy(blockId);
+    //     options.engine.block.destroy(blockId);
     //   }
     // });
 
@@ -1107,10 +1168,30 @@ FalAiImage.IdeogramV3Remix(config: {
 })
 ```
 
+#### GeminiFlash25
+
+```typescript
+FalAiImage.GeminiFlash25(config: {
+  proxyUrl: string;
+  headers?: Record<string, string>;
+  debug?: boolean;
+})
+```
+
 #### GeminiFlashEdit
 
 ```typescript
 FalAiImage.GeminiFlashEdit(config: {
+  proxyUrl: string;
+  headers?: Record<string, string>;
+  debug?: boolean;
+})
+```
+
+#### Gemini25FlashImageEdit
+
+```typescript
+FalAiImage.Gemini25FlashImageEdit(config: {
   proxyUrl: string;
   headers?: Record<string, string>;
   debug?: boolean;
@@ -1294,6 +1375,7 @@ const myImageProvider = {
   - Recraft20b: `ly.img.ai.fal-ai/recraft/v2/text-to-image`
   - IdeogramV3: `ly.img.ai.fal-ai/ideogram/v3`
   - IdeogramV3Remix: `ly.img.ai.fal-ai/ideogram/v3/remix`
+  - GeminiFlash25: `ly.img.ai.fal-ai/gemini-flash-2.5`
   - GeminiFlashEdit: `ly.img.ai.fal-ai/gemini-flash-edit`
   - QwenImageEdit: `ly.img.ai.fal-ai/qwen-image-edit`
   - GptImage1.Text2Image: `ly.img.ai.open-ai/gpt-image-1/text2image`
@@ -1312,6 +1394,7 @@ Generated images are automatically stored in asset sources with the following ID
 - Recraft20b: `fal-ai/recraft/v2/text-to-image.history`
 - IdeogramV3: `fal-ai/ideogram/v3.history`
 - IdeogramV3Remix: `fal-ai/ideogram/v3/remix.history`
+- GeminiFlash25: `fal-ai/gemini-flash-2.5.history`
 - GeminiFlashEdit: `fal-ai/gemini-flash-edit.history`
 - QwenImageEdit: `fal-ai/qwen-image-edit.history`
 - GptImage1.Text2Image: `open-ai/gpt-image-1/text2image.history`

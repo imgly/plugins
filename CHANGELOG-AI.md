@@ -2,12 +2,14 @@
 
 ## [Unreleased]
 
-### Added
+### New Features
 
--   [generation-web] **Middleware preventDefault() API**: Added `options.preventDefault()` method to suppress default UI feedback (notifications, block states, console logging) when handling errors in custom middleware
+-   [image-generation] **GeminiFlash25 Provider**: Added Google Gemini Flash 2.5 text-to-image provider via fal.ai with fast generation times, multiple aspect ratios (1:1, 3:4, 4:3, 9:16, 16:9), custom dimensions support, and multiple output formats (JPEG, PNG, WEBP)
+-   [image-generation] **Gemini25FlashImageEdit Provider**: Added Google Gemini 2.5 Flash Image Edit provider via fal.ai for advanced image editing with multi-image support (1-10 images), comprehensive quick actions support (editImage, swapBackground, styleTransfer, artistTransfer, createVariant, combineImages, remixPage, remixPageWithPrompt), text-based editing instructions, and fast processing times
 
 ### Improvements
 
+-   [generation-web] **Middleware preventDefault() API**: Added `options.preventDefault()` method to suppress default UI feedback (notifications, block states, console logging) when handling errors in custom middleware
 -   [all] **Internationalization Support**: All hardcoded strings across AI plugins have been removed and replaced with translation keys, enabling full localization support for plugin labels, actions, styles, and error messages
 -   [all] **Translation Keys Available**: Added comprehensive translation keys for:
     -   Panel and dock labels (AI Image, AI Video, AI Sticker, AI Voice, Sound Generation)

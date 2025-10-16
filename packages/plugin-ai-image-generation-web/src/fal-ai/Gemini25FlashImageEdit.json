@@ -1,0 +1,37 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Gemini 2.5 Flash Image Edit API",
+    "version": "1.0.0"
+  },
+  "paths": {},
+  "components": {
+    "schemas": {
+      "Gemini25FlashImageEditInput": {
+        "type": "object",
+        "required": ["prompt"],
+        "properties": {
+          "image_url": {
+            "type": "string",
+            "description": "Source image to edit",
+            "x-imgly-builder": {
+              "type": "file-upload",
+              "accept": "image/*",
+              "label": "Source Image"
+            }
+          },
+          "prompt": {
+            "type": "string",
+            "description": "Text prompt describing the desired edits",
+            "minLength": 3,
+            "maxLength": 5000,
+            "x-imgly-builder": {
+              "component": "TextArea"
+            }
+          }
+        },
+        "x-fal-order-properties": ["image_url", "prompt"]
+      }
+    }
+  }
+}
