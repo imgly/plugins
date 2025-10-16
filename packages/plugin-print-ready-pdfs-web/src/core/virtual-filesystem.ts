@@ -98,20 +98,6 @@ export class VirtualFileSystem {
     }
   }
 
-  readText(path: string): string {
-    try {
-      const data = this.fs.readFile(path, { encoding: 'utf8' });
-      this.logger.debug('Text file read', {
-        path,
-        length: (data as string).length,
-      });
-      return data as string;
-    } catch (error) {
-      this.logger.error('Failed to read text file', { path, error });
-      throw new Error(`Failed to read text file ${path}: ${error}`);
-    }
-  }
-
   exists(path: string): boolean {
     try {
       this.fs.stat(path);
@@ -119,22 +105,6 @@ export class VirtualFileSystem {
     } catch {
       return false;
     }
-  }
-
-  getFileSize(path: string): number {
-    try {
-      const stat = this.fs.stat(path);
-      return stat.size;
-    } catch (error) {
-      this.logger.error('Failed to get file size', { path, error });
-      return 0;
-    }
-  }
-
-  generateTempPath(prefix: string, extension: string): string {
-    const timestamp = Date.now();
-    const random = Math.random().toString(36).substring(2, 8);
-    return `${this.workingDir}/temp/${prefix}_${timestamp}_${random}.${extension}`;
   }
 
   cleanup(): void {
@@ -151,9 +121,5 @@ export class VirtualFileSystem {
 
     this.managedFiles.clear();
     this.logger.info('Filesystem cleanup completed', { cleanedCount });
-  }
-
-  getWorkingDir(): string {
-    return this.workingDir;
   }
 }
