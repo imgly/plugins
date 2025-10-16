@@ -44,7 +44,7 @@ type CustomIcon =
       theme,
       iconSize
     }: {
-      theme: string;
+      theme: 'light' | 'dark';
       iconSize: 'normal' | 'large';
     }) => string);
 
