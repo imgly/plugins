@@ -9,6 +9,7 @@
 
 ### Improvements
 
+-   [generation-web] **Middleware preventDefault() API**: Added `options.preventDefault()` method to suppress default UI feedback (notifications, block states, console logging) when handling errors in custom middleware
 -   [all] **Internationalization Support**: All hardcoded strings across AI plugins have been removed and replaced with translation keys, enabling full localization support for plugin labels, actions, styles, and error messages
 -   [all] **Translation Keys Available**: Added comprehensive translation keys for:
     -   Panel and dock labels (AI Image, AI Video, AI Sticker, AI Voice, Sound Generation)

@@ -298,20 +298,41 @@ export function MyImageProvider(config: MyProviderConfiguration): (context: {
                             headers: {
                                 'Content-Type': 'application/json'
                             },
-                            body: JSON.stringify({ 
+                            body: JSON.stringify({
                                 url: output.url,
                                 type: 'ai-generated-image'
                             })
                         });
-                        
+
                         const result = await response.json();
-                        
+
                         // Return the output with the updated URL from your server
                         return {
                             ...output,
                             url: result.storedImageUrl
                         };
-                    })
+                    }),
+                    // Example: Custom error handling middleware
+                    async (input, options, next) => {
+                        try {
+                            return await next(input, options);
+                        } catch (error) {
+                            // Prevent default error notification
+                            options.preventDefault();
+
+                            // Show custom error notification
+                            options.cesdk?.ui.showNotification({
+                                type: 'error',
+                                message: `Image generation failed: ${error.message}`,
+                                action: {
+                                    label: 'Try Again',
+                                    onClick: () => {/* handle retry */}
+                                }
+                            });
+
+                            throw error;
+                        }
+                    }
                 ],
 
                 // Configure success/error notifications
@@ -608,6 +629,50 @@ The new architecture includes:
 -   **Custom Headers**: All providers support headers configuration for API requests
 -   **Enhanced Type Safety**: Improved TypeScript support with better provider interfaces
 -   **Cross-plugin Support**: Actions can work across different AI generation plugins
+
+### Custom Error Handling with preventDefault()
+
+Middleware can suppress default UI feedback behaviors using `options.preventDefault()`. This is useful when you want complete control over how errors and successes are presented to users:
+
+**What gets prevented:**
+- Error/success notifications (toast messages)
+- Block error state (error icon)
+- Console error logging
+
+**What is NOT prevented:**
+- Pending → Ready transition (loading spinner always stops)
+
+**Example: Error-specific handling:**
+```typescript
+const smartErrorMiddleware = async (input, options, next) => {
+  try {
+    return await next(input, options);
+  } catch (error) {
+    options.preventDefault();
+
+    // Handle different error types with custom UI
+    if (error.message?.includes('rate limit')) {
+      options.cesdk?.ui.showDialog({
+        type: 'warning',
+        content: 'Rate limit reached. Please upgrade for more generations.',
+        actions: { label: 'Upgrade', onClick: () => window.open('/pricing') }
+      });
+    } else if (error.message?.includes('network')) {
+      options.cesdk?.ui.showNotification({
+        type: 'error',
+        message: 'Network error. Please check your connection.'
+      });
+    } else {
+      options.cesdk?.ui.showNotification({
+        type: 'error',
+        message: `Generation failed: ${error.message}`
+      });
+    }
+
+    throw error;
+  }
+};
+```
 
 ### Controlling Features with Feature API
 

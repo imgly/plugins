@@ -222,17 +222,20 @@ function handleGeneratePlaceholderUserFlow<
 
       if (result.status !== 'success') {
         // Update block state before returning to prevent stuck in Pending state
-        if (
-          placeholderBlock != null &&
-          cesdk.engine.block.isValid(placeholderBlock)
-        ) {
-          if (result.status === 'aborted') {
-            cesdk.engine.block.destroy(placeholderBlock);
-          } else {
-            cesdk.engine.block.setState(placeholderBlock, {
-              type: 'Error',
-              error: 'Unknown'
-            });
+        // Check if default was prevented
+        if (!result.middlewareOptions?.defaultPrevented()) {
+          if (
+            placeholderBlock != null &&
+            cesdk.engine.block.isValid(placeholderBlock)
+          ) {
+            if (result.status === 'aborted') {
+              cesdk.engine.block.destroy(placeholderBlock);
+            } else {
+              cesdk.engine.block.setState(placeholderBlock, {
+                type: 'Error',
+                error: 'Unknown'
+              });
+            }
           }
         }
         return result;
@@ -306,6 +309,9 @@ function handleGeneratePlaceholderUserFlow<
 
       return result;
     } catch (error) {
+      // Note: For exceptions thrown in middleware, we don't have access to middlewareOptions
+      // so we can't check defaultPrevented here. Middleware should handle errors in catch blocks
+      // and re-throw to use preventDefault properly.
       if (
         placeholderBlock != null &&
         cesdk.engine.block.isValid(placeholderBlock)
