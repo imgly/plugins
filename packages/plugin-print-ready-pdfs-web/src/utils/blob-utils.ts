@@ -67,7 +67,7 @@ export class BlobUtils {
     data: Uint8Array,
     mimeType: string = 'application/octet-stream'
   ): Blob {
-    return new Blob([data], { type: mimeType });
+    return new Blob([data as BlobPart], { type: mimeType });
   }
 
   static fromArrayBuffer(

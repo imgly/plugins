@@ -86,7 +86,11 @@ export class ExternalValidators {
       const { stdout } = await execAsync(`pdfinfo "${tempPath}"`);
       return this.parsePdfInfo(stdout);
     } finally {
-      unlinkSync(tempPath);
+      try {
+        unlinkSync(tempPath);
+      } catch {
+        // Ignore cleanup errors
+      }
     }
   }
 
