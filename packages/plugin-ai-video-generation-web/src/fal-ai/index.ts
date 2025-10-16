@@ -7,6 +7,7 @@ import { KlingVideoV21MasterTextToVideo } from './KlingVideoV21MasterTextToVideo
 import { Veo3TextToVideo } from './Veo3TextToVideo';
 import { ByteDanceSeedanceV1ProImageToVideo } from './ByteDanceSeedanceV1ProImageToVideo';
 import { ByteDanceSeedanceV1ProTextToVideo } from './ByteDanceSeedanceV1ProTextToVideo';
+import { Veo31ImageToVideo } from './Veo31ImageToVideo';
 
 const FalAi = {
   MinimaxVideo01Live,
@@ -17,7 +18,8 @@ const FalAi = {
   KlingVideoV21MasterTextToVideo,
   Veo3TextToVideo,
   ByteDanceSeedanceV1ProImageToVideo,
-  ByteDanceSeedanceV1ProTextToVideo
+  ByteDanceSeedanceV1ProTextToVideo,
+  Veo31ImageToVideo
 };
 
 export default FalAi;
