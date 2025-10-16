@@ -1240,12 +1240,17 @@ const customErrorMiddleware: Middleware<any, any> = async (input, options, next)
     // Prevent default error notification and block error state
     options.preventDefault();
 
-    // Optional: Manually set block error state if desired
+    // When preventDefault() is called, you need to handle the block state yourself.
+    // Here we set the error state to mimic the default behavior:
+    options.blockIds?.forEach(blockId => {
+      if (options.engine.block.isValid(blockId)) {
+        options.engine.block.setState(blockId, { type: 'Error', error: 'Unknown' });
+      }
+    });
+    // Alternative: Delete the placeholder block instead
     // options.blockIds?.forEach(blockId => {
     //   if (options.engine.block.isValid(blockId)) {
-    //     options.engine.block.setState(blockId, { type: 'Error', error: 'Unknown' });
-    //     // Alternative: Delete the placeholder block
-    //     // options.engine.block.destroy(blockId);
+    //     options.engine.block.destroy(blockId);
     //   }
     // });
 
@@ -1283,13 +1288,13 @@ const middleware = async (input, options, next) => {
   } catch (error) {
     options.preventDefault();
 
-    // Note: preventDefault() also prevents block error state
-    // Optionally set it manually or delete the block:
-    // options.blockIds?.forEach(blockId => {
-    //   if (options.engine.block.isValid(blockId)) {
-    //     options.engine.block.setState(blockId, { type: 'Error', error: 'Unknown' });
-    //   }
-    // });
+    // When preventDefault() is called, you need to handle the block state yourself.
+    // Here we set the error state to mimic the default behavior:
+    options.blockIds?.forEach(blockId => {
+      if (options.engine.block.isValid(blockId)) {
+        options.engine.block.setState(blockId, { type: 'Error', error: 'Unknown' });
+      }
+    });
 
     options.cesdk?.ui.showNotification({
       type: 'error',
@@ -1335,12 +1340,13 @@ const retryMiddleware = async (input, options, next) => {
       } else {
         options.preventDefault();
 
-        // After final retry failure, optionally set block error state or delete:
-        // options.blockIds?.forEach(blockId => {
-        //   if (options.engine.block.isValid(blockId)) {
-        //     options.engine.block.destroy(blockId); // Remove failed placeholder
-        //   }
-        // });
+        // When preventDefault() is called, you need to handle the block state yourself.
+        // After final retry failure, you might want to delete the placeholder:
+        options.blockIds?.forEach(blockId => {
+          if (options.engine.block.isValid(blockId)) {
+            options.engine.block.destroy(blockId); // Remove failed placeholder
+          }
+        });
 
         options.cesdk?.ui.showNotification({
           type: 'error',

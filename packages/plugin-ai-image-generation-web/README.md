@@ -1007,12 +1007,17 @@ const customErrorMiddleware = async (input, options, next) => {
     // Prevent default error notification and block error state
     options.preventDefault();
 
-    // Optional: Manually set block error state if desired
+    // When preventDefault() is called, you need to handle the block state yourself.
+    // Here we set the error state to mimic the default behavior:
+    options.blockIds?.forEach(blockId => {
+      if (options.engine.block.isValid(blockId)) {
+        options.engine.block.setState(blockId, { type: 'Error', error: 'Unknown' });
+      }
+    });
+    // Alternative: Delete the placeholder block instead
     // options.blockIds?.forEach(blockId => {
     //   if (options.engine.block.isValid(blockId)) {
-    //     options.engine.block.setState(blockId, { type: 'Error', error: 'Unknown' });
-    //     // Alternative: Delete the placeholder block
-    //     // options.engine.block.destroy(blockId);
+    //     options.engine.block.destroy(blockId);
     //   }
     // });
 
