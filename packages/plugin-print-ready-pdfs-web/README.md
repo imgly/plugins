@@ -62,42 +62,42 @@ import { convertToPDFX3 } from '@imgly/plugin-print-ready-pdfs-web';
 
 const config = {
   license: 'your-cesdk-license',
-  ui: {
-    elements: {
-      navigation: {
-        action: {
-          custom: [
-            {
-              label: 'Export Print-Ready PDF',
-              iconName: '@imgly/icons/Essentials/Download',
-              callback: async () => {
-                const sceneId = cesdk.engine.scene.get();
-                const pdfBlob = await cesdk.engine.block.export(
-                  sceneId,
-                  'application/pdf'
-                );
-                const printReadyBlob = await convertToPDFX3(pdfBlob, {
-                  outputProfile: 'fogra39',
-                  title: 'Print-Ready Export',
-                });
-
-                // Download
-                const url = URL.createObjectURL(printReadyBlob);
-                const link = document.createElement('a');
-                link.href = url;
-                link.download = 'design-print-ready.pdf';
-                link.click();
-                URL.revokeObjectURL(url);
-              },
-            },
-          ],
-        },
-      },
-    },
-  },
 };
 
 const cesdk = await CreativeEditorSDK.create('#editor', config);
+await cesdk.createDesignScene();
+
+// Add custom export button to the navigation bar
+cesdk.ui.insertNavigationBarOrderComponent('last', {
+  id: 'ly.img.actions.navigationBar',
+  children: [
+    {
+      key: 'export-print-ready-pdf',
+      id: 'ly.img.action.navigationBar',
+      label: 'Export Print-Ready PDF',
+      iconName: '@imgly/Download',
+      onClick: async () => {
+        const sceneId = cesdk.engine.scene.get();
+        const pdfBlob = await cesdk.engine.block.export(
+          sceneId,
+          'application/pdf'
+        );
+        const printReadyBlob = await convertToPDFX3(pdfBlob, {
+          outputProfile: 'fogra39',
+          title: 'Print-Ready Export',
+        });
+
+        // Download
+        const url = URL.createObjectURL(printReadyBlob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'design-print-ready.pdf';
+        link.click();
+        URL.revokeObjectURL(url);
+      },
+    },
+  ],
+});
 ```
 
 ## API Reference
