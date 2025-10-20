@@ -22,13 +22,18 @@ interface Veo31FastFirstLastFrameToVideoInput {
 }
 
 interface ProviderConfiguration
-  extends CommonProviderConfiguration<Veo31FastFirstLastFrameToVideoInput, VideoOutput> {}
+  extends CommonProviderConfiguration<
+    Veo31FastFirstLastFrameToVideoInput,
+    VideoOutput
+  > {}
 
 export function Veo31FastFirstLastFrameToVideo(
   config: ProviderConfiguration
 ): (context: {
   cesdk: CreativeEditorSDK;
-}) => Promise<Provider<'video', Veo31FastFirstLastFrameToVideoInput, VideoOutput>> {
+}) => Promise<
+  Provider<'video', Veo31FastFirstLastFrameToVideoInput, VideoOutput>
+> {
   return async ({ cesdk }: { cesdk: CreativeEditorSDK }) => {
     const modelKey = 'fal-ai/veo3.1/fast/first-last-frame-to-video';
 
@@ -57,13 +62,21 @@ export function Veo31FastFirstLastFrameToVideo(
 function getProvider(
   cesdk: CreativeEditorSDK,
   config: ProviderConfiguration
-): Provider<'video', Veo31FastFirstLastFrameToVideoInput, { kind: 'video'; url: string }> {
+): Provider<
+  'video',
+  Veo31FastFirstLastFrameToVideoInput,
+  { kind: 'video'; url: string }
+> {
   const modelKey = 'fal-ai/veo3.1/fast/first-last-frame-to-video';
   const middleware = config.middlewares ?? config.middleware ?? [];
 
   let falClient: FalClient | null = null;
 
-  const provider: Provider<'video', Veo31FastFirstLastFrameToVideoInput, VideoOutput> = {
+  const provider: Provider<
+    'video',
+    Veo31FastFirstLastFrameToVideoInput,
+    VideoOutput
+  > = {
     id: modelKey,
     name: 'Veo 3.1 Fast (First/Last Frame)',
     kind: 'video',
@@ -99,7 +112,8 @@ function getProvider(
         type: 'schema',
         // @ts-ignore
         document: schema,
-        inputReference: '#/components/schemas/Veo31FastFirstLastFrameToVideoInput',
+        inputReference:
+          '#/components/schemas/Veo31FastFirstLastFrameToVideoInput',
         includeHistoryLibrary: true,
         orderExtensionKeyword: 'x-fal-order-properties',
         // Custom property renderers for dual image inputs

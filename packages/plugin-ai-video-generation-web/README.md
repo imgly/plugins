@@ -364,7 +364,113 @@ Key features:
 -   Fixed duration of 8 seconds
 -   Optional audio generation via `generate_audio`
 
-#### 9. Veo31FastFirstLastFrameToVideo (Image-to-Video)
+#### 9. Veo31TextToVideo (Text-to-Video)
+
+Google's Veo 3.1 text-to-video model with enhanced capabilities:
+
+```typescript
+text2video: FalAiVideo.Veo31TextToVideo({
+    proxyUrl: 'http://your-proxy-server.com/api/proxy',
+    // Optional: Configure default property values
+    properties: {
+        aspect_ratio: { default: '16:9' },     // Options: '16:9', '9:16', '1:1'
+        duration: { default: '8s' },           // Options: '4s', '6s', '8s'
+        resolution: { default: '720p' },       // Options: '720p', '1080p'
+        generate_audio: { default: true }      // Enable audio generation
+    }
+});
+```
+
+Key features:
+
+-   Generate videos from text descriptions
+-   Supports aspect ratios 16:9, 9:16 and 1:1 (defaults to 16:9)
+-   Variable duration options: 4s, 6s, or 8s
+-   Resolution options: 720p (1280×720) or 1080p (1920×1080)
+-   Optional audio generation
+
+#### 10. Veo31FastTextToVideo (Text-to-Video)
+
+Faster and more cost-effective version of Google's Veo 3.1 text-to-video model:
+
+```typescript
+text2video: FalAiVideo.Veo31FastTextToVideo({
+    proxyUrl: 'http://your-proxy-server.com/api/proxy',
+    // Optional: Configure default property values
+    properties: {
+        aspect_ratio: { default: '16:9' },     // Options: '16:9', '9:16', '1:1'
+        duration: { default: '8s' },           // Options: '4s', '6s', '8s'
+        resolution: { default: '720p' },       // Options: '720p', '1080p'
+        generate_audio: { default: true }      // Enable audio generation
+    }
+});
+```
+
+Key features:
+
+-   Generate videos from text descriptions with faster processing
+-   Supports aspect ratios 16:9, 9:16 and 1:1 (defaults to 16:9)
+-   Variable duration options: 4s, 6s, or 8s
+-   Resolution options: 720p (1280×720) or 1080p (1920×1080)
+-   Optional audio generation
+-   More cost-effective than the standard Veo 3.1 model
+
+#### 11. Veo31ImageToVideo (Image-to-Video)
+
+A model that transforms still images into videos using Google's Veo 3.1:
+
+```typescript
+image2video: FalAiVideo.Veo31ImageToVideo({
+    proxyUrl: 'http://your-proxy-server.com/api/proxy',
+    // Optional: Configure default property values
+    properties: {
+        aspect_ratio: { default: 'auto' },     // Options: 'auto', '9:16', '16:9', '1:1'
+        resolution: { default: '720p' },       // Options: '720p', '1080p'
+        duration: { default: '8s' },           // Fixed at 8 seconds
+        generate_audio: { default: true }      // Enable audio generation
+    }
+});
+```
+
+Key features:
+
+-   Transform existing images into videos
+-   Multiple aspect ratio options (auto, 9:16, 16:9, 1:1)
+-   Resolution options: 720p (1280×720) or 1080p (1920×1080)
+-   Fixed duration of 8 seconds
+-   Optional audio generation
+-   Canvas quick-action integration
+-   Auto aspect ratio preserves source image dimensions
+
+#### 12. Veo31FastImageToVideo (Image-to-Video)
+
+Faster and more cost-effective version of Google's Veo 3.1 image-to-video model:
+
+```typescript
+image2video: FalAiVideo.Veo31FastImageToVideo({
+    proxyUrl: 'http://your-proxy-server.com/api/proxy',
+    // Optional: Configure default property values
+    properties: {
+        aspect_ratio: { default: 'auto' },     // Options: 'auto', '9:16', '16:9', '1:1'
+        resolution: { default: '720p' },       // Options: '720p', '1080p'
+        duration: { default: '8s' },           // Fixed at 8 seconds
+        generate_audio: { default: true }      // Enable audio generation
+    }
+});
+```
+
+Key features:
+
+-   Transform existing images into videos with faster processing
+-   Multiple aspect ratio options (auto, 9:16, 16:9, 1:1)
+-   Resolution options: 720p (1280×720) or 1080p (1920×1080)
+-   Fixed duration of 8 seconds
+-   Optional audio generation
+-   Canvas quick-action integration
+-   More cost-effective than the standard Veo 3.1 model
+-   Auto aspect ratio preserves source image dimensions
+
+#### 13. Veo31FastFirstLastFrameToVideo (Image-to-Video)
 
 An experimental dual-image transformation model using Veo 3.1 Fast that creates videos by interpolating between two images:
 
@@ -683,6 +789,42 @@ FalAiVideo.Veo3TextToVideo(config: {
 }): AiVideoProvider
 ```
 
+#### Veo31TextToVideo
+
+```typescript
+FalAiVideo.Veo31TextToVideo(config: {
+  proxyUrl: string;
+  debug?: boolean;
+}): AiVideoProvider
+```
+
+#### Veo31FastTextToVideo
+
+```typescript
+FalAiVideo.Veo31FastTextToVideo(config: {
+  proxyUrl: string;
+  debug?: boolean;
+}): AiVideoProvider
+```
+
+#### Veo31ImageToVideo
+
+```typescript
+FalAiVideo.Veo31ImageToVideo(config: {
+  proxyUrl: string;
+  debug?: boolean;
+}): AiVideoProvider
+```
+
+#### Veo31FastImageToVideo
+
+```typescript
+FalAiVideo.Veo31FastImageToVideo(config: {
+  proxyUrl: string;
+  debug?: boolean;
+}): AiVideoProvider
+```
+
 #### Veo31FastFirstLastFrameToVideo
 
 ```typescript
@@ -715,6 +857,10 @@ The plugin automatically registers the following UI components:
     -   ByteDanceSeedanceV1ProImageToVideo: `ly.img.ai.fal-ai/bytedance/seedance/v1/pro/image-to-video`
     -   ByteDanceSeedanceV1ProTextToVideo: `ly.img.ai.fal-ai/bytedance/seedance/v1/pro/text-to-video`
     -   Veo3TextToVideo: `ly.img.ai.fal-ai/veo3`
+    -   Veo31TextToVideo: `ly.img.ai.fal-ai/veo3.1`
+    -   Veo31FastTextToVideo: `ly.img.ai.fal-ai/veo3.1/fast`
+    -   Veo31ImageToVideo: `ly.img.ai.fal-ai/veo3.1/image-to-video`
+    -   Veo31FastImageToVideo: `ly.img.ai.fal-ai/veo3.1/fast/image-to-video`
     -   Veo31FastFirstLastFrameToVideo: `ly.img.ai.fal-ai/veo3.1/fast/first-last-frame-to-video`
 
 ### Asset History
@@ -730,6 +876,10 @@ Generated videos are automatically stored in asset sources with the following ID
 -   ByteDanceSeedanceV1ProImageToVideo: `fal-ai/bytedance/seedance/v1/pro/image-to-video.history`
 -   ByteDanceSeedanceV1ProTextToVideo: `fal-ai/bytedance/seedance/v1/pro/text-to-video.history`
 -   Veo3TextToVideo: `fal-ai/veo3.history`
+-   Veo31TextToVideo: `fal-ai/veo3.1.history`
+-   Veo31FastTextToVideo: `fal-ai/veo3.1/fast.history`
+-   Veo31ImageToVideo: `fal-ai/veo3.1/image-to-video.history`
+-   Veo31FastImageToVideo: `fal-ai/veo3.1/fast/image-to-video.history`
 -   Veo31FastFirstLastFrameToVideo: `fal-ai/veo3.1/fast/first-last-frame-to-video.history`
 
 ### Dock Integration
