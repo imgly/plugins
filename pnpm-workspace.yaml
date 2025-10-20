@@ -3,5 +3,5 @@ packages:
   - 'examples/*'
 
 catalog:
-  '@cesdk/cesdk-js': '1.59.2'
-  '@cesdk/engine': '1.59.2'
+  '@cesdk/cesdk-js': '1.60.0'
+  '@cesdk/engine': '1.60.0'
