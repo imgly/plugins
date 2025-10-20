@@ -16,5 +16,6 @@ export const DEFAULT_IMAGE_QUICK_ACTION_ORDER = [
   'ly.img.separator',
   'ly.img.remixPage',
   'ly.img.separator',
-  'ly.img.createVideo'
+  'ly.img.createVideo',
+  'ly.img.animateBetweenImages'
 ];

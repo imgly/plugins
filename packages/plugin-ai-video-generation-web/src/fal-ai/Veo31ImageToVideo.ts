@@ -80,6 +80,16 @@ function getProvider(
                   'This generation should not be triggered by this quick action'
                 );
               }
+            },
+            'ly.img.animateBetweenImages': {
+              mapInput: (input: {
+                firstFrameUri: string;
+                lastFrameUri: string;
+              }) => ({
+                prompt: '',
+                first_frame_url: input.firstFrameUri,
+                last_frame_url: input.lastFrameUri
+              })
             }
           },
           config.supportedQuickActions

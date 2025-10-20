@@ -48,8 +48,9 @@ const AnimateBetweenImages: GetQuickActionDefinition<InputType> = ({
   cesdk
 }) => {
   // Set feature default for this quick action
+  // Note: Uses 'image' prefix because kind: 'image' (appears in image canvas menu)
   cesdk.feature.enable(
-    'ly.img.plugin-ai-video-generation-web.quickAction.animateBetweenImages',
+    'ly.img.plugin-ai-image-generation-web.quickAction.animateBetweenImages',
     true
   );
 
@@ -122,6 +123,13 @@ const AnimateBetweenImages: GetQuickActionDefinition<InputType> = ({
             // Open the Veo 3.1 panel specifically
             const modelKey = 'fal-ai/veo3.1/fast/first-last-frame-to-video';
 
+            // Set the active provider to Veo 3.1 BEFORE opening panel
+            // Note: After refactoring, selectedProvider state stores just the ID string
+            cesdk.ui.experimental.setGlobalStateValue(
+              'ly.img.ai.video-generation.selectedProvider.fromImage',
+              modelKey
+            );
+
             // Set the frame URLs in global state
             cesdk.ui.experimental.setGlobalStateValue(
               `${modelKey}.first_frame_url`,
@@ -132,18 +140,14 @@ const AnimateBetweenImages: GetQuickActionDefinition<InputType> = ({
               secondUri
             );
 
-            // Open the video generation panel with image-to-video mode
-            cesdk.ui.openPanel('ly.img.ai.video-generation');
+            // Set the mode type
             cesdk.ui.experimental.setGlobalStateValue(
               'ly.img.ai.video-generation.fromType',
               'fromImage'
             );
 
-            // Set the active provider to Veo 3.1
-            cesdk.ui.experimental.setGlobalStateValue(
-              'ly.img.ai.video-generation.fromImage.activeProvider',
-              modelKey
-            );
+            // Open the video generation panel with all state already set
+            cesdk.ui.openPanel('ly.img.ai.video-generation');
 
             close();
           } catch (error) {
