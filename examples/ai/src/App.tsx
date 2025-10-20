@@ -76,9 +76,6 @@ function App() {
               {
                 id: `ly.img.ai.image.canvasMenu`
               },
-              {
-                id: `ly.img.ai.video.canvasMenu`
-              },
               ...instance.ui.getCanvasMenuOrder()
             ]);
 
@@ -313,7 +310,11 @@ function App() {
                     }),
                     FalAiVideo.Veo31ImageToVideo({
                       middleware: [videoRateLimitMiddleware, errorMiddleware],
-                      proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
+                      proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL,
+                      properties: {
+                        prompt: {
+                        }
+                      }
                     })
                   ],
                   text2speech: Elevenlabs.ElevenMultilingualV2({

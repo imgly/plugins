@@ -265,13 +265,15 @@ function getBuilderRenderFunctionByFromType<
     );
 
     // Derive the full provider value by looking up the ID in the values array
-    const providerFromText = providerValuesFromText.find(
-      p => p.id === providerIdStateFromText.value
-    ) ?? providerValuesFromText[0];
+    const providerFromText =
+      providerValuesFromText.find(
+        (p) => p.id === providerIdStateFromText.value
+      ) ?? providerValuesFromText[0];
 
-    const providerFromImage = providerValuesFromImage.find(
-      p => p.id === providerIdStateFromImage.value
-    ) ?? providerValuesFromImage[0];
+    const providerFromImage =
+      providerValuesFromImage.find(
+        (p) => p.id === providerIdStateFromImage.value
+      ) ?? providerValuesFromImage[0];
 
     const providerIdState =
       inputTypeState.value === 'fromText'
@@ -465,9 +467,9 @@ function getBuilderRenderFunctionByProvider<
     );
 
     // Derive the full provider value by looking up the ID in the values array
-    const providerValue = providerValues.find(
-      p => p.id === providerIdState.value
-    ) ?? providerValues[0];
+    const providerValue =
+      providerValues.find((p) => p.id === providerIdState.value) ??
+      providerValues[0];
 
     if (providerInitializationResults.length > 1 && isProviderSelectorEnabled) {
       if (providerIdState != null && providerValue != null) {
