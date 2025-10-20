@@ -48,8 +48,9 @@ export type InputType = {
 
 const CreateVideo: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
   // Set feature default for this quick action
+  // Note: Uses 'image' prefix because kind: 'image' (appears in image canvas menu)
   cesdk.feature.enable(
-    'ly.img.plugin-ai-video-generation-web.quickAction.createVideo',
+    'ly.img.plugin-ai-image-generation-web.quickAction.createVideo',
     true
   );
 

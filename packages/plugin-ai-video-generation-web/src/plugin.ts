@@ -4,17 +4,15 @@ import {
   initializeProviders,
   Output,
   registerDockComponent,
-  checkAiPluginVersion,
-  initializeQuickActionComponents,
-  AI_EDIT_MODE
+  checkAiPluginVersion
 } from '@imgly/plugin-ai-generation-web';
 import { PluginConfiguration } from './types';
 import { toArray, translateWithFallback } from '@imgly/plugin-utils';
-import { PLUGIN_ID, DEFAULT_VIDEO_QUICK_ACTION_ORDER } from './constants';
+import { PLUGIN_ID } from './constants';
 import CreateVideo from './quickActions/CreateVideo';
 import AnimateBetweenImages from './quickActions/AnimateBetweenImages';
 
-export { PLUGIN_ID, DEFAULT_VIDEO_QUICK_ACTION_ORDER } from './constants';
+export { PLUGIN_ID } from './constants';
 
 const VIDEO_GENERATION_PANEL_ID = 'ly.img.ai.video-generation';
 
@@ -48,10 +46,6 @@ export function VideoGeneration<I, O extends Output>(
       );
       cesdk.feature.enable(
         'ly.img.plugin-ai-video-generation-web.quickAction.providerSelect',
-        true
-      );
-      cesdk.feature.enable(
-        'ly.img.plugin-ai-video-generation-web.quickAction.animateBetweenImages',
         true
       );
 
@@ -120,28 +114,6 @@ export function VideoGeneration<I, O extends Output>(
       // Register video quick actions
       ActionRegistry.get().register(CreateVideo({ cesdk }));
       ActionRegistry.get().register(AnimateBetweenImages({ cesdk }));
-
-      // Initialize quick action canvas menu components
-      const initializedQuickActions = await initializeQuickActionComponents({
-        kind: 'video',
-        providerInitializationResults:
-          initializedResult.providerInitializationResults,
-        cesdk,
-        engine: cesdk.engine,
-        debug: config.debug,
-        dryRun: config.dryRun,
-        defaultOrder: DEFAULT_VIDEO_QUICK_ACTION_ORDER
-      });
-
-      if (initializedQuickActions.renderFunction != null) {
-        cesdk.ui.registerComponent(
-          `ly.img.ai.video.canvasMenu`,
-          initializedQuickActions.renderFunction
-        );
-        cesdk.ui.setCanvasMenuOrder([`ly.img.ai.video.canvasMenu`], {
-          editMode: AI_EDIT_MODE
-        });
-      }
 
       if (initializedResult.panel.builderRenderFunction != null) {
         cesdk.ui.registerPanel(
