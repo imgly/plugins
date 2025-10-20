@@ -39,9 +39,11 @@ describe('ICC Profile Conversion Tests', () => {
 
       expect(outputPDF.size).toBeGreaterThan(0);
 
-      // Validate structure
-      const validation = await ExternalValidators.validateStructure(outputPDF);
-      expect(validation.valid).toBe(true);
+      // Validate structure (skip if qpdf not available)
+      if (toolsAvailable.qpdf) {
+        const validation = await ExternalValidators.validateStructure(outputPDF);
+        expect(validation.valid).toBe(true);
+      }
 
       // Check basic info
       const info = await ExternalValidators.getPdfInfo(outputPDF);
@@ -58,8 +60,11 @@ describe('ICC Profile Conversion Tests', () => {
 
       expect(outputPDF.size).toBeGreaterThan(0);
 
-      const validation = await ExternalValidators.validateStructure(outputPDF);
-      expect(validation.valid).toBe(true);
+      // Validate structure (skip if qpdf not available)
+      if (toolsAvailable.qpdf) {
+        const validation = await ExternalValidators.validateStructure(outputPDF);
+        expect(validation.valid).toBe(true);
+      }
     });
 
     test('should convert with sRGB profile', async () => {
@@ -72,8 +77,11 @@ describe('ICC Profile Conversion Tests', () => {
 
       expect(outputPDF.size).toBeGreaterThan(0);
 
-      const validation = await ExternalValidators.validateStructure(outputPDF);
-      expect(validation.valid).toBe(true);
+      // Validate structure (skip if qpdf not available)
+      if (toolsAvailable.qpdf) {
+        const validation = await ExternalValidators.validateStructure(outputPDF);
+        expect(validation.valid).toBe(true);
+      }
     });
   });
 
@@ -96,11 +104,17 @@ describe('ICC Profile Conversion Tests', () => {
 
       expect(outputPDF.size).toBeGreaterThan(0);
 
-      const validation = await ExternalValidators.validateStructure(outputPDF);
-      expect(validation.valid).toBe(true);
+      // Validate structure (skip if qpdf not available)
+      if (toolsAvailable.qpdf) {
+        const validation = await ExternalValidators.validateStructure(outputPDF);
+        expect(validation.valid).toBe(true);
+      }
 
-      const info = await ExternalValidators.getPdfInfo(outputPDF);
-      expect(info.title).toBe('Custom Profile Test');
+      // Check basic info (skip if pdfinfo not available)
+      if (toolsAvailable.pdfinfo) {
+        const info = await ExternalValidators.getPdfInfo(outputPDF);
+        expect(info.title).toBe('Custom Profile Test');
+      }
     });
 
     test('should reject missing custom profile', async () => {

@@ -149,9 +149,11 @@ describe('PDF/X-3:2003 Compliance Tests', () => {
         title: 'RGB Profile Test',
       });
 
-      // Should still be valid PDF/X-3
-      const validation = await ExternalValidators.validateStructure(outputPDF);
-      expect(validation.valid).toBe(true);
+      // Should still be valid PDF/X-3 (skip if qpdf not available)
+      if (toolsAvailable.qpdf) {
+        const validation = await ExternalValidators.validateStructure(outputPDF);
+        expect(validation.valid).toBe(true);
+      }
 
       // Should contain RGB references
       const pdfText = await outputPDF.text();
@@ -283,9 +285,11 @@ describe('PDF/X-3:2003 Compliance Tests', () => {
         title: 'Custom ICC Test',
       });
 
-      // Should be valid
-      const validation = await ExternalValidators.validateStructure(outputPDF);
-      expect(validation.valid).toBe(true);
+      // Should be valid (skip if qpdf not available)
+      if (toolsAvailable.qpdf) {
+        const validation = await ExternalValidators.validateStructure(outputPDF);
+        expect(validation.valid).toBe(true);
+      }
 
       // Should contain ICC profile reference
       const pdfText = await outputPDF.text();
@@ -498,13 +502,15 @@ describe('PDF/X-3:2003 Compliance Tests', () => {
         title: 'Structure Validation Test',
       });
 
-      // Validate with qpdf
-      const validation = await ExternalValidators.validateStructure(outputPDF);
-      expect(validation.valid).toBe(true);
+      // Validate with qpdf (skip if not available)
+      if (toolsAvailable.qpdf) {
+        const validation = await ExternalValidators.validateStructure(outputPDF);
+        expect(validation.valid).toBe(true);
 
-      if (!validation.valid) {
-        console.error('❌ Validation errors:', validation.errors);
-        console.error('⚠️  Validation warnings:', validation.warnings);
+        if (!validation.valid) {
+          console.error('❌ Validation errors:', validation.errors);
+          console.error('⚠️  Validation warnings:', validation.warnings);
+        }
       }
     });
 
@@ -519,9 +525,11 @@ describe('PDF/X-3:2003 Compliance Tests', () => {
       const info = await ExternalValidators.getPdfInfo(outputPDF);
       expect(info.pages).toBeGreaterThan(0);
 
-      // Each page should be valid
-      const validation = await ExternalValidators.validateStructure(outputPDF);
-      expect(validation.valid).toBe(true);
+      // Each page should be valid (skip if qpdf not available)
+      if (toolsAvailable.qpdf) {
+        const validation = await ExternalValidators.validateStructure(outputPDF);
+        expect(validation.valid).toBe(true);
+      }
     });
 
     test('should produce non-corrupt PDF', async () => {
@@ -606,8 +614,12 @@ describe('PDF/X-3:2003 Compliance Tests', () => {
 
       // Should produce valid output even for minimal input
       expect(outputPDF.size).toBeGreaterThan(0);
-      const validation = await ExternalValidators.validateStructure(outputPDF);
-      expect(validation.valid).toBe(true);
+
+      // Validate structure (skip if qpdf not available)
+      if (toolsAvailable.qpdf) {
+        const validation = await ExternalValidators.validateStructure(outputPDF);
+        expect(validation.valid).toBe(true);
+      }
     });
 
     test('should handle complex PDFs with mixed content', async () => {
@@ -621,9 +633,11 @@ describe('PDF/X-3:2003 Compliance Tests', () => {
       // Should handle without errors
       expect(outputPDF.size).toBeGreaterThan(0);
 
-      // Should be structurally valid
-      const validation = await ExternalValidators.validateStructure(outputPDF);
-      expect(validation.valid).toBe(true);
+      // Should be structurally valid (skip if qpdf not available)
+      if (toolsAvailable.qpdf) {
+        const validation = await ExternalValidators.validateStructure(outputPDF);
+        expect(validation.valid).toBe(true);
+      }
 
       // Should preserve content (if not rasterized due to transparency)
       const text = await ExternalValidators.extractText(outputPDF);

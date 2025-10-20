@@ -10,6 +10,15 @@ import { readFileSync, existsSync } from 'fs';
 import { join } from 'path';
 
 describe('Content Preservation Tests', () => {
+  let toolsAvailable: Record<string, boolean>;
+
+  beforeAll(async () => {
+    toolsAvailable = await ExternalValidators.checkToolsAvailable();
+    if (!toolsAvailable.pdffonts || !toolsAvailable.pdfimages || !toolsAvailable.qpdf) {
+      console.warn('⚠️  Some external tools missing. Run: cd test && ./setup.sh');
+    }
+  });
+
   const getTestPDF = (name: string): Blob => {
     const path = join(testDir, '../fixtures/pdfs', name);
     if (!existsSync(path)) {
@@ -101,13 +110,16 @@ describe('Content Preservation Tests', () => {
       flattenTransparency: false,
     });
 
-    const inputObjects = await ExternalValidators.countPdfObjects(inputPDF);
-    const outputObjects = await ExternalValidators.countPdfObjects(outputPDF);
+    // Check object count (skip if qpdf not available)
+    if (toolsAvailable.qpdf) {
+      const inputObjects = await ExternalValidators.countPdfObjects(inputPDF);
+      const outputObjects = await ExternalValidators.countPdfObjects(outputPDF);
 
-    // Output should not drastically reduce object count
-    // (which would indicate flattening/rasterization)
-    // Allow some reduction for optimization, but not more than 50%
-    expect(outputObjects).toBeGreaterThan(inputObjects * 0.5);
+      // Output should not drastically reduce object count
+      // (which would indicate flattening/rasterization)
+      // Allow some reduction for optimization, but not more than 50%
+      expect(outputObjects).toBeGreaterThan(inputObjects * 0.5);
+    }
   });
 
   test('should preserve images without re-encoding', async () => {
@@ -146,9 +158,11 @@ describe('Content Preservation Tests', () => {
       flattenTransparency: false,
     });
 
-    // Validate overall structure
-    const validation = await ExternalValidators.validateStructure(outputPDF);
-    expect(validation.valid).toBe(true);
+    // Validate overall structure (skip if qpdf not available)
+    if (toolsAvailable.qpdf) {
+      const validation = await ExternalValidators.validateStructure(outputPDF);
+      expect(validation.valid).toBe(true);
+    }
 
     // Check text is preserved
     const text = await ExternalValidators.extractText(outputPDF);
