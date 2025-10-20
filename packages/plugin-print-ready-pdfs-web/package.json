@@ -61,7 +61,7 @@
     "test:browser": "pnpm run build && playwright test test/browser-test.spec.ts",
     "test:node": "pnpm run build && node test/node-test.mjs",
     "test": "pnpm run test:integration",
-    "test:integration": "pnpm run build && vitest run",
+    "test:integration": "bash scripts/setup-test-tools.sh && pnpm run build && vitest run",
     "test:profiles": "pnpm run build && vitest run profile-conversion",
     "test:metadata": "pnpm run build && vitest run metadata-validation",
     "test:content": "pnpm run build && vitest run content-preservation",
