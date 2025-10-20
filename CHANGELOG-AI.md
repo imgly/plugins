@@ -4,7 +4,7 @@
 
 ### New Features
 
--   [video-generation] **Veo31ImageToVideo Provider**: Added experimental Veo 3.1 dual-image transformation provider via fal.ai that creates videos by interpolating between two images (first frame and last frame) with:
+-   [video-generation] **Veo31FastFirstLastFrameToVideo Provider**: Added experimental Veo 3.1 Fast dual-image transformation provider via fal.ai that creates videos by interpolating between two images (first frame and last frame) with:
     - Dual image input UI (custom implementation for first_frame_url and last_frame_url)
     - Multiple aspect ratio options (16:9, 9:16, 1:1, 4:3, 3:4)
     - Resolution options (480p, 720p, 1080p)

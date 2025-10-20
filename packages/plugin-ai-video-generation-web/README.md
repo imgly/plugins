@@ -364,12 +364,12 @@ Key features:
 -   Fixed duration of 8 seconds
 -   Optional audio generation via `generate_audio`
 
-#### 9. Veo31ImageToVideo (Image-to-Video)
+#### 9. Veo31FastFirstLastFrameToVideo (Image-to-Video)
 
-An experimental dual-image transformation model using Veo 3.1 that creates videos by interpolating between two images:
+An experimental dual-image transformation model using Veo 3.1 Fast that creates videos by interpolating between two images:
 
 ```typescript
-image2video: FalAiVideo.Veo31ImageToVideo({
+image2video: FalAiVideo.Veo31FastFirstLastFrameToVideo({
     proxyUrl: 'http://your-proxy-server.com/api/proxy',
     // Optional: Configure default property values
     properties: {
@@ -683,10 +683,10 @@ FalAiVideo.Veo3TextToVideo(config: {
 }): AiVideoProvider
 ```
 
-#### Veo31ImageToVideo
+#### Veo31FastFirstLastFrameToVideo
 
 ```typescript
-FalAiVideo.Veo31ImageToVideo(config: {
+FalAiVideo.Veo31FastFirstLastFrameToVideo(config: {
   proxyUrl: string;
   debug?: boolean;
 }): AiVideoProvider
@@ -715,7 +715,7 @@ The plugin automatically registers the following UI components:
     -   ByteDanceSeedanceV1ProImageToVideo: `ly.img.ai.fal-ai/bytedance/seedance/v1/pro/image-to-video`
     -   ByteDanceSeedanceV1ProTextToVideo: `ly.img.ai.fal-ai/bytedance/seedance/v1/pro/text-to-video`
     -   Veo3TextToVideo: `ly.img.ai.fal-ai/veo3`
-    -   Veo31ImageToVideo: `ly.img.ai.fal-ai/veo3.1/fast/first-last-frame-to-video`
+    -   Veo31FastFirstLastFrameToVideo: `ly.img.ai.fal-ai/veo3.1/fast/first-last-frame-to-video`
 
 ### Asset History
 
@@ -730,7 +730,7 @@ Generated videos are automatically stored in asset sources with the following ID
 -   ByteDanceSeedanceV1ProImageToVideo: `fal-ai/bytedance/seedance/v1/pro/image-to-video.history`
 -   ByteDanceSeedanceV1ProTextToVideo: `fal-ai/bytedance/seedance/v1/pro/text-to-video.history`
 -   Veo3TextToVideo: `fal-ai/veo3.history`
--   Veo31ImageToVideo: `fal-ai/veo3.1/fast/first-last-frame-to-video.history`
+-   Veo31FastFirstLastFrameToVideo: `fal-ai/veo3.1/fast/first-last-frame-to-video.history`
 
 ### Dock Integration
 

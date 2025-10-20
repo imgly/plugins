@@ -6,12 +6,12 @@ import {
   mergeQuickActionsConfig
 } from '@imgly/plugin-ai-generation-web';
 import { getImageDimensionsFromURL } from '@imgly/plugin-utils';
-import schema from './Veo31ImageToVideo.json';
+import schema from './Veo31FastFirstLastFrameToVideo.json';
 import CreativeEditorSDK, { AssetResult } from '@cesdk/cesdk-js';
 import { createFalClient, FalClient } from './createFalClient';
 import { uploadImageInputToFalIfNeeded } from './utils';
 
-interface Veo31ImageToVideoInput {
+interface Veo31FastFirstLastFrameToVideoInput {
   prompt: string;
   first_frame_url: string;
   last_frame_url: string;
@@ -22,13 +22,13 @@ interface Veo31ImageToVideoInput {
 }
 
 interface ProviderConfiguration
-  extends CommonProviderConfiguration<Veo31ImageToVideoInput, VideoOutput> {}
+  extends CommonProviderConfiguration<Veo31FastFirstLastFrameToVideoInput, VideoOutput> {}
 
-export function Veo31ImageToVideo(
+export function Veo31FastFirstLastFrameToVideo(
   config: ProviderConfiguration
 ): (context: {
   cesdk: CreativeEditorSDK;
-}) => Promise<Provider<'video', Veo31ImageToVideoInput, VideoOutput>> {
+}) => Promise<Provider<'video', Veo31FastFirstLastFrameToVideoInput, VideoOutput>> {
   return async ({ cesdk }: { cesdk: CreativeEditorSDK }) => {
     const modelKey = 'fal-ai/veo3.1/fast/first-last-frame-to-video';
 
@@ -57,15 +57,15 @@ export function Veo31ImageToVideo(
 function getProvider(
   cesdk: CreativeEditorSDK,
   config: ProviderConfiguration
-): Provider<'video', Veo31ImageToVideoInput, { kind: 'video'; url: string }> {
+): Provider<'video', Veo31FastFirstLastFrameToVideoInput, { kind: 'video'; url: string }> {
   const modelKey = 'fal-ai/veo3.1/fast/first-last-frame-to-video';
   const middleware = config.middlewares ?? config.middleware ?? [];
 
   let falClient: FalClient | null = null;
 
-  const provider: Provider<'video', Veo31ImageToVideoInput, VideoOutput> = {
+  const provider: Provider<'video', Veo31FastFirstLastFrameToVideoInput, VideoOutput> = {
     id: modelKey,
-    name: 'Veo 3.1',
+    name: 'Veo 3.1 Fast (First/Last Frame)',
     kind: 'video',
     initialize: async () => {
       falClient = createFalClient(config.proxyUrl, config.headers);
@@ -99,7 +99,7 @@ function getProvider(
         type: 'schema',
         // @ts-ignore
         document: schema,
-        inputReference: '#/components/schemas/Veo31ImageToVideoInput',
+        inputReference: '#/components/schemas/Veo31FastFirstLastFrameToVideoInput',
         includeHistoryLibrary: true,
         orderExtensionKeyword: 'x-fal-order-properties',
         // Custom property renderers for dual image inputs
@@ -270,7 +270,7 @@ function getProvider(
       history: config.history ?? '@imgly/indexedDB',
       middleware,
       generate: async (
-        input: Veo31ImageToVideoInput,
+        input: Veo31FastFirstLastFrameToVideoInput,
         { abortSignal }: { abortSignal?: AbortSignal }
       ) => {
         if (!falClient) {

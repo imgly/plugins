@@ -46,8 +46,8 @@
         },
         "required": ["status", "request_id"]
       },
-      "Veo31ImageToVideoInput": {
-        "title": "Veo31ImageToVideoRequest",
+      "Veo31FastFirstLastFrameToVideoInput": {
+        "title": "Veo31FastFirstLastFrameToVideoRequest",
         "type": "object",
         "properties": {
           "first_frame_url": {
@@ -110,8 +110,8 @@
         "x-fal-order-properties": ["first_frame_url", "last_frame_url", "prompt", "aspect_ratio", "resolution"],
         "required": ["prompt", "first_frame_url", "last_frame_url"]
       },
-      "Veo31ImageToVideoOutput": {
-        "title": "Veo31ImageToVideoOutput",
+      "Veo31FastFirstLastFrameToVideoOutput": {
+        "title": "Veo31FastFirstLastFrameToVideoOutput",
         "type": "object",
         "properties": {
           "video": {
@@ -239,7 +239,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Veo31ImageToVideoInput"
+                "$ref": "#/components/schemas/Veo31FastFirstLastFrameToVideoInput"
               }
             }
           }
@@ -272,7 +272,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Veo31ImageToVideoOutput"
+                  "$ref": "#/components/schemas/Veo31FastFirstLastFrameToVideoOutput"
                 }
               }
             }

@@ -308,7 +308,7 @@ function App() {
                       middleware: [videoRateLimitMiddleware, errorMiddleware],
                       proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
                     }),
-                    FalAiVideo.Veo31ImageToVideo({
+                    FalAiVideo.Veo31FastFirstLastFrameToVideo({
                       middleware: [videoRateLimitMiddleware, errorMiddleware],
                       proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL,
                       properties: {
