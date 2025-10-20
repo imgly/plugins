@@ -5,6 +5,8 @@ import { KlingVideoV21MasterImageToVideo } from './KlingVideoV21MasterImageToVid
 import { PixverseV35TextToVideo } from './PixverseV35TextToVideo';
 import { KlingVideoV21MasterTextToVideo } from './KlingVideoV21MasterTextToVideo';
 import { Veo3TextToVideo } from './Veo3TextToVideo';
+import { Veo31TextToVideo } from './Veo31TextToVideo';
+import { Veo31FastTextToVideo } from './Veo31FastTextToVideo';
 import { ByteDanceSeedanceV1ProImageToVideo } from './ByteDanceSeedanceV1ProImageToVideo';
 import { ByteDanceSeedanceV1ProTextToVideo } from './ByteDanceSeedanceV1ProTextToVideo';
 import { Veo31FastFirstLastFrameToVideo } from './Veo31FastFirstLastFrameToVideo';
@@ -17,6 +19,8 @@ const FalAi = {
   PixverseV35TextToVideo,
   KlingVideoV21MasterTextToVideo,
   Veo3TextToVideo,
+  Veo31TextToVideo,
+  Veo31FastTextToVideo,
   ByteDanceSeedanceV1ProImageToVideo,
   ByteDanceSeedanceV1ProTextToVideo,
   Veo31FastFirstLastFrameToVideo

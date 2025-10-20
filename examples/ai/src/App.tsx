@@ -278,6 +278,14 @@ function App() {
                       middleware: [videoRateLimitMiddleware, errorMiddleware],
                       proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
                     }),
+                    FalAiVideo.Veo31TextToVideo({
+                      middleware: [videoRateLimitMiddleware, errorMiddleware],
+                      proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
+                    }),
+                    FalAiVideo.Veo31FastTextToVideo({
+                      middleware: [videoRateLimitMiddleware, errorMiddleware],
+                      proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
+                    }),
                     FalAiVideo.KlingVideoV21MasterTextToVideo({
                       middleware: [videoRateLimitMiddleware, errorMiddleware],
                       proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
