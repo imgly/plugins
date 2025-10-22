@@ -11,6 +11,7 @@ import FalAiSticker from '@imgly/plugin-ai-sticker-generation-web/fal-ai';
 import PhotoEditorPlugin from './pages/PhotoEditorPlugin';
 
 import { useRef } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { rateLimitMiddleware } from '@imgly/plugin-ai-generation-web';
 import { Middleware } from '@imgly/plugin-ai-generation-web';
 import { RateLimitOptions } from '@imgly/plugin-ai-generation-web';
@@ -21,6 +22,7 @@ import {
 
 function App() {
   const cesdk = useRef<CreativeEditorSDK>();
+  const [searchParams, setSearchParams] = useSearchParams();
   console.log('App component rendering...');
   return (
     <div
@@ -82,17 +84,12 @@ function App() {
             instance.feature.enable('ly.img.preview', false);
             instance.feature.enable('ly.img.placeholder', false);
 
-            const urlParams = new URLSearchParams(window.location.search);
-            let archiveType = urlParams.get('archive');
+            let archiveType = searchParams.get('archive');
 
             // If no archive parameter, add default to URL
             if (!archiveType) {
               archiveType = 'design';
-              urlParams.set('archive', 'design');
-              const newUrl = `${
-                window.location.pathname
-              }?${urlParams.toString()}`;
-              window.history.replaceState({}, '', newUrl);
+              setSearchParams({ archive: 'design' }, { replace: true });
             }
 
             // Handle photo editor mode
@@ -388,21 +385,21 @@ function App() {
                     label: 'Design Mode',
                     isSelected: archiveType === 'design',
                     onClick: () => {
-                      window.location.search = '?archive=design';
+                      setSearchParams({ archive: 'design' });
                     }
                   });
                   builder.Button('videoMode', {
                     label: 'Video Mode',
                     isSelected: archiveType === 'video',
                     onClick: () => {
-                      window.location.search = '?archive=video';
+                      setSearchParams({ archive: 'video' });
                     }
                   });
                   builder.Button('photoEditor', {
                     label: 'Photo Editor',
                     isSelected: archiveType === 'photoeditor',
                     onClick: () => {
-                      window.location.search = '?archive=photoeditor';
+                      setSearchParams({ archive: 'photoeditor' });
                     }
                   });
                 }
