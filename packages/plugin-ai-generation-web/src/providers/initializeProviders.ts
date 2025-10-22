@@ -253,20 +253,40 @@ function getBuilderRenderFunctionByFromType<
       builderRenderFunction: panel?.builderRenderFunction
     }));
 
-    const providerStateFromText = context.experimental.global(
+    // Store only the provider ID in global state (not the full object with label and render function)
+    // This allows external code to change the selected provider by just setting the ID
+    const providerIdStateFromText = context.experimental.global(
       `${prefix}.selectedProvider.fromText`,
-      providerValuesFromText[0]
+      providerValuesFromText[0]?.id
     );
-    const providerStateFromImage = context.experimental.global(
+    const providerIdStateFromImage = context.experimental.global(
       `${prefix}.selectedProvider.fromImage`,
-      providerValuesFromImage[0]
+      providerValuesFromImage[0]?.id
     );
 
-    const providerState =
+    // Derive the full provider value by looking up the ID in the values array
+    const providerFromText =
+      providerValuesFromText.find(
+        (p) => p.id === providerIdStateFromText.value
+      ) ?? providerValuesFromText[0];
+
+    const providerFromImage =
+      providerValuesFromImage.find(
+        (p) => p.id === providerIdStateFromImage.value
+      ) ?? providerValuesFromImage[0];
+
+    const providerIdState =
       inputTypeState.value === 'fromText'
-        ? providerStateFromText
+        ? providerIdStateFromText
         : inputTypeState.value === 'fromImage'
-        ? providerStateFromImage
+        ? providerIdStateFromImage
+        : undefined;
+
+    const providerValue =
+      inputTypeState.value === 'fromText'
+        ? providerFromText
+        : inputTypeState.value === 'fromImage'
+        ? providerFromImage
         : undefined;
 
     // Check if provider selector is enabled via Feature API
@@ -362,11 +382,14 @@ function getBuilderRenderFunctionByFromType<
                 ? providerValuesFromImage
                 : [...providerValuesFromText, ...providerValuesFromImage];
 
-            if (providerState != null) {
+            if (providerIdState != null && providerValue != null) {
               builder.Select(`${prefix}.providerSelect.select`, {
                 inputLabel: createLabelArray(kind, 'providerSelect.label'),
                 values: providerValues,
-                ...providerState
+                value: providerValue,
+                setValue: (newValue: SelectValue) => {
+                  providerIdState.setValue(newValue.id);
+                }
               });
             }
           }
@@ -376,7 +399,7 @@ function getBuilderRenderFunctionByFromType<
 
     // Render the provider content
     if (providerInitializationResults.length > 1) {
-      providerState?.value.builderRenderFunction?.(context);
+      providerValue?.builderRenderFunction?.(context);
     } else {
       const providerInitializationResult = providerInitializationResults[0];
       if (providerInitializationResult) {
@@ -436,19 +459,29 @@ function getBuilderRenderFunctionByProvider<
       builderRenderFunction: panel?.builderRenderFunction
     }));
 
-    const providerState = context.state(
+    // Store only the provider ID in state (not the full object with label and render function)
+    // This allows external code to change the selected provider by just setting the ID
+    const providerIdState = context.state(
       `${prefix}.selectedProvider`,
-      providerValues[0]
+      providerValues[0]?.id
     );
 
+    // Derive the full provider value by looking up the ID in the values array
+    const providerValue =
+      providerValues.find((p) => p.id === providerIdState.value) ??
+      providerValues[0];
+
     if (providerInitializationResults.length > 1 && isProviderSelectorEnabled) {
-      if (providerState != null) {
+      if (providerIdState != null && providerValue != null) {
         builder.Section(`${prefix}.providerSelection.section`, {
           children: () => {
             builder.Select(`${prefix}.providerSelect.select`, {
               inputLabel: createLabelArray(kind, 'providerSelect.label'),
               values: providerValues,
-              ...providerState
+              value: providerValue,
+              setValue: (newValue: SelectValue) => {
+                providerIdState.setValue(newValue.id);
+              }
             });
           }
         });
@@ -456,7 +489,7 @@ function getBuilderRenderFunctionByProvider<
     }
 
     // Render the provider content
-    providerState.value.builderRenderFunction?.(context);
+    providerValue?.builderRenderFunction?.(context);
   };
 
   return builderRenderFunction;

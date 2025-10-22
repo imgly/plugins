@@ -1,0 +1,286 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Fal Queue API",
+    "version": "1.0.0",
+    "description": "The Fal Queue API."
+  },
+  "components": {
+    "securitySchemes": {
+      "apiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization",
+        "description": "Fal Key"
+      }
+    },
+    "schemas": {
+      "QueueStatus": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["IN_QUEUE", "IN_PROGRESS", "COMPLETED"]
+          },
+          "request_id": { "type": "string", "description": "The request id." },
+          "response_url": {
+            "type": "string",
+            "description": "The response url."
+          },
+          "status_url": { "type": "string", "description": "The status url." },
+          "cancel_url": { "type": "string", "description": "The cancel url." },
+          "logs": {
+            "type": "object",
+            "description": "The logs.",
+            "additionalProperties": true
+          },
+          "metrics": {
+            "type": "object",
+            "description": "The metrics.",
+            "additionalProperties": true
+          },
+          "queue_position": {
+            "type": "integer",
+            "description": "The queue position."
+          }
+        },
+        "required": ["status", "request_id"]
+      },
+      "Veo31FastFirstLastFrameToVideoInput": {
+        "title": "Veo31FastFirstLastFrameToVideoRequest",
+        "type": "object",
+        "properties": {
+          "first_frame_url": {
+            "title": "First Frame",
+            "type": "string",
+            "description": "URL of the image to use as the first frame"
+          },
+          "last_frame_url": {
+            "title": "Last Frame",
+            "type": "string",
+            "description": "URL of the image to use as the last frame"
+          },
+          "prompt": {
+            "title": "Prompt",
+            "type": "string",
+            "description": "Text description for the video generation",
+            "x-imgly-builder": { "component": "TextArea" }
+          },
+          "aspect_ratio": {
+            "title": "Aspect Ratio",
+            "type": "string",
+            "enum": ["auto", "9:16", "16:9", "1:1"],
+            "default": "auto",
+            "description": "Aspect ratio for the generated video",
+            "x-imgly-enum-labels": {
+              "auto": "Auto (From Images)",
+              "9:16": "9:16 (Vertical)",
+              "16:9": "16:9 (Landscape)",
+              "1:1": "1:1 (Square)"
+            }
+          },
+          "resolution": {
+            "title": "Resolution",
+            "type": "string",
+            "enum": ["720p", "1080p"],
+            "default": "720p",
+            "description": "Video resolution quality",
+            "x-imgly-enum-labels": {
+              "720p": "720p (HD)",
+              "1080p": "1080p (Full HD)"
+            }
+          },
+          "duration": {
+            "title": "Duration",
+            "type": "string",
+            "enum": ["8s"],
+            "default": "8s",
+            "description": "Duration of the generated video",
+            "x-imgly-enum-labels": {
+              "8s": "8 seconds"
+            }
+          },
+          "generate_audio": {
+            "title": "Generate Audio",
+            "type": "boolean",
+            "default": false,
+            "description": "Whether to generate audio for the video"
+          }
+        },
+        "x-fal-order-properties": ["first_frame_url", "last_frame_url", "prompt", "aspect_ratio", "resolution", "generate_audio"],
+        "required": ["prompt", "first_frame_url", "last_frame_url"]
+      },
+      "Veo31FastFirstLastFrameToVideoOutput": {
+        "title": "Veo31FastFirstLastFrameToVideoOutput",
+        "type": "object",
+        "properties": {
+          "video": {
+            "title": "Video",
+            "description": "The generated video",
+            "allOf": [{ "$ref": "#/components/schemas/File" }]
+          },
+          "seed": {
+            "title": "Seed",
+            "type": "integer",
+            "description": "The seed used for generation"
+          }
+        },
+        "x-fal-order-properties": ["video", "seed"],
+        "required": ["video"]
+      },
+      "File": {
+        "title": "File",
+        "type": "object",
+        "properties": {
+          "file_size": {
+            "title": "File Size",
+            "type": "integer",
+            "description": "The size of the file in bytes."
+          },
+          "file_name": {
+            "title": "File Name",
+            "type": "string",
+            "description": "The name of the file. It will be auto-generated if not provided."
+          },
+          "content_type": {
+            "title": "Content Type",
+            "type": "string",
+            "description": "The mime type of the file."
+          },
+          "url": {
+            "title": "Url",
+            "type": "string",
+            "description": "The URL where the file can be downloaded from."
+          },
+          "file_data": {
+            "format": "binary",
+            "title": "File Data",
+            "type": "string",
+            "description": "File data"
+          }
+        },
+        "x-fal-order-properties": [
+          "url",
+          "content_type",
+          "file_name",
+          "file_size",
+          "file_data"
+        ],
+        "required": ["url"]
+      }
+    }
+  },
+  "paths": {
+    "/fal-ai/veo3.1/fast/first-last-frame-to-video/requests/{request_id}/status": {
+      "get": {
+        "parameters": [
+          {
+            "name": "request_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "description": "Request ID" }
+          },
+          {
+            "name": "logs",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "description": "Whether to include logs (`1`) in the response or not (`0`)."
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request status.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/QueueStatus" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/fal-ai/veo3.1/fast/first-last-frame-to-video/requests/{request_id}/cancel": {
+      "put": {
+        "parameters": [
+          {
+            "name": "request_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "description": "Request ID" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request was cancelled.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "description": "Whether the request was cancelled successfully."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/fal-ai/veo3.1/fast/first-last-frame-to-video": {
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Veo31FastFirstLastFrameToVideoInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The request status.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/QueueStatus" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/fal-ai/veo3.1/fast/first-last-frame-to-video/requests/{request_id}": {
+      "get": {
+        "parameters": [
+          {
+            "name": "request_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "description": "Request ID" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Result of the request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Veo31FastFirstLastFrameToVideoOutput"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "servers": [{ "url": "https://queue.fal.run" }],
+  "security": [{ "apiKeyAuth": [] }]
+}

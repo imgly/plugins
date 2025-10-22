@@ -14,16 +14,17 @@
   "dependencies": {
     "@cesdk/cesdk-js": "catalog:",
     "@cesdk/engine": "catalog:",
-    "@imgly/plugin-ai-generation-web": "workspace:*",
     "@imgly/plugin-ai-apps-web": "workspace:*",
-    "@imgly/plugin-utils": "workspace:*",
-    "@imgly/plugin-ai-text-generation-web": "workspace:*",
-    "@imgly/plugin-ai-image-generation-web": "workspace:*",
-    "@imgly/plugin-ai-video-generation-web": "workspace:*",
     "@imgly/plugin-ai-audio-generation-web": "workspace:*",
+    "@imgly/plugin-ai-generation-web": "workspace:*",
+    "@imgly/plugin-ai-image-generation-web": "workspace:*",
     "@imgly/plugin-ai-sticker-generation-web": "workspace:*",
+    "@imgly/plugin-ai-text-generation-web": "workspace:*",
+    "@imgly/plugin-ai-video-generation-web": "workspace:*",
+    "@imgly/plugin-utils": "workspace:*",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^7.3.0"
   },
   "devDependencies": {
     "@types/react": "^18.3.18",

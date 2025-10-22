@@ -10,6 +10,7 @@ import { PluginConfiguration } from './types';
 import { toArray, translateWithFallback } from '@imgly/plugin-utils';
 import { PLUGIN_ID } from './constants';
 import CreateVideo from './quickActions/CreateVideo';
+import AnimateBetweenImages from './quickActions/AnimateBetweenImages';
 
 export { PLUGIN_ID } from './constants';
 
@@ -112,6 +113,7 @@ export function VideoGeneration<I, O extends Output>(
 
       // Register video quick actions
       ActionRegistry.get().register(CreateVideo({ cesdk }));
+      ActionRegistry.get().register(AnimateBetweenImages({ cesdk }));
 
       if (initializedResult.panel.builderRenderFunction != null) {
         cesdk.ui.registerPanel(
