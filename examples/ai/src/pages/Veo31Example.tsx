@@ -12,14 +12,6 @@ import FalAiVideo from '@imgly/plugin-ai-video-generation-web/fal-ai';
  * 1. Text-to-Video: Generate videos from text descriptions
  * 2. Image-to-Video: Animate static images into videos
  * 3. First-Last Frame: Interpolate smooth video transitions between two images
- *
- * Each type comes in two variants:
- * - Standard: Higher quality, longer processing time
- * - Fast: Faster processing, optimized for quick iterations
- *
- * Note: The "Animate Between Images" quick action automatically appears when 2 images
- * are selected in the canvas. No image generation providers are required - the video
- * plugin's quick action will automatically enable the image canvas menu.
  */
 function Veo31Example() {
   const cesdk = useRef<CreativeEditorSDK>();

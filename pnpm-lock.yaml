@@ -692,14 +692,14 @@ importers:
         injected: true
     devDependencies:
       '@cesdk/cesdk-js':
-        specifier: 1.59.2
-        version: 1.59.2(react@18.3.1)
+        specifier: 1.60.0
+        version: 1.60.0(react@18.3.1)
       '@cesdk/engine':
-        specifier: 1.59.2
-        version: 1.59.2(react@18.3.1)
+        specifier: 1.60.0
+        version: 1.60.0(react@18.3.1)
       '@imgly/plugin-utils':
         specifier: workspace:*
-        version: file:packages/plugin-utils(@cesdk/cesdk-js@1.59.2(react@18.3.1))
+        version: file:packages/plugin-utils(@cesdk/cesdk-js@1.60.0(react@18.3.1))
       '@playwright/test':
         specifier: ^1.54.1
         version: 1.56.0
@@ -1796,7 +1796,7 @@ packages:
   '@imgly/plugin-utils@file:packages/plugin-utils':
     resolution: {directory: packages/plugin-utils, type: directory}
     peerDependencies:
-      '@cesdk/cesdk-js': 1.59.2
+      '@cesdk/cesdk-js': 1.60.0
 
   '@imgly/vectorizer@1.0.0':
     resolution: {integrity: sha512-cXVmZYZgIIX8KOMDBd/xko8Wg158LmWkcjIAjTlKh2Rf9MPsVpuUTCdbPteX3Ut2bMMzmP7CO7cixlkKIizR5Q==}
@@ -6230,9 +6230,9 @@ snapshots:
       onnxruntime-web: 1.21.0
       zod: 3.25.76
 
-  '@imgly/plugin-utils@file:packages/plugin-utils(@cesdk/cesdk-js@1.59.2(react@18.3.1))':
+  '@imgly/plugin-utils@file:packages/plugin-utils(@cesdk/cesdk-js@1.60.0(react@18.3.1))':
     dependencies:
-      '@cesdk/cesdk-js': 1.59.2(react@18.3.1)
+      '@cesdk/cesdk-js': 1.60.0(react@18.3.1)
       lodash-es: 4.17.21
 
   '@imgly/vectorizer@1.0.0':
