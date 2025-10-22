@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [0.2.10] - 2025-10-22
+
 ### New Features
 
 -   [video-generation] **Google Veo 3.1 Provider Suite**: Added comprehensive Google Veo 3.1 video generation providers via fal.ai, offering multiple models optimized for different use cases:
