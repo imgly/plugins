@@ -4,13 +4,17 @@
 
 ### New Features
 
--   [video-generation] **Veo31FastFirstLastFrameToVideo Provider**: Added experimental Veo 3.1 Fast dual-image transformation provider via fal.ai that creates videos by interpolating between two images (first frame and last frame) with:
-    - Dual image input UI (custom implementation for first_frame_url and last_frame_url)
-    - Multiple aspect ratio options (16:9, 9:16, 1:1, 4:3, 3:4)
-    - Resolution options (480p, 720p, 1080p)
-    - Adjustable duration (2-8 seconds, default 8)
-    - Optional prompt guidance for transition control
-    - Optional audio generation
+-   [video-generation] **Google Veo 3.1 Provider Suite**: Added comprehensive Google Veo 3.1 video generation providers via fal.ai, offering multiple models optimized for different use cases:
+    - **Text-to-Video Providers**:
+        - `Veo31TextToVideo`: Standard quality text-to-video with configurable aspect ratios (16:9, 9:16, 1:1), variable duration (4s, 6s, 8s), resolution options (720p, 1080p), and optional audio generation
+        - `Veo31FastTextToVideo`: Faster and more cost-effective text-to-video variant with same capabilities as standard version
+    - **Image-to-Video Providers**:
+        - `Veo31ImageToVideo`: Standard quality image-to-video with auto aspect ratio detection, multiple preset options (16:9, 9:16, 1:1), resolution options (720p, 1080p), fixed 8-second duration, and optional audio generation
+        - `Veo31FastImageToVideo`: Faster and more cost-effective image-to-video variant with same capabilities
+    - **First-Last Frame Providers** (experimental dual-image transformation):
+        - `Veo31FirstLastFrameToVideo`: Standard quality interpolation between two images (first and last frame)
+        - `Veo31FastFirstLastFrameToVideo`: Faster variant with dual image input UI, multiple aspect ratios (16:9, 9:16, 1:1, 4:3, 3:4), resolution options (480p, 720p, 1080p), adjustable duration (2-8 seconds), optional prompt guidance, and optional audio generation
+    - **Quick Action Support**: Added "Animate Between Images" quick action for creating smooth transitions between two selected images using the first-last-frame providers
 
 ### Improvements
 
