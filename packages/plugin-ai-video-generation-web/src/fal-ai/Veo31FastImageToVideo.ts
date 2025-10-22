@@ -4,7 +4,6 @@ import {
   CommonProviderConfiguration,
   getPanelId
 } from '@imgly/plugin-ai-generation-web';
-import { getImageDimensionsFromURL } from '@imgly/plugin-utils';
 import schema from './Veo31FastImageToVideo.json';
 import CreativeEditorSDK from '@cesdk/cesdk-js';
 import createVideoProvider from './createVideoProvider';
@@ -12,7 +11,7 @@ import createVideoProvider from './createVideoProvider';
 type Veo31FastImageToVideoInput = {
   prompt: string;
   image_url: string;
-  aspect_ratio?: 'auto' | '9:16' | '16:9' | '1:1';
+  aspect_ratio?: '9:16' | '16:9' | '1:1';
   resolution?: '720p' | '1080p';
   duration?: '8s';
   generate_audio?: boolean;
@@ -80,16 +79,7 @@ function getProvider(
         }
       },
       getBlockInput: async (input) => {
-        const imageDimensions = await getImageDimensionsFromURL(
-          input.image_url as string,
-          cesdk.engine
-        );
-
-        // If aspect_ratio is 'auto', use the image dimensions
-        // Otherwise, calculate based on specified aspect ratio
-        let width: number;
-        let height: number;
-
+        // Parse resolution
         const resolution = input.resolution ?? '720p';
         const resolutionMap = {
           '720p': 720,
@@ -97,21 +87,13 @@ function getProvider(
         };
         const resolutionHeight = resolutionMap[resolution];
 
-        if (input.aspect_ratio === 'auto' || !input.aspect_ratio) {
-          // Use image dimensions, but scale to target resolution
-          const imageAspectRatio =
-            (imageDimensions.width ?? 1280) / (imageDimensions.height ?? 720);
-          width = Math.round(resolutionHeight * imageAspectRatio);
-          height = resolutionHeight;
-        } else {
-          // Parse specified aspect ratio
-          const aspectRatio = input.aspect_ratio;
-          const [widthRatio, heightRatio] = aspectRatio.split(':').map(Number);
+        // Parse aspect ratio
+        const aspectRatio = input.aspect_ratio ?? '16:9';
+        const [widthRatio, heightRatio] = aspectRatio.split(':').map(Number);
 
-          // Calculate width based on aspect ratio
-          width = Math.round((resolutionHeight * widthRatio) / heightRatio);
-          height = resolutionHeight;
-        }
+        // Calculate dimensions based on aspect ratio and resolution
+        const height = resolutionHeight;
+        const width = Math.round((height * widthRatio) / heightRatio);
 
         // Parse duration from string format (e.g., "8s" -> 8)
         const durationString = input.duration ?? '8s';

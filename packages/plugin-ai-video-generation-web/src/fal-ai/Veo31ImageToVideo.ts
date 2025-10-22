@@ -4,7 +4,6 @@ import {
   CommonProviderConfiguration,
   getPanelId
 } from '@imgly/plugin-ai-generation-web';
-import { getImageDimensionsFromURL } from '@imgly/plugin-utils';
 import schema from './Veo31ImageToVideo.json';
 import CreativeEditorSDK from '@cesdk/cesdk-js';
 import createVideoProvider from './createVideoProvider';
@@ -12,7 +11,7 @@ import createVideoProvider from './createVideoProvider';
 type Veo31ImageToVideoInput = {
   prompt: string;
   image_url: string;
-  aspect_ratio?: 'auto' | '9:16' | '16:9' | '1:1';
+  aspect_ratio?: '9:16' | '16:9' | '1:1';
   resolution?: '720p' | '1080p';
   duration?: '8s';
   generate_audio?: boolean;
@@ -77,41 +76,13 @@ function getProvider(
         };
         const resolutionHeight = resolutionMap[resolution];
 
-        let width: number;
-        let height: number;
+        // Parse aspect ratio
+        const aspectRatio = input.aspect_ratio ?? '16:9';
+        const [widthRatio, heightRatio] = aspectRatio.split(':').map(Number);
 
-        // Handle aspect ratio selection
-        if (input.aspect_ratio && input.aspect_ratio !== 'auto') {
-          // User selected a specific aspect ratio
-          const [widthRatio, heightRatio] = input.aspect_ratio
-            .split(':')
-            .map(Number);
-
-          // Calculate width based on the aspect ratio and target height
-          height = resolutionHeight;
-          width = Math.round((height * widthRatio) / heightRatio);
-        } else {
-          // Use image dimensions as fallback for 'auto'
-          try {
-            const imageDimension = await getImageDimensionsFromURL(
-              input.image_url as string,
-              cesdk.engine
-            );
-
-            // Use image dimensions as base
-            const imageWidth = imageDimension.width ?? 1920;
-            const imageHeight = imageDimension.height ?? 1080;
-
-            // Scale to target resolution while maintaining image aspect ratio
-            const imageAspectRatio = imageWidth / imageHeight;
-            height = resolutionHeight;
-            width = Math.round(height * imageAspectRatio);
-          } catch (error) {
-            // Fallback to 16:9 if image dimensions cannot be determined
-            height = resolutionHeight;
-            width = Math.round((height * 16) / 9);
-          }
-        }
+        // Calculate dimensions based on aspect ratio and resolution
+        const height = resolutionHeight;
+        const width = Math.round((height * widthRatio) / heightRatio);
 
         // Parse duration from string format (e.g., "8s" -> 8)
         const durationString = input.duration ?? '8s';

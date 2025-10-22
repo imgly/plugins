@@ -68,11 +68,10 @@
           "aspect_ratio": {
             "title": "Aspect Ratio",
             "type": "string",
-            "enum": ["auto", "9:16", "16:9", "1:1"],
-            "default": "auto",
-            "description": "The aspect ratio of the generated video. 'auto' will use the input image's aspect ratio",
+            "enum": ["9:16", "16:9", "1:1"],
+            "default": "16:9",
+            "description": "The aspect ratio of the generated video",
             "x-imgly-enum-labels": {
-              "auto": "Auto (From Image)",
               "9:16": "9:16 (Vertical)",
               "16:9": "16:9 (Landscape)",
               "1:1": "1:1 (Square)"
@@ -141,7 +140,6 @@
           "prompt",
           "aspect_ratio",
           "resolution",
-          "duration",
           "generate_audio"
         ],
         "required": ["prompt", "image_url"]
