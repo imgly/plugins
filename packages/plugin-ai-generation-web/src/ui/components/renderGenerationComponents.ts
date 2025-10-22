@@ -152,17 +152,21 @@ function renderGenerationComponents<K extends OutputKind, I, O extends Output>(
                 handleGenerationError(result.message, {
                   cesdk,
                   provider,
-                  getInput
+                  getInput,
+                  middlewareOptions: result.middlewareOptions
                 });
                 return;
               }
 
               if (result.status === 'success' && result.type === 'sync') {
-                const notification = provider.output.notification;
-                showSuccessNotification(cesdk, notification, () => ({
-                  input: getInput().input,
-                  output: result.output
-                }));
+                // Check if default was prevented
+                if (!result.middlewareOptions?.defaultPrevented()) {
+                  const notification = provider.output.notification;
+                  showSuccessNotification(cesdk, notification, () => ({
+                    input: getInput().input,
+                    output: result.output
+                  }));
+                }
               }
             } catch (error) {
               // Do not treat abort errors as errors
@@ -170,6 +174,9 @@ function renderGenerationComponents<K extends OutputKind, I, O extends Output>(
                 return;
               }
 
+              // Note: For exceptions thrown in middleware, we don't have access to middlewareOptions
+              // so we can't check defaultPrevented here. Middleware should handle errors in catch blocks
+              // and re-throw to use preventDefault properly.
               handleGenerationError(error, {
                 cesdk,
                 provider,

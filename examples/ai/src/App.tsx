@@ -167,7 +167,7 @@ function App() {
                   type: 'warning',
                   size: 'large',
                   content:
-                    'Due to high demand, we’re currently unable to process your request. Please try again shortly — we appreciate your patience!'
+                    "Due to high demand, we're currently unable to process your request. Please try again shortly — we appreciate your patience!"
                 });
                 // Throw abort error to stop the generation without further
                 // error notification.
@@ -176,6 +176,46 @@ function App() {
                   'AbortError'
                 );
               });
+            };
+
+            // Persistent error middleware that shows non-dismissing notification and sets block error state
+            const persistentErrorMiddleware: Middleware<any, any> = async (
+              input,
+              options,
+              next
+            ) => {
+              try {
+                return await next(input, options);
+              } catch (error) {
+                // Prevent all default behaviors (notifications, console logging, etc.)
+                options.preventDefault();
+
+                // Manually set blocks to error state
+                options.blockIds?.forEach((blockId) => {
+                  if (options.cesdk?.engine.block.isValid(blockId)) {
+                    options.cesdk.engine.block.setState(blockId, {
+                      type: 'Error',
+                      error: 'Unknown'
+                    });
+                  }
+                });
+
+                // Show persistent (non-dismissing) custom notification
+                options.cesdk?.ui.showNotification({
+                  type: 'error',
+                  message: 'Critical error occurred. Please contact support immediately.',
+                  duration: 'infinite', // Non-dismissing - notification stays until manually closed
+                  action: {
+                    label: 'Contact Support',
+                    onClick: () => {
+                      window.open('mailto:support@img.ly?subject=RecraftV3%20Generation%20Error');
+                    }
+                  }
+                });
+
+                // Re-throw the error to maintain the error flow
+                throw error;
+              }
             };
 
               instance.addPlugin(
@@ -203,7 +243,7 @@ function App() {
                   ],
                   text2image: [
                     FalAiImage.RecraftV3({
-                      middleware: [imageRateLimitMiddleware, errorMiddleware],
+                      middleware: [persistentErrorMiddleware],
                       proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL,
                       properties: {
                         style: {
@@ -212,6 +252,10 @@ function App() {
                       }
                     }),
                     FalAiImage.Recraft20b({
+                      middleware: [imageRateLimitMiddleware, errorMiddleware],
+                      proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
+                    }),
+                    FalAiImage.GeminiFlash25({
                       middleware: [imageRateLimitMiddleware, errorMiddleware],
                       proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
                     }),
@@ -233,6 +277,10 @@ function App() {
                     })
                   ],
                   image2image: [
+                    FalAiImage.Gemini25FlashImageEdit({
+                      middleware: [imageRateLimitMiddleware, errorMiddleware],
+                      proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
+                    }),
                     FalAiImage.GeminiFlashEdit({
                       middleware: [imageRateLimitMiddleware, errorMiddleware],
                       proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL

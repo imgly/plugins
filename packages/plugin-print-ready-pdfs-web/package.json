@@ -1,0 +1,96 @@
+{
+  "name": "@imgly/plugin-print-ready-pdfs-web",
+  "version": "1.0.0",
+  "description": "Print-Ready PDFs plugin for CE.SDK editor - PDF/X conversion and export functionality. Contains AGPL-3.0 licensed Ghostscript WASM.",
+  "keywords": [
+    "CE.SDK",
+    "plugin",
+    "pdf",
+    "pdfx",
+    "export"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/imgly/plugin-print-ready-pdfs-web.git"
+  },
+  "license": "SEE LICENSE IN LICENSE.md",
+  "author": {
+    "name": "IMG.LY GmbH",
+    "email": "support@img.ly",
+    "url": "https://img.ly"
+  },
+  "bugs": {
+    "email": "support@img.ly"
+  },
+  "source": "./src/index.ts",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "homepage": "https://img.ly/products/creative-sdk",
+  "files": [
+    "LICENSE.md",
+    "README.md",
+    "CHANGELOG.md",
+    "dist/",
+    "src/wasm/"
+  ],
+  "scripts": {
+    "start": "pnpm dev",
+    "clean": "pnpm exec rimraf dist",
+    "purge": "pnpm exec rimraf node_modules",
+    "build": "pnpm run clean && pnpm _syncPnpm && pnpm exec node scripts/build.mjs",
+    "dev": "pnpm exec concurrently 'node scripts/watch.mjs' 'pnpm _syncPnpm --watch' --names 'build,sync deps'",
+    "dev:wait": "pnpm exec wait-on ./dist/index.mjs ./dist/index.d.ts --window 250 --timeout 60000",
+    "dev:types": "tsc --emitDeclarationOnly --watch --preserveWatchOutput",
+    "publish:latest": "pnpm run build && pnpm publish --tag latest --access public",
+    "publish:next": "pnpm run build && pnpm publish --tag next --access public",
+    "check:all": "concurrently -n lint,type,pretty \"pnpm run check:lint\" \"pnpm run check:types\" \"pnpm run check:pretty\"",
+    "check:lint": "eslint --max-warnings 0 './src/**/*.{ts,tsx}'",
+    "check:pretty": "prettier --list-different './src/**/*.{ts,tsx}'",
+    "check:types": "tsc --noEmit",
+    "types:create": "tsc --emitDeclarationOnly",
+    "_syncPnpm": "pnpm sync-dependencies-meta-injected",
+    "demo:build": "pnpm run build && node scripts/build-demo.mjs",
+    "demo:dev": "pnpm run build && node scripts/build-demo.mjs && cd demo-dist && python3 -m http.server 8080",
+    "test:convert": "node test/convert-test.mjs",
+    "test:browser": "pnpm run build && playwright test test/browser-test.spec.ts",
+    "test:node": "pnpm run build && node test/node-test.mjs",
+    "test": "pnpm run test:integration",
+    "test:integration": "bash scripts/setup-test-tools.sh && pnpm run build && vitest run",
+    "test:profiles": "pnpm run build && vitest run profile-conversion",
+    "test:metadata": "pnpm run build && vitest run metadata-validation",
+    "test:content": "pnpm run build && vitest run content-preservation",
+    "test:all": "pnpm run test:browser && pnpm run test:integration",
+    "test:visual": "pnpm run build && node test/visual-test.mjs"
+  },
+  "devDependencies": {
+    "@cesdk/cesdk-js": "~1.61.0",
+    "@cesdk/engine": "~1.61.0",
+    "@imgly/plugin-utils": "workspace:*",
+    "@playwright/test": "^1.54.1",
+    "@types/emscripten": "^1.40.1",
+    "@types/node": "^20.11.0",
+    "chalk": "^5.4.1",
+    "concurrently": "^8.2.2",
+    "dotenv": "^16.5.0",
+    "esbuild": "^0.19.12",
+    "eslint": "^8.57.1",
+    "http-server": "^14.1.1",
+    "playwright": "^1.54.1",
+    "pnpm-sync-dependencies-meta-injected": "^0.0.14",
+    "prettier": "^2.8.8",
+    "typescript": "^5.7.3",
+    "vitest": "^2.1.8",
+    "wait-on": "8.0.2"
+  },
+  "dependenciesMeta": {
+    "@imgly/plugin-utils": {
+      "injected": true
+    }
+  }
+}

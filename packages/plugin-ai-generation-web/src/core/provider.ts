@@ -195,6 +195,46 @@ export type GenerationOptions = {
   abortSignal?: AbortSignal;
   engine: CreativeEngine;
   cesdk?: CreativeEditorSDK;
+
+  /**
+   * Prevents default UI feedback behaviors for this generation.
+   *
+   * **What gets prevented:**
+   * - Error/success notifications
+   * - Block error state
+   * - Console error logging
+   *
+   * **What is NOT prevented (always happens):**
+   * - Pending → Ready block state transition (loading spinner always stops)
+   * - Block validity checks
+   * - Middleware execution flow
+   *
+   * @example
+   * ```typescript
+   * catch (error) {
+   *   options.preventDefault();
+   *   myCustomErrorHandler(error);
+   *   throw error;
+   * }
+   * ```
+   */
+  preventDefault(): void;
+
+  /**
+   * Check if default behaviors have been prevented.
+   *
+   * @returns `true` if preventDefault() was called
+   *
+   * @example
+   * ```typescript
+   * if (!options.defaultPrevented()) {
+   *   // Show default notification
+   * }
+   * ```
+   *
+   * @internal
+   */
+  defaultPrevented(): boolean;
 };
 
 export type RenderCustomProperty = {

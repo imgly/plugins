@@ -1,0 +1,11 @@
+export interface PDFX3Options {
+  // Required
+  outputProfile: 'gracol' | 'fogra39' | 'srgb' | 'custom';
+  customProfile?: Blob; // Only if outputProfile is 'custom'
+
+  // Optional (with sensible defaults)
+  title?: string; // Document title (default: use existing)
+  outputConditionIdentifier?: string; // OutputIntent identifier (e.g., "FOGRA39")
+  outputCondition?: string; // Human-readable condition description
+  flattenTransparency?: boolean; // Force transparency flattening (default: true for PDF/X-3 compliance)
+}

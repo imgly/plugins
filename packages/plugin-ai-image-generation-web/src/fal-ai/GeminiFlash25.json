@@ -1,0 +1,321 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Fal Queue API",
+    "version": "1.0.0",
+    "description": "The Fal Queue API."
+  },
+  "components": {
+    "securitySchemes": {
+      "apiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization",
+        "description": "Fal Key"
+      }
+    },
+    "schemas": {
+      "QueueStatus": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["IN_QUEUE", "IN_PROGRESS", "COMPLETED"]
+          },
+          "request_id": { "type": "string", "description": "The request id." },
+          "response_url": {
+            "type": "string",
+            "description": "The response url."
+          },
+          "status_url": { "type": "string", "description": "The status url." },
+          "cancel_url": { "type": "string", "description": "The cancel url." },
+          "logs": {
+            "type": "object",
+            "description": "The logs.",
+            "additionalProperties": true
+          },
+          "metrics": {
+            "type": "object",
+            "description": "The metrics.",
+            "additionalProperties": true
+          },
+          "queue_position": {
+            "type": "integer",
+            "description": "The queue position."
+          }
+        },
+        "required": ["status", "request_id"]
+      },
+      "GeminiFlash25Input": {
+        "title": "GeminiFlash25TextToImageInput",
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "maxLength": 5000,
+            "type": "string",
+            "title": "Prompt",
+            "minLength": 1,
+            "description": "The text prompt describing the image to generate",
+            "x-imgly-builder": { "component": "TextArea" }
+          },
+          "aspect_ratio": {
+            "anyOf": [
+              {
+                "enum": ["1:1", "3:4", "4:3", "9:16", "16:9"],
+                "type": "string"
+              },
+              { "$ref": "#/components/schemas/CustomAspectRatio" }
+            ],
+            "title": "Aspect Ratio",
+            "default": "1:1",
+            "description": "The aspect ratio of the generated image",
+            "x-imgly-enum-labels": {
+              "CustomAspectRatio": "Custom",
+              "1:1": "Square (1:1)",
+              "3:4": "Portrait (3:4)",
+              "4:3": "Landscape (4:3)",
+              "9:16": "Portrait (9:16)",
+              "16:9": "Landscape (16:9)"
+            },
+            "x-imgly-enum-icons": {
+              "1:1": "@imgly/plugin/formats/ratio1by1",
+              "3:4": "@imgly/plugin/formats/ratio3by4",
+              "4:3": "@imgly/plugin/formats/ratio4by3",
+              "9:16": "@imgly/plugin/formats/ratio9by16",
+              "16:9": "@imgly/plugin/formats/ratio16by9",
+              "CustomAspectRatio": "@imgly/plugin/formats/ratioFree"
+            }
+          },
+          "output_format": {
+            "enum": ["jpeg", "png", "webp"],
+            "type": "string",
+            "title": "Output Format",
+            "default": "jpeg",
+            "description": "The format of the generated image"
+          },
+          "num_images": {
+            "type": "integer",
+            "title": "Number of Images",
+            "default": 1,
+            "minimum": 1,
+            "maximum": 4,
+            "description": "Number of images to generate"
+          },
+          "safety_settings": {
+            "type": "array",
+            "title": "Safety Settings",
+            "description": "Safety settings for content filtering",
+            "items": {
+              "type": "object",
+              "properties": {
+                "category": { "type": "string" },
+                "threshold": { "type": "string" }
+              }
+            }
+          },
+          "seed": {
+            "type": "integer",
+            "title": "Seed",
+            "description": "Random seed for reproducible results"
+          }
+        },
+        "x-fal-order-properties": ["prompt", "aspect_ratio"],
+        "required": ["prompt"]
+      },
+      "GeminiFlash25Output": {
+        "title": "GeminiFlash25Output",
+        "type": "object",
+        "properties": {
+          "images": {
+            "title": "Images",
+            "type": "array",
+            "description": "The generated images",
+            "items": { "$ref": "#/components/schemas/Image" }
+          }
+        },
+        "x-fal-order-properties": ["images"],
+        "required": ["images"]
+      },
+      "CustomAspectRatio": {
+        "title": "CustomAspectRatio",
+        "type": "object",
+        "properties": {
+          "height": {
+            "type": "integer",
+            "title": "Height",
+            "description": "The height of the generated image in pixels",
+            "minimum": 256,
+            "maximum": 2048,
+            "default": 1024
+          },
+          "width": {
+            "type": "integer",
+            "title": "Width",
+            "description": "The width of the generated image in pixels",
+            "minimum": 256,
+            "maximum": 2048,
+            "default": 1024
+          }
+        },
+        "x-fal-order-properties": ["width", "height"]
+      },
+      "Image": {
+        "title": "Image",
+        "type": "object",
+        "properties": {
+          "file_size": {
+            "anyOf": [{ "type": "integer" }, { "type": "null" }],
+            "title": "File Size",
+            "description": "The size of the file in bytes."
+          },
+          "height": {
+            "anyOf": [{ "type": "integer" }, { "type": "null" }],
+            "title": "Height",
+            "description": "The height of the image in pixels."
+          },
+          "file_name": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "File Name",
+            "description": "The name of the file. It will be auto-generated if not provided."
+          },
+          "content_type": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Content Type",
+            "description": "The mime type of the file."
+          },
+          "url": {
+            "title": "Url",
+            "type": "string",
+            "description": "The URL where the file can be downloaded from."
+          },
+          "width": {
+            "anyOf": [{ "type": "integer" }, { "type": "null" }],
+            "title": "Width",
+            "description": "The width of the image in pixels."
+          }
+        },
+        "description": "Represents an image file.",
+        "x-fal-order-properties": [
+          "url",
+          "content_type",
+          "file_name",
+          "file_size",
+          "width",
+          "height"
+        ],
+        "required": ["url"]
+      }
+    }
+  },
+  "paths": {
+    "/fal-ai/gemini-flash-2.5/requests/{request_id}/status": {
+      "get": {
+        "parameters": [
+          {
+            "name": "request_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "description": "Request ID" }
+          },
+          {
+            "name": "logs",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "description": "Whether to include logs (`1`) in the response or not (`0`)."
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request status.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/QueueStatus" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/fal-ai/gemini-flash-2.5/requests/{request_id}/cancel": {
+      "put": {
+        "parameters": [
+          {
+            "name": "request_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "description": "Request ID" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request was cancelled.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "description": "Whether the request was cancelled successfully."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/fal-ai/gemini-flash-2.5": {
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/GeminiFlash25Input" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The request status.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/QueueStatus" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/fal-ai/gemini-flash-2.5/requests/{request_id}": {
+      "get": {
+        "parameters": [
+          {
+            "name": "request_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "description": "Request ID" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Result of the request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GeminiFlash25Output"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "servers": [{ "url": "https://queue.fal.run" }],
+  "security": [{ "apiKeyAuth": [] }]
+}

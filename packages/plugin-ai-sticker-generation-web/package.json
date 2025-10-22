@@ -1,6 +1,6 @@
 {
   "name": "@imgly/plugin-ai-sticker-generation-web",
-  "version": "0.2.8",
+  "version": "0.2.9",
   "description": "AI sticker generation plugin for the CE.SDK editor",
   "keywords": [
     "CE.SDK",
