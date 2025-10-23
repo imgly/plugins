@@ -2,8 +2,7 @@ import {
   type Provider,
   type AudioOutput,
   CommonProviderConfiguration,
-  getPanelId,
-  createTranslationCallback
+  getPanelId
 } from '@imgly/plugin-ai-generation-web';
 import CreativeEditorSDK from '@cesdk/cesdk-js';
 import schema from './ElevenMultilingualV2.json';
@@ -55,10 +54,18 @@ function getProvider(
   const voiceSelectionPanelId = `${prefix}.voiceSelection`;
   const modelKey = 'elevenlabs/monolingual/v1';
 
-  const voiceAssetSource = createVoicesAssetSource(
-    baseURL,
-    createTranslationCallback(cesdk, voices.id, undefined, undefined)
-  );
+  // Create custom translateLabel for library assets
+  const translateVoiceLabel = (
+    assetId: string,
+    fallbackLabel: string
+  ): string => {
+    const translationKey = `libraries.${voices.id}.${assetId}`;
+    const translated = cesdk.i18n.translate([translationKey]);
+    // Return translated label or fallback if no translation found
+    return translated !== translationKey ? translated : fallbackLabel;
+  };
+
+  const voiceAssetSource = createVoicesAssetSource(baseURL, translateVoiceLabel);
   const voiceAssetSourceId = voiceAssetSource.id;
 
   cesdk.setTranslations({
