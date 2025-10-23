@@ -73,10 +73,10 @@ function extractProviderIdFromSchema(schema, filePath) {
     'QwenImageEdit': 'fal-ai/qwen-image-edit',
     'FluxProKontextEdit': 'fal-ai/flux-pro/kontext',
     'FluxProKontextMaxEdit': 'fal-ai/flux-pro/kontext/max',
-    'Ideogram3': 'fal-ai/ideogram/v3',
-    'Ideogram3Remix': 'fal-ai/ideogram/v3/remix',
-    'GptImage1': 'open-ai/gpt-image-1/text2image',
-    'GptImage1Image2Image': 'open-ai/gpt-image-1/image2image'
+    'IdeogramV3': 'fal-ai/ideogram/v3',
+    'IdeogramV3Remix': 'fal-ai/ideogram/v3/remix',
+    'GptImage1.text2image': 'open-ai/gpt-image-1/text2image',
+    'GptImage1.image2image': 'open-ai/gpt-image-1/image2image'
   };
 
   return providerMap[fileName] || null;
