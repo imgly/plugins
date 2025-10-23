@@ -1,14 +1,33 @@
 {
   "en": {
     "common.generate": "Generate",
+    "libraries.ly.img.voices.eleventlabs.9BWtsMINqrJLrRacOk9x": "Aria",
+    "libraries.ly.img.voices.eleventlabs.CwhRBWXzGAHq8TQ4Fs17": "Roger",
+    "libraries.ly.img.voices.eleventlabs.EXAVITQu4vr4xnSDxMaL": "Sarah",
+    "libraries.ly.img.voices.eleventlabs.FGY2WhTYpPnrIDTdsKH5": "Laura",
+    "libraries.ly.img.voices.eleventlabs.IKne3meq5aSn9XLyUdCD": "Charlie",
+    "libraries.ly.img.voices.eleventlabs.JBFqnCBsd6RMkjVDRZzb": "George",
+    "libraries.ly.img.voices.eleventlabs.N2lVS1w4EtoT3dr4eOWO": "Callum",
+    "libraries.ly.img.voices.eleventlabs.SAz9YHcvj6GT2YYXdXww": "River",
+    "libraries.ly.img.voices.eleventlabs.TX3LPaxmHKxFdv7VOQHJ": "Liam",
+    "libraries.ly.img.voices.eleventlabs.XB0fDUnXU5powFXDhCwa": "Charlotte",
+    "libraries.ly.img.voices.eleventlabs.Xb7hH8MSUJpSbSDYk0k2": "Alice",
+    "libraries.ly.img.voices.eleventlabs.XrExE9yKIg1WjnnlVkGX": "Matilda",
+    "libraries.ly.img.voices.eleventlabs.bIHbv24MWmeRgasZH58o": "Will",
+    "libraries.ly.img.voices.eleventlabs.cgSgspJ2msm6clMCkdW9": "Jessica",
+    "libraries.ly.img.voices.eleventlabs.cjVigY5qzO86Huf0OWal": "Eric",
+    "libraries.ly.img.voices.eleventlabs.iP95p4xoKVk53GoZ742B": "Chris",
+    "libraries.ly.img.voices.eleventlabs.nPczCjzI2devNBz1zQrb": "Brian",
+    "libraries.ly.img.voices.eleventlabs.onwK4e9ZLuTAKqWW03F9": "Daniel",
+    "libraries.ly.img.voices.eleventlabs.pFZP5JQG7iQjIQuC4Bku": "Lily",
+    "libraries.ly.img.voices.eleventlabs.pqHfZKP75CvOlQylNhV4": "Bill",
+    "ly.img.plugin-ai-audio-generation-web.elevenlabs/monolingual/v1.property.prompt": "Prompt",
+    "ly.img.plugin-ai-audio-generation-web.elevenlabs/monolingual/v1.property.speed": "Speech Speed",
+    "ly.img.plugin-ai-audio-generation-web.elevenlabs/monolingual/v1.property.voice_id": "Voice",
+    "ly.img.plugin-ai-audio-generation-web.elevenlabs/sound-generation.property.duration_seconds": "Duration (seconds)",
+    "ly.img.plugin-ai-audio-generation-web.elevenlabs/sound-generation.property.text": "Sound description",
     "panel.ly.img.ai.audio-generation.sound": "Sound Generation",
     "panel.ly.img.ai.audio-generation.speech": "AI Voice",
-    "panel.ly.img.ai.audio-generation.speech.elevenlabs.voiceSelection": "Select a Voice",
-    "ly.img.plugin-ai-audio-generation-web.elevenlabs/monolingual/v1.property.prompt": "Prompt",
-    "ly.img.plugin-ai-audio-generation-web.elevenlabs/monolingual/v1.property.voice_id": "Voice",
-    "ly.img.plugin-ai-audio-generation-web.elevenlabs/monolingual/v1.property.speed": "Speech Speed",
-
-    "ly.img.plugin-ai-audio-generation-web.elevenlabs/sound-generation.property.text": "Sound description",
-    "ly.img.plugin-ai-audio-generation-web.elevenlabs/sound-generation.property.duration_seconds": "Duration (seconds)"
+    "panel.ly.img.ai.audio-generation.speech.elevenlabs.voiceSelection": "Select a Voice"
   }
 }
