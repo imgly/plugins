@@ -547,6 +547,9 @@ importers:
       '@cesdk/cesdk-js':
         specifier: 1.60.0
         version: 1.60.0(react@18.3.1)
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.0.1
     devDependencies:
       '@anthropic-ai/sdk':
         specifier: ^0.39.0
