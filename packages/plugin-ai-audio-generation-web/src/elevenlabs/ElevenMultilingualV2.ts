@@ -139,7 +139,10 @@ function getProvider(
               icon: '@imgly/Appearance',
               trailingIcon: '@imgly/ChevronRight',
               labelAlignment: 'left',
-              label: voiceState.value.name,
+              label: translateVoiceLabel(
+                voiceState.value.voiceId,
+                voiceState.value.name
+              ),
               onClick: () => {
                 cesdk.ui.openPanel(voiceSelectionPanelId, {
                   payload: {
