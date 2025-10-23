@@ -2,7 +2,8 @@ import { Icons } from '@imgly/plugin-utils';
 import {
   CommonProviderConfiguration,
   getPanelId,
-  type Provider
+  type Provider,
+  createTranslationCallback
 } from '@imgly/plugin-ai-generation-web';
 import GptImage1Schema from './GptImage1.text2image.json';
 import CreativeEditorSDK, { AssetResult } from '@cesdk/cesdk-js';
@@ -51,10 +52,14 @@ function getProvider(
   const baseURL =
     'https://cdn.img.ly/assets/plugins/plugin-ai-image-generation-web/v1/gpt-image-1/';
   const styleAssetSourceId = `${modelKey}/styles`;
-  const styleAssetSource = createStyleAssetSource(styleAssetSourceId, {
-    baseURL,
-    includeNone: true
-  });
+  const styleAssetSource = createStyleAssetSource(
+    styleAssetSourceId,
+    {
+      baseURL,
+      includeNone: true
+    },
+    createTranslationCallback(cesdk, modelKey, 'style', 'image')
+  );
   addStyleAssetSource(styleAssetSource, { cesdk });
 
   cesdk.ui.registerPanel<StyleSelectionPayload>(

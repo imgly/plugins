@@ -61,7 +61,12 @@ export const createStyleAssetSource = (
   options: {
     baseURL: string;
     includeNone?: boolean;
-  }
+  },
+  translateLabel?: (
+    assetId: string,
+    fallbackLabel: string,
+    locale: string
+  ) => string
 ) => {
   const styleValues = STYLES_IMAGE.map((style) => {
     if (style.id === 'none') {
@@ -81,7 +86,11 @@ export const createStyleAssetSource = (
     };
   }).filter(isDefined);
 
-  const styleAssetSource = new CustomAssetSource(assetSourceId, styleValues);
+  const styleAssetSource = new CustomAssetSource(
+    assetSourceId,
+    styleValues,
+    translateLabel ? { translateLabel } : undefined
+  );
 
   const defaultStyle = STYLES_IMAGE[0];
   styleAssetSource.setAssetActive(defaultStyle.id);
