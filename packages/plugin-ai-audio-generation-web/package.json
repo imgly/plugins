@@ -2,7 +2,12 @@
   "name": "@imgly/plugin-ai-audio-generation-web",
   "version": "0.2.10",
   "description": "AI audio generation plugin for the CE.SDK editor",
-  "keywords": ["CE.SDK", "plugin", "AI", "audio-generation"],
+  "keywords": [
+    "CE.SDK",
+    "plugin",
+    "AI",
+    "audio-generation"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/imgly/plugins.git"
@@ -30,7 +35,13 @@
     }
   },
   "homepage": "https://img.ly/products/creative-sdk",
-  "files": ["LICENSE.md", "README.md", "CHANGELOG.md", "dist/", "bin/"],
+  "files": [
+    "LICENSE.md",
+    "README.md",
+    "CHANGELOG.md",
+    "dist/",
+    "bin/"
+  ],
   "scripts": {
     "start": "npm run watch",
     "clean": "pnpm exec rimraf dist",
@@ -49,7 +60,9 @@
     "check:types": "tsc --noEmit",
     "types:create": "tsc --emitDeclarationOnly"
   },
-  "dependencies": {},
+  "dependencies": {
+    "rimraf": "^6.0.1"
+  },
   "devDependencies": {
     "@imgly/plugin-ai-generation-web": "workspace:*",
     "@imgly/plugin-utils": "workspace:*",

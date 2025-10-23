@@ -9,6 +9,7 @@ import {
 import { PluginConfiguration } from './types';
 import { toArray, translateWithFallback } from '@imgly/plugin-utils';
 import { PLUGIN_ID } from './constants';
+import translations from '../translations.json';
 
 export { PLUGIN_ID } from './constants';
 
@@ -39,10 +40,11 @@ export function AudioGeneration<I, O extends Output>(
       const SOUND_ACTION_LABEL_KEY = `${PLUGIN_ID}.sound.action.label`;
       const SPEECH_ACTION_LABEL_KEY = `${PLUGIN_ID}.speech.action.label`;
 
+      // Load all translations from translations.json
+      cesdk.i18n.setTranslations(translations);
+
       cesdk.setTranslations({
         en: {
-          [`panel.${SPEECH_GENERATION_PANEL_ID}`]: 'AI Voice',
-          [`panel.${SOUND_GENERATION_PANEL_ID}`]: 'Sound Generation',
           [SOUND_ACTION_LABEL_KEY]: 'Generate Sound',
           [SPEECH_ACTION_LABEL_KEY]: 'AI Voice'
         }
