@@ -10,6 +10,7 @@ import { PluginConfiguration } from './types';
 import iconSprite, { PLUGIN_ICON_SET_ID } from './iconSprite';
 import { toArray, translateWithFallback } from '@imgly/plugin-utils';
 import { PLUGIN_ID } from './constants';
+import translations from '../translations.json';
 
 export { PLUGIN_ID } from './constants';
 
@@ -44,6 +45,10 @@ export function StickerGeneration<I, O extends Output>(
       const ACTION_LABEL_KEY = `${PLUGIN_ID}.action.label`;
 
       cesdk.ui.addIconSet(PLUGIN_ICON_SET_ID, iconSprite);
+
+      // Load all translations from translations.json
+      cesdk.i18n.setTranslations(translations);
+
       cesdk.i18n.setTranslations({
         en: {
           [`panel.${STICKER_GENERATION_PANEL_ID}`]: 'Sticker Generation',
