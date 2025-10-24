@@ -2,7 +2,8 @@ import { Icons } from '@imgly/plugin-utils';
 import {
   CommonProviderConfiguration,
   getPanelId,
-  type Provider
+  type Provider,
+  createTranslationCallback
 } from '@imgly/plugin-ai-generation-web';
 import GptImage1Schema from './GptImage1.text2image.json';
 import CreativeEditorSDK, { AssetResult } from '@cesdk/cesdk-js';
@@ -10,8 +11,9 @@ import { b64JsonToBlob } from './utils';
 import {
   addStyleAssetSource,
   createStyleAssetSource,
-  STYLES
-} from './GptImage1.styles';
+  STYLES_IMAGE,
+  STYLE_PROMPTS
+} from './GptImage1.constants';
 
 type StyleSelectionPayload = {
   onSelect: (asset: AssetResult) => Promise<void>;
@@ -50,10 +52,14 @@ function getProvider(
   const baseURL =
     'https://cdn.img.ly/assets/plugins/plugin-ai-image-generation-web/v1/gpt-image-1/';
   const styleAssetSourceId = `${modelKey}/styles`;
-  const styleAssetSource = createStyleAssetSource(styleAssetSourceId, {
-    baseURL,
-    includeNone: true
-  });
+  const styleAssetSource = createStyleAssetSource(
+    styleAssetSourceId,
+    {
+      baseURL,
+      includeNone: true
+    },
+    createTranslationCallback(cesdk, modelKey, 'style', 'image')
+  );
   addStyleAssetSource(styleAssetSource, { cesdk });
 
   cesdk.ui.registerPanel<StyleSelectionPayload>(
@@ -71,12 +77,7 @@ function getProvider(
   );
 
   cesdk.ui.addIconSet('@imgly/plugin/formats', Icons.Formats);
-  cesdk.i18n.setTranslations({
-    en: {
-      [`panel.${getPanelId(modelKey)}.styleSelection`]: 'Style Selection',
-      [`panel.gpt-image-1.imageSelection`]: 'Select Image To Change'
-    }
-  });
+  // Panel translations are loaded from translations.json
 
   const provider: Provider<'image', GptImage1Input, GptImage1Output> = {
     id: 'open-ai/gpt-image-1/text2image',
@@ -99,7 +100,7 @@ function getProvider(
               'style',
               styleAssetSource.getAssetSelectValue(
                 styleAssetSource.getActiveAssetIds()[0]
-              ) ?? STYLES[0]
+              ) ?? STYLES_IMAGE[0]
             );
 
             // Show the style library for the selected type.
@@ -174,15 +175,14 @@ function getProvider(
         input: GptImage1Input,
         { abortSignal }: { abortSignal?: AbortSignal }
       ) => {
-        const stylePrompt = STYLES.find((style) => style.id === input.style);
         let prompt = input.prompt;
 
-        if (
-          stylePrompt != null &&
-          stylePrompt.id !== 'none' &&
-          stylePrompt.prompt
-        ) {
-          prompt = `${prompt}, ${stylePrompt.prompt}`;
+        // Apply style prompt if style is selected and not 'none'
+        if (input.style && input.style !== 'none') {
+          const stylePrompt = STYLE_PROMPTS[input.style];
+          if (stylePrompt) {
+            prompt = `${prompt}, ${stylePrompt}`;
+          }
         }
         const hasGlobalAPIKey =
           cesdk.ui.experimental.hasGlobalStateValue('OPENAI_API_KEY');

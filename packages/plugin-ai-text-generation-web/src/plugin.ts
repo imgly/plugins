@@ -18,6 +18,7 @@ import ChangeTone from './quickActions/ChangeTone';
 import Translate from './quickActions/Translate';
 import ChangeTextTo from './quickActions/ChangeTextTo';
 import { PLUGIN_ID, DEFAULT_TEXT_QUICK_ACTION_ORDER } from './constants';
+import translations from '../translations.json';
 
 export { PLUGIN_ID, DEFAULT_TEXT_QUICK_ACTION_ORDER } from './constants';
 
@@ -47,6 +48,10 @@ export function TextGeneration<I, O extends Output>(
       );
 
       cesdk.ui.addIconSet(PLUGIN_ICON_SET_ID, iconSprite);
+
+      // Load all translations from translations.json
+      cesdk.i18n.setTranslations(translations);
+
       cesdk.i18n.setTranslations({
         en: {
           'common.apply': 'Apply',

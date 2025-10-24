@@ -13,6 +13,7 @@ import {
   createThumbnailFromAudio,
   truncate
 } from './utils';
+import { CustomAssetSource } from '@imgly/plugin-utils';
 
 type ElevenlabsInput = {
   prompt: string;
@@ -51,8 +52,21 @@ function getProvider(
 
   const prefix = 'ly.img.ai.audio-generation.speech.elevenlabs';
   const voiceSelectionPanelId = `${prefix}.voiceSelection`;
-  const voiceAssetSourceId = createVoicesAssetSource(cesdk, baseURL);
   const modelKey = 'elevenlabs/monolingual/v1';
+
+  // Create custom translateLabel for library assets
+  const translateVoiceLabel = (
+    assetId: string,
+    fallbackLabel: string
+  ): string => {
+    const translationKey = `libraries.${voices.id}.${assetId}`;
+    const translated = cesdk.i18n.translate([translationKey]);
+    // Return translated label or fallback if no translation found
+    return translated !== translationKey ? translated : fallbackLabel;
+  };
+
+  const voiceAssetSource = createVoicesAssetSource(baseURL, translateVoiceLabel);
+  const voiceAssetSourceId = voiceAssetSource.id;
 
   cesdk.setTranslations({
     en: {
@@ -69,6 +83,7 @@ function getProvider(
     name: 'Elevenlabs Multilingual V2',
     kind: 'audio',
     initialize: async () => {
+      cesdk.engine.asset.addSource(voiceAssetSource);
       cesdk.ui.addAssetLibraryEntry({
         id: voiceAssetSourceId,
         sourceIds: [voiceAssetSourceId],
@@ -124,7 +139,10 @@ function getProvider(
               icon: '@imgly/Appearance',
               trailingIcon: '@imgly/ChevronRight',
               labelAlignment: 'left',
-              label: voiceState.value.name,
+              label: translateVoiceLabel(
+                voiceState.value.voiceId,
+                voiceState.value.name
+              ),
               onClick: () => {
                 cesdk.ui.openPanel(voiceSelectionPanelId, {
                   payload: {
@@ -246,23 +264,34 @@ export async function generateSpeech(
 }
 
 function createVoicesAssetSource(
-  cesdk: CreativeEditorSDK,
-  baseURL: string
-): string {
+  baseURL: string,
+  translateLabel?: (
+    assetId: string,
+    fallbackLabel: string,
+    locale: string
+  ) => string
+): CustomAssetSource {
   const { id, assets } = voices;
-  cesdk.engine.asset.addLocalSource(id);
-  assets.map(async (asset) => {
-    cesdk.engine.asset.addAssetToSource(id, {
-      ...asset,
-      meta: {
-        ...asset.meta,
-        thumbUri: asset.meta.thumbUri.replace(
-          '{{base_url}}',
-          `${baseURL}thumbnails/`
-        )
-      }
-    });
-  });
-  return id;
+
+  const voiceValues = assets.map((asset) => ({
+    id: asset.id,
+    label: asset.label.en,
+    tags: asset.tags,
+    meta: {
+      ...asset.meta,
+      thumbUri: asset.meta.thumbUri.replace(
+        '{{base_url}}',
+        `${baseURL}thumbnails/`
+      )
+    }
+  }));
+
+  const voiceAssetSource = new CustomAssetSource(
+    id,
+    voiceValues,
+    translateLabel ? { translateLabel } : undefined
+  );
+
+  return voiceAssetSource;
 }
 export default getProvider;

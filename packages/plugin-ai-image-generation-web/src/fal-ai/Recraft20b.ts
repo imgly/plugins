@@ -182,37 +182,8 @@ function getProvider(
     }
   );
 
-  // Build default translations from constants
-  const styleTranslations: Record<string, string> = {};
-
-  // Add all image style translations
-  STYLES_IMAGE.forEach(({ id, label }) => {
-    styleTranslations[
-      `ly.img.plugin-ai-image-generation-web.${modelKey}.property.style.${id}`
-    ] = label;
-  });
-
-  // Add all vector style translations
-  STYLES_VECTOR.forEach(({ id, label }) => {
-    styleTranslations[
-      `ly.img.plugin-ai-image-generation-web.${modelKey}.property.style.${id}`
-    ] = label;
-  });
-
-  // Add all icon style translations
-  STYLES_ICON.forEach(({ id, label }) => {
-    styleTranslations[
-      `ly.img.plugin-ai-image-generation-web.${modelKey}.property.style.${id}`
-    ] = label;
-  });
-
-  cesdk.i18n.setTranslations({
-    en: {
-      [`panel.${getPanelId('fal-ai/recraft/v2/text-to-image')}.styleSelection`]:
-        'Style Selection',
-      ...styleTranslations
-    }
-  });
+  // All translations (panel and property) are now loaded from translations.json
+  // No runtime translation code needed here!
 
   return createImageProvider(
     {

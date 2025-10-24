@@ -11,6 +11,7 @@ import { toArray, translateWithFallback } from '@imgly/plugin-utils';
 import { PLUGIN_ID } from './constants';
 import CreateVideo from './quickActions/CreateVideo';
 import AnimateBetweenImages from './quickActions/AnimateBetweenImages';
+import translations from '../translations.json';
 
 export { PLUGIN_ID } from './constants';
 
@@ -50,6 +51,9 @@ export function VideoGeneration<I, O extends Output>(
       );
 
       const ACTION_LABEL_KEY = `${PLUGIN_ID}.action.label`;
+
+      // Load all translations from translations.json
+      cesdk.i18n.setTranslations(translations);
 
       cesdk.setTranslations({
         en: {

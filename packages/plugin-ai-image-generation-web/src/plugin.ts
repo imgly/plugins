@@ -12,6 +12,7 @@ import { PluginConfiguration } from './types';
 import iconSprite, { PLUGIN_ICON_SET_ID } from './iconSprite';
 import { toArray, translateWithFallback } from '@imgly/plugin-utils';
 import { PLUGIN_ID, DEFAULT_IMAGE_QUICK_ACTION_ORDER } from './constants';
+import translations from '../translations.json';
 import EditImage from './quickActions/EditImage';
 import SwapBackground from './quickActions/SwapBackground';
 import StyleTransfer from './quickActions/StyleTransfer';
@@ -62,13 +63,9 @@ export function ImageGeneration<I, O extends Output>(
       const ACTION_LABEL_KEY = `${PLUGIN_ID}.action.label`;
 
       cesdk.ui.addIconSet(PLUGIN_ICON_SET_ID, iconSprite);
-      cesdk.i18n.setTranslations({
-        en: {
-          [`panel.${IMAGE_GENERATION_PANEL_ID}`]: 'Image Generation',
-          [`${IMAGE_GENERATION_PANEL_ID}.dock.label`]: 'AI Image',
-          [ACTION_LABEL_KEY]: 'Generate Image'
-        }
-      });
+
+      // Load all translations from translations.json
+      cesdk.i18n.setTranslations(translations);
 
       const disposeApp = registry.register({
         type: 'plugin',

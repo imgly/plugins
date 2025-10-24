@@ -59,10 +59,12 @@
     "check:types": "tsc --noEmit",
     "types:create": "tsc --emitDeclarationOnly"
   },
-  "dependencies": {},
+  "dependencies": {
+    "rimraf": "^6.0.1"
+  },
   "devDependencies": {
-    "@imgly/plugin-ai-generation-web": "workspace:*",
     "@fal-ai/client": "^1.3.0",
+    "@imgly/plugin-ai-generation-web": "workspace:*",
     "@imgly/plugin-utils": "workspace:*",
     "@types/ndarray": "^1.0.14",
     "chalk": "^5.3.0",
