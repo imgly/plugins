@@ -60,9 +60,6 @@
     "check:types": "tsc --noEmit",
     "types:create": "tsc --emitDeclarationOnly"
   },
-  "dependencies": {
-    "rimraf": "^6.0.1"
-  },
   "devDependencies": {
     "@imgly/plugin-ai-generation-web": "workspace:*",
     "@imgly/plugin-utils": "workspace:*",
@@ -73,6 +70,7 @@
     "eslint": "^8.51.0",
     "lodash-es": "^4.17.21",
     "openapi-types": "^12.1.3",
+    "rimraf": "^6.0.1",
     "typescript": "^5.3.3"
   },
   "peerDependencies": {
