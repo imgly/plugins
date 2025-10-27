@@ -11,6 +11,7 @@
 export const defaultTranslations: Record<string, string> = {
   // Core generation properties (found in all Input schemas)
   'ly.img.plugin-ai-generation-web.defaults.property.prompt': 'Prompt',
+  'ly.img.plugin-ai-generation-web.defaults.property.prompt.placeholder': '',
   'ly.img.plugin-ai-generation-web.defaults.property.style': 'Style',
 
   // Common properties

@@ -255,6 +255,14 @@ function renderStringProperty<K extends OutputKind, I, O extends Output>(
   const id = `${provider.id}.${propertyId}`;
   const inputLabel = createInputLabelArray(property, provider, kind);
 
+  // Create placeholder i18n key array with fallback to global placeholder
+  const placeholderKeys = createInputLabelArray(
+    property,
+    provider,
+    kind,
+    'placeholder'
+  );
+
   // Resolve default value from property configuration
   const propertyContext = buildPropertyContext(engine, options.cesdk);
   const propertyConfig =
@@ -276,9 +284,17 @@ function renderStringProperty<K extends OutputKind, I, O extends Output>(
       ? 'TextArea'
       : 'TextInput';
 
+  // Build placeholder with i18n keys
+  // Note: CE.SDK supports string arrays for i18n fallback at runtime,
+  // but TypeScript types only declare string. Using type assertion as a temporary workaround.
+  // TODO: Remove type assertion once CE.SDK types are fixed to accept string | string[] for placeholder
+  // See: https://github.com/imgly/ubq/pull/10593
+  const placeholder =
+    placeholderKeys.length > 0 ? (placeholderKeys as any as string) : undefined;
+
   builder[builderComponent](id, {
     inputLabel,
-    placeholder: options.i18n?.prompt,
+    ...(placeholder && { placeholder }),
     ...propertyState
   });
 
