@@ -157,9 +157,6 @@ export type UIOptions = {
   engine: CreativeEngine;
   historyAssetSourceId?: string;
   historyAssetLibraryEntryId?: string;
-  i18n?: {
-    prompt?: string;
-  };
 };
 
 /**

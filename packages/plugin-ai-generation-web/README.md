@@ -826,6 +826,38 @@ cesdk.i18n.setTranslations({
 });
 ```
 
+### Customizing Input Placeholders
+
+You can customize placeholder text for input fields (like the prompt textarea) using the same translation system. Placeholders help guide users on what to enter:
+
+```typescript
+cesdk.i18n.setTranslations({
+  en: {
+    // Generic placeholder (applies to ALL AI plugins)
+    'ly.img.plugin-ai-generation-web.property.prompt.placeholder':
+      'e.g., A serene mountain landscape at sunset...',
+
+    // Provider-specific placeholders (highest priority)
+    'ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.property.prompt.placeholder':
+      'Describe your image in detail...',
+
+    'ly.img.plugin-ai-image-generation-web.fal-ai/gemini-25-flash-image/edit.property.prompt.placeholder':
+      'Describe the changes you want to make...',
+
+    'ly.img.plugin-ai-video-generation-web.fal-ai/veo3.property.prompt.placeholder':
+      'Describe the video scene, camera movements, and style...'
+  }
+});
+```
+
+**Translation Priority for Placeholders:**
+
+Placeholders follow the same priority chain as labels:
+1. `ly.img.plugin-ai-{kind}-generation-web.{provider.id}.property.{field}.placeholder` (highest)
+2. `ly.img.plugin-ai-generation-web.property.{field}.placeholder`
+3. `ly.img.plugin-ai-{kind}-generation-web.{provider.id}.defaults.property.{field}.placeholder`
+4. `ly.img.plugin-ai-generation-web.defaults.property.{field}.placeholder` (lowest)
+
 ### Dropdown Options
 
 For dropdown menus, add the option value to the translation key:

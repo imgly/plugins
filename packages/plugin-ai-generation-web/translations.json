@@ -5,6 +5,7 @@
     "ly.img.plugin-ai-generation-web.fromText.label": "Text",
     "ly.img.plugin-ai-generation-web.fromImage.label": "Image",
     "ly.img.plugin-ai-generation-web.property.prompt": "Prompt",
+    "ly.img.plugin-ai-generation-web.property.prompt.placeholder": "",
     "ly.img.plugin-ai-generation-web.property.style": "Style",
     "ly.img.plugin-ai-generation-web.property.image_size": "Image Size",
     "ly.img.plugin-ai-generation-web.property.size": "Size",

@@ -2,6 +2,15 @@
 
 ## [Unreleased]
 
+### New Features
+
+-   [generation-web] **Input Placeholder Customization**: Added support for customizing placeholder text in input fields (e.g., prompt textarea) through the i18n translation system. Placeholders follow the same priority chain as labels:
+    1. Provider-specific: `ly.img.plugin-ai-{kind}-generation-web.{provider.id}.property.{field}.placeholder`
+    2. Global: `ly.img.plugin-ai-generation-web.property.{field}.placeholder`
+    3. Provider defaults: `ly.img.plugin-ai-{kind}-generation-web.{provider.id}.defaults.property.{field}.placeholder`
+    4. Global defaults: `ly.img.plugin-ai-generation-web.defaults.property.{field}.placeholder`
+-   [image-generation] **Gemini Provider Placeholders**: Added example placeholder text to Gemini providers (GeminiFlash25 and Gemini25FlashImageEdit) demonstrating provider-specific placeholder customization
+
 ## [0.2.10] - 2025-10-22
 
 ### New Features
