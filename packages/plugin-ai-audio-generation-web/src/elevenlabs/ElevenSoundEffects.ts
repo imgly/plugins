@@ -31,7 +31,7 @@ function getProvider(
 ): Provider<'audio', ElevenlabsInput, AudioOutput> {
   const modelKey = 'elevenlabs/sound-generation';
 
-  cesdk.i18n.setTranslations({
+  cesdk.setTranslations({
     en: {
       [`panel.${modelKey}`]: 'Generate Sound'
     }

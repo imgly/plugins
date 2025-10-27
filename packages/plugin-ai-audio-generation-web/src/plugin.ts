@@ -43,7 +43,7 @@ export function AudioGeneration<I, O extends Output>(
       // Load all translations from translations.json
       cesdk.i18n.setTranslations(translations);
 
-      cesdk.i18n.setTranslations({
+      cesdk.setTranslations({
         en: {
           [SOUND_ACTION_LABEL_KEY]: 'Generate Sound',
           [SPEECH_ACTION_LABEL_KEY]: 'AI Voice'
