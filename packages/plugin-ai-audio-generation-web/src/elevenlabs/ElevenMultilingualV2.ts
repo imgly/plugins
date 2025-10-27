@@ -68,7 +68,7 @@ function getProvider(
   const voiceAssetSource = createVoicesAssetSource(baseURL, translateVoiceLabel);
   const voiceAssetSourceId = voiceAssetSource.id;
 
-  cesdk.setTranslations({
+  cesdk.i18n.setTranslations({
     en: {
       [`panel.${modelKey}`]: 'AI Voice',
       [`panel.${voiceSelectionPanelId}`]: 'Select a Voice',

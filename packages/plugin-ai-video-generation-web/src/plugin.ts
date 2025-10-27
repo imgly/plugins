@@ -55,7 +55,7 @@ export function VideoGeneration<I, O extends Output>(
       // Load all translations from translations.json
       cesdk.i18n.setTranslations(translations);
 
-      cesdk.setTranslations({
+      cesdk.i18n.setTranslations({
         en: {
           [`panel.${VIDEO_GENERATION_PANEL_ID}`]: 'Video Generation',
           [`${VIDEO_GENERATION_PANEL_ID}.dock.label`]: 'AI Video',
