@@ -52,13 +52,6 @@ export function TextGeneration<I, O extends Output>(
       // Load all translations from translations.json
       cesdk.i18n.setTranslations(translations);
 
-      cesdk.i18n.setTranslations({
-        en: {
-          'common.apply': 'Apply',
-          'common.back': 'Back'
-        }
-      });
-
       printConfigWarnings(config);
 
       const registry = ActionRegistry.get();

@@ -49,14 +49,6 @@ export function StickerGeneration<I, O extends Output>(
       // Load all translations from translations.json
       cesdk.i18n.setTranslations(translations);
 
-      cesdk.i18n.setTranslations({
-        en: {
-          [`panel.${STICKER_GENERATION_PANEL_ID}`]: 'Sticker Generation',
-          [`${STICKER_GENERATION_PANEL_ID}.dock.label`]: 'AI Sticker',
-          [ACTION_LABEL_KEY]: 'Generate Sticker'
-        }
-      });
-
       const disposeApp = registry.register({
         type: 'plugin',
         sceneMode: 'Design',

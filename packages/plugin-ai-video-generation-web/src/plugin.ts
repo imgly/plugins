@@ -55,16 +55,6 @@ export function VideoGeneration<I, O extends Output>(
       // Load all translations from translations.json
       cesdk.i18n.setTranslations(translations);
 
-      cesdk.setTranslations({
-        en: {
-          [`panel.${VIDEO_GENERATION_PANEL_ID}`]: 'Video Generation',
-          [`${VIDEO_GENERATION_PANEL_ID}.dock.label`]: 'AI Video',
-          [ACTION_LABEL_KEY]: 'Generate Video',
-          'ly.img.ai.video.generation.hint':
-            "Video generation may take up to a few minutes. This panel can be closed and you'll be notified when it's ready."
-        }
-      });
-
       printConfigWarnings(config);
 
       const registry = ActionRegistry.get();

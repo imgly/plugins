@@ -1,5 +1,6 @@
 {
   "en": {
+    "ly.img.plugin-ai-video-generation-web.action.label": "Generate Video",
     "panel.ly.img.ai.video-generation": "Video Generation",
     "ly.img.ai.video-generation.dock.label": "AI Video",
     "ly.img.ai.video.generation.hint": "Video generation may take up to a few minutes. This panel can be closed and you'll be notified when it's ready.",

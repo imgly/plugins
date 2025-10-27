@@ -1,5 +1,7 @@
 {
   "en": {
+    "@imgly/plugin-ai-audio-generation-web.sound.action.label": "Generate Sound",
+    "@imgly/plugin-ai-audio-generation-web.speech.action.label": "AI Voice",
     "common.generate": "Generate",
     "libraries.ly.img.voices.eleventlabs.9BWtsMINqrJLrRacOk9x": "Aria",
     "libraries.ly.img.voices.eleventlabs.CwhRBWXzGAHq8TQ4Fs17": "Roger",
@@ -21,11 +23,15 @@
     "libraries.ly.img.voices.eleventlabs.onwK4e9ZLuTAKqWW03F9": "Daniel",
     "libraries.ly.img.voices.eleventlabs.pFZP5JQG7iQjIQuC4Bku": "Lily",
     "libraries.ly.img.voices.eleventlabs.pqHfZKP75CvOlQylNhV4": "Bill",
+    "libraries.elevenlabs/monolingual/v1.history.label": "AI Voice",
+    "libraries.elevenlabs/sound-generation.history.label": "Generated Sound",
     "ly.img.plugin-ai-audio-generation-web.elevenlabs/monolingual/v1.property.prompt": "Prompt",
     "ly.img.plugin-ai-audio-generation-web.elevenlabs/monolingual/v1.property.speed": "Speech Speed",
     "ly.img.plugin-ai-audio-generation-web.elevenlabs/monolingual/v1.property.voice_id": "Voice",
     "ly.img.plugin-ai-audio-generation-web.elevenlabs/sound-generation.property.duration_seconds": "Duration (seconds)",
     "ly.img.plugin-ai-audio-generation-web.elevenlabs/sound-generation.property.text": "Sound description",
+    "panel.elevenlabs/monolingual/v1": "AI Voice",
+    "panel.elevenlabs/sound-generation": "Generate Sound",
     "panel.ly.img.ai.audio-generation.sound": "Sound Generation",
     "panel.ly.img.ai.audio-generation.speech": "AI Voice",
     "panel.ly.img.ai.audio-generation.speech.elevenlabs.voiceSelection": "Select a Voice"

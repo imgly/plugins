@@ -68,16 +68,6 @@ function getProvider(
   const voiceAssetSource = createVoicesAssetSource(baseURL, translateVoiceLabel);
   const voiceAssetSourceId = voiceAssetSource.id;
 
-  cesdk.setTranslations({
-    en: {
-      [`panel.${modelKey}`]: 'AI Voice',
-      [`panel.${voiceSelectionPanelId}`]: 'Select a Voice',
-      [`panel.${getPanelId('elevenlabs')}`]: 'AI Voice',
-      [`libraries.${modelKey}.history.label`]: 'AI Voice',
-      [`libraries.elevenlabs/sound-generation.history.label`]: 'Generated Sound'
-    }
-  });
-
   const provider: Provider<'audio', ElevenlabsInput, AudioOutput> = {
     id: modelKey,
     name: 'Elevenlabs Multilingual V2',
