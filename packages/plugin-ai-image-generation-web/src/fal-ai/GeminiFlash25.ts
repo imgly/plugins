@@ -55,7 +55,10 @@ export function GeminiFlash25(
     cesdk.i18n.setTranslations({
       en: {
         [`libraries.${getPanelId(modelKey)}.history.label`]:
-          'Generated From Text'
+          'Generated From Text',
+        // Provider-specific placeholder for prompt property
+        [`ly.img.plugin-ai-image-generation-web.${modelKey}.property.prompt.placeholder`]:
+          'A serene mountain landscape at sunset...'
       }
     });
 

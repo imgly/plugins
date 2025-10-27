@@ -32,7 +32,10 @@ export function Gemini25FlashImageEdit(
           'Select Image To Edit',
         [`panel.${modelKey}.imageSelection`]: 'Select Image To Edit',
         [`libraries.${getPanelId(modelKey)}.history.label`]:
-          'Generated From Image'
+          'Generated From Image',
+        // Provider-specific placeholder for prompt property
+        [`ly.img.plugin-ai-image-generation-web.${modelKey}.property.prompt.placeholder`]:
+          'Describe the changes you want to make...'
       }
     });
 
