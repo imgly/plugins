@@ -5,13 +5,18 @@
  * Structure:
  * - Property translations: `ly.img.plugin-ai-generation-web.defaults.property.${property.id}`
  * - Enum value translations: `ly.img.plugin-ai-generation-web.defaults.property.${property.id}.${enumValue}`
+ * - Generic fallbacks: `ly.img.plugin-ai-generation-web.fallback.*`
  *
  * Based on actual OpenAPI Input schemas from all AI provider packages.
  */
 export const defaultTranslations: Record<string, string> = {
+  // Generic fallback for property placeholders (applies to ALL properties)
+  // This ensures that if no specific placeholder translation exists, an empty string is shown
+  // instead of displaying the translation key itself
+  'ly.img.plugin-ai-generation-web.fallback.property.placeholder': '',
+
   // Core generation properties (found in all Input schemas)
   'ly.img.plugin-ai-generation-web.defaults.property.prompt': 'Prompt',
-  'ly.img.plugin-ai-generation-web.defaults.property.prompt.placeholder': '',
   'ly.img.plugin-ai-generation-web.defaults.property.style': 'Style',
 
   // Common properties

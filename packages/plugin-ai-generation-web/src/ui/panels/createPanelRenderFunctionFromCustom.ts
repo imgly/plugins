@@ -27,6 +27,11 @@ async function createPanelRenderFunctionFromCustom<
   const { cesdk } = options;
   const { id: providerId } = provider;
 
+  if (config.debug) {
+    // eslint-disable-next-line no-console
+    console.log(`Provider: ${providerId} (custom)`);
+  }
+
   const render = panelInput.render;
 
   const builderRenderFunction: BuilderRenderFunction<any> = (context) => {

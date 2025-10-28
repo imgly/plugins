@@ -38,9 +38,7 @@ async function createPanelRenderFunctionFromSchema<
 
   if (config.debug) {
     // eslint-disable-next-line no-console
-    console.log(
-      `Registering schema-based panel input for provider ${providerId}`
-    );
+    console.log(`Provider: ${providerId} (schema-based)`);
   }
 
   const schemaDocument = dereferenceDocument(panelInput.document);

@@ -37,7 +37,7 @@ export default (
 
       const { providers } = config;
 
-      cesdk.addPlugin(
+      await cesdk.addPlugin(
         TextGeneration({
           providers: {
             text2text: providers.text2text
@@ -47,7 +47,7 @@ export default (
         })
       );
 
-      cesdk.addPlugin(
+      await cesdk.addPlugin(
         ImageGeneration({
           providers: {
             text2image: providers.text2image,
@@ -58,7 +58,7 @@ export default (
         })
       );
 
-      cesdk.addPlugin(
+      await cesdk.addPlugin(
         VideoGeneration({
           providers: {
             text2video: providers.text2video,
@@ -69,7 +69,7 @@ export default (
         })
       );
 
-      cesdk.addPlugin(
+      await cesdk.addPlugin(
         AudioGeneration({
           providers: {
             text2speech: providers.text2speech,
@@ -80,7 +80,7 @@ export default (
         })
       );
 
-      cesdk.addPlugin(
+      await cesdk.addPlugin(
         StickerGeneration({
           providers: {
             text2sticker: providers.text2sticker
