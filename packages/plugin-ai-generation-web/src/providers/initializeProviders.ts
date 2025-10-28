@@ -85,6 +85,13 @@ async function initializeProviders<K extends OutputKind, I, O extends Output>(
   let builderRenderFunction: BuilderRenderFunction | undefined;
 
   const providerResults: ProviderInitializationResult<K, I, O>[] = [];
+
+  // Group provider initialization logs for cleaner console output
+  if (config.debug) {
+    // eslint-disable-next-line no-console
+    console.groupCollapsed(`Initializing ${kind} generation providers`);
+  }
+
   if (!Array.isArray(providers)) {
     const initializedFromTextProviders = await Promise.all(
       providers.fromText.map((provider) => {
@@ -121,6 +128,12 @@ async function initializeProviders<K extends OutputKind, I, O extends Output>(
       providerInitializationResults: providerResults,
       cesdk
     });
+  }
+
+  // Close the console group
+  if (config.debug) {
+    // eslint-disable-next-line no-console
+    console.groupEnd();
   }
 
   const compositeHistoryAssetSourceId = initializeHistoryCompositeAssetSource({
