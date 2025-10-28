@@ -19,19 +19,42 @@ import { getLabelFromId } from '../utils/utils';
 import { buildPropertyContext } from '../utils/propertyContext';
 import { resolvePropertyDefault } from '../utils/propertyResolver';
 
-function createInputLabelArray<K extends OutputKind, I, O extends Output>(
+/**
+ * Creates a translation key array with fallback chain for property-related translations.
+ * Used for input labels, placeholders, enum values, etc.
+ *
+ * @param property - The property being translated
+ * @param provider - The AI provider
+ * @param kind - The output kind (image, video, audio, etc.)
+ * @param valueId - Optional suffix for the translation key (e.g., 'placeholder', enum value)
+ * @returns Array of translation keys in priority order, with generic fallback for placeholders
+ */
+function createPropertyTranslationKeys<
+  K extends OutputKind,
+  I,
+  O extends Output
+>(
   property: Property,
   provider: Provider<K, I, O>,
   kind: K,
   valueId?: string
 ): string[] {
   const baseKey = `property.${property.id}${valueId ? `.${valueId}` : ''}`;
-  return [
+  const keys = [
     `ly.img.plugin-ai-${kind}-generation-web.${provider.id}.${baseKey}`,
     `ly.img.plugin-ai-generation-web.${baseKey}`,
     `ly.img.plugin-ai-${kind}-generation-web.${provider.id}.defaults.${baseKey}`,
     `ly.img.plugin-ai-generation-web.defaults.${baseKey}`
   ];
+
+  // For placeholder keys, append generic property placeholder fallback
+  // This ensures that if no placeholder translation exists, an empty string is used
+  // instead of showing the translation key itself
+  if (valueId === 'placeholder') {
+    keys.push('ly.img.plugin-ai-generation-web.fallback.property.placeholder');
+  }
+
+  return keys;
 }
 
 function extractEnumMetadata(schema: any): {
@@ -253,10 +276,10 @@ function renderStringProperty<K extends OutputKind, I, O extends Output>(
   const { id: propertyId } = property;
 
   const id = `${provider.id}.${propertyId}`;
-  const inputLabel = createInputLabelArray(property, provider, kind);
+  const inputLabel = createPropertyTranslationKeys(property, provider, kind);
 
   // Create placeholder i18n key array with fallback to global placeholder
-  const placeholderKeys = createInputLabelArray(
+  const placeholderKeys = createPropertyTranslationKeys(
     property,
     provider,
     kind,
@@ -323,13 +346,13 @@ function renderEnumProperty<K extends OutputKind, I, O extends Output>(
   const { id: propertyId } = property;
 
   const id = `${provider.id}.${propertyId}`;
-  const inputLabel = createInputLabelArray(property, provider, kind);
+  const inputLabel = createPropertyTranslationKeys(property, provider, kind);
 
   const { labels: enumLabels, icons } = extractEnumMetadata(property.schema);
 
   const values: EnumValue[] = (property.schema.enum ?? []).map((valueId) => ({
     id: valueId,
-    label: createInputLabelArray(property, provider, kind, valueId),
+    label: createPropertyTranslationKeys(property, provider, kind, valueId),
     icon: icons[valueId]
   }));
 
@@ -384,7 +407,7 @@ function renderBooleanProperty<K extends OutputKind, I, O extends Output>(
   const { id: propertyId } = property;
 
   const id = `${provider.id}.${propertyId}`;
-  const inputLabel = createInputLabelArray(property, provider, kind);
+  const inputLabel = createPropertyTranslationKeys(property, provider, kind);
 
   // Resolve default value from property configuration
   const propertyContext = buildPropertyContext(engine, options.cesdk);
@@ -430,7 +453,7 @@ function renderIntegerProperty<K extends OutputKind, I, O extends Output>(
   const { id: propertyId } = property;
 
   const id = `${provider.id}.${propertyId}`;
-  const inputLabel = createInputLabelArray(property, provider, kind);
+  const inputLabel = createPropertyTranslationKeys(property, provider, kind);
 
   const minValue = property.schema.minimum;
   const maxValue = property.schema.maximum;
@@ -510,7 +533,7 @@ function renderAnyOfProperty<K extends OutputKind, I, O extends Output>(
   const { id: propertyId } = property;
 
   const id = `${provider.id}.${propertyId}`;
-  const inputLabel = createInputLabelArray(property, provider, kind);
+  const inputLabel = createPropertyTranslationKeys(property, provider, kind);
 
   const anyOf = (property.schema.anyOf ?? []) as OpenAPIV3.SchemaObject[];
   const values: EnumValue[] = [];
@@ -538,7 +561,7 @@ function renderAnyOfProperty<K extends OutputKind, I, O extends Output>(
 
   const createEnumValue = (enumId: string, valueId: string): EnumValue => ({
     id: enumId,
-    label: createInputLabelArray(property, provider, kind, valueId),
+    label: createPropertyTranslationKeys(property, provider, kind, valueId),
     icon: icons[valueId] ?? icons[enumId]
   });
 
