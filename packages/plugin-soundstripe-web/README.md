@@ -110,6 +110,26 @@ await refreshSoundstripeAudioURIs(cesdk.engine, { apiKey });
 await refreshSoundstripeAudioURIs(cesdk.engine, { baseUrl: 'https://your-proxy.com' });
 ```
 
+### Retrieving Song IDs
+
+When users add Soundstripe songs, the plugin stores the song ID as metadata. You can retrieve these IDs programmatically (e.g., during export). This is useful when you need to pass the song ID through the Soundstripe API to generate a code for YouTube video captions or descriptions before publishing:
+
+```typescript
+const audioBlocks = cesdk.engine.block.findByType('audio');
+
+audioBlocks.forEach(blockId => {
+  const songId = cesdk.engine.block.getMetadata(
+    blockId,
+    'ly.img.audio.soundstripe.songId'
+  );
+
+  if (songId) {
+    console.log('Soundstripe Song ID:', songId);
+    // Use this songId with Soundstripe API to generate YouTube attribution codes
+  }
+});
+```
+
 ## Configuration
 
 ### Plugin Configuration
