@@ -1,3 +1,19 @@
+/**
+ * Check if an origin matches any of the allowed patterns.
+ * Port numbers are stripped from the origin before comparison.
+ * @param {string} origin - The origin to check (e.g., "http://localhost:8080")
+ * @param {string[]} allowedPatterns - Array of allowed origins without ports
+ * @returns {boolean} - True if origin matches any pattern
+ */
+function isOriginAllowed(origin, allowedPatterns) {
+	if (!origin) return false;
+
+	// Strip port number from origin (e.g., "http://localhost:8080" -> "http://localhost")
+	const originWithoutPort = origin.replace(/:\d+$/, '');
+
+	return allowedPatterns.includes(originWithoutPort);
+}
+
 export default {
 	async fetch(request, ENV) {
 		const rewrittenHostname = ENV.REWRITTEN_HOSTNAME;
@@ -7,7 +23,7 @@ export default {
 
 		// CORS headers for all responses - Access-Control-Allow-Origin can only be a single origin or *
 		const corsHeaders = {
-			'Access-Control-Allow-Origin': allowedOrigins.includes(origin) ? origin : allowedOrigins[0] || '*',
+			'Access-Control-Allow-Origin': isOriginAllowed(origin, allowedOrigins) ? origin : allowedOrigins[0] || '*',
 			'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
 			'Access-Control-Allow-Headers': 'Content-Type, Authorization, Accept',
 		};
@@ -20,7 +36,7 @@ export default {
 			});
 		}
 
-		if (origin && !allowedOrigins.includes(origin)) {
+		if (origin && !isOriginAllowed(origin, allowedOrigins)) {
 			return new Response('Forbidden: ' + origin + ' is not allowed.', {
 				status: 403,
 				headers: corsHeaders,
