@@ -10,6 +10,8 @@
     3. Provider defaults: `ly.img.plugin-ai-{kind}-generation-web.{provider.id}.defaults.property.{field}.placeholder`
     4. Global defaults: `ly.img.plugin-ai-generation-web.defaults.property.{field}.placeholder`
 -   [image-generation] **Gemini Provider Placeholders**: Added example placeholder text to Gemini providers (GeminiFlash25 and Gemini25FlashImageEdit) demonstrating provider-specific placeholder customization
+-   [image-generation] **NanoBananaPro Provider**: Added NanoBananaPro text-to-image provider via fal.ai, an enhanced version of NanoBanana with advanced configuration options including 10 aspect ratio presets (1:1, 3:2, 2:3, 4:3, 3:4, 16:9, 9:16, 21:9, 9:21, 2.4:1), resolution multipliers (1K, 2K, 4K for standard/high/ultra quality), dynamic dimension calculation based on aspect ratio and resolution, and remixPageWithPrompt quick action support
+-   [image-generation] **NanoBananaProEdit Provider**: Added NanoBananaProEdit image-to-image provider via fal.ai for professional-grade image editing with text prompts, supporting resolution control (1K/2K/4K), all standard quick actions (editImage, swapBackground, styleTransfer, artistTransfer, createVariant, combineImages with up to 10 images, remixPage, remixPageWithPrompt), and automatic dimension preservation from source images
 
 ## [0.2.10] - 2025-10-22
 

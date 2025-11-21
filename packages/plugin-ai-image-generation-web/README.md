@@ -718,7 +718,50 @@ cesdk.i18n.setTranslations({
 });
 ```
 
-#### 10. SeedreamV4 (Text-to-Image)
+#### 10. NanoBananaPro (Text-to-Image)
+
+An enhanced version of NanoBanana from fal.ai with advanced aspect ratio and resolution controls:
+
+```typescript
+text2image: FalAiImage.NanoBananaPro({
+  proxyUrl: 'http://your-proxy-server.com/api/proxy',
+  headers: {
+    'x-custom-header': 'value',
+    'x-client-version': '1.0.0'
+  },
+  // Optional: Configure default property values
+  properties: {
+    aspect_ratio: { default: '1:1' },  // Options: '1:1', '3:2', '2:3', '4:3', '3:4', '16:9', '9:16', '21:9', '9:21', '2.4:1'
+    resolution: { default: '1K' },     // Options: '1K', '2K', '4K'
+    output_format: { default: 'png' }     // Options: 'png', 'jpeg', 'webp'
+  }
+})
+```
+
+Key features:
+- Fast generation times for quick prototyping
+- 10 different aspect ratio options (square, portrait, landscape, ultra-wide, cinematic)
+- 3 resolution multipliers (1K, 2K, 4K) for scalable image quality
+- High-quality image output with flexible dimensions
+- Simple prompt-based interface
+- Support for multiple output formats (JPEG, PNG)
+- Configurable number of images (1-4)
+- Supports page remixing with custom prompts
+- Custom headers support for API requests
+
+**Custom Translations:**
+```typescript
+cesdk.i18n.setTranslations({
+  en: {
+    'ly.img.plugin-ai-image-generation-web.fal-ai/nano-banana-pro.property.prompt': 'Describe your image',
+    'ly.img.plugin-ai-image-generation-web.fal-ai/nano-banana-pro.property.aspect_ratio': 'Aspect Ratio',
+    'ly.img.plugin-ai-image-generation-web.fal-ai/nano-banana-pro.property.resolution': 'Resolution',
+    'ly.img.plugin-ai-image-generation-web.fal-ai/nano-banana-pro.property.output_format': 'Output Format'
+  }
+});
+```
+
+#### 11. SeedreamV4 (Text-to-Image)
 
 A powerful text-to-image model from ByteDance's Seedream 4.0 available through fal.ai:
 
@@ -798,6 +841,47 @@ cesdk.i18n.setTranslations({
   en: {
     'ly.img.plugin-ai-image-generation-web.fal-ai/nano-banana/edit.property.prompt': 'Edit instructions',
     'ly.img.plugin-ai-image-generation-web.fal-ai/nano-banana/edit.property.image_url': 'Source Image'
+  }
+});
+```
+
+#### 13. NanoBananaProEdit (Image-to-Image)
+
+An enhanced image editing model from fal.ai (Pro version of Nano Banana) that transforms existing images using text prompts:
+
+```typescript
+image2image: FalAiImage.NanoBananaProEdit({
+  proxyUrl: 'http://your-proxy-server.com/api/proxy',
+  headers: {
+    'x-custom-header': 'value',
+    'x-client-version': '1.0.0'
+  },
+  // Optional: Configure default property values
+  properties: {
+    num_images: { default: 1 },           // Number of images (1-4)
+    aspect_ratio: { default: 'auto' },    // Aspect ratio (auto, 21:9, 16:9, 3:2, 4:3, 5:4, 1:1, 4:5, 3:4, 2:3, 9:16)
+    resolution: { default: '1K' },        // Resolution (1K, 2K, 4K)
+    output_format: { default: 'png' }     // Options: 'png', 'jpeg', 'webp'
+  }
+})
+```
+
+Key features:
+- Professional-grade image editing with text prompts
+- Supports combining multiple images (up to 10 images)
+- Maintains original image dimensions automatically
+- Multiple aspect ratio and resolution options
+- Supports all standard image editing quick actions
+- Fast processing with optimized quality
+- Canvas quick-action integration
+- Custom headers support for API requests
+
+**Custom Translations:**
+```typescript
+cesdk.i18n.setTranslations({
+  en: {
+    'ly.img.plugin-ai-image-generation-web.fal-ai/nano-banana-pro/edit.property.prompt': 'Edit instructions',
+    'ly.img.plugin-ai-image-generation-web.fal-ai/nano-banana-pro/edit.property.image_url': 'Source Image'
   }
 });
 ```
@@ -1258,10 +1342,30 @@ FalAiImage.NanoBanana(config: {
 })
 ```
 
+#### NanoBananaPro
+
+```typescript
+FalAiImage.NanoBananaPro(config: {
+  proxyUrl: string;
+  headers?: Record<string, string>;
+  debug?: boolean;
+})
+```
+
 #### NanoBananaEdit
 
 ```typescript
 FalAiImage.NanoBananaEdit(config: {
+  proxyUrl: string;
+  headers?: Record<string, string>;
+  debug?: boolean;
+})
+```
+
+#### NanoBananaProEdit
+
+```typescript
+FalAiImage.NanoBananaProEdit(config: {
   proxyUrl: string;
   headers?: Record<string, string>;
   debug?: boolean;
@@ -1383,7 +1487,9 @@ const myImageProvider = {
   - FluxProKontextEdit: `ly.img.ai.fal-ai/flux-pro/kontext`
   - FluxProKontextMaxEdit: `ly.img.ai.fal-ai/flux-pro/kontext/max`
   - NanoBanana: `ly.img.ai.fal-ai/nano-banana`
+  - NanoBananaPro: `ly.img.ai.fal-ai/nano-banana-pro`
   - NanoBananaEdit: `ly.img.ai.fal-ai/nano-banana/edit`
+  - NanoBananaProEdit: `ly.img.ai.fal-ai/nano-banana-pro/edit`
   - SeedreamV4: `ly.img.ai.fal-ai/bytedance/seedream/v4/text-to-image`
   - SeedreamV4Edit: `ly.img.ai.fal-ai/bytedance/seedream/v4/edit`
 
@@ -1402,7 +1508,9 @@ Generated images are automatically stored in asset sources with the following ID
 - FluxProKontextEdit: `fal-ai/flux-pro/kontext.history`
 - FluxProKontextMaxEdit: `fal-ai/flux-pro/kontext/max.history`
 - NanoBanana: `fal-ai/nano-banana.history`
+- NanoBananaPro: `fal-ai/nano-banana-pro.history`
 - NanoBananaEdit: `fal-ai/nano-banana/edit.history`
+- NanoBananaProEdit: `fal-ai/nano-banana-pro/edit.history`
 - SeedreamV4: `fal-ai/bytedance/seedream/v4/text-to-image.history`
 - SeedreamV4Edit: `fal-ai/bytedance/seedream/v4/edit.history`
 
