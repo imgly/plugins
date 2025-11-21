@@ -10,6 +10,8 @@ import { IdeogramV3Remix } from './IdeogramV3Remix';
 import { QwenImageEdit } from './QwenImageEdit';
 import { NanoBanana } from './NanoBanana';
 import { NanoBananaEdit } from './NanoBananaEdit';
+import { NanoBananaPro } from './NanoBananaPro';
+import { NanoBananaProEdit } from './NanoBananaProEdit';
 import { SeedreamV4 } from './SeedreamV4';
 import { SeedreamV4Edit } from './SeedreamV4Edit';
 
@@ -24,6 +26,8 @@ const FalAi = {
   QwenImageEdit,
   NanoBanana,
   NanoBananaEdit,
+  NanoBananaPro,
+  NanoBananaProEdit,
   Recraft20b,
   RecraftV3,
   SeedreamV4,
