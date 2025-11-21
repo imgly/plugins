@@ -64,10 +64,9 @@
     "check:types": "tsc --noEmit",
     "types:create": "tsc --emitDeclarationOnly"
   },
-  "dependencies": {
-    "@imgly/plugin-ai-generation-web": "workspace:*"
-  },
+  "dependencies": {},
   "devDependencies": {
+    "@imgly/plugin-ai-generation-web": "workspace:*",
     "@anthropic-ai/sdk": "^0.39.0",
     "openai": "^4.68.4",
     "@imgly/plugin-utils": "workspace:*",
