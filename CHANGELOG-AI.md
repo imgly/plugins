@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [0.2.11] - 2025-11-21
+
 ### New Features
 
 -   [generation-web] **Input Placeholder Customization**: Added support for customizing placeholder text in input fields (e.g., prompt textarea) through the i18n translation system. Placeholders follow the same priority chain as labels:
