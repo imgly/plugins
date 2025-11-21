@@ -1,6 +1,6 @@
 {
   "name": "@imgly/plugin-ai-audio-generation-web",
-  "version": "0.2.11",
+  "version": "0.2.12",
   "description": "AI audio generation plugin for the CE.SDK editor",
   "keywords": ["CE.SDK", "plugin", "AI", "audio-generation"],
   "repository": {
