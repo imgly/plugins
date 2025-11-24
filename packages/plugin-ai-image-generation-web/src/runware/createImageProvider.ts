@@ -10,7 +10,7 @@ import {
   Middleware,
   mergeQuickActionsConfig
 } from '@imgly/plugin-ai-generation-web';
-import { createRunwareClient } from './createRunwareClient';
+import { createRunwareClient, RunwareClient } from './createRunwareClient';
 import { convertImageUrlForRunware, isCustomImageSize } from './utils';
 import {
   RunwareProviderConfiguration,
@@ -48,11 +48,9 @@ function createImageProvider<
   options: CreateProviderOptions<I>,
   config: RunwareProviderConfiguration
 ): Provider<'image', I, ImageOutput> {
-  const middleware =
-    options.middleware ?? config.middlewares ?? [];
+  const middleware = options.middleware ?? config.middlewares ?? [];
 
-  let runwareClient: Awaited<ReturnType<typeof createRunwareClient>> | null =
-    null;
+  let runwareClient: RunwareClient | null = null;
 
   const provider: Provider<'image', I, ImageOutput> = {
     id: options.providerId,
@@ -60,8 +58,8 @@ function createImageProvider<
     name: options.name,
     configuration: config,
     initialize: async (context) => {
-      console.log('Initializing Runware client:', options.providerId);
-      runwareClient = await createRunwareClient(config.proxyUrl);
+      console.log('Initializing Runware client:', options.providerId, config);
+      runwareClient = createRunwareClient(config.proxyUrl);
       console.log('Runware client initialized:', options.providerId);
       options.initialize?.(context);
     },
@@ -117,7 +115,7 @@ function createImageProvider<
           // Try to extract from size (OpenAI format)
           if (input.size != null && typeof input.size === 'string') {
             const [w, h] = input.size.split('x').map(Number);
-            if (!isNaN(w) && !isNaN(h)) {
+            if (!Number.isNaN(w) && !Number.isNaN(h)) {
               return Promise.resolve({ image: { width: w, height: h } });
             }
           }
@@ -128,10 +126,13 @@ function createImageProvider<
       }
     },
     output: {
-      abortable: false, // Runware SDK doesn't support abort signals directly
+      abortable: true,
       middleware,
       history: config.history ?? '@imgly/indexedDB',
-      generate: async (input: I) => {
+      generate: async (
+        input: I,
+        { abortSignal }: { abortSignal?: AbortSignal }
+      ) => {
         if (!runwareClient) {
           throw new Error('Provider not initialized');
         }
@@ -149,14 +150,17 @@ function createImageProvider<
         // Map input to Runware format
         const runwareInput = options.mapInput(processedInput);
 
-        // Call Runware imageInference
-        const images = await runwareClient.imageInference({
-          model: options.modelAIR,
-          outputType: 'URL',
-          outputFormat: 'PNG',
-          numberResults: 1,
-          ...runwareInput
-        } as any);
+        // Call Runware imageInference via HTTP REST API
+        const images = await runwareClient.imageInference(
+          {
+            model: options.modelAIR,
+            outputType: 'URL',
+            outputFormat: 'PNG',
+            numberResults: 1,
+            ...runwareInput
+          },
+          abortSignal
+        );
 
         if (images != null && Array.isArray(images) && images.length > 0) {
           const image = images[0];

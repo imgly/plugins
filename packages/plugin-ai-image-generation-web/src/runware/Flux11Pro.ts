@@ -1,7 +1,4 @@
-import {
-  type Provider,
-  addIconSetOnce
-} from '@imgly/plugin-ai-generation-web';
+import { type Provider, addIconSetOnce } from '@imgly/plugin-ai-generation-web';
 import { Icons } from '@imgly/plugin-utils';
 import schema from './Flux11Pro.json';
 import CreativeEditorSDK from '@cesdk/cesdk-js';
