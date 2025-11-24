@@ -290,6 +290,98 @@ interface IVideo {
 }
 ```
 
+## Image Upload Utility
+
+Runware provides an image upload utility for uploading images to be used in subsequent API calls. This is analogous to fal.ai's `falClient.upload()` functionality.
+
+**Documentation**: https://runware.ai/docs/en/getting-started/image-upload
+
+### API-Level Upload (taskType: imageUpload)
+
+At the raw API level, you can upload images using the `imageUpload` task type:
+
+```typescript
+// Request
+{
+  taskType: 'imageUpload',
+  taskUUID: string,       // UUID v4 - unique identifier for matching responses
+  image: string,          // Image data (see formats below)
+}
+
+// Response
+{
+  taskType: 'imageUpload',
+  taskUUID: string,       // Matches request taskUUID
+  imageUUID: string,      // UUID to reference this image in future requests
+}
+```
+
+### Image Parameter Formats
+
+The `image` parameter accepts the following formats:
+
+| Format | Example |
+|--------|---------|
+| Data URI | `data:image/png;base64,iVBORw0KGgo...` |
+| Base64 | `iVBORw0KGgo...` (without data URI prefix) |
+| URL | `https://example.com/image.jpg` (must be publicly accessible) |
+
+**Supported formats**: PNG, JPG, WEBP
+
+### JavaScript SDK Usage
+
+The JavaScript SDK does not expose a standalone `uploadImage()` method. Instead, images can be passed directly to inference methods via the `seedImage`, `maskImage`, or `frameImages` parameters:
+
+```typescript
+// Passing a File object (SDK handles upload automatically)
+const images = await runware.imageInference({
+  positivePrompt: 'A beautiful sunset',
+  seedImage: fileObject,  // File from input or drag-and-drop
+  strength: 0.75,
+  // ...other params
+});
+
+// Passing a previously uploaded image UUID
+const images = await runware.imageInference({
+  positivePrompt: 'A beautiful sunset',
+  seedImage: '989ba605-1449-4e1e-b462-cd83ec9c1a67',  // imageUUID from prior upload
+  strength: 0.75,
+  // ...other params
+});
+
+// Passing image data directly
+const images = await runware.imageInference({
+  positivePrompt: 'A beautiful sunset',
+  seedImage: 'data:image/png;base64,iVBORw0KGgo...',
+  strength: 0.75,
+  // ...other params
+});
+```
+
+### Relation to seedImage and frameImages
+
+The `imageUUID` returned from an upload can be used in these parameters:
+
+| Parameter | Used In | Description |
+|-----------|---------|-------------|
+| `seedImage` | `imageInference` | Base image for image-to-image, inpainting, outpainting |
+| `maskImage` | `imageInference` | Mask for inpainting/outpainting operations |
+| `inputImage` | `caption`, `removeBackground`, `upscale` | Image to process |
+| `guideImage` | ControlNet operations | Reference image for guided generation |
+| `frameImages[].image` | `videoInference` | Frame images for image-to-video generation |
+
+### Implementation Notes
+
+For the IMG.LY plugin implementation:
+
+1. **Image URLs**: When the plugin receives an image URL (e.g., from the editor's asset library), pass it directly to `seedImage` or `frameImages` - no pre-upload needed.
+
+2. **Data URIs**: The SDK accepts data URIs directly, useful when working with canvas exports.
+
+3. **File Objects**: If implementing file upload UI, pass the `File` object directly - the SDK handles the upload internally.
+
+4. **No explicit upload needed**: Unlike fal.ai's `falClient.upload()`, Runware's SDK handles image transmission transparently when you pass supported formats to the inference methods.
+
 ### Video Provider Implementation
 
 #### File Structure
