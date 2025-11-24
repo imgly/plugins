@@ -1,0 +1,42 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "SeedEdit 3.0 API",
+    "version": "1.0.0"
+  },
+  "components": {
+    "schemas": {
+      "SeedEdit3Input": {
+        "type": "object",
+        "x-fal-order-properties": ["image_url", "prompt", "resolution"],
+        "properties": {
+          "image_url": {
+            "type": "string",
+            "format": "uri",
+            "title": "Source Image"
+          },
+          "prompt": {
+            "type": "string",
+            "title": "Prompt",
+            "minLength": 2,
+            "maxLength": 3000,
+            "x-imgly-builder": {
+              "component": "TextArea"
+            }
+          },
+          "resolution": {
+            "type": "string",
+            "title": "Resolution",
+            "enum": ["1k", "2k"],
+            "default": "1k",
+            "x-imgly-enum-labels": {
+              "1k": "1K (~1MP)",
+              "2k": "2K (~4MP)"
+            }
+          }
+        },
+        "required": ["image_url", "prompt"]
+      }
+    }
+  }
+}

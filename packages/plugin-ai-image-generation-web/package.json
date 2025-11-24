@@ -36,6 +36,10 @@
     "./open-ai": {
       "import": "./dist/open-ai/index.mjs",
       "types": "./dist/open-ai/index.d.ts"
+    },
+    "./runware": {
+      "import": "./dist/runware/index.mjs",
+      "types": "./dist/runware/index.d.ts"
     }
   },
   "homepage": "https://img.ly/products/creative-sdk",
@@ -67,6 +71,7 @@
   "devDependencies": {
     "@imgly/plugin-ai-generation-web": "workspace:*",
     "@fal-ai/client": "^1.3.0",
+    "@runware/sdk-js": "^1.0.24",
     "@imgly/plugin-utils": "workspace:*",
     "@types/jest": "^30.0.0",
     "@types/ndarray": "^1.0.14",

@@ -1,0 +1,58 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "FLUX Kontext Max API",
+    "version": "1.0.0"
+  },
+  "components": {
+    "schemas": {
+      "FluxKontextMaxInput": {
+        "type": "object",
+        "x-fal-order-properties": ["image_url", "prompt", "aspect_ratio"],
+        "properties": {
+          "image_url": {
+            "type": "string",
+            "format": "uri",
+            "title": "Source Image"
+          },
+          "prompt": {
+            "type": "string",
+            "title": "Prompt",
+            "minLength": 3,
+            "maxLength": 5000,
+            "x-imgly-builder": {
+              "component": "TextArea"
+            }
+          },
+          "aspect_ratio": {
+            "type": "string",
+            "title": "Aspect Ratio",
+            "enum": [
+              "1:1",
+              "16:9",
+              "9:16",
+              "4:3",
+              "3:4",
+              "3:2",
+              "2:3",
+              "21:9",
+              "9:21"
+            ],
+            "x-imgly-enum-icons": {
+              "1:1": "@imgly/plugin/formats/ratio1by1",
+              "16:9": "@imgly/plugin/formats/ratio16by9",
+              "9:16": "@imgly/plugin/formats/ratio9by16",
+              "4:3": "@imgly/plugin/formats/ratio4by3",
+              "3:4": "@imgly/plugin/formats/ratio3by4",
+              "3:2": "@imgly/plugin/formats/ratio3by2",
+              "2:3": "@imgly/plugin/formats/ratio2by3",
+              "21:9": "@imgly/plugin/formats/ratio21by9",
+              "9:21": "@imgly/plugin/formats/ratio9by21"
+            }
+          }
+        },
+        "required": ["image_url", "prompt"]
+      }
+    }
+  }
+}

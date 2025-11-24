@@ -29,7 +29,8 @@ export default ({ isDevelopment }) => {
   config.entryPoints = [
     './src/index.ts',
     './src/fal-ai/index.ts',
-    './src/open-ai/index.ts'
+    './src/open-ai/index.ts',
+    './src/runware/index.ts'
   ];
   config.outExtension = { '.js': '.mjs' };
   config.outdir = './dist';

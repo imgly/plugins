@@ -1,0 +1,50 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Ideogram 3.0 Remix API",
+    "version": "1.0.0"
+  },
+  "components": {
+    "schemas": {
+      "Ideogram3RemixInput": {
+        "type": "object",
+        "x-fal-order-properties": ["image_url", "prompt", "style", "resolution"],
+        "properties": {
+          "image_url": {
+            "type": "string",
+            "format": "uri",
+            "title": "Source Image"
+          },
+          "prompt": {
+            "type": "string",
+            "title": "Prompt",
+            "x-imgly-builder": {
+              "component": "TextArea"
+            }
+          },
+          "style": {
+            "type": "string",
+            "title": "Style",
+            "enum": ["AUTO", "GENERAL", "REALISTIC", "DESIGN", "RENDER_3D", "ANIME"],
+            "default": "AUTO",
+            "x-imgly-enum-labels": {
+              "AUTO": "Auto",
+              "GENERAL": "General",
+              "REALISTIC": "Realistic",
+              "DESIGN": "Design",
+              "RENDER_3D": "3D Render",
+              "ANIME": "Anime"
+            }
+          },
+          "resolution": {
+            "type": "string",
+            "title": "Resolution",
+            "enum": ["1k", "2k"],
+            "default": "1k"
+          }
+        },
+        "required": ["image_url", "prompt"]
+      }
+    }
+  }
+}
