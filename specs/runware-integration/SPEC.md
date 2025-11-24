@@ -369,45 +369,6 @@ export function <ModelName>ImageToVideo(config: RunwareProviderConfiguration) {
 }
 ```
 
-## Quick Action Support
-
-### Image Quick Actions
-
-| Quick Action | Text-to-Image | Image-to-Image |
-|--------------|---------------|----------------|
-| `editImage` | - | ✓ |
-| `createVariant` | - | ✓ |
-| `styleTransfer` | - | ✓ |
-| `remixPage` | ✓ | ✓ |
-
-### Video Quick Actions
-
-| Quick Action | Text-to-Video | Image-to-Video |
-|--------------|---------------|----------------|
-| `animateImage` | - | ✓ |
-| `remixPage` | ✓ | ✓ |
-
-## Implementation Checklist
-
-### Image Generation
-- [ ] Add `@runware/sdk-js` dependency
-- [ ] Create `runware/createRunwareClient.ts`
-- [ ] Create `runware/createRunwareImageProvider.ts`
-- [ ] Create `runware/types.ts`
-- [ ] Implement SDXL text-to-image provider
-- [ ] Implement SDXL image-to-image provider
-- [ ] Add image quick action support
-- [ ] Export providers from index.ts
-- [ ] Write tests
-
-### Video Generation
-- [ ] Create `runware/createRunwareVideoProvider.ts`
-- [ ] Implement Kling text-to-video provider
-- [ ] Implement Kling image-to-video provider
-- [ ] Add video quick action support
-- [ ] Export video providers from index.ts
-- [ ] Write tests
-
 ---
 
 ## Available Models
