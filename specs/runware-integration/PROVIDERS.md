@@ -6,33 +6,33 @@ This document lists all available models through the Runware API with their AIR 
 
 ### Overview
 
-| Provider | Model | AIR ID | Capabilities |
-|----------|-------|--------|--------------|
-| BFL | FLUX.1.1 Pro | `bfl:2@1` | T2I |
-| BFL | FLUX.1.1 Pro Ultra | `bfl:2@2` | T2I |
-| BFL | FLUX.1 Kontext [pro] | `bfl:3@1` | I2I (editing) |
-| BFL | FLUX.1 Kontext [max] | `bfl:4@1` | I2I (editing) |
-| Google | Imagen 3.0 | `google:1@1` | T2I |
-| Google | Imagen 3.0 Fast | `google:1@2` | T2I |
-| Google | Imagen 4 Preview | `google:2@1` | T2I |
-| Google | Imagen 4 Ultra | `google:2@2` | T2I |
-| Google | Imagen 4 Fast | `google:2@3` | T2I |
-| Google | Nano Banana / Gemini Flash 2.5 | `google:4@1` | T2I |
-| Google | Nano Banana 2 Pro | `google:4@2` | T2I |
-| OpenAI | GPT Image 1 | `openai:1@1` | T2I, I2I |
-| ByteDance | Seedream 3.0 | `bytedance:3@1` | T2I |
-| ByteDance | SeedEdit 3.0 | `bytedance:4@1` | I2I (editing) |
-| ByteDance | Seedream 4.0 | `bytedance:5@0` | T2I |
-| Bria | Bria 3.2 | `bria:10@1` | T2I |
-| Bria | Bria FIBO | `bria:20@1` | T2I |
-| Ideogram | Ideogram 3.0 | `ideogram:4@1` | T2I |
-| Ideogram | Ideogram 3.0 Remix | `ideogram:4@2` | I2I |
-| KlingAI | Kolors 2.0 | `klingai:5@10` | T2I |
-| KlingAI | Kolors 2.1 | `klingai:4@10` | T2I |
-| Runware | HiDream-I1 Full | `runware:97@1` | T2I |
-| Runware | FLUX.1 Krea [dev] | `runware:107@1` | T2I |
-| Runware | Qwen-Image | `runware:108@1` | T2I |
-| Runware | Flex.1-alpha | `runware:160@1` | T2I |
+| Provider | Model | AIR ID | Capabilities | Tested |
+|----------|-------|--------|--------------|--------|
+| BFL | FLUX.1.1 Pro | `bfl:2@1` | T2I | |
+| BFL | FLUX.1.1 Pro Ultra | `bfl:2@2` | T2I | |
+| BFL | FLUX.1 Kontext [pro] | `bfl:3@1` | I2I (editing) | |
+| BFL | FLUX.1 Kontext [max] | `bfl:4@1` | I2I (editing) | |
+| Google | Imagen 3.0 | `google:1@1` | T2I | |
+| Google | Imagen 3.0 Fast | `google:1@2` | T2I | |
+| Google | Imagen 4 Preview | `google:2@1` | T2I | |
+| Google | Imagen 4 Ultra | `google:2@2` | T2I | |
+| Google | Imagen 4 Fast | `google:2@3` | T2I | |
+| Google | Nano Banana / Gemini Flash 2.5 | `google:4@1` | T2I | |
+| Google | Nano Banana 2 Pro | `google:4@2` | T2I | |
+| OpenAI | GPT Image 1 | `openai:1@1` | T2I, I2I | |
+| ByteDance | Seedream 3.0 | `bytedance:3@1` | T2I | |
+| ByteDance | SeedEdit 3.0 | `bytedance:4@1` | I2I (editing) | |
+| ByteDance | Seedream 4.0 | `bytedance:5@0` | T2I | |
+| Bria | Bria 3.2 | `bria:10@1` | T2I | |
+| Bria | Bria FIBO | `bria:20@1` | T2I | |
+| Ideogram | Ideogram 3.0 | `ideogram:4@1` | T2I | |
+| Ideogram | Ideogram 3.0 Remix | `ideogram:4@2` | I2I | |
+| KlingAI | Kolors 2.0 | `klingai:5@10` | T2I | |
+| KlingAI | Kolors 2.1 | `klingai:4@10` | T2I | |
+| Runware | HiDream-I1 Full | `runware:97@1` | T2I | |
+| Runware | FLUX.1 Krea [dev] | `runware:107@1` | T2I | |
+| Runware | Qwen-Image | `runware:108@1` | T2I | |
+| Runware | Flex.1-alpha | `runware:160@1` | T2I | |
 
 ---
 
