@@ -3,16 +3,30 @@ import { Icons } from '@imgly/plugin-utils';
 import schema from './Ideogram3.json';
 import CreativeEditorSDK from '@cesdk/cesdk-js';
 import createImageProvider from './createImageProvider';
-import {
-  RunwareProviderConfiguration,
-  getImageDimensionsFromSize
-} from './types';
-import { isCustomImageSize } from './utils';
+import { RunwareProviderConfiguration } from './types';
+
+// Ideogram 3.0 dimensions: 128-2048px, divisible by 64
+// Use preset aspect ratios that map to valid dimensions
+const IDEOGRAM3_SIZE_MAP: Record<string, { width: number; height: number }> = {
+  square: { width: 1024, height: 1024 },
+  square_hd: { width: 1024, height: 1024 }, // Max supported square
+  portrait_4_3: { width: 896, height: 1152 }, // 3:4 ratio, divisible by 64
+  portrait_16_9: { width: 768, height: 1344 }, // 9:16 ratio, divisible by 64
+  landscape_4_3: { width: 1152, height: 896 }, // 4:3 ratio, divisible by 64
+  landscape_16_9: { width: 1344, height: 768 } // 16:9 ratio, divisible by 64
+};
+
+function getIdeogram3Dimensions(imageSize: string): {
+  width: number;
+  height: number;
+} {
+  return IDEOGRAM3_SIZE_MAP[imageSize] ?? { width: 1024, height: 1024 };
+}
 
 type Ideogram3Input = {
   prompt: string;
   style?: 'AUTO' | 'GENERAL' | 'REALISTIC' | 'DESIGN' | 'RENDER_3D' | 'ANIME';
-  image_size?: string | { width: number; height: number };
+  image_size?: string;
 };
 
 type Ideogram3Output = {
@@ -39,31 +53,14 @@ export function Ideogram3(config: RunwareProviderConfiguration) {
         cesdk,
         middleware: config.middlewares ?? [],
         getImageSize: (input) => {
-          if (isCustomImageSize(input.image_size)) {
-            return {
-              width: input.image_size.width ?? 1024,
-              height: input.image_size.height ?? 1024
-            };
-          }
-          return getImageDimensionsFromSize(input.image_size ?? 'square_hd');
+          return getIdeogram3Dimensions(input.image_size ?? 'square');
         },
         mapInput: (input) => {
-          let width: number;
-          let height: number;
-          if (isCustomImageSize(input.image_size)) {
-            width = input.image_size.width ?? 1024;
-            height = input.image_size.height ?? 1024;
-          } else {
-            const dims = getImageDimensionsFromSize(
-              input.image_size ?? 'square_hd'
-            );
-            width = dims.width;
-            height = dims.height;
-          }
+          const dims = getIdeogram3Dimensions(input.image_size ?? 'square');
           return {
             positivePrompt: input.prompt,
-            width,
-            height
+            width: dims.width,
+            height: dims.height
           };
         }
       },

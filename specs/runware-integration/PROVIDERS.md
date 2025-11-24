@@ -27,18 +27,11 @@ This document lists all available models through the Runware API with their AIR 
 | Bria | Bria FIBO | `bria:20@1` | T2I |
 | Ideogram | Ideogram 3.0 | `ideogram:4@1` | T2I |
 | Ideogram | Ideogram 3.0 Remix | `ideogram:4@2` | I2I |
-| Ideogram | Ideogram 3.0 Edit | `ideogram:4@3` | I2I |
-| Ideogram | Ideogram 3.0 Reframe | `ideogram:4@4` | I2I |
-| Ideogram | Ideogram 3.0 Replace BG | `ideogram:4@5` | I2I |
 | KlingAI | Kolors 2.0 | `klingai:5@10` | T2I |
 | KlingAI | Kolors 2.1 | `klingai:4@10` | T2I |
-| Sourceful | Riverflow 1.1 Mini | `sourceful:1@0` | I2I |
-| Sourceful | Riverflow 1.1 | `sourceful:1@1` | I2I |
-| Sourceful | Riverflow 1.1 Pro | `sourceful:1@2` | I2I |
 | Runware | HiDream-I1 Full | `runware:97@1` | T2I |
 | Runware | FLUX.1 Krea [dev] | `runware:107@1` | T2I |
 | Runware | Qwen-Image | `runware:108@1` | T2I |
-| Runware | Qwen-Image-Edit | `runware:108@20` | I2I |
 | Runware | Flex.1-alpha | `runware:160@1` | T2I |
 
 ---
@@ -244,6 +237,107 @@ This document lists all available models through the Runware API with their AIR 
 
 **Docs**: https://runware.ai/docs/en/providers/google
 
+#### Imagen 3.0
+
+- **AIR ID**: `google:1@1`
+- **Capabilities**: Text-to-Image
+- **Prompt**: 2-3000 characters
+- **Dimensions**: Fixed aspect ratios only
+
+```json
+{
+  "components": {
+    "schemas": {
+      "Imagen3Input": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "title": "Prompt",
+            "minLength": 2,
+            "maxLength": 3000,
+            "x-imgly-builder": { "component": "TextArea" }
+          },
+          "aspect_ratio": {
+            "type": "string",
+            "title": "Aspect Ratio",
+            "enum": ["1:1", "16:9", "9:16", "4:3", "3:4"],
+            "default": "1:1",
+            "x-imgly-enum-labels": {
+              "1:1": "Square (1024×1024)",
+              "16:9": "Landscape (1408×768)",
+              "9:16": "Portrait (768×1408)",
+              "4:3": "Landscape (1280×896)",
+              "3:4": "Portrait (896×1280)"
+            },
+            "x-imgly-enum-icons": {
+              "1:1": "@imgly/plugin/formats/ratio1by1",
+              "16:9": "@imgly/plugin/formats/ratio16by9",
+              "9:16": "@imgly/plugin/formats/ratio9by16",
+              "4:3": "@imgly/plugin/formats/ratio4by3",
+              "3:4": "@imgly/plugin/formats/ratio3by4"
+            }
+          }
+        },
+        "required": ["prompt"],
+        "x-fal-order-properties": ["prompt", "aspect_ratio"]
+      }
+    }
+  }
+}
+```
+
+#### Imagen 3.0 Fast
+
+- **AIR ID**: `google:1@2`
+- **Capabilities**: Text-to-Image
+- **Features**: Optimized for speed/latency, ideal for interactive or real-time use
+- **Prompt**: 2-3000 characters
+- **Dimensions**: Fixed aspect ratios only
+
+```json
+{
+  "components": {
+    "schemas": {
+      "Imagen3FastInput": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "title": "Prompt",
+            "minLength": 2,
+            "maxLength": 3000,
+            "x-imgly-builder": { "component": "TextArea" }
+          },
+          "aspect_ratio": {
+            "type": "string",
+            "title": "Aspect Ratio",
+            "enum": ["1:1", "16:9", "9:16", "4:3", "3:4"],
+            "default": "1:1",
+            "x-imgly-enum-labels": {
+              "1:1": "Square (1024×1024)",
+              "16:9": "Landscape (1408×768)",
+              "9:16": "Portrait (768×1408)",
+              "4:3": "Landscape (1280×896)",
+              "3:4": "Portrait (896×1280)"
+            },
+            "x-imgly-enum-icons": {
+              "1:1": "@imgly/plugin/formats/ratio1by1",
+              "16:9": "@imgly/plugin/formats/ratio16by9",
+              "9:16": "@imgly/plugin/formats/ratio9by16",
+              "4:3": "@imgly/plugin/formats/ratio4by3",
+              "3:4": "@imgly/plugin/formats/ratio3by4"
+            }
+          }
+        },
+        "required": ["prompt"],
+        "x-fal-order-properties": ["prompt", "aspect_ratio"]
+      }
+    }
+  }
+}
+```
+
 #### Imagen 4 Preview
 
 - **AIR ID**: `google:2@1`
@@ -345,6 +439,63 @@ Schema same as Imagen 4 Preview.
 }
 ```
 
+#### Nano Banana 2 Pro / Gemini 3 Pro Image Preview
+
+- **AIR ID**: `google:4@2`
+- **Capabilities**: Text-to-Image
+- **Features**: Advanced version of Nano Banana, lighting control, camera angle control, multi-image blending, high-resolution output up to 4K
+
+```json
+{
+  "components": {
+    "schemas": {
+      "NanoBananaProInput": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "title": "Prompt",
+            "minLength": 2,
+            "maxLength": 3000,
+            "x-imgly-builder": { "component": "TextArea" }
+          },
+          "aspect_ratio": {
+            "type": "string",
+            "title": "Aspect Ratio",
+            "enum": ["1:1", "16:9", "9:16", "4:3", "3:4", "3:2", "2:3", "21:9", "9:21"],
+            "default": "1:1",
+            "x-imgly-enum-labels": {
+              "1:1": "Square",
+              "16:9": "Landscape 16:9",
+              "9:16": "Portrait 9:16",
+              "4:3": "Landscape 4:3",
+              "3:4": "Portrait 3:4",
+              "3:2": "Landscape 3:2",
+              "2:3": "Portrait 2:3",
+              "21:9": "Ultrawide",
+              "9:21": "Tall"
+            },
+            "x-imgly-enum-icons": {
+              "1:1": "@imgly/plugin/formats/ratio1by1",
+              "16:9": "@imgly/plugin/formats/ratio16by9",
+              "9:16": "@imgly/plugin/formats/ratio9by16",
+              "4:3": "@imgly/plugin/formats/ratio4by3",
+              "3:4": "@imgly/plugin/formats/ratio3by4",
+              "3:2": "@imgly/plugin/formats/ratio3by2",
+              "2:3": "@imgly/plugin/formats/ratio2by3",
+              "21:9": "@imgly/plugin/formats/ratio21by9",
+              "9:21": "@imgly/plugin/formats/ratio9by21"
+            }
+          }
+        },
+        "required": ["prompt"],
+        "x-fal-order-properties": ["prompt", "aspect_ratio"]
+      }
+    }
+  }
+}
+```
+
 ---
 
 ### OpenAI
@@ -433,6 +584,59 @@ Schema same as Imagen 4 Preview.
 ### ByteDance
 
 **Docs**: https://runware.ai/docs/en/providers/bytedance
+
+#### Seedream 3.0
+
+- **AIR ID**: `bytedance:3@1`
+- **Capabilities**: Text-to-Image
+- **Resolution**: Up to 2K (2048×2048)
+- **Dimensions**: 512-2048px
+- **Features**: Bilingual (Chinese-English) support, industry-leading text rendering and layout accuracy
+
+```json
+{
+  "components": {
+    "schemas": {
+      "Seedream3Input": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "title": "Prompt",
+            "minLength": 2,
+            "maxLength": 3000,
+            "x-imgly-builder": { "component": "TextArea" }
+          },
+          "image_size": {
+            "type": "string",
+            "title": "Format",
+            "enum": ["square", "square_hd", "portrait_4_3", "portrait_16_9", "landscape_4_3", "landscape_16_9"],
+            "default": "square_hd",
+            "x-imgly-enum-labels": {
+              "square": "Square",
+              "square_hd": "Square HD",
+              "portrait_4_3": "Portrait 4:3",
+              "portrait_16_9": "Portrait 16:9",
+              "landscape_4_3": "Landscape 4:3",
+              "landscape_16_9": "Landscape 16:9"
+            },
+            "x-imgly-enum-icons": {
+              "square": "@imgly/plugin/formats/ratio1by1",
+              "square_hd": "@imgly/plugin/formats/ratio1by1",
+              "portrait_4_3": "@imgly/plugin/formats/ratio3by4",
+              "portrait_16_9": "@imgly/plugin/formats/ratio9by16",
+              "landscape_4_3": "@imgly/plugin/formats/ratio4by3",
+              "landscape_16_9": "@imgly/plugin/formats/ratio16by9"
+            }
+          }
+        },
+        "required": ["prompt"],
+        "x-fal-order-properties": ["prompt", "image_size"]
+      }
+    }
+  }
+}
+```
 
 #### Seedream 4.0
 
@@ -723,6 +927,39 @@ Schema same as Imagen 4 Preview.
 
 **Docs**: https://runware.ai/docs/en/providers/klingai
 
+#### Kolors 2.0
+
+- **AIR ID**: `klingai:5@10`
+- **Capabilities**: Text-to-Image
+- **Features**: Photorealism, natural color balance, advanced compositional depth, cinematic shots, human subjects
+
+```json
+{
+  "components": {
+    "schemas": {
+      "Kolors20Input": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "title": "Prompt",
+            "x-imgly-builder": { "component": "TextArea" }
+          },
+          "aspect_ratio": {
+            "type": "string",
+            "title": "Aspect Ratio",
+            "enum": ["1:1", "16:9", "9:16", "4:3", "3:4"],
+            "default": "1:1"
+          }
+        },
+        "required": ["prompt"],
+        "x-fal-order-properties": ["prompt", "aspect_ratio"]
+      }
+    }
+  }
+}
+```
+
 #### Kolors 2.1
 
 - **AIR ID**: `klingai:4@10`
@@ -762,6 +999,54 @@ Schema same as Imagen 4 Preview.
 
 **Docs**: https://runware.ai/docs/en/providers/bria
 
+#### Bria 3.2
+
+- **AIR ID**: `bria:10@1`
+- **Capabilities**: Text-to-Image
+- **Features**: Commercial-ready model with improved aesthetics, strong prompt alignment, superior short-text rendering, trained on licensed data
+
+```json
+{
+  "components": {
+    "schemas": {
+      "Bria32Input": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "title": "Prompt",
+            "maxLength": 1000,
+            "x-imgly-builder": { "component": "TextArea" }
+          },
+          "aspect_ratio": {
+            "type": "string",
+            "title": "Aspect Ratio",
+            "enum": ["1:1", "16:9", "9:16", "4:5", "3:2"],
+            "default": "1:1",
+            "x-imgly-enum-labels": {
+              "1:1": "Square",
+              "16:9": "Landscape 16:9",
+              "9:16": "Portrait 9:16",
+              "4:5": "Portrait 4:5",
+              "3:2": "Landscape 3:2"
+            },
+            "x-imgly-enum-icons": {
+              "1:1": "@imgly/plugin/formats/ratio1by1",
+              "16:9": "@imgly/plugin/formats/ratio16by9",
+              "9:16": "@imgly/plugin/formats/ratio9by16",
+              "4:5": "@imgly/plugin/formats/ratio4by5",
+              "3:2": "@imgly/plugin/formats/ratio3by2"
+            }
+          }
+        },
+        "required": ["prompt"],
+        "x-fal-order-properties": ["prompt", "aspect_ratio"]
+      }
+    }
+  }
+}
+```
+
 #### Bria FIBO
 
 - **AIR ID**: `bria:20@1`
@@ -786,6 +1071,236 @@ Schema same as Imagen 4 Preview.
             "title": "Aspect Ratio",
             "enum": ["1:1", "16:9", "9:16", "4:5", "3:2"],
             "default": "1:1"
+          }
+        },
+        "required": ["prompt"],
+        "x-fal-order-properties": ["prompt", "aspect_ratio"]
+      }
+    }
+  }
+}
+```
+
+---
+
+### Runware
+
+**Docs**: https://runware.ai/models
+
+#### HiDream-I1 Full
+
+- **AIR ID**: `runware:97@1`
+- **Capabilities**: Text-to-Image
+- **Architecture**: 17B parameter Sparse Diffusion Transformer (DiT) with Mixture-of-Experts (MoE)
+- **Features**: Highest quality HiDream model, sharp detail, accurate prompts, full LoRA compatibility
+- **Resolution**: Default 1024x1024, supports multiple aspect ratios
+- **License**: MIT (commercial use allowed)
+
+```json
+{
+  "components": {
+    "schemas": {
+      "HiDreamI1FullInput": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "title": "Prompt",
+            "minLength": 2,
+            "maxLength": 3000,
+            "x-imgly-builder": { "component": "TextArea" }
+          },
+          "aspect_ratio": {
+            "type": "string",
+            "title": "Aspect Ratio",
+            "enum": ["1:1", "16:9", "9:16", "4:3", "3:4"],
+            "default": "1:1",
+            "x-imgly-enum-labels": {
+              "1:1": "Square",
+              "16:9": "Landscape 16:9",
+              "9:16": "Portrait 9:16",
+              "4:3": "Landscape 4:3",
+              "3:4": "Portrait 3:4"
+            },
+            "x-imgly-enum-icons": {
+              "1:1": "@imgly/plugin/formats/ratio1by1",
+              "16:9": "@imgly/plugin/formats/ratio16by9",
+              "9:16": "@imgly/plugin/formats/ratio9by16",
+              "4:3": "@imgly/plugin/formats/ratio4by3",
+              "3:4": "@imgly/plugin/formats/ratio3by4"
+            }
+          }
+        },
+        "required": ["prompt"],
+        "x-fal-order-properties": ["prompt", "aspect_ratio"]
+      }
+    }
+  }
+}
+```
+
+#### FLUX.1 Krea [dev]
+
+- **AIR ID**: `runware:107@1`
+- **Capabilities**: Text-to-Image
+- **Features**: Photorealistic open-weight model co-developed with Krea AI, distinctive realistic results without typical AI artifacts, strong foundation for custom image generation projects
+
+```json
+{
+  "components": {
+    "schemas": {
+      "FluxKreaDevInput": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "title": "Prompt",
+            "minLength": 2,
+            "maxLength": 3000,
+            "x-imgly-builder": { "component": "TextArea" }
+          },
+          "aspect_ratio": {
+            "type": "string",
+            "title": "Aspect Ratio",
+            "enum": ["1:1", "16:9", "9:16", "4:3", "3:4", "3:2", "2:3", "21:9", "9:21"],
+            "default": "1:1",
+            "x-imgly-enum-labels": {
+              "1:1": "Square",
+              "16:9": "Landscape 16:9",
+              "9:16": "Portrait 9:16",
+              "4:3": "Landscape 4:3",
+              "3:4": "Portrait 3:4",
+              "3:2": "Landscape 3:2",
+              "2:3": "Portrait 2:3",
+              "21:9": "Ultrawide",
+              "9:21": "Tall"
+            },
+            "x-imgly-enum-icons": {
+              "1:1": "@imgly/plugin/formats/ratio1by1",
+              "16:9": "@imgly/plugin/formats/ratio16by9",
+              "9:16": "@imgly/plugin/formats/ratio9by16",
+              "4:3": "@imgly/plugin/formats/ratio4by3",
+              "3:4": "@imgly/plugin/formats/ratio3by4",
+              "3:2": "@imgly/plugin/formats/ratio3by2",
+              "2:3": "@imgly/plugin/formats/ratio2by3",
+              "21:9": "@imgly/plugin/formats/ratio21by9",
+              "9:21": "@imgly/plugin/formats/ratio9by21"
+            }
+          }
+        },
+        "required": ["prompt"],
+        "x-fal-order-properties": ["prompt", "aspect_ratio"]
+      }
+    }
+  }
+}
+```
+
+#### Flex.1-alpha
+
+- **AIR ID**: `runware:160@1`
+- **Capabilities**: Text-to-Image
+- **Architecture**: Compact 8 billion parameter model
+- **Features**: Optional guidance embedder, CFG-free generation
+- **License**: Apache 2.0 (open-source)
+
+```json
+{
+  "components": {
+    "schemas": {
+      "Flex1AlphaInput": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "title": "Prompt",
+            "minLength": 2,
+            "maxLength": 3000,
+            "x-imgly-builder": { "component": "TextArea" }
+          },
+          "aspect_ratio": {
+            "type": "string",
+            "title": "Aspect Ratio",
+            "enum": ["1:1", "16:9", "9:16", "4:3", "3:4", "3:2", "2:3", "21:9", "9:21"],
+            "default": "1:1",
+            "x-imgly-enum-labels": {
+              "1:1": "Square",
+              "16:9": "Landscape 16:9",
+              "9:16": "Portrait 9:16",
+              "4:3": "Landscape 4:3",
+              "3:4": "Portrait 3:4",
+              "3:2": "Landscape 3:2",
+              "2:3": "Portrait 2:3",
+              "21:9": "Ultrawide",
+              "9:21": "Tall"
+            },
+            "x-imgly-enum-icons": {
+              "1:1": "@imgly/plugin/formats/ratio1by1",
+              "16:9": "@imgly/plugin/formats/ratio16by9",
+              "9:16": "@imgly/plugin/formats/ratio9by16",
+              "4:3": "@imgly/plugin/formats/ratio4by3",
+              "3:4": "@imgly/plugin/formats/ratio3by4",
+              "3:2": "@imgly/plugin/formats/ratio3by2",
+              "2:3": "@imgly/plugin/formats/ratio2by3",
+              "21:9": "@imgly/plugin/formats/ratio21by9",
+              "9:21": "@imgly/plugin/formats/ratio9by21"
+            }
+          }
+        },
+        "required": ["prompt"],
+        "x-fal-order-properties": ["prompt", "aspect_ratio"]
+      }
+    }
+  }
+}
+```
+
+#### Qwen-Image
+
+- **AIR ID**: `runware:108@1`
+- **Capabilities**: Text-to-Image
+- **Architecture**: 20B MMDiT (Multimodal Diffusion Transformer) model by Alibaba Cloud
+- **Features**: Complex text rendering (especially Chinese), precise prompt following, strong general image generation
+- **Dimensions**: Custom aspect ratios (1328x1328, 1664x928, etc.)
+- **License**: Apache 2.0
+
+```json
+{
+  "components": {
+    "schemas": {
+      "QwenImageInput": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "title": "Prompt",
+            "minLength": 2,
+            "maxLength": 3000,
+            "x-imgly-builder": { "component": "TextArea" }
+          },
+          "aspect_ratio": {
+            "type": "string",
+            "title": "Aspect Ratio",
+            "enum": ["1:1", "16:9", "9:16", "4:3", "3:4", "3:2", "2:3"],
+            "default": "1:1",
+            "x-imgly-enum-labels": {
+              "1:1": "Square (1328×1328)",
+              "16:9": "Landscape (1664×928)",
+              "9:16": "Portrait (928×1664)",
+              "4:3": "Landscape (1472×1104)",
+              "3:4": "Portrait (1104×1472)",
+              "3:2": "Landscape (1584×1056)",
+              "2:3": "Portrait (1056×1584)"
+            },
+            "x-imgly-enum-icons": {
+              "1:1": "@imgly/plugin/formats/ratio1by1",
+              "16:9": "@imgly/plugin/formats/ratio16by9",
+              "9:16": "@imgly/plugin/formats/ratio9by16",
+              "4:3": "@imgly/plugin/formats/ratio4by3",
+              "3:4": "@imgly/plugin/formats/ratio3by4",
+              "3:2": "@imgly/plugin/formats/ratio3by2",
+              "2:3": "@imgly/plugin/formats/ratio2by3"
+            }
           }
         },
         "required": ["prompt"],

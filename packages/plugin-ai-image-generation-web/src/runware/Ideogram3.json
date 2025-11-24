@@ -31,21 +31,13 @@
             }
           },
           "image_size": {
-            "anyOf": [
-              {
-                "type": "string",
-                "enum": ["square_hd", "square", "portrait_4_3", "portrait_16_9", "landscape_4_3", "landscape_16_9"]
-              },
-              {
-                "$ref": "#/components/schemas/ImageSize"
-              }
-            ],
+            "type": "string",
+            "enum": ["square", "square_hd", "portrait_4_3", "portrait_16_9", "landscape_4_3", "landscape_16_9"],
             "title": "Format",
-            "default": "square_hd",
+            "default": "square",
             "x-imgly-enum-labels": {
-              "ImageSize": "Custom",
-              "square_hd": "Square HD",
               "square": "Square",
+              "square_hd": "Square HD",
               "portrait_4_3": "Portrait 4:3",
               "portrait_16_9": "Portrait 16:9",
               "landscape_4_3": "Landscape 4:3",
@@ -57,32 +49,12 @@
               "portrait_4_3": "@imgly/plugin/formats/ratio3by4",
               "portrait_16_9": "@imgly/plugin/formats/ratio9by16",
               "landscape_4_3": "@imgly/plugin/formats/ratio4by3",
-              "landscape_16_9": "@imgly/plugin/formats/ratio16by9",
-              "ImageSize": "@imgly/plugin/formats/ratioFree"
+              "landscape_16_9": "@imgly/plugin/formats/ratio16by9"
             }
           }
         },
         "required": ["prompt"],
         "x-fal-order-properties": ["prompt", "style", "image_size"]
-      },
-      "ImageSize": {
-        "type": "object",
-        "properties": {
-          "width": {
-            "type": "integer",
-            "title": "Width",
-            "minimum": 128,
-            "maximum": 2048,
-            "default": 1024
-          },
-          "height": {
-            "type": "integer",
-            "title": "Height",
-            "minimum": 128,
-            "maximum": 2048,
-            "default": 1024
-          }
-        }
       }
     }
   }
