@@ -8,7 +8,7 @@ This document lists all available models through the Runware API with their AIR 
 
 | Provider | Model | AIR ID | Capabilities |
 |----------|-------|--------|--------------|
-| BFL | FLUX.1.1 Pro | `bfl:1@1` | T2I |
+| BFL | FLUX.1.1 Pro | `bfl:2@1` | T2I |
 | BFL | FLUX.1.1 Pro Ultra | `bfl:2@2` | T2I |
 | BFL | FLUX.1 Kontext [pro] | `bfl:3@1` | I2I (editing) |
 | BFL | FLUX.1 Kontext [max] | `bfl:4@1` | I2I (editing) |
@@ -51,7 +51,7 @@ This document lists all available models through the Runware API with their AIR 
 
 #### FLUX.1.1 Pro
 
-- **AIR ID**: `bfl:1@1`
+- **AIR ID**: `bfl:2@1`
 - **Capabilities**: Text-to-Image
 - **Dimensions**: 256-1440px (must be divisible by 64)
 - **Aspect Ratio**: 3:7 to 7:3 (default: 1:1 = 1024×1024)
