@@ -2,8 +2,6 @@ import CreativeEditorSDK from '@cesdk/cesdk-js';
 
 import AiApps from '@imgly/plugin-ai-apps-web';
 import OpenAiImage from '@imgly/plugin-ai-image-generation-web/open-ai';
-import FalAiImage from '@imgly/plugin-ai-image-generation-web/fal-ai';
-import FalAiVideo from '@imgly/plugin-ai-video-generation-web/fal-ai';
 import Elevenlabs from '@imgly/plugin-ai-audio-generation-web/elevenlabs';
 import Anthropic from '@imgly/plugin-ai-text-generation-web/anthropic';
 import OpenAIText from '@imgly/plugin-ai-text-generation-web/open-ai';
@@ -19,6 +17,11 @@ import {
   testAllTranslations,
   resetTranslations
 } from './utils/testTranslations';
+import { createFalAiProviders } from './falaiProviders';
+import { createOpenAiProviders } from './openaiProviders';
+import { createRunwareProviders } from './runwareProviders';
+
+export type ProviderPartner = 'fal-ai' | 'openai' | 'runware';
 
 function App() {
   const cesdk = useRef<CreativeEditorSDK>();
@@ -85,11 +88,23 @@ function App() {
             instance.feature.enable('ly.img.placeholder', false);
 
             let archiveType = searchParams.get('archive');
+            let providerPartner = searchParams.get('partner') as ProviderPartner | null;
 
             // If no archive parameter, add default to URL
             if (!archiveType) {
               archiveType = 'design';
-              setSearchParams({ archive: 'design' }, { replace: true });
+            }
+
+            // If no provider partner parameter, add default
+            if (!providerPartner) {
+              providerPartner = 'fal-ai';
+            }
+
+            // Update URL with current parameters
+            const currentArchive = searchParams.get('archive');
+            const currentPartner = searchParams.get('partner');
+            if (currentArchive !== archiveType || currentPartner !== providerPartner) {
+              setSearchParams({ archive: archiveType, partner: providerPartner }, { replace: true });
             }
 
             // Handle photo editor mode
@@ -178,45 +193,40 @@ function App() {
               });
             };
 
-            // Persistent error middleware that shows non-dismissing notification and sets block error state
-            const persistentErrorMiddleware: Middleware<any, any> = async (
-              input,
-              options,
-              next
-            ) => {
-              try {
-                return await next(input, options);
-              } catch (error) {
-                // Prevent all default behaviors (notifications, console logging, etc.)
-                options.preventDefault();
+            // Get partner-specific providers for image and video generation
+            const getPartnerProviders = () => {
+              const middlewareOptions = {
+                imageRateLimitMiddleware,
+                videoRateLimitMiddleware,
+                errorMiddleware,
+                proxyUrl: ''
+              };
 
-                // Manually set blocks to error state
-                options.blockIds?.forEach((blockId) => {
-                  if (options.cesdk?.engine.block.isValid(blockId)) {
-                    options.cesdk.engine.block.setState(blockId, {
-                      type: 'Error',
-                      error: 'Unknown'
-                    });
-                  }
-                });
-
-                // Show persistent (non-dismissing) custom notification
-                options.cesdk?.ui.showNotification({
-                  type: 'error',
-                  message: 'Critical error occurred. Please contact support immediately.',
-                  duration: 'infinite', // Non-dismissing - notification stays until manually closed
-                  action: {
-                    label: 'Contact Support',
-                    onClick: () => {
-                      window.open('mailto:support@img.ly?subject=RecraftV3%20Generation%20Error');
-                    }
-                  }
-                });
-
-                // Re-throw the error to maintain the error flow
-                throw error;
+              switch (providerPartner) {
+                case 'fal-ai':
+                  return createFalAiProviders({
+                    ...middlewareOptions,
+                    proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
+                  });
+                case 'openai':
+                  return createOpenAiProviders({
+                    ...middlewareOptions,
+                    proxyUrl: import.meta.env.VITE_OPENAI_PROXY_URL
+                  });
+                case 'runware':
+                  return createRunwareProviders({
+                    ...middlewareOptions,
+                    proxyUrl: import.meta.env.VITE_RUNWARE_PROXY_URL
+                  });
+                default:
+                  return createFalAiProviders({
+                    ...middlewareOptions,
+                    proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
+                  });
               }
             };
+
+            const partnerProviders = getPartnerProviders();
 
               instance.addPlugin(
                 AiApps({
@@ -241,159 +251,10 @@ function App() {
                       proxyUrl: import.meta.env.VITE_OPENAI_PROXY_URL
                     })
                   ],
-                  text2image: [
-                    FalAiImage.RecraftV3({
-                      middleware: [persistentErrorMiddleware],
-                      proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL,
-                      properties: {
-                        style: {
-                          default: "realistic_image/b_and_w"
-                        }
-                      }
-                    }),
-                    FalAiImage.Recraft20b({
-                      middleware: [imageRateLimitMiddleware, errorMiddleware],
-                      proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
-                    }),
-                    FalAiImage.GeminiFlash25({
-                      middleware: [imageRateLimitMiddleware, errorMiddleware],
-                      proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
-                    }),
-                    FalAiImage.NanoBanana({
-                      middleware: [imageRateLimitMiddleware, errorMiddleware],
-                      proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
-                    }),
-                    FalAiImage.NanoBananaPro({
-                      middleware: [imageRateLimitMiddleware, errorMiddleware],
-                      proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
-                    }),
-                    OpenAiImage.GptImage1.Text2Image({
-                      middleware: [imageRateLimitMiddleware, errorMiddleware],
-                      proxyUrl: import.meta.env.VITE_OPENAI_PROXY_URL
-                    }),
-                    FalAiImage.IdeogramV3({
-                      middleware: [imageRateLimitMiddleware, errorMiddleware],
-                      proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
-                    }),
-                    FalAiImage.SeedreamV4({
-                      middleware: [imageRateLimitMiddleware, errorMiddleware],
-                      proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
-                    })
-                  ],
-                  image2image: [
-                    FalAiImage.Gemini25FlashImageEdit({
-                      middleware: [imageRateLimitMiddleware, errorMiddleware],
-                      proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
-                    }),
-                    FalAiImage.GeminiFlashEdit({
-                      middleware: [imageRateLimitMiddleware, errorMiddleware],
-                      proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
-                    }),
-                    FalAiImage.NanoBananaEdit({
-                      middleware: [imageRateLimitMiddleware, errorMiddleware],
-                      proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
-                    }),
-                    FalAiImage.NanoBananaProEdit({
-                      middleware: [imageRateLimitMiddleware, errorMiddleware],
-                      proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
-                    }),
-                    OpenAiImage.GptImage1.Image2Image({
-                      middleware: [imageRateLimitMiddleware, errorMiddleware],
-                      proxyUrl: import.meta.env.VITE_OPENAI_PROXY_URL
-                    }),
-                    FalAiImage.FluxProKontextEdit({
-                      middleware: [imageRateLimitMiddleware, errorMiddleware],
-                      proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
-                    }),
-                    FalAiImage.FluxProKontextMaxEdit({
-                      middleware: [imageRateLimitMiddleware, errorMiddleware],
-                      proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
-                    }),
-                    FalAiImage.QwenImageEdit({
-                      middleware: [imageRateLimitMiddleware, errorMiddleware],
-                      proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
-                    }),
-                    FalAiImage.IdeogramV3Remix({
-                      middleware: [imageRateLimitMiddleware, errorMiddleware],
-                      proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
-                    }),
-                    FalAiImage.SeedreamV4Edit({
-                      middleware: [imageRateLimitMiddleware, errorMiddleware],
-                      proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
-                    })
-                  ],
-                  text2video: [
-                    FalAiVideo.MinimaxVideo01Live({
-                      middleware: [videoRateLimitMiddleware, errorMiddleware],
-                      proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
-                    }),
-                    FalAiVideo.Veo3TextToVideo({
-                      middleware: [videoRateLimitMiddleware, errorMiddleware],
-                      proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
-                    }),
-                    FalAiVideo.Veo31TextToVideo({
-                      middleware: [videoRateLimitMiddleware, errorMiddleware],
-                      proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
-                    }),
-                    FalAiVideo.Veo31FastTextToVideo({
-                      middleware: [videoRateLimitMiddleware, errorMiddleware],
-                      proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
-                    }),
-                    FalAiVideo.KlingVideoV21MasterTextToVideo({
-                      middleware: [videoRateLimitMiddleware, errorMiddleware],
-                      proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
-                    }),
-                    FalAiVideo.PixverseV35TextToVideo({
-                      middleware: [videoRateLimitMiddleware, errorMiddleware],
-                      proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
-                    }),
-                    FalAiVideo.ByteDanceSeedanceV1ProTextToVideo({
-                      middleware: [videoRateLimitMiddleware, errorMiddleware],
-                      proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
-                    })
-                  ],
-                  image2video: [
-                    FalAiVideo.MinimaxVideo01LiveImageToVideo({
-                      middleware: [videoRateLimitMiddleware, errorMiddleware],
-                      proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
-                    }),
-                    FalAiVideo.KlingVideoV21MasterImageToVideo({
-                      middleware: [videoRateLimitMiddleware, errorMiddleware],
-                      proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
-                    }),
-                    FalAiVideo.MinimaxHailuo02StandardImageToVideo({
-                      middleware: [videoRateLimitMiddleware, errorMiddleware],
-                      proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
-                    }),
-                    FalAiVideo.ByteDanceSeedanceV1ProImageToVideo({
-                      middleware: [videoRateLimitMiddleware, errorMiddleware],
-                      proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
-                    }),
-                    FalAiVideo.Veo31ImageToVideo({
-                      middleware: [videoRateLimitMiddleware, errorMiddleware],
-                      proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
-                    }),
-                    FalAiVideo.Veo31FastImageToVideo({
-                      middleware: [videoRateLimitMiddleware, errorMiddleware],
-                      proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL
-                    }),
-                    FalAiVideo.Veo31FirstLastFrameToVideo({
-                      middleware: [videoRateLimitMiddleware, errorMiddleware],
-                      proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL,
-                      properties: {
-                        prompt: {
-                        }
-                      }
-                    }),
-                    FalAiVideo.Veo31FastFirstLastFrameToVideo({
-                      middleware: [videoRateLimitMiddleware, errorMiddleware],
-                      proxyUrl: import.meta.env.VITE_FAL_AI_PROXY_URL,
-                      properties: {
-                        prompt: {
-                        }
-                      }
-                    })
-                  ],
+                  text2image: partnerProviders.text2image,
+                  image2image: partnerProviders.image2image,
+                  text2video: partnerProviders.text2video,
+                  image2video: partnerProviders.image2video,
                   text2speech: Elevenlabs.ElevenMultilingualV2({
                     middleware: [soundRateLimitMiddleware, errorMiddleware],
                     proxyUrl: import.meta.env.VITE_ELEVENLABS_PROXY_URL
@@ -415,6 +276,7 @@ function App() {
 
             instance.ui.setNavigationBarOrder([
               'sceneModeToggle',
+              'providerPartnerToggle',
               'testTranslations',
               'featureApiCustomizations',
               ...instance.ui.getNavigationBarOrder()
@@ -441,26 +303,73 @@ function App() {
                     label: 'Design Mode',
                     isSelected: archiveType === 'design',
                     onClick: () => {
-                      setSearchParams({ archive: 'design' });
+                      setSearchParams({ archive: 'design', partner: providerPartner! });
                     }
                   });
                   builder.Button('videoMode', {
                     label: 'Video Mode',
                     isSelected: archiveType === 'video',
                     onClick: () => {
-                      setSearchParams({ archive: 'video' });
+                      setSearchParams({ archive: 'video', partner: providerPartner! });
                     }
                   });
                   builder.Button('photoEditor', {
                     label: 'Photo Editor',
                     isSelected: archiveType === 'photoeditor',
                     onClick: () => {
-                      setSearchParams({ archive: 'photoeditor' });
+                      setSearchParams({ archive: 'photoeditor', partner: providerPartner! });
                     }
                   });
                 }
               });
             });
+
+            // Provider partner toggle - only show for non-photoeditor modes
+            if (archiveType !== 'photoeditor') {
+              const getPartnerLabel = (partner: ProviderPartner) => {
+                switch (partner) {
+                  case 'fal-ai':
+                    return 'Fal.ai';
+                  case 'openai':
+                    return 'OpenAI';
+                  case 'runware':
+                    return 'Runware';
+                  default:
+                    return 'Fal.ai';
+                }
+              };
+
+              instance.ui.registerComponent('providerPartnerToggle', ({ builder }) => {
+                builder.Dropdown('providerPartnerToggle', {
+                  label: getPartnerLabel(providerPartner!),
+                  icon: '@imgly/Settings',
+                  variant: 'regular',
+                  children: () => {
+                    builder.Button('falai', {
+                      label: 'Fal.ai',
+                      isSelected: providerPartner === 'fal-ai',
+                      onClick: () => {
+                        setSearchParams({ archive: archiveType!, partner: 'fal-ai' });
+                      }
+                    });
+                    builder.Button('openai', {
+                      label: 'OpenAI',
+                      isSelected: providerPartner === 'openai',
+                      onClick: () => {
+                        setSearchParams({ archive: archiveType!, partner: 'openai' });
+                      }
+                    });
+                    builder.Button('runware', {
+                      label: 'Runware',
+                      isSelected: providerPartner === 'runware',
+                      onClick: () => {
+                        setSearchParams({ archive: archiveType!, partner: 'runware' });
+                      }
+                    });
+                  }
+                });
+              });
+            }
             instance.ui.registerComponent('testTranslations', ({ builder }) => {
               builder.Button('testTranslations', {
                 label: 'Test Translations',
