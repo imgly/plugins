@@ -58,9 +58,7 @@ function createImageProvider<
     name: options.name,
     configuration: config,
     initialize: async (context) => {
-      console.log('Initializing Runware client:', options.providerId, config);
       runwareClient = createRunwareClient(config.proxyUrl);
-      console.log('Runware client initialized:', options.providerId);
       options.initialize?.(context);
     },
     input: {

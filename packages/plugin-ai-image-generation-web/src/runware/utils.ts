@@ -1,4 +1,3 @@
-import { mimeTypeToExtension } from '@imgly/plugin-utils';
 import type CreativeEditorSDK from '@cesdk/cesdk-js';
 
 /**
@@ -12,10 +11,6 @@ export async function convertImageUrlForRunware(
 
   // For blob URLs, convert to data URI
   if (imageUrl.startsWith('blob:')) {
-    const mimeType =
-      cesdk != null
-        ? await cesdk.engine.editor.getMimeType(imageUrl)
-        : 'image/png';
     const response = await fetch(imageUrl);
     const blob = await response.blob();
     return blobToDataUri(blob);
