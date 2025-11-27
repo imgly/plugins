@@ -103,11 +103,12 @@ When updating providers.md:
 ### Provider Specifications
 - `specs/providers/README.md` - Overview of provider system
 - `specs/providers/architecture.md` - How providers fit into the plugin system
-- `specs/providers/schemas/text-to-image.md` - T2I implementation pattern
-- `specs/providers/schemas/image-to-image.md` - I2I implementation pattern
-- `specs/providers/schemas/text-to-video.md` - T2V implementation pattern
-- `specs/providers/schemas/image-to-video.md` - I2V implementation pattern
-- `specs/providers/schemas/quick-actions.md` - Quick action support
+- `specs/providers/patterns/ui-guidelines.md` - **CRITICAL**: Which parameters to expose/hide in UI
+- `specs/providers/patterns/text-to-image.md` - T2I implementation pattern
+- `specs/providers/patterns/image-to-image.md` - I2I implementation pattern
+- `specs/providers/patterns/text-to-video.md` - T2V implementation pattern
+- `specs/providers/patterns/image-to-video.md` - I2V implementation pattern
+- `specs/providers/patterns/quick-actions.md` - Quick action support
 
 ### Runware-Specific
 - `specs/providers/runware/providers.md` - Model inventory and status

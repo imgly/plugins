@@ -347,6 +347,14 @@ export default Runware;
 
 Change status from `planned` to `implemented` in `specs/providers/runware/providers.md`.
 
+## UI Parameter Guidelines
+
+**IMPORTANT**: Before implementing any provider, read `specs/providers/patterns/ui-guidelines.md` for comprehensive guidance on:
+- Which parameters to expose in UI (prompt, aspect_ratio, image_url)
+- Which parameters to NEVER expose (seed, cfg_scale, steps, enhance_prompt, etc.)
+- Standard aspect ratios and dimension mappings
+- JSON schema component reference and examples
+
 ## Common Patterns
 
 ### T2I Provider (Simple)
@@ -354,6 +362,7 @@ Change status from `planned` to `implemented` in `specs/providers/runware/provid
 Minimal implementation with aspect ratio:
 - `prompt` input field
 - `aspect_ratio` selection with icon labels
+- **No advanced parameters** (prompt enhancement, CFG, steps, etc.)
 
 ### I2I Provider (With Quick Actions)
 

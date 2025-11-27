@@ -22,14 +22,20 @@ Map capabilities to provider type:
 
 For models with multiple capabilities (e.g., text-to-image AND image-to-image), create one provider that supports both input types.
 
-### 2. Read Implementation Notes
+### 2. Read Required Documentation
 
-**Before writing any code**, read `specs/providers/runware/implementation-notes.md` which contains:
-- Complete TypeScript template with all imports
-- Complete JSON schema template with all required fields
-- Known issues and gotchas (TypeScript workarounds)
+**Before writing any code**, read these files in order:
 
-This file has copy-paste ready templates - use them as your starting point.
+1. **`specs/providers/patterns/ui-guidelines.md`** - CRITICAL
+   - Which parameters to expose in UI (prompt, aspect_ratio, image_url)
+   - Which parameters to NEVER expose (seed, cfg_scale, steps, enhance_prompt, etc.)
+   - Standard aspect ratios and dimensions
+   - JSON schema component reference
+
+2. **`specs/providers/runware/implementation-notes.md`**
+   - Complete TypeScript template with all imports
+   - Complete JSON schema template with all required fields
+   - Known issues and gotchas (TypeScript workarounds)
 
 ### 3. Fetch Detailed API Documentation
 
@@ -66,7 +72,40 @@ const Runware = {
 };
 ```
 
-### 6. Update providers.md
+### 6. Add to Example App
+
+Add the provider to `examples/ai/src/runwareProviders.ts`:
+
+```typescript
+import RunwareImage from '@imgly/plugin-ai-image-generation-web/runware';
+
+export function createRunwareProviders(options: RunwareProviderOptions) {
+  const { imageRateLimitMiddleware, errorMiddleware, proxyUrl } = options;
+
+  return {
+    text2image: [
+      // Add T2I providers here
+      RunwareImage.{ModelName}({
+        middlewares: [imageRateLimitMiddleware, errorMiddleware],
+        proxyUrl
+      })
+    ],
+    image2image: [
+      // Add I2I providers here
+    ],
+    text2video: [
+      // Add T2V providers here
+    ],
+    image2video: [
+      // Add I2V providers here
+    ]
+  };
+}
+```
+
+Place the provider in the appropriate array based on its type.
+
+### 7. Update providers.md
 
 Change status from `planned` to `implemented` in `specs/providers/runware/providers.md`:
 
@@ -75,7 +114,7 @@ Change status from `planned` to `implemented` in `specs/providers/runware/provid
 | ... | ... | ... | ... | ... | implemented |
 ```
 
-### 7. Run Validation
+### 8. Run Validation
 
 ```bash
 pnpm --filter "@imgly/plugin-ai-*" check:all
@@ -86,7 +125,7 @@ Fix any:
 - [ ] Lint errors
 - [ ] Build failures
 
-### 8. Test (if demo available)
+### 9. Test (if demo available)
 
 If the example app is set up:
 
