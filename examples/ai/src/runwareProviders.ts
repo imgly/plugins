@@ -1,4 +1,4 @@
-// import RunwareImage from '@imgly/plugin-ai-image-generation-web/runware';
+import RunwareImage from '@imgly/plugin-ai-image-generation-web/runware';
 // import RunwareVideo from '@imgly/plugin-ai-video-generation-web/runware';
 import { Middleware } from '@imgly/plugin-ai-generation-web';
 
@@ -14,7 +14,10 @@ export function createRunwareProviders(options: RunwareProviderOptions) {
 
   return {
     text2image: [
-      // Runware text-to-image providers will be added here
+      RunwareImage.Flux2Dev({
+        middlewares: [imageRateLimitMiddleware, errorMiddleware],
+        proxyUrl
+      })
     ],
     image2image: [
       // Runware image-to-image providers will be added here

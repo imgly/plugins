@@ -32,7 +32,7 @@ This document lists all available models through the Runware API with their AIR 
 | Black Forest Labs | FLUX.1 Expand Pro | `bfl:1@3` | outpainting | Nov 2024 | skipped |
 | Black Forest Labs | FLUX.1 Kontext [pro] | `bfl:3@1` | text-to-image, image-to-image | 2025 | skipped |
 | Black Forest Labs | FLUX.1 Kontext [max] | `bfl:4@1` | text-to-image, image-to-image | 2025 | skipped |
-| Black Forest Labs | FLUX.2 [dev] | `runware:400@1` | text-to-image, image-to-image | Nov 2025 | planned |
+| Black Forest Labs | FLUX.2 [dev] | `runware:400@1` | text-to-image, image-to-image | Nov 2025 | implemented |
 | Black Forest Labs | FLUX.2 [pro] | `bfl:5@1` | text-to-image, image-to-image | Nov 2025 | planned |
 | Black Forest Labs | FLUX.2 [flex] | `bfl:6@1` | text-to-image, image-to-image | Nov 2025 | planned |
 | **Bria** | Bria 3.2 | `bria:10@1` | text-to-image | Jun 2025 | skipped |
