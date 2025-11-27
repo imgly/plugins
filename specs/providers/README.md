@@ -17,10 +17,10 @@ This folder contains the canonical specifications for implementing AI generation
 ```
 specs/providers/
 ├── README.md              # This file
-├── ARCHITECTURE.md        # How providers fit into the plugin system
+├── architecture.md        # How providers fit into the plugin system
 │
 ├── patterns/              # Implementation patterns by provider type
-│   ├── UI-GUIDELINES.md   # Parameter design & UI standards (START HERE)
+│   ├── ui-guidelines.md   # Parameter design & UI standards (START HERE)
 │   ├── text-to-image.md   # T2I provider structure
 │   ├── image-to-image.md  # I2I provider structure
 │   ├── text-to-video.md   # T2V provider structure
@@ -30,7 +30,7 @@ specs/providers/
 │   └── i18n.md            # Internationalization and translations
 │
 └── {partner}/             # Partner-specific information
-    ├── PROVIDERS.md       # Model inventory & implementation status
+    ├── providers.md       # Model inventory & implementation status
     ├── api-patterns.md    # Partner API conventions
     └── implementation-notes.md  # Partner-specific quirks
 ```
@@ -47,25 +47,25 @@ specs/providers/
 ## Quick Start
 
 1. **Implementing a new provider?**
-   - Read `patterns/UI-GUIDELINES.md` for parameter design principles (START HERE)
-   - Read `ARCHITECTURE.md` for system overview
+   - Read `patterns/ui-guidelines.md` for parameter design principles (START HERE)
+   - Read `architecture.md` for system overview
    - Read the appropriate `patterns/{type}.md` for implementation pattern
    - Read `patterns/feature-api.md` for feature flag integration
    - Read `patterns/i18n.md` for translation requirements
    - Read `{partner}/api-patterns.md` for API specifics
 
 2. **Adding a new model to existing partner?**
-   - Check `{partner}/PROVIDERS.md` for model inventory
+   - Check `{partner}/providers.md` for model inventory
    - Follow existing provider of same type as template
-   - Consult `patterns/UI-GUIDELINES.md` for parameter decisions
+   - Consult `patterns/ui-guidelines.md` for parameter decisions
    - Ensure feature flags and translations per `patterns/feature-api.md` and `patterns/i18n.md`
 
 3. **Building automation (skill/agent)?**
-   - Use `patterns/UI-GUIDELINES.md` for parameter standards
+   - Use `patterns/ui-guidelines.md` for parameter standards
    - Use `patterns/` as source of truth for structure
    - Use `patterns/feature-api.md` for feature flag patterns
    - Use `patterns/i18n.md` for translation key conventions
-   - Use `{partner}/PROVIDERS.md` for model discovery
+   - Use `{partner}/providers.md` for model discovery
    - Use `{partner}/api-patterns.md` for API mapping
 
 ## Current Partners
@@ -91,7 +91,7 @@ Examples:
 - Provider Schema: `{ModelName}.json` (PascalCase)
 - Partner folders: lowercase with hyphens
 
-### Status Values in PROVIDERS.md
+### Status Values in providers.md
 | Status | Meaning |
 |--------|---------|
 | `implemented` | Provider exists and works |

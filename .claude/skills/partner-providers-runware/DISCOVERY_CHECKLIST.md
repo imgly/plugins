@@ -4,14 +4,14 @@ Step-by-step process for discovering new Runware models.
 
 ## Prerequisites
 
-- [ ] Read `specs/providers/runware/PROVIDERS.md` to understand current state
+- [ ] Read `specs/providers/runware/providers.md` to understand current state
 
 ## Discovery Steps
 
 ### 1. Gather Current State
 
 ```
-Read: specs/providers/runware/PROVIDERS.md
+Read: specs/providers/runware/providers.md
 Extract:
 - List of all tracked models with their AIR identifiers
 - Current status of each model
@@ -37,7 +37,7 @@ Provider documentation URLs are at: https://runware.ai/docs/en/providers/{provid
 
 For each discovered model:
 
-- [ ] Check if AIR exists in PROVIDERS.md
+- [ ] Check if AIR exists in providers.md
 - [ ] If exists, check if capabilities match
 - [ ] If new, categorize as "new model"
 - [ ] If changed, categorize as "updated model"

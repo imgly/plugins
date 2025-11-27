@@ -67,9 +67,9 @@ const Runware = {
 };
 ```
 
-### 6. Update PROVIDERS.md
+### 6. Update providers.md
 
-Change status from `planned` to `implemented` in `specs/providers/runware/PROVIDERS.md`:
+Change status from `planned` to `implemented` in `specs/providers/runware/providers.md`:
 
 ```markdown
 | Provider | Model Name | AIR | Capabilities | Release Date | Status |

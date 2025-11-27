@@ -253,9 +253,9 @@ const Runware = {
 export default Runware;
 ```
 
-### 4. Update PROVIDERS.md
+### 4. Update providers.md
 
-Change status from `planned` to `implemented` in `specs/providers/runware/PROVIDERS.md`.
+Change status from `planned` to `implemented` in `specs/providers/runware/providers.md`.
 
 ## Common Patterns
 

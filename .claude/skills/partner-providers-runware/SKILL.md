@@ -3,7 +3,7 @@ name: partner-providers-runware
 description: |
   Discover new Runware AI models from documentation and implement providers.
   Use when: checking for new Runware models, implementing Runware providers,
-  updating PROVIDERS.md status, or working with Runware API integrations.
+  updating providers.md status, or working with Runware API integrations.
 ---
 
 # Runware Provider Management
@@ -12,7 +12,7 @@ Manage the lifecycle of Runware AI providers: discover new models from documenta
 
 ## Key Files
 
-- **Provider Tracking**: `specs/providers/runware/PROVIDERS.md`
+- **Provider Tracking**: `specs/providers/runware/providers.md`
 - **Provider Specifications**: `specs/providers/` (schemas, architecture)
 - **Provider Implementations**: `packages/plugin-ai-image-generation-web/src/runware/`
 - **API Patterns**: `specs/providers/runware/api-patterns.md`
@@ -28,11 +28,11 @@ This skill operates in two phases:
 
 Follow the checklist in `DISCOVERY_CHECKLIST.md` to:
 
-1. Read current `specs/providers/runware/PROVIDERS.md` to understand what's tracked
+1. Read current `specs/providers/runware/providers.md` to understand what's tracked
 2. Fetch Runware provider documentation pages listed in the Provider Documentation Links table
-3. Compare discovered models against the PROVIDERS.md table
+3. Compare discovered models against the providers.md table
 4. Report findings to user:
-   - New models not in PROVIDERS.md
+   - New models not in providers.md
    - Models with updated capabilities
    - Status recommendations (implement vs skip)
 
@@ -69,7 +69,7 @@ Only proceed after user approval. Follow `IMPLEMENTATION_CHECKLIST.md` to:
 2. Find existing Runware provider of same type as reference
 3. Fetch detailed API documentation for the model
 4. Create provider implementation following patterns in `specs/providers/schemas/`
-5. Update `specs/providers/runware/PROVIDERS.md` status to "implemented"
+5. Update `specs/providers/runware/providers.md` status to "implemented"
 6. Run build checks: `pnpm --filter "@imgly/plugin-ai-*" check:all`
 
 ### Implementation Reference
@@ -85,7 +85,7 @@ Based on model capabilities, follow the appropriate schema documentation:
 
 ## Status Values
 
-When updating PROVIDERS.md:
+When updating providers.md:
 
 | Status | When to Use |
 |--------|-------------|
@@ -102,7 +102,7 @@ When updating PROVIDERS.md:
 
 ### Provider Specifications
 - `specs/providers/README.md` - Overview of provider system
-- `specs/providers/ARCHITECTURE.md` - How providers fit into the plugin system
+- `specs/providers/architecture.md` - How providers fit into the plugin system
 - `specs/providers/schemas/text-to-image.md` - T2I implementation pattern
 - `specs/providers/schemas/image-to-image.md` - I2I implementation pattern
 - `specs/providers/schemas/text-to-video.md` - T2V implementation pattern
@@ -110,6 +110,6 @@ When updating PROVIDERS.md:
 - `specs/providers/schemas/quick-actions.md` - Quick action support
 
 ### Runware-Specific
-- `specs/providers/runware/PROVIDERS.md` - Model inventory and status
+- `specs/providers/runware/providers.md` - Model inventory and status
 - `specs/providers/runware/api-patterns.md` - Runware API conventions
 - `specs/providers/runware/implementation-notes.md` - Runware-specific details

@@ -1,6 +1,6 @@
 # Text-to-Image (T2I) Provider Pattern
 
-Implementation guide for text-to-image providers. For general principles, see [UI-GUIDELINES.md](./UI-GUIDELINES.md) and [ARCHITECTURE.md](../ARCHITECTURE.md).
+Implementation guide for text-to-image providers. For general principles, see [ui-guidelines.md](./ui-guidelines.md) and [architecture.md](../architecture.md).
 
 ## Overview
 

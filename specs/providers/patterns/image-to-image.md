@@ -1,6 +1,6 @@
 # Image-to-Image (I2I) Provider Pattern
 
-Implementation guide for image-to-image providers. For general principles, see [UI-GUIDELINES.md](./UI-GUIDELINES.md), [quick-actions.md](./quick-actions.md), and [ARCHITECTURE.md](../ARCHITECTURE.md).
+Implementation guide for image-to-image providers. For general principles, see [ui-guidelines.md](./ui-guidelines.md), [quick-actions.md](./quick-actions.md), and [architecture.md](../architecture.md).
 
 ## Overview
 

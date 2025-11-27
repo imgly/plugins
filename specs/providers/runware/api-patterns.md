@@ -225,7 +225,7 @@ The Runware client handles both automatically.
 - Uses OpenAI-style size format ("1024x1024")
 - Separate providers for edit vs generate modes
 
-Check `PROVIDERS.md` for model-specific capabilities and the Runware documentation for detailed parameter specifications.
+Check `providers.md` for model-specific capabilities and the Runware documentation for detailed parameter specifications.
 
 ## Provider ID Convention
 
