@@ -370,20 +370,9 @@ ImageGeneration({
 
 ## Feature API Integration
 
-The Feature API allows users to control visibility of plugin features. See `patterns/feature-api.md` for full details.
+Most providers don't need to register feature flags - the plugin handles standard features automatically.
 
-**Plugin-level features** (registered by generation plugin, not providers):
-- `ly.img.plugin-ai-{kind}-generation-web.fromText` - Text input toggle
-- `ly.img.plugin-ai-{kind}-generation-web.fromImage` - Image input toggle
-- `ly.img.plugin-ai-{kind}-generation-web.providerSelect` - Provider dropdown
-- `ly.img.plugin-ai-{kind}-generation-web.quickAction` - All quick actions
-- `ly.img.plugin-ai-{kind}-generation-web.quickAction.providerSelect` - Quick action provider dropdown
-
-**Provider-specific features** (registered by individual providers when needed):
-- Pattern: `ly.img.plugin-ai-{kind}-generation-web.{modelKey}.{feature}`
-- Example: `ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.style.vector`
-
-Most providers don't need to register feature flags - only those with toggleable sub-features.
+Only register provider-specific feature flags if your provider has toggleable sub-features (e.g., Recraft's style groups). See `patterns/feature-api.md` for the rare cases when this is needed.
 
 ## Internationalization (i18n)
 

@@ -176,9 +176,8 @@ supportedQuickActions: {
 - [ ] TypeScript provider file with `createVideoProvider`
 - [ ] JSON schema with duration field (Slider or Select)
 - [ ] Export added to partner `index.ts`
-- [ ] **i18n**: History label registered (`libraries.{panelId}.history.label`)
-- [ ] **i18n**: Custom enum translations if applicable (see `i18n.md`)
-- [ ] **Feature API**: Provider-specific features registered if needed (see `feature-api.md`)
+- [ ] **i18n**: History label registered (`libraries.{panelId}.history.label`) - see `i18n.md`
+- [ ] **i18n**: Custom enum translations if applicable
 - [ ] `getBlockInput` returns `video` with width, height, AND duration
 - [ ] `mapInput` transforms to API format
 - [ ] Quick action support for `ly.img.createVideo` if applicable

@@ -161,10 +161,9 @@ I2I providers commonly support these quick actions (see [quick-actions.md](./qui
 - [ ] TypeScript provider file with `createImageProvider`
 - [ ] JSON schema with `ImageUrl` component for input image
 - [ ] Export added to partner `index.ts`
-- [ ] **i18n**: Image selection UI (`panel.{panelId}.imageSelection`)
+- [ ] **i18n**: Image selection UI (`panel.{panelId}.imageSelection`) - see `i18n.md`
 - [ ] **i18n**: History label (`libraries.{panelId}.history.label`)
-- [ ] **i18n**: Custom enum translations if applicable (see `i18n.md`)
-- [ ] **Feature API**: Provider-specific features registered if needed (see `feature-api.md`)
+- [ ] **i18n**: Custom enum translations if applicable
 - [ ] `supportedQuickActions` with appropriate mappings
 - [ ] `getBlockInput` reads dimensions from input image (async)
 - [ ] `mapInput` transforms to API format

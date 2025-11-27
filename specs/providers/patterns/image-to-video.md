@@ -213,10 +213,9 @@ I2V providers commonly support (see [quick-actions.md](./quick-actions.md) for f
 - [ ] TypeScript provider file with `createVideoProvider`
 - [ ] JSON schema with `ImageUrl` component for input image
 - [ ] Export added to partner `index.ts`
-- [ ] **i18n**: Image selection UI (`panel.{panelId}.imageSelection`)
+- [ ] **i18n**: Image selection UI (`panel.{panelId}.imageSelection`) - see `i18n.md`
 - [ ] **i18n**: History label (`libraries.{panelId}.history.label`)
-- [ ] **i18n**: Custom enum translations if applicable (see `i18n.md`)
-- [ ] **Feature API**: Provider-specific features registered if needed (see `feature-api.md`)
+- [ ] **i18n**: Custom enum translations if applicable
 - [ ] `supportedQuickActions` with appropriate mappings
 - [ ] `getBlockInput` reads dimensions from input image (async) + includes duration
 - [ ] `mapInput` transforms to API format

@@ -139,7 +139,6 @@ T2I providers typically don't support quick actions (no input image). For provid
 - [ ] Export added to partner `index.ts`
 - [ ] `getImageSize` returns dimensions for placeholder
 - [ ] `mapInput` transforms to API format
-- [ ] **i18n**: History label registered (`libraries.{panelId}.history.label`)
-- [ ] **i18n**: Custom enum translations if applicable (see `i18n.md`)
-- [ ] **Feature API**: Provider-specific features registered if needed (see `feature-api.md`)
+- [ ] **i18n**: History label registered (`libraries.{panelId}.history.label`) - see `i18n.md`
+- [ ] **i18n**: Custom enum translations if applicable
 - [ ] Build passes: `pnpm --filter "@imgly/plugin-ai-*" check:all`
