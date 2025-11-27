@@ -397,3 +397,14 @@ The JSON schema must have these properties to avoid TypeScript errors:
 - `"info": { ... }`
 - `"components": { "schemas": { ... } }`
 - `"paths": {}` ← Often forgotten, causes TS2741 error
+
+## Implementation Checklist
+
+After creating provider files, ensure you've completed ALL steps:
+
+- [ ] Created `{ModelName}.ts` with `// @ts-ignore` before schema
+- [ ] Created `{ModelName}.json` with `"paths": {}`
+- [ ] Added export to `index.ts`
+- [ ] Added to `examples/ai/src/runwareProviders.ts`
+- [ ] Updated `specs/providers/runware/providers.md` status
+- [ ] Ran `pnpm --filter "@imgly/plugin-ai-*" check:all`
