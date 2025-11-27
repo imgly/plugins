@@ -162,40 +162,79 @@ export async function convertImageUrlForRunware(
 
 ### 1. Create TypeScript File
 
+**IMPORTANT**: The JSON schema import requires `// @ts-ignore` because the OpenAPI types are stricter than what we actually need at runtime. This is a known pattern used across all providers.
+
 ```typescript
 // {ModelName}.ts
-import { Provider, addIconSetOnce } from '@imgly/plugin-ai-generation-web';
+import {
+  type Provider,
+  type ImageOutput,
+  addIconSetOnce
+} from '@imgly/plugin-ai-generation-web';
 import { Icons } from '@imgly/plugin-utils';
-import schema from './{ModelName}.json';
+import type CreativeEditorSDK from '@cesdk/cesdk-js';
+import {ModelName}Schema from './{ModelName}.json';
 import createImageProvider from './createImageProvider';
-import { RunwareProviderConfiguration, getImageDimensionsFromAspectRatio } from './types';
+import {
+  RunwareProviderConfiguration,
+  getImageDimensionsFromAspectRatio
+} from './types';
 
-type {ModelName}Input = {
+/**
+ * Input interface for {Model Display Name}
+ *
+ * Use only aspect ratios that have icons available:
+ * - 1:1, 16:9, 9:16, 4:3, 3:4 (have dedicated icons)
+ * - 3:2, 2:3, 21:9, 9:21 (no icons, avoid unless model requires)
+ */
+export type {ModelName}Input = {
   prompt: string;
-  aspect_ratio?: string;
+  aspect_ratio?: '1:1' | '16:9' | '9:16' | '4:3' | '3:4';
+  // Add model-specific optional parameters here
 };
 
-export function {ModelName}(config: RunwareProviderConfiguration) {
-  return async ({ cesdk }) => {
+/**
+ * {Model Display Name} - {Brief description}
+ *
+ * AIR: {air-identifier}
+ *
+ * Features:
+ * - {List key capabilities}
+ *
+ * Specifications:
+ * - {List key specs from API docs}
+ */
+export function {ModelName}(
+  config: RunwareProviderConfiguration
+): (context: {
+  cesdk: CreativeEditorSDK;
+}) => Promise<Provider<'image', {ModelName}Input, ImageOutput>> {
+  return async ({ cesdk }: { cesdk: CreativeEditorSDK }) => {
+    // Add aspect ratio icons
     addIconSetOnce(cesdk, '@imgly/plugin/formats', Icons.Formats);
 
     return createImageProvider<{ModelName}Input>(
       {
         modelAIR: '{air-identifier}',
-        providerId: 'runware/{vendor}/{model}',
+        providerId: 'runware/{vendor}/{model-name}',
         name: '{Display Name}',
-        schema,
+        // @ts-ignore - JSON schema types are compatible at runtime
+        schema: {ModelName}Schema,
         inputReference: '#/components/schemas/{ModelName}Input',
         cesdk,
         middleware: config.middlewares ?? [],
         getImageSize: (input) =>
           getImageDimensionsFromAspectRatio(input.aspect_ratio ?? '1:1'),
         mapInput: (input) => {
-          const dims = getImageDimensionsFromAspectRatio(input.aspect_ratio ?? '1:1');
+          const dims = getImageDimensionsFromAspectRatio(
+            input.aspect_ratio ?? '1:1'
+          );
           return {
             positivePrompt: input.prompt,
             width: dims.width,
             height: dims.height
+            // Map additional parameters here using spread syntax:
+            // ...(input.param && { apiParam: input.param })
           };
         }
       },
@@ -209,35 +248,86 @@ export default {ModelName};
 
 ### 2. Create JSON Schema
 
+**IMPORTANT**: The schema must include an empty `"paths": {}` property to satisfy the OpenAPI type requirements.
+
 ```json
 {
   "openapi": "3.0.0",
-  "info": { "title": "{Model} API", "version": "1.0.0" },
+  "info": {
+    "title": "{Model Display Name} API",
+    "version": "1.0.0",
+    "description": "{Model Display Name} generation via Runware"
+  },
   "components": {
     "schemas": {
       "{ModelName}Input": {
+        "title": "{ModelName}Input",
         "type": "object",
         "properties": {
           "prompt": {
-            "type": "string",
             "title": "Prompt",
-            "x-imgly-builder": { "component": "TextArea" }
+            "type": "string",
+            "description": "Text description for image generation",
+            "x-imgly-builder": {
+              "component": "TextArea"
+            }
           },
           "aspect_ratio": {
+            "title": "Format",
             "type": "string",
-            "enum": ["1:1", "16:9", "9:16"],
+            "enum": ["1:1", "16:9", "9:16", "4:3", "3:4"],
             "default": "1:1",
-            "x-imgly-enum-labels": { ... },
-            "x-imgly-enum-icons": { ... }
+            "description": "Aspect ratio for the generated image",
+            "x-imgly-enum-labels": {
+              "1:1": "Square",
+              "16:9": "Landscape 16:9",
+              "9:16": "Portrait 9:16",
+              "4:3": "Landscape 4:3",
+              "3:4": "Portrait 3:4"
+            },
+            "x-imgly-enum-icons": {
+              "1:1": "@imgly/plugin/formats/ratio1by1",
+              "16:9": "@imgly/plugin/formats/ratio16by9",
+              "9:16": "@imgly/plugin/formats/ratio9by16",
+              "4:3": "@imgly/plugin/formats/ratio4by3",
+              "3:4": "@imgly/plugin/formats/ratio3by4"
+            }
           }
         },
-        "required": ["prompt"],
-        "x-fal-order-properties": ["prompt", "aspect_ratio"]
+        "x-fal-order-properties": ["prompt", "aspect_ratio"],
+        "required": ["prompt"]
       }
     }
-  }
+  },
+  "paths": {}
 }
 ```
+
+#### Schema Extension Keywords
+
+| Keyword | Purpose |
+|---------|---------|
+| `x-imgly-builder` | Specifies UI component (e.g., `TextArea` for multiline input) |
+| `x-imgly-enum-labels` | Human-readable labels for enum values |
+| `x-imgly-enum-icons` | Icon paths for enum values (aspect ratios use `@imgly/plugin/formats/ratio*`) |
+| `x-fal-order-properties` | Array defining the display order of properties in the UI |
+
+#### Available Aspect Ratio Icons
+
+Only use aspect ratios that have icons available in `@imgly/plugin/formats`:
+
+| Aspect Ratio | Icon ID | Use For |
+|--------------|---------|---------|
+| `1:1` | `ratio1by1` | Square images |
+| `16:9` | `ratio16by9` | Landscape widescreen |
+| `9:16` | `ratio9by16` | Portrait (mobile/stories) |
+| `4:3` | `ratio4by3` | Landscape standard |
+| `3:4` | `ratio3by4` | Portrait standard |
+| Custom | `ratioFree` | User-defined dimensions |
+
+**Avoid these** (no icons, will show blank):
+- `3:2`, `2:3` - No dedicated icons
+- `21:9`, `9:21` - No dedicated icons
 
 ### 3. Add to Index
 
@@ -276,3 +366,25 @@ Includes:
 ### Style Selection
 
 Complex style selection with CustomAssetSource for models that support style presets.
+
+## Known Issues & Gotchas
+
+### TypeScript and JSON Schema
+
+The OpenAPI types from `openapi-types` are stricter than what we need at runtime. When importing JSON schemas:
+
+1. **Always use `// @ts-ignore`** before the `schema:` property in `createImageProvider`
+2. **Always include `"paths": {}`** in the JSON schema file
+
+```typescript
+// @ts-ignore - JSON schema types are compatible at runtime
+schema: MyModelSchema,
+```
+
+### Required Schema Properties
+
+The JSON schema must have these properties to avoid TypeScript errors:
+- `"openapi": "3.0.0"`
+- `"info": { ... }`
+- `"components": { "schemas": { ... } }`
+- `"paths": {}` ← Often forgotten, causes TS2741 error

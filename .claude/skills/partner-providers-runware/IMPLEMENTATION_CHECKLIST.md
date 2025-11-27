@@ -22,15 +22,14 @@ Map capabilities to provider type:
 
 For models with multiple capabilities (e.g., text-to-image AND image-to-image), create one provider that supports both input types.
 
-### 2. Find Reference Provider
+### 2. Read Implementation Notes
 
-Locate an existing Runware provider of the same type:
+**Before writing any code**, read `specs/providers/runware/implementation-notes.md` which contains:
+- Complete TypeScript template with all imports
+- Complete JSON schema template with all required fields
+- Known issues and gotchas (TypeScript workarounds)
 
-```
-Glob: packages/plugin-ai-image-generation-web/src/runware/*.ts
-```
-
-Use the most similar model as a template (same provider family if possible).
+This file has copy-paste ready templates - use them as your starting point.
 
 ### 3. Fetch Detailed API Documentation
 
@@ -106,3 +105,11 @@ Verify the provider appears and generates correctly.
 | Missing AIR format | Use pattern `provider:model@version` |
 | Type errors | Ensure schema matches provider interface |
 | Export not found | Add to index.ts barrel export |
+| **TS2741: Property 'paths' is missing** | Add `"paths": {}` to the JSON schema file |
+| **TS2322: Type incompatible with Document** | Add `// @ts-ignore` before `schema:` property |
+
+## Critical Reminders
+
+1. **Always read `implementation-notes.md` first** - it has complete templates
+2. **JSON schema must include `"paths": {}`** - OpenAPI type requirement
+3. **Always use `// @ts-ignore` before schema** - TypeScript workaround for OpenAPI types
