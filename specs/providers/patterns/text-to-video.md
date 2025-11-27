@@ -1,4 +1,4 @@
-# Text-to-Video (T2V) Provider Schema
+# Text-to-Video (T2V) Provider Pattern
 
 Implementation guide for text-to-video providers. For general principles, see [UI-GUIDELINES.md](./UI-GUIDELINES.md) and [ARCHITECTURE.md](../ARCHITECTURE.md).
 
@@ -40,7 +40,7 @@ Implementation guide for text-to-video providers. For general principles, see [U
 ## TypeScript Template
 
 ```typescript
-import { addIconSetOnce } from '@imgly/plugin-ai-generation-web';
+import { addIconSetOnce, getPanelId } from '@imgly/plugin-ai-generation-web';
 import { Icons } from '@imgly/plugin-utils';
 import schema from './{ModelName}.json';
 import createVideoProvider from './createVideoProvider';
@@ -54,7 +54,16 @@ type {ModelName}Input = {
 
 export function {ModelName}(config: ProviderConfiguration) {
   return async ({ cesdk }) => {
+    const modelKey = '{partner}/{vendor}/{model-name}';
+
     addIconSetOnce(cesdk, '@imgly/plugin/formats', Icons.Formats);
+
+    // Register translations
+    cesdk.i18n.setTranslations({
+      en: {
+        [`libraries.${getPanelId(modelKey)}.history.label`]: 'Generated Videos'
+      }
+    });
 
     return createVideoProvider<{ModelName}Input>(
       {
@@ -167,6 +176,9 @@ supportedQuickActions: {
 - [ ] TypeScript provider file with `createVideoProvider`
 - [ ] JSON schema with duration field (Slider or Select)
 - [ ] Export added to partner `index.ts`
+- [ ] **i18n**: History label registered (`libraries.{panelId}.history.label`)
+- [ ] **i18n**: Custom enum translations if applicable (see `i18n.md`)
+- [ ] **Feature API**: Provider-specific features registered if needed (see `feature-api.md`)
 - [ ] `getBlockInput` returns `video` with width, height, AND duration
 - [ ] `mapInput` transforms to API format
 - [ ] Quick action support for `ly.img.createVideo` if applicable

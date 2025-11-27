@@ -19,13 +19,15 @@ specs/providers/
 ├── README.md              # This file
 ├── ARCHITECTURE.md        # How providers fit into the plugin system
 │
-├── schemas/               # Implementation patterns by provider type
+├── patterns/              # Implementation patterns by provider type
 │   ├── UI-GUIDELINES.md   # Parameter design & UI standards (START HERE)
 │   ├── text-to-image.md   # T2I provider structure
 │   ├── image-to-image.md  # I2I provider structure
 │   ├── text-to-video.md   # T2V provider structure
 │   ├── image-to-video.md  # I2V provider structure
-│   └── quick-actions.md   # Quick action support patterns
+│   ├── quick-actions.md   # Quick action support patterns
+│   ├── feature-api.md     # Feature flags for user customization
+│   └── i18n.md            # Internationalization and translations
 │
 └── {partner}/             # Partner-specific information
     ├── PROVIDERS.md       # Model inventory & implementation status
@@ -45,19 +47,24 @@ specs/providers/
 ## Quick Start
 
 1. **Implementing a new provider?**
-   - Read `schemas/UI-GUIDELINES.md` for parameter design principles (START HERE)
+   - Read `patterns/UI-GUIDELINES.md` for parameter design principles (START HERE)
    - Read `ARCHITECTURE.md` for system overview
-   - Read the appropriate `schemas/{type}.md` for implementation pattern
+   - Read the appropriate `patterns/{type}.md` for implementation pattern
+   - Read `patterns/feature-api.md` for feature flag integration
+   - Read `patterns/i18n.md` for translation requirements
    - Read `{partner}/api-patterns.md` for API specifics
 
 2. **Adding a new model to existing partner?**
    - Check `{partner}/PROVIDERS.md` for model inventory
    - Follow existing provider of same type as template
-   - Consult `schemas/UI-GUIDELINES.md` for parameter decisions
+   - Consult `patterns/UI-GUIDELINES.md` for parameter decisions
+   - Ensure feature flags and translations per `patterns/feature-api.md` and `patterns/i18n.md`
 
 3. **Building automation (skill/agent)?**
-   - Use `schemas/UI-GUIDELINES.md` for parameter standards
-   - Use `schemas/` as source of truth for structure
+   - Use `patterns/UI-GUIDELINES.md` for parameter standards
+   - Use `patterns/` as source of truth for structure
+   - Use `patterns/feature-api.md` for feature flag patterns
+   - Use `patterns/i18n.md` for translation key conventions
    - Use `{partner}/PROVIDERS.md` for model discovery
    - Use `{partner}/api-patterns.md` for API mapping
 

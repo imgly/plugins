@@ -62,7 +62,7 @@ Each partner has factory functions at:
 - Image: `plugin-ai-image-generation-web/src/{partner}/createImageProvider.ts`
 - Video: `plugin-ai-video-generation-web/src/{partner}/createVideoProvider.ts`
 
-See each partner's folder in `specs/providers/{partner}/` for specific implementation details.
+See each partner's folder in `specs/providers/{partner}/` for specific implementation details. See `patterns/` for implementation patterns.
 
 ### Example: Text-to-Image Provider
 
@@ -362,15 +362,55 @@ ImageGeneration({
 3. Factory returns async initializer function
 4. Plugin calls initializer with `{ cesdk }` context
 5. Provider:
-   - Registers icons and translations
+   - Registers icons and translations (see `patterns/i18n.md`)
+   - Registers provider-specific feature flags if needed (see `patterns/feature-api.md`)
    - Creates API client for the partner
    - Builds and returns Provider object
 6. Plugin registers provider for use
 
+## Feature API Integration
+
+The Feature API allows users to control visibility of plugin features. See `patterns/feature-api.md` for full details.
+
+**Plugin-level features** (registered by generation plugin, not providers):
+- `ly.img.plugin-ai-{kind}-generation-web.fromText` - Text input toggle
+- `ly.img.plugin-ai-{kind}-generation-web.fromImage` - Image input toggle
+- `ly.img.plugin-ai-{kind}-generation-web.providerSelect` - Provider dropdown
+- `ly.img.plugin-ai-{kind}-generation-web.quickAction` - All quick actions
+- `ly.img.plugin-ai-{kind}-generation-web.quickAction.providerSelect` - Quick action provider dropdown
+
+**Provider-specific features** (registered by individual providers when needed):
+- Pattern: `ly.img.plugin-ai-{kind}-generation-web.{modelKey}.{feature}`
+- Example: `ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.style.vector`
+
+Most providers don't need to register feature flags - only those with toggleable sub-features.
+
+## Internationalization (i18n)
+
+All providers must register translations during initialization. See `patterns/i18n.md` for full details.
+
+**Required translations:**
+```typescript
+cesdk.i18n.setTranslations({
+  en: {
+    [`libraries.${getPanelId(modelKey)}.history.label`]: 'Generated Images'
+  }
+});
+```
+
+**Translation key patterns:**
+- `libraries.{panelId}.history.label` - History/generated items label
+- `panel.{panelId}.{feature}` - Panel-specific labels
+- `ly.img.plugin-ai-{kind}-generation-web.{modelKey}.property.{prop}.{value}` - Enum value labels
+
+**Default translations** are provided for common properties (prompt, aspect_ratio, style, etc.) - only register custom values.
+
 ## Related Documentation
 
-- `schemas/text-to-image.md` - T2I implementation details
-- `schemas/image-to-image.md` - I2I implementation details
-- `schemas/text-to-video.md` - T2V implementation details
-- `schemas/image-to-video.md` - I2V implementation details
-- `schemas/quick-actions.md` - Quick action patterns
+- `patterns/text-to-image.md` - T2I implementation details
+- `patterns/image-to-image.md` - I2I implementation details
+- `patterns/text-to-video.md` - T2V implementation details
+- `patterns/image-to-video.md` - I2V implementation details
+- `patterns/quick-actions.md` - Quick action patterns
+- `patterns/feature-api.md` - Feature flag integration
+- `patterns/i18n.md` - Internationalization patterns

@@ -1,4 +1,4 @@
-# Image-to-Image (I2I) Provider Schema
+# Image-to-Image (I2I) Provider Pattern
 
 Implementation guide for image-to-image providers. For general principles, see [UI-GUIDELINES.md](./UI-GUIDELINES.md), [quick-actions.md](./quick-actions.md), and [ARCHITECTURE.md](../ARCHITECTURE.md).
 
@@ -161,7 +161,10 @@ I2I providers commonly support these quick actions (see [quick-actions.md](./qui
 - [ ] TypeScript provider file with `createImageProvider`
 - [ ] JSON schema with `ImageUrl` component for input image
 - [ ] Export added to partner `index.ts`
-- [ ] i18n translations for image selection UI
+- [ ] **i18n**: Image selection UI (`panel.{panelId}.imageSelection`)
+- [ ] **i18n**: History label (`libraries.{panelId}.history.label`)
+- [ ] **i18n**: Custom enum translations if applicable (see `i18n.md`)
+- [ ] **Feature API**: Provider-specific features registered if needed (see `feature-api.md`)
 - [ ] `supportedQuickActions` with appropriate mappings
 - [ ] `getBlockInput` reads dimensions from input image (async)
 - [ ] `mapInput` transforms to API format

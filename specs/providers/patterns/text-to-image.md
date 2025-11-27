@@ -1,4 +1,4 @@
-# Text-to-Image (T2I) Provider Schema
+# Text-to-Image (T2I) Provider Pattern
 
 Implementation guide for text-to-image providers. For general principles, see [UI-GUIDELINES.md](./UI-GUIDELINES.md) and [ARCHITECTURE.md](../ARCHITECTURE.md).
 
@@ -29,7 +29,7 @@ Implementation guide for text-to-image providers. For general principles, see [U
 ## TypeScript Template
 
 ```typescript
-import { addIconSetOnce } from '@imgly/plugin-ai-generation-web';
+import { addIconSetOnce, getPanelId } from '@imgly/plugin-ai-generation-web';
 import { Icons } from '@imgly/plugin-utils';
 import schema from './{ModelName}.json';
 import createImageProvider from './createImageProvider';
@@ -42,12 +42,21 @@ type {ModelName}Input = {
 
 export function {ModelName}(config: ProviderConfiguration) {
   return async ({ cesdk }) => {
+    const modelKey = '{partner}/{vendor}/{model-name}';
+
     addIconSetOnce(cesdk, '@imgly/plugin/formats', Icons.Formats);
+
+    // Register translations
+    cesdk.i18n.setTranslations({
+      en: {
+        [`libraries.${getPanelId(modelKey)}.history.label`]: 'Generated From Text'
+      }
+    });
 
     return createImageProvider<{ModelName}Input>(
       {
         modelAIR: '{partner}:{model}@{version}',
-        providerId: '{partner}/{vendor}/{model-name}',
+        providerId: modelKey,
         name: '{Display Name}',
         schema,
         inputReference: '#/components/schemas/{ModelName}Input',
@@ -130,4 +139,7 @@ T2I providers typically don't support quick actions (no input image). For provid
 - [ ] Export added to partner `index.ts`
 - [ ] `getImageSize` returns dimensions for placeholder
 - [ ] `mapInput` transforms to API format
+- [ ] **i18n**: History label registered (`libraries.{panelId}.history.label`)
+- [ ] **i18n**: Custom enum translations if applicable (see `i18n.md`)
+- [ ] **Feature API**: Provider-specific features registered if needed (see `feature-api.md`)
 - [ ] Build passes: `pnpm --filter "@imgly/plugin-ai-*" check:all`
