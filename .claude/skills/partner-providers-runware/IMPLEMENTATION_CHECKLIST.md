@@ -4,23 +4,32 @@ Step-by-step process for implementing Runware providers.
 
 ## Prerequisites
 
-- [ ] User has approved which models to implement
-- [ ] Model AIR and capabilities are known from discovery phase
+- [ ] User has approved which capability to implement
+- [ ] Model AIR and capability are known from discovery phase
+
+## Key Principle: One Capability = One Provider
+
+**IMPORTANT**: Each capability requires a separate provider file. A model with both text-to-image AND image-to-image capabilities needs TWO provider implementations:
+
+```
+Flux2Pro.text2image.ts   → text-to-image provider
+Flux2Pro.image2image.ts  → image-to-image provider (separate implementation)
+```
+
+The `providers.md` file tracks each capability as a separate row. Implement one capability at a time.
 
 ## Implementation Steps
 
 ### 1. Determine Provider Type
 
-Map capabilities to provider type:
+Map capability to provider type:
 
-| Primary Capability | Provider Type | Target Directory | Schema Doc |
-|-------------------|---------------|------------------|------------|
-| text-to-image | t2i | `plugin-ai-image-generation-web/src/runware/` | `specs/providers/schemas/text-to-image.md` |
-| image-to-image | i2i | `plugin-ai-image-generation-web/src/runware/` | `specs/providers/schemas/image-to-image.md` |
-| text-to-video | t2v | `plugin-ai-video-generation-web/src/runware/` | `specs/providers/schemas/text-to-video.md` |
-| image-to-video | i2v | `plugin-ai-video-generation-web/src/runware/` | `specs/providers/schemas/image-to-video.md` |
-
-For models with multiple capabilities (e.g., text-to-image AND image-to-image), create one provider that supports both input types.
+| Capability | Provider Type | File Pattern | Target Directory |
+|------------|---------------|--------------|------------------|
+| text-to-image | t2i | `{Model}.text2image.ts` | `plugin-ai-image-generation-web/src/runware/` |
+| image-to-image | i2i | `{Model}.image2image.ts` | `plugin-ai-image-generation-web/src/runware/` |
+| text-to-video | t2v | `{Model}.text2video.ts` | `plugin-ai-video-generation-web/src/runware/` |
+| image-to-video | i2v | `{Model}.image2video.ts` | `plugin-ai-video-generation-web/src/runware/` |
 
 ### 2. Read Required Documentation
 
@@ -48,28 +57,33 @@ Extract:
 - Any model-specific quirks
 ```
 
-### 4. Create Provider File
+### 4. Create Provider Files
 
-Follow the structure in the appropriate `specs/providers/schemas/{type}.md` and `specs/providers/runware/implementation-notes.md`:
+Follow the structure in `specs/providers/runware/implementation-notes.md`:
 
-- [ ] Create file: `{ModelName}.ts` (PascalCase, no spaces)
+- [ ] Create TypeScript file: `{ModelName}.{capability}.ts` (e.g., `Flux2Pro.text2image.ts`)
+- [ ] Create JSON schema file: `{ModelName}.{capability}.json` (e.g., `Flux2Pro.text2image.json`)
 - [ ] Define provider metadata (id, name, AIR)
 - [ ] Define input schema with all parameters
 - [ ] Implement dimension handling if applicable
-- [ ] Add to provider index exports
 
 ### 5. Register Provider
 
-Add export to the appropriate index file:
+Add export to the appropriate index file with nested structure:
 
 ```typescript
 // packages/plugin-ai-image-generation-web/src/runware/index.ts
-import { {ModelName} } from './{ModelName}';
+import { Flux2Pro as Flux2ProText2Image } from './Flux2Pro.text2image';
+// Later: import { Flux2Pro as Flux2ProImage2Image } from './Flux2Pro.image2image';
 
 const Runware = {
-  // ... existing providers
-  {ModelName},
+  Flux2Pro: {
+    Text2Image: Flux2ProText2Image
+    // Image2Image: Flux2ProImage2Image  // Added when I2I is implemented
+  }
 };
+
+export default Runware;
 ```
 
 ### 6. Add to Example App
@@ -84,34 +98,34 @@ export function createRunwareProviders(options: RunwareProviderOptions) {
 
   return {
     text2image: [
-      // Add T2I providers here
-      RunwareImage.{ModelName}({
+      // T2I providers use .Text2Image
+      RunwareImage.Flux2Pro.Text2Image({
         middlewares: [imageRateLimitMiddleware, errorMiddleware],
         proxyUrl
       })
     ],
     image2image: [
-      // Add I2I providers here
+      // I2I providers use .Image2Image
+      // RunwareImage.Flux2Pro.Image2Image({...})
     ],
     text2video: [
-      // Add T2V providers here
+      // T2V providers use .Text2Video
     ],
     image2video: [
-      // Add I2V providers here
+      // I2V providers use .Image2Video
     ]
   };
 }
 ```
 
-Place the provider in the appropriate array based on its type.
-
 ### 7. Update providers.md
 
-Change status from `planned` to `implemented` in `specs/providers/runware/providers.md`:
+Change status from `planned` to `implemented` for **only the capability you implemented**:
 
 ```markdown
-| Provider | Model Name | AIR | Capabilities | Release Date | Status |
-| ... | ... | ... | ... | ... | implemented |
+| Provider | Model Name | AIR | Capability | Release Date | Status |
+| BFL | FLUX.2 [pro] | `bfl:5@1` | text-to-image | Nov 2025 | implemented |
+| BFL | FLUX.2 [pro] | `bfl:5@1` | image-to-image | Nov 2025 | planned |  ← Still planned!
 ```
 
 ### 8. Run Validation
@@ -149,6 +163,8 @@ Verify the provider appears and generates correctly.
 
 ## Critical Reminders
 
-1. **Always read `implementation-notes.md` first** - it has complete templates
-2. **JSON schema must include `"paths": {}`** - OpenAPI type requirement
-3. **Always use `// @ts-ignore` before schema** - TypeScript workaround for OpenAPI types
+1. **One capability = one provider file** - Never combine T2I and I2I in one file
+2. **Always read `implementation-notes.md` first** - it has complete templates
+3. **JSON schema must include `"paths": {}`** - OpenAPI type requirement
+4. **Always use `// @ts-ignore` before schema** - TypeScript workaround for OpenAPI types
+5. **Update providers.md for only the implemented capability** - Don't mark the whole model as done

@@ -6,7 +6,7 @@ import {
 import { Icons } from '@imgly/plugin-utils';
 import type CreativeEditorSDK from '@cesdk/cesdk-js';
 // @ts-ignore - JSON import
-import Flux2DevSchema from './Flux2Dev.json';
+import Flux2DevSchema from './Flux2Dev.text2image.json';
 import createImageProvider from './createImageProvider';
 import {
   RunwareProviderConfiguration,

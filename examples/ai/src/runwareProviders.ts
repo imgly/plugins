@@ -14,13 +14,18 @@ export function createRunwareProviders(options: RunwareProviderOptions) {
 
   return {
     text2image: [
-      RunwareImage.Flux2Dev({
+      RunwareImage.Flux2Dev.Text2Image({
+        middlewares: [imageRateLimitMiddleware, errorMiddleware],
+        proxyUrl
+      }),
+      RunwareImage.Flux2Pro.Text2Image({
         middlewares: [imageRateLimitMiddleware, errorMiddleware],
         proxyUrl
       })
     ],
     image2image: [
       // Runware image-to-image providers will be added here
+      // e.g., RunwareImage.Flux2Pro.Image2Image({...})
     ],
     text2video: [
       // Runware text-to-video providers will be added here

@@ -22,14 +22,18 @@ The trade-off is that HTTP may have slightly higher latency per request (no pers
 
 ```
 packages/plugin-ai-image-generation-web/src/runware/
-├── index.ts                    # Barrel export
-├── types.ts                    # RunwareProviderConfiguration, dimension maps
-├── createRunwareClient.ts      # HTTP client
-├── createImageProvider.ts      # Factory function
-├── utils.ts                    # Image URL conversion, helpers
-├── {ModelName}.ts              # Provider implementations
-└── {ModelName}.json            # OpenAPI schemas
+├── index.ts                         # Barrel export (nested structure)
+├── types.ts                         # RunwareProviderConfiguration, dimension maps
+├── createRunwareClient.ts           # HTTP client
+├── createImageProvider.ts           # Factory function
+├── utils.ts                         # Image URL conversion, helpers
+├── {ModelName}.text2image.ts        # T2I provider implementations
+├── {ModelName}.text2image.json      # T2I OpenAPI schemas
+├── {ModelName}.image2image.ts       # I2I provider implementations
+└── {ModelName}.image2image.json     # I2I OpenAPI schemas
 ```
+
+**Key Principle**: One capability = one provider file. Models with multiple capabilities (e.g., T2I + I2I) have separate files for each.
 
 ## Configuration Type
 
@@ -162,10 +166,14 @@ export async function convertImageUrlForRunware(
 
 ### 1. Create TypeScript File
 
+**File Naming**: Use `{ModelName}.{capability}.ts` pattern:
+- `Flux2Pro.text2image.ts` for T2I
+- `Flux2Pro.image2image.ts` for I2I
+
 **IMPORTANT**: The JSON schema import requires `// @ts-ignore` because the OpenAPI types are stricter than what we actually need at runtime. This is a known pattern used across all providers.
 
 ```typescript
-// {ModelName}.ts
+// {ModelName}.text2image.ts
 import {
   type Provider,
   type ImageOutput,
@@ -173,7 +181,8 @@ import {
 } from '@imgly/plugin-ai-generation-web';
 import { Icons } from '@imgly/plugin-utils';
 import type CreativeEditorSDK from '@cesdk/cesdk-js';
-import {ModelName}Schema from './{ModelName}.json';
+// @ts-ignore - JSON import
+import {ModelName}Schema from './{ModelName}.text2image.json';
 import createImageProvider from './createImageProvider';
 import {
   RunwareProviderConfiguration,
@@ -331,21 +340,41 @@ Only use aspect ratios that have icons available in `@imgly/plugin/formats`:
 
 ### 3. Add to Index
 
+Use a nested structure grouping capabilities under model names:
+
 ```typescript
 // index.ts
-import { {ModelName} } from './{ModelName}';
+import { Flux2Pro as Flux2ProText2Image } from './Flux2Pro.text2image';
+// Later when I2I is implemented:
+// import { Flux2Pro as Flux2ProImage2Image } from './Flux2Pro.image2image';
 
 const Runware = {
-  // ... existing
-  {ModelName},
+  Flux2Pro: {
+    Text2Image: Flux2ProText2Image
+    // Image2Image: Flux2ProImage2Image  // Added when implemented
+  }
 };
 
 export default Runware;
 ```
 
+Usage in apps:
+```typescript
+RunwareImage.Flux2Pro.Text2Image({ proxyUrl, middlewares: [...] })
+RunwareImage.Flux2Pro.Image2Image({ proxyUrl, middlewares: [...] })  // When available
+```
+
 ### 4. Update providers.md
 
-Change status from `planned` to `implemented` in `specs/providers/runware/providers.md`.
+Change status from `planned` to `implemented` for **only the capability you implemented**:
+
+```markdown
+| Provider | Model Name | AIR | Capability | Release Date | Status |
+| BFL | FLUX.2 [pro] | `bfl:5@1` | text-to-image | Nov 2025 | implemented |
+| BFL | FLUX.2 [pro] | `bfl:5@1` | image-to-image | Nov 2025 | planned |  ← Still planned!
+```
+
+Each capability has its own row in the table.
 
 ## UI Parameter Guidelines
 
@@ -402,9 +431,11 @@ The JSON schema must have these properties to avoid TypeScript errors:
 
 After creating provider files, ensure you've completed ALL steps:
 
-- [ ] Created `{ModelName}.ts` with `// @ts-ignore` before schema
-- [ ] Created `{ModelName}.json` with `"paths": {}`
-- [ ] Added export to `index.ts`
-- [ ] Added to `examples/ai/src/runwareProviders.ts`
-- [ ] Updated `specs/providers/runware/providers.md` status
+- [ ] Created `{ModelName}.{capability}.ts` with `// @ts-ignore` before schema
+- [ ] Created `{ModelName}.{capability}.json` with `"paths": {}`
+- [ ] Added export to `index.ts` with nested structure (`Model.Text2Image` or `Model.Image2Image`)
+- [ ] Added to `examples/ai/src/runwareProviders.ts` in appropriate array
+- [ ] Updated `specs/providers/runware/providers.md` status **for that capability only**
 - [ ] Ran `pnpm --filter "@imgly/plugin-ai-*" check:all`
+
+**Remember**: One capability = one provider file. Don't mark the whole model as implemented if you only did T2I!
