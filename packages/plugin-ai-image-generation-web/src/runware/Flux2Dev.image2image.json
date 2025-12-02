@@ -1,0 +1,37 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "FLUX.2 [dev] Image-to-Image API",
+    "version": "1.0.0",
+    "description": "FLUX.2 [dev] image-to-image transformation via Runware"
+  },
+  "components": {
+    "schemas": {
+      "Flux2DevImage2ImageInput": {
+        "title": "Flux2DevImage2ImageInput",
+        "type": "object",
+        "properties": {
+          "image_url": {
+            "title": "Input Image",
+            "type": "string",
+            "description": "Image to transform",
+            "x-imgly-builder": {
+              "component": "ImageUrl"
+            }
+          },
+          "prompt": {
+            "title": "Prompt",
+            "type": "string",
+            "description": "Text description for image transformation",
+            "x-imgly-builder": {
+              "component": "TextArea"
+            }
+          }
+        },
+        "x-fal-order-properties": ["image_url", "prompt"],
+        "required": ["image_url", "prompt"]
+      }
+    }
+  },
+  "paths": {}
+}

@@ -384,6 +384,68 @@ Each capability has its own row in the table.
 - Standard aspect ratios and dimension mappings
 - JSON schema component reference and examples
 
+## Image Input Parameters (I2I)
+
+Runware uses different parameter names and structures for passing input images depending on the model. **Do not abstract these differences** - each provider's `mapInput` should return exactly what Runware expects for that specific model.
+
+### Why No Abstraction?
+
+1. **Debugging clarity**: When something breaks, you see exactly what's sent to the API
+2. **Documentation match**: Code matches Runware docs 1:1
+3. **Model-specific behavior**: Different parameters have different semantics (see below)
+4. **Minimal benefit**: We're not building a generic client library
+
+### Parameter Types
+
+| Parameter | Location | Semantics | Models |
+|-----------|----------|-----------|--------|
+| `seedImage` | Root | Direct transformation via diffusion; `strength` controls preservation | FLUX.1 Fill Pro, FLUX.1 Expand Pro |
+| `referenceImages` | Root | Visual guidance for style/composition | Nano Banana (Gemini), Ideogram |
+| `inputs.referenceImages` | Nested | Reference-based generation | FLUX.2 [dev], FLUX.2 [pro], FLUX.2 [flex] |
+
+### Semantic Differences
+
+- **`seedImage`**: The image IS the starting point. Model modifies it directly. Used for inpainting, outpainting, and direct style transfer.
+- **`referenceImages`**: Images INFLUENCE generation. Model creates new content inspired by the references. Used for style matching, composition guidance.
+
+The distinction matters less for end users (both feel like "image-to-image"), but affects what the model produces.
+
+### Implementation Pattern
+
+Our UI consistently uses `image_url` as the input field. Each provider maps it to the correct wire format:
+
+```typescript
+// FLUX.2 [dev] - uses nested inputs.referenceImages
+mapInput: (input) => ({
+  positivePrompt: input.prompt,
+  inputs: {
+    referenceImages: [input.image_url]
+  }
+})
+
+// Nano Banana (Gemini) - uses root-level referenceImages
+mapInput: (input) => ({
+  positivePrompt: input.prompt,
+  referenceImages: [input.image_url]
+})
+
+// FLUX.1 Fill Pro (inpainting) - uses seedImage
+mapInput: (input) => ({
+  positivePrompt: input.prompt,
+  seedImage: input.image_url,
+  maskImage: input.mask_url,
+  strength: 0.8
+})
+```
+
+### Finding the Right Parameter
+
+When implementing a new model:
+
+1. Fetch the model's documentation: `https://runware.ai/docs/en/providers/{vendor}.md`
+2. Look for the exact JSON example for image-to-image
+3. Copy the parameter structure exactly into `mapInput`
+
 ## Common Patterns
 
 ### T2I Provider (Simple)
@@ -396,7 +458,7 @@ Minimal implementation with aspect ratio:
 ### I2I Provider (With Quick Actions)
 
 Includes:
-- `image_url` input field
+- `image_url` input field (mapped to model-specific parameter in `mapInput`)
 - Quick action support
 - i18n translations
 - Dynamic dimensions from input image
@@ -426,6 +488,40 @@ The JSON schema must have these properties to avoid TypeScript errors:
 - `"info": { ... }`
 - `"components": { "schemas": { ... } }`
 - `"paths": {}` ← Often forgotten, causes TS2741 error
+
+## Undocumented API Parameters
+
+This section tracks API parameters discovered through testing that are **not yet documented** by Runware. These should be verified periodically and removed once official documentation is updated.
+
+### GPT Image 1 (`openai:1@1`) - Image-to-Image
+
+**Discovered**: 2025-12-02
+**Status**: Works in production, not documented
+
+The Runware documentation only shows text-to-image for GPT Image 1, but image-to-image works via `referenceImages`:
+
+```json
+{
+  "taskType": "imageInference",
+  "model": "openai:1@1",
+  "positivePrompt": "A dog instead of a cat",
+  "height": 1024,
+  "width": 1024,
+  "numberResults": 1,
+  "outputType": ["dataURI", "URL"],
+  "outputFormat": "JPEG",
+  "includeCost": true,
+  "referenceImages": ["https://im.runware.ai/image/ii/example.png"],
+  "outputQuality": 85,
+  "taskUUID": "76a2ddb0-21ce-403c-95ca-45fbfbb61c27"
+}
+```
+
+**Key points**:
+- Uses root-level `referenceImages` (not nested under `inputs`)
+- Accepts at least 1 reference image
+- Works as instruction-based editing (prompt describes the change)
+- Same dimensions as T2I: 1024×1024, 1536×1024, 1024×1536
 
 ## Implementation Checklist
 

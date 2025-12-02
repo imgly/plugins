@@ -7,8 +7,8 @@
 export interface RunwareImageInferenceParams {
   model: string;
   positivePrompt: string;
-  width: number;
-  height: number;
+  width?: number;
+  height?: number;
   negativePrompt?: string;
   numberResults?: number;
   outputType?: 'URL' | 'base64Data' | 'dataURI';
@@ -21,6 +21,11 @@ export interface RunwareImageInferenceParams {
   seedImage?: string;
   maskImage?: string;
   strength?: number;
+  /** Model-specific inputs (e.g., referenceImages for FLUX.2 [dev]) */
+  inputs?: {
+    referenceImages?: string[];
+    [key: string]: unknown;
+  };
   [key: string]: unknown;
 }
 
@@ -85,11 +90,11 @@ export function createRunwareClient(proxyUrl: string): RunwareClient {
           taskUUID,
           model: params.model,
           positivePrompt: params.positivePrompt,
-          width: params.width,
-          height: params.height,
           outputType: params.outputType ?? 'URL',
           outputFormat: params.outputFormat ?? 'PNG',
           numberResults: params.numberResults ?? 1,
+          ...(params.width != null && { width: params.width }),
+          ...(params.height != null && { height: params.height }),
           ...(params.negativePrompt != null && {
             negativePrompt: params.negativePrompt
           }),
@@ -102,7 +107,8 @@ export function createRunwareClient(proxyUrl: string): RunwareClient {
           ...(params.scheduler != null && { scheduler: params.scheduler }),
           ...(params.seedImage != null && { seedImage: params.seedImage }),
           ...(params.maskImage != null && { maskImage: params.maskImage }),
-          ...(params.strength != null && { strength: params.strength })
+          ...(params.strength != null && { strength: params.strength }),
+          ...(params.inputs != null && { inputs: params.inputs })
         }
       ];
 

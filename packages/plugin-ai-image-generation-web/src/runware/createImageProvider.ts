@@ -11,7 +11,12 @@ import {
   mergeQuickActionsConfig
 } from '@imgly/plugin-ai-generation-web';
 import { createRunwareClient, RunwareClient } from './createRunwareClient';
-import { convertImageUrlForRunware, isCustomImageSize } from './utils';
+import {
+  convertImageUrlForRunware,
+  isCustomImageSize,
+  adjustDimensionsForRunware
+} from './utils';
+import { getImageDimensionsFromURL } from '@imgly/plugin-utils';
 import {
   RunwareProviderConfiguration,
   getImageDimensionsFromAspectRatio,
@@ -137,12 +142,23 @@ function createImageProvider<
 
         // Convert image URL if needed for image-to-image
         let processedInput = input;
+        let imageDimensions: { width: number; height: number } | undefined;
+
         if (input.image_url != null) {
           const convertedUrl = await convertImageUrlForRunware(
             input.image_url,
             options.cesdk
           );
           processedInput = { ...input, image_url: convertedUrl };
+
+          // Get and adjust dimensions from input image for image-to-image
+          if (options.cesdk != null) {
+            const { width, height } = await getImageDimensionsFromURL(
+              input.image_url,
+              options.cesdk.engine
+            );
+            imageDimensions = adjustDimensionsForRunware(width, height);
+          }
         }
 
         // Map input to Runware format
@@ -155,7 +171,13 @@ function createImageProvider<
             outputType: 'URL',
             outputFormat: 'PNG',
             numberResults: 1,
-            ...runwareInput
+            ...runwareInput,
+            // Add adjusted dimensions for image-to-image (if not already provided by mapInput)
+            ...(imageDimensions != null &&
+              runwareInput.width == null && {
+                width: imageDimensions.width,
+                height: imageDimensions.height
+              })
           },
           abortSignal
         );

@@ -94,6 +94,14 @@ When updating providers.md:
 | `skipped` | Intentionally not implementing (older version, limited use) |
 | `undecided` | Needs discussion |
 
+## Documentation Access
+
+Runware documentation URLs can be accessed as LLM-friendly markdown by appending `.md` to the path:
+- HTML: `https://runware.ai/docs/en/image-inference/api-reference`
+- Markdown: `https://runware.ai/docs/en/image-inference/api-reference.md`
+
+Always prefer the `.md` version when fetching documentation for better parsing.
+
 ## References
 
 ### Skill Files (this folder)
