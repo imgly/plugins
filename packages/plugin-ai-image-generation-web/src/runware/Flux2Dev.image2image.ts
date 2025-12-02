@@ -10,7 +10,7 @@ import type CreativeEditorSDK from '@cesdk/cesdk-js';
 import Flux2DevImage2ImageSchema from './Flux2Dev.image2image.json';
 import createImageProvider from './createImageProvider';
 import { RunwareProviderConfiguration } from './types';
-import { adjustDimensionsForRunware } from './utils';
+import { adjustDimensions } from './utils';
 
 /**
  * Input interface for FLUX.2 [dev] image-to-image
@@ -68,6 +68,11 @@ export function Flux2DevImage2Image(
         renderCustomProperty: CommonProperties.ImageUrl(providerId, {
           cesdk
         }),
+        dimensionConstraints: {
+          width: { min: 512, max: 2048 },
+          height: { min: 512, max: 2048 },
+          multiple: 16
+        },
         supportedQuickActions: {
           'ly.img.editImage': {
             mapInput: (input) => ({
@@ -121,8 +126,12 @@ export function Flux2DevImage2Image(
             input.image_url,
             cesdk.engine
           );
-          // Adjust dimensions to meet Runware API constraints
-          const adjusted = adjustDimensionsForRunware(width, height);
+          // Adjust dimensions to meet FLUX.2 [dev] constraints (512-2048, multiples of 16)
+          const adjusted = adjustDimensions(width, height, {
+            width: { min: 512, max: 2048 },
+            height: { min: 512, max: 2048 },
+            multiple: 16
+          });
           return Promise.resolve({
             image: {
               width: adjusted.width,

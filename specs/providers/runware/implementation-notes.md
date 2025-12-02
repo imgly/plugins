@@ -467,6 +467,71 @@ Includes:
 
 Complex style selection with CustomAssetSource for models that support style presets.
 
+## Dimension Constraints (CRITICAL for I2I)
+
+**IMPORTANT**: Different models have different dimension constraints. Using wrong constraints will cause API errors like `invalidCustomWidth`.
+
+### DimensionConstraints Interface
+
+```typescript
+interface DimensionConstraints {
+  width: { min: number; max: number };
+  height: { min: number; max: number };
+  multiple?: number;  // Optional, defaults to 1
+}
+```
+
+### Using Dimension Constraints
+
+Pass `dimensionConstraints` to `createImageProvider` for I2I providers:
+
+```typescript
+return createImageProvider<MyModelInput>(
+  {
+    // ... other options
+    dimensionConstraints: {
+      width: { min: 256, max: 1920 },
+      height: { min: 256, max: 1920 },
+      multiple: 16
+    },
+    // ...
+  },
+  config
+);
+```
+
+The `adjustDimensions` utility is also available for use in `getBlockInput`:
+
+```typescript
+import { adjustDimensions } from './utils';
+
+getBlockInput: async (input) => {
+  const { width, height } = await getImageDimensionsFromURL(...);
+  const adjusted = adjustDimensions(width, height, {
+    width: { min: 256, max: 1920 },
+    height: { min: 256, max: 1920 },
+    multiple: 16
+  });
+  return { image: { width: adjusted.width, height: adjusted.height } };
+}
+```
+
+### Known Model Constraints
+
+| Model | AIR | Width | Height | Multiple |
+|-------|-----|-------|--------|----------|
+| FLUX.2 [dev] | `runware:400@1` | 512-2048 | 512-2048 | 16 |
+| FLUX.2 [pro] | `bfl:5@1` | 256-1920 | 256-1920 | 16 |
+| FLUX.2 [flex] | `bfl:6@1` | 256-1920 | 256-1920 | 16 |
+
+### Extracting Constraints from API Docs
+
+When fetching documentation, look for width/height parameter specs:
+```
+width: integer, min: XXX, max: YYY, multiples of ZZ
+height: integer, min: XXX, max: YYY, multiples of ZZ
+```
+
 ## Known Issues & Gotchas
 
 ### TypeScript and JSON Schema

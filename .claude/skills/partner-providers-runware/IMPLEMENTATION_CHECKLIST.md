@@ -57,7 +57,28 @@ Extract:
 - Any model-specific quirks
 ```
 
-### 4. Create Provider Files
+### 4. Extract Dimension Constraints (I2I Only)
+
+**CRITICAL for image-to-image providers**: Extract width/height constraints from API docs.
+
+When fetching documentation, look for:
+```
+width: integer, min: XXX, max: YYY, multiples of ZZ
+height: integer, min: XXX, max: YYY, multiples of ZZ
+```
+
+- [ ] Record width constraints: min=___, max=___
+- [ ] Record height constraints: min=___, max=___
+- [ ] Record multiple (if any): ___
+
+Example constraints by model:
+| Model | Width | Height | Multiple |
+|-------|-------|--------|----------|
+| FLUX.2 [dev] | 512-2048 | 512-2048 | 16 |
+| FLUX.2 [pro] | 256-1920 | 256-1920 | 16 |
+| FLUX.2 [flex] | 256-1920 | 256-1920 | 16 |
+
+### 5. Create Provider Files
 
 Follow the structure in `specs/providers/runware/implementation-notes.md`:
 
@@ -65,9 +86,16 @@ Follow the structure in `specs/providers/runware/implementation-notes.md`:
 - [ ] Create JSON schema file: `{ModelName}.{capability}.json` (e.g., `Flux2Pro.text2image.json`)
 - [ ] Define provider metadata (id, name, AIR)
 - [ ] Define input schema with all parameters
-- [ ] Implement dimension handling if applicable
+- [ ] **For I2I**: Add `dimensionConstraints` to `createImageProvider` options:
+  ```typescript
+  dimensionConstraints: {
+    width: { min: XXX, max: YYY },
+    height: { min: XXX, max: YYY },
+    multiple: ZZ  // optional
+  }
+  ```
 
-### 5. Register Provider
+### 6. Register Provider
 
 Add export to the appropriate index file with nested structure:
 
@@ -86,9 +114,9 @@ const Runware = {
 export default Runware;
 ```
 
-### 6. Add to Example App
+### 7. Add to Example App (REQUIRED)
 
-Add the provider to `examples/ai/src/runwareProviders.ts`:
+**CRITICAL**: Every new provider MUST be added to `examples/ai/src/runwareProviders.ts`:
 
 ```typescript
 import RunwareImage from '@imgly/plugin-ai-image-generation-web/runware';
@@ -118,7 +146,7 @@ export function createRunwareProviders(options: RunwareProviderOptions) {
 }
 ```
 
-### 7. Update providers.md
+### 8. Update providers.md
 
 Change status from `planned` to `implemented` for **only the capability you implemented**:
 
@@ -128,7 +156,7 @@ Change status from `planned` to `implemented` for **only the capability you impl
 | BFL | FLUX.2 [pro] | `bfl:5@1` | image-to-image | Nov 2025 | planned |  ← Still planned!
 ```
 
-### 8. Run Validation
+### 9. Run Validation
 
 ```bash
 pnpm --filter "@imgly/plugin-ai-*" check:all
@@ -139,7 +167,7 @@ Fix any:
 - [ ] Lint errors
 - [ ] Build failures
 
-### 9. Test (if demo available)
+### 10. Test (if demo available)
 
 If the example app is set up:
 
@@ -168,3 +196,5 @@ Verify the provider appears and generates correctly.
 3. **JSON schema must include `"paths": {}`** - OpenAPI type requirement
 4. **Always use `// @ts-ignore` before schema** - TypeScript workaround for OpenAPI types
 5. **Update providers.md for only the implemented capability** - Don't mark the whole model as done
+6. **ALWAYS add to example app** - Every provider must be added to `examples/ai/src/runwareProviders.ts`
+7. **For I2I: Set `dimensionConstraints` in provider** - Extract width/height min/max from API docs and pass to `createImageProvider`. Each provider defines its own constraints inline.

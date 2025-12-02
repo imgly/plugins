@@ -51,67 +51,82 @@ export function isCustomImageSize(
 }
 
 /**
- * Runware dimension constraints for image inference
+ * Constraints for a single dimension (width or height)
  */
-const RUNWARE_MIN_DIMENSION = 512;
-const RUNWARE_MAX_DIMENSION = 2048;
-const RUNWARE_DIMENSION_MULTIPLE = 16;
+export interface DimensionRange {
+  min: number;
+  max: number;
+}
 
 /**
- * Adjusts dimensions to meet Runware API constraints:
- * - Width and height must be between 512 and 2048
- * - Must be multiples of 16
- * - Preserves aspect ratio when scaling
+ * Model-specific dimension constraints for image generation.
+ * Allows separate constraints for width and height.
  */
-export function adjustDimensionsForRunware(
+export interface DimensionConstraints {
+  width: DimensionRange;
+  height: DimensionRange;
+  /** Round dimensions to this multiple (e.g., 16). Defaults to 1 if not specified. */
+  multiple?: number;
+}
+
+/**
+ * Adjusts dimensions to meet API constraints:
+ * - Width and height are constrained to their respective min/max ranges
+ * - Optionally rounds to a multiple (e.g., 16)
+ * - Preserves aspect ratio when scaling
+ *
+ * @param width - Original width
+ * @param height - Original height
+ * @param constraints - Model-specific dimension constraints
+ */
+export function adjustDimensions(
   width: number,
-  height: number
+  height: number,
+  constraints: DimensionConstraints
 ): { width: number; height: number } {
-  // First, scale down if either dimension exceeds max
+  const multiple = constraints.multiple ?? 1;
+
+  // First, scale down if either dimension exceeds its max
   let scaledWidth = width;
   let scaledHeight = height;
 
   if (
-    scaledWidth > RUNWARE_MAX_DIMENSION ||
-    scaledHeight > RUNWARE_MAX_DIMENSION
+    scaledWidth > constraints.width.max ||
+    scaledHeight > constraints.height.max
   ) {
     const scale = Math.min(
-      RUNWARE_MAX_DIMENSION / scaledWidth,
-      RUNWARE_MAX_DIMENSION / scaledHeight
+      constraints.width.max / scaledWidth,
+      constraints.height.max / scaledHeight
     );
     scaledWidth = Math.round(scaledWidth * scale);
     scaledHeight = Math.round(scaledHeight * scale);
   }
 
-  // Scale up if either dimension is below min
+  // Scale up if either dimension is below its min
   if (
-    scaledWidth < RUNWARE_MIN_DIMENSION ||
-    scaledHeight < RUNWARE_MIN_DIMENSION
+    scaledWidth < constraints.width.min ||
+    scaledHeight < constraints.height.min
   ) {
     const scale = Math.max(
-      RUNWARE_MIN_DIMENSION / scaledWidth,
-      RUNWARE_MIN_DIMENSION / scaledHeight
+      constraints.width.min / scaledWidth,
+      constraints.height.min / scaledHeight
     );
     scaledWidth = Math.round(scaledWidth * scale);
     scaledHeight = Math.round(scaledHeight * scale);
   }
 
-  // Round to nearest multiple of 16
-  const roundedWidth =
-    Math.round(scaledWidth / RUNWARE_DIMENSION_MULTIPLE) *
-    RUNWARE_DIMENSION_MULTIPLE;
-  const roundedHeight =
-    Math.round(scaledHeight / RUNWARE_DIMENSION_MULTIPLE) *
-    RUNWARE_DIMENSION_MULTIPLE;
+  // Round to nearest multiple (if specified)
+  const roundedWidth = Math.round(scaledWidth / multiple) * multiple;
+  const roundedHeight = Math.round(scaledHeight / multiple) * multiple;
 
   // Final clamp to ensure we're within bounds after rounding
   const finalWidth = Math.max(
-    RUNWARE_MIN_DIMENSION,
-    Math.min(RUNWARE_MAX_DIMENSION, roundedWidth)
+    constraints.width.min,
+    Math.min(constraints.width.max, roundedWidth)
   );
   const finalHeight = Math.max(
-    RUNWARE_MIN_DIMENSION,
-    Math.min(RUNWARE_MAX_DIMENSION, roundedHeight)
+    constraints.height.min,
+    Math.min(constraints.height.max, roundedHeight)
   );
 
   return { width: finalWidth, height: finalHeight };

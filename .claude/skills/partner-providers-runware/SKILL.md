@@ -68,9 +68,13 @@ Only proceed after user approval. Follow `IMPLEMENTATION_CHECKLIST.md` to:
 1. Determine provider type (t2i, i2i, t2v, i2v) from capabilities
 2. Find existing Runware provider of same type as reference
 3. Fetch detailed API documentation for the model
-4. Create provider implementation following patterns in `specs/providers/schemas/`
-5. Update `specs/providers/runware/providers.md` status to "implemented"
-6. Run build checks: `pnpm --filter "@imgly/plugin-ai-*" check:all`
+4. **For I2I**: Extract dimension constraints (min/max/multiple) from API docs
+5. Create provider implementation following patterns in `specs/providers/schemas/`
+   - **For I2I**: Use model-specific `RUNWARE_DIMENSION_CONSTRAINTS` (see `implementation-notes.md`)
+6. Export provider from `runware/index.ts`
+7. **Add to example app** (`examples/ai/src/runwareProviders.ts`) - REQUIRED
+8. Update `specs/providers/runware/providers.md` status to "implemented"
+9. Run build checks: `pnpm --filter "@imgly/plugin-ai-*" check:all`
 
 ### Implementation Reference
 

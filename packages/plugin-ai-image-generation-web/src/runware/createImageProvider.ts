@@ -14,7 +14,8 @@ import { createRunwareClient, RunwareClient } from './createRunwareClient';
 import {
   convertImageUrlForRunware,
   isCustomImageSize,
-  adjustDimensionsForRunware
+  adjustDimensions,
+  DimensionConstraints
 } from './utils';
 import { getImageDimensionsFromURL } from '@imgly/plugin-utils';
 import {
@@ -42,6 +43,11 @@ interface CreateProviderOptions<I extends Record<string, any>> {
   mapInput: (input: I) => Record<string, any>;
   middleware?: Middleware<I, ImageOutput>[];
   cesdk?: CreativeEditorSDK;
+  /**
+   * Model-specific dimension constraints for image-to-image.
+   * Required for I2I providers to properly constrain output dimensions.
+   */
+  dimensionConstraints?: DimensionConstraints;
 }
 
 /**
@@ -157,7 +163,16 @@ function createImageProvider<
               input.image_url,
               options.cesdk.engine
             );
-            imageDimensions = adjustDimensionsForRunware(width, height);
+            // Apply dimension constraints if provided
+            if (options.dimensionConstraints != null) {
+              imageDimensions = adjustDimensions(
+                width,
+                height,
+                options.dimensionConstraints
+              );
+            } else {
+              imageDimensions = { width, height };
+            }
           }
         }
 
