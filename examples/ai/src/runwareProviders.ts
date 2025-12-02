@@ -27,6 +27,10 @@ export function createRunwareProviders(options: RunwareProviderOptions) {
       RunwareImage.Flux2Dev.Image2Image({
         middlewares: [imageRateLimitMiddleware, errorMiddleware],
         proxyUrl
+      }),
+      RunwareImage.Flux2Pro.Image2Image({
+        middlewares: [imageRateLimitMiddleware, errorMiddleware],
+        proxyUrl
       })
     ],
     text2video: [
