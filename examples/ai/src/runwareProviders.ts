@@ -25,6 +25,10 @@ export function createRunwareProviders(options: RunwareProviderOptions) {
       RunwareImage.Flux2Flex.Text2Image({
         middlewares: [imageRateLimitMiddleware, errorMiddleware],
         proxyUrl
+      }),
+      RunwareImage.Seedream4.Text2Image({
+        middlewares: [imageRateLimitMiddleware, errorMiddleware],
+        proxyUrl
       })
     ],
     image2image: [
@@ -37,6 +41,10 @@ export function createRunwareProviders(options: RunwareProviderOptions) {
         proxyUrl
       }),
       RunwareImage.Flux2Flex.Image2Image({
+        middlewares: [imageRateLimitMiddleware, errorMiddleware],
+        proxyUrl
+      }),
+      RunwareImage.Seedream4.Image2Image({
         middlewares: [imageRateLimitMiddleware, errorMiddleware],
         proxyUrl
       })

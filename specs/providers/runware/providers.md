@@ -55,8 +55,8 @@ Each capability is tracked separately. Models with multiple capabilities have mu
 | Bria | Bria Video Background Removal | `bria:51@1` | video background removal | - | 2025 | skipped |
 | Bria | Bria Image Increase Resolution | `bria:52@1` | image upscaling | - | 2025 | skipped |
 | **ByteDance** | SeedEdit 3.0 | `bytedance:4@1` | image-to-image | reference (1, instruction-edit) | Apr-Sep 2025 | skipped |
-| ByteDance | Seedream 4.0 | `bytedance:5@0` | text-to-image | - | Sep 2025 | planned |
-| ByteDance | Seedream 4.0 | `bytedance:5@0` | image-to-image | reference (14 max, consistency) | Sep 2025 | planned |
+| ByteDance | Seedream 4.0 | `bytedance:5@0` | text-to-image | - | Sep 2025 | implemented |
+| ByteDance | Seedream 4.0 | `bytedance:5@0` | image-to-image | reference (14 max, consistency) | Sep 2025 | implemented |
 | ByteDance | Seedance 1.0 Lite | `bytedance:1@1` | text-to-video | - | Jun 2025 | skipped |
 | ByteDance | Seedance 1.0 Lite | `bytedance:1@1` | image-to-video | first frame | Jun 2025 | skipped |
 | ByteDance | Seedance 1.0 Pro | `bytedance:2@1` | text-to-video | - | Jun 2025 | skipped |
