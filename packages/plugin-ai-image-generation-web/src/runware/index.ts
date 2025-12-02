@@ -5,6 +5,8 @@ import { Flux2Dev as Flux2DevText2Image } from './Flux2Dev.text2image';
 import { Flux2DevImage2Image } from './Flux2Dev.image2image';
 import { Flux2Pro as Flux2ProText2Image } from './Flux2Pro.text2image';
 import { Flux2ProImage2Image } from './Flux2Pro.image2image';
+import { Flux2Flex as Flux2FlexText2Image } from './Flux2Flex.text2image';
+import { Flux2FlexImage2Image } from './Flux2Flex.image2image';
 
 const Runware = {
   Flux2Dev: {
@@ -14,6 +16,10 @@ const Runware = {
   Flux2Pro: {
     Text2Image: Flux2ProText2Image,
     Image2Image: Flux2ProImage2Image
+  },
+  Flux2Flex: {
+    Text2Image: Flux2FlexText2Image,
+    Image2Image: Flux2FlexImage2Image
   }
 };
 

@@ -40,8 +40,8 @@ Each capability is tracked separately. Models with multiple capabilities have mu
 | Black Forest Labs | FLUX.2 [dev] | `runware:400@1` | image-to-image | reference (4 max) | Nov 2025 | implemented |
 | Black Forest Labs | FLUX.2 [pro] | `bfl:5@1` | text-to-image | - | Nov 2025 | implemented |
 | Black Forest Labs | FLUX.2 [pro] | `bfl:5@1` | image-to-image | reference (9 max) | Nov 2025 | implemented |
-| Black Forest Labs | FLUX.2 [flex] | `bfl:6@1` | text-to-image | - | Nov 2025 | planned |
-| Black Forest Labs | FLUX.2 [flex] | `bfl:6@1` | image-to-image | reference (10 max) | Nov 2025 | planned |
+| Black Forest Labs | FLUX.2 [flex] | `bfl:6@1` | text-to-image | - | Nov 2025 | implemented |
+| Black Forest Labs | FLUX.2 [flex] | `bfl:6@1` | image-to-image | reference (10 max) | Nov 2025 | implemented |
 | **Bria** | Bria 3.2 | `bria:10@1` | text-to-image | - | Jun 2025 | skipped |
 | Bria | Bria ControlNet (Canny) | `bria:10@10` | text-to-image (edge control) | control (edge) | Jun 2025 | skipped |
 | Bria | Bria ControlNet (Depth) | `bria:10@11` | text-to-image (depth control) | control (depth) | Jun 2025 | skipped |

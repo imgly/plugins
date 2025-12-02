@@ -21,6 +21,10 @@ export function createRunwareProviders(options: RunwareProviderOptions) {
       RunwareImage.Flux2Pro.Text2Image({
         middlewares: [imageRateLimitMiddleware, errorMiddleware],
         proxyUrl
+      }),
+      RunwareImage.Flux2Flex.Text2Image({
+        middlewares: [imageRateLimitMiddleware, errorMiddleware],
+        proxyUrl
       })
     ],
     image2image: [
@@ -29,6 +33,10 @@ export function createRunwareProviders(options: RunwareProviderOptions) {
         proxyUrl
       }),
       RunwareImage.Flux2Pro.Image2Image({
+        middlewares: [imageRateLimitMiddleware, errorMiddleware],
+        proxyUrl
+      }),
+      RunwareImage.Flux2Flex.Image2Image({
         middlewares: [imageRateLimitMiddleware, errorMiddleware],
         proxyUrl
       })
