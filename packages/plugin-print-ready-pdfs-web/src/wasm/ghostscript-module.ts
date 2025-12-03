@@ -4,7 +4,18 @@ import type {
   GhostscriptModuleFactory,
 } from '../types/ghostscript';
 
-export default async function createGhostscriptModule(): Promise<EmscriptenModule> {
+export interface GhostscriptModuleOptions {
+  /**
+   * Whether to suppress Ghostscript's stdout/stderr output.
+   * Default: true (silent mode)
+   */
+  silent?: boolean;
+}
+
+export default async function createGhostscriptModule(
+  options: GhostscriptModuleOptions = {}
+): Promise<EmscriptenModule> {
+  const { silent = true } = options;
   // Check if we're in Node.js
   const isNode =
     typeof process !== 'undefined' &&
@@ -38,14 +49,24 @@ export default async function createGhostscriptModule(): Promise<EmscriptenModul
     GhostscriptModule) as GhostscriptModuleFactory;
 
   // Configure the module to load WASM from the bundled location
-  const module = await factory({
+  const moduleConfig: Record<string, unknown> = {
     locateFile: (filename: string) => {
       if (filename === 'gs.wasm') {
         return wasmPath;
       }
       return filename;
     },
-  });
+  };
+
+  // Suppress Ghostscript stdout/stderr output in silent mode
+  if (silent) {
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    moduleConfig.print = () => {};
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    moduleConfig.printErr = () => {};
+  }
+
+  const module = await factory(moduleConfig);
 
   return module;
 }

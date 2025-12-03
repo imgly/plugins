@@ -1,10 +1,23 @@
 import { exec } from 'child_process';
 import { promisify } from 'util';
-import { writeFileSync, unlinkSync } from 'fs';
+import { writeFileSync, unlinkSync, existsSync } from 'fs';
 import { tmpdir } from 'os';
 import { join } from 'path';
 
 const execAsync = promisify(exec);
+
+/**
+ * Safely remove a temporary file, ignoring errors if it doesn't exist
+ */
+function safeUnlink(filePath: string): void {
+  try {
+    if (existsSync(filePath)) {
+      unlinkSync(filePath);
+    }
+  } catch {
+    // Ignore cleanup errors - file may have been removed by another process
+  }
+}
 
 export interface FontInfo {
   name: string;
@@ -50,7 +63,7 @@ export class ExternalValidators {
       const { stdout } = await execAsync(`pdffonts "${tempPath}"`);
       return this.parsePdfFonts(stdout);
     } finally {
-      unlinkSync(tempPath);
+      safeUnlink(tempPath);
     }
   }
 
@@ -72,7 +85,7 @@ export class ExternalValidators {
       const { stdout } = await execAsync(`pdfimages -list "${tempPath}"`);
       return this.parsePdfImages(stdout);
     } finally {
-      unlinkSync(tempPath);
+      safeUnlink(tempPath);
     }
   }
 
@@ -86,11 +99,7 @@ export class ExternalValidators {
       const { stdout } = await execAsync(`pdfinfo "${tempPath}"`);
       return this.parsePdfInfo(stdout);
     } finally {
-      try {
-        unlinkSync(tempPath);
-      } catch {
-        // Ignore cleanup errors
-      }
+      safeUnlink(tempPath);
     }
   }
 
@@ -104,7 +113,7 @@ export class ExternalValidators {
       const { stdout } = await execAsync(`pdftotext "${tempPath}" -`);
       return stdout.trim();
     } finally {
-      unlinkSync(tempPath);
+      safeUnlink(tempPath);
     }
   }
 
@@ -125,7 +134,7 @@ export class ExternalValidators {
         warnings: this.extractWarnings(output)
       };
     } finally {
-      unlinkSync(tempPath);
+      safeUnlink(tempPath);
     }
   }
 
@@ -157,7 +166,7 @@ export class ExternalValidators {
         warnings: this.extractWarnings(output)
       };
     } finally {
-      unlinkSync(tempPath);
+      safeUnlink(tempPath);
     }
   }
 
@@ -183,7 +192,7 @@ export class ExternalValidators {
     } catch {
       return 0;
     } finally {
-      unlinkSync(tempPath);
+      safeUnlink(tempPath);
     }
   }
 
@@ -336,7 +345,7 @@ export class ExternalValidators {
         pdfContent.includes('/CA ')
       );
     } finally {
-      unlinkSync(tempPath);
+      safeUnlink(tempPath);
     }
   }
 
@@ -388,7 +397,7 @@ export class ExternalValidators {
       console.warn('Failed to extract ICC profile:', error);
       return null;
     } finally {
-      unlinkSync(tempPath);
+      safeUnlink(tempPath);
     }
   }
 
