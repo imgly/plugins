@@ -1,0 +1,78 @@
+/* eslint-disable import/extensions */
+import { describe, test, expect, vi, beforeEach, afterEach } from 'vitest';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+import { readFileSync, existsSync } from 'fs';
+
+const testFile = fileURLToPath(import.meta.url);
+const testDir = dirname(testFile);
+
+describe('Silent Conversion Tests', () => {
+  let consoleLogSpy: ReturnType<typeof vi.spyOn>;
+  let consoleErrorSpy: ReturnType<typeof vi.spyOn>;
+  let consoleWarnSpy: ReturnType<typeof vi.spyOn>;
+
+  const getTestPDF = (name: string): Blob => {
+    const path = join(testDir, '../fixtures/pdfs', name);
+    if (!existsSync(path)) {
+      throw new Error(`Test PDF not found: ${path}. Export it from CE.SDK first.`);
+    }
+    return new Blob([readFileSync(path)], { type: 'application/pdf' });
+  };
+
+  beforeEach(() => {
+    // Spy on console methods
+    consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+    consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    // Restore console methods
+    consoleLogSpy.mockRestore();
+    consoleErrorSpy.mockRestore();
+    consoleWarnSpy.mockRestore();
+  });
+
+  test('should convert PDF without Ghostscript warnings about PDF 1.5 features', async () => {
+    // Dynamic import to ensure console spies are set up first
+    const { convertToPDFX3 } = await import('../../dist/index.mjs');
+
+    const inputPDF = getTestPDF('test-minimal.pdf');
+
+    const outputPDF = (await convertToPDFX3(inputPDF, {
+      outputProfile: 'gracol',
+      title: 'Silent Test',
+    })) as Blob;
+
+    // Verify PDF was created successfully
+    expect(outputPDF).toBeInstanceOf(Blob);
+    expect(outputPDF.size).toBeGreaterThan(1024); // At least 1KB
+
+    // Verify it's a valid PDF
+    const pdfBytes = new Uint8Array(await outputPDF.arrayBuffer());
+    const pdfHeader = String.fromCharCode(...pdfBytes.slice(0, 5));
+    expect(pdfHeader).toBe('%PDF-');
+
+    // Check that no PDF 1.5 feature warnings were logged
+    const allErrorCalls = consoleErrorSpy.mock.calls.flat().join(' ');
+    expect(allErrorCalls).not.toContain('WriteObjStms');
+    expect(allErrorCalls).not.toContain('WriteXRefStm');
+    expect(allErrorCalls).not.toContain("Can't use Object streams");
+    expect(allErrorCalls).not.toContain("Can't use an XRef stream");
+  });
+
+  test('should not produce any console.error output during normal conversion', async () => {
+    const { convertToPDFX3 } = await import('../../dist/index.mjs');
+
+    const inputPDF = getTestPDF('test-minimal.pdf');
+
+    await convertToPDFX3(inputPDF, {
+      outputProfile: 'fogra39',
+      title: 'No Errors Test',
+    });
+
+    // No console.error calls should have been made
+    expect(consoleErrorSpy).not.toHaveBeenCalled();
+  });
+});

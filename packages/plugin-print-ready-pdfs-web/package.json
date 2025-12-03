@@ -65,6 +65,7 @@
     "test:profiles": "pnpm run build && vitest run profile-conversion",
     "test:metadata": "pnpm run build && vitest run metadata-validation",
     "test:content": "pnpm run build && vitest run content-preservation",
+    "test:silent": "pnpm run build && vitest run silent-conversion",
     "test:all": "pnpm run test:browser && pnpm run test:integration",
     "test:visual": "pnpm run build && node test/visual-test.mjs"
   },
@@ -84,6 +85,7 @@
     "playwright": "^1.54.1",
     "pnpm-sync-dependencies-meta-injected": "^0.0.14",
     "prettier": "^2.8.8",
+    "rimraf": "^6.0.1",
     "typescript": "^5.7.3",
     "vitest": "^2.1.8",
     "wait-on": "8.0.2"
