@@ -1,5 +1,5 @@
 import RunwareImage from '@imgly/plugin-ai-image-generation-web/runware';
-// import RunwareVideo from '@imgly/plugin-ai-video-generation-web/runware';
+import RunwareVideo from '@imgly/plugin-ai-video-generation-web/runware';
 import { Middleware } from '@imgly/plugin-ai-generation-web';
 
 export interface RunwareProviderOptions {
@@ -10,7 +10,12 @@ export interface RunwareProviderOptions {
 }
 
 export function createRunwareProviders(options: RunwareProviderOptions) {
-  const { imageRateLimitMiddleware, errorMiddleware, proxyUrl } = options;
+  const {
+    imageRateLimitMiddleware,
+    videoRateLimitMiddleware,
+    errorMiddleware,
+    proxyUrl
+  } = options;
 
   return {
     text2image: [
@@ -58,10 +63,24 @@ export function createRunwareProviders(options: RunwareProviderOptions) {
       })
     ],
     text2video: [
-      // Runware text-to-video providers will be added here
+      RunwareVideo.Veo31.Text2Video({
+        middlewares: [videoRateLimitMiddleware, errorMiddleware],
+        proxyUrl
+      }),
+      RunwareVideo.Veo31Fast.Text2Video({
+        middlewares: [videoRateLimitMiddleware, errorMiddleware],
+        proxyUrl
+      })
     ],
     image2video: [
-      // Runware image-to-video providers will be added here
+      RunwareVideo.Veo31.Image2Video({
+        middlewares: [videoRateLimitMiddleware, errorMiddleware],
+        proxyUrl
+      }),
+      RunwareVideo.Veo31Fast.Image2Video({
+        middlewares: [videoRateLimitMiddleware, errorMiddleware],
+        proxyUrl
+      })
     ]
   };
 }
