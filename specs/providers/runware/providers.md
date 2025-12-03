@@ -138,8 +138,8 @@ Each capability is tracked separately. Models with multiple capabilities have mu
 | MiniMax | Hailuo 2.3 Fast | `minimax:4@2` | image-to-video | first frame | 2025 | skipped |
 | **OpenAI** | DALL·E 2 | `openai:2@2` | text-to-image | - | Apr 2022 | skipped |
 | OpenAI | DALL·E 3 | `openai:2@3` | text-to-image | - | Oct 2023 | skipped |
-| OpenAI | GPT Image 1 | `openai:1@1` | text-to-image | - | Mar 2025 | planned |
-| OpenAI | GPT Image 1 | `openai:1@1` | image-to-image | reference (edit) | Mar 2025 | planned |
+| OpenAI | GPT Image 1 | `openai:1@1` | text-to-image | - | Mar 2025 | implemented |
+| OpenAI | GPT Image 1 | `openai:1@1` | image-to-image | reference (edit) | Mar 2025 | implemented |
 | OpenAI | Sora 2 | `openai:3@1` | text-to-video | - | Sep 2025 | planned |
 | OpenAI | Sora 2 | `openai:3@1` | image-to-video | first frame | Sep 2025 | planned |
 | OpenAI | Sora 2 Pro | `openai:3@2` | text-to-video | - | Sep 2025 | planned |

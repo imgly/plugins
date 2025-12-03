@@ -11,6 +11,8 @@ import { Seedream4 as Seedream4Text2Image } from './Seedream4.text2image';
 import { Seedream4Image2Image } from './Seedream4.image2image';
 import { NanoBanana2Pro as NanoBanana2ProText2Image } from './NanoBanana2Pro.text2image';
 import { NanoBanana2ProImage2Image } from './NanoBanana2Pro.image2image';
+import { GptImage1 as GptImage1Text2Image } from './GptImage1.text2image';
+import { GptImage1Image2Image } from './GptImage1.image2image';
 
 const Runware = {
   Flux2Dev: {
@@ -32,6 +34,10 @@ const Runware = {
   NanoBanana2Pro: {
     Text2Image: NanoBanana2ProText2Image,
     Image2Image: NanoBanana2ProImage2Image
+  },
+  GptImage1: {
+    Text2Image: GptImage1Text2Image,
+    Image2Image: GptImage1Image2Image
   }
 };
 

@@ -163,7 +163,8 @@ function createImageProvider<
           processedInput = { ...input, image_url: convertedUrl };
 
           // Get and adjust dimensions from input image for image-to-image
-          if (options.cesdk != null) {
+          // Skip dimension computation entirely if skipAutoDimensions is set
+          if (options.cesdk != null && !options.skipAutoDimensions) {
             const { width, height } = await getImageDimensionsFromURL(
               input.image_url,
               options.cesdk.engine

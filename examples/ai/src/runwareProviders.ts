@@ -38,6 +38,10 @@ export function createRunwareProviders(options: RunwareProviderOptions) {
       RunwareImage.NanoBanana2Pro.Text2Image({
         middlewares: [imageRateLimitMiddleware, errorMiddleware],
         proxyUrl
+      }),
+      RunwareImage.GptImage1.Text2Image({
+        middlewares: [imageRateLimitMiddleware, errorMiddleware],
+        proxyUrl
       })
     ],
     image2image: [
@@ -58,6 +62,10 @@ export function createRunwareProviders(options: RunwareProviderOptions) {
         proxyUrl
       }),
       RunwareImage.NanoBanana2Pro.Image2Image({
+        middlewares: [imageRateLimitMiddleware, errorMiddleware],
+        proxyUrl
+      }),
+      RunwareImage.GptImage1.Image2Image({
         middlewares: [imageRateLimitMiddleware, errorMiddleware],
         proxyUrl
       })

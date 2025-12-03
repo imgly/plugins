@@ -26,6 +26,8 @@ export interface RunwareImageInferenceParams {
     referenceImages?: string[];
     [key: string]: unknown;
   };
+  /** Root-level reference images (for models like GPT Image 1 that don't use nested inputs) */
+  referenceImages?: string[];
   [key: string]: unknown;
 }
 
@@ -108,7 +110,10 @@ export function createRunwareClient(proxyUrl: string): RunwareClient {
           ...(params.seedImage != null && { seedImage: params.seedImage }),
           ...(params.maskImage != null && { maskImage: params.maskImage }),
           ...(params.strength != null && { strength: params.strength }),
-          ...(params.inputs != null && { inputs: params.inputs })
+          ...(params.inputs != null && { inputs: params.inputs }),
+          ...(params.referenceImages != null && {
+            referenceImages: params.referenceImages
+          })
         }
       ];
 
