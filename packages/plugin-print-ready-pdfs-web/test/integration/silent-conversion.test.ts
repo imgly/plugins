@@ -11,6 +11,8 @@ describe('Silent Conversion Tests', () => {
   let consoleLogSpy: ReturnType<typeof vi.spyOn>;
   let consoleErrorSpy: ReturnType<typeof vi.spyOn>;
   let consoleWarnSpy: ReturnType<typeof vi.spyOn>;
+  let consoleInfoSpy: ReturnType<typeof vi.spyOn>;
+  let consoleDebugSpy: ReturnType<typeof vi.spyOn>;
 
   const getTestPDF = (name: string): Blob => {
     const path = join(testDir, '../fixtures/pdfs', name);
@@ -21,10 +23,12 @@ describe('Silent Conversion Tests', () => {
   };
 
   beforeEach(() => {
-    // Spy on console methods
+    // Spy on all console methods
     consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
     consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
     consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    consoleInfoSpy = vi.spyOn(console, 'info').mockImplementation(() => {});
+    consoleDebugSpy = vi.spyOn(console, 'debug').mockImplementation(() => {});
   });
 
   afterEach(() => {
@@ -32,6 +36,8 @@ describe('Silent Conversion Tests', () => {
     consoleLogSpy.mockRestore();
     consoleErrorSpy.mockRestore();
     consoleWarnSpy.mockRestore();
+    consoleInfoSpy.mockRestore();
+    consoleDebugSpy.mockRestore();
   });
 
   test('should convert PDF without Ghostscript warnings about PDF 1.5 features', async () => {
@@ -73,6 +79,24 @@ describe('Silent Conversion Tests', () => {
     });
 
     // No console.error calls should have been made
+    expect(consoleErrorSpy).not.toHaveBeenCalled();
+  });
+
+  test('should not produce any console output during normal conversion (silent by default)', async () => {
+    const { convertToPDFX3 } = await import('../../dist/index.mjs');
+
+    const inputPDF = getTestPDF('test-minimal.pdf');
+
+    await convertToPDFX3(inputPDF, {
+      outputProfile: 'gracol',
+      title: 'Silent Test',
+    });
+
+    // No console output should have been made (silent by default)
+    expect(consoleLogSpy).not.toHaveBeenCalled();
+    expect(consoleInfoSpy).not.toHaveBeenCalled();
+    expect(consoleDebugSpy).not.toHaveBeenCalled();
+    expect(consoleWarnSpy).not.toHaveBeenCalled();
     expect(consoleErrorSpy).not.toHaveBeenCalled();
   });
 });

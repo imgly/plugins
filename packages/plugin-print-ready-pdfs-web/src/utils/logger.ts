@@ -10,7 +10,7 @@ export interface LogEntry {
 }
 
 export class Logger {
-  private static globalLogLevel: LogLevel = 'info';
+  private static globalLogLevel: LogLevel = 'warn';
 
   private static logs: LogEntry[] = [];
 
