@@ -1,8 +1,18 @@
 /**
  * Runware HTTP REST API client for video generation
  * Uses the REST API instead of the WebSocket SDK
- * API documentation: https://runware.ai/docs/en/getting-started/how-to-connect
+ * API documentation: https://runware.ai/docs/en/video-inference/api-reference
+ *
+ * Video generation uses async delivery with polling:
+ * 1. Submit task with deliveryMethod: "async"
+ * 2. Receive taskUUID in response
+ * 3. Poll with getResponse until status is "success" or "failed"
  */
+
+export interface FrameImage {
+  inputImage: string;
+  frame?: 'first' | 'last' | number;
+}
 
 export interface RunwareVideoInferenceParams {
   model: string;
@@ -16,8 +26,8 @@ export interface RunwareVideoInferenceParams {
   duration?: number;
   fps?: number;
   seed?: number;
-  seedImage?: string;
-  lastFrameImage?: string;
+  frameImages?: FrameImage[];
+  providerSettings?: Record<string, unknown>;
   [key: string]: unknown;
 }
 
@@ -33,11 +43,13 @@ export type RunwareVideoInferenceInput =
 export interface RunwareVideoResult {
   taskType: string;
   taskUUID: string;
-  videoURL: string;
+  status?: 'processing' | 'success' | 'failed';
+  videoURL?: string;
   videoUUID?: string;
   seed?: number;
   NSFWContent?: boolean;
   cost?: number;
+  errorMessage?: string;
 }
 
 export interface RunwareErrorResponse {
@@ -53,6 +65,10 @@ export interface RunwareClient {
   ) => Promise<RunwareVideoResult[]>;
 }
 
+// Polling configuration
+const POLL_INTERVAL_MS = 3000; // Poll every 3 seconds
+const MAX_POLL_TIME_MS = 10 * 60 * 1000; // Maximum 10 minutes
+
 function generateUUID(): string {
   // Use crypto.randomUUID if available (modern browsers and Node.js)
   if (typeof crypto !== 'undefined' && crypto.randomUUID) {
@@ -67,7 +83,102 @@ function generateUUID(): string {
   });
 }
 
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
+
 export function createRunwareClient(proxyUrl: string): RunwareClient {
+  /**
+   * Poll for video generation results using getResponse task
+   */
+  // eslint-disable-next-line no-await-in-loop
+  async function pollForResult(
+    taskUUID: string,
+    abortSignal?: AbortSignal
+  ): Promise<RunwareVideoResult> {
+    const startTime = Date.now();
+
+    // Polling must be sequential - each request depends on the previous result
+    /* eslint-disable no-await-in-loop */
+    while (Date.now() - startTime < MAX_POLL_TIME_MS) {
+      // Check if aborted
+      if (abortSignal?.aborted) {
+        throw new Error('Video generation aborted');
+      }
+
+      // Poll for results
+      const pollBody = [
+        {
+          taskType: 'getResponse',
+          taskUUID
+        }
+      ];
+
+      const pollResponse = await fetch(proxyUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(pollBody),
+        signal: abortSignal
+      });
+
+      if (!pollResponse.ok) {
+        const errorText = await pollResponse.text();
+        throw new Error(
+          `Runware API polling error: ${pollResponse.status} - ${errorText}`
+        );
+      }
+
+      const pollResult = await pollResponse.json();
+
+      // Check for errors
+      if (pollResult.errors != null && pollResult.errors.length > 0) {
+        const error = pollResult.errors[0] as RunwareErrorResponse;
+        throw new Error(`Runware API error: ${error.errorMessage}`);
+      }
+
+      if (pollResult.error != null) {
+        throw new Error(
+          `Runware API error: ${
+            pollResult.error.errorMessage ?? pollResult.error
+          }`
+        );
+      }
+
+      const data = pollResult.data;
+      if (data != null && Array.isArray(data) && data.length > 0) {
+        const videoResult = data.find(
+          (item: any) =>
+            item.taskType === 'videoInference' && item.taskUUID === taskUUID
+        ) as RunwareVideoResult | undefined;
+
+        if (videoResult != null) {
+          // Check status
+          if (videoResult.status === 'success' && videoResult.videoURL) {
+            return videoResult;
+          }
+
+          if (videoResult.status === 'failed') {
+            throw new Error(
+              videoResult.errorMessage ?? 'Video generation failed'
+            );
+          }
+
+          // Still processing, continue polling
+        }
+      }
+
+      // Wait before next poll
+      await sleep(POLL_INTERVAL_MS);
+    }
+    /* eslint-enable no-await-in-loop */
+
+    throw new Error('Video generation timed out');
+  }
+
   return {
     videoInference: async (
       params: RunwareVideoInferenceInput,
@@ -75,12 +186,13 @@ export function createRunwareClient(proxyUrl: string): RunwareClient {
     ): Promise<RunwareVideoResult[]> => {
       const taskUUID = generateUUID();
 
-      // Build the request body as a JSON array with the videoInference task
+      // Build the request body with async delivery for video tasks
       const requestBody = [
         {
           taskType: 'videoInference',
           taskUUID,
           model: params.model,
+          deliveryMethod: 'async', // Required for video to avoid timeouts
           ...(params.positivePrompt != null && {
             positivePrompt: params.positivePrompt
           }),
@@ -95,13 +207,16 @@ export function createRunwareClient(proxyUrl: string): RunwareClient {
           ...(params.duration != null && { duration: params.duration }),
           ...(params.fps != null && { fps: params.fps }),
           ...(params.seed != null && { seed: params.seed }),
-          ...(params.seedImage != null && { seedImage: params.seedImage }),
-          ...(params.lastFrameImage != null && {
-            lastFrameImage: params.lastFrameImage
+          ...(params.frameImages != null && {
+            frameImages: params.frameImages
+          }),
+          ...(params.providerSettings != null && {
+            providerSettings: params.providerSettings
           })
         }
       ];
 
+      // Submit the video generation task
       const response = await fetch(proxyUrl, {
         method: 'POST',
         headers: {
@@ -124,14 +239,13 @@ export function createRunwareClient(proxyUrl: string): RunwareClient {
         throw new Error(`Runware API error: ${error.errorMessage}`);
       }
 
-      // Check for error property directly
       if (result.error != null) {
         throw new Error(
           `Runware API error: ${result.error.errorMessage ?? result.error}`
         );
       }
 
-      // The response contains a data array with video results
+      // Verify we got the task acknowledgment
       const data = result.data;
       if (data == null || !Array.isArray(data)) {
         throw new Error(
@@ -139,26 +253,19 @@ export function createRunwareClient(proxyUrl: string): RunwareClient {
         );
       }
 
-      // Filter for videoInference results that match our taskUUID
-      const videoResults = data.filter(
+      const taskAck = data.find(
         (item: any) =>
           item.taskType === 'videoInference' && item.taskUUID === taskUUID
-      ) as RunwareVideoResult[];
+      );
 
-      if (videoResults.length === 0) {
-        // Fallback: if no exact match, try to get any videoInference results
-        const anyVideoResults = data.filter(
-          (item: any) => item.taskType === 'videoInference'
-        ) as RunwareVideoResult[];
-
-        if (anyVideoResults.length > 0) {
-          return anyVideoResults;
-        }
-
-        throw new Error('No video results in Runware API response');
+      if (taskAck == null) {
+        throw new Error('Video generation task was not acknowledged');
       }
 
-      return videoResults;
+      // Poll for the result
+      const videoResult = await pollForResult(taskUUID, abortSignal);
+
+      return [videoResult];
     }
   };
 }
