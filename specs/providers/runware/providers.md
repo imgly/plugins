@@ -112,9 +112,9 @@ Each capability is tracked separately. Models with multiple capabilities have mu
 | KlingAI | KlingAI 2.1 Pro | `klingai:5@2` | image-to-video | first frame | May 2025 | skipped |
 | KlingAI | KlingAI 2.1 Master | `klingai:5@3` | text-to-video | - | May 2025 | skipped |
 | KlingAI | KlingAI 2.1 Master | `klingai:5@3` | image-to-video | first frame | May 2025 | skipped |
-| KlingAI | KlingAI 2.5 Turbo Standard | `klingai:6@0` | image-to-video | first frame | Sep 2025 | planned |
-| KlingAI | KlingAI 2.5 Turbo Pro | `klingai:6@1` | text-to-video | - | Sep 2025 | planned |
-| KlingAI | KlingAI 2.5 Turbo Pro | `klingai:6@1` | image-to-video | first frame | Sep 2025 | planned |
+| KlingAI | KlingAI 2.5 Turbo Standard | `klingai:6@0` | image-to-video | first frame | Sep 2025 | skipped |
+| KlingAI | KlingAI 2.5 Turbo Pro | `klingai:6@1` | text-to-video | - | Sep 2025 | skipped |
+| KlingAI | KlingAI 2.5 Turbo Pro | `klingai:6@1` | image-to-video | first frame | Sep 2025 | skipped |
 | KlingAI | KlingAI Lip-Sync | `klingai:7@1` | video-to-video (lip sync) | - | 2025 | skipped |
 | **Lightricks** | LTX-2 Pro | `lightricks:2@0` | text-to-video | - | Oct 2025 | skipped |
 | Lightricks | LTX-2 Pro | `lightricks:2@0` | image-to-video | first frame | Oct 2025 | skipped |
@@ -125,8 +125,8 @@ Each capability is tracked separately. Models with multiple capabilities have mu
 | Midjourney | Midjourney V6 | `midjourney:1@1` | image-to-image | reference (style/composition) | Dec 2023 | skipped |
 | Midjourney | Midjourney V6.1 | `midjourney:2@1` | text-to-image | - | Jul 2024 | skipped |
 | Midjourney | Midjourney V6.1 | `midjourney:2@1` | image-to-image | reference (style/composition) | Jul 2024 | skipped |
-| Midjourney | Midjourney V7 | `midjourney:3@1` | text-to-image | - | Apr 2025 | planned |
-| Midjourney | Midjourney V7 | `midjourney:3@1` | image-to-image | reference (style/composition) | Apr 2025 | planned |
+| Midjourney | Midjourney V7 | `midjourney:3@1` | text-to-image | - | Apr 2025 | skipped |
+| Midjourney | Midjourney V7 | `midjourney:3@1` | image-to-image | reference (style/composition) | Apr 2025 | skipped |
 | **MiniMax** | Video-01 Base | `minimax:1@1` | text-to-video | - | Aug 2024 | skipped |
 | MiniMax | Video-01 Base | `minimax:1@1` | image-to-video | first frame | Aug 2024 | skipped |
 | MiniMax | Video-01 Live | `minimax:2@3` | image-to-video | first frame | Jan 2025 | skipped |
@@ -140,10 +140,10 @@ Each capability is tracked separately. Models with multiple capabilities have mu
 | OpenAI | DALL·E 3 | `openai:2@3` | text-to-image | - | Oct 2023 | skipped |
 | OpenAI | GPT Image 1 | `openai:1@1` | text-to-image | - | Mar 2025 | implemented |
 | OpenAI | GPT Image 1 | `openai:1@1` | image-to-image | reference (edit) | Mar 2025 | implemented |
-| OpenAI | Sora 2 | `openai:3@1` | text-to-video | - | Sep 2025 | planned |
-| OpenAI | Sora 2 | `openai:3@1` | image-to-video | first frame | Sep 2025 | planned |
-| OpenAI | Sora 2 Pro | `openai:3@2` | text-to-video | - | Sep 2025 | planned |
-| OpenAI | Sora 2 Pro | `openai:3@2` | image-to-video | first frame | Sep 2025 | planned |
+| OpenAI | Sora 2 | `openai:3@1` | text-to-video | - | Sep 2025 | implemented |
+| OpenAI | Sora 2 | `openai:3@1` | image-to-video | first frame | Sep 2025 | implemented |
+| OpenAI | Sora 2 Pro | `openai:3@2` | text-to-video | - | Sep 2025 | implemented |
+| OpenAI | Sora 2 Pro | `openai:3@2` | image-to-video | first frame | Sep 2025 | implemented |
 | **PixVerse** | PixVerse v3.5 | `pixverse:1@1` | text-to-video | - | Dec 2024 | skipped |
 | PixVerse | PixVerse v3.5 | `pixverse:1@1` | image-to-video | first frame | Dec 2024 | skipped |
 | PixVerse | PixVerse v4 | `pixverse:1@2` | text-to-video | - | Feb 2025 | skipped |
