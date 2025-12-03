@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2025-12-03
+
+### Added
+
+- Export `Logger` class for controlling log verbosity
+- Export `LogLevel` type for TypeScript users
+
+### Changed
+
+- Library is now silent by default (log level set to `warn` instead of `info`)
+- Ghostscript WASM module suppresses stdout/stderr output by default
+
+### Fixed
+
+- Eliminated Ghostscript warnings about PDF 1.5 features ("Can't use Object streams", "Can't use an XRef stream") by disabling `-dWriteObjStms` and `-dWriteXRefStm` when targeting PDF 1.4 compatibility
+
+## [1.0.0] - 2025-10-21
+
+### Changed
+
+- Promoted to stable release
+
 ## [0.1.0-rc.1] - 2025-10-16
 
 ### Added
