@@ -78,6 +78,14 @@ export function createRunwareProviders(options: RunwareProviderOptions) {
       RunwareVideo.Veo31Fast.Text2Video({
         middlewares: [videoRateLimitMiddleware, errorMiddleware],
         proxyUrl
+      }),
+      RunwareVideo.Sora2.Text2Video({
+        middlewares: [videoRateLimitMiddleware, errorMiddleware],
+        proxyUrl
+      }),
+      RunwareVideo.Sora2Pro.Text2Video({
+        middlewares: [videoRateLimitMiddleware, errorMiddleware],
+        proxyUrl
       })
     ],
     image2video: [
@@ -86,6 +94,14 @@ export function createRunwareProviders(options: RunwareProviderOptions) {
         proxyUrl
       }),
       RunwareVideo.Veo31Fast.Image2Video({
+        middlewares: [videoRateLimitMiddleware, errorMiddleware],
+        proxyUrl
+      }),
+      RunwareVideo.Sora2.Image2Video({
+        middlewares: [videoRateLimitMiddleware, errorMiddleware],
+        proxyUrl
+      }),
+      RunwareVideo.Sora2Pro.Image2Video({
         middlewares: [videoRateLimitMiddleware, errorMiddleware],
         proxyUrl
       })
