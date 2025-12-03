@@ -588,6 +588,84 @@ The Runware documentation only shows text-to-image for GPT Image 1, but image-to
 - Works as instruction-based editing (prompt describes the change)
 - Same dimensions as T2I: 1024×1024, 1536×1024, 1024×1536
 
+## Translations
+
+Every provider requires UI translations in the appropriate translations.json file.
+
+| Capability | Translations File |
+|------------|-------------------|
+| text-to-image, image-to-image | `packages/plugin-ai-image-generation-web/translations.json` |
+| text-to-video, image-to-video | `packages/plugin-ai-video-generation-web/translations.json` |
+
+### Translation Key Pattern
+
+```
+ly.img.plugin-ai-{kind}-generation-web.{providerId}.property.{property-name}
+```
+
+### Image Provider Translations (T2I)
+
+```json
+"ly.img.plugin-ai-image-generation-web.runware/{vendor}/{model-name}.property.prompt": "Prompt",
+"ly.img.plugin-ai-image-generation-web.runware/{vendor}/{model-name}.property.prompt.placeholder": "Describe your image...",
+"ly.img.plugin-ai-image-generation-web.runware/{vendor}/{model-name}.property.aspect_ratio": "Format",
+"ly.img.plugin-ai-image-generation-web.runware/{vendor}/{model-name}.property.aspect_ratio.1:1": "Square",
+"ly.img.plugin-ai-image-generation-web.runware/{vendor}/{model-name}.property.aspect_ratio.16:9": "Landscape 16:9",
+"ly.img.plugin-ai-image-generation-web.runware/{vendor}/{model-name}.property.aspect_ratio.9:16": "Portrait 9:16",
+"ly.img.plugin-ai-image-generation-web.runware/{vendor}/{model-name}.property.aspect_ratio.4:3": "Landscape 4:3",
+"ly.img.plugin-ai-image-generation-web.runware/{vendor}/{model-name}.property.aspect_ratio.3:4": "Portrait 3:4"
+```
+
+### Image Provider Translations (I2I)
+
+```json
+"ly.img.plugin-ai-image-generation-web.runware/{vendor}/{model-name}/image2image.property.image_url": "Source Image",
+"ly.img.plugin-ai-image-generation-web.runware/{vendor}/{model-name}/image2image.property.prompt": "Prompt",
+"ly.img.plugin-ai-image-generation-web.runware/{vendor}/{model-name}/image2image.property.prompt.placeholder": "Describe the changes..."
+```
+
+### Video Provider Translations (T2V)
+
+```json
+"ly.img.plugin-ai-video-generation-web.runware/{vendor}/{model-name}.property.prompt": "Prompt",
+"ly.img.plugin-ai-video-generation-web.runware/{vendor}/{model-name}.property.prompt.placeholder": "Describe the video scene...",
+"ly.img.plugin-ai-video-generation-web.runware/{vendor}/{model-name}.property.aspect_ratio": "Aspect Ratio",
+"ly.img.plugin-ai-video-generation-web.runware/{vendor}/{model-name}.property.aspect_ratio.16:9": "16:9 (Landscape)",
+"ly.img.plugin-ai-video-generation-web.runware/{vendor}/{model-name}.property.aspect_ratio.9:16": "9:16 (Vertical)",
+"ly.img.plugin-ai-video-generation-web.runware/{vendor}/{model-name}.property.aspect_ratio.1:1": "1:1 (Square)",
+"ly.img.plugin-ai-video-generation-web.runware/{vendor}/{model-name}.property.duration": "Duration",
+"ly.img.plugin-ai-video-generation-web.runware/{vendor}/{model-name}.property.duration.5s": "5 seconds",
+"ly.img.plugin-ai-video-generation-web.runware/{vendor}/{model-name}.property.duration.8s": "8 seconds"
+```
+
+### Video Provider Translations (I2V)
+
+```json
+"ly.img.plugin-ai-video-generation-web.runware/{vendor}/{model-name}/image2video.property.image_url": "Source Image",
+"ly.img.plugin-ai-video-generation-web.runware/{vendor}/{model-name}/image2video.property.prompt": "Prompt",
+"ly.img.plugin-ai-video-generation-web.runware/{vendor}/{model-name}/image2video.property.prompt.placeholder": "Describe the video...",
+"ly.img.plugin-ai-video-generation-web.runware/{vendor}/{model-name}/image2video.property.duration": "Duration"
+```
+
+### Guidelines
+
+- Use the exact `providerId` from the TypeScript file (e.g., `runware/bfl/flux-2-dev`)
+- Match the `title` values from the JSON schema for consistency
+- **Placeholders**: Add `.placeholder` suffix for textarea placeholder text
+- **Image providers**: Use "Format" for `aspect_ratio` label
+- **Video providers**: Use "Aspect Ratio" for `aspect_ratio` label
+- For `image_url`, use "Source Image" as the label
+
+### Translation Priority (Fallback Chain)
+
+Translations follow this priority order (highest to lowest):
+1. `ly.img.plugin-ai-{kind}-generation-web.{providerId}.property.{field}` - Provider-specific
+2. `ly.img.plugin-ai-generation-web.property.{field}` - Generic base
+3. `ly.img.plugin-ai-{kind}-generation-web.{providerId}.defaults.property.{field}` - Provider defaults
+4. `ly.img.plugin-ai-generation-web.defaults.property.{field}` - Base defaults
+
+This allows customers to override any translation (labels, placeholders, enum values) at the provider level.
+
 ## Implementation Checklist
 
 After creating provider files, ensure you've completed ALL steps:
@@ -595,6 +673,7 @@ After creating provider files, ensure you've completed ALL steps:
 - [ ] Created `{ModelName}.{capability}.ts` with `// @ts-ignore` before schema
 - [ ] Created `{ModelName}.{capability}.json` with `"paths": {}`
 - [ ] Added export to `index.ts` with nested structure (`Model.Text2Image` or `Model.Image2Image`)
+- [ ] Added translations to `translations.json` for all UI properties
 - [ ] Added to `examples/ai/src/runwareProviders.ts` in appropriate array
 - [ ] Updated `specs/providers/runware/providers.md` status **for that capability only**
 - [ ] Ran `pnpm --filter "@imgly/plugin-ai-*" check:all`

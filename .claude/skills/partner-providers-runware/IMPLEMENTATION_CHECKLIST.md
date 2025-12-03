@@ -114,7 +114,79 @@ const Runware = {
 export default Runware;
 ```
 
-### 7. Add to Example App (REQUIRED)
+### 7. Update translations.json (REQUIRED)
+
+**CRITICAL**: Every provider needs UI translations for its properties.
+
+| Capability | Translations File |
+|------------|-------------------|
+| text-to-image, image-to-image | `packages/plugin-ai-image-generation-web/translations.json` |
+| text-to-video, image-to-video | `packages/plugin-ai-video-generation-web/translations.json` |
+
+**Translation Key Pattern**: `ly.img.plugin-ai-{kind}-generation-web.{providerId}.property.{property-name}`
+
+#### For Text-to-Image Providers
+
+```json
+"ly.img.plugin-ai-image-generation-web.runware/{vendor}/{model-name}.property.prompt": "Prompt",
+"ly.img.plugin-ai-image-generation-web.runware/{vendor}/{model-name}.property.prompt.placeholder": "Describe your image...",
+"ly.img.plugin-ai-image-generation-web.runware/{vendor}/{model-name}.property.aspect_ratio": "Format",
+"ly.img.plugin-ai-image-generation-web.runware/{vendor}/{model-name}.property.aspect_ratio.1:1": "Square",
+"ly.img.plugin-ai-image-generation-web.runware/{vendor}/{model-name}.property.aspect_ratio.16:9": "Landscape 16:9",
+"ly.img.plugin-ai-image-generation-web.runware/{vendor}/{model-name}.property.aspect_ratio.9:16": "Portrait 9:16",
+"ly.img.plugin-ai-image-generation-web.runware/{vendor}/{model-name}.property.aspect_ratio.4:3": "Landscape 4:3",
+"ly.img.plugin-ai-image-generation-web.runware/{vendor}/{model-name}.property.aspect_ratio.3:4": "Portrait 3:4"
+```
+
+#### For Image-to-Image Providers
+
+```json
+"ly.img.plugin-ai-image-generation-web.runware/{vendor}/{model-name}/image2image.property.image_url": "Source Image",
+"ly.img.plugin-ai-image-generation-web.runware/{vendor}/{model-name}/image2image.property.prompt": "Prompt",
+"ly.img.plugin-ai-image-generation-web.runware/{vendor}/{model-name}/image2image.property.prompt.placeholder": "Describe the changes..."
+```
+
+#### For Text-to-Video Providers
+
+```json
+"ly.img.plugin-ai-video-generation-web.runware/{vendor}/{model-name}.property.prompt": "Prompt",
+"ly.img.plugin-ai-video-generation-web.runware/{vendor}/{model-name}.property.prompt.placeholder": "Describe the video scene...",
+"ly.img.plugin-ai-video-generation-web.runware/{vendor}/{model-name}.property.aspect_ratio": "Aspect Ratio",
+"ly.img.plugin-ai-video-generation-web.runware/{vendor}/{model-name}.property.aspect_ratio.16:9": "16:9 (Landscape)",
+"ly.img.plugin-ai-video-generation-web.runware/{vendor}/{model-name}.property.aspect_ratio.9:16": "9:16 (Vertical)",
+"ly.img.plugin-ai-video-generation-web.runware/{vendor}/{model-name}.property.aspect_ratio.1:1": "1:1 (Square)",
+"ly.img.plugin-ai-video-generation-web.runware/{vendor}/{model-name}.property.duration": "Duration",
+"ly.img.plugin-ai-video-generation-web.runware/{vendor}/{model-name}.property.duration.{value}": "{X} seconds"
+```
+
+#### For Image-to-Video Providers
+
+```json
+"ly.img.plugin-ai-video-generation-web.runware/{vendor}/{model-name}/image2video.property.image_url": "Source Image",
+"ly.img.plugin-ai-video-generation-web.runware/{vendor}/{model-name}/image2video.property.prompt": "Prompt",
+"ly.img.plugin-ai-video-generation-web.runware/{vendor}/{model-name}/image2video.property.prompt.placeholder": "Describe the video...",
+"ly.img.plugin-ai-video-generation-web.runware/{vendor}/{model-name}/image2video.property.duration": "Duration"
+```
+
+#### Translation Guidelines
+
+- **Property labels**: Use the same labels as the JSON schema `title` fields
+- **Placeholders**: Add `.placeholder` suffix for textarea placeholder text (e.g., `.property.prompt.placeholder`)
+- **Enum values**: Add human-readable labels for each enum option
+- **Image vs Video naming**: Use "Format" for image `aspect_ratio`, "Aspect Ratio" for video
+- **Provider ID**: Use the exact `providerId` from the TypeScript file (e.g., `runware/bfl/flux-2-dev`)
+
+#### Translation Priority (Fallback Chain)
+
+Translations follow this priority order (highest to lowest):
+1. `ly.img.plugin-ai-{kind}-generation-web.{providerId}.property.{field}` - Provider-specific
+2. `ly.img.plugin-ai-generation-web.property.{field}` - Generic base
+3. `ly.img.plugin-ai-{kind}-generation-web.{providerId}.defaults.property.{field}` - Provider defaults
+4. `ly.img.plugin-ai-generation-web.defaults.property.{field}` - Base defaults
+
+This allows customers to override any translation at the provider level.
+
+### 8. Add to Example App (REQUIRED)
 
 **CRITICAL**: Every new provider MUST be added to `examples/ai/src/runwareProviders.ts`:
 
@@ -146,7 +218,7 @@ export function createRunwareProviders(options: RunwareProviderOptions) {
 }
 ```
 
-### 8. Update providers.md
+### 9. Update providers.md
 
 Change status from `planned` to `implemented` for **only the capability you implemented**:
 
@@ -156,7 +228,7 @@ Change status from `planned` to `implemented` for **only the capability you impl
 | BFL | FLUX.2 [pro] | `bfl:5@1` | image-to-image | Nov 2025 | planned |  ← Still planned!
 ```
 
-### 9. Run Validation
+### 10. Run Validation
 
 ```bash
 pnpm --filter "@imgly/plugin-ai-*" check:all
@@ -167,7 +239,7 @@ Fix any:
 - [ ] Lint errors
 - [ ] Build failures
 
-### 10. Test (if demo available)
+### 11. Test (if demo available)
 
 If the example app is set up:
 
@@ -198,3 +270,4 @@ Verify the provider appears and generates correctly.
 5. **Update providers.md for only the implemented capability** - Don't mark the whole model as done
 6. **ALWAYS add to example app** - Every provider must be added to `examples/ai/src/runwareProviders.ts`
 7. **For I2I: Set `dimensionConstraints` in provider** - Extract width/height min/max from API docs and pass to `createImageProvider`. Each provider defines its own constraints inline.
+8. **ALWAYS add translations** - Add property translations to `translations.json` for all UI-visible properties using the pattern `ly.img.plugin-ai-image-generation-web.{providerId}.property.{property-name}`
