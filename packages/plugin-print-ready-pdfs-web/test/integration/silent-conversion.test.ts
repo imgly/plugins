@@ -99,4 +99,51 @@ describe('Silent Conversion Tests', () => {
     expect(consoleWarnSpy).not.toHaveBeenCalled();
     expect(consoleErrorSpy).not.toHaveBeenCalled();
   });
+
+  test('should allow enabling all logs via Logger.setLogLevel("info")', async () => {
+    const { convertToPDFX3, Logger } = await import('../../dist/index.mjs');
+
+    // Enable info-level logging
+    Logger.setLogLevel('info');
+
+    const inputPDF = getTestPDF('test-minimal.pdf');
+
+    await convertToPDFX3(inputPDF, {
+      outputProfile: 'gracol',
+      title: 'Verbose Test',
+    });
+
+    // Reset to default (warn) for other tests
+    Logger.setLogLevel('warn');
+
+    // INFO logs should have been produced
+    expect(consoleInfoSpy).toHaveBeenCalled();
+
+    // Verify some expected log messages (VirtualFileSystem logs on each conversion)
+    const allInfoCalls = consoleInfoSpy.mock.calls.flat().join(' ');
+    expect(allInfoCalls).toContain('VirtualFileSystem');
+    expect(allInfoCalls).toContain('[INFO]');
+  });
+
+  test('should allow enabling warnings and errors only via Logger.setLogLevel("warn")', async () => {
+    const { convertToPDFX3, Logger } = await import('../../dist/index.mjs');
+
+    // Set to warn level (this is the default, but being explicit)
+    Logger.setLogLevel('warn');
+
+    const inputPDF = getTestPDF('test-minimal.pdf');
+
+    await convertToPDFX3(inputPDF, {
+      outputProfile: 'gracol',
+      title: 'Warn Level Test',
+    });
+
+    // No INFO or DEBUG logs should have been produced
+    expect(consoleInfoSpy).not.toHaveBeenCalled();
+    expect(consoleDebugSpy).not.toHaveBeenCalled();
+
+    // No warnings/errors expected during normal conversion
+    expect(consoleWarnSpy).not.toHaveBeenCalled();
+    expect(consoleErrorSpy).not.toHaveBeenCalled();
+  });
 });
