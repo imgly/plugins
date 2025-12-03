@@ -2,7 +2,8 @@ import {
   type Provider,
   type AudioOutput,
   CommonProviderConfiguration,
-  getPanelId
+  getPanelId,
+  normalizeBaseURL
 } from '@imgly/plugin-ai-generation-web';
 import CreativeEditorSDK from '@cesdk/cesdk-js';
 import schema from './ElevenMultilingualV2.json';
@@ -45,9 +46,11 @@ function getProvider(
   cesdk: CreativeEditorSDK,
   config: ProviderConfiguration
 ): Provider<'audio', ElevenlabsInput, AudioOutput> {
-  const baseURL =
+  // Normalize baseURL to ensure exactly one trailing slash
+  const baseURL = normalizeBaseURL(
     config.baseURL ??
-    'https://cdn.img.ly/assets/plugins/plugin-ai-audio-generation-web/v1/elevenlabs/';
+      'https://cdn.img.ly/assets/plugins/plugin-ai-audio-generation-web/v1/elevenlabs/'
+  );
 
   const prefix = 'ly.img.ai.audio-generation.speech.elevenlabs';
   const voiceSelectionPanelId = `${prefix}.voiceSelection`;
