@@ -23,9 +23,35 @@ Implementation guide for text-to-video providers. For general principles, see [u
 
 | Field | Type | UI Component | Include When |
 |-------|------|--------------|--------------|
-| `aspect_ratio` | `enum` | `Select` with icons | Always |
+| `aspect_ratio` | `enum` | `Select` with icons | Model accepts any aspect ratio |
 | `duration` | `enum` or `number` | `Select` or `Slider` | Always |
 | `resolution` | `enum` | `Select` | Provider has quality levels |
+| `format` | `enum` | `Select` with icons | Model only accepts fixed WxH combinations (see below) |
+
+### Dimension Patterns
+
+**Flexible (default)**: Use `aspect_ratio` when the model accepts aspect ratios and calculates dimensions internally.
+
+**Fixed dimensions**: Some models (e.g., Veo 3.1) only accept specific pixel combinations. Use a single `format` field with WxH values:
+
+```json
+"format": {
+  "title": "Format",
+  "type": "string",
+  "enum": ["1280x720", "720x1280", "1920x1080", "1080x1920"],
+  "default": "1280x720",
+  "x-imgly-enum-labels": {
+    "1280x720": "Landscape HD (1280×720)",
+    "720x1280": "Portrait HD (720×1280)"
+  },
+  "x-imgly-enum-icons": {
+    "1280x720": "@imgly/plugin/formats/ratio16by9",
+    "720x1280": "@imgly/plugin/formats/ratio9by16"
+  }
+}
+```
+
+**How to choose**: Check API docs for "supported dimensions". If it lists specific pixel values, use `format`. If it accepts aspect ratios like "16:9", use `aspect_ratio`.
 
 ## Key Differences from Image Providers
 

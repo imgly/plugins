@@ -46,18 +46,87 @@ Map capability to provider type:
    - Complete JSON schema template with all required fields
    - Known issues and gotchas (TypeScript workarounds)
 
-### 3. Fetch Detailed API Documentation
+### 3. Fetch and Verify API Documentation (MANDATORY)
+
+**CRITICAL**: You MUST fetch BOTH documentation sources and verify exact parameter names before writing any code. Do NOT assume parameter names based on feature descriptions.
+
+#### Step 3a: Fetch General API Reference
+
+Fetch the API reference for the inference type:
+
+| Type | Documentation URL |
+|------|-------------------|
+| Image (T2I/I2I) | `https://runware.ai/docs/en/image-inference/api-reference.md` |
+| Video (T2V/I2V) | `https://runware.ai/docs/en/video-inference/api-reference.md` |
 
 ```
-WebFetch: https://runware.ai/docs/en/providers/{provider}.md
+WebFetch: https://runware.ai/docs/en/{image|video}-inference/api-reference.md
 Extract:
-- Required parameters
-- Optional parameters with defaults
-- Dimension/resolution constraints
-- Any model-specific quirks
+- Complete list of allowed top-level parameters
+- Request body structure
+- Delivery method requirements (sync vs async)
+- Response format and polling mechanism (for video)
 ```
 
-### 4. Extract Dimension Constraints (I2I Only)
+**Record allowed parameters here** (example for video):
+```
+Allowed top-level: includeCost, taskUUID, taskType, model, height, width,
+outputType, outputFormat, numberResults, positivePrompt, negativePrompt,
+deliveryMethod, duration, frameImages, providerSettings, advancedFeatures,
+fps, uploadEndpoint, outputQuality, webhookURL, ttl, seed, referenceImages, inputs
+```
+
+- [ ] Verified: I have the complete list of allowed top-level parameters
+
+#### Step 3b: Fetch Provider-Specific Documentation
+
+```
+WebFetch: https://runware.ai/docs/en/providers/{vendor}.md
+Extract:
+- Model-specific AIR identifiers
+- providerSettings.{vendor} options (CRITICAL!)
+- Supported resolutions/dimensions
+- Model-specific constraints or quirks
+```
+
+**Record provider-specific settings** (example for Google):
+```
+providerSettings.google:
+  - generateAudio: boolean (default: true) - Controls audio generation
+  - enhancePrompt: always enabled, cannot be disabled
+```
+
+- [ ] Verified: I have documented all `providerSettings.{vendor}` options
+- [ ] Noted supported dimensions/resolutions from docs
+
+#### Step 3c: Determine Dimension Pattern (T2V/I2V)
+
+For video providers, check how dimensions are specified in the API docs:
+
+| If docs say... | Use this pattern |
+|----------------|------------------|
+| "aspect_ratio: 16:9, 9:16, 1:1" | `aspect_ratio` enum (flexible) |
+| "dimensions: 1280x720, 720x1280, 1920x1080, 1080x1920" | `format` enum with WxH values (fixed) |
+
+- [ ] Dimension pattern: ___ (flexible aspect_ratio / fixed format)
+
+See `specs/providers/patterns/text-to-video.md` for schema examples.
+
+#### Step 3d: Verify Parameter Mapping
+
+Before writing `mapInput`, verify EACH parameter:
+
+| Feature | Parameter Location | Verified |
+|---------|-------------------|----------|
+| Prompt | `positivePrompt` (top-level) | [ ] |
+| Dimensions | `width`, `height` (top-level) | [ ] |
+| Duration | `duration` (top-level) | [ ] |
+| Frame images | `frameImages` (top-level, for video) | [ ] |
+| Audio generation | `providerSettings.google.generateAudio` (nested!) | [ ] |
+
+**NEVER assume a feature is a top-level parameter. ALWAYS verify against the API docs.**
+
+### 4. Extract Dimension Constraints (I2I/I2V Only)
 
 **CRITICAL for image-to-image providers**: Extract width/height constraints from API docs.
 

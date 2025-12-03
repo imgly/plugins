@@ -67,14 +67,39 @@ Only proceed after user approval. Follow `IMPLEMENTATION_CHECKLIST.md` to:
 
 1. Determine provider type (t2i, i2i, t2v, i2v) from capabilities
 2. Find existing Runware provider of same type as reference
-3. Fetch detailed API documentation for the model
-4. **For I2I**: Extract dimension constraints (min/max/multiple) from API docs
+3. **MANDATORY: Fetch and verify API documentation** (see API Verification below)
+4. **For I2I/I2V**: Extract dimension constraints (min/max/multiple) from API docs
 5. Create provider implementation following patterns in `specs/providers/schemas/`
    - **For I2I**: Use model-specific `RUNWARE_DIMENSION_CONSTRAINTS` (see `implementation-notes.md`)
 6. Export provider from `runware/index.ts`
 7. **Add to example app** (`examples/ai/src/runwareProviders.ts`) - REQUIRED
 8. Update `specs/providers/runware/providers.md` status to "implemented"
 9. Run build checks: `pnpm --filter "@imgly/plugin-ai-*" check:all`
+
+### API Verification (MANDATORY)
+
+**CRITICAL**: Before writing ANY provider code, you MUST fetch and verify the exact API parameters from TWO documentation sources:
+
+1. **General API Reference** - For the inference type (image or video):
+   - Image: `https://runware.ai/docs/en/image-inference/api-reference.md`
+   - Video: `https://runware.ai/docs/en/video-inference/api-reference.md`
+
+   Extract: Allowed top-level parameters, request/response format, delivery methods
+
+2. **Provider-Specific Documentation** - For model-specific settings:
+   - `https://runware.ai/docs/en/providers/{vendor}.md` (e.g., `google.md`, `bfl.md`)
+
+   Extract: `providerSettings.{vendor}` options, model-specific parameters, constraints
+
+**Verification Checklist**:
+- [ ] Fetched general API reference for inference type
+- [ ] Listed all allowed top-level parameters from API docs
+- [ ] Fetched provider-specific documentation
+- [ ] Identified any `providerSettings.{vendor}` options (e.g., `providerSettings.google.generateAudio`)
+- [ ] Verified parameter names match EXACTLY (no assumptions!)
+- [ ] Noted any async/polling requirements (video uses `deliveryMethod: "async"`)
+
+**Why This Matters**: Provider-specific features (like audio generation) are often nested under `providerSettings.{vendor}` rather than being top-level parameters. Using wrong parameter names causes API errors.
 
 ### Implementation Reference
 

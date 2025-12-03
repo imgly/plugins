@@ -638,6 +638,18 @@ ly.img.plugin-ai-{kind}-generation-web.{providerId}.property.{property-name}
 "ly.img.plugin-ai-video-generation-web.runware/{vendor}/{model-name}.property.duration.8s": "8 seconds"
 ```
 
+### Video Provider Translations (Fixed Dimensions)
+
+For models with fixed dimension combinations (see `text-to-video.md`), use `format` instead of `aspect_ratio`:
+
+```json
+"ly.img.plugin-ai-video-generation-web.runware/{vendor}/{model-name}.property.format": "Format",
+"ly.img.plugin-ai-video-generation-web.runware/{vendor}/{model-name}.property.format.1280x720": "Landscape HD (1280×720)",
+"ly.img.plugin-ai-video-generation-web.runware/{vendor}/{model-name}.property.format.720x1280": "Portrait HD (720×1280)",
+"ly.img.plugin-ai-video-generation-web.runware/{vendor}/{model-name}.property.format.1920x1080": "Landscape Full HD (1920×1080)",
+"ly.img.plugin-ai-video-generation-web.runware/{vendor}/{model-name}.property.format.1080x1920": "Portrait Full HD (1080×1920)"
+```
+
 ### Video Provider Translations (I2V)
 
 ```json
@@ -666,10 +678,91 @@ Translations follow this priority order (highest to lowest):
 
 This allows customers to override any translation (labels, placeholders, enum values) at the provider level.
 
+## Video-Specific Patterns
+
+Video inference has different requirements than image inference.
+
+### Async Delivery and Polling
+
+Video generation uses async delivery with polling:
+
+```typescript
+// 1. Submit with deliveryMethod: "async"
+const requestBody = [{
+  taskType: 'videoInference',
+  taskUUID,
+  model: params.model,
+  deliveryMethod: 'async',  // REQUIRED for video
+  // ... other params
+}];
+
+// 2. Response is just acknowledgment
+{ "data": [{ "taskType": "videoInference", "taskUUID": "..." }] }
+
+// 3. Poll with getResponse until status is "success"
+const pollBody = [{ taskType: 'getResponse', taskUUID }];
+// Response when complete:
+{ "data": [{ "taskType": "videoInference", "taskUUID": "...", "status": "success", "videoURL": "..." }] }
+```
+
+### Frame Images (for I2V)
+
+Video uses `frameImages` instead of `seedImage` for input images:
+
+```typescript
+mapInput: (input) => ({
+  positivePrompt: input.prompt ?? '',
+  frameImages: [
+    {
+      inputImage: input.image_url,
+      frame: 'first'  // or 'last', or a frame number
+    }
+  ],
+  // ...
+})
+```
+
+### Provider Settings
+
+Provider-specific features (like audio) go under `providerSettings.{vendor}`:
+
+```typescript
+// WRONG - will cause "unsupportedParameter" error
+mapInput: (input) => ({
+  generateAudio: true  // NOT a top-level parameter!
+})
+
+// CORRECT - nested under providerSettings
+mapInput: (input) => ({
+  providerSettings: {
+    google: {
+      generateAudio: input.generate_audio ?? true
+    }
+  }
+})
+```
+
+### Video File Organization
+
+```
+packages/plugin-ai-video-generation-web/src/runware/
+├── index.ts                         # Barrel export
+├── types.ts                         # RunwareProviderConfiguration
+├── createRunwareClient.ts           # HTTP client with polling
+├── createVideoProvider.ts           # Factory function
+├── utils.ts                         # Helpers
+├── {ModelName}.text2video.ts        # T2V provider
+├── {ModelName}.text2video.json      # T2V schema
+├── {ModelName}.image2video.ts       # I2V provider
+└── {ModelName}.image2video.json     # I2V schema
+```
+
 ## Implementation Checklist
 
 After creating provider files, ensure you've completed ALL steps:
 
+- [ ] **VERIFIED API docs** - Fetched both general API reference AND provider-specific docs
+- [ ] **Listed allowed parameters** - Know exactly which params are top-level vs nested
 - [ ] Created `{ModelName}.{capability}.ts` with `// @ts-ignore` before schema
 - [ ] Created `{ModelName}.{capability}.json` with `"paths": {}`
 - [ ] Added export to `index.ts` with nested structure (`Model.Text2Image` or `Model.Image2Image`)

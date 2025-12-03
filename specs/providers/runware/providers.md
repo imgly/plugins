@@ -79,10 +79,10 @@ Each capability is tracked separately. Models with multiple capabilities have mu
 | Google | Veo 3 | `google:3@0` | image-to-video (with audio) | first frame | May 2025 | skipped |
 | Google | Veo 3 Fast | `google:3@1` | text-to-video | - | May 2025 | skipped |
 | Google | Veo 3 Fast | `google:3@1` | image-to-video (with audio) | first frame | May 2025 | skipped |
-| Google | Veo 3.1 | `google:3@2` | text-to-video | - | 2025 | planned |
-| Google | Veo 3.1 | `google:3@2` | image-to-video (with audio) | first frame | 2025 | planned |
-| Google | Veo 3.1 Fast | `google:3@3` | text-to-video | - | 2025 | planned |
-| Google | Veo 3.1 Fast | `google:3@3` | image-to-video (with audio) | first frame | 2025 | planned |
+| Google | Veo 3.1 | `google:3@2` | text-to-video | - | 2025 | implemented |
+| Google | Veo 3.1 | `google:3@2` | image-to-video (with audio) | first frame | 2025 | implemented |
+| Google | Veo 3.1 Fast | `google:3@3` | text-to-video | - | 2025 | implemented |
+| Google | Veo 3.1 Fast | `google:3@3` | image-to-video (with audio) | first frame | 2025 | implemented |
 | **Ideogram** | Ideogram 1.0 | `ideogram:1@1` | text-to-image | - | Feb 2024 | skipped |
 | Ideogram | Ideogram 1.0 Remix | `ideogram:1@2` | image-to-image (remix) | seed + style ref (remix) | Feb 2024 | skipped |
 | Ideogram | Ideogram 2a | `ideogram:2@1` | text-to-image | - | Feb 2025 | skipped |
