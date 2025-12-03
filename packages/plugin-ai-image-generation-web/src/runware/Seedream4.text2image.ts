@@ -47,7 +47,7 @@ export function Seedream4(
 
     return createImageProvider<Seedream4Input>(
       {
-        modelAIR: 'bytedance:5@0',
+        modelId: 'bytedance:5@0',
         providerId: 'runware/bytedance/seedream-4',
         name: 'Seedream 4.0',
         // @ts-ignore - JSON schema types are compatible at runtime

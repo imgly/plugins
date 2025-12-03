@@ -58,7 +58,7 @@ export function Sora2Text2Video(
 
     return createVideoProvider<Sora2Text2VideoInput>(
       {
-        modelAIR: 'openai:3@1',
+        modelId: 'openai:3@1',
         providerId: 'runware/openai/sora-2',
         name: 'Sora 2',
         // @ts-ignore - JSON schema types are compatible at runtime

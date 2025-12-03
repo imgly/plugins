@@ -77,7 +77,10 @@ function generateUUID(): string {
   });
 }
 
-export function createRunwareClient(proxyUrl: string): RunwareClient {
+export function createRunwareClient(
+  proxyUrl: string,
+  headers?: Record<string, string>
+): RunwareClient {
   return {
     imageInference: async (
       params: RunwareImageInferenceInput,
@@ -120,7 +123,8 @@ export function createRunwareClient(proxyUrl: string): RunwareClient {
       const response = await fetch(proxyUrl, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          ...headers
         },
         body: JSON.stringify(requestBody),
         signal: abortSignal

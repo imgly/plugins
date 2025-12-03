@@ -1,18 +1,8 @@
 // Re-export client type from the HTTP client
 export type { RunwareClient } from './createRunwareClient';
 
-export interface RunwareProviderConfiguration {
-  /**
-   * HTTP endpoint URL for the Runware proxy. The proxy handles API key injection.
-   */
-  proxyUrl: string;
-  debug?: boolean;
-  middlewares?: any[];
-  history?: false | '@imgly/local' | '@imgly/indexedDB' | (string & {});
-  supportedQuickActions?: {
-    [quickActionId: string]: any | false | null;
-  };
-}
+// Re-export configuration type from createImageProvider
+export type { RunwareProviderConfiguration } from './createImageProvider';
 
 // Aspect ratio to dimensions mapping (all divisible by 64)
 export const ASPECT_RATIO_MAP: Record<

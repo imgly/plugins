@@ -61,7 +61,7 @@ export function Veo31Text2Video(
 
     return createVideoProvider<Veo31Text2VideoInput>(
       {
-        modelAIR: 'google:3@2',
+        modelId: 'google:3@2',
         providerId: 'runware/google/veo-3.1',
         name: 'Veo 3.1',
         // @ts-ignore - JSON schema types are compatible at runtime

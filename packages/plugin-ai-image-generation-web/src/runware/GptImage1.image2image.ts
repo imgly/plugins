@@ -69,7 +69,7 @@ export function GptImage1Image2Image(
 
     return createImageProvider<GptImage1Image2ImageInput>(
       {
-        modelAIR: 'openai:1@1',
+        modelId: 'openai:1@1',
         providerId,
         name: 'GPT Image 1',
         // @ts-ignore - JSON schema types are compatible at runtime

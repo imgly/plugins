@@ -57,7 +57,7 @@ export function Flux2DevImage2Image(
 
     return createImageProvider<Flux2DevImage2ImageInput>(
       {
-        modelAIR: 'runware:400@1',
+        modelId: 'runware:400@1',
         providerId,
         name: 'FLUX.2 [dev]',
         // @ts-ignore - JSON schema types are compatible at runtime

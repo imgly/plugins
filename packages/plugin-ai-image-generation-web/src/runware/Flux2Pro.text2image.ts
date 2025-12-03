@@ -49,7 +49,7 @@ export function Flux2Pro(
 
     return createImageProvider<Flux2ProInput>(
       {
-        modelAIR: 'bfl:5@1',
+        modelId: 'bfl:5@1',
         providerId: 'runware/bfl/flux-2-pro',
         name: 'FLUX.2 [pro]',
         // @ts-ignore - JSON schema types are compatible at runtime

@@ -93,7 +93,7 @@ export function Veo31FastImage2Video(
 
     return createVideoProvider<Veo31FastImage2VideoInput>(
       {
-        modelAIR: 'google:3@3',
+        modelId: 'google:3@3',
         providerId,
         name: 'Veo 3.1 Fast',
         // @ts-ignore - JSON schema types are compatible at runtime

@@ -53,7 +53,7 @@ export function GptImage1(
 
     return createImageProvider<GptImage1Input>(
       {
-        modelAIR: 'openai:1@1',
+        modelId: 'openai:1@1',
         providerId: 'runware/openai/gpt-image-1',
         name: 'GPT Image 1',
         // @ts-ignore - JSON schema types are compatible at runtime

@@ -55,7 +55,7 @@ export function NanoBanana2ProImage2Image(
 
     return createImageProvider<NanoBanana2ProImage2ImageInput>(
       {
-        modelAIR: 'google:4@2',
+        modelId: 'google:4@2',
         providerId,
         name: 'Nano Banana 2 Pro',
         // @ts-ignore - JSON schema types are compatible at runtime

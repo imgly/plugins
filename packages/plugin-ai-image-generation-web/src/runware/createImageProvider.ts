@@ -19,29 +19,108 @@ import {
 } from './utils';
 import { getImageDimensionsFromURL } from '@imgly/plugin-utils';
 import {
-  RunwareProviderConfiguration,
   getImageDimensionsFromAspectRatio,
   getImageDimensionsFromSize
 } from './types';
 import { ImageQuickActionSupportMap } from '../types';
 
+/**
+ * Configuration for Runware image providers.
+ */
+type ImageProviderConfiguration = {
+  /**
+   * HTTP endpoint URL for the Runware proxy. The proxy handles API key injection.
+   */
+  proxyUrl: string;
+  /**
+   * Enable debug logging for provider creation and API calls.
+   */
+  debug?: boolean;
+  /**
+   * Middleware functions to process inputs/outputs.
+   */
+  middlewares?: Middleware<any, any>[];
+  /**
+   * Override provider's default history asset source.
+   */
+  history?: false | '@imgly/local' | '@imgly/indexedDB' | (string & {});
+  /**
+   * Configure supported quick actions.
+   */
+  supportedQuickActions?: {
+    [quickActionId: string]:
+      | Partial<ImageQuickActionSupportMap<any>[string]>
+      | false
+      | null;
+  };
+};
+
+/**
+ * Options for creating a Runware image provider.
+ */
 interface CreateProviderOptions<I extends Record<string, any>> {
-  modelAIR: string;
+  /**
+   * Runware model identifier (AIR format, e.g., 'bfl:5@1').
+   */
+  modelId: string;
+  /**
+   * Unique provider identifier for registration.
+   */
   providerId: string;
+  /**
+   * Human-readable provider name displayed in the UI.
+   */
   name: string;
+  /**
+   * OpenAPI schema document describing the input parameters.
+   */
   schema: OpenAPIV3.Document;
+  /**
+   * JSON reference to the input schema (e.g., '#/components/schemas/Input').
+   */
   inputReference: string;
+  /**
+   * User flow mode for the provider panel.
+   */
   useFlow?: 'placeholder' | 'generation-only';
+  /**
+   * Initialization callback when the provider is registered.
+   */
   initialize?: (context: {
     cesdk?: CreativeEditorSDK;
     engine: CreativeEngine;
   }) => void;
+  /**
+   * Custom property renderers for the input panel.
+   */
   renderCustomProperty?: RenderCustomProperty;
+  /**
+   * Quick actions this provider supports.
+   */
   supportedQuickActions?: ImageQuickActionSupportMap<I>;
+  /**
+   * Get block dimensions from input parameters.
+   */
   getBlockInput?: GetBlockInput<'image', I>;
+  /**
+   * Extract image dimensions from input parameters.
+   */
   getImageSize?: (input: I) => { width: number; height: number };
+  /**
+   * Transform input parameters to Runware API format.
+   */
   mapInput: (input: I) => Record<string, any>;
+  /**
+   * Provider-specific middleware functions.
+   */
   middleware?: Middleware<I, ImageOutput>[];
+  /**
+   * Custom headers to include in API requests.
+   */
+  headers?: Record<string, string>;
+  /**
+   * CE.SDK instance for image URL conversion.
+   */
   cesdk?: CreativeEditorSDK;
   /**
    * Model-specific dimension constraints for image-to-image.
@@ -56,13 +135,14 @@ interface CreateProviderOptions<I extends Record<string, any>> {
 }
 
 /**
- * Creates a Runware image provider from schema
+ * Creates a Runware image provider from schema. This should work out of the box
+ * but may be rough around the edges and should/can be further customized.
  */
 function createImageProvider<
   I extends Record<string, any> & { image_url?: string }
 >(
   options: CreateProviderOptions<I>,
-  config: RunwareProviderConfiguration
+  config: ImageProviderConfiguration
 ): Provider<'image', I, ImageOutput> {
   const middleware = options.middleware ?? config.middlewares ?? [];
 
@@ -74,7 +154,7 @@ function createImageProvider<
     name: options.name,
     configuration: config,
     initialize: async (context) => {
-      runwareClient = createRunwareClient(config.proxyUrl);
+      runwareClient = createRunwareClient(config.proxyUrl, options.headers);
       options.initialize?.(context);
     },
     input: {
@@ -188,7 +268,7 @@ function createImageProvider<
         // Call Runware imageInference via HTTP REST API
         const images = await runwareClient.imageInference(
           {
-            model: options.modelAIR,
+            model: options.modelId,
             outputType: 'URL',
             outputFormat: 'PNG',
             numberResults: 1,
@@ -222,10 +302,11 @@ function createImageProvider<
 
   if (config.debug) {
     // eslint-disable-next-line no-console
-    console.log('Created Runware Provider:', provider);
+    console.log('Created Provider:', provider);
   }
 
   return provider;
 }
 
 export default createImageProvider;
+export type { ImageProviderConfiguration as RunwareProviderConfiguration };

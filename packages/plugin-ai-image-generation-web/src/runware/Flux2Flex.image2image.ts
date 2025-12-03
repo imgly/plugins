@@ -59,7 +59,7 @@ export function Flux2FlexImage2Image(
 
     return createImageProvider<Flux2FlexImage2ImageInput>(
       {
-        modelAIR: 'bfl:6@1',
+        modelId: 'bfl:6@1',
         providerId,
         name: 'FLUX.2 [flex]',
         // @ts-ignore - JSON schema types are compatible at runtime

@@ -84,7 +84,7 @@ export function Sora2Image2Video(
 
     return createVideoProvider<Sora2Image2VideoInput>(
       {
-        modelAIR: 'openai:3@1',
+        modelId: 'openai:3@1',
         providerId,
         name: 'Sora 2',
         // @ts-ignore - JSON schema types are compatible at runtime

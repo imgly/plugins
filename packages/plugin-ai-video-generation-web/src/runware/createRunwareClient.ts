@@ -89,7 +89,10 @@ function sleep(ms: number): Promise<void> {
   });
 }
 
-export function createRunwareClient(proxyUrl: string): RunwareClient {
+export function createRunwareClient(
+  proxyUrl: string,
+  headers?: Record<string, string>
+): RunwareClient {
   /**
    * Poll for video generation results using getResponse task
    */
@@ -119,7 +122,8 @@ export function createRunwareClient(proxyUrl: string): RunwareClient {
       const pollResponse = await fetch(proxyUrl, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          ...headers
         },
         body: JSON.stringify(pollBody),
         signal: abortSignal
@@ -220,7 +224,8 @@ export function createRunwareClient(proxyUrl: string): RunwareClient {
       const response = await fetch(proxyUrl, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          ...headers
         },
         body: JSON.stringify(requestBody),
         signal: abortSignal

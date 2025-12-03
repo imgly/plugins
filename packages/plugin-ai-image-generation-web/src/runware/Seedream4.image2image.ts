@@ -67,7 +67,7 @@ export function Seedream4Image2Image(
 
     return createImageProvider<Seedream4Image2ImageInput>(
       {
-        modelAIR: 'bytedance:5@0',
+        modelId: 'bytedance:5@0',
         providerId,
         name: 'Seedream 4.0',
         // @ts-ignore - JSON schema types are compatible at runtime
