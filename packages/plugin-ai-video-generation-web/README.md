@@ -33,6 +33,8 @@ To use the plugin, import it and configure it with your preferred providers:
 import CreativeEditorSDK from '@cesdk/cesdk-js';
 import VideoGeneration from '@imgly/plugin-ai-video-generation-web';
 import FalAiVideo from '@imgly/plugin-ai-video-generation-web/fal-ai';
+// For Runware providers
+import RunwareVideo from '@imgly/plugin-ai-video-generation-web/runware';
 
 // Initialize CreativeEditor SDK
 CreativeEditorSDK.create(domElement, {
@@ -498,6 +500,104 @@ Key features:
 
 **Note:** This provider uses a custom UI implementation with two image input fields (first_frame_url and last_frame_url) instead of the standard single image selector. This is a proof-of-concept implementation for handling multiple image inputs in video generation.
 
+### Runware Providers
+
+Runware provides access to multiple AI video models through a unified API. These providers require a Runware proxy URL for authentication.
+
+#### 14. Veo31 (Text-to-Video & Image-to-Video) via Runware
+
+Google's Veo 3.1 model accessed through Runware:
+
+```typescript
+// Text-to-Video
+text2video: RunwareVideo.Veo31.Text2Video({
+    proxyUrl: 'http://your-runware-proxy.com/api/proxy'
+})
+
+// Image-to-Video
+image2video: RunwareVideo.Veo31.Image2Video({
+    proxyUrl: 'http://your-runware-proxy.com/api/proxy'
+})
+```
+
+Key features:
+- Google's latest video generation model via Runware
+- Text-to-video and image-to-video support
+- Aspect ratios: 16:9, 9:16, 1:1
+- Durations: 5 or 8 seconds
+- Optional audio generation
+- Async delivery with polling
+
+#### 15. Veo31Fast (Text-to-Video & Image-to-Video) via Runware
+
+Faster version of Google's Veo 3.1 model:
+
+```typescript
+// Text-to-Video
+text2video: RunwareVideo.Veo31Fast.Text2Video({
+    proxyUrl: 'http://your-runware-proxy.com/api/proxy'
+})
+
+// Image-to-Video
+image2video: RunwareVideo.Veo31Fast.Image2Video({
+    proxyUrl: 'http://your-runware-proxy.com/api/proxy'
+})
+```
+
+Key features:
+- Faster generation times
+- Same capabilities as Veo31
+- More cost-effective
+- Aspect ratios: 16:9, 9:16, 1:1
+- Durations: 5 or 8 seconds
+
+#### 16. Sora2 (Text-to-Video & Image-to-Video) via Runware
+
+OpenAI's Sora 2 video generation model:
+
+```typescript
+// Text-to-Video
+text2video: RunwareVideo.Sora2.Text2Video({
+    proxyUrl: 'http://your-runware-proxy.com/api/proxy'
+})
+
+// Image-to-Video
+image2video: RunwareVideo.Sora2.Image2Video({
+    proxyUrl: 'http://your-runware-proxy.com/api/proxy'
+})
+```
+
+Key features:
+- OpenAI's advanced video generation model
+- Text-to-video and image-to-video support
+- Accurate physics simulation
+- Synchronized dialogue and high-fidelity visuals
+- Resolutions: 1280×720, 720×1280
+- Durations: 4, 8, or 12 seconds
+
+#### 17. Sora2Pro (Text-to-Video & Image-to-Video) via Runware
+
+Professional version of OpenAI's Sora 2:
+
+```typescript
+// Text-to-Video
+text2video: RunwareVideo.Sora2Pro.Text2Video({
+    proxyUrl: 'http://your-runware-proxy.com/api/proxy'
+})
+
+// Image-to-Video
+image2video: RunwareVideo.Sora2Pro.Image2Video({
+    proxyUrl: 'http://your-runware-proxy.com/api/proxy'
+})
+```
+
+Key features:
+- Enhanced quality over standard Sora 2
+- Text-to-video and image-to-video support
+- Professional-grade output
+- Resolutions: 1280×720, 720×1280
+- Durations: 4, 8, or 12 seconds
+
 ### Feature Control
 
 You can control various aspects of the video generation plugin using the Feature API:
@@ -871,6 +971,47 @@ FalAiVideo.Veo31FastFirstLastFrameToVideo(config: {
 }): AiVideoProvider
 ```
 
+### Runware Providers
+
+All Runware video providers use the following configuration:
+
+```typescript
+interface RunwareProviderConfiguration {
+  proxyUrl: string;        // HTTP endpoint URL for the Runware proxy
+  debug?: boolean;         // Enable debug logging
+  middlewares?: any[];     // Optional middleware functions
+  history?: false | '@imgly/local' | '@imgly/indexedDB' | (string & {});
+}
+```
+
+#### Veo31.Text2Video / Veo31.Image2Video
+
+```typescript
+RunwareVideo.Veo31.Text2Video(config: RunwareProviderConfiguration)
+RunwareVideo.Veo31.Image2Video(config: RunwareProviderConfiguration)
+```
+
+#### Veo31Fast.Text2Video / Veo31Fast.Image2Video
+
+```typescript
+RunwareVideo.Veo31Fast.Text2Video(config: RunwareProviderConfiguration)
+RunwareVideo.Veo31Fast.Image2Video(config: RunwareProviderConfiguration)
+```
+
+#### Sora2.Text2Video / Sora2.Image2Video
+
+```typescript
+RunwareVideo.Sora2.Text2Video(config: RunwareProviderConfiguration)
+RunwareVideo.Sora2.Image2Video(config: RunwareProviderConfiguration)
+```
+
+#### Sora2Pro.Text2Video / Sora2Pro.Image2Video
+
+```typescript
+RunwareVideo.Sora2Pro.Text2Video(config: RunwareProviderConfiguration)
+RunwareVideo.Sora2Pro.Image2Video(config: RunwareProviderConfiguration)
+```
+
 ## UI Integration
 
 The plugin automatically registers the following UI components:
@@ -899,6 +1040,14 @@ The plugin automatically registers the following UI components:
     -   Veo31ImageToVideo: `ly.img.ai.fal-ai/veo3.1/image-to-video`
     -   Veo31FastImageToVideo: `ly.img.ai.fal-ai/veo3.1/fast/image-to-video`
     -   Veo31FastFirstLastFrameToVideo: `ly.img.ai.fal-ai/veo3.1/fast/first-last-frame-to-video`
+    -   Runware Veo31.Text2Video: `ly.img.ai.runware/google/veo-3-1`
+    -   Runware Veo31.Image2Video: `ly.img.ai.runware/google/veo-3-1/image2video`
+    -   Runware Veo31Fast.Text2Video: `ly.img.ai.runware/google/veo-3-1-fast`
+    -   Runware Veo31Fast.Image2Video: `ly.img.ai.runware/google/veo-3-1-fast/image2video`
+    -   Runware Sora2.Text2Video: `ly.img.ai.runware/openai/sora-2`
+    -   Runware Sora2.Image2Video: `ly.img.ai.runware/openai/sora-2/image2video`
+    -   Runware Sora2Pro.Text2Video: `ly.img.ai.runware/openai/sora-2-pro`
+    -   Runware Sora2Pro.Image2Video: `ly.img.ai.runware/openai/sora-2-pro/image2video`
 
 ### Asset History
 
@@ -918,6 +1067,14 @@ Generated videos are automatically stored in asset sources with the following ID
 -   Veo31ImageToVideo: `fal-ai/veo3.1/image-to-video.history`
 -   Veo31FastImageToVideo: `fal-ai/veo3.1/fast/image-to-video.history`
 -   Veo31FastFirstLastFrameToVideo: `fal-ai/veo3.1/fast/first-last-frame-to-video.history`
+-   Runware Veo31.Text2Video: `runware/google/veo-3-1.history`
+-   Runware Veo31.Image2Video: `runware/google/veo-3-1/image2video.history`
+-   Runware Veo31Fast.Text2Video: `runware/google/veo-3-1-fast.history`
+-   Runware Veo31Fast.Image2Video: `runware/google/veo-3-1-fast/image2video.history`
+-   Runware Sora2.Text2Video: `runware/openai/sora-2.history`
+-   Runware Sora2.Image2Video: `runware/openai/sora-2/image2video.history`
+-   Runware Sora2Pro.Text2Video: `runware/openai/sora-2-pro.history`
+-   Runware Sora2Pro.Image2Video: `runware/openai/sora-2-pro/image2video.history`
 
 ### Dock Integration
 
