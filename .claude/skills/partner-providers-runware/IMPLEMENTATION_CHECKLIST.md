@@ -297,7 +297,69 @@ Change status from `planned` to `implemented` for **only the capability you impl
 | BFL | FLUX.2 [pro] | `bfl:5@1` | image-to-image | Nov 2025 | planned |  ← Still planned!
 ```
 
-### 10. Run Validation
+### 10. Update README Documentation (REQUIRED)
+
+**CRITICAL**: Every new provider MUST be documented in the plugin's README.md file.
+
+| Capability | README File |
+|------------|-------------|
+| text-to-image, image-to-image | `packages/plugin-ai-image-generation-web/README.md` |
+| text-to-video, image-to-video | `packages/plugin-ai-video-generation-web/README.md` |
+
+#### Sections to Update
+
+1. **Import statement** (if first Runware provider): Add `import RunwareImage from '@imgly/plugin-ai-image-generation-web/runware';` or video equivalent
+
+2. **Providers section**: Add a numbered provider entry (e.g., `#### 14. Flux2Dev (Text-to-Image & Image-to-Image)`) with:
+   - Code example showing configuration
+   - Key features bullet list
+   - Supported aspect ratios/resolutions
+
+3. **API Reference section**: Add provider function signatures under "Runware Providers" subsection:
+   ```typescript
+   RunwareImage.Flux2Dev.Text2Image(config: RunwareProviderConfiguration)
+   RunwareImage.Flux2Dev.Image2Image(config: RunwareProviderConfiguration)
+   ```
+
+4. **Panel IDs section**: Add provider panel IDs:
+   ```
+   - Runware Flux2Dev.Text2Image: `ly.img.ai.runware/bfl/flux-2-dev`
+   - Runware Flux2Dev.Image2Image: `ly.img.ai.runware/bfl/flux-2-dev/image2image`
+   ```
+
+5. **Asset History section**: Add history source IDs:
+   ```
+   - Runware Flux2Dev.Text2Image: `runware/bfl/flux-2-dev.history`
+   - Runware Flux2Dev.Image2Image: `runware/bfl/flux-2-dev/image2image.history`
+   ```
+
+#### Documentation Template
+
+```markdown
+#### N. {ModelName} (Text-to-Image & Image-to-Image)
+
+{Description of the model}:
+
+\`\`\`typescript
+// Text-to-Image
+text2image: RunwareImage.{ModelName}.Text2Image({
+    proxyUrl: 'http://your-runware-proxy.com/api/proxy'
+})
+
+// Image-to-Image
+image2image: RunwareImage.{ModelName}.Image2Image({
+    proxyUrl: 'http://your-runware-proxy.com/api/proxy'
+})
+\`\`\`
+
+Key features:
+- {Feature 1}
+- {Feature 2}
+- Resolution: {min}-{max} pixels
+- Aspect ratios: 1:1, 16:9, 9:16, 4:3, 3:4
+```
+
+### 11. Run Validation
 
 ```bash
 pnpm --filter "@imgly/plugin-ai-*" check:all
@@ -308,7 +370,7 @@ Fix any:
 - [ ] Lint errors
 - [ ] Build failures
 
-### 11. Test (if demo available)
+### 12. Test (if demo available)
 
 If the example app is set up:
 
@@ -340,3 +402,4 @@ Verify the provider appears and generates correctly.
 6. **ALWAYS add to example app** - Every provider must be added to `examples/ai/src/runwareProviders.ts`
 7. **For I2I: Set `dimensionConstraints` in provider** - Extract width/height min/max from API docs and pass to `createImageProvider`. Each provider defines its own constraints inline.
 8. **ALWAYS add translations** - Add property translations to `translations.json` for all UI-visible properties using the pattern `ly.img.plugin-ai-image-generation-web.{providerId}.property.{property-name}`
+9. **ALWAYS update README documentation** - Add provider to the plugin's README.md (Providers section, API Reference, Panel IDs, Asset History)

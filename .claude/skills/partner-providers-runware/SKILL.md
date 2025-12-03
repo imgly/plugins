@@ -14,8 +14,13 @@ Manage the lifecycle of Runware AI providers: discover new models from documenta
 
 - **Provider Tracking**: `specs/providers/runware/providers.md`
 - **Provider Specifications**: `specs/providers/` (schemas, architecture)
-- **Provider Implementations**: `packages/plugin-ai-image-generation-web/src/runware/`
+- **Provider Implementations**:
+  - Image: `packages/plugin-ai-image-generation-web/src/runware/`
+  - Video: `packages/plugin-ai-video-generation-web/src/runware/`
 - **API Patterns**: `specs/providers/runware/api-patterns.md`
+- **README Documentation**:
+  - Image: `packages/plugin-ai-image-generation-web/README.md`
+  - Video: `packages/plugin-ai-video-generation-web/README.md`
 
 ## Workflow Overview
 
@@ -72,9 +77,11 @@ Only proceed after user approval. Follow `IMPLEMENTATION_CHECKLIST.md` to:
 5. Create provider implementation following patterns in `specs/providers/schemas/`
    - **For I2I**: Use model-specific `RUNWARE_DIMENSION_CONSTRAINTS` (see `implementation-notes.md`)
 6. Export provider from `runware/index.ts`
-7. **Add to example app** (`examples/ai/src/runwareProviders.ts`) - REQUIRED
-8. Update `specs/providers/runware/providers.md` status to "implemented"
-9. Run build checks: `pnpm --filter "@imgly/plugin-ai-*" check:all`
+7. Add translations to `translations.json` - REQUIRED
+8. **Add to example app** (`examples/ai/src/runwareProviders.ts`) - REQUIRED
+9. Update `specs/providers/runware/providers.md` status to "implemented"
+10. **Update README documentation** - Add to plugin's README.md (Providers, API Reference, Panel IDs, Asset History)
+11. Run build checks: `pnpm --filter "@imgly/plugin-ai-*" check:all`
 
 ### API Verification (MANDATORY)
 
