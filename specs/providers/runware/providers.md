@@ -71,8 +71,8 @@ Each capability is tracked separately. Models with multiple capabilities have mu
 | Google | Imagen 4.0 Fast | `google:2@3` | text-to-image | - | May 2025 | skipped |
 | Google | Nano Banana (Gemini Flash 2.5) | `google:4@1` | text-to-image | - | 2025 | skipped |
 | Google | Nano Banana (Gemini Flash 2.5) | `google:4@1` | image-to-image | reference (8 max, edit/fusion) | 2025 | skipped |
-| Google | Nano Banana 2 Pro (Gemini 3 Pro) | `google:4@2` | text-to-image | - | 2025 | planned |
-| Google | Nano Banana 2 Pro (Gemini 3 Pro) | `google:4@2` | image-to-image | reference (14 max, style/lighting) | 2025 | planned |
+| Google | Nano Banana 2 Pro (Gemini 3 Pro) | `google:4@2` | text-to-image | - | 2025 | implemented |
+| Google | Nano Banana 2 Pro (Gemini 3 Pro) | `google:4@2` | image-to-image | reference (14 max, style/lighting) | 2025 | implemented |
 | Google | Veo 2 | `google:2@0` | text-to-video | - | Dec 2024 | skipped |
 | Google | Veo 2 | `google:2@0` | image-to-video | first frame | Dec 2024 | skipped |
 | Google | Veo 3 | `google:3@0` | text-to-video | - | May 2025 | skipped |

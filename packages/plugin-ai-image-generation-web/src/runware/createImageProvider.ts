@@ -48,6 +48,11 @@ interface CreateProviderOptions<I extends Record<string, any>> {
    * Required for I2I providers to properly constrain output dimensions.
    */
   dimensionConstraints?: DimensionConstraints;
+  /**
+   * Skip automatic dimension injection for image-to-image.
+   * When true, the API will auto-detect dimensions from the reference image.
+   */
+  skipAutoDimensions?: boolean;
 }
 
 /**
@@ -188,8 +193,10 @@ function createImageProvider<
             numberResults: 1,
             ...runwareInput,
             // Add adjusted dimensions for image-to-image (if not already provided by mapInput)
+            // Skip if skipAutoDimensions is set - API will auto-detect from reference image
             ...(imageDimensions != null &&
-              runwareInput.width == null && {
+              runwareInput.width == null &&
+              !options.skipAutoDimensions && {
                 width: imageDimensions.width,
                 height: imageDimensions.height
               })

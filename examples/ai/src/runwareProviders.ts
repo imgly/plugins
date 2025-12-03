@@ -29,6 +29,10 @@ export function createRunwareProviders(options: RunwareProviderOptions) {
       RunwareImage.Seedream4.Text2Image({
         middlewares: [imageRateLimitMiddleware, errorMiddleware],
         proxyUrl
+      }),
+      RunwareImage.NanoBanana2Pro.Text2Image({
+        middlewares: [imageRateLimitMiddleware, errorMiddleware],
+        proxyUrl
       })
     ],
     image2image: [
@@ -45,6 +49,10 @@ export function createRunwareProviders(options: RunwareProviderOptions) {
         proxyUrl
       }),
       RunwareImage.Seedream4.Image2Image({
+        middlewares: [imageRateLimitMiddleware, errorMiddleware],
+        proxyUrl
+      }),
+      RunwareImage.NanoBanana2Pro.Image2Image({
         middlewares: [imageRateLimitMiddleware, errorMiddleware],
         proxyUrl
       })
