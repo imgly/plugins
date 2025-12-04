@@ -523,8 +523,8 @@ image2video: RunwareVideo.Veo31.Image2Video({
 Key features:
 - Google's latest video generation model via Runware
 - Text-to-video and image-to-video support
-- Aspect ratios: 16:9, 9:16, 1:1
-- Durations: 5 or 8 seconds
+- Aspect ratios: 16:9, 9:16
+- Duration: Fixed at 8 seconds
 - Optional audio generation
 - Async delivery with polling
 
@@ -548,8 +548,8 @@ Key features:
 - Faster generation times
 - Same capabilities as Veo31
 - More cost-effective
-- Aspect ratios: 16:9, 9:16, 1:1
-- Durations: 5 or 8 seconds
+- Aspect ratios: 16:9, 9:16
+- Duration: Fixed at 8 seconds
 
 #### 16. Sora2 (Text-to-Video & Image-to-Video) via Runware
 
@@ -595,7 +595,7 @@ Key features:
 - Enhanced quality over standard Sora 2
 - Text-to-video and image-to-video support
 - Professional-grade output
-- Resolutions: 1280×720, 720×1280
+- Resolutions: 1280×720, 720×1280, 1792×1024 (7:4), 1024×1792 (4:7)
 - Durations: 4, 8, or 12 seconds
 
 ### Feature Control
