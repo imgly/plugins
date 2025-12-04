@@ -79,7 +79,8 @@ export {
   getThumbnailForVideo,
   getLabelFromId,
   isAsyncGenerator,
-  addIconSetOnce
+  addIconSetOnce,
+  normalizeBaseURL
 } from './utils/utils';
 
 export { checkAiPluginVersion } from './utils/checkAiPluginVersion';

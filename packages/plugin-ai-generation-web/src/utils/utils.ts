@@ -312,3 +312,18 @@ export function addIconSetOnce(
     cesdk.ui.experimental.setGlobalStateValue(globalStateIconSetAddedId, true);
   }
 }
+
+/**
+ * Normalizes a base URL to ensure it has exactly one trailing slash.
+ *
+ * @param url - The base URL to normalize
+ * @returns The normalized URL with exactly one trailing slash
+ *
+ * @example
+ * normalizeBaseURL('https://example.com') // 'https://example.com/'
+ * normalizeBaseURL('https://example.com/') // 'https://example.com/'
+ * normalizeBaseURL('https://example.com//') // 'https://example.com/'
+ */
+export function normalizeBaseURL(url: string): string {
+  return `${url.replace(/\/+$/, '')}/`;
+}

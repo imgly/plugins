@@ -2,7 +2,8 @@ import { Icons, CustomAssetSource } from '@imgly/plugin-utils';
 import {
   CommonProviderConfiguration,
   getPanelId,
-  createTranslationCallback
+  createTranslationCallback,
+  normalizeBaseURL
 } from '@imgly/plugin-ai-generation-web';
 import Recraft20bSchema from './Recraft20b.json';
 import CreativeEditorSDK, { AssetResult } from '@cesdk/cesdk-js';
@@ -61,9 +62,11 @@ function getProvider(
   const falKey = 'fal-ai/recraft/v2/text-to-image';
   const modelKey = 'fal-ai/recraft/v2/text-to-sticker';
   const styleIconAssetSourceId = `${modelKey}/styles/icon`;
-  const baseURL =
+  // Normalize baseURL to ensure exactly one trailing slash
+  const baseURL = normalizeBaseURL(
     config.baseURL ??
-    'https://cdn.img.ly/assets/plugins/plugin-ai-image-generation-web/v1/recraft-v3/';
+      'https://cdn.img.ly/assets/plugins/plugin-ai-image-generation-web/v1/recraft-v3/'
+  );
 
   cesdk.ui.addIconSet('@imgly/plugin/formats', Icons.Formats);
 
