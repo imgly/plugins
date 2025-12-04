@@ -181,8 +181,3 @@ export function createRunwareClient(
     }
   };
 }
-
-export function getRunwareClient(): RunwareClient | null {
-  // This is now managed per-provider initialization
-  return null;
-}
