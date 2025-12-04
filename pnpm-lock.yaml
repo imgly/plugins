@@ -464,9 +464,6 @@ importers:
       '@imgly/plugin-utils':
         specifier: workspace:*
         version: link:../plugin-utils
-      '@runware/sdk-js':
-        specifier: ^1.0.24
-        version: 1.2.2
       '@types/jest':
         specifier: ^30.0.0
         version: 30.0.0
@@ -2275,9 +2272,6 @@ packages:
 
   '@rtsao/scc@1.1.0':
     resolution: {integrity: sha512-zt6OdqaDoOnJ1ZYsCYGt9YmWzDXl4vQdKTyJev62gFhRGKdx7mcT54V9KIjg+d2wi9EXsPvAPKe7i7WjfVWB8g==}
-
-  '@runware/sdk-js@1.2.2':
-    resolution: {integrity: sha512-bQKzuXcBWqf62XFQheSn7gZkK/WjRSP1n4HPjl1bRBmObvYrstki1RTwF4wSsaezZyeCoQC/YCUn9Vxc7nzTBw==}
 
   '@sideway/address@4.1.5':
     resolution: {integrity: sha512-IqO/DUQHUkPeixNQ8n0JA6102hT9CmaljNTPmQ1u8MEhBo/R4Q8eKLN/vGZxuebwOroDB4cbpjheD4+/sKFK4Q==}
@@ -5292,10 +5286,6 @@ packages:
   util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
 
-  uuid@9.0.1:
-    resolution: {integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==}
-    hasBin: true
-
   v8-compile-cache-lib@3.0.1:
     resolution: {integrity: sha512-wa7YjyUGfNZngI/vtK0UHAN+lgDCxBPCylVXGp0zu59Fz5aiGtNXaq3DhIov063MorB+VfufLh3JlF2KdTK3xg==}
 
@@ -6926,15 +6916,6 @@ snapshots:
     optional: true
 
   '@rtsao/scc@1.1.0': {}
-
-  '@runware/sdk-js@1.2.2':
-    dependencies:
-      uuid: 9.0.1
-      ws: 8.18.3(bufferutil@4.0.9)
-    optionalDependencies:
-      bufferutil: 4.0.9
-    transitivePeerDependencies:
-      - utf-8-validate
 
   '@sideway/address@4.1.5':
     dependencies:
@@ -10687,8 +10668,6 @@ snapshots:
       requires-port: 1.0.0
 
   util-deprecate@1.0.2: {}
-
-  uuid@9.0.1: {}
 
   v8-compile-cache-lib@3.0.1: {}
 
