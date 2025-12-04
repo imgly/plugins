@@ -1,0 +1,56 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Veo 3.1 API",
+    "version": "1.0.0",
+    "description": "Google Veo 3.1 video generation via Runware"
+  },
+  "components": {
+    "schemas": {
+      "Veo31Text2VideoInput": {
+        "title": "Veo31Text2VideoInput",
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "title": "Prompt",
+            "type": "string",
+            "description": "Text description for video generation",
+            "minLength": 2,
+            "maxLength": 3000,
+            "x-imgly-builder": {
+              "component": "TextArea"
+            }
+          },
+          "format": {
+            "title": "Format",
+            "type": "string",
+            "enum": ["1280x720", "720x1280", "1920x1080", "1080x1920"],
+            "default": "1280x720",
+            "description": "Output resolution and aspect ratio",
+            "x-imgly-enum-labels": {
+              "1280x720": "Landscape HD (1280×720)",
+              "720x1280": "Portrait HD (720×1280)",
+              "1920x1080": "Landscape Full HD (1920×1080)",
+              "1080x1920": "Portrait Full HD (1080×1920)"
+            },
+            "x-imgly-enum-icons": {
+              "1280x720": "@imgly/plugin/formats/ratio16by9",
+              "720x1280": "@imgly/plugin/formats/ratio9by16",
+              "1920x1080": "@imgly/plugin/formats/ratio16by9",
+              "1080x1920": "@imgly/plugin/formats/ratio9by16"
+            }
+          },
+          "generate_audio": {
+            "title": "Generate Audio",
+            "type": "boolean",
+            "default": true,
+            "description": "Generate native audio with the video"
+          }
+        },
+        "x-fal-order-properties": ["prompt", "format", "generate_audio"],
+        "required": ["prompt"]
+      }
+    }
+  },
+  "paths": {}
+}

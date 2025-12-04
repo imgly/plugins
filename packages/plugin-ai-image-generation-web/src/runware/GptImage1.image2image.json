@@ -1,0 +1,56 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "GPT Image 1 Image-to-Image API",
+    "version": "1.0.0",
+    "description": "OpenAI GPT Image 1 image-to-image transformation via Runware"
+  },
+  "components": {
+    "schemas": {
+      "GptImage1Image2ImageInput": {
+        "title": "GptImage1Image2ImageInput",
+        "type": "object",
+        "properties": {
+          "image_url": {
+            "title": "Input Image",
+            "type": "string",
+            "description": "Image to transform",
+            "x-imgly-builder": {
+              "component": "ImageUrl"
+            }
+          },
+          "prompt": {
+            "title": "Prompt",
+            "type": "string",
+            "description": "Text description for image transformation",
+            "minLength": 1,
+            "maxLength": 32000,
+            "x-imgly-builder": {
+              "component": "TextArea"
+            }
+          },
+          "format": {
+            "title": "Format",
+            "type": "string",
+            "enum": ["1024x1024", "1536x1024", "1024x1536"],
+            "default": "1024x1024",
+            "description": "Output image dimensions",
+            "x-imgly-enum-labels": {
+              "1024x1024": "Square (1024×1024)",
+              "1536x1024": "Landscape (1536×1024)",
+              "1024x1536": "Portrait (1024×1536)"
+            },
+            "x-imgly-enum-icons": {
+              "1024x1024": "@imgly/plugin/formats/ratio1by1",
+              "1536x1024": "@imgly/plugin/formats/ratio4by3",
+              "1024x1536": "@imgly/plugin/formats/ratio3by4"
+            }
+          }
+        },
+        "x-fal-order-properties": ["image_url", "prompt", "format"],
+        "required": ["image_url", "prompt"]
+      }
+    }
+  },
+  "paths": {}
+}

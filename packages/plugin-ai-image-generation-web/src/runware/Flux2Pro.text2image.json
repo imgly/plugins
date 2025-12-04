@@ -1,0 +1,50 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "FLUX.2 [pro] API",
+    "version": "1.0.0",
+    "description": "FLUX.2 [pro] image generation via Runware"
+  },
+  "components": {
+    "schemas": {
+      "Flux2ProInput": {
+        "title": "Flux2ProInput",
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "title": "Prompt",
+            "type": "string",
+            "description": "Text description for image generation",
+            "x-imgly-builder": {
+              "component": "TextArea"
+            }
+          },
+          "aspect_ratio": {
+            "title": "Format",
+            "type": "string",
+            "enum": ["1:1", "16:9", "9:16", "4:3", "3:4"],
+            "default": "1:1",
+            "description": "Aspect ratio for the generated image",
+            "x-imgly-enum-labels": {
+              "1:1": "Square",
+              "16:9": "Landscape 16:9",
+              "9:16": "Portrait 9:16",
+              "4:3": "Landscape 4:3",
+              "3:4": "Portrait 3:4"
+            },
+            "x-imgly-enum-icons": {
+              "1:1": "@imgly/plugin/formats/ratio1by1",
+              "16:9": "@imgly/plugin/formats/ratio16by9",
+              "9:16": "@imgly/plugin/formats/ratio9by16",
+              "4:3": "@imgly/plugin/formats/ratio4by3",
+              "3:4": "@imgly/plugin/formats/ratio3by4"
+            }
+          }
+        },
+        "x-fal-order-properties": ["prompt", "aspect_ratio"],
+        "required": ["prompt"]
+      }
+    }
+  },
+  "paths": {}
+}

@@ -36,6 +36,10 @@
     "./open-ai": {
       "import": "./dist/open-ai/index.mjs",
       "types": "./dist/open-ai/index.d.ts"
+    },
+    "./runware": {
+      "import": "./dist/runware/index.mjs",
+      "types": "./dist/runware/index.d.ts"
     }
   },
   "homepage": "https://img.ly/products/creative-sdk",

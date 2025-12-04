@@ -24,7 +24,7 @@ export function testAllTranslations(cesdk: CreativeEditorSDK) {
   // Process image generation translations (provider-specific) with @ prefix
   Object.entries(imageTranslations.en).forEach(([key, value]) => {
     // Check if it's a provider-specific translation
-    if (key.includes('.fal-ai/') || key.includes('.open-ai/')) {
+    if (key.includes('.fal-ai/') || key.includes('.open-ai/') || key.includes('.runware/')) {
       allTranslations[key] = `@${value}`;
     } else {
       // Generic property that might be redefined
@@ -34,7 +34,7 @@ export function testAllTranslations(cesdk: CreativeEditorSDK) {
 
   // Process video generation translations (provider-specific) with @ prefix
   Object.entries(videoTranslations.en).forEach(([key, value]) => {
-    if (key.includes('.fal-ai/')) {
+    if (key.includes('.fal-ai/') || key.includes('.runware/')) {
       allTranslations[key] = `@${value}`;
     } else {
       allTranslations[key] = `&${value}`;
