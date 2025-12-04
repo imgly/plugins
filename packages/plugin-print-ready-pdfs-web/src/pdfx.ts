@@ -224,6 +224,9 @@ async function convertToPDFX3Single(
       '-dNOPAUSE',
       '-sDEVICE=pdfwrite',
       '-dCompatibilityLevel=1.4',
+      // Disable PDF 1.5+ features to avoid warnings with PDF 1.4 compatibility
+      '-dWriteObjStms=false',
+      '-dWriteXRefStm=false',
       // PDF/X-3 settings
       '-dPDFSETTINGS=/prepress',
       '-dSetPageSize=false',

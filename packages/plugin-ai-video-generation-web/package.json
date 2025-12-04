@@ -44,17 +44,18 @@
     "dev": "SKIP_DTS=true node scripts/watch.mjs",
     "dev:wait": "node ../../scripts/dev-wait.mjs",
     "dev:types": "tsc --emitDeclarationOnly --watch --preserveWatchOutput",
-    "publish:latest": "pnpm run build && npm publish --tag latest --access public",
-    "publish:next": "pnpm run build && npm publish --tag next --access public",
+    "publish:latest": "pnpm run build && pnpm publish --tag latest --access public",
+    "publish:next": "pnpm run build && pnpm publish --tag next --access public",
     "check:all": "concurrently -n lint,type,pretty \"pnpm run check:lint\" \"pnpm run check:types\" \"pnpm run check:pretty\"",
     "check:lint": "eslint --max-warnings 0 './src/**/*.{ts,tsx}'",
     "check:pretty": "prettier --list-different './src/**/*.{ts,tsx}'",
     "check:types": "tsc --noEmit",
     "types:create": "tsc --emitDeclarationOnly"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@imgly/plugin-ai-generation-web": "workspace:*"
+  },
   "devDependencies": {
-    "@imgly/plugin-ai-generation-web": "workspace:*",
     "@fal-ai/client": "^1.3.0",
     "@imgly/plugin-utils": "workspace:*",
     "@types/ndarray": "^1.0.14",
