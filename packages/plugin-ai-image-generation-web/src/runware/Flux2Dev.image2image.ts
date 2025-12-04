@@ -17,7 +17,8 @@ import { adjustDimensions } from './utils';
  */
 export type Flux2DevImage2ImageInput = {
   prompt: string;
-  image_url: string;
+  image_url?: string;
+  image_urls?: string[];
 };
 
 /**
@@ -115,15 +116,23 @@ export function Flux2DevImage2Image(
               prompt: input.prompt,
               image_url: input.uri
             })
+          },
+          'ly.img.combineImages': {
+            mapInput: (input) => ({
+              prompt: input.prompt,
+              image_urls: input.uris
+            })
           }
         },
         getBlockInput: async (input) => {
-          if (input.image_url == null) {
+          // Get first image URL from either single or array input
+          const firstImageUrl = input.image_url ?? input.image_urls?.[0];
+          if (firstImageUrl == null) {
             throw new Error('No image URL provided');
           }
 
           const { width, height } = await getImageDimensionsFromURL(
-            input.image_url,
+            firstImageUrl,
             cesdk.engine
           );
           // Adjust dimensions to meet FLUX.2 [dev] constraints (512-2048, multiples of 16)
@@ -142,10 +151,13 @@ export function Flux2DevImage2Image(
         mapInput: (input) => {
           // Map to Runware API format
           // FLUX.2 [dev] uses inputs.referenceImages for image-to-image
+          // Supports up to 4 reference images
+          const referenceImages =
+            input.image_urls ?? (input.image_url ? [input.image_url] : []);
           return {
             positivePrompt: input.prompt,
             inputs: {
-              referenceImages: [input.image_url]
+              referenceImages
             }
           };
         }

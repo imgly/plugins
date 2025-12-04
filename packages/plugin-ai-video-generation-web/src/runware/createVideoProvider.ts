@@ -31,6 +31,10 @@ type VideoProviderConfiguration = {
    */
   middlewares?: Middleware<any, any>[];
   /**
+   * @deprecated Use `middlewares` instead.
+   */
+  middleware?: Middleware<any, any>[];
+  /**
    * Override provider's default history asset source.
    */
   history?: false | '@imgly/local' | '@imgly/indexedDB' | (string & {});
@@ -120,7 +124,8 @@ function createVideoProvider<
   options: CreateProviderOptions<I>,
   config: VideoProviderConfiguration
 ): Provider<'video', I, VideoOutput> {
-  const middleware = options.middleware ?? config.middlewares ?? [];
+  const middleware =
+    options.middleware ?? config.middlewares ?? config.middleware ?? [];
 
   let runwareClient: RunwareClient | null = null;
 
@@ -160,9 +165,8 @@ function createVideoProvider<
     },
     output: {
       abortable: true,
-      middleware,
       history: config.history ?? '@imgly/indexedDB',
-      generationHintText: 'ly.img.ai.video.generation.hint',
+      middleware,
       generate: async (
         input: I,
         { abortSignal }: { abortSignal?: AbortSignal }
@@ -207,7 +211,8 @@ function createVideoProvider<
         // eslint-disable-next-line no-console
         console.error('Cannot extract generated video from response:', videos);
         throw new Error('Cannot find generated video');
-      }
+      },
+      generationHintText: 'ly.img.ai.video.generation.hint'
     }
   };
 

@@ -13,6 +13,7 @@ import {
 import { createRunwareClient, RunwareClient } from './createRunwareClient';
 import {
   convertImageUrlForRunware,
+  convertImageUrlArrayForRunware,
   isCustomImageSize,
   adjustDimensions,
   DimensionConstraints
@@ -40,6 +41,10 @@ type ImageProviderConfiguration = {
    * Middleware functions to process inputs/outputs.
    */
   middlewares?: Middleware<any, any>[];
+  /**
+   * @deprecated Use `middlewares` instead.
+   */
+  middleware?: Middleware<any, any>[];
   /**
    * Override provider's default history asset source.
    */
@@ -139,12 +144,13 @@ interface CreateProviderOptions<I extends Record<string, any>> {
  * but may be rough around the edges and should/can be further customized.
  */
 function createImageProvider<
-  I extends Record<string, any> & { image_url?: string }
+  I extends Record<string, any> & { image_url?: string; image_urls?: string[] }
 >(
   options: CreateProviderOptions<I>,
   config: ImageProviderConfiguration
 ): Provider<'image', I, ImageOutput> {
-  const middleware = options.middleware ?? config.middlewares ?? [];
+  const middleware =
+    options.middleware ?? config.middlewares ?? config.middleware ?? [];
 
   let runwareClient: RunwareClient | null = null;
 
@@ -250,6 +256,37 @@ function createImageProvider<
               options.cesdk.engine
             );
             // Apply dimension constraints if provided
+            if (options.dimensionConstraints != null) {
+              imageDimensions = adjustDimensions(
+                width,
+                height,
+                options.dimensionConstraints
+              );
+            } else {
+              imageDimensions = { width, height };
+            }
+          }
+        }
+
+        // Convert image URLs array if needed for multi-image inputs (e.g., combineImages)
+        if (input.image_urls != null && input.image_urls.length > 0) {
+          const convertedUrls = await convertImageUrlArrayForRunware(
+            input.image_urls,
+            options.cesdk
+          );
+          processedInput = { ...processedInput, image_urls: convertedUrls };
+
+          // For multi-image, get dimensions from the first image if not already set
+          if (
+            imageDimensions == null &&
+            options.cesdk != null &&
+            !options.skipAutoDimensions &&
+            input.image_urls[0] != null
+          ) {
+            const { width, height } = await getImageDimensionsFromURL(
+              input.image_urls[0],
+              options.cesdk.engine
+            );
             if (options.dimensionConstraints != null) {
               imageDimensions = adjustDimensions(
                 width,

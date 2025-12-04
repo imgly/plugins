@@ -70,6 +70,23 @@ export interface DimensionConstraints {
 }
 
 /**
+ * Converts an array of blob:/buffer: URLs to data URIs for Runware.
+ * Used for multi-image inputs like combineImages quick action.
+ */
+export async function convertImageUrlArrayForRunware(
+  imageUrls?: string[],
+  cesdk?: CreativeEditorSDK
+): Promise<string[] | undefined> {
+  if (imageUrls == null || !Array.isArray(imageUrls)) return undefined;
+
+  const convertedUrls = await Promise.all(
+    imageUrls.map((url) => convertImageUrlForRunware(url, cesdk))
+  );
+
+  return convertedUrls.filter((url): url is string => url != null);
+}
+
+/**
  * Adjusts dimensions to meet API constraints:
  * - Width and height are constrained to their respective min/max ranges
  * - Optionally rounds to a multiple (e.g., 16)

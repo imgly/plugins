@@ -16,7 +16,8 @@ import { RunwareProviderConfiguration } from './types';
  */
 export type NanoBanana2ProImage2ImageInput = {
   prompt: string;
-  image_url: string;
+  image_url?: string;
+  image_urls?: string[];
 };
 
 /**
@@ -110,17 +111,25 @@ export function NanoBanana2ProImage2Image(
               prompt: input.prompt,
               image_url: input.uri
             })
+          },
+          'ly.img.combineImages': {
+            mapInput: (input) => ({
+              prompt: input.prompt,
+              image_urls: input.uris
+            })
           }
         },
         getBlockInput: async (input) => {
-          if (input.image_url == null) {
+          // Get first image URL from either single or array input
+          const firstImageUrl = input.image_url ?? input.image_urls?.[0];
+          if (firstImageUrl == null) {
             throw new Error('No image URL provided');
           }
 
           // Get dimensions from input image for UI placeholder
           // API will auto-detect dimensions from the reference image
           const { width, height } = await getImageDimensionsFromURL(
-            input.image_url,
+            firstImageUrl,
             cesdk.engine
           );
           return Promise.resolve({
@@ -133,10 +142,13 @@ export function NanoBanana2ProImage2Image(
         mapInput: (input) => {
           // Map to Runware API format
           // Nano Banana 2 Pro uses inputs.referenceImages for image-to-image
+          // Supports up to 14 reference images
+          const referenceImages =
+            input.image_urls ?? (input.image_url ? [input.image_url] : []);
           return {
             positivePrompt: input.prompt,
             inputs: {
-              referenceImages: [input.image_url]
+              referenceImages
             }
           };
         }

@@ -27,7 +27,8 @@ const GPT_IMAGE_1_DIMENSIONS: Record<
  */
 export type GptImage1Image2ImageInput = {
   prompt: string;
-  image_url: string;
+  image_url?: string;
+  image_urls?: string[];
   format?: '1024x1024' | '1536x1024' | '1024x1536';
 };
 
@@ -131,10 +132,19 @@ export function GptImage1Image2Image(
               image_url: input.uri,
               format: '1024x1024'
             })
+          },
+          'ly.img.combineImages': {
+            mapInput: (input) => ({
+              prompt: input.prompt,
+              image_urls: input.uris,
+              format: '1024x1024'
+            })
           }
         },
         getBlockInput: async (input) => {
-          if (input.image_url == null) {
+          // Get first image URL from either single or array input
+          const firstImageUrl = input.image_url ?? input.image_urls?.[0];
+          if (firstImageUrl == null) {
             throw new Error('No image URL provided');
           }
 
@@ -150,9 +160,12 @@ export function GptImage1Image2Image(
         mapInput: (input) => {
           const dims = GPT_IMAGE_1_DIMENSIONS[input.format ?? '1024x1024'];
           // GPT Image 1 uses root-level referenceImages (not nested under inputs)
+          // Supports up to 16 reference images
+          const referenceImages =
+            input.image_urls ?? (input.image_url ? [input.image_url] : []);
           return {
             positivePrompt: input.prompt,
-            referenceImages: [input.image_url],
+            referenceImages,
             width: dims.width,
             height: dims.height
           };
