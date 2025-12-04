@@ -391,6 +391,32 @@
     "ly.img.plugin-ai-image-generation-web.runware/openai/gpt-image-1/image2image.property.format": "Format",
     "ly.img.plugin-ai-image-generation-web.runware/openai/gpt-image-1/image2image.property.format.1024x1024": "Square (1024×1024)",
     "ly.img.plugin-ai-image-generation-web.runware/openai/gpt-image-1/image2image.property.format.1536x1024": "Landscape (1536×1024)",
-    "ly.img.plugin-ai-image-generation-web.runware/openai/gpt-image-1/image2image.property.format.1024x1536": "Portrait (1024×1536)"
+    "ly.img.plugin-ai-image-generation-web.runware/openai/gpt-image-1/image2image.property.format.1024x1536": "Portrait (1024×1536)",
+
+    "ly.img.plugin-ai-image-generation-web.runware/bytedance/seedream-4-5.property.prompt": "Prompt",
+    "ly.img.plugin-ai-image-generation-web.runware/bytedance/seedream-4-5.property.prompt.placeholder": "Describe your image...",
+    "ly.img.plugin-ai-image-generation-web.runware/bytedance/seedream-4-5.property.aspect_ratio": "Format",
+    "ly.img.plugin-ai-image-generation-web.runware/bytedance/seedream-4-5.property.aspect_ratio.1:1": "Square",
+    "ly.img.plugin-ai-image-generation-web.runware/bytedance/seedream-4-5.property.aspect_ratio.16:9": "Landscape 16:9",
+    "ly.img.plugin-ai-image-generation-web.runware/bytedance/seedream-4-5.property.aspect_ratio.9:16": "Portrait 9:16",
+    "ly.img.plugin-ai-image-generation-web.runware/bytedance/seedream-4-5.property.aspect_ratio.4:3": "Landscape 4:3",
+    "ly.img.plugin-ai-image-generation-web.runware/bytedance/seedream-4-5.property.aspect_ratio.3:4": "Portrait 3:4",
+    "ly.img.plugin-ai-image-generation-web.runware/bytedance/seedream-4-5/image2image.property.image_url": "Source Image",
+    "ly.img.plugin-ai-image-generation-web.runware/bytedance/seedream-4-5/image2image.property.prompt": "Prompt",
+    "ly.img.plugin-ai-image-generation-web.runware/bytedance/seedream-4-5/image2image.property.prompt.placeholder": "Describe the changes...",
+
+    "ly.img.plugin-ai-image-generation-web.runware/openai/gpt-image-1-mini.property.prompt": "Prompt",
+    "ly.img.plugin-ai-image-generation-web.runware/openai/gpt-image-1-mini.property.prompt.placeholder": "Describe your image...",
+    "ly.img.plugin-ai-image-generation-web.runware/openai/gpt-image-1-mini.property.format": "Format",
+    "ly.img.plugin-ai-image-generation-web.runware/openai/gpt-image-1-mini.property.format.1024x1024": "Square (1024×1024)",
+    "ly.img.plugin-ai-image-generation-web.runware/openai/gpt-image-1-mini.property.format.1536x1024": "Landscape (1536×1024)",
+    "ly.img.plugin-ai-image-generation-web.runware/openai/gpt-image-1-mini.property.format.1024x1536": "Portrait (1024×1536)",
+    "ly.img.plugin-ai-image-generation-web.runware/openai/gpt-image-1-mini/image2image.property.image_url": "Source Image",
+    "ly.img.plugin-ai-image-generation-web.runware/openai/gpt-image-1-mini/image2image.property.prompt": "Prompt",
+    "ly.img.plugin-ai-image-generation-web.runware/openai/gpt-image-1-mini/image2image.property.prompt.placeholder": "Describe the changes...",
+    "ly.img.plugin-ai-image-generation-web.runware/openai/gpt-image-1-mini/image2image.property.format": "Format",
+    "ly.img.plugin-ai-image-generation-web.runware/openai/gpt-image-1-mini/image2image.property.format.1024x1024": "Square (1024×1024)",
+    "ly.img.plugin-ai-image-generation-web.runware/openai/gpt-image-1-mini/image2image.property.format.1536x1024": "Landscape (1536×1024)",
+    "ly.img.plugin-ai-image-generation-web.runware/openai/gpt-image-1-mini/image2image.property.format.1024x1536": "Portrait (1024×1536)"
   }
 }

@@ -1026,6 +1026,53 @@ Key features:
 - Fixed resolutions: 1024×1024, 1536×1024, 1024×1536
 - Instruction-based editing for I2I
 
+#### 20. Seedream45 (Text-to-Image & Image-to-Image) via Runware
+
+ByteDance's Seedream 4.5 model with improved facial detail and text generation:
+
+```typescript
+// Text-to-Image
+text2image: RunwareImage.Seedream45.Text2Image({
+    proxyUrl: 'http://your-runware-proxy.com/api/proxy'
+})
+
+// Image-to-Image
+image2image: RunwareImage.Seedream45.Image2Image({
+    proxyUrl: 'http://your-runware-proxy.com/api/proxy'
+})
+```
+
+Key features:
+- Improved facial detail rendering over Seedream 4.0
+- Enhanced text generation quality
+- Multi-image fusion capabilities
+- 2K resolution output (minimum 3.7M pixels)
+- Aspect ratios: 1:1, 16:9, 9:16, 4:3, 3:4
+- Up to 14 reference images for I2I
+
+#### 21. GptImage1Mini (Text-to-Image & Image-to-Image) via Runware
+
+OpenAI's cost-efficient GPT Image 1 Mini model accessed through Runware:
+
+```typescript
+// Text-to-Image
+text2image: RunwareImage.GptImage1Mini.Text2Image({
+    proxyUrl: 'http://your-runware-proxy.com/api/proxy'
+})
+
+// Image-to-Image
+image2image: RunwareImage.GptImage1Mini.Image2Image({
+    proxyUrl: 'http://your-runware-proxy.com/api/proxy'
+})
+```
+
+Key features:
+- ~80% cost savings compared to GPT Image 1
+- Fast generation times
+- Same capabilities as GPT Image 1
+- Fixed resolutions: 1024×1024, 1536×1024, 1024×1536
+- Instruction-based editing for I2I
+
 ### Customizing Labels and Translations
 
 You can customize all labels and text in the AI image generation interface using the translation system. This allows you to provide better labels for your users in any language.

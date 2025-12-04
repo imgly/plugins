@@ -54,9 +54,12 @@ Each capability is tracked separately. Models with multiple capabilities have mu
 | Bria | Bria Video Increase Resolution | `bria:50@1` | video upscaling | - | 2025 | skipped |
 | Bria | Bria Video Background Removal | `bria:51@1` | video background removal | - | 2025 | skipped |
 | Bria | Bria Image Increase Resolution | `bria:52@1` | image upscaling | - | 2025 | skipped |
+| Bria | Bria Image Replace Background | `bria:11@1` | image-to-image (background) | seed (bg replace) | 2025 | skipped |
 | **ByteDance** | SeedEdit 3.0 | `bytedance:4@1` | image-to-image | reference (1, instruction-edit) | Apr-Sep 2025 | skipped |
 | ByteDance | Seedream 4.0 | `bytedance:5@0` | text-to-image | - | Sep 2025 | implemented |
 | ByteDance | Seedream 4.0 | `bytedance:5@0` | image-to-image | reference (14 max, consistency) | Sep 2025 | implemented |
+| ByteDance | Seedream 4.5 | `bytedance:seedream@4.5` | text-to-image | - | 2025 | implemented |
+| ByteDance | Seedream 4.5 | `bytedance:seedream@4.5` | image-to-image | reference (multi-image fusion) | 2025 | implemented |
 | ByteDance | Seedance 1.0 Lite | `bytedance:1@1` | text-to-video | - | Jun 2025 | skipped |
 | ByteDance | Seedance 1.0 Lite | `bytedance:1@1` | image-to-video | first frame | Jun 2025 | skipped |
 | ByteDance | Seedance 1.0 Pro | `bytedance:2@1` | text-to-video | - | Jun 2025 | skipped |
@@ -116,6 +119,8 @@ Each capability is tracked separately. Models with multiple capabilities have mu
 | KlingAI | KlingAI 2.5 Turbo Pro | `klingai:6@1` | text-to-video | - | Sep 2025 | skipped |
 | KlingAI | KlingAI 2.5 Turbo Pro | `klingai:6@1` | image-to-video | first frame | Sep 2025 | skipped |
 | KlingAI | KlingAI Lip-Sync | `klingai:7@1` | video-to-video (lip sync) | - | 2025 | skipped |
+| KlingAI | Kling VIDEO O1 | `klingai:kling@o1` | text-to-video | - | 2025 | skipped |
+| KlingAI | Kling VIDEO O1 | `klingai:kling@o1` | image-to-video | first frame | 2025 | skipped |
 | **Lightricks** | LTX-2 Pro | `lightricks:2@0` | text-to-video | - | Oct 2025 | skipped |
 | Lightricks | LTX-2 Pro | `lightricks:2@0` | image-to-video | first frame | Oct 2025 | skipped |
 | Lightricks | LTX-2 Fast | `lightricks:2@1` | text-to-video | - | Oct 2025 | skipped |
@@ -140,6 +145,8 @@ Each capability is tracked separately. Models with multiple capabilities have mu
 | OpenAI | DALL·E 3 | `openai:2@3` | text-to-image | - | Oct 2023 | skipped |
 | OpenAI | GPT Image 1 | `openai:1@1` | text-to-image | - | Mar 2025 | implemented |
 | OpenAI | GPT Image 1 | `openai:1@1` | image-to-image | reference (edit) | Mar 2025 | implemented |
+| OpenAI | GPT Image 1 Mini | `openai:1@2` | text-to-image | - | 2025 | implemented |
+| OpenAI | GPT Image 1 Mini | `openai:1@2` | image-to-image | reference (edit) | 2025 | implemented |
 | OpenAI | Sora 2 | `openai:3@1` | text-to-video | - | Sep 2025 | implemented |
 | OpenAI | Sora 2 | `openai:3@1` | image-to-video | first frame | Sep 2025 | implemented |
 | OpenAI | Sora 2 Pro | `openai:3@2` | text-to-video | - | Sep 2025 | implemented |
@@ -152,6 +159,8 @@ Each capability is tracked separately. Models with multiple capabilities have mu
 | PixVerse | PixVerse v4.5 | `pixverse:1@3` | image-to-video | first frame | May 2025 | skipped |
 | PixVerse | PixVerse v5 | `pixverse:1@5` | text-to-video | - | Aug 2025 | skipped |
 | PixVerse | PixVerse v5 | `pixverse:1@5` | image-to-video | first frame | Aug 2025 | skipped |
+| PixVerse | PixVerse v5.5 | `pixverse:1@6` | text-to-video | - | 2025 | skipped |
+| PixVerse | PixVerse v5.5 | `pixverse:1@6` | image-to-video | first frame | 2025 | skipped |
 | PixVerse | PixVerse LipSync | `pixverse:lipsync@1` | video-to-video (lip sync) | - | 2025 | skipped |
 | **Runway** | Runway Gen-4 Turbo | `runway:1@1` | image-to-video | first frame | Apr 2025 | skipped |
 | Runway | Runway Aleph | `runway:2@1` | video-to-video | - | Jul 2025 | skipped |
