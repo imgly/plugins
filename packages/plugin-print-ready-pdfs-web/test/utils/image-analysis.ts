@@ -6,6 +6,26 @@ import { join } from 'path';
 
 const execAsync = promisify(exec);
 
+// Cache for ImageMagick command detection
+let imageMagickCommand: string | null = null;
+
+/**
+ * Detect which ImageMagick command to use (magick for v7+, convert for v6)
+ */
+async function getImageMagickCommand(): Promise<string> {
+  if (imageMagickCommand) return imageMagickCommand;
+
+  try {
+    // Try magick first (ImageMagick v7)
+    await execAsync('magick -version');
+    imageMagickCommand = 'magick';
+  } catch {
+    // Fall back to convert (ImageMagick v6)
+    imageMagickCommand = 'convert';
+  }
+  return imageMagickCommand;
+}
+
 /**
  * Safely remove a temporary file, ignoring errors if it doesn't exist
  */
@@ -43,8 +63,9 @@ export async function convertPdfToPng(
   const { dpi = 150, page = 1 } = options;
 
   const buffer = Buffer.from(await pdfBlob.arrayBuffer());
-  const tempPdfPath = join(tmpdir(), `pdfx-test-${Date.now()}-input.pdf`);
-  const tempPngPrefix = join(tmpdir(), `pdfx-test-${Date.now()}-output`);
+  const timestamp = Date.now();
+  const tempPdfPath = join(tmpdir(), `pdfx-test-${timestamp}-input.pdf`);
+  const tempPngPrefix = join(tmpdir(), `pdfx-test-${timestamp}-output`);
 
   try {
     writeFileSync(tempPdfPath, buffer);
@@ -78,15 +99,19 @@ export async function extractPixelData(
   pngBuffer: Buffer
 ): Promise<{ width: number; height: number; pixels: RGBPixel[] }> {
   // Use ImageMagick's convert to get raw RGB data
-  const tempPngPath = join(tmpdir(), `pdfx-test-${Date.now()}-analyze.png`);
-  const tempRgbPath = join(tmpdir(), `pdfx-test-${Date.now()}-analyze.rgb`);
+  const timestamp = Date.now();
+  const tempPngPath = join(tmpdir(), `pdfx-test-${timestamp}-analyze.png`);
+  const tempRgbPath = join(tmpdir(), `pdfx-test-${timestamp}-analyze.rgb`);
 
   try {
     writeFileSync(tempPngPath, pngBuffer);
 
+    const magickCmd = await getImageMagickCommand();
+
     // Get image dimensions
+    const identifyCmd = magickCmd === 'magick' ? 'magick identify' : 'identify';
     const { stdout: dimensions } = await execAsync(
-      `identify -format "%w %h" "${tempPngPath}"`
+      `${identifyCmd} -format "%w %h" "${tempPngPath}"`
     );
     const [widthStr, heightStr] = dimensions.trim().split(' ');
     const width = parseInt(widthStr, 10);
@@ -94,8 +119,12 @@ export async function extractPixelData(
 
     // Convert to raw RGB
     await execAsync(
-      `convert "${tempPngPath}" -depth 8 rgb:"${tempRgbPath}"`
+      `${magickCmd} "${tempPngPath}" -depth 8 rgb:"${tempRgbPath}"`
     );
+
+    if (!existsSync(tempRgbPath)) {
+      throw new Error(`RGB conversion failed - output file not created`);
+    }
 
     const rgbData = readFileSync(tempRgbPath);
     const pixels: RGBPixel[] = [];
@@ -201,20 +230,34 @@ export async function analyzeRegionForBlackPixels(
 export async function checkImageToolsAvailable(): Promise<
   Record<string, boolean>
 > {
-  const tools: Record<string, string> = {
-    pdftoppm: 'pdftoppm -v',
-    convert: 'convert --version',
-    identify: 'identify --version'
-  };
-
   const available: Record<string, boolean> = {};
 
-  for (const [name, cmd] of Object.entries(tools)) {
+  // Check pdftoppm
+  try {
+    await execAsync('pdftoppm -v 2>&1');
+    available.pdftoppm = true;
+  } catch {
+    available.pdftoppm = false;
+  }
+
+  // Check ImageMagick (v7 uses magick, v6 uses convert)
+  try {
+    await execAsync('magick -version 2>&1');
+    available.convert = true;
+    available.identify = true;
+  } catch {
+    // Try v6 commands
     try {
-      await execAsync(cmd + ' 2>&1');
-      available[name] = true;
+      await execAsync('convert --version 2>&1');
+      available.convert = true;
     } catch {
-      available[name] = false;
+      available.convert = false;
+    }
+    try {
+      await execAsync('identify --version 2>&1');
+      available.identify = true;
+    } catch {
+      available.identify = false;
     }
   }
 
@@ -294,18 +337,24 @@ export async function resizePng(
   width: number,
   height: number
 ): Promise<Buffer> {
-  const tempInputPath = join(tmpdir(), `pdfx-test-${Date.now()}-resize-in.png`);
+  const timestamp = Date.now();
+  const tempInputPath = join(tmpdir(), `pdfx-test-${timestamp}-resize-in.png`);
   const tempOutputPath = join(
     tmpdir(),
-    `pdfx-test-${Date.now()}-resize-out.png`
+    `pdfx-test-${timestamp}-resize-out.png`
   );
 
   try {
     writeFileSync(tempInputPath, pngBuffer);
 
-    await execAsync(
-      `convert "${tempInputPath}" -resize ${width}x${height}! "${tempOutputPath}"`
+    const magickCmd = await getImageMagickCommand();
+    const { stderr } = await execAsync(
+      `${magickCmd} "${tempInputPath}" -resize ${width}x${height}! "${tempOutputPath}" 2>&1`
     );
+
+    if (!existsSync(tempOutputPath)) {
+      throw new Error(`Resize failed - output file not created. stderr: ${stderr}`);
+    }
 
     return readFileSync(tempOutputPath);
   } finally {

@@ -21,6 +21,21 @@ import { readFileSync, existsSync, writeFileSync, mkdirSync } from 'fs';
 
 import CreativeEngine from '@cesdk/node';
 
+// Load license from .env.local
+function loadLicense(): string {
+  const testFile = fileURLToPath(import.meta.url);
+  const testDir = dirname(testFile);
+  const envPath = join(testDir, '../.env.local');
+  if (existsSync(envPath)) {
+    const content = readFileSync(envPath, 'utf-8');
+    const match = content.match(/CESDK_LICENSE=(.+)/);
+    if (match) return match[1].trim();
+  }
+  return process.env.CESDK_LICENSE || '';
+}
+
+const CESDK_LICENSE = loadLicense();
+
 import { convertToPDFX3 } from '../../dist/index.mjs';
 import {
   convertPdfToPng,
@@ -35,9 +50,6 @@ import { ExternalValidators } from '../utils/external-validators.js';
 
 const testFile = fileURLToPath(import.meta.url);
 const testDir = dirname(testFile);
-
-// CE.SDK license - uses trial/demo mode if not set
-const CESDK_LICENSE = process.env.CESDK_LICENSE || '';
 
 describe('Black Background Regression (#11242)', () => {
   let imageToolsAvailable: Record<string, boolean>;
@@ -61,7 +73,6 @@ describe('Black Background Regression (#11242)', () => {
         license: CESDK_LICENSE,
         baseURL: 'https://cdn.img.ly/packages/imgly/cesdk-node/1.61.0/assets'
       });
-      console.log('CE.SDK engine initialized for test PDF generation');
     } catch (error) {
       console.warn(
         '⚠️  Failed to initialize CE.SDK engine:',
