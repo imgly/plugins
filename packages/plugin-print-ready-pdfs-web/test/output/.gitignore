@@ -1,3 +1,4 @@
 # Ignore all PDF outputs except reference files
 *.pdf
 !*_reference.pdf
+*.png
