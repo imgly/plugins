@@ -20,8 +20,9 @@ import {
 import { createFalAiProviders } from './falaiProviders';
 import { createOpenAiProviders } from './openaiProviders';
 import { createRunwareProviders } from './runwareProviders';
+import { createEachLabsProviders } from './eachlabsProviders';
 
-export type ProviderPartner = 'fal-ai' | 'openai' | 'runware';
+export type ProviderPartner = 'fal-ai' | 'openai' | 'runware' | 'eachlabs';
 
 function App() {
   const cesdk = useRef<CreativeEditorSDK>();
@@ -218,6 +219,11 @@ function App() {
                     ...middlewareOptions,
                     proxyUrl: import.meta.env.VITE_RUNWARE_PROXY_URL
                   });
+                case 'eachlabs':
+                  return createEachLabsProviders({
+                    ...middlewareOptions,
+                    proxyUrl: import.meta.env.VITE_EACHLABS_PROXY_URL
+                  });
                 default:
                   return createFalAiProviders({
                     ...middlewareOptions,
@@ -334,6 +340,8 @@ function App() {
                     return 'OpenAI';
                   case 'runware':
                     return 'Runware';
+                  case 'eachlabs':
+                    return 'EachLabs';
                   default:
                     return 'Fal.ai';
                 }
@@ -364,6 +372,13 @@ function App() {
                       isSelected: providerPartner === 'runware',
                       onClick: () => {
                         setSearchParams({ archive: archiveType!, partner: 'runware' });
+                      }
+                    });
+                    builder.Button('eachlabs', {
+                      label: 'EachLabs',
+                      isSelected: providerPartner === 'eachlabs',
+                      onClick: () => {
+                        setSearchParams({ archive: archiveType!, partner: 'eachlabs' });
                       }
                     });
                   }
