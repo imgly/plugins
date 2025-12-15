@@ -35,6 +35,8 @@ import ImageGeneration from '@imgly/plugin-ai-image-generation-web';
 import FalAiImage from '@imgly/plugin-ai-image-generation-web/fal-ai';
 // For OpenAI providers
 import OpenAiImage from '@imgly/plugin-ai-image-generation-web/open-ai';
+// For Runware providers
+import RunwareImage from '@imgly/plugin-ai-image-generation-web/runware';
 
 // Initialize CreativeEditor SDK
 CreativeEditorSDK.create(domElement, {
@@ -886,6 +888,191 @@ cesdk.i18n.setTranslations({
 });
 ```
 
+### Runware Providers
+
+Runware provides access to multiple AI models through a unified API. These providers require a Runware proxy URL for authentication.
+
+#### 14. Flux2Dev (Text-to-Image & Image-to-Image)
+
+Black Forest Labs' FLUX.2 [dev] model with full architectural control:
+
+```typescript
+// Text-to-Image
+text2image: RunwareImage.Flux2Dev.Text2Image({
+    proxyUrl: 'http://your-runware-proxy.com/api/proxy'
+})
+
+// Image-to-Image
+image2image: RunwareImage.Flux2Dev.Image2Image({
+    proxyUrl: 'http://your-runware-proxy.com/api/proxy'
+})
+```
+
+Key features:
+- Open weights release with full architectural control
+- Flexible sampling behavior and guidance strategies
+- Resolution: 512-2048 pixels (multiples of 16)
+- Up to 4 reference images for I2I
+- Aspect ratios: 1:1, 16:9, 9:16, 4:3, 3:4
+
+#### 15. Flux2Pro (Text-to-Image & Image-to-Image)
+
+Black Forest Labs' FLUX.2 [pro] model with enhanced capabilities:
+
+```typescript
+// Text-to-Image
+text2image: RunwareImage.Flux2Pro.Text2Image({
+    proxyUrl: 'http://your-runware-proxy.com/api/proxy'
+})
+
+// Image-to-Image
+image2image: RunwareImage.Flux2Pro.Image2Image({
+    proxyUrl: 'http://your-runware-proxy.com/api/proxy'
+})
+```
+
+Key features:
+- Professional-grade image generation
+- Resolution: 256-1920 pixels (multiples of 16)
+- Up to 9 reference images for I2I
+- Enhanced quality and detail
+- Aspect ratios: 1:1, 16:9, 9:16, 4:3, 3:4
+
+#### 16. Flux2Flex (Text-to-Image & Image-to-Image)
+
+Black Forest Labs' FLUX.2 [flex] model optimized for flexibility:
+
+```typescript
+// Text-to-Image
+text2image: RunwareImage.Flux2Flex.Text2Image({
+    proxyUrl: 'http://your-runware-proxy.com/api/proxy'
+})
+
+// Image-to-Image
+image2image: RunwareImage.Flux2Flex.Image2Image({
+    proxyUrl: 'http://your-runware-proxy.com/api/proxy'
+})
+```
+
+Key features:
+- Flexible generation with fast inference
+- Resolution: 256-1920 pixels (multiples of 16)
+- Up to 10 reference images for I2I
+- Aspect ratios: 1:1, 16:9, 9:16, 4:3, 3:4
+
+#### 17. Seedream4 (Text-to-Image & Image-to-Image)
+
+ByteDance's Seedream 4.0 model for high-quality generation:
+
+```typescript
+// Text-to-Image
+text2image: RunwareImage.Seedream4.Text2Image({
+    proxyUrl: 'http://your-runware-proxy.com/api/proxy'
+})
+
+// Image-to-Image
+image2image: RunwareImage.Seedream4.Image2Image({
+    proxyUrl: 'http://your-runware-proxy.com/api/proxy'
+})
+```
+
+Key features:
+- ByteDance's latest generation model
+- High-quality photorealistic output
+- Up to 14 reference images for I2I with character/subject consistency
+- Aspect ratios: 1:1, 16:9, 9:16, 4:3, 3:4
+
+#### 18. NanoBanana2Pro (Text-to-Image & Image-to-Image)
+
+Google's Gemini 3 Pro based model for fast, high-quality generation:
+
+```typescript
+// Text-to-Image
+text2image: RunwareImage.NanoBanana2Pro.Text2Image({
+    proxyUrl: 'http://your-runware-proxy.com/api/proxy'
+})
+
+// Image-to-Image
+image2image: RunwareImage.NanoBanana2Pro.Image2Image({
+    proxyUrl: 'http://your-runware-proxy.com/api/proxy'
+})
+```
+
+Key features:
+- Powered by Gemini 3 Pro
+- Fast generation with high quality
+- Up to 14 reference images for style/lighting transfer
+- Aspect ratios: 1:1, 16:9, 9:16, 4:3, 3:4
+
+#### 19. GptImage1 (Text-to-Image & Image-to-Image) via Runware
+
+OpenAI's GPT Image 1 model accessed through Runware:
+
+```typescript
+// Text-to-Image
+text2image: RunwareImage.GptImage1.Text2Image({
+    proxyUrl: 'http://your-runware-proxy.com/api/proxy'
+})
+
+// Image-to-Image
+image2image: RunwareImage.GptImage1.Image2Image({
+    proxyUrl: 'http://your-runware-proxy.com/api/proxy'
+})
+```
+
+Key features:
+- OpenAI's latest image generation model
+- High-quality image generation and editing
+- Fixed resolutions: 1024×1024, 1536×1024, 1024×1536
+- Instruction-based editing for I2I
+
+#### 20. Seedream45 (Text-to-Image & Image-to-Image) via Runware
+
+ByteDance's Seedream 4.5 model with improved facial detail and text generation:
+
+```typescript
+// Text-to-Image
+text2image: RunwareImage.Seedream45.Text2Image({
+    proxyUrl: 'http://your-runware-proxy.com/api/proxy'
+})
+
+// Image-to-Image
+image2image: RunwareImage.Seedream45.Image2Image({
+    proxyUrl: 'http://your-runware-proxy.com/api/proxy'
+})
+```
+
+Key features:
+- Improved facial detail rendering over Seedream 4.0
+- Enhanced text generation quality
+- Multi-image fusion capabilities
+- 2K resolution output (minimum 3.7M pixels)
+- Aspect ratios: 1:1, 16:9, 9:16, 4:3, 3:4
+- Up to 14 reference images for I2I
+
+#### 21. GptImage1Mini (Text-to-Image & Image-to-Image) via Runware
+
+OpenAI's cost-efficient GPT Image 1 Mini model accessed through Runware:
+
+```typescript
+// Text-to-Image
+text2image: RunwareImage.GptImage1Mini.Text2Image({
+    proxyUrl: 'http://your-runware-proxy.com/api/proxy'
+})
+
+// Image-to-Image
+image2image: RunwareImage.GptImage1Mini.Image2Image({
+    proxyUrl: 'http://your-runware-proxy.com/api/proxy'
+})
+```
+
+Key features:
+- ~80% cost savings compared to GPT Image 1
+- Fast generation times
+- Same capabilities as GPT Image 1
+- Fixed resolutions: 1024×1024, 1536×1024, 1024×1536
+- Instruction-based editing for I2I
+
 ### Customizing Labels and Translations
 
 You can customize all labels and text in the AI image generation interface using the translation system. This allows you to provide better labels for your users in any language.
@@ -1392,6 +1579,61 @@ FalAiImage.SeedreamV4Edit(config: {
 })
 ```
 
+### Runware Providers
+
+All Runware providers use the following configuration:
+
+```typescript
+interface RunwareProviderConfiguration {
+  proxyUrl: string;        // HTTP endpoint URL for the Runware proxy
+  debug?: boolean;         // Enable debug logging
+  middlewares?: any[];     // Optional middleware functions
+  history?: false | '@imgly/local' | '@imgly/indexedDB' | (string & {});
+}
+```
+
+#### Flux2Dev.Text2Image / Flux2Dev.Image2Image
+
+```typescript
+RunwareImage.Flux2Dev.Text2Image(config: RunwareProviderConfiguration)
+RunwareImage.Flux2Dev.Image2Image(config: RunwareProviderConfiguration)
+```
+
+#### Flux2Pro.Text2Image / Flux2Pro.Image2Image
+
+```typescript
+RunwareImage.Flux2Pro.Text2Image(config: RunwareProviderConfiguration)
+RunwareImage.Flux2Pro.Image2Image(config: RunwareProviderConfiguration)
+```
+
+#### Flux2Flex.Text2Image / Flux2Flex.Image2Image
+
+```typescript
+RunwareImage.Flux2Flex.Text2Image(config: RunwareProviderConfiguration)
+RunwareImage.Flux2Flex.Image2Image(config: RunwareProviderConfiguration)
+```
+
+#### Seedream4.Text2Image / Seedream4.Image2Image
+
+```typescript
+RunwareImage.Seedream4.Text2Image(config: RunwareProviderConfiguration)
+RunwareImage.Seedream4.Image2Image(config: RunwareProviderConfiguration)
+```
+
+#### NanoBanana2Pro.Text2Image / NanoBanana2Pro.Image2Image
+
+```typescript
+RunwareImage.NanoBanana2Pro.Text2Image(config: RunwareProviderConfiguration)
+RunwareImage.NanoBanana2Pro.Image2Image(config: RunwareProviderConfiguration)
+```
+
+#### GptImage1.Text2Image / GptImage1.Image2Image (Runware)
+
+```typescript
+RunwareImage.GptImage1.Text2Image(config: RunwareProviderConfiguration)
+RunwareImage.GptImage1.Image2Image(config: RunwareProviderConfiguration)
+```
+
 ## UI Integration
 
 The plugin automatically registers the following UI components:
@@ -1492,6 +1734,18 @@ const myImageProvider = {
   - NanoBananaProEdit: `ly.img.ai.fal-ai/nano-banana-pro/edit`
   - SeedreamV4: `ly.img.ai.fal-ai/bytedance/seedream/v4/text-to-image`
   - SeedreamV4Edit: `ly.img.ai.fal-ai/bytedance/seedream/v4/edit`
+  - Runware Flux2Dev.Text2Image: `ly.img.ai.runware/bfl/flux-2-dev`
+  - Runware Flux2Dev.Image2Image: `ly.img.ai.runware/bfl/flux-2-dev/image2image`
+  - Runware Flux2Pro.Text2Image: `ly.img.ai.runware/bfl/flux-2-pro`
+  - Runware Flux2Pro.Image2Image: `ly.img.ai.runware/bfl/flux-2-pro/image2image`
+  - Runware Flux2Flex.Text2Image: `ly.img.ai.runware/bfl/flux-2-flex`
+  - Runware Flux2Flex.Image2Image: `ly.img.ai.runware/bfl/flux-2-flex/image2image`
+  - Runware Seedream4.Text2Image: `ly.img.ai.runware/bytedance/seedream-4`
+  - Runware Seedream4.Image2Image: `ly.img.ai.runware/bytedance/seedream-4/image2image`
+  - Runware NanoBanana2Pro.Text2Image: `ly.img.ai.runware/google/nano-banana-2-pro`
+  - Runware NanoBanana2Pro.Image2Image: `ly.img.ai.runware/google/nano-banana-2-pro/image2image`
+  - Runware GptImage1.Text2Image: `ly.img.ai.runware/openai/gpt-image-1`
+  - Runware GptImage1.Image2Image: `ly.img.ai.runware/openai/gpt-image-1/image2image`
 
 ### Asset History
 
@@ -1513,6 +1767,18 @@ Generated images are automatically stored in asset sources with the following ID
 - NanoBananaProEdit: `fal-ai/nano-banana-pro/edit.history`
 - SeedreamV4: `fal-ai/bytedance/seedream/v4/text-to-image.history`
 - SeedreamV4Edit: `fal-ai/bytedance/seedream/v4/edit.history`
+- Runware Flux2Dev.Text2Image: `runware/bfl/flux-2-dev.history`
+- Runware Flux2Dev.Image2Image: `runware/bfl/flux-2-dev/image2image.history`
+- Runware Flux2Pro.Text2Image: `runware/bfl/flux-2-pro.history`
+- Runware Flux2Pro.Image2Image: `runware/bfl/flux-2-pro/image2image.history`
+- Runware Flux2Flex.Text2Image: `runware/bfl/flux-2-flex.history`
+- Runware Flux2Flex.Image2Image: `runware/bfl/flux-2-flex/image2image.history`
+- Runware Seedream4.Text2Image: `runware/bytedance/seedream-4.history`
+- Runware Seedream4.Image2Image: `runware/bytedance/seedream-4/image2image.history`
+- Runware NanoBanana2Pro.Text2Image: `runware/google/nano-banana-2-pro.history`
+- Runware NanoBanana2Pro.Image2Image: `runware/google/nano-banana-2-pro/image2image.history`
+- Runware GptImage1.Text2Image: `runware/openai/gpt-image-1.history`
+- Runware GptImage1.Image2Image: `runware/openai/gpt-image-1/image2image.history`
 
 ### Dock Integration
 

@@ -1,0 +1,39 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Seedream 4.5 Image-to-Image API",
+    "version": "1.0.0",
+    "description": "Seedream 4.5 image-to-image transformation via Runware"
+  },
+  "components": {
+    "schemas": {
+      "Seedream45Image2ImageInput": {
+        "title": "Seedream45Image2ImageInput",
+        "type": "object",
+        "properties": {
+          "image_url": {
+            "title": "Input Image",
+            "type": "string",
+            "description": "Image to transform",
+            "x-imgly-builder": {
+              "component": "ImageUrl"
+            }
+          },
+          "prompt": {
+            "title": "Prompt",
+            "type": "string",
+            "description": "Text description for image transformation",
+            "minLength": 1,
+            "maxLength": 2000,
+            "x-imgly-builder": {
+              "component": "TextArea"
+            }
+          }
+        },
+        "x-fal-order-properties": ["image_url", "prompt"],
+        "required": ["image_url", "prompt"]
+      }
+    }
+  },
+  "paths": {}
+}

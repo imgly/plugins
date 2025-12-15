@@ -1,0 +1,39 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Nano Banana 2 Pro Image-to-Image API",
+    "version": "1.0.0",
+    "description": "Nano Banana 2 Pro (Gemini 3 Pro) image-to-image transformation via Runware"
+  },
+  "components": {
+    "schemas": {
+      "NanoBanana2ProImage2ImageInput": {
+        "title": "NanoBanana2ProImage2ImageInput",
+        "type": "object",
+        "properties": {
+          "image_url": {
+            "title": "Input Image",
+            "type": "string",
+            "description": "Image to transform",
+            "x-imgly-builder": {
+              "component": "ImageUrl"
+            }
+          },
+          "prompt": {
+            "title": "Prompt",
+            "type": "string",
+            "description": "Text description for image transformation",
+            "minLength": 3,
+            "maxLength": 45000,
+            "x-imgly-builder": {
+              "component": "TextArea"
+            }
+          }
+        },
+        "x-fal-order-properties": ["image_url", "prompt"],
+        "required": ["image_url", "prompt"]
+      }
+    }
+  },
+  "paths": {}
+}

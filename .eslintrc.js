@@ -90,6 +90,10 @@ module.exports = {
     {
       files: ['esbuild/*', './types/*'],
       extends: ['plugin:@typescript-eslint/disable-type-checked']
+    },
+    {
+      files: ['**/test/**/*.ts', '**/test/**/*.tsx'],
+      extends: ['plugin:@typescript-eslint/disable-type-checked']
     }
   ]
 };

@@ -27,6 +27,10 @@
     "./fal-ai": {
       "import": "./dist/fal-ai/index.mjs",
       "types": "./dist/fal-ai/index.d.ts"
+    },
+    "./runware": {
+      "import": "./dist/runware/index.mjs",
+      "types": "./dist/runware/index.d.ts"
     }
   },
   "homepage": "https://img.ly/products/creative-sdk",
