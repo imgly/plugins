@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+## [0.2.13] - 2025-12-15
+
+### Fixed
+
+-   [image-generation] **Broken thumbnails on Style Selection**: Fixed an issue where thumbnails on Style Selection are broken due to double slashes. Thumbnail URLs are now ensured to have normalized baseURL with a trailing slash and each appended thumbnail paths respect it.
+
 ### New Features
 
 -   [all] **Runware Partner Integration**: Added Runware as a new AI provider service, offering access to multiple image and video generation models through a unified API. Runware provides a single endpoint for accessing various AI models with consistent configuration.
