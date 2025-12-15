@@ -2,7 +2,8 @@ import { Icons, CustomAssetSource } from '@imgly/plugin-utils';
 import {
   type Provider,
   getPanelId,
-  createTranslationCallback
+  createTranslationCallback,
+  normalizeBaseURL
 } from '@imgly/plugin-ai-generation-web';
 import { type RecraftV3TextToImageInput } from '@fal-ai/client/endpoints';
 import RecraftV3Schema from './RecraftV3.json';
@@ -55,9 +56,11 @@ function getProvider(
   const modelKey = 'fal-ai/recraft-v3';
   const styleImageAssetSourceId = `${modelKey}/styles/image`;
   const styleVectorAssetSourceId = `${modelKey}/styles/vector`;
-  const baseURL =
+  // Normalize baseURL to ensure exactly one trailing slash
+  const baseURL = normalizeBaseURL(
     config.baseURL ??
-    'https://cdn.img.ly/assets/plugins/plugin-ai-image-generation-web/v1/recraft-v3/';
+      'https://cdn.img.ly/assets/plugins/plugin-ai-image-generation-web/v1/recraft-v3/'
+  );
 
   // Initialize feature flags for style groups
   cesdk.feature.enable(
