@@ -1,6 +1,6 @@
 {
   "name": "@imgly/plugin-ai-text-generation-web",
-  "version": "0.2.13",
+  "version": "0.2.14",
   "description": "AI text generation plugin for the CE.SDK editor",
   "keywords": [
     "CE.SDK",
@@ -56,8 +56,8 @@
     "dev": "SKIP_DTS=true node scripts/watch.mjs",
     "dev:wait": "node ../../scripts/dev-wait.mjs",
     "dev:types": "tsc --emitDeclarationOnly --watch --preserveWatchOutput",
-    "publish:latest": "pnpm run build && pnpm publish --tag latest --access public",
-    "publish:next": "pnpm run build && pnpm publish --tag next --access public",
+    "publish:latest": "pnpm run build && pnpm publish --tag latest --access public --no-git-checks",
+    "publish:next": "pnpm run build && pnpm publish --tag next --access public --no-git-checks",
     "check:all": "concurrently -n lint,type,pretty \"pnpm run check:lint\" \"pnpm run check:types\" \"pnpm run check:pretty\"",
     "check:lint": "eslint --max-warnings 0 './src/**/*.{ts,tsx}'",
     "check:pretty": "prettier --list-different './src/**/*.{ts,tsx}'",

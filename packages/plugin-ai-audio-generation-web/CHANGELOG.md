@@ -2,6 +2,16 @@
 
 ## [Unreleased]
 
+## [0.2.14] - 2025-12-15
+
+## [0.2.13] - 2025-12-15
+
+### New Features
+
+-   [all] **Runware Partner Integration**: Added Runware as a new AI provider service, offering access to multiple image and video generation models through a unified API. Runware provides a single endpoint for accessing various AI models with consistent configuration.
+    - **Image Generation**: FLUX.2 [dev], FLUX.2 [pro], FLUX.2 [flex], Seedream 4.0, Seedream 4.5, Nano Banana 2 Pro, GPT Image 1, GPT Image 1 Mini (all with text-to-image and image-to-image variants)
+    - **Video Generation**: Google Veo 3.1, Veo 3.1 Fast, OpenAI Sora 2, Sora 2 Pro (all with text-to-video and image-to-video variants)
+
 ## [0.2.12] - 2025-11-21
 
 ## [0.2.11] - 2025-11-21
