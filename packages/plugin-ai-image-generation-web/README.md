@@ -1143,6 +1143,36 @@ Key features:
 - Supports up to 4 reference images
 - Full canvas quick actions support: edit image, swap background, style transfer, artist styles, create variants, combine images, remix page
 
+#### 26. OpenAI GPT Image (Text-to-Image) via EachLabs
+
+OpenAI's GPT Image text-to-image generation via EachLabs:
+
+```typescript
+text2image: EachLabsImage.OpenAIGptImage.Text2Image({
+    proxyUrl: 'http://your-eachlabs-proxy.com/api/proxy'
+})
+```
+
+Key features:
+- High-quality image generation from OpenAI
+- 3 image size options (Square, Landscape, Portrait)
+- Professional-grade output quality
+
+#### 27. OpenAI GPT Image Edit (Image-to-Image) via EachLabs
+
+OpenAI's GPT Image image transformation via EachLabs:
+
+```typescript
+image2image: EachLabsImage.OpenAIGptImage.Image2Image({
+    proxyUrl: 'http://your-eachlabs-proxy.com/api/proxy'
+})
+```
+
+Key features:
+- High-quality image transformation
+- Supports up to 16 reference images
+- Full canvas quick actions support: edit image, swap background, style transfer, artist styles, create variants, combine images, remix page
+
 ### Customizing Labels and Translations
 
 You can customize all labels and text in the AI image generation interface using the translation system. This allows you to provide better labels for your users in any language.
@@ -1731,6 +1761,13 @@ EachLabsImage.Flux2Pro.Text2Image(config: EachLabsProviderConfiguration)
 EachLabsImage.Flux2Pro.Image2Image(config: EachLabsProviderConfiguration)
 ```
 
+#### OpenAIGptImage.Text2Image / OpenAIGptImage.Image2Image
+
+```typescript
+EachLabsImage.OpenAIGptImage.Text2Image(config: EachLabsProviderConfiguration)
+EachLabsImage.OpenAIGptImage.Image2Image(config: EachLabsProviderConfiguration)
+```
+
 ## UI Integration
 
 The plugin automatically registers the following UI components:
@@ -1847,6 +1884,8 @@ const myImageProvider = {
   - EachLabs NanoBananaPro.Image2Image: `ly.img.ai.eachlabs/nano-banana-pro/edit`
   - EachLabs Flux2Pro.Text2Image: `ly.img.ai.eachlabs/flux-2-pro`
   - EachLabs Flux2Pro.Image2Image: `ly.img.ai.eachlabs/flux-2-pro/edit`
+  - EachLabs OpenAIGptImage.Text2Image: `ly.img.ai.eachlabs/openai-gpt-image`
+  - EachLabs OpenAIGptImage.Image2Image: `ly.img.ai.eachlabs/openai-gpt-image/edit`
 
 ### Asset History
 
@@ -1884,6 +1923,8 @@ Generated images are automatically stored in asset sources with the following ID
 - EachLabs NanoBananaPro.Image2Image: `eachlabs/nano-banana-pro/edit.history`
 - EachLabs Flux2Pro.Text2Image: `eachlabs/flux-2-pro.history`
 - EachLabs Flux2Pro.Image2Image: `eachlabs/flux-2-pro/edit.history`
+- EachLabs OpenAIGptImage.Text2Image: `eachlabs/openai-gpt-image.history`
+- EachLabs OpenAIGptImage.Image2Image: `eachlabs/openai-gpt-image/edit.history`
 
 ### Dock Integration
 
