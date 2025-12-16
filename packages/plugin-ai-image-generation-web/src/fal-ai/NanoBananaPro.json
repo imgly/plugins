@@ -75,6 +75,18 @@
               "21:9": "Ultra-Wide (21:9)",
               "9:21": "Ultra-Tall (9:21)",
               "2.4:1": "Cinematic (2.4:1)"
+            },
+            "x-imgly-enum-icons": {
+              "1:1": "@imgly/plugin/formats/ratio1by1",
+              "3:2": "@imgly/plugin/formats/ratio4by3",
+              "2:3": "@imgly/plugin/formats/ratio3by4",
+              "4:3": "@imgly/plugin/formats/ratio4by3",
+              "3:4": "@imgly/plugin/formats/ratio3by4",
+              "16:9": "@imgly/plugin/formats/ratio16by9",
+              "9:16": "@imgly/plugin/formats/ratio9by16",
+              "21:9": "@imgly/plugin/formats/ratio16by9",
+              "9:21": "@imgly/plugin/formats/ratio9by16",
+              "2.4:1": "@imgly/plugin/formats/ratio16by9"
             }
           },
           "resolution": {
