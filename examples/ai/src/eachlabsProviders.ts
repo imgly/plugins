@@ -16,10 +16,18 @@ export function createEachLabsProviders(options: EachLabsProviderOptions) {
       EachLabsImage.NanoBananaPro.Text2Image({
         middlewares: [imageRateLimitMiddleware, errorMiddleware],
         proxyUrl
+      }),
+      EachLabsImage.Flux2Pro.Text2Image({
+        middlewares: [imageRateLimitMiddleware, errorMiddleware],
+        proxyUrl
       })
     ],
     image2image: [
       EachLabsImage.NanoBananaPro.Image2Image({
+        middlewares: [imageRateLimitMiddleware, errorMiddleware],
+        proxyUrl
+      }),
+      EachLabsImage.Flux2Pro.Image2Image({
         middlewares: [imageRateLimitMiddleware, errorMiddleware],
         proxyUrl
       })
