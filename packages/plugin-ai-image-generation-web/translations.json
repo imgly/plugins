@@ -457,6 +457,17 @@
 
     "ly.img.plugin-ai-image-generation-web.eachlabs/flux-2-pro/edit.property.image_url": "Source Image",
     "ly.img.plugin-ai-image-generation-web.eachlabs/flux-2-pro/edit.property.prompt": "Prompt",
-    "ly.img.plugin-ai-image-generation-web.eachlabs/flux-2-pro/edit.property.prompt.placeholder": "Describe the changes..."
+    "ly.img.plugin-ai-image-generation-web.eachlabs/flux-2-pro/edit.property.prompt.placeholder": "Describe the changes...",
+
+    "ly.img.plugin-ai-image-generation-web.eachlabs/openai-gpt-image.property.prompt": "Prompt",
+    "ly.img.plugin-ai-image-generation-web.eachlabs/openai-gpt-image.property.prompt.placeholder": "Describe your image...",
+    "ly.img.plugin-ai-image-generation-web.eachlabs/openai-gpt-image.property.image_size": "Format",
+    "ly.img.plugin-ai-image-generation-web.eachlabs/openai-gpt-image.property.image_size.1024x1024": "Square",
+    "ly.img.plugin-ai-image-generation-web.eachlabs/openai-gpt-image.property.image_size.1536x1024": "Landscape",
+    "ly.img.plugin-ai-image-generation-web.eachlabs/openai-gpt-image.property.image_size.1024x1536": "Portrait",
+
+    "ly.img.plugin-ai-image-generation-web.eachlabs/openai-gpt-image/edit.property.image_url": "Source Image",
+    "ly.img.plugin-ai-image-generation-web.eachlabs/openai-gpt-image/edit.property.prompt": "Prompt",
+    "ly.img.plugin-ai-image-generation-web.eachlabs/openai-gpt-image/edit.property.prompt.placeholder": "Describe the changes..."
   }
 }
