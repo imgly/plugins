@@ -697,6 +697,9 @@ importers:
       '@cesdk/engine':
         specifier: 1.60.0
         version: 1.60.0(react@18.3.1)
+      '@cesdk/node':
+        specifier: ~1.61.0
+        version: 1.61.0
       '@imgly/plugin-utils':
         specifier: workspace:*
         version: file:packages/plugin-utils(@cesdk/cesdk-js@1.60.0(react@18.3.1))
@@ -1118,6 +1121,10 @@ packages:
     peerDependenciesMeta:
       react:
         optional: true
+
+  '@cesdk/node@1.61.0':
+    resolution: {integrity: sha512-BTADkxk6FAloYoNLTWs1nKzXlmW6GC+CZYH6dsFkkhcyUWmQ69AWqM6M0UD2r71O5BnDoA6CQiiHxLjM4UUNIA==}
+    engines: {node: '>=20.0.0'}
 
   '@cloudflare/kv-asset-handler@0.4.0':
     resolution: {integrity: sha512-+tv3z+SPp+gqTIcImN9o0hqE9xyfQjI1XD9pL6NuKjua9B1y7mNYv0S9cP+QEbA4ppVgGZEmKOvHX5G5Ei1CVA==}
@@ -5824,6 +5831,8 @@ snapshots:
   '@cesdk/engine@1.60.0(react@18.3.1)':
     optionalDependencies:
       react: 18.3.1
+
+  '@cesdk/node@1.61.0': {}
 
   '@cloudflare/kv-asset-handler@0.4.0':
     dependencies:

@@ -334,7 +334,7 @@ Text and vector graphics are preserved in their original vector format during co
 
 ### Transparency Handling
 
-**Important:** PDF/X-3:2003 does not support transparency. By default, the plugin flattens all transparency to ensure compliance:
+**Important:** PDF/X-3:2003 is based on PDF 1.3 which does not support transparency. By default, the plugin flattens all transparency to ensure compliance:
 
 ```javascript
 // Default behavior - flattens transparency (PDF/X-3 compliant)
@@ -350,30 +350,50 @@ const printReadyPDF = await convertToPDFX3(pdfBlob, {
 - **Pages without transparency** → Preserved as vectors (text, shapes remain editable)
 - **Mixed content** → Only transparent elements are rasterized
 
-**For Maximum Quality:**
+**Why Flattening is Required:**
 
-If your CE.SDK exports contain no transparency, you can disable flattening to preserve all vectors:
+PDF/X-3 is based on PDF 1.3, which predates PDF transparency features (introduced in PDF 1.4). Therefore, **transparency flattening is mandatory** for PDF/X-3 compliance—this is a requirement of the standard itself, not a limitation of the tooling. Any PDF with transparency must have those elements composited into opaque equivalents before it can be a valid PDF/X-3 file.
+
+**⚠️ Known Issue: Black Backgrounds During Flattening**
+
+During the flattening process, certain elements with transparency may render with black backgrounds instead of their intended appearance. Affected elements include:
+
+- Gradients that fade to transparent
+- PNG images with alpha channels (e.g., stickers, icons)
+- Text with emoji characters
+- Overlapping semi-transparent elements
+
+**Workaround - Preserve Transparency:**
+
+If visual fidelity is more important than strict PDF/X-3 compliance, you can disable transparency flattening:
 
 ```javascript
-// Disable flattening for transparent-free PDFs (best quality)
+// Preserve transparency for better visual fidelity
 const printReadyPDF = await convertToPDFX3(pdfBlob, {
   outputProfile: 'fogra39',
-  title: 'Vector Preserved',
-  flattenTransparency: false, // Preserves vectors, but may not be PDF/X-3 compliant if transparency exists
+  title: 'Visual Fidelity Preserved',
+  flattenTransparency: false, // Preserves appearance but may not be strictly PDF/X-3 compliant
 });
 ```
 
-**⚠️ Important:** Only disable `flattenTransparency` if you're certain your PDFs contain no transparency. PDFs with transparency and `flattenTransparency: false` will fail PDF/X-3 validation.
+**Trade-offs:**
+| Setting | Visual Fidelity | PDF/X-3 Compliance |
+|---------|----------------|-------------------|
+| `flattenTransparency: true` (default) | May have artifacts | Strictly compliant |
+| `flattenTransparency: false` | Preserved | May not validate if transparency exists |
 
-**Avoiding Transparency in CE.SDK:**
+**Avoiding Transparency Issues in CE.SDK:**
+
+To ensure best results with PDF/X-3, design without transparency:
 - Use 100% opacity for all elements
-- Avoid alpha channel PNG images
+- Avoid PNG images with alpha channels
 - Use solid fills instead of gradient opacity
+- Avoid gradients that fade to transparent
 - Export without blend modes
 
 ## Known Limitations
 
-- **Transparency**: PDF/X-3:2003 does not support transparency. Pages containing transparency (alpha channels, soft masks, opacity < 1.0) will be rasterized to bitmaps during conversion to ensure compliance. To preserve vectors, avoid transparency in your CE.SDK designs.
+- **Transparency Flattening Required**: PDF/X-3 is based on PDF 1.3 which does not support transparency. Transparency flattening is mandatory for compliance. During flattening, elements with transparency may render with black backgrounds (affects gradients with alpha, PNGs with transparency, emojis). Use `flattenTransparency: false` as a workaround if visual fidelity is more important than strict compliance. See [Transparency Handling](#transparency-handling) for details.
 - **Spot Colors**: Currently, spot colors (Pantone, custom inks) are converted to CMYK during the PDF/X-3 conversion process. This is a limitation of the current Ghostscript WASM implementation. If preserving spot colors is critical for your workflow, consider server-side PDF processing solutions.
 - **PDF/X Versions**: Only supports PDF/X-3:2003 (not X-1a or X-4 yet)
 
