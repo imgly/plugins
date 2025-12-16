@@ -1113,6 +1113,36 @@ Key features:
 - Supports up to 10 reference images
 - Full canvas quick actions support: edit image, swap background, style transfer, artist styles, create variants, combine images, remix page
 
+#### 24. Flux2Pro (Text-to-Image) via EachLabs
+
+Black Forest Labs' Flux 2 Pro high-quality text-to-image generation via EachLabs:
+
+```typescript
+text2image: EachLabsImage.Flux2Pro.Text2Image({
+    proxyUrl: 'http://your-eachlabs-proxy.com/api/proxy'
+})
+```
+
+Key features:
+- High-quality image generation from Black Forest Labs
+- 6 image size options (square HD, square, portrait 4:3/16:9, landscape 4:3/16:9)
+- Professional-grade output quality
+
+#### 25. Flux2Pro Edit (Image-to-Image) via EachLabs
+
+Black Forest Labs' Flux 2 Pro image transformation via EachLabs:
+
+```typescript
+image2image: EachLabsImage.Flux2Pro.Image2Image({
+    proxyUrl: 'http://your-eachlabs-proxy.com/api/proxy'
+})
+```
+
+Key features:
+- High-quality image transformation
+- Supports up to 4 reference images
+- Full canvas quick actions support: edit image, swap background, style transfer, artist styles, create variants, combine images, remix page
+
 ### Customizing Labels and Translations
 
 You can customize all labels and text in the AI image generation interface using the translation system. This allows you to provide better labels for your users in any language.
@@ -1694,6 +1724,13 @@ EachLabsImage.NanoBananaPro.Text2Image(config: EachLabsProviderConfiguration)
 EachLabsImage.NanoBananaPro.Image2Image(config: EachLabsProviderConfiguration)
 ```
 
+#### Flux2Pro.Text2Image / Flux2Pro.Image2Image
+
+```typescript
+EachLabsImage.Flux2Pro.Text2Image(config: EachLabsProviderConfiguration)
+EachLabsImage.Flux2Pro.Image2Image(config: EachLabsProviderConfiguration)
+```
+
 ## UI Integration
 
 The plugin automatically registers the following UI components:
@@ -1808,6 +1845,8 @@ const myImageProvider = {
   - Runware GptImage1.Image2Image: `ly.img.ai.runware/openai/gpt-image-1/image2image`
   - EachLabs NanoBananaPro.Text2Image: `ly.img.ai.eachlabs/nano-banana-pro`
   - EachLabs NanoBananaPro.Image2Image: `ly.img.ai.eachlabs/nano-banana-pro/edit`
+  - EachLabs Flux2Pro.Text2Image: `ly.img.ai.eachlabs/flux-2-pro`
+  - EachLabs Flux2Pro.Image2Image: `ly.img.ai.eachlabs/flux-2-pro/edit`
 
 ### Asset History
 
@@ -1843,6 +1882,8 @@ Generated images are automatically stored in asset sources with the following ID
 - Runware GptImage1.Image2Image: `runware/openai/gpt-image-1/image2image.history`
 - EachLabs NanoBananaPro.Text2Image: `eachlabs/nano-banana-pro.history`
 - EachLabs NanoBananaPro.Image2Image: `eachlabs/nano-banana-pro/edit.history`
+- EachLabs Flux2Pro.Text2Image: `eachlabs/flux-2-pro.history`
+- EachLabs Flux2Pro.Image2Image: `eachlabs/flux-2-pro/edit.history`
 
 ### Dock Integration
 
