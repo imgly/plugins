@@ -36,7 +36,7 @@ This document tracks EachLabs AI models for implementation, focusing on image an
 | flux-2-flex | Flux 2 \| Flex | image | planned | Prompt expansion enabled |
 | gemini-3-pro-image-preview | Gemini 3 \| Pro \| Image Preview | array | planned | Google Gemini image generation |
 | bytedance-seedream-v4-5-text-to-image | Bytedance \| Seedream \| v4.5 \| Text to Image | array | planned | Latest Seedream |
-| nano-banana-pro | Nano Banana Pro | array | planned | Multi-style generation |
+| nano-banana-pro | Nano Banana Pro | array | implemented | Multi-style generation |
 | openai-image-generation | GPT-1 \| Image Generation | image | planned | OpenAI GPT Image |
 
 ## Image Generation (Image-to-Image / Edit)
@@ -48,7 +48,7 @@ This document tracks EachLabs AI models for implementation, focusing on image an
 | flux-2-flex-edit | Flux 2 \| Flex \| Edit | image | planned | Flex edit variant |
 | gemini-3-pro-image-preview-edit | Gemini 3 Pro \| Image Edit | array | planned | Google Gemini edit |
 | bytedance-seedream-v4-5-edit | Bytedance \| Seedream \| v4.5 \| Edit | array | planned | Seedream edit |
-| nano-banana-pro-edit | Nano Banana Pro \| Edit | array | planned | Multi-style edit |
+| nano-banana-pro-edit | Nano Banana Pro \| Edit | array | implemented | Multi-style edit |
 | openai-image-edit | GPT-1 \| Image Edit | image | planned | OpenAI GPT Image edit |
 
 ## Video Generation (Text-to-Video)
@@ -70,20 +70,26 @@ This document tracks EachLabs AI models for implementation, focusing on image an
 
 ## Summary
 
+### Implemented
+
+**Image Generation (T2I):** 1 model
+- nano-banana-pro
+
+**Image Generation (I2I/Edit):** 1 model
+- nano-banana-pro-edit
+
 ### Planned for Implementation
 
-**Image Generation (T2I):** 7 models
+**Image Generation (T2I):** 6 models
 - flux-2-pro, flux-2, flux-2-flex
 - gemini-3-pro-image-preview
 - bytedance-seedream-v4-5-text-to-image
-- nano-banana-pro
 - openai-image-generation
 
-**Image Generation (I2I/Edit):** 7 models
+**Image Generation (I2I/Edit):** 6 models
 - flux-2-pro-edit, flux-2-edit, flux-2-flex-edit
 - gemini-3-pro-image-preview-edit
 - bytedance-seedream-v4-5-edit
-- nano-banana-pro-edit
 - openai-image-edit
 
 **Video Generation (T2V):** 2 models
@@ -97,10 +103,10 @@ This document tracks EachLabs AI models for implementation, focusing on image an
 
 ### Statistics
 
-| Category | Total Planned |
-|----------|---------------|
-| Image T2I | 7 |
-| Image I2I | 7 |
-| Video T2V | 2 |
-| Video I2V | 3 |
-| **Total** | **19** |
+| Category | Implemented | Planned | Total |
+|----------|-------------|---------|-------|
+| Image T2I | 1 | 6 | 7 |
+| Image I2I | 1 | 6 | 7 |
+| Video T2V | 0 | 2 | 2 |
+| Video I2V | 0 | 3 | 3 |
+| **Total** | **2** | **17** | **19** |

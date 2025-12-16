@@ -1073,6 +1073,46 @@ Key features:
 - Fixed resolutions: 1024×1024, 1536×1024, 1024×1536
 - Instruction-based editing for I2I
 
+### EachLabs Providers
+
+EachLabs provides access to multiple AI models through a unified API. These providers require an EachLabs proxy URL for authentication.
+
+```typescript
+import EachLabsImage from '@imgly/plugin-ai-image-generation-web/eachlabs';
+```
+
+#### 22. NanoBananaPro (Text-to-Image) via EachLabs
+
+Nano Banana Pro multi-style image generation via EachLabs:
+
+```typescript
+text2image: EachLabsImage.NanoBananaPro.Text2Image({
+    proxyUrl: 'http://your-eachlabs-proxy.com/api/proxy'
+})
+```
+
+Key features:
+- Multi-style image generation
+- 10 aspect ratio options (1:1, 16:9, 9:16, 4:3, 3:4, 3:2, 2:3, 21:9, 9:21, 2.4:1)
+- Multiple resolution options (1K, 2K, 4K)
+- High-quality output
+
+#### 23. NanoBananaPro Edit (Image-to-Image) via EachLabs
+
+Nano Banana Pro image transformation via EachLabs:
+
+```typescript
+image2image: EachLabsImage.NanoBananaPro.Image2Image({
+    proxyUrl: 'http://your-eachlabs-proxy.com/api/proxy'
+})
+```
+
+Key features:
+- Multi-style image transformation
+- Multiple resolution options (1K, 2K, 4K)
+- Supports up to 10 reference images
+- Full canvas quick actions support: edit image, swap background, style transfer, artist styles, create variants, combine images, remix page
+
 ### Customizing Labels and Translations
 
 You can customize all labels and text in the AI image generation interface using the translation system. This allows you to provide better labels for your users in any language.
@@ -1634,6 +1674,26 @@ RunwareImage.GptImage1.Text2Image(config: RunwareProviderConfiguration)
 RunwareImage.GptImage1.Image2Image(config: RunwareProviderConfiguration)
 ```
 
+### EachLabs Providers
+
+All EachLabs providers use the following configuration:
+
+```typescript
+interface EachLabsProviderConfiguration {
+  proxyUrl: string;        // HTTP endpoint URL for the EachLabs proxy
+  debug?: boolean;         // Enable debug logging
+  middlewares?: any[];     // Optional middleware functions
+  history?: false | '@imgly/local' | '@imgly/indexedDB' | (string & {});
+}
+```
+
+#### NanoBananaPro.Text2Image / NanoBananaPro.Image2Image
+
+```typescript
+EachLabsImage.NanoBananaPro.Text2Image(config: EachLabsProviderConfiguration)
+EachLabsImage.NanoBananaPro.Image2Image(config: EachLabsProviderConfiguration)
+```
+
 ## UI Integration
 
 The plugin automatically registers the following UI components:
@@ -1746,6 +1806,8 @@ const myImageProvider = {
   - Runware NanoBanana2Pro.Image2Image: `ly.img.ai.runware/google/nano-banana-2-pro/image2image`
   - Runware GptImage1.Text2Image: `ly.img.ai.runware/openai/gpt-image-1`
   - Runware GptImage1.Image2Image: `ly.img.ai.runware/openai/gpt-image-1/image2image`
+  - EachLabs NanoBananaPro.Text2Image: `ly.img.ai.eachlabs/nano-banana-pro`
+  - EachLabs NanoBananaPro.Image2Image: `ly.img.ai.eachlabs/nano-banana-pro/edit`
 
 ### Asset History
 
@@ -1779,6 +1841,8 @@ Generated images are automatically stored in asset sources with the following ID
 - Runware NanoBanana2Pro.Image2Image: `runware/google/nano-banana-2-pro/image2image.history`
 - Runware GptImage1.Text2Image: `runware/openai/gpt-image-1.history`
 - Runware GptImage1.Image2Image: `runware/openai/gpt-image-1/image2image.history`
+- EachLabs NanoBananaPro.Text2Image: `eachlabs/nano-banana-pro.history`
+- EachLabs NanoBananaPro.Image2Image: `eachlabs/nano-banana-pro/edit.history`
 
 ### Dock Integration
 

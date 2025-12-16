@@ -1,7 +1,4 @@
-// EachLabs provider namespace
-// Providers will be added here when EachLabs models are implemented
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
+import EachLabsImage from '@imgly/plugin-ai-image-generation-web/eachlabs';
 import { Middleware } from '@imgly/plugin-ai-generation-web';
 
 export interface EachLabsProviderOptions {
@@ -11,10 +8,22 @@ export interface EachLabsProviderOptions {
   proxyUrl: string;
 }
 
-export function createEachLabsProviders(_options: EachLabsProviderOptions) {
+export function createEachLabsProviders(options: EachLabsProviderOptions) {
+  const { imageRateLimitMiddleware, errorMiddleware, proxyUrl } = options;
+
   return {
-    text2image: [],
-    image2image: [],
+    text2image: [
+      EachLabsImage.NanoBananaPro.Text2Image({
+        middlewares: [imageRateLimitMiddleware, errorMiddleware],
+        proxyUrl
+      })
+    ],
+    image2image: [
+      EachLabsImage.NanoBananaPro.Image2Image({
+        middlewares: [imageRateLimitMiddleware, errorMiddleware],
+        proxyUrl
+      })
+    ],
     text2video: [],
     image2video: []
   };

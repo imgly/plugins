@@ -17,7 +17,8 @@ export const ASPECT_RATIO_MAP: Record<
   '3:2': { width: 1152, height: 768 },
   '2:3': { width: 768, height: 1152 },
   '21:9': { width: 1536, height: 640 },
-  '9:21': { width: 640, height: 1536 }
+  '9:21': { width: 640, height: 1536 },
+  '2.4:1': { width: 2400, height: 1000 }
 };
 
 export function getImageDimensionsFromAspectRatio(aspectRatio: string): {
