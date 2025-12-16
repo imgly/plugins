@@ -24,6 +24,10 @@ export function createEachLabsProviders(options: EachLabsProviderOptions) {
       EachLabsImage.OpenAIGptImage.Text2Image({
         middlewares: [imageRateLimitMiddleware, errorMiddleware],
         proxyUrl
+      }),
+      EachLabsImage.Seedream45.Text2Image({
+        middlewares: [imageRateLimitMiddleware, errorMiddleware],
+        proxyUrl
       })
     ],
     image2image: [
@@ -36,6 +40,10 @@ export function createEachLabsProviders(options: EachLabsProviderOptions) {
         proxyUrl
       }),
       EachLabsImage.OpenAIGptImage.Image2Image({
+        middlewares: [imageRateLimitMiddleware, errorMiddleware],
+        proxyUrl
+      }),
+      EachLabsImage.Seedream45.Image2Image({
         middlewares: [imageRateLimitMiddleware, errorMiddleware],
         proxyUrl
       })

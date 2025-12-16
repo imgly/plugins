@@ -1173,6 +1173,37 @@ Key features:
 - Supports up to 16 reference images
 - Full canvas quick actions support: edit image, swap background, style transfer, artist styles, create variants, combine images, remix page
 
+#### 28. Seedream v4.5 (Text-to-Image) via EachLabs
+
+ByteDance's Seedream v4.5 text-to-image generation via EachLabs:
+
+```typescript
+text2image: EachLabsImage.Seedream45.Text2Image({
+    proxyUrl: 'http://your-eachlabs-proxy.com/api/proxy'
+})
+```
+
+Key features:
+- High-quality image generation from ByteDance
+- 6 image size options (square HD, square, portrait 4:3/16:9, landscape 4:3/16:9)
+- Improved facial details and text generation over v4.0
+
+#### 29. Seedream v4.5 Edit (Image-to-Image) via EachLabs
+
+ByteDance's Seedream v4.5 image transformation via EachLabs:
+
+```typescript
+image2image: EachLabsImage.Seedream45.Image2Image({
+    proxyUrl: 'http://your-eachlabs-proxy.com/api/proxy'
+})
+```
+
+Key features:
+- High-quality image transformation
+- Supports up to 10 reference images
+- Full canvas quick actions support: edit image, swap background, style transfer, artist styles, create variants, combine images, remix page
+- Improved facial details and text generation over v4.0
+
 ### Customizing Labels and Translations
 
 You can customize all labels and text in the AI image generation interface using the translation system. This allows you to provide better labels for your users in any language.
@@ -1768,6 +1799,13 @@ EachLabsImage.OpenAIGptImage.Text2Image(config: EachLabsProviderConfiguration)
 EachLabsImage.OpenAIGptImage.Image2Image(config: EachLabsProviderConfiguration)
 ```
 
+#### Seedream45.Text2Image / Seedream45.Image2Image
+
+```typescript
+EachLabsImage.Seedream45.Text2Image(config: EachLabsProviderConfiguration)
+EachLabsImage.Seedream45.Image2Image(config: EachLabsProviderConfiguration)
+```
+
 ## UI Integration
 
 The plugin automatically registers the following UI components:
@@ -1886,6 +1924,8 @@ const myImageProvider = {
   - EachLabs Flux2Pro.Image2Image: `ly.img.ai.eachlabs/flux-2-pro/edit`
   - EachLabs OpenAIGptImage.Text2Image: `ly.img.ai.eachlabs/openai-gpt-image`
   - EachLabs OpenAIGptImage.Image2Image: `ly.img.ai.eachlabs/openai-gpt-image/edit`
+  - EachLabs Seedream45.Text2Image: `ly.img.ai.eachlabs/seedream-v4.5`
+  - EachLabs Seedream45.Image2Image: `ly.img.ai.eachlabs/seedream-v4.5/edit`
 
 ### Asset History
 
@@ -1925,6 +1965,8 @@ Generated images are automatically stored in asset sources with the following ID
 - EachLabs Flux2Pro.Image2Image: `eachlabs/flux-2-pro/edit.history`
 - EachLabs OpenAIGptImage.Text2Image: `eachlabs/openai-gpt-image.history`
 - EachLabs OpenAIGptImage.Image2Image: `eachlabs/openai-gpt-image/edit.history`
+- EachLabs Seedream45.Text2Image: `eachlabs/seedream-v4.5.history`
+- EachLabs Seedream45.Image2Image: `eachlabs/seedream-v4.5/edit.history`
 
 ### Dock Integration
 
