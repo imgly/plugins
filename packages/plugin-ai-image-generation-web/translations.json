@@ -468,6 +468,26 @@
 
     "ly.img.plugin-ai-image-generation-web.eachlabs/openai-gpt-image/edit.property.image_url": "Source Image",
     "ly.img.plugin-ai-image-generation-web.eachlabs/openai-gpt-image/edit.property.prompt": "Prompt",
-    "ly.img.plugin-ai-image-generation-web.eachlabs/openai-gpt-image/edit.property.prompt.placeholder": "Describe the changes..."
+    "ly.img.plugin-ai-image-generation-web.eachlabs/openai-gpt-image/edit.property.prompt.placeholder": "Describe the changes...",
+
+    "ly.img.plugin-ai-image-generation-web.eachlabs/gemini-3-pro-image.property.prompt": "Prompt",
+    "ly.img.plugin-ai-image-generation-web.eachlabs/gemini-3-pro-image.property.prompt.placeholder": "Describe your image...",
+    "ly.img.plugin-ai-image-generation-web.eachlabs/gemini-3-pro-image.property.aspect_ratio": "Format",
+    "ly.img.plugin-ai-image-generation-web.eachlabs/gemini-3-pro-image.property.aspect_ratio.1:1": "Square",
+    "ly.img.plugin-ai-image-generation-web.eachlabs/gemini-3-pro-image.property.aspect_ratio.16:9": "Widescreen",
+    "ly.img.plugin-ai-image-generation-web.eachlabs/gemini-3-pro-image.property.aspect_ratio.9:16": "Mobile",
+    "ly.img.plugin-ai-image-generation-web.eachlabs/gemini-3-pro-image.property.aspect_ratio.4:3": "Landscape 4:3",
+    "ly.img.plugin-ai-image-generation-web.eachlabs/gemini-3-pro-image.property.aspect_ratio.3:4": "Portrait 3:4",
+    "ly.img.plugin-ai-image-generation-web.eachlabs/gemini-3-pro-image.property.aspect_ratio.3:2": "Photo Landscape",
+    "ly.img.plugin-ai-image-generation-web.eachlabs/gemini-3-pro-image.property.aspect_ratio.2:3": "Photo Portrait",
+    "ly.img.plugin-ai-image-generation-web.eachlabs/gemini-3-pro-image.property.aspect_ratio.21:9": "Ultra-Wide",
+    "ly.img.plugin-ai-image-generation-web.eachlabs/gemini-3-pro-image.property.resolution": "Resolution",
+    "ly.img.plugin-ai-image-generation-web.eachlabs/gemini-3-pro-image.property.resolution.1K": "Standard (1K)",
+    "ly.img.plugin-ai-image-generation-web.eachlabs/gemini-3-pro-image.property.resolution.2K": "HD (2K)",
+    "ly.img.plugin-ai-image-generation-web.eachlabs/gemini-3-pro-image.property.resolution.4K": "Ultra HD (4K)",
+
+    "ly.img.plugin-ai-image-generation-web.eachlabs/gemini-3-pro-image/edit.property.image_url": "Source Image",
+    "ly.img.plugin-ai-image-generation-web.eachlabs/gemini-3-pro-image/edit.property.prompt": "Prompt",
+    "ly.img.plugin-ai-image-generation-web.eachlabs/gemini-3-pro-image/edit.property.prompt.placeholder": "Describe the changes..."
   }
 }

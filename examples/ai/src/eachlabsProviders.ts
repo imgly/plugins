@@ -28,6 +28,10 @@ export function createEachLabsProviders(options: EachLabsProviderOptions) {
       EachLabsImage.Seedream45.Text2Image({
         middlewares: [imageRateLimitMiddleware, errorMiddleware],
         proxyUrl
+      }),
+      EachLabsImage.Gemini3Pro.Text2Image({
+        middlewares: [imageRateLimitMiddleware, errorMiddleware],
+        proxyUrl
       })
     ],
     image2image: [
@@ -44,6 +48,10 @@ export function createEachLabsProviders(options: EachLabsProviderOptions) {
         proxyUrl
       }),
       EachLabsImage.Seedream45.Image2Image({
+        middlewares: [imageRateLimitMiddleware, errorMiddleware],
+        proxyUrl
+      }),
+      EachLabsImage.Gemini3Pro.Image2Image({
         middlewares: [imageRateLimitMiddleware, errorMiddleware],
         proxyUrl
       })

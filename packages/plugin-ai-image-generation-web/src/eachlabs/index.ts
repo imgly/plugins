@@ -9,6 +9,8 @@ import { OpenAIImageText2Image } from './OpenAIImage.text2image';
 import { OpenAIImageImage2Image } from './OpenAIImage.image2image';
 import { Seedream45 as Seedream45Text2Image } from './Seedream45.text2image';
 import { Seedream45Image2Image } from './Seedream45.image2image';
+import { Gemini3ProText2Image } from './Gemini3Pro.text2image';
+import { Gemini3ProImage2Image } from './Gemini3Pro.image2image';
 
 const EachLabs = {
   NanoBananaPro: {
@@ -26,6 +28,10 @@ const EachLabs = {
   Seedream45: {
     Text2Image: Seedream45Text2Image,
     Image2Image: Seedream45Image2Image
+  },
+  Gemini3Pro: {
+    Text2Image: Gemini3ProText2Image,
+    Image2Image: Gemini3ProImage2Image
   }
 };
 
