@@ -5,6 +5,8 @@ import { NanoBananaPro as NanoBananaProText2Image } from './NanoBananaPro.text2i
 import { NanoBananaProImage2Image } from './NanoBananaPro.image2image';
 import { Flux2Pro as Flux2ProText2Image } from './Flux2Pro.text2image';
 import { Flux2ProImage2Image } from './Flux2Pro.image2image';
+import { Flux2 as Flux2Text2Image } from './Flux2.text2image';
+import { Flux2Image2Image } from './Flux2.image2image';
 import { OpenAIImageText2Image } from './OpenAIImage.text2image';
 import { OpenAIImageImage2Image } from './OpenAIImage.image2image';
 import { Seedream45 as Seedream45Text2Image } from './Seedream45.text2image';
@@ -20,6 +22,10 @@ const EachLabs = {
   Flux2Pro: {
     Text2Image: Flux2ProText2Image,
     Image2Image: Flux2ProImage2Image
+  },
+  Flux2: {
+    Text2Image: Flux2Text2Image,
+    Image2Image: Flux2Image2Image
   },
   OpenAIGptImage: {
     Text2Image: OpenAIImageText2Image,
