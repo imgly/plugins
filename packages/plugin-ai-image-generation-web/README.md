@@ -1173,7 +1173,38 @@ Key features:
 - Supports up to 3 reference images
 - Full canvas quick actions support: edit image, swap background, style transfer, artist styles, create variants, combine images, remix page
 
-#### 28. OpenAI GPT Image (Text-to-Image) via EachLabs
+#### 28. Flux2Flex (Text-to-Image) via EachLabs
+
+Black Forest Labs' Flux 2 Flex text-to-image generation with automatic prompt expansion via EachLabs:
+
+```typescript
+text2image: EachLabsImage.Flux2Flex.Text2Image({
+    proxyUrl: 'http://your-eachlabs-proxy.com/api/proxy'
+})
+```
+
+Key features:
+- Automatic prompt expansion using the model's knowledge
+- 6 image size options (square HD, square, portrait 4:3/16:9, landscape 4:3/16:9)
+- High-quality Flux 2 generation from Black Forest Labs
+
+#### 29. Flux2Flex Edit (Image-to-Image) via EachLabs
+
+Black Forest Labs' Flux 2 Flex image transformation with automatic prompt expansion via EachLabs:
+
+```typescript
+image2image: EachLabsImage.Flux2Flex.Image2Image({
+    proxyUrl: 'http://your-eachlabs-proxy.com/api/proxy'
+})
+```
+
+Key features:
+- Automatic prompt expansion using the model's knowledge
+- Automatic image size detection ("auto" mode)
+- Supports up to 10 reference images
+- Full canvas quick actions support: edit image, swap background, style transfer, artist styles, create variants, combine images, remix page
+
+#### 30. OpenAI GPT Image (Text-to-Image) via EachLabs
 
 OpenAI's GPT Image text-to-image generation via EachLabs:
 
@@ -1188,7 +1219,7 @@ Key features:
 - 3 image size options (Square, Landscape, Portrait)
 - Professional-grade output quality
 
-#### 29. OpenAI GPT Image Edit (Image-to-Image) via EachLabs
+#### 31. OpenAI GPT Image Edit (Image-to-Image) via EachLabs
 
 OpenAI's GPT Image image transformation via EachLabs:
 
@@ -1203,7 +1234,7 @@ Key features:
 - Supports up to 16 reference images
 - Full canvas quick actions support: edit image, swap background, style transfer, artist styles, create variants, combine images, remix page
 
-#### 30. Seedream v4.5 (Text-to-Image) via EachLabs
+#### 32. Seedream v4.5 (Text-to-Image) via EachLabs
 
 ByteDance's Seedream v4.5 text-to-image generation via EachLabs:
 
@@ -1218,7 +1249,7 @@ Key features:
 - 6 image size options (square HD, square, portrait 4:3/16:9, landscape 4:3/16:9)
 - Improved facial details and text generation over v4.0
 
-#### 31. Seedream v4.5 Edit (Image-to-Image) via EachLabs
+#### 33. Seedream v4.5 Edit (Image-to-Image) via EachLabs
 
 ByteDance's Seedream v4.5 image transformation via EachLabs:
 
@@ -1234,7 +1265,7 @@ Key features:
 - Full canvas quick actions support: edit image, swap background, style transfer, artist styles, create variants, combine images, remix page
 - Improved facial details and text generation over v4.0
 
-#### 32. Gemini 3 Pro Image (Text-to-Image) via EachLabs
+#### 34. Gemini 3 Pro Image (Text-to-Image) via EachLabs
 
 Google's Gemini 3 Pro text-to-image generation via EachLabs:
 
@@ -1250,7 +1281,7 @@ Key features:
 - Multiple resolution options (1K, 2K, 4K)
 - Professional-grade output quality
 
-#### 33. Gemini 3 Pro Image Edit (Image-to-Image) via EachLabs
+#### 35. Gemini 3 Pro Image Edit (Image-to-Image) via EachLabs
 
 Google's Gemini 3 Pro image transformation via EachLabs:
 
@@ -1860,6 +1891,13 @@ EachLabsImage.Flux2.Text2Image(config: EachLabsProviderConfiguration)
 EachLabsImage.Flux2.Image2Image(config: EachLabsProviderConfiguration)
 ```
 
+#### Flux2Flex.Text2Image / Flux2Flex.Image2Image
+
+```typescript
+EachLabsImage.Flux2Flex.Text2Image(config: EachLabsProviderConfiguration)
+EachLabsImage.Flux2Flex.Image2Image(config: EachLabsProviderConfiguration)
+```
+
 #### OpenAIGptImage.Text2Image / OpenAIGptImage.Image2Image
 
 ```typescript
@@ -1999,6 +2037,8 @@ const myImageProvider = {
   - EachLabs Flux2Pro.Image2Image: `ly.img.ai.eachlabs/flux-2-pro/edit`
   - EachLabs Flux2.Text2Image: `ly.img.ai.eachlabs/flux-2`
   - EachLabs Flux2.Image2Image: `ly.img.ai.eachlabs/flux-2/edit`
+  - EachLabs Flux2Flex.Text2Image: `ly.img.ai.eachlabs/flux-2-flex`
+  - EachLabs Flux2Flex.Image2Image: `ly.img.ai.eachlabs/flux-2-flex/edit`
   - EachLabs OpenAIGptImage.Text2Image: `ly.img.ai.eachlabs/openai-gpt-image`
   - EachLabs OpenAIGptImage.Image2Image: `ly.img.ai.eachlabs/openai-gpt-image/edit`
   - EachLabs Seedream45.Text2Image: `ly.img.ai.eachlabs/seedream-v4.5`
@@ -2044,6 +2084,8 @@ Generated images are automatically stored in asset sources with the following ID
 - EachLabs Flux2Pro.Image2Image: `eachlabs/flux-2-pro/edit.history`
 - EachLabs Flux2.Text2Image: `eachlabs/flux-2.history`
 - EachLabs Flux2.Image2Image: `eachlabs/flux-2/edit.history`
+- EachLabs Flux2Flex.Text2Image: `eachlabs/flux-2-flex.history`
+- EachLabs Flux2Flex.Image2Image: `eachlabs/flux-2-flex/edit.history`
 - EachLabs OpenAIGptImage.Text2Image: `eachlabs/openai-gpt-image.history`
 - EachLabs OpenAIGptImage.Image2Image: `eachlabs/openai-gpt-image/edit.history`
 - EachLabs Seedream45.Text2Image: `eachlabs/seedream-v4.5.history`

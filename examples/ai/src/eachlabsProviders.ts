@@ -25,6 +25,10 @@ export function createEachLabsProviders(options: EachLabsProviderOptions) {
         middlewares: [imageRateLimitMiddleware, errorMiddleware],
         proxyUrl
       }),
+      EachLabsImage.Flux2Flex.Text2Image({
+        middlewares: [imageRateLimitMiddleware, errorMiddleware],
+        proxyUrl
+      }),
       EachLabsImage.OpenAIGptImage.Text2Image({
         middlewares: [imageRateLimitMiddleware, errorMiddleware],
         proxyUrl
@@ -48,6 +52,10 @@ export function createEachLabsProviders(options: EachLabsProviderOptions) {
         proxyUrl
       }),
       EachLabsImage.Flux2.Image2Image({
+        middlewares: [imageRateLimitMiddleware, errorMiddleware],
+        proxyUrl
+      }),
+      EachLabsImage.Flux2Flex.Image2Image({
         middlewares: [imageRateLimitMiddleware, errorMiddleware],
         proxyUrl
       }),

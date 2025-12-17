@@ -7,6 +7,8 @@ import { Flux2Pro as Flux2ProText2Image } from './Flux2Pro.text2image';
 import { Flux2ProImage2Image } from './Flux2Pro.image2image';
 import { Flux2 as Flux2Text2Image } from './Flux2.text2image';
 import { Flux2Image2Image } from './Flux2.image2image';
+import { Flux2Flex as Flux2FlexText2Image } from './Flux2Flex.text2image';
+import { Flux2FlexImage2Image } from './Flux2Flex.image2image';
 import { OpenAIImageText2Image } from './OpenAIImage.text2image';
 import { OpenAIImageImage2Image } from './OpenAIImage.image2image';
 import { Seedream45 as Seedream45Text2Image } from './Seedream45.text2image';
@@ -26,6 +28,10 @@ const EachLabs = {
   Flux2: {
     Text2Image: Flux2Text2Image,
     Image2Image: Flux2Image2Image
+  },
+  Flux2Flex: {
+    Text2Image: Flux2FlexText2Image,
+    Image2Image: Flux2FlexImage2Image
   },
   OpenAIGptImage: {
     Text2Image: OpenAIImageText2Image,
