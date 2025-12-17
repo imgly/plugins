@@ -488,6 +488,34 @@
 
     "ly.img.plugin-ai-image-generation-web.eachlabs/gemini-3-pro-image/edit.property.image_url": "Source Image",
     "ly.img.plugin-ai-image-generation-web.eachlabs/gemini-3-pro-image/edit.property.prompt": "Prompt",
-    "ly.img.plugin-ai-image-generation-web.eachlabs/gemini-3-pro-image/edit.property.prompt.placeholder": "Describe the changes..."
+    "ly.img.plugin-ai-image-generation-web.eachlabs/gemini-3-pro-image/edit.property.prompt.placeholder": "Describe the changes...",
+
+    "ly.img.plugin-ai-image-generation-web.eachlabs/flux-2.property.prompt": "Prompt",
+    "ly.img.plugin-ai-image-generation-web.eachlabs/flux-2.property.prompt.placeholder": "Describe your image...",
+    "ly.img.plugin-ai-image-generation-web.eachlabs/flux-2.property.image_size": "Format",
+    "ly.img.plugin-ai-image-generation-web.eachlabs/flux-2.property.image_size.square_hd": "Square HD (1:1)",
+    "ly.img.plugin-ai-image-generation-web.eachlabs/flux-2.property.image_size.square": "Square (1:1)",
+    "ly.img.plugin-ai-image-generation-web.eachlabs/flux-2.property.image_size.portrait_4_3": "Portrait (3:4)",
+    "ly.img.plugin-ai-image-generation-web.eachlabs/flux-2.property.image_size.portrait_16_9": "Portrait (9:16)",
+    "ly.img.plugin-ai-image-generation-web.eachlabs/flux-2.property.image_size.landscape_4_3": "Landscape (4:3)",
+    "ly.img.plugin-ai-image-generation-web.eachlabs/flux-2.property.image_size.landscape_16_9": "Landscape (16:9)",
+
+    "ly.img.plugin-ai-image-generation-web.eachlabs/flux-2/edit.property.image_url": "Source Image",
+    "ly.img.plugin-ai-image-generation-web.eachlabs/flux-2/edit.property.prompt": "Prompt",
+    "ly.img.plugin-ai-image-generation-web.eachlabs/flux-2/edit.property.prompt.placeholder": "Describe the changes...",
+
+    "ly.img.plugin-ai-image-generation-web.eachlabs/seedream-v4.5.property.prompt": "Prompt",
+    "ly.img.plugin-ai-image-generation-web.eachlabs/seedream-v4.5.property.prompt.placeholder": "Describe your image...",
+    "ly.img.plugin-ai-image-generation-web.eachlabs/seedream-v4.5.property.image_size": "Format",
+    "ly.img.plugin-ai-image-generation-web.eachlabs/seedream-v4.5.property.image_size.square_hd": "Square HD (1:1)",
+    "ly.img.plugin-ai-image-generation-web.eachlabs/seedream-v4.5.property.image_size.square": "Square (1:1)",
+    "ly.img.plugin-ai-image-generation-web.eachlabs/seedream-v4.5.property.image_size.portrait_4_3": "Portrait (3:4)",
+    "ly.img.plugin-ai-image-generation-web.eachlabs/seedream-v4.5.property.image_size.portrait_16_9": "Portrait (9:16)",
+    "ly.img.plugin-ai-image-generation-web.eachlabs/seedream-v4.5.property.image_size.landscape_4_3": "Landscape (4:3)",
+    "ly.img.plugin-ai-image-generation-web.eachlabs/seedream-v4.5.property.image_size.landscape_16_9": "Landscape (16:9)",
+
+    "ly.img.plugin-ai-image-generation-web.eachlabs/seedream-v4.5/edit.property.image_url": "Source Image",
+    "ly.img.plugin-ai-image-generation-web.eachlabs/seedream-v4.5/edit.property.prompt": "Prompt",
+    "ly.img.plugin-ai-image-generation-web.eachlabs/seedream-v4.5/edit.property.prompt.placeholder": "Describe the changes..."
   }
 }
