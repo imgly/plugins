@@ -1204,6 +1204,37 @@ Key features:
 - Full canvas quick actions support: edit image, swap background, style transfer, artist styles, create variants, combine images, remix page
 - Improved facial details and text generation over v4.0
 
+#### 30. Gemini 3 Pro Image (Text-to-Image) via EachLabs
+
+Google's Gemini 3 Pro text-to-image generation via EachLabs:
+
+```typescript
+text2image: EachLabsImage.Gemini3Pro.Text2Image({
+    proxyUrl: 'http://your-eachlabs-proxy.com/api/proxy'
+})
+```
+
+Key features:
+- High-quality image generation from Google Gemini
+- 8 aspect ratio options (1:1, 16:9, 9:16, 4:3, 3:4, 3:2, 2:3, 21:9)
+- Multiple resolution options (1K, 2K, 4K)
+- Professional-grade output quality
+
+#### 31. Gemini 3 Pro Image Edit (Image-to-Image) via EachLabs
+
+Google's Gemini 3 Pro image transformation via EachLabs:
+
+```typescript
+image2image: EachLabsImage.Gemini3Pro.Image2Image({
+    proxyUrl: 'http://your-eachlabs-proxy.com/api/proxy'
+})
+```
+
+Key features:
+- High-quality image transformation
+- Supports up to 10 reference images
+- Full canvas quick actions support: edit image, swap background, style transfer, artist styles, create variants, combine images, remix page
+
 ### Customizing Labels and Translations
 
 You can customize all labels and text in the AI image generation interface using the translation system. This allows you to provide better labels for your users in any language.
@@ -1806,6 +1837,13 @@ EachLabsImage.Seedream45.Text2Image(config: EachLabsProviderConfiguration)
 EachLabsImage.Seedream45.Image2Image(config: EachLabsProviderConfiguration)
 ```
 
+#### Gemini3Pro.Text2Image / Gemini3Pro.Image2Image
+
+```typescript
+EachLabsImage.Gemini3Pro.Text2Image(config: EachLabsProviderConfiguration)
+EachLabsImage.Gemini3Pro.Image2Image(config: EachLabsProviderConfiguration)
+```
+
 ## UI Integration
 
 The plugin automatically registers the following UI components:
@@ -1926,6 +1964,8 @@ const myImageProvider = {
   - EachLabs OpenAIGptImage.Image2Image: `ly.img.ai.eachlabs/openai-gpt-image/edit`
   - EachLabs Seedream45.Text2Image: `ly.img.ai.eachlabs/seedream-v4.5`
   - EachLabs Seedream45.Image2Image: `ly.img.ai.eachlabs/seedream-v4.5/edit`
+  - EachLabs Gemini3Pro.Text2Image: `ly.img.ai.eachlabs/gemini-3-pro-image`
+  - EachLabs Gemini3Pro.Image2Image: `ly.img.ai.eachlabs/gemini-3-pro-image/edit`
 
 ### Asset History
 
@@ -1967,6 +2007,8 @@ Generated images are automatically stored in asset sources with the following ID
 - EachLabs OpenAIGptImage.Image2Image: `eachlabs/openai-gpt-image/edit.history`
 - EachLabs Seedream45.Text2Image: `eachlabs/seedream-v4.5.history`
 - EachLabs Seedream45.Image2Image: `eachlabs/seedream-v4.5/edit.history`
+- EachLabs Gemini3Pro.Text2Image: `eachlabs/gemini-3-pro-image.history`
+- EachLabs Gemini3Pro.Image2Image: `eachlabs/gemini-3-pro-image/edit.history`
 
 ### Dock Integration
 
