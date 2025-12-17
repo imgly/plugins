@@ -1,4 +1,5 @@
 import EachLabsImage from '@imgly/plugin-ai-image-generation-web/eachlabs';
+import EachLabsVideo from '@imgly/plugin-ai-video-generation-web/eachlabs';
 import { Middleware } from '@imgly/plugin-ai-generation-web';
 
 export interface EachLabsProviderOptions {
@@ -9,7 +10,12 @@ export interface EachLabsProviderOptions {
 }
 
 export function createEachLabsProviders(options: EachLabsProviderOptions) {
-  const { imageRateLimitMiddleware, errorMiddleware, proxyUrl } = options;
+  const {
+    imageRateLimitMiddleware,
+    videoRateLimitMiddleware,
+    errorMiddleware,
+    proxyUrl
+  } = options;
 
   return {
     text2image: [
@@ -72,7 +78,17 @@ export function createEachLabsProviders(options: EachLabsProviderOptions) {
         proxyUrl
       })
     ],
-    text2video: [],
-    image2video: []
+    text2video: [
+      EachLabsVideo.KlingV26ProTextToVideo({
+        middlewares: [videoRateLimitMiddleware, errorMiddleware],
+        proxyUrl
+      })
+    ],
+    image2video: [
+      EachLabsVideo.KlingV26ProImageToVideo({
+        middlewares: [videoRateLimitMiddleware, errorMiddleware],
+        proxyUrl
+      })
+    ]
   };
 }

@@ -205,6 +205,21 @@
     "ly.img.plugin-ai-video-generation-web.runware/openai/sora-2-pro/image2video.property.duration": "Duration",
     "ly.img.plugin-ai-video-generation-web.runware/openai/sora-2-pro/image2video.property.duration.4": "4 seconds",
     "ly.img.plugin-ai-video-generation-web.runware/openai/sora-2-pro/image2video.property.duration.8": "8 seconds",
-    "ly.img.plugin-ai-video-generation-web.runware/openai/sora-2-pro/image2video.property.duration.12": "12 seconds"
+    "ly.img.plugin-ai-video-generation-web.runware/openai/sora-2-pro/image2video.property.duration.12": "12 seconds",
+    "ly.img.plugin-ai-video-generation-web.eachlabs/kling-v2-6-pro-text-to-video.property.prompt": "Prompt",
+    "ly.img.plugin-ai-video-generation-web.eachlabs/kling-v2-6-pro-text-to-video.property.prompt.placeholder": "Describe your video scene...",
+    "ly.img.plugin-ai-video-generation-web.eachlabs/kling-v2-6-pro-text-to-video.property.duration": "Duration",
+    "ly.img.plugin-ai-video-generation-web.eachlabs/kling-v2-6-pro-text-to-video.property.duration.5": "5 seconds",
+    "ly.img.plugin-ai-video-generation-web.eachlabs/kling-v2-6-pro-text-to-video.property.duration.10": "10 seconds",
+    "ly.img.plugin-ai-video-generation-web.eachlabs/kling-v2-6-pro-text-to-video.property.aspect_ratio": "Aspect Ratio",
+    "ly.img.plugin-ai-video-generation-web.eachlabs/kling-v2-6-pro-text-to-video.property.aspect_ratio.16:9": "16:9 (Landscape)",
+    "ly.img.plugin-ai-video-generation-web.eachlabs/kling-v2-6-pro-text-to-video.property.aspect_ratio.9:16": "9:16 (Portrait)",
+    "ly.img.plugin-ai-video-generation-web.eachlabs/kling-v2-6-pro-text-to-video.property.aspect_ratio.1:1": "1:1 (Square)",
+    "ly.img.plugin-ai-video-generation-web.eachlabs/kling-v2-6-pro-image-to-video.property.image_url": "Source Image",
+    "ly.img.plugin-ai-video-generation-web.eachlabs/kling-v2-6-pro-image-to-video.property.prompt": "Prompt",
+    "ly.img.plugin-ai-video-generation-web.eachlabs/kling-v2-6-pro-image-to-video.property.prompt.placeholder": "Describe the motion...",
+    "ly.img.plugin-ai-video-generation-web.eachlabs/kling-v2-6-pro-image-to-video.property.duration": "Duration",
+    "ly.img.plugin-ai-video-generation-web.eachlabs/kling-v2-6-pro-image-to-video.property.duration.5": "5 seconds",
+    "ly.img.plugin-ai-video-generation-web.eachlabs/kling-v2-6-pro-image-to-video.property.duration.10": "10 seconds"
   }
 }
