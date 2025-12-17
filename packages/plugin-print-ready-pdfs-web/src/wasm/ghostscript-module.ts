@@ -27,8 +27,25 @@ export default async function createGhostscriptModule(
 
   if (isNode) {
     // Node.js: Use require.resolve to find gs.js relative to this module
-    const { createRequire } = await import('module');
-    const { dirname, join } = await import('path');
+    // Use indirect dynamic import to prevent Webpack 5 from statically analyzing these imports
+    // But use direct imports in test environments (vitest) where new Function doesn't work
+    // See: https://github.com/imgly/ubq/issues/11471
+    const isTestEnv =
+      typeof process !== 'undefined' &&
+      (process.env.VITEST === 'true' || process.env.NODE_ENV === 'test');
+
+    // Helper for dynamic imports - uses indirect import in production to avoid Webpack static analysis
+    // eslint-disable-next-line @typescript-eslint/no-implied-eval, no-new-func
+    const indirectImport = new Function('s', 'return import(s)') as (
+      s: string
+    ) => Promise<any>;
+    const dynamicImport = isTestEnv ? (s: string) => import(s) : indirectImport;
+
+    const moduleLib = await dynamicImport('module');
+    const pathLib = await dynamicImport('path');
+    const createRequire = moduleLib.createRequire;
+    const dirname = pathLib.dirname;
+    const join = pathLib.join;
 
     const requireForESM = createRequire(import.meta.url);
 
@@ -37,7 +54,7 @@ export default async function createGhostscriptModule(
     const moduleDir = dirname(gsPath);
     wasmPath = join(moduleDir, 'gs.wasm');
 
-    GhostscriptModule = await import(gsPath);
+    GhostscriptModule = await dynamicImport(gsPath);
   } else {
     // Browser: Use URL-based imports
     const moduleUrl = new URL('./gs.js', import.meta.url).href;
