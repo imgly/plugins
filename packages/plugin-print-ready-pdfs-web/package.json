@@ -67,7 +67,8 @@
     "test:content": "pnpm run build && vitest run content-preservation",
     "test:silent": "pnpm run build && vitest run silent-conversion",
     "test:all": "pnpm run test:browser && pnpm run test:integration",
-    "test:visual": "pnpm run build && node test/visual-test.mjs"
+    "test:visual": "pnpm run build && node test/visual-test.mjs",
+    "test:webpack5": "bash test/webpack5-angular-test.sh"
   },
   "devDependencies": {
     "@cesdk/cesdk-js": "~1.61.0",

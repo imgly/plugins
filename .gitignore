@@ -15,3 +15,6 @@ yarn-error.log
 _ci_*
 
 .pnpm-store
+
+# Test artifacts
+packages/*/test/webpack5-angular-project
