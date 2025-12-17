@@ -12,8 +12,8 @@ import {
 } from '@imgly/plugin-ai-generation-web';
 import { createEachLabsClient, EachLabsClient } from './createEachLabsClient';
 import {
-  convertImageUrlForEachLabs,
-  convertImageUrlArrayForEachLabs
+  uploadImageInputToEachLabsIfNeeded,
+  uploadImageArrayToEachLabsIfNeeded
 } from './utils';
 import { getImageDimensionsFromURL } from '@imgly/plugin-utils';
 import { getImageDimensionsFromAspectRatio } from './types';
@@ -202,16 +202,17 @@ function createImageProvider<
           throw new Error('Provider not initialized');
         }
 
-        // Convert image URL if needed for image-to-image
+        // Upload image URL if needed for image-to-image
         let processedInput = input;
         let imageDimensions: { width: number; height: number } | undefined;
 
         if (input.image_url != null) {
-          const convertedUrl = await convertImageUrlForEachLabs(
+          const uploadedUrl = await uploadImageInputToEachLabsIfNeeded(
+            eachLabsClient,
             input.image_url,
             options.cesdk
           );
-          processedInput = { ...input, image_url: convertedUrl };
+          processedInput = { ...input, image_url: uploadedUrl };
 
           // Get dimensions from input image for image-to-image
           if (options.cesdk != null) {
@@ -223,13 +224,14 @@ function createImageProvider<
           }
         }
 
-        // Convert image URLs array if needed for multi-image inputs
+        // Upload image URLs array if needed for multi-image inputs
         if (input.image_urls != null && input.image_urls.length > 0) {
-          const convertedUrls = await convertImageUrlArrayForEachLabs(
+          const uploadedUrls = await uploadImageArrayToEachLabsIfNeeded(
+            eachLabsClient,
             input.image_urls,
             options.cesdk
           );
-          processedInput = { ...processedInput, image_urls: convertedUrls };
+          processedInput = { ...processedInput, image_urls: uploadedUrls };
 
           // For multi-image, get dimensions from the first image if not already set
           if (

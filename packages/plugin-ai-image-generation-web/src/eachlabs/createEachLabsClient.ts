@@ -51,6 +51,25 @@ export interface EachLabsImageResult {
 }
 
 /**
+ * Upload response from EachLabs storage API
+ */
+interface UploadResponse {
+  url: string;
+}
+
+/**
+ * EachLabs storage interface for file uploads
+ */
+export interface EachLabsStorage {
+  /**
+   * Upload a file to EachLabs storage
+   * @param file - The file to upload
+   * @returns The URL of the uploaded file
+   */
+  upload: (file: File) => Promise<string>;
+}
+
+/**
  * EachLabs API client interface
  */
 export interface EachLabsClient {
@@ -58,6 +77,10 @@ export interface EachLabsClient {
     params: EachLabsImageInferenceParams,
     abortSignal?: AbortSignal
   ) => Promise<EachLabsImageResult[]>;
+  /**
+   * Storage API for uploading files
+   */
+  storage: EachLabsStorage;
 }
 
 /**
@@ -240,7 +263,48 @@ export function createEachLabsClient(
     return [];
   }
 
+  /**
+   * Upload a file to EachLabs storage
+   */
+  async function uploadFile(file: File): Promise<string> {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    // Use the storage upload endpoint via proxy
+    const uploadUrl = `${proxyUrl}/api/v1/upload`;
+
+    const response = await fetch(uploadUrl, {
+      method: 'POST',
+      headers: {
+        // Don't set Content-Type header - let the browser set it with the boundary
+        ...Object.fromEntries(
+          Object.entries(baseHeaders).filter(
+            ([key]) => key.toLowerCase() !== 'content-type'
+          )
+        )
+      },
+      body: formData
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text().catch(() => 'Unknown error');
+      throw new Error(
+        `EachLabs storage upload error: ${response.status} - ${errorText}`
+      );
+    }
+
+    const data = (await response.json()) as UploadResponse;
+    if (!data.url) {
+      throw new Error('EachLabs storage did not return a URL');
+    }
+
+    return data.url;
+  }
+
   return {
+    storage: {
+      upload: uploadFile
+    },
     imageInference: async (
       params: EachLabsImageInferenceParams,
       abortSignal?: AbortSignal
