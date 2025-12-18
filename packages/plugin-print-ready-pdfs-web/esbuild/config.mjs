@@ -20,15 +20,9 @@ function addWebpackIgnoreComments(content) {
   let transformed = content;
 
   for (const mod of nodeModules) {
-    // Match: import("module") or import('module')
-    const patterns = [
-      new RegExp(`import\\(\\s*["']${mod}["']\\s*\\)`, 'g'),
-      new RegExp(`import\\(\\s*"${mod}"\\s*\\)`, 'g'),
-    ];
-
-    for (const pattern of patterns) {
-      transformed = transformed.replace(pattern, `import(/* webpackIgnore: true */ "${mod}")`);
-    }
+    // Match: import("module") or import('module') with optional whitespace
+    const pattern = new RegExp(`import\\(\\s*["']${mod}["']\\s*\\)`, 'g');
+    transformed = transformed.replace(pattern, `import(/* webpackIgnore: true */ "${mod}")`);
   }
 
   return transformed;

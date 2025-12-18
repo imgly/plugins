@@ -28,7 +28,7 @@ export default async function createGhostscriptModule(
   if (isNode) {
     // Node.js: Use require.resolve to find gs.js relative to this module
     // Use indirect dynamic import to prevent Webpack 5 from statically analyzing these imports
-    // But use direct imports in test environments (vitest) where new Function doesn't work
+    // But use direct imports in test environments (vitest) where indirect imports bypass mocking
     // See: https://github.com/imgly/ubq/issues/11471
     const isTestEnv =
       typeof process !== 'undefined' &&

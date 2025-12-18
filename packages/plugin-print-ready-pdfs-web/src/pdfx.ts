@@ -146,7 +146,7 @@ async function convertToPDFX3Single(
       if (isNode) {
         // Node.js: Load from filesystem using readFileSync
         // Use indirect dynamic import to prevent Webpack 5 from statically analyzing these imports
-        // But use direct imports in test environments (vitest) where new Function doesn't work
+        // But use direct imports in test environments (vitest) where indirect imports bypass mocking
         // See: https://github.com/imgly/ubq/issues/11471
         const isTestEnv =
           process.env.VITEST === 'true' || process.env.NODE_ENV === 'test';
