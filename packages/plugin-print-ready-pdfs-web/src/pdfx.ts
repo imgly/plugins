@@ -151,6 +151,8 @@ async function convertToPDFX3Single(
         const isTestEnv =
           process.env.VITEST === 'true' || process.env.NODE_ENV === 'test';
 
+        // Note: new Function() could fail in CSP-restricted environments, but CSP is a browser
+        // security mechanism and doesn't apply to Node.js. This code only runs in Node.js (isNode check above).
         // eslint-disable-next-line @typescript-eslint/no-implied-eval, no-new-func
         const indirectImport = new Function('s', 'return import(s)') as (
           s: string
