@@ -1,0 +1,62 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "EachLabs Veo 3.1 Text to Video API",
+    "version": "1.0.0",
+    "description": "Google Veo 3.1 text-to-video generation via EachLabs"
+  },
+  "components": {
+    "schemas": {
+      "Veo31TextToVideoInput": {
+        "title": "Veo31TextToVideoInput",
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "title": "Prompt",
+            "type": "string",
+            "description": "The text prompt describing the video you want to generate",
+            "minLength": 1,
+            "x-imgly-builder": {
+              "component": "TextArea"
+            }
+          },
+          "aspect_ratio": {
+            "title": "Aspect Ratio",
+            "type": "string",
+            "enum": ["16:9", "9:16"],
+            "default": "16:9",
+            "description": "The aspect ratio of the generated video",
+            "x-imgly-enum-labels": {
+              "16:9": "Landscape (16:9)",
+              "9:16": "Portrait (9:16)"
+            },
+            "x-imgly-enum-icons": {
+              "16:9": "@imgly/plugin/formats/ratio16by9",
+              "9:16": "@imgly/plugin/formats/ratio9by16"
+            }
+          },
+          "resolution": {
+            "title": "Resolution",
+            "type": "string",
+            "enum": ["720p", "1080p"],
+            "default": "720p",
+            "description": "The resolution of the generated video",
+            "x-imgly-enum-labels": {
+              "720p": "720p",
+              "1080p": "1080p"
+            }
+          },
+          "generate_audio": {
+            "title": "Generate Audio",
+            "type": "boolean",
+            "default": true,
+            "description": "Whether to generate audio for the video"
+          }
+        },
+        "x-fal-order-properties": ["prompt", "aspect_ratio", "resolution", "generate_audio"],
+        "required": ["prompt"]
+      }
+    }
+  },
+  "paths": {}
+}

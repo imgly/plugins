@@ -1,0 +1,49 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "EachLabs Kling O1 Image to Video API",
+    "version": "1.0.0",
+    "description": "Kling O1 image-to-video generation via EachLabs"
+  },
+  "components": {
+    "schemas": {
+      "KlingO1ImageToVideoInput": {
+        "title": "KlingO1ImageToVideoInput",
+        "type": "object",
+        "properties": {
+          "image_url": {
+            "title": "Input Image",
+            "type": "string",
+            "format": "uri",
+            "description": "URL of the image to be used as the start frame",
+            "x-imgly-builder": {
+              "component": "ImageUrl"
+            }
+          },
+          "prompt": {
+            "title": "Prompt",
+            "type": "string",
+            "description": "Motion/action description for video generation",
+            "x-imgly-builder": {
+              "component": "TextArea"
+            }
+          },
+          "duration": {
+            "title": "Duration",
+            "type": "string",
+            "enum": ["5", "10"],
+            "default": "5",
+            "description": "The duration of the generated video in seconds",
+            "x-imgly-enum-labels": {
+              "5": "5 seconds",
+              "10": "10 seconds"
+            }
+          }
+        },
+        "x-fal-order-properties": ["image_url", "prompt", "duration"],
+        "required": ["image_url", "prompt"]
+      }
+    }
+  },
+  "paths": {}
+}

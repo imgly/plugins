@@ -1,0 +1,38 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "EachLabs Flux 2 Pro Edit API",
+    "version": "1.0.0",
+    "description": "Flux 2 Pro image-to-image editing via EachLabs"
+  },
+  "components": {
+    "schemas": {
+      "Flux2ProImage2ImageInput": {
+        "title": "Flux2ProImage2ImageInput",
+        "type": "object",
+        "properties": {
+          "image_url": {
+            "title": "Input Image",
+            "type": "string",
+            "description": "Image to transform",
+            "x-imgly-builder": {
+              "component": "ImageUrl"
+            }
+          },
+          "prompt": {
+            "title": "Prompt",
+            "type": "string",
+            "description": "Text description for image editing",
+            "minLength": 1,
+            "x-imgly-builder": {
+              "component": "TextArea"
+            }
+          }
+        },
+        "x-fal-order-properties": ["image_url", "prompt"],
+        "required": ["image_url", "prompt"]
+      }
+    }
+  },
+  "paths": {}
+}

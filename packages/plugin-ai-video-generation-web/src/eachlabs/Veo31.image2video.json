@@ -1,0 +1,55 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "EachLabs Veo 3.1 Image to Video API",
+    "version": "1.0.0",
+    "description": "Google Veo 3.1 image-to-video generation via EachLabs"
+  },
+  "components": {
+    "schemas": {
+      "Veo31ImageToVideoInput": {
+        "title": "Veo31ImageToVideoInput",
+        "type": "object",
+        "properties": {
+          "image_url": {
+            "title": "Input Image",
+            "type": "string",
+            "format": "uri",
+            "description": "URL of the input image to animate",
+            "x-imgly-builder": {
+              "component": "ImageUrl"
+            }
+          },
+          "prompt": {
+            "title": "Prompt",
+            "type": "string",
+            "description": "The text prompt describing the video you want to generate",
+            "x-imgly-builder": {
+              "component": "TextArea"
+            }
+          },
+          "resolution": {
+            "title": "Resolution",
+            "type": "string",
+            "enum": ["720p", "1080p"],
+            "default": "720p",
+            "description": "The resolution of the generated video",
+            "x-imgly-enum-labels": {
+              "720p": "720p",
+              "1080p": "1080p"
+            }
+          },
+          "generate_audio": {
+            "title": "Generate Audio",
+            "type": "boolean",
+            "default": true,
+            "description": "Whether to generate audio for the video"
+          }
+        },
+        "x-fal-order-properties": ["image_url", "prompt", "resolution", "generate_audio"],
+        "required": ["image_url", "prompt"]
+      }
+    }
+  },
+  "paths": {}
+}

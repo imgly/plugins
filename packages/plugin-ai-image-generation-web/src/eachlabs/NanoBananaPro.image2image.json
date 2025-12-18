@@ -1,0 +1,50 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "EachLabs Nano Banana Pro Edit API",
+    "version": "1.0.0",
+    "description": "Nano Banana Pro image-to-image transformation via EachLabs"
+  },
+  "components": {
+    "schemas": {
+      "NanoBananaProImage2ImageInput": {
+        "title": "NanoBananaProImage2ImageInput",
+        "type": "object",
+        "properties": {
+          "image_url": {
+            "title": "Input Image",
+            "type": "string",
+            "description": "Image to transform",
+            "x-imgly-builder": {
+              "component": "ImageUrl"
+            }
+          },
+          "prompt": {
+            "title": "Prompt",
+            "type": "string",
+            "description": "Text description for image transformation",
+            "minLength": 1,
+            "x-imgly-builder": {
+              "component": "TextArea"
+            }
+          },
+          "resolution": {
+            "title": "Resolution",
+            "type": "string",
+            "enum": ["1K", "2K", "4K"],
+            "default": "1K",
+            "description": "Output resolution quality",
+            "x-imgly-enum-labels": {
+              "1K": "1K (Standard)",
+              "2K": "2K (High)",
+              "4K": "4K (Ultra)"
+            }
+          }
+        },
+        "x-fal-order-properties": ["image_url", "prompt", "resolution"],
+        "required": ["image_url", "prompt"]
+      }
+    }
+  },
+  "paths": {}
+}

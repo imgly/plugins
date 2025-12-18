@@ -1,0 +1,58 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "EachLabs Kling v2.6 Pro Text to Video API",
+    "version": "1.0.0",
+    "description": "Kling v2.6 Pro text-to-video generation via EachLabs"
+  },
+  "components": {
+    "schemas": {
+      "KlingV26ProTextToVideoInput": {
+        "title": "KlingV26ProTextToVideoInput",
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "title": "Prompt",
+            "type": "string",
+            "description": "User's video generation instruction",
+            "minLength": 1,
+            "x-imgly-builder": {
+              "component": "TextArea"
+            }
+          },
+          "duration": {
+            "title": "Duration",
+            "type": "string",
+            "enum": ["5", "10"],
+            "default": "10",
+            "description": "The duration of the generated video in seconds",
+            "x-imgly-enum-labels": {
+              "5": "5 seconds",
+              "10": "10 seconds"
+            }
+          },
+          "aspect_ratio": {
+            "title": "Aspect Ratio",
+            "type": "string",
+            "enum": ["16:9", "9:16", "1:1"],
+            "default": "16:9",
+            "description": "The aspect ratio of the generated video frame",
+            "x-imgly-enum-labels": {
+              "16:9": "Landscape (16:9)",
+              "9:16": "Portrait (9:16)",
+              "1:1": "Square (1:1)"
+            },
+            "x-imgly-enum-icons": {
+              "16:9": "@imgly/plugin/formats/ratio16by9",
+              "9:16": "@imgly/plugin/formats/ratio9by16",
+              "1:1": "@imgly/plugin/formats/ratio1by1"
+            }
+          }
+        },
+        "x-fal-order-properties": ["prompt", "duration", "aspect_ratio"],
+        "required": ["prompt"]
+      }
+    }
+  },
+  "paths": {}
+}

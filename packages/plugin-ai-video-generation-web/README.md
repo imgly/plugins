@@ -598,6 +598,115 @@ Key features:
 - Resolutions: 1280×720, 720×1280, 1792×1024 (7:4), 1024×1792 (4:7)
 - Durations: 4, 8, or 12 seconds
 
+### EachLabs Providers
+
+EachLabs provides access to multiple AI video models through a unified API. These providers require an EachLabs proxy URL for authentication.
+
+#### 18. KlingV26ProTextToVideo (Text-to-Video) via EachLabs
+
+Kling v2.6 Pro text-to-video model accessed through EachLabs:
+
+```typescript
+import EachLabsVideo from '@imgly/plugin-ai-video-generation-web/eachlabs';
+
+text2video: EachLabsVideo.KlingV26ProTextToVideo({
+    proxyUrl: 'http://your-eachlabs-proxy.com/api/proxy',
+    // Optional: Configure default values
+    middlewares: [rateLimitMiddleware, errorMiddleware]
+})
+```
+
+Key features:
+- Kling v2.6 Pro - latest high-quality video generation
+- Aspect ratios: 16:9, 9:16, 1:1
+- Duration: 5 or 10 seconds
+- Native audio generation (Chinese/English)
+- Async delivery with polling
+
+#### 19. KlingV26ProImageToVideo (Image-to-Video) via EachLabs
+
+Kling v2.6 Pro image-to-video model:
+
+```typescript
+import EachLabsVideo from '@imgly/plugin-ai-video-generation-web/eachlabs';
+
+image2video: EachLabsVideo.KlingV26ProImageToVideo({
+    proxyUrl: 'http://your-eachlabs-proxy.com/api/proxy',
+    // Optional: Configure default values
+    middlewares: [rateLimitMiddleware, errorMiddleware]
+})
+```
+
+Key features:
+- Transform existing images into videos
+- Duration: 5 or 10 seconds
+- Native audio generation (Chinese/English)
+- Canvas quick-action integration
+- Maintains image aspect ratio
+
+#### 20. KlingO1ImageToVideo (Image-to-Video) via EachLabs
+
+Kling O1 image-to-video model:
+
+```typescript
+import EachLabsVideo from '@imgly/plugin-ai-video-generation-web/eachlabs';
+
+image2video: EachLabsVideo.KlingO1ImageToVideo({
+    proxyUrl: 'http://your-eachlabs-proxy.com/api/proxy',
+    // Optional: Configure default values
+    middlewares: [rateLimitMiddleware, errorMiddleware]
+})
+```
+
+Key features:
+- Transform existing images into videos
+- Duration: 5 or 10 seconds
+- Canvas quick-action integration
+- Maintains image aspect ratio
+
+#### 22. Veo31TextToVideo (Text-to-Video) via EachLabs
+
+Google's Veo 3.1 text-to-video model accessed through EachLabs:
+
+```typescript
+import EachLabsVideo from '@imgly/plugin-ai-video-generation-web/eachlabs';
+
+text2video: EachLabsVideo.Veo31TextToVideo({
+    proxyUrl: 'http://your-eachlabs-proxy.com/api/proxy',
+    // Optional: Configure default values
+    middlewares: [rateLimitMiddleware, errorMiddleware]
+})
+```
+
+Key features:
+- Google's Veo 3.1 - high-quality text-to-video generation
+- Aspect ratios: 16:9, 9:16
+- Resolution: 720p or 1080p
+- 8-second video duration
+- Optional audio generation
+- Async delivery with polling
+
+#### 23. Veo31ImageToVideo (Image-to-Video) via EachLabs
+
+Google's Veo 3.1 image-to-video model:
+
+```typescript
+import EachLabsVideo from '@imgly/plugin-ai-video-generation-web/eachlabs';
+
+image2video: EachLabsVideo.Veo31ImageToVideo({
+    proxyUrl: 'http://your-eachlabs-proxy.com/api/proxy',
+    // Optional: Configure default values
+    middlewares: [rateLimitMiddleware, errorMiddleware]
+})
+```
+
+Key features:
+- Transform existing images into videos
+- Resolution: 720p or 1080p
+- 8-second video duration
+- Optional audio generation
+- Canvas quick-action integration
+
 ### Feature Control
 
 You can control various aspects of the video generation plugin using the Feature API:
@@ -1012,6 +1121,49 @@ RunwareVideo.Sora2Pro.Text2Video(config: RunwareProviderConfiguration)
 RunwareVideo.Sora2Pro.Image2Video(config: RunwareProviderConfiguration)
 ```
 
+### EachLabs Providers
+
+All EachLabs video providers use the following configuration:
+
+```typescript
+interface EachLabsProviderConfiguration {
+  proxyUrl: string;        // HTTP endpoint URL for the EachLabs proxy
+  debug?: boolean;         // Enable debug logging
+  middlewares?: any[];     // Optional middleware functions
+  history?: false | '@imgly/local' | '@imgly/indexedDB' | (string & {});
+}
+```
+
+#### KlingV26ProTextToVideo
+
+```typescript
+EachLabsVideo.KlingV26ProTextToVideo(config: EachLabsProviderConfiguration)
+```
+
+#### KlingV26ProImageToVideo
+
+```typescript
+EachLabsVideo.KlingV26ProImageToVideo(config: EachLabsProviderConfiguration)
+```
+
+#### KlingO1ImageToVideo
+
+```typescript
+EachLabsVideo.KlingO1ImageToVideo(config: EachLabsProviderConfiguration)
+```
+
+#### Veo31TextToVideo
+
+```typescript
+EachLabsVideo.Veo31TextToVideo(config: EachLabsProviderConfiguration)
+```
+
+#### Veo31ImageToVideo
+
+```typescript
+EachLabsVideo.Veo31ImageToVideo(config: EachLabsProviderConfiguration)
+```
+
 ## UI Integration
 
 The plugin automatically registers the following UI components:
@@ -1048,6 +1200,11 @@ The plugin automatically registers the following UI components:
     -   Runware Sora2.Image2Video: `ly.img.ai.runware/openai/sora-2/image2video`
     -   Runware Sora2Pro.Text2Video: `ly.img.ai.runware/openai/sora-2-pro`
     -   Runware Sora2Pro.Image2Video: `ly.img.ai.runware/openai/sora-2-pro/image2video`
+    -   EachLabs KlingV26ProTextToVideo: `ly.img.ai.eachlabs/kling-v2-6-pro-text-to-video`
+    -   EachLabs KlingV26ProImageToVideo: `ly.img.ai.eachlabs/kling-v2-6-pro-image-to-video`
+    -   EachLabs KlingO1ImageToVideo: `ly.img.ai.eachlabs/kling-o1-image-to-video`
+    -   EachLabs Veo31TextToVideo: `ly.img.ai.eachlabs/veo3-1-text-to-video`
+    -   EachLabs Veo31ImageToVideo: `ly.img.ai.eachlabs/veo3-1-image-to-video`
 
 ### Asset History
 
@@ -1075,6 +1232,11 @@ Generated videos are automatically stored in asset sources with the following ID
 -   Runware Sora2.Image2Video: `runware/openai/sora-2/image2video.history`
 -   Runware Sora2Pro.Text2Video: `runware/openai/sora-2-pro.history`
 -   Runware Sora2Pro.Image2Video: `runware/openai/sora-2-pro/image2video.history`
+-   EachLabs KlingV26ProTextToVideo: `eachlabs/kling-v2-6-pro-text-to-video.history`
+-   EachLabs KlingV26ProImageToVideo: `eachlabs/kling-v2-6-pro-image-to-video.history`
+-   EachLabs KlingO1ImageToVideo: `eachlabs/kling-o1-image-to-video.history`
+-   EachLabs Veo31TextToVideo: `eachlabs/veo3-1-text-to-video.history`
+-   EachLabs Veo31ImageToVideo: `eachlabs/veo3-1-image-to-video.history`
 
 ### Dock Integration
 

@@ -1073,6 +1073,229 @@ Key features:
 - Fixed resolutions: 1024×1024, 1536×1024, 1024×1536
 - Instruction-based editing for I2I
 
+### EachLabs Providers
+
+EachLabs provides access to multiple AI models through a unified API. These providers require an EachLabs proxy URL for authentication.
+
+```typescript
+import EachLabsImage from '@imgly/plugin-ai-image-generation-web/eachlabs';
+```
+
+#### 22. NanoBananaPro (Text-to-Image) via EachLabs
+
+Nano Banana Pro multi-style image generation via EachLabs:
+
+```typescript
+text2image: EachLabsImage.NanoBananaPro.Text2Image({
+    proxyUrl: 'http://your-eachlabs-proxy.com/api/proxy'
+})
+```
+
+Key features:
+- Multi-style image generation
+- 10 aspect ratio options (1:1, 16:9, 9:16, 4:3, 3:4, 3:2, 2:3, 21:9, 9:21, 2.4:1)
+- Multiple resolution options (1K, 2K, 4K)
+- High-quality output
+
+#### 23. NanoBananaPro Edit (Image-to-Image) via EachLabs
+
+Nano Banana Pro image transformation via EachLabs:
+
+```typescript
+image2image: EachLabsImage.NanoBananaPro.Image2Image({
+    proxyUrl: 'http://your-eachlabs-proxy.com/api/proxy'
+})
+```
+
+Key features:
+- Multi-style image transformation
+- Multiple resolution options (1K, 2K, 4K)
+- Supports up to 10 reference images
+- Full canvas quick actions support: edit image, swap background, style transfer, artist styles, create variants, combine images, remix page
+
+#### 24. Flux2Pro (Text-to-Image) via EachLabs
+
+Black Forest Labs' Flux 2 Pro high-quality text-to-image generation via EachLabs:
+
+```typescript
+text2image: EachLabsImage.Flux2Pro.Text2Image({
+    proxyUrl: 'http://your-eachlabs-proxy.com/api/proxy'
+})
+```
+
+Key features:
+- High-quality image generation from Black Forest Labs
+- 6 image size options (square HD, square, portrait 4:3/16:9, landscape 4:3/16:9)
+- Professional-grade output quality
+
+#### 25. Flux2Pro Edit (Image-to-Image) via EachLabs
+
+Black Forest Labs' Flux 2 Pro image transformation via EachLabs:
+
+```typescript
+image2image: EachLabsImage.Flux2Pro.Image2Image({
+    proxyUrl: 'http://your-eachlabs-proxy.com/api/proxy'
+})
+```
+
+Key features:
+- High-quality image transformation
+- Supports up to 4 reference images
+- Full canvas quick actions support: edit image, swap background, style transfer, artist styles, create variants, combine images, remix page
+
+#### 26. Flux2 (Text-to-Image) via EachLabs
+
+Black Forest Labs' Flux 2 standard text-to-image generation via EachLabs:
+
+```typescript
+text2image: EachLabsImage.Flux2.Text2Image({
+    proxyUrl: 'http://your-eachlabs-proxy.com/api/proxy'
+})
+```
+
+Key features:
+- Standard Flux 2 image generation from Black Forest Labs
+- 6 image size options (square HD, square, portrait 4:3/16:9, landscape 4:3/16:9)
+- Good quality output with faster generation
+
+#### 27. Flux2 Edit (Image-to-Image) via EachLabs
+
+Black Forest Labs' Flux 2 image transformation via EachLabs:
+
+```typescript
+image2image: EachLabsImage.Flux2.Image2Image({
+    proxyUrl: 'http://your-eachlabs-proxy.com/api/proxy'
+})
+```
+
+Key features:
+- Standard Flux 2 image transformation
+- Supports up to 3 reference images
+- Full canvas quick actions support: edit image, swap background, style transfer, artist styles, create variants, combine images, remix page
+
+#### 28. Flux2Flex (Text-to-Image) via EachLabs
+
+Black Forest Labs' Flux 2 Flex text-to-image generation with automatic prompt expansion via EachLabs:
+
+```typescript
+text2image: EachLabsImage.Flux2Flex.Text2Image({
+    proxyUrl: 'http://your-eachlabs-proxy.com/api/proxy'
+})
+```
+
+Key features:
+- Automatic prompt expansion using the model's knowledge
+- 6 image size options (square HD, square, portrait 4:3/16:9, landscape 4:3/16:9)
+- High-quality Flux 2 generation from Black Forest Labs
+
+#### 29. Flux2Flex Edit (Image-to-Image) via EachLabs
+
+Black Forest Labs' Flux 2 Flex image transformation with automatic prompt expansion via EachLabs:
+
+```typescript
+image2image: EachLabsImage.Flux2Flex.Image2Image({
+    proxyUrl: 'http://your-eachlabs-proxy.com/api/proxy'
+})
+```
+
+Key features:
+- Automatic prompt expansion using the model's knowledge
+- Automatic image size detection ("auto" mode)
+- Supports up to 10 reference images
+- Full canvas quick actions support: edit image, swap background, style transfer, artist styles, create variants, combine images, remix page
+
+#### 30. OpenAI GPT Image (Text-to-Image) via EachLabs
+
+OpenAI's GPT Image text-to-image generation via EachLabs:
+
+```typescript
+text2image: EachLabsImage.OpenAIGptImage.Text2Image({
+    proxyUrl: 'http://your-eachlabs-proxy.com/api/proxy'
+})
+```
+
+Key features:
+- High-quality image generation from OpenAI
+- 3 image size options (Square, Landscape, Portrait)
+- Professional-grade output quality
+
+#### 31. OpenAI GPT Image Edit (Image-to-Image) via EachLabs
+
+OpenAI's GPT Image image transformation via EachLabs:
+
+```typescript
+image2image: EachLabsImage.OpenAIGptImage.Image2Image({
+    proxyUrl: 'http://your-eachlabs-proxy.com/api/proxy'
+})
+```
+
+Key features:
+- High-quality image transformation
+- Supports up to 16 reference images
+- Full canvas quick actions support: edit image, swap background, style transfer, artist styles, create variants, combine images, remix page
+
+#### 32. Seedream v4.5 (Text-to-Image) via EachLabs
+
+ByteDance's Seedream v4.5 text-to-image generation via EachLabs:
+
+```typescript
+text2image: EachLabsImage.Seedream45.Text2Image({
+    proxyUrl: 'http://your-eachlabs-proxy.com/api/proxy'
+})
+```
+
+Key features:
+- High-quality image generation from ByteDance
+- 6 image size options (square HD, square, portrait 4:3/16:9, landscape 4:3/16:9)
+- Improved facial details and text generation over v4.0
+
+#### 33. Seedream v4.5 Edit (Image-to-Image) via EachLabs
+
+ByteDance's Seedream v4.5 image transformation via EachLabs:
+
+```typescript
+image2image: EachLabsImage.Seedream45.Image2Image({
+    proxyUrl: 'http://your-eachlabs-proxy.com/api/proxy'
+})
+```
+
+Key features:
+- High-quality image transformation
+- Supports up to 10 reference images
+- Full canvas quick actions support: edit image, swap background, style transfer, artist styles, create variants, combine images, remix page
+- Improved facial details and text generation over v4.0
+
+#### 34. Gemini 3 Pro Image (Text-to-Image) via EachLabs
+
+Google's Gemini 3 Pro text-to-image generation via EachLabs:
+
+```typescript
+text2image: EachLabsImage.Gemini3Pro.Text2Image({
+    proxyUrl: 'http://your-eachlabs-proxy.com/api/proxy'
+})
+```
+
+Key features:
+- High-quality image generation from Google Gemini
+- 8 aspect ratio options (1:1, 16:9, 9:16, 4:3, 3:4, 3:2, 2:3, 21:9)
+- Multiple resolution options (1K, 2K, 4K)
+- Professional-grade output quality
+
+#### 35. Gemini 3 Pro Image Edit (Image-to-Image) via EachLabs
+
+Google's Gemini 3 Pro image transformation via EachLabs:
+
+```typescript
+image2image: EachLabsImage.Gemini3Pro.Image2Image({
+    proxyUrl: 'http://your-eachlabs-proxy.com/api/proxy'
+})
+```
+
+Key features:
+- High-quality image transformation
+- Supports up to 10 reference images
+- Full canvas quick actions support: edit image, swap background, style transfer, artist styles, create variants, combine images, remix page
+
 ### Customizing Labels and Translations
 
 You can customize all labels and text in the AI image generation interface using the translation system. This allows you to provide better labels for your users in any language.
@@ -1634,6 +1857,68 @@ RunwareImage.GptImage1.Text2Image(config: RunwareProviderConfiguration)
 RunwareImage.GptImage1.Image2Image(config: RunwareProviderConfiguration)
 ```
 
+### EachLabs Providers
+
+All EachLabs providers use the following configuration:
+
+```typescript
+interface EachLabsProviderConfiguration {
+  proxyUrl: string;        // HTTP endpoint URL for the EachLabs proxy
+  debug?: boolean;         // Enable debug logging
+  middlewares?: any[];     // Optional middleware functions
+  history?: false | '@imgly/local' | '@imgly/indexedDB' | (string & {});
+}
+```
+
+#### NanoBananaPro.Text2Image / NanoBananaPro.Image2Image
+
+```typescript
+EachLabsImage.NanoBananaPro.Text2Image(config: EachLabsProviderConfiguration)
+EachLabsImage.NanoBananaPro.Image2Image(config: EachLabsProviderConfiguration)
+```
+
+#### Flux2Pro.Text2Image / Flux2Pro.Image2Image
+
+```typescript
+EachLabsImage.Flux2Pro.Text2Image(config: EachLabsProviderConfiguration)
+EachLabsImage.Flux2Pro.Image2Image(config: EachLabsProviderConfiguration)
+```
+
+#### Flux2.Text2Image / Flux2.Image2Image
+
+```typescript
+EachLabsImage.Flux2.Text2Image(config: EachLabsProviderConfiguration)
+EachLabsImage.Flux2.Image2Image(config: EachLabsProviderConfiguration)
+```
+
+#### Flux2Flex.Text2Image / Flux2Flex.Image2Image
+
+```typescript
+EachLabsImage.Flux2Flex.Text2Image(config: EachLabsProviderConfiguration)
+EachLabsImage.Flux2Flex.Image2Image(config: EachLabsProviderConfiguration)
+```
+
+#### OpenAIGptImage.Text2Image / OpenAIGptImage.Image2Image
+
+```typescript
+EachLabsImage.OpenAIGptImage.Text2Image(config: EachLabsProviderConfiguration)
+EachLabsImage.OpenAIGptImage.Image2Image(config: EachLabsProviderConfiguration)
+```
+
+#### Seedream45.Text2Image / Seedream45.Image2Image
+
+```typescript
+EachLabsImage.Seedream45.Text2Image(config: EachLabsProviderConfiguration)
+EachLabsImage.Seedream45.Image2Image(config: EachLabsProviderConfiguration)
+```
+
+#### Gemini3Pro.Text2Image / Gemini3Pro.Image2Image
+
+```typescript
+EachLabsImage.Gemini3Pro.Text2Image(config: EachLabsProviderConfiguration)
+EachLabsImage.Gemini3Pro.Image2Image(config: EachLabsProviderConfiguration)
+```
+
 ## UI Integration
 
 The plugin automatically registers the following UI components:
@@ -1746,6 +2031,20 @@ const myImageProvider = {
   - Runware NanoBanana2Pro.Image2Image: `ly.img.ai.runware/google/nano-banana-2-pro/image2image`
   - Runware GptImage1.Text2Image: `ly.img.ai.runware/openai/gpt-image-1`
   - Runware GptImage1.Image2Image: `ly.img.ai.runware/openai/gpt-image-1/image2image`
+  - EachLabs NanoBananaPro.Text2Image: `ly.img.ai.eachlabs/nano-banana-pro`
+  - EachLabs NanoBananaPro.Image2Image: `ly.img.ai.eachlabs/nano-banana-pro/edit`
+  - EachLabs Flux2Pro.Text2Image: `ly.img.ai.eachlabs/flux-2-pro`
+  - EachLabs Flux2Pro.Image2Image: `ly.img.ai.eachlabs/flux-2-pro/edit`
+  - EachLabs Flux2.Text2Image: `ly.img.ai.eachlabs/flux-2`
+  - EachLabs Flux2.Image2Image: `ly.img.ai.eachlabs/flux-2/edit`
+  - EachLabs Flux2Flex.Text2Image: `ly.img.ai.eachlabs/flux-2-flex`
+  - EachLabs Flux2Flex.Image2Image: `ly.img.ai.eachlabs/flux-2-flex/edit`
+  - EachLabs OpenAIGptImage.Text2Image: `ly.img.ai.eachlabs/openai-gpt-image`
+  - EachLabs OpenAIGptImage.Image2Image: `ly.img.ai.eachlabs/openai-gpt-image/edit`
+  - EachLabs Seedream45.Text2Image: `ly.img.ai.eachlabs/seedream-v4.5`
+  - EachLabs Seedream45.Image2Image: `ly.img.ai.eachlabs/seedream-v4.5/edit`
+  - EachLabs Gemini3Pro.Text2Image: `ly.img.ai.eachlabs/gemini-3-pro-image`
+  - EachLabs Gemini3Pro.Image2Image: `ly.img.ai.eachlabs/gemini-3-pro-image/edit`
 
 ### Asset History
 
@@ -1779,6 +2078,20 @@ Generated images are automatically stored in asset sources with the following ID
 - Runware NanoBanana2Pro.Image2Image: `runware/google/nano-banana-2-pro/image2image.history`
 - Runware GptImage1.Text2Image: `runware/openai/gpt-image-1.history`
 - Runware GptImage1.Image2Image: `runware/openai/gpt-image-1/image2image.history`
+- EachLabs NanoBananaPro.Text2Image: `eachlabs/nano-banana-pro.history`
+- EachLabs NanoBananaPro.Image2Image: `eachlabs/nano-banana-pro/edit.history`
+- EachLabs Flux2Pro.Text2Image: `eachlabs/flux-2-pro.history`
+- EachLabs Flux2Pro.Image2Image: `eachlabs/flux-2-pro/edit.history`
+- EachLabs Flux2.Text2Image: `eachlabs/flux-2.history`
+- EachLabs Flux2.Image2Image: `eachlabs/flux-2/edit.history`
+- EachLabs Flux2Flex.Text2Image: `eachlabs/flux-2-flex.history`
+- EachLabs Flux2Flex.Image2Image: `eachlabs/flux-2-flex/edit.history`
+- EachLabs OpenAIGptImage.Text2Image: `eachlabs/openai-gpt-image.history`
+- EachLabs OpenAIGptImage.Image2Image: `eachlabs/openai-gpt-image/edit.history`
+- EachLabs Seedream45.Text2Image: `eachlabs/seedream-v4.5.history`
+- EachLabs Seedream45.Image2Image: `eachlabs/seedream-v4.5/edit.history`
+- EachLabs Gemini3Pro.Text2Image: `eachlabs/gemini-3-pro-image.history`
+- EachLabs Gemini3Pro.Image2Image: `eachlabs/gemini-3-pro-image/edit.history`
 
 ### Dock Integration
 

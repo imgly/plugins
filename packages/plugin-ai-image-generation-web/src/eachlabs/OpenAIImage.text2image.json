@@ -1,0 +1,51 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "EachLabs OpenAI GPT Image API",
+    "version": "1.0.0",
+    "description": "OpenAI GPT Image text-to-image generation via EachLabs"
+  },
+  "components": {
+    "schemas": {
+      "OpenAIImageText2ImageInput": {
+        "title": "OpenAIImageText2ImageInput",
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "title": "Prompt",
+            "type": "string",
+            "description": "Text description for image generation",
+            "minLength": 1,
+            "x-imgly-builder": {
+              "component": "TextArea"
+            }
+          },
+          "image_size": {
+            "title": "Format",
+            "type": "string",
+            "enum": [
+              "1024x1024",
+              "1536x1024",
+              "1024x1536"
+            ],
+            "default": "1024x1024",
+            "description": "Output image format",
+            "x-imgly-enum-labels": {
+              "1024x1024": "Square",
+              "1536x1024": "Landscape",
+              "1024x1536": "Portrait"
+            },
+            "x-imgly-enum-icons": {
+              "1024x1024": "@imgly/plugin/formats/ratio1by1",
+              "1536x1024": "@imgly/plugin/formats/ratio4by3",
+              "1024x1536": "@imgly/plugin/formats/ratio3by4"
+            }
+          }
+        },
+        "x-fal-order-properties": ["prompt", "image_size"],
+        "required": ["prompt"]
+      }
+    }
+  },
+  "paths": {}
+}
