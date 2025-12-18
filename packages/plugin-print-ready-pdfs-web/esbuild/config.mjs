@@ -1,11 +1,32 @@
 import chalk from 'chalk';
-import { readFile, copyFile, mkdir } from 'fs/promises';
+import { readFile, copyFile, mkdir, writeFile } from 'fs/promises';
 import { existsSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
 import baseConfig from '../../../esbuild/config.mjs';
 import log from '../../../esbuild/log.mjs';
+
+/**
+ * Add webpackIgnore comments to Node.js module imports in gs.js
+ * This prevents Webpack 5 from trying to resolve these modules in browser builds.
+ * See: https://github.com/imgly/ubq/issues/11471
+ */
+function addWebpackIgnoreComments(content) {
+  // Transform: await import("module") -> await import(/* webpackIgnore: true */ "module")
+  // Transform: await import("path") -> await import(/* webpackIgnore: true */ "path")
+  // Also handle other Node.js modules that might be imported
+  const nodeModules = ['module', 'path', 'fs', 'url', 'os'];
+  let transformed = content;
+
+  for (const mod of nodeModules) {
+    // Match: import("module") or import('module') with optional whitespace
+    const pattern = new RegExp(`import\\(\\s*["']${mod}["']\\s*\\)`, 'g');
+    transformed = transformed.replace(pattern, `import(/* webpackIgnore: true */ "${mod}")`);
+  }
+
+  return transformed;
+}
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -31,11 +52,14 @@ const copyWasmPlugin = {
       await copyFile(srcWasm, distWasm);
       log(chalk.green('✓ Copied gs.wasm to dist/'));
 
-      // Copy gs.js file
+      // Copy and transform gs.js file to add webpackIgnore comments
+      // This fixes Webpack 5 compatibility (see https://github.com/imgly/ubq/issues/11471)
       const srcJs = join(__dirname, '../src/wasm/gs.js');
       const distJs = join(distDir, 'gs.js');
-      await copyFile(srcJs, distJs);
-      log(chalk.green('✓ Copied gs.js to dist/'));
+      const gsContent = await readFile(srcJs, 'utf-8');
+      const transformedContent = addWebpackIgnoreComments(gsContent);
+      await writeFile(distJs, transformedContent);
+      log(chalk.green('✓ Copied and transformed gs.js to dist/ (added webpackIgnore comments)'));
 
       // Copy ICC profile files
       const iccProfiles = [

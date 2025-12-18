@@ -145,9 +145,25 @@ async function convertToPDFX3Single(
 
       if (isNode) {
         // Node.js: Load from filesystem using readFileSync
-        const { readFileSync } = await import('fs');
-        const { fileURLToPath } = await import('url');
-        const { dirname, join } = await import('path');
+        // Use indirect dynamic import to prevent Webpack 5 from statically analyzing these imports
+        // But use direct imports in test environments (vitest) where indirect imports bypass mocking
+        // See: https://github.com/imgly/ubq/issues/11471
+        const isTestEnv =
+          process.env.VITEST === 'true' || process.env.NODE_ENV === 'test';
+
+        // Note: new Function() could fail in CSP-restricted environments, but CSP is a browser
+        // security mechanism and doesn't apply to Node.js. This code only runs in Node.js (isNode check above).
+        // eslint-disable-next-line @typescript-eslint/no-implied-eval, no-new-func
+        const indirectImport = new Function('s', 'return import(s)') as (
+          s: string
+        ) => Promise<any>;
+        const dynamicImport = isTestEnv
+          ? (s: string) => import(s)
+          : indirectImport;
+
+        const { readFileSync } = await dynamicImport('fs');
+        const { fileURLToPath } = await dynamicImport('url');
+        const { dirname, join } = await dynamicImport('path');
 
         // Get the directory of the built module
         const moduleDir = dirname(fileURLToPath(import.meta.url));

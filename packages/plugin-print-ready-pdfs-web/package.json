@@ -1,6 +1,6 @@
 {
   "name": "@imgly/plugin-print-ready-pdfs-web",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Print-Ready PDFs plugin for CE.SDK editor - PDF/X conversion and export functionality. Contains AGPL-3.0 licensed Ghostscript WASM.",
   "keywords": [
     "CE.SDK",
@@ -67,7 +67,8 @@
     "test:content": "pnpm run build && vitest run content-preservation",
     "test:silent": "pnpm run build && vitest run silent-conversion",
     "test:all": "pnpm run test:browser && pnpm run test:integration",
-    "test:visual": "pnpm run build && node test/visual-test.mjs"
+    "test:visual": "pnpm run build && node test/visual-test.mjs",
+    "test:webpack5": "bash test/webpack5-compatibility-test.sh"
   },
   "devDependencies": {
     "@cesdk/cesdk-js": "~1.61.0",
