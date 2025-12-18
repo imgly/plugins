@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+## [0.2.14] - 2025-12-15
+
+## [0.2.13] - 2025-12-15
+
 ### New Features
 
 -   [all] **Runware Partner Integration**: Added Runware as a new AI provider service, offering access to multiple image and video generation models through a unified API. Runware provides a single endpoint for accessing various AI models with consistent configuration.

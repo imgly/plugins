@@ -1,6 +1,6 @@
 {
   "name": "@imgly/plugin-ai-generation-web",
-  "version": "0.2.12",
+  "version": "0.2.14",
   "description": "AI generation plugin for the CE.SDK editor",
   "keywords": [
     "CE.SDK",
@@ -43,8 +43,8 @@
     "clean": "pnpm exec rimraf dist",
     "purge": "pnpm exec rimraf node_modules",
     "build": "pnpm run clean && pnpm exec node scripts/build.mjs",
-    "publish:latest": "pnpm run build && pnpm publish --tag latest --access public",
-    "publish:next": "pnpm run build && pnpm publish --tag next --access public",
+    "publish:latest": "pnpm run build && pnpm publish --tag latest --access public --no-git-checks",
+    "publish:next": "pnpm run build && pnpm publish --tag next --access public --no-git-checks",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
