@@ -220,6 +220,22 @@
     "ly.img.plugin-ai-video-generation-web.eachlabs/kling-v2-6-pro-image-to-video.property.prompt.placeholder": "Describe the motion...",
     "ly.img.plugin-ai-video-generation-web.eachlabs/kling-v2-6-pro-image-to-video.property.duration": "Duration",
     "ly.img.plugin-ai-video-generation-web.eachlabs/kling-v2-6-pro-image-to-video.property.duration.5": "5 seconds",
-    "ly.img.plugin-ai-video-generation-web.eachlabs/kling-v2-6-pro-image-to-video.property.duration.10": "10 seconds"
+    "ly.img.plugin-ai-video-generation-web.eachlabs/kling-v2-6-pro-image-to-video.property.duration.10": "10 seconds",
+    "ly.img.plugin-ai-video-generation-web.eachlabs/veo3-1-text-to-video.property.prompt": "Prompt",
+    "ly.img.plugin-ai-video-generation-web.eachlabs/veo3-1-text-to-video.property.prompt.placeholder": "Describe your video scene...",
+    "ly.img.plugin-ai-video-generation-web.eachlabs/veo3-1-text-to-video.property.aspect_ratio": "Aspect Ratio",
+    "ly.img.plugin-ai-video-generation-web.eachlabs/veo3-1-text-to-video.property.aspect_ratio.16:9": "16:9 (Landscape)",
+    "ly.img.plugin-ai-video-generation-web.eachlabs/veo3-1-text-to-video.property.aspect_ratio.9:16": "9:16 (Portrait)",
+    "ly.img.plugin-ai-video-generation-web.eachlabs/veo3-1-text-to-video.property.resolution": "Resolution",
+    "ly.img.plugin-ai-video-generation-web.eachlabs/veo3-1-text-to-video.property.resolution.720p": "720p (HD)",
+    "ly.img.plugin-ai-video-generation-web.eachlabs/veo3-1-text-to-video.property.resolution.1080p": "1080p (Full HD)",
+    "ly.img.plugin-ai-video-generation-web.eachlabs/veo3-1-text-to-video.property.generate_audio": "Generate Audio",
+    "ly.img.plugin-ai-video-generation-web.eachlabs/veo3-1-image-to-video.property.image_url": "Source Image",
+    "ly.img.plugin-ai-video-generation-web.eachlabs/veo3-1-image-to-video.property.prompt": "Prompt",
+    "ly.img.plugin-ai-video-generation-web.eachlabs/veo3-1-image-to-video.property.prompt.placeholder": "Describe the motion...",
+    "ly.img.plugin-ai-video-generation-web.eachlabs/veo3-1-image-to-video.property.resolution": "Resolution",
+    "ly.img.plugin-ai-video-generation-web.eachlabs/veo3-1-image-to-video.property.resolution.720p": "720p (HD)",
+    "ly.img.plugin-ai-video-generation-web.eachlabs/veo3-1-image-to-video.property.resolution.1080p": "1080p (Full HD)",
+    "ly.img.plugin-ai-video-generation-web.eachlabs/veo3-1-image-to-video.property.generate_audio": "Generate Audio"
   }
 }

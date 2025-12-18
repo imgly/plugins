@@ -56,7 +56,7 @@ This document tracks EachLabs AI models for implementation, focusing on image an
 | Slug | Title | Output Type | Status | Notes |
 |------|-------|-------------|--------|-------|
 | kling-v2-6-pro-text-to-video | Kling \| v2.6 \| Pro \| Text to Video | video | implemented | Latest Kling, high quality |
-| veo3-1-text-to-video | Veo 3.1 \| Text to Video | video | planned | Google Veo 3.1 |
+| veo3-1-text-to-video | Veo 3.1 \| Text to Video | video | implemented | Google Veo 3.1 |
 
 ## Video Generation (Image-to-Video)
 
@@ -64,7 +64,7 @@ This document tracks EachLabs AI models for implementation, focusing on image an
 |------|-------|-------------|--------|-------|
 | kling-v2-6-pro-image-to-video | Kling \| v2.6 \| Pro \| Image to Video | video | implemented | Latest Kling I2V |
 | kling-o1-image-to-video | Kling O1 \| Image to Video | video | planned | Kling O1 variant |
-| veo3-1-image-to-video | Veo 3.1 \| Image to Video | video | planned | Google Veo 3.1 I2V |
+| veo3-1-image-to-video | Veo 3.1 \| Image to Video | video | implemented | Google Veo 3.1 I2V |
 
 ---
 
@@ -90,20 +90,18 @@ This document tracks EachLabs AI models for implementation, focusing on image an
 - bytedance-seedream-v4-5-edit
 - gemini-3-pro-image-preview-edit
 
-**Video Generation (T2V):** 1 model
+**Video Generation (T2V):** 2 models
 - kling-v2-6-pro-text-to-video
-
-**Video Generation (I2V):** 1 model
-- kling-v2-6-pro-image-to-video
-
-### Planned for Implementation
-
-**Video Generation (T2V):** 1 model
 - veo3-1-text-to-video
 
 **Video Generation (I2V):** 2 models
-- kling-o1-image-to-video
+- kling-v2-6-pro-image-to-video
 - veo3-1-image-to-video
+
+### Planned for Implementation
+
+**Video Generation (I2V):** 1 model
+- kling-o1-image-to-video
 
 ### Statistics
 
@@ -111,6 +109,6 @@ This document tracks EachLabs AI models for implementation, focusing on image an
 |----------|-------------|---------|-------|
 | Image T2I | 7 | 0 | 7 |
 | Image I2I | 7 | 0 | 7 |
-| Video T2V | 1 | 1 | 2 |
-| Video I2V | 1 | 2 | 3 |
-| **Total** | **16** | **3** | **19** |
+| Video T2V | 2 | 0 | 2 |
+| Video I2V | 2 | 1 | 3 |
+| **Total** | **18** | **1** | **19** |

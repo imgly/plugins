@@ -82,10 +82,18 @@ export function createEachLabsProviders(options: EachLabsProviderOptions) {
       EachLabsVideo.KlingV26ProTextToVideo({
         middlewares: [videoRateLimitMiddleware, errorMiddleware],
         proxyUrl
+      }),
+      EachLabsVideo.Veo31TextToVideo({
+        middlewares: [videoRateLimitMiddleware, errorMiddleware],
+        proxyUrl
       })
     ],
     image2video: [
       EachLabsVideo.KlingV26ProImageToVideo({
+        middlewares: [videoRateLimitMiddleware, errorMiddleware],
+        proxyUrl
+      }),
+      EachLabsVideo.Veo31ImageToVideo({
         middlewares: [videoRateLimitMiddleware, errorMiddleware],
         proxyUrl
       })
