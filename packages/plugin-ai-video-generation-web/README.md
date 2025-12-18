@@ -644,7 +644,27 @@ Key features:
 - Canvas quick-action integration
 - Maintains image aspect ratio
 
-#### 20. Veo31TextToVideo (Text-to-Video) via EachLabs
+#### 20. KlingO1ImageToVideo (Image-to-Video) via EachLabs
+
+Kling O1 image-to-video model:
+
+```typescript
+import EachLabsVideo from '@imgly/plugin-ai-video-generation-web/eachlabs';
+
+image2video: EachLabsVideo.KlingO1ImageToVideo({
+    proxyUrl: 'http://your-eachlabs-proxy.com/api/proxy',
+    // Optional: Configure default values
+    middlewares: [rateLimitMiddleware, errorMiddleware]
+})
+```
+
+Key features:
+- Transform existing images into videos
+- Duration: 5 or 10 seconds
+- Canvas quick-action integration
+- Maintains image aspect ratio
+
+#### 22. Veo31TextToVideo (Text-to-Video) via EachLabs
 
 Google's Veo 3.1 text-to-video model accessed through EachLabs:
 
@@ -666,7 +686,7 @@ Key features:
 - Optional audio generation
 - Async delivery with polling
 
-#### 21. Veo31ImageToVideo (Image-to-Video) via EachLabs
+#### 23. Veo31ImageToVideo (Image-to-Video) via EachLabs
 
 Google's Veo 3.1 image-to-video model:
 
@@ -1126,6 +1146,12 @@ EachLabsVideo.KlingV26ProTextToVideo(config: EachLabsProviderConfiguration)
 EachLabsVideo.KlingV26ProImageToVideo(config: EachLabsProviderConfiguration)
 ```
 
+#### KlingO1ImageToVideo
+
+```typescript
+EachLabsVideo.KlingO1ImageToVideo(config: EachLabsProviderConfiguration)
+```
+
 #### Veo31TextToVideo
 
 ```typescript
@@ -1176,6 +1202,7 @@ The plugin automatically registers the following UI components:
     -   Runware Sora2Pro.Image2Video: `ly.img.ai.runware/openai/sora-2-pro/image2video`
     -   EachLabs KlingV26ProTextToVideo: `ly.img.ai.eachlabs/kling-v2-6-pro-text-to-video`
     -   EachLabs KlingV26ProImageToVideo: `ly.img.ai.eachlabs/kling-v2-6-pro-image-to-video`
+    -   EachLabs KlingO1ImageToVideo: `ly.img.ai.eachlabs/kling-o1-image-to-video`
     -   EachLabs Veo31TextToVideo: `ly.img.ai.eachlabs/veo3-1-text-to-video`
     -   EachLabs Veo31ImageToVideo: `ly.img.ai.eachlabs/veo3-1-image-to-video`
 
@@ -1207,6 +1234,7 @@ Generated videos are automatically stored in asset sources with the following ID
 -   Runware Sora2Pro.Image2Video: `runware/openai/sora-2-pro/image2video.history`
 -   EachLabs KlingV26ProTextToVideo: `eachlabs/kling-v2-6-pro-text-to-video.history`
 -   EachLabs KlingV26ProImageToVideo: `eachlabs/kling-v2-6-pro-image-to-video.history`
+-   EachLabs KlingO1ImageToVideo: `eachlabs/kling-o1-image-to-video.history`
 -   EachLabs Veo31TextToVideo: `eachlabs/veo3-1-text-to-video.history`
 -   EachLabs Veo31ImageToVideo: `eachlabs/veo3-1-image-to-video.history`
 

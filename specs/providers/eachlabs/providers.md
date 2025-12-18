@@ -63,7 +63,7 @@ This document tracks EachLabs AI models for implementation, focusing on image an
 | Slug | Title | Output Type | Status | Notes |
 |------|-------|-------------|--------|-------|
 | kling-v2-6-pro-image-to-video | Kling \| v2.6 \| Pro \| Image to Video | video | implemented | Latest Kling I2V |
-| kling-o1-image-to-video | Kling O1 \| Image to Video | video | planned | Kling O1 variant |
+| kling-o1-image-to-video | Kling O1 \| Image to Video | video | implemented | Kling O1 variant |
 | veo3-1-image-to-video | Veo 3.1 \| Image to Video | video | implemented | Google Veo 3.1 I2V |
 
 ---
@@ -94,14 +94,10 @@ This document tracks EachLabs AI models for implementation, focusing on image an
 - kling-v2-6-pro-text-to-video
 - veo3-1-text-to-video
 
-**Video Generation (I2V):** 2 models
+**Video Generation (I2V):** 3 models
 - kling-v2-6-pro-image-to-video
-- veo3-1-image-to-video
-
-### Planned for Implementation
-
-**Video Generation (I2V):** 1 model
 - kling-o1-image-to-video
+- veo3-1-image-to-video
 
 ### Statistics
 
@@ -110,5 +106,5 @@ This document tracks EachLabs AI models for implementation, focusing on image an
 | Image T2I | 7 | 0 | 7 |
 | Image I2I | 7 | 0 | 7 |
 | Video T2V | 2 | 0 | 2 |
-| Video I2V | 2 | 1 | 3 |
-| **Total** | **18** | **1** | **19** |
+| Video I2V | 3 | 0 | 3 |
+| **Total** | **19** | **0** | **19** |
