@@ -30,3 +30,9 @@ pnpm-debug.log*
 test/converted-pdfx3.pdf
 test-results/
 .vercel
+
+# Webpack 5 test projects (generated)
+test/webpack5-build-test/
+test/webpack5-angular-project/node_modules/
+test/webpack5-angular-project/dist/
+test/webpack5-angular-project/.angular/

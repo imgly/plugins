@@ -1,9 +1,12 @@
 #!/bin/bash
 #
-# Test: Verify @imgly/plugin-print-ready-pdfs-web works with Webpack 5
+# Test: Verify @imgly/plugin-print-ready-pdfs-web works with Webpack 5 (BUILD-TIME TEST)
 # Issue: https://github.com/imgly/ubq/issues/11471
 #
-# Exit 0 = PASS (plugin is Webpack 5 compatible)
+# This test verifies that the plugin can be bundled with Webpack 5 without build errors.
+# For runtime testing with Angular + Webpack 5, use: pnpm test:webpack5:angular
+#
+# Exit 0 = PASS (plugin is Webpack 5 compatible for bundling)
 # Exit 1 = FAIL (plugin has Webpack 5 compatibility issues)
 #
 
@@ -11,7 +14,7 @@ set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PACKAGE_DIR="$(dirname "$SCRIPT_DIR")"
-TEST_PROJECT_DIR="${SCRIPT_DIR}/webpack5-angular-project"
+TEST_PROJECT_DIR="${SCRIPT_DIR}/webpack5-build-test"
 
 echo "Testing Webpack 5 compatibility..."
 

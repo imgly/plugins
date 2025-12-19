@@ -68,7 +68,9 @@
     "test:silent": "pnpm run build && vitest run silent-conversion",
     "test:all": "pnpm run test:browser && pnpm run test:integration",
     "test:visual": "pnpm run build && node test/visual-test.mjs",
-    "test:webpack5": "bash test/webpack5-compatibility-test.sh"
+    "test:webpack5": "bash test/webpack5-compatibility-test.sh",
+    "test:webpack5:angular": "playwright test test/webpack5-angular-runtime.spec.ts --timeout 180000",
+    "test:webpack5:angular:setup": "cd test/webpack5-angular-project && npm install"
   },
   "devDependencies": {
     "@cesdk/cesdk-js": "~1.61.0",

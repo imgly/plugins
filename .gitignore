@@ -16,5 +16,9 @@ _ci_*
 
 .pnpm-store
 
-# Test artifacts
-packages/*/test/webpack5-angular-project
+# Test artifacts - only ignore generated files, not source
+packages/*/test/webpack5-angular-project/node_modules
+packages/*/test/webpack5-angular-project/dist
+packages/*/test/webpack5-angular-project/.angular
+packages/*/test/webpack5-angular-project/package-lock.json
+packages/*/test/webpack5-build-test
