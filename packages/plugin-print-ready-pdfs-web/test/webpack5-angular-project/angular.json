@@ -26,17 +26,17 @@
               "src/assets",
               {
                 "glob": "*.wasm",
-                "input": "node_modules/@imgly/plugin-print-ready-pdfs-web/dist",
+                "input": "node_modules/@imgly/plugin-print-ready-pdfs-web",
                 "output": "/assets/wasm"
               },
               {
                 "glob": "gs.js",
-                "input": "node_modules/@imgly/plugin-print-ready-pdfs-web/dist",
+                "input": "node_modules/@imgly/plugin-print-ready-pdfs-web",
                 "output": "/assets/wasm"
               },
               {
                 "glob": "*.icc",
-                "input": "node_modules/@imgly/plugin-print-ready-pdfs-web/dist",
+                "input": "node_modules/@imgly/plugin-print-ready-pdfs-web",
                 "output": "/assets/icc"
               }
             ],

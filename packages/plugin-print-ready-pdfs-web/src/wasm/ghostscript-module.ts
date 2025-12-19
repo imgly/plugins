@@ -16,8 +16,17 @@ export default async function createGhostscriptModule(
   options: GhostscriptModuleOptions = {}
 ): Promise<EmscriptenModule> {
   const { silent = true } = options;
-  // Check if we're in Node.js
+
+  // Check if we're in a browser environment
+  // This is more reliable than checking for Node.js because bundlers like Webpack
+  // may polyfill `process` and `process.versions.node` in browser builds
+  const isBrowser =
+    typeof window !== 'undefined' || typeof document !== 'undefined';
+
+  // Check if we're in Node.js - only trust this if we're NOT in a browser
+  // Webpack 5 and other bundlers may polyfill process.versions.node
   const isNode =
+    !isBrowser &&
     typeof process !== 'undefined' &&
     process.versions != null &&
     process.versions.node != null;
@@ -59,9 +68,66 @@ export default async function createGhostscriptModule(
     GhostscriptModule = await dynamicImport(gsPath);
   } else {
     // Browser: Use URL-based imports
-    const moduleUrl = new URL('./gs.js', import.meta.url).href;
-    GhostscriptModule = await import(/* webpackIgnore: true */ moduleUrl);
-    wasmPath = new URL('./gs.wasm', import.meta.url).href;
+    // Note: Webpack and other bundlers may transform import.meta.url to a file:// URL at build time
+    // which won't work in browsers. We need to detect this and use alternative loading strategies.
+    let baseUrl = import.meta.url;
+
+    // Check if the bundler transformed import.meta.url to a file:// URL
+    // This happens with Webpack 5 when bundling for browser targets
+    if (baseUrl.startsWith('file://')) {
+      // In bundled browser environments, we need to find the assets relative to the current page
+      // or from a known CDN/asset path. Try multiple strategies:
+      const origin =
+        typeof document !== 'undefined' ? document.location?.origin || '' : '';
+
+      // Try common asset paths used by bundlers/frameworks
+      // The assets (gs.js, gs.wasm) should be copied to one of these locations
+      const commonAssetPaths = [
+        '/assets/wasm/', // Angular default asset path
+        '/assets/', // Common asset directory
+        '/', // Root (when assets are at the root)
+      ];
+
+      // Try to find gs.js at each path
+      let foundPath: string | null = null;
+      for (const assetPath of commonAssetPaths) {
+        const testUrl = origin + assetPath + 'gs.js';
+        try {
+          const response = await fetch(testUrl, { method: 'HEAD' });
+          if (response.ok) {
+            foundPath = origin + assetPath;
+            break;
+          }
+        } catch {
+          // Continue to next path
+        }
+      }
+
+      if (foundPath) {
+        baseUrl = foundPath;
+      } else {
+        // Last resort: use the current page's directory
+        const pathname =
+          typeof document !== 'undefined'
+            ? document.location?.pathname || ''
+            : '';
+        const baseDir = pathname.substring(0, pathname.lastIndexOf('/') + 1);
+        baseUrl = origin + baseDir;
+      }
+    }
+
+    const moduleUrl = new URL('./gs.js', baseUrl).href;
+    wasmPath = new URL('./gs.wasm', baseUrl).href;
+
+    // Use indirect import to prevent Webpack from transforming this dynamic import
+    // The /* webpackIgnore: true */ comment is stripped by esbuild during bundling,
+    // so we need to use new Function() to create an import that Webpack can't analyze
+    // Note: This may fail in CSP-restricted environments that block eval/new Function
+    // eslint-disable-next-line @typescript-eslint/no-implied-eval, no-new-func
+    const indirectImport = new Function('s', 'return import(s)') as (
+      s: string
+    ) => Promise<any>;
+    GhostscriptModule = await indirectImport(moduleUrl);
   }
 
   const factory = (GhostscriptModule.default ||

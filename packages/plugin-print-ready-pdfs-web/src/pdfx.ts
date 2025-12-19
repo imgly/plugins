@@ -138,8 +138,13 @@ async function convertToPDFX3Single(
       const profilePath = `/tmp/${profileInfo.file}`;
 
       // Load ICC profile - different approach for Node.js vs browser
+      // Check if we're in a browser environment first (more reliable than checking for Node.js)
+      const isBrowser =
+        typeof window !== 'undefined' || typeof document !== 'undefined';
       const isNode =
-        typeof process !== 'undefined' && process.versions?.node != null;
+        !isBrowser &&
+        typeof process !== 'undefined' &&
+        process.versions?.node != null;
 
       let profileBlob: Blob;
 
@@ -175,7 +180,56 @@ async function convertToPDFX3Single(
         });
       } else {
         // Browser: Use fetch
-        const profileUrl = new URL(profileInfo.file, import.meta.url).href;
+        // Handle bundled environments where import.meta.url is transformed to file://
+        let baseUrl = import.meta.url;
+
+        if (baseUrl.startsWith('file://')) {
+          // In bundled browser environments, find assets relative to the current page
+          const origin =
+            typeof document !== 'undefined'
+              ? document.location?.origin || ''
+              : '';
+
+          // Try common asset paths used by bundlers/frameworks
+          const commonAssetPaths = [
+            '/assets/icc/', // Angular default for ICC profiles
+            '/assets/wasm/', // Alternative location
+            '/assets/', // Common asset directory
+            '/', // Root
+          ];
+
+          // Try to find the ICC profile at each path
+          let foundPath: string | null = null;
+          for (const assetPath of commonAssetPaths) {
+            const testUrl = origin + assetPath + profileInfo.file;
+            try {
+              const response = await fetch(testUrl, { method: 'HEAD' });
+              if (response.ok) {
+                foundPath = origin + assetPath;
+                break;
+              }
+            } catch {
+              // Continue to next path
+            }
+          }
+
+          if (foundPath) {
+            baseUrl = foundPath;
+          } else {
+            // Last resort: use current page's directory
+            const pathname =
+              typeof document !== 'undefined'
+                ? document.location?.pathname || ''
+                : '';
+            const baseDir = pathname.substring(
+              0,
+              pathname.lastIndexOf('/') + 1
+            );
+            baseUrl = origin + baseDir;
+          }
+        }
+
+        const profileUrl = new URL(profileInfo.file, baseUrl).href;
         const profileResponse = await fetch(profileUrl);
         if (!profileResponse.ok) {
           throw new Error(
