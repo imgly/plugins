@@ -22,3 +22,4 @@ packages/*/test/webpack5-angular-project/dist
 packages/*/test/webpack5-angular-project/.angular
 packages/*/test/webpack5-angular-project/package-lock.json
 packages/*/test/webpack5-build-test
+.playwright-mcp/

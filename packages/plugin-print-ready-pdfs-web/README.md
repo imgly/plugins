@@ -36,6 +36,65 @@ This plugin automatically converts CE.SDK's RGB PDFs into print-ready files that
 npm install @imgly/plugin-print-ready-pdfs-web
 ```
 
+## Bundler Setup (Webpack 5 / Angular)
+
+When using bundlers like Webpack 5 or Angular CLI, the plugin's WASM assets need to be copied to your public folder and the `assetPath` option must be provided.
+
+**Why is this needed?** Webpack 5 transforms `import.meta.url` to `file://` URLs at build time, which don't work in browsers. The `assetPath` option tells the plugin where to find its assets at runtime.
+
+### Angular CLI
+
+Add to your `angular.json` in the `assets` array:
+
+```json
+{
+  "glob": "{gs.js,gs.wasm,*.icc}",
+  "input": "node_modules/@imgly/plugin-print-ready-pdfs-web/dist",
+  "output": "/assets/print-ready-pdfs"
+}
+```
+
+Then provide the `assetPath` option:
+
+```javascript
+const printReadyPDF = await convertToPDFX3(pdfBlob, {
+  outputProfile: 'fogra39',
+  assetPath: '/assets/print-ready-pdfs/'
+});
+```
+
+### Webpack 5
+
+Use `copy-webpack-plugin` to copy the assets:
+
+```javascript
+const CopyPlugin = require('copy-webpack-plugin');
+
+module.exports = {
+  plugins: [
+    new CopyPlugin({
+      patterns: [{
+        from: 'node_modules/@imgly/plugin-print-ready-pdfs-web/dist/*.{js,wasm,icc}',
+        to: 'assets/[name][ext]'
+      }]
+    })
+  ]
+};
+```
+
+Then provide the `assetPath` option:
+
+```javascript
+const printReadyPDF = await convertToPDFX3(pdfBlob, {
+  outputProfile: 'fogra39',
+  assetPath: '/assets/'
+});
+```
+
+### Vite / Native ESM
+
+No additional configuration needed. The plugin automatically resolves assets using `import.meta.url`.
+
 ## Quick Start
 
 Just one function call transforms any PDF into a print-ready file:

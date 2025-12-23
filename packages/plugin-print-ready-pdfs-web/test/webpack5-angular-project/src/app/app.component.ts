@@ -134,9 +134,12 @@ export class AppComponent implements OnInit {
       console.log('[TEST] Starting conversion with blob size:', inputBlob.size);
 
       // Attempt conversion - this is where the runtime error would occur
+      // assetPath is required for Webpack 5 / Angular because import.meta.url
+      // is transformed to a file:// URL that doesn't work in browsers
       const outputBlob = await convertToPDFX3(inputBlob, {
         outputProfile: 'srgb',
-        title: 'Angular Webpack 5 Test'
+        title: 'Angular Webpack 5 Test',
+        assetPath: '/assets/print-ready-pdfs/'
       });
 
       this.conversionStatus = 'SUCCESS';

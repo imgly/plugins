@@ -67,6 +67,6 @@ export function resolveAssetBasePath(
       `    outputProfile: 'fogra39',\n` +
       `    assetPath: '/assets/'  // adjust to match your output path\n` +
       `  });\n\n` +
-      `See: https://img.ly/docs/cesdk/print-ready-pdfs/bundler-setup`
+      `See: https://github.com/imgly/plugins/tree/main/packages/plugin-print-ready-pdfs-web#bundler-setup-webpack-5--angular`
   );
 }

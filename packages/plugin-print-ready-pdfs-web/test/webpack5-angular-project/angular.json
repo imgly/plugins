@@ -25,19 +25,9 @@
               "src/favicon.ico",
               "src/assets",
               {
-                "glob": "*.wasm",
+                "glob": "{gs.js,gs.wasm,*.icc}",
                 "input": "node_modules/@imgly/plugin-print-ready-pdfs-web",
-                "output": "/assets/wasm"
-              },
-              {
-                "glob": "gs.js",
-                "input": "node_modules/@imgly/plugin-print-ready-pdfs-web",
-                "output": "/assets/wasm"
-              },
-              {
-                "glob": "*.icc",
-                "input": "node_modules/@imgly/plugin-print-ready-pdfs-web",
-                "output": "/assets/icc"
+                "output": "/assets/print-ready-pdfs"
               }
             ],
             "styles": [],
