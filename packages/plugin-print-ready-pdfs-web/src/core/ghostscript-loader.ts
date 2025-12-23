@@ -15,19 +15,16 @@ export interface LoaderOptions {
 
 export class GhostscriptLoader {
   private static instance: Promise<EmscriptenModule> | null = null;
-  private static loadedAssetPath: string | undefined = undefined;
 
   private static readonly TIMEOUT_MS = 30000;
 
   static async load(options: LoaderOptions = {}): Promise<EmscriptenModule> {
-    // If already loaded with a different assetPath, we can't change it
-    // (the WASM module is already initialized)
-    // This is fine because within an app, assetPath should be consistent
+    // If already loaded, return the cached instance
+    // (the WASM module is a singleton and assetPath should be consistent within an app)
     if (this.instance) {
       return this.instance;
     }
 
-    this.loadedAssetPath = options.assetPath;
     this.instance = this.loadInternal(options);
     return this.instance;
   }
@@ -105,6 +102,5 @@ export class GhostscriptLoader {
 
   static reset(): void {
     this.instance = null;
-    this.loadedAssetPath = undefined;
   }
 }
