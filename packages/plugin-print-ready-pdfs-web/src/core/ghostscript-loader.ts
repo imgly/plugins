@@ -5,18 +5,29 @@ import createGhostscriptModule from '../wasm/ghostscript-module';
 
 export interface LoaderOptions {
   timeout?: number;
+  /**
+   * Base URL path where plugin assets (gs.js, gs.wasm) are served from.
+   * Required for bundled environments (Webpack 5, Angular).
+   * For Vite and native ESM, this is optional.
+   */
+  assetPath?: string;
 }
 
 export class GhostscriptLoader {
   private static instance: Promise<EmscriptenModule> | null = null;
+  private static loadedAssetPath: string | undefined = undefined;
 
   private static readonly TIMEOUT_MS = 30000;
 
   static async load(options: LoaderOptions = {}): Promise<EmscriptenModule> {
+    // If already loaded with a different assetPath, we can't change it
+    // (the WASM module is already initialized)
+    // This is fine because within an app, assetPath should be consistent
     if (this.instance) {
       return this.instance;
     }
 
+    this.loadedAssetPath = options.assetPath;
     this.instance = this.loadInternal(options);
     return this.instance;
   }
@@ -37,7 +48,10 @@ export class GhostscriptLoader {
     try {
       logger.info('Loading bundled Ghostscript (AGPL-3.0 licensed)');
       logger.info('Source available at: https://github.com/imgly/plugins');
-      return await this.loadWithTimeout(() => this.loadFromBundle(), timeout);
+      return await this.loadWithTimeout(
+        () => this.loadFromBundle(options.assetPath),
+        timeout
+      );
     } catch (error) {
       logger.error('Ghostscript loading failed', {
         error: (error as Error).message,
@@ -48,14 +62,16 @@ export class GhostscriptLoader {
     }
   }
 
-  private static async loadFromBundle(): Promise<EmscriptenModule> {
+  private static async loadFromBundle(
+    assetPath?: string
+  ): Promise<EmscriptenModule> {
     // Use the bundled WASM module with proper configuration
     const logger = new Logger('GhostscriptInit');
 
     try {
       logger.info('Initializing Ghostscript module');
 
-      const module = await createGhostscriptModule();
+      const module = await createGhostscriptModule({ assetPath });
 
       logger.info('Ghostscript module initialized successfully', {
         version: module.version || 'unknown',
@@ -89,5 +105,6 @@ export class GhostscriptLoader {
 
   static reset(): void {
     this.instance = null;
+    this.loadedAssetPath = undefined;
   }
 }

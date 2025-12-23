@@ -70,8 +70,7 @@ describe('Black Background Regression (#11242)', () => {
     // Initialize CE.SDK engine for creating test PDFs
     try {
       engine = await CreativeEngine.init({
-        license: CESDK_LICENSE,
-        baseURL: 'https://cdn.img.ly/packages/imgly/cesdk-node/1.61.0/assets'
+        license: CESDK_LICENSE
       });
     } catch (error) {
       console.warn(
@@ -304,7 +303,7 @@ describe('Black Background Regression (#11242)', () => {
 
       // 7. Add STICKERS from "craft" group (PNG with transparency - known to cause issues per #11242)
       // These stickers have alpha channels that can trigger the black background bug
-      const stickerBaseUrl = 'https://cdn.img.ly/assets/v5';
+      const stickerBaseUrl = 'https://cdn.img.ly/packages/imgly/cesdk-engine/1.64.0/assets/v4';
 
       // Craft sticker: tape (PNG with transparency)
       const tapeSticker = engine.block.create('graphic');

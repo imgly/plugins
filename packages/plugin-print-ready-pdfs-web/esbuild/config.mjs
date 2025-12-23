@@ -74,6 +74,20 @@ const copyWasmPlugin = {
         await copyFile(srcProfile, distProfile);
         log(chalk.green(`✓ Copied ${profile} to dist/`));
       }
+
+      // Copy type declaration files from src/types to dist/types
+      // These are .d.ts files that need to be preserved in the output
+      const typesDir = join(distDir, 'types');
+      if (!existsSync(typesDir)) {
+        await mkdir(typesDir, { recursive: true });
+      }
+      const typeFiles = ['pdfx.d.ts', 'ghostscript.d.ts', 'index.d.ts'];
+      for (const typeFile of typeFiles) {
+        const srcType = join(__dirname, '../src/types', typeFile);
+        const distType = join(typesDir, typeFile);
+        await copyFile(srcType, distType);
+      }
+      log(chalk.green('✓ Copied type declarations to dist/types/'));
     });
   }
 };
