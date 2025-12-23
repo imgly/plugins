@@ -27,8 +27,26 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/index.mjs",
-      "types": "./dist/index.d.ts"
+      "node": {
+        "import": "./dist/index.node.mjs",
+        "types": "./dist/index.node.d.ts"
+      },
+      "browser": {
+        "import": "./dist/index.browser.mjs",
+        "types": "./dist/index.browser.d.ts"
+      },
+      "default": {
+        "import": "./dist/index.mjs",
+        "types": "./dist/index.d.ts"
+      }
+    },
+    "./browser": {
+      "import": "./dist/index.browser.mjs",
+      "types": "./dist/index.browser.d.ts"
+    },
+    "./node": {
+      "import": "./dist/index.node.mjs",
+      "types": "./dist/index.node.d.ts"
     }
   },
   "homepage": "https://img.ly/products/creative-sdk",

@@ -1,20 +1,20 @@
 /**
  * @imgly/plugin-pdfx-web - Print-Ready PDF conversion for CE.SDK
- * Universal entry point (auto-detects environment)
+ * Node.js-specific entry point
+ *
+ * This entry point is optimized for Node.js environments:
+ * - Uses filesystem APIs to load assets
+ * - No browser-specific code included
+ * - Assets are resolved relative to the module location
  *
  * IMPORTANT: This package includes Ghostscript WASM binaries licensed under AGPL-3.0.
  * Commercial users must ensure license compliance. See README.md for details.
- *
- * For optimal bundle size, consider using the platform-specific entry points:
- * - `@imgly/plugin-print-ready-pdfs-web/browser` for browser environments
- * - `@imgly/plugin-print-ready-pdfs-web/node` for Node.js environments
  */
 
-// Export the main conversion function (supports both single blob and array of blobs)
+// Export the main conversion function
 export { convertToPDFX3 } from './pdfx';
 
-// Export asset loaders for both environments
-export { BrowserAssetLoader } from './loaders/browser-loader';
+// Export NodeAssetLoader for Node.js environments
 export { NodeAssetLoader } from './loaders/node-loader';
 
 // Export Logger for controlling log verbosity
