@@ -5,18 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.1.2] - 2025-12-19
+## [1.1.2] - 2025-12-23
 
 ### Fixed
 
 - Fixed Webpack 5 **runtime** compatibility issue where `import.meta.url` was transformed to `file://` URLs at build time, causing "Cannot find module" errors in Angular 17+ and other Webpack 5 bundled environments
-- Fixed incorrect Node.js environment detection when Webpack 5 polyfills `process.versions.node` in browser builds
-- Added automatic asset path discovery for bundled environments (probes `/assets/wasm/`, `/assets/`, `/` to locate gs.js, gs.wasm, and ICC profiles)
-- Used indirect dynamic imports (`new Function`) to prevent Webpack from transforming module loading
 
 ### Added
 
+- New `AssetLoader` interface for customizing how plugin assets (gs.js, gs.wasm, ICC profiles) are loaded
+- `BrowserAssetLoader` for browser environments with configurable `assetPath` option
+- `NodeAssetLoader` for Node.js environments (used automatically)
+- New `assetPath` option for `convertToPDFX3()` to specify where assets are served from
+- Separate browser/node entry points via conditional exports in package.json
 - New Playwright test suite for Angular + Webpack 5 runtime verification (`pnpm test:webpack5:angular`)
+
+### Changed
+
+- Refactored asset loading to use dependency injection pattern for better bundler compatibility
+- Vite and native ESM continue to work without configuration (auto-detects via `import.meta.url`)
 
 ## [1.1.1] - 2025-12-18
 

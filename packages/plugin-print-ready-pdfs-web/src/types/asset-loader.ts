@@ -38,6 +38,11 @@ export interface AssetLoader {
 
   /**
    * Get the URL/path to the WASM file for Emscripten's locateFile callback.
+   *
+   * **Note:** This method is called synchronously by Emscripten after `loadGhostscriptModule()`
+   * completes. Implementations should ensure any required initialization happens in
+   * `loadGhostscriptModule()` so that `getWasmPath()` can return immediately.
+   *
    * @returns URL or path to gs.wasm
    */
   getWasmPath(): string;

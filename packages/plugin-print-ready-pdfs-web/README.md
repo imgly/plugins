@@ -95,6 +95,37 @@ const printReadyPDF = await convertToPDFX3(pdfBlob, {
 
 No additional configuration needed. The plugin automatically resolves assets using `import.meta.url`.
 
+### Custom Asset Loading
+
+For advanced use cases (CDN hosting, custom loading logic), implement the `AssetLoader` interface:
+
+```typescript
+import { convertToPDFX3, type AssetLoader } from '@imgly/plugin-print-ready-pdfs-web';
+
+class CDNAssetLoader implements AssetLoader {
+  private cdnBase = 'https://cdn.example.com/pdf-plugin/v1.1.2/';
+
+  async loadGhostscriptModule() {
+    const module = await import(/* webpackIgnore: true */ this.cdnBase + 'gs.js');
+    return module.default;
+  }
+
+  getWasmPath() {
+    return this.cdnBase + 'gs.wasm';
+  }
+
+  async loadICCProfile(name: string) {
+    const response = await fetch(this.cdnBase + name);
+    return response.blob();
+  }
+}
+
+const printReadyPDF = await convertToPDFX3(pdfBlob, {
+  outputProfile: 'fogra39',
+  assetLoader: new CDNAssetLoader()
+});
+```
+
 ## Quick Start
 
 Just one function call transforms any PDF into a print-ready file:
@@ -202,8 +233,22 @@ interface PDFX3Options {
   outputConditionIdentifier?: string;     // ICC profile identifier for OutputIntent
   outputCondition?: string;               // Human-readable output condition description
   flattenTransparency?: boolean;          // Flatten transparency (default: true for PDF/X-3)
+
+  // Asset loading (for bundler compatibility)
+  assetPath?: string;                     // URL path where plugin assets are served
+  assetLoader?: AssetLoader;              // Custom asset loader (advanced)
 }
 ```
+
+**Asset Loading Options:**
+
+| Option | When to Use |
+|--------|-------------|
+| Neither | Vite, native ESM - auto-detected via `import.meta.url` |
+| `assetPath` | Webpack 5, Angular - specify where assets are served |
+| `assetLoader` | CDN hosting, custom loading logic - full control |
+
+See [Bundler Setup](#bundler-setup-webpack-5--angular) for configuration examples.
 
 **Note:** Batch processing handles each PDF sequentially to avoid overwhelming the WASM module.
 

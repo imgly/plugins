@@ -64,13 +64,22 @@ export class NodeAssetLoader implements AssetLoader {
     return module.default || module;
   }
 
+  /**
+   * Get the path to the WASM file.
+   *
+   * **Important:** This method must be called after `loadGhostscriptModule()` has completed,
+   * as initialization happens lazily during that call. The library's internal usage
+   * guarantees this ordering, but if you're using `NodeAssetLoader` directly, ensure
+   * you call `loadGhostscriptModule()` first.
+   *
+   * @throws Error if called before initialization completes
+   */
   getWasmPath(): string {
-    // This method is synchronous but we need moduleDir to be initialized
-    // The design ensures this is only called after loadGhostscriptModule
     if (!this.moduleDir) {
-      throw new Error('NodeAssetLoader not initialized. Call loadGhostscriptModule first.');
+      throw new Error(
+        'NodeAssetLoader not initialized. Call loadGhostscriptModule() first and await its completion.'
+      );
     }
-    // Use dynamic import result cached in moduleDir
     return `${this.moduleDir}/gs.wasm`;
   }
 
