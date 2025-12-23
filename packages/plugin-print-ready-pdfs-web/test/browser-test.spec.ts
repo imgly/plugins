@@ -214,6 +214,7 @@ test.describe('PDF/X Conversion Browser Tests', () => {
         const startTime = Date.now();
 
         // Perform actual conversion
+        // In Vite-like environments (including this test with http-server), assetPath is auto-detected
         const outputBlob = await window.PDFXPlugin.convertToPDFX3(inputBlob, {
           outputProfile: 'fogra39',
           title: 'E2E Test - FOGRA39'
@@ -260,6 +261,7 @@ test.describe('PDF/X Conversion Browser Tests', () => {
         const inputBlob = new Blob([new Uint8Array(pdfData)], { type: 'application/pdf' });
 
         const startTime = Date.now();
+        // In Vite-like environments, assetPath is auto-detected
         const outputBlob = await window.PDFXPlugin.convertToPDFX3(inputBlob, {
           outputProfile: 'gracol',
           title: 'E2E Test - GRACoL'
@@ -302,6 +304,7 @@ test.describe('PDF/X Conversion Browser Tests', () => {
         const inputBlob = new Blob([new Uint8Array(pdfData)], { type: 'application/pdf' });
 
         const startTime = Date.now();
+        // In Vite-like environments, assetPath is auto-detected
         const outputBlob = await window.PDFXPlugin.convertToPDFX3(inputBlob, {
           outputProfile: 'fogra39',
           title: 'E2E Test - Images',
