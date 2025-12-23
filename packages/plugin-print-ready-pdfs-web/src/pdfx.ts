@@ -1,9 +1,76 @@
-import type { PDFX3Options } from './types/pdfx';
+import type { PDFX3Options, AssetLoader } from './types';
 import { GhostscriptLoader } from './core/ghostscript-loader';
 import { VirtualFileSystem } from './core/virtual-filesystem';
-import { resolveAssetBasePath } from './utils/asset-path';
-import { createDynamicImport } from './utils/dynamic-import';
 import { BlobUtils } from './utils/blob-utils';
+
+/**
+ * Try to get a usable base URL from import.meta.url.
+ * Returns null if the URL is not usable (e.g., file:// protocol in browser).
+ */
+function tryGetBaseUrlFromImportMeta(): string | null {
+  try {
+    // import.meta.url points to the bundled JS file location
+    // In Vite: "http://localhost:5173/node_modules/.vite/deps/..."
+    // In Webpack 5: "file:///path/to/dist/index.mjs" (not usable in browser)
+    const url = import.meta.url;
+    if (!url) return null;
+
+    // file:// URLs don't work for dynamic imports in browsers
+    if (url.startsWith('file://')) return null;
+
+    // Extract the directory from the URL
+    const lastSlash = url.lastIndexOf('/');
+    if (lastSlash === -1) return null;
+
+    return url.substring(0, lastSlash + 1);
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Get the appropriate AssetLoader based on options and environment.
+ */
+async function getAssetLoader(options: PDFX3Options): Promise<AssetLoader> {
+  // 1. Explicit loader takes precedence
+  if (options.assetLoader) {
+    return options.assetLoader;
+  }
+
+  // 2. assetPath creates a BrowserAssetLoader
+  if (options.assetPath) {
+    const { BrowserAssetLoader } = await import('./loaders/browser-loader');
+    return new BrowserAssetLoader(options.assetPath);
+  }
+
+  // 3. Auto-detect environment
+  const isBrowser =
+    typeof window !== 'undefined' || typeof document !== 'undefined';
+
+  if (isBrowser) {
+    // Try to auto-detect base URL from import.meta.url (works in Vite)
+    const autoBaseUrl = tryGetBaseUrlFromImportMeta();
+    if (autoBaseUrl) {
+      const { BrowserAssetLoader } = await import('./loaders/browser-loader');
+      return new BrowserAssetLoader(autoBaseUrl);
+    }
+
+    // Can't auto-detect - require explicit configuration (Webpack 5, Angular, etc.)
+    throw new Error(
+      'In browser environments with Webpack 5 or Angular, you must provide the `assetPath` option.\n\n' +
+        'Example:\n' +
+        '  convertToPDFX3(blob, {\n' +
+        "    outputProfile: 'fogra39',\n" +
+        "    assetPath: '/assets/print-ready-pdfs/'\n" +
+        '  });\n\n' +
+        'See: https://github.com/imgly/plugins/tree/main/packages/plugin-print-ready-pdfs-web#bundler-setup-webpack-5--angular'
+    );
+  }
+
+  // Node.js - use NodeAssetLoader
+  const { NodeAssetLoader } = await import('./loaders/node-loader');
+  return new NodeAssetLoader();
+}
 
 /**
  * PDF/X-3 conversion function
@@ -116,8 +183,11 @@ async function convertToPDFX3Single(
     throw new Error('Invalid PDF format');
   }
 
-  // Load Ghostscript with assetPath option
-  const module = await GhostscriptLoader.load({ assetPath: options.assetPath });
+  // Get the asset loader for this conversion
+  const assetLoader = await getAssetLoader(options);
+
+  // Load Ghostscript with the asset loader
+  const module = await GhostscriptLoader.load({ assetLoader });
   const vfs = new VirtualFileSystem(module);
 
   try {
@@ -134,54 +204,12 @@ async function convertToPDFX3Single(
     if (options.outputProfile === 'custom' && options.customProfile) {
       await vfs.writeBlob(customProfilePath, options.customProfile);
     } else if (options.outputProfile !== 'custom') {
-      // Load the bundled ICC profile
+      // Load the bundled ICC profile using the asset loader
       const profileInfo =
         PROFILE_PRESETS[options.outputProfile as keyof typeof PROFILE_PRESETS];
       const profilePath = `/tmp/${profileInfo.file}`;
 
-      // Load ICC profile - different approach for Node.js vs browser
-      // Check if we're in a browser environment first (more reliable than checking for Node.js)
-      const isBrowser =
-        typeof window !== 'undefined' || typeof document !== 'undefined';
-      const isNode =
-        !isBrowser &&
-        typeof process !== 'undefined' &&
-        process.versions?.node != null;
-
-      let profileBlob: Blob;
-
-      if (isNode) {
-        // Node.js: Load from filesystem using readFileSync
-        // Use indirect dynamic import to prevent Webpack 5 from statically analyzing these imports
-        // See: https://github.com/imgly/ubq/issues/11471
-        const dynamicImport = createDynamicImport();
-
-        const { readFileSync } = await dynamicImport('fs');
-        const { fileURLToPath } = await dynamicImport('url');
-        const { dirname, join } = await dynamicImport('path');
-
-        // Get the directory of the built module
-        const moduleDir = dirname(fileURLToPath(import.meta.url));
-        const profileFilePath = join(moduleDir, profileInfo.file);
-
-        const profileData = readFileSync(profileFilePath);
-        profileBlob = new Blob([profileData], {
-          type: 'application/vnd.iccprofile',
-        });
-      } else {
-        // Browser: Resolve asset path with explicit option or import.meta.url
-        const baseUrl = resolveAssetBasePath(options.assetPath, import.meta.url);
-
-        const profileUrl = new URL(profileInfo.file, baseUrl).href;
-        const profileResponse = await fetch(profileUrl);
-        if (!profileResponse.ok) {
-          throw new Error(
-            `Failed to load ICC profile ${profileInfo.file}: ${profileResponse.statusText}`
-          );
-        }
-        profileBlob = await profileResponse.blob();
-      }
-
+      const profileBlob = await assetLoader.loadICCProfile(profileInfo.file);
       await vfs.writeBlob(profilePath, profileBlob);
     }
 

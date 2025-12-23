@@ -1,4 +1,5 @@
 import type { EmscriptenModule } from '../types/ghostscript';
+import type { AssetLoader } from '../types/asset-loader';
 import { Logger } from '../utils/logger';
 import { BrowserDetection } from '../utils/browser-detection';
 import createGhostscriptModule from '../wasm/ghostscript-module';
@@ -6,11 +7,10 @@ import createGhostscriptModule from '../wasm/ghostscript-module';
 export interface LoaderOptions {
   timeout?: number;
   /**
-   * Base URL path where plugin assets (gs.js, gs.wasm) are served from.
-   * Required for bundled environments (Webpack 5, Angular).
-   * For Vite and native ESM, this is optional.
+   * Asset loader for loading plugin assets.
+   * Required - use BrowserAssetLoader or NodeAssetLoader.
    */
-  assetPath?: string;
+  assetLoader: AssetLoader;
 }
 
 export class GhostscriptLoader {
@@ -18,9 +18,9 @@ export class GhostscriptLoader {
 
   private static readonly TIMEOUT_MS = 30000;
 
-  static async load(options: LoaderOptions = {}): Promise<EmscriptenModule> {
+  static async load(options: LoaderOptions): Promise<EmscriptenModule> {
     // If already loaded, return the cached instance
-    // (the WASM module is a singleton and assetPath should be consistent within an app)
+    // (the WASM module is a singleton and assetLoader should be consistent within an app)
     if (this.instance) {
       return this.instance;
     }
@@ -46,7 +46,7 @@ export class GhostscriptLoader {
       logger.info('Loading bundled Ghostscript (AGPL-3.0 licensed)');
       logger.info('Source available at: https://github.com/imgly/plugins');
       return await this.loadWithTimeout(
-        () => this.loadFromBundle(options.assetPath),
+        () => this.loadFromBundle(options.assetLoader),
         timeout
       );
     } catch (error) {
@@ -60,7 +60,7 @@ export class GhostscriptLoader {
   }
 
   private static async loadFromBundle(
-    assetPath?: string
+    assetLoader: AssetLoader
   ): Promise<EmscriptenModule> {
     // Use the bundled WASM module with proper configuration
     const logger = new Logger('GhostscriptInit');
@@ -68,7 +68,7 @@ export class GhostscriptLoader {
     try {
       logger.info('Initializing Ghostscript module');
 
-      const module = await createGhostscriptModule({ assetPath });
+      const module = await createGhostscriptModule({ assetLoader });
 
       logger.info('Ghostscript module initialized successfully', {
         version: module.version || 'unknown',
