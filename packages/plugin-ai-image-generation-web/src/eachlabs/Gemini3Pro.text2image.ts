@@ -55,6 +55,16 @@ const ASPECT_RATIO_DIMENSIONS: Record<
     '1K': { width: 1536, height: 640 },
     '2K': { width: 3072, height: 1280 },
     '4K': { width: 6144, height: 2560 }
+  },
+  '5:4': {
+    '1K': { width: 1152, height: 896 },
+    '2K': { width: 2304, height: 1792 },
+    '4K': { width: 4608, height: 3584 }
+  },
+  '4:5': {
+    '1K': { width: 896, height: 1152 },
+    '2K': { width: 1792, height: 2304 },
+    '4K': { width: 3584, height: 4608 }
   }
 };
 
@@ -71,7 +81,9 @@ export type Gemini3ProText2ImageInput = {
     | '3:4'
     | '3:2'
     | '2:3'
-    | '21:9';
+    | '21:9'
+    | '5:4'
+    | '4:5';
   resolution?: '1K' | '2K' | '4K';
 };
 

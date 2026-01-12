@@ -32,8 +32,8 @@
               "3:2",
               "2:3",
               "21:9",
-              "9:21",
-              "2.4:1"
+              "5:4",
+              "4:5"
             ],
             "default": "1:1",
             "description": "Aspect ratio for the generated image",
@@ -46,8 +46,8 @@
               "3:2": "Photo Landscape (3:2)",
               "2:3": "Photo Portrait (2:3)",
               "21:9": "Ultra-Wide (21:9)",
-              "9:21": "Ultra-Tall (9:21)",
-              "2.4:1": "Cinematic (2.4:1)"
+              "5:4": "Photo (5:4)",
+              "4:5": "Portrait Photo (4:5)"
             },
             "x-imgly-enum-icons": {
               "1:1": "@imgly/plugin/formats/ratio1by1",
@@ -58,8 +58,8 @@
               "3:2": "@imgly/plugin/formats/ratio4by3",
               "2:3": "@imgly/plugin/formats/ratio3by4",
               "21:9": "@imgly/plugin/formats/ratio16by9",
-              "9:21": "@imgly/plugin/formats/ratio9by16",
-              "2.4:1": "@imgly/plugin/formats/ratio16by9"
+              "5:4": "@imgly/plugin/formats/ratio4by3",
+              "4:5": "@imgly/plugin/formats/ratio3by4"
             }
           },
           "resolution": {

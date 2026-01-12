@@ -27,8 +27,8 @@ export type NanoBananaProInput = {
     | '3:2'
     | '2:3'
     | '21:9'
-    | '9:21'
-    | '2.4:1';
+    | '5:4'
+    | '4:5';
   resolution?: '1K' | '2K' | '4K';
 };
 
