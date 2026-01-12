@@ -44,8 +44,8 @@
       "protobufjs"
     ],
     "overrides": {
-      "@cesdk/cesdk-js": "1.60.0",
-      "@cesdk/engine": "1.60.0"
+      "@cesdk/cesdk-js": "1.66.1",
+      "@cesdk/engine": "1.66.1"
     }
   }
 }

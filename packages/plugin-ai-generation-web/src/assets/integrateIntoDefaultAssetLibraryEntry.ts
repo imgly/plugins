@@ -13,8 +13,13 @@ function integrateIntoDefaultAssetLibraryEntry<K extends OutputKind>(
   const entryId = `ly.img.${kind}`;
   const entry = cesdk.ui.getAssetLibraryEntry(entryId);
   if (entry != null) {
+    // Resolve sourceIds - it can be a function in CESDK >= 1.62.0
+    const currentSourceIds =
+      typeof entry.sourceIds === 'function'
+        ? entry.sourceIds({ cesdk, engine: cesdk.engine })
+        : entry.sourceIds;
     cesdk.ui.updateAssetLibraryEntry(entryId, {
-      sourceIds: [...entry.sourceIds, ...historAssetSourceIds]
+      sourceIds: [...currentSourceIds, ...historAssetSourceIds]
     });
     return entry.id;
   }

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CE.SDK with Eachlabs.ai</title>
+    <style>
+      @font-face {
+        font-display: swap;
+        font-family: GT Walsheim Pro;
+        font-style: normal;
+        font-weight: 900;
+        src: url('https://cdn.img.ly/demo/gpt-image-1/v1/fonts/GTWalsheimPro-Black.woff')
+            format('woff'),
+          url('https://cdn.img.ly/demo/gpt-image-1/v1/fonts/GTWalsheimPro-Black.woff2')
+            format('woff2'),
+          url('https://cdn.img.ly/demo/gpt-image-1/v1/fonts/GTWalsheimPro-Black.ttf')
+            format('truetype');
+      }
+
+      @font-face {
+        font-display: swap;
+        font-family: GT Walsheim Pro;
+        font-style: normal;
+        font-weight: 700;
+        src: url('https://cdn.img.ly/demo/gpt-image-1/v1/fonts/GTWalsheimPro-Bold.woff')
+            format('woff'),
+          url('https://cdn.img.ly/demo/gpt-image-1/v1/fonts/GTWalsheimPro-Bold.woff2')
+            format('woff2'),
+          url('https://cdn.img.ly/demo/gpt-image-1/v1/fonts/GTWalsheimPro-Bold.ttf')
+            format('truetype');
+      }
+
+      @font-face {
+        font-display: swap;
+        font-family: GT Walsheim Pro;
+        font-style: normal;
+        font-weight: 800;
+        src: url('https://cdn.img.ly/demo/gpt-image-1/v1/fonts/GTWalsheimPro-Black.woff')
+            format('woff'),
+          url('https://cdn.img.ly/demo/gpt-image-1/v1/fonts/GTWalsheimPro-Black.woff2')
+            format('woff2'),
+          url('https://cdn.img.ly/demo/gpt-image-1/v1/fonts/GTWalsheimPro-Black.ttf')
+            format('truetype');
+      }
+    </style>
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      html {
+        overscroll-behavior-x: contain;
+      }
+
+      #root {
+        /* Using 100% height instead of 100vh/100dvh to correctly fit within parent container */
+        height: 100%;
+        width: 100%;
+      }
+
+      .FullscreenHeader_wrapper__VTab8 {
+        display: flex;
+        justify-content: center;
+        border-bottom: 1px solid rgba(22, 22, 23, 0.15);
+        background-color: #fff;
+        box-shadow: 0 0 2px rgba(22, 22, 23, 0.25),
+          0 4px 6px -2px rgba(22, 22, 23, 0.12),
+          0 2px 2.5px -2px rgba(22, 22, 23, 0.12),
+          0 1px 1.75px -2px rgba(22, 22, 23, 0.12);
+        z-index: 1;
+      }
+      .FullscreenHeader_innerWrapper__T2_f9 {
+        display: flex;
+        flex-grow: 1;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.25rem 1.5rem;
+      }
+      .FullscreenHeader_logoWrapper__tZ3uB {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+      .imgly_9c223 {
+        position: relative;
+        display: flex;
+        flex: 0 0 auto;
+        align-items: center;
+        height: 3rem;
+        color: var(--imgly-black-color);
+        text-decoration: none;
+      }
+      .imgly_9c223 > svg {
+        height: 2rem;
+        width: auto;
+      }
+      .FullscreenHeader_headline__Ghcp3 {
+        color: #161617;
+
+        font-family: GT Walsheim Pro, sans-serif;
+        font-size: 18px;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        line-height: 24px;
+      }
+      .ShowcaseFullscreenLayout_wrapper__m47DB {
+        display: flex;
+        width: 100%;
+        flex: 1;
+        flex-direction: column;
+        background: #e7e7e9
+          linear-gradient(180deg, rgba(0, 0, 0, 0.04), transparent 10%);
+        gap: 1rem;
+        overflow: hidden;
+      }
+      .ShowcaseFullscreenLayout_content__AOcgP {
+        padding: 2rem;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        overflow: hidden;
+      }
+
+      @media (max-width: 768px) {
+        .ShowcaseFullscreenLayout_content__AOcgP {
+          padding: 1rem;
+        }
+      }
+      .cesdkWrapperStyle {
+        position: relative;
+        display: flex;
+        overflow: hidden;
+        flex-grow: 1;
+        border-radius: 0.75rem;
+        box-shadow: 0 0 2px rgba(22, 22, 23, 0.25),
+          0 4px 6px -2px rgba(22, 22, 23, 0.12),
+          0 2px 2.5px -2px rgba(22, 22, 23, 0.12),
+          0 1px 1.75px -2px rgba(22, 22, 23, 0.12);
+      }
+    </style>
+  </head>
+  <body>
+    <header class="FullscreenHeader_wrapper__VTab8">
+      <div class="FullscreenHeader_innerWrapper__T2_f9">
+        <div class="FullscreenHeader_logoWrapper__tZ3uB">
+          <a
+            class="imgly_9c223 IMGLY__header_logo"
+            href="https://img.ly/"
+            aria-label="Go to the main IMGLY page"
+            ><svg
+              width="142"
+              height="30"
+              viewBox="0 0 142 30"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-label="IMGLY Logo"
+            >
+              <title>IMG.LY</title>
+              <path
+                d="M0.44 29H8.84V0.999998H0.44V29ZM46.5213 0.999998H36.2013L30.2413 19.08L24.3213 0.999998H13.7213V29H21.8013V11.64L27.2013 29H33.3613L38.4413 11.64V29H46.5213V0.999998ZM66.0166 18.96H70.6566C70.2566 21.16 68.4966 22.92 65.3766 22.92C60.7766 22.92 58.5366 19.48 58.5366 15.12C58.5366 11.16 60.3766 7.36 64.8566 7.36C67.7766 7.36 69.3766 9.12 69.6566 10.72H78.8566C78.3366 5.04 73.0566 0.239998 64.9366 0.239998C55.5366 0.239998 50.0566 7.32 50.0566 15C50.0566 23.04 55.3766 29.76 64.9766 29.76C73.2166 29.76 78.0566 25.4 79.0966 18.96H81.7766V13.48H66.0166V18.96ZM105.948 21.88V0.999998H97.6275V29H113.268V21.88H105.948ZM141.93 0.999998H132.65L128.41 10.96L123.89 0.999998H114.13L123.53 19.12L118.69 29H128.05L141.93 0.999998Z"
+                fill="#161617"
+              ></path>
+              <path
+                d="M83.8188 24.68C83.8188 27.32 85.9388 29.48 88.6588 29.48C91.4588 29.48 93.5788 27.32 93.5788 24.68C93.5788 22.04 91.4588 19.88 88.6588 19.88C85.9388 19.88 83.8188 22.04 83.8188 24.68Z"
+                fill="#471AFF"
+              ></path></svg
+          ></a>
+          <h1 class="FullscreenHeader_headline__Ghcp3 h5">Eachlabs.ai Demo</h1>
+        </div>
+      </div>
+    </header>
+    <div class="ShowcaseFullscreenLayout_wrapper__m47DB">
+      <div class="ShowcaseFullscreenLayout_content__AOcgP">
+        <div
+          class="ShowcaseContainer_outerWrapper__G_XpT"
+          style="height: 100%; display: flex; flex-direction: column"
+        >
+          <div
+            class="ShowcaseContainer_innerWrapper__86vlr showcaseContainer"
+            style="height: 100%; display: flex; flex-direction: column"
+          >
+            <div class="gap-sm flex flex-grow flex-col" style="height: 100%">
+              <div class="cesdkWrapperStyle" style="height: 100%">
+                <div id="root"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script type="module">
+      import initialize from './dist/index.mjs';
+
+      const baseURL = window.location.href.substring(
+        0,
+        window.location.href.lastIndexOf('/') + 1
+      );
+      initialize('#root', {
+        archiveUrl: 'https://img.ly/showcases/cesdk/cases/ai-editor/ai_editor_video.archive'
+      });
+    </script>
+  </body>
+</html>
