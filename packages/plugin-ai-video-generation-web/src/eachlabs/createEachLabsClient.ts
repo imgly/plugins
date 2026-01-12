@@ -17,7 +17,8 @@ type PredictionStatus =
   | 'processing'
   | 'starting'
   | 'failed'
-  | 'cancelled';
+  | 'cancelled'
+  | 'error';
 
 /**
  * EachLabs prediction response (from GET /v1/prediction/{id})
@@ -179,6 +180,15 @@ export function createEachLabsClient(
 
       if (prediction.status === 'cancelled') {
         throw new Error('Prediction was cancelled');
+      }
+
+      if (prediction.status === 'error') {
+        // Error message can be in 'error' field or 'output' field (as string)
+        const errorMessage =
+          prediction.error ??
+          (typeof prediction.output === 'string' ? prediction.output : null) ??
+          'Prediction error';
+        throw new Error(errorMessage);
       }
 
       // Wait before polling again
