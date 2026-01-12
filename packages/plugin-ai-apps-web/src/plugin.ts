@@ -313,7 +313,11 @@ function overrideAssetLibraryDockComponent(cesdk: CreativeEditorSDK) {
           );
         }
         if (typeof entrySceneMode === 'function') {
-          return entry.sourceIds.some((sourceId) => {
+          const sourceIds =
+            typeof entry.sourceIds === 'function'
+              ? entry.sourceIds({ cesdk, engine })
+              : entry.sourceIds;
+          return sourceIds.some((sourceId: string) => {
             // Changes in the interface in CE.SDK version 1.51.0
             // We do not want to bump the version for this change.
             // In addition, 1.51.0 will only accept the sourceId as a string
