@@ -76,6 +76,8 @@ function initialize(
           options?.archiveUrl ??
             'https://img.ly/showcases/cesdk/cases/ai-editor/ai_editor_video.archive'
         );
+        const [page] = instance.engine.scene.getPages();
+        instance.engine.scene.enableZoomAutoFit(page, 'Both');
 
         instance.i18n.setTranslations({
           en: {}
