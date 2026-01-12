@@ -31,6 +31,10 @@
     "./runware": {
       "import": "./dist/runware/index.mjs",
       "types": "./dist/runware/index.d.ts"
+    },
+    "./eachlabs": {
+      "import": "./dist/eachlabs/index.mjs",
+      "types": "./dist/eachlabs/index.d.ts"
     }
   },
   "homepage": "https://img.ly/products/creative-sdk",

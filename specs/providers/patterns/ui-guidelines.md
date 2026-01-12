@@ -238,10 +238,13 @@ Icons available from `@imgly/plugin/formats`:
 | Portrait 9:16 | `ratio9by16` |
 | Landscape 4:3 | `ratio4by3` |
 | Portrait 3:4 | `ratio3by4` |
-| Landscape 3:2 | `ratio3by2` |
-| Portrait 2:3 | `ratio2by3` |
-| Ultra-wide 21:9 | `ratio21by9` |
-| Ultra-tall 9:21 | `ratio9by21` |
+| Free/Custom | `ratioFree` |
+
+**Note:** Only these 6 icons exist. For other aspect ratios, use the closest matching icon:
+- 3:2 (Photo Landscape) → use `ratio4by3`
+- 2:3 (Photo Portrait) → use `ratio3by4`
+- 21:9 (Ultra-wide) → use `ratio16by9`
+- 9:21 (Ultra-tall) → use `ratio9by16`
 
 Usage: `@imgly/plugin/formats/{key}`
 

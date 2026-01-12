@@ -1,0 +1,60 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "EachLabs Flux 2 Pro API",
+    "version": "1.0.0",
+    "description": "Flux 2 Pro text-to-image generation via EachLabs"
+  },
+  "components": {
+    "schemas": {
+      "Flux2ProInput": {
+        "title": "Flux2ProInput",
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "title": "Prompt",
+            "type": "string",
+            "description": "Text description for image generation",
+            "minLength": 1,
+            "x-imgly-builder": {
+              "component": "TextArea"
+            }
+          },
+          "image_size": {
+            "title": "Format",
+            "type": "string",
+            "enum": [
+              "square_hd",
+              "square",
+              "portrait_4_3",
+              "portrait_16_9",
+              "landscape_4_3",
+              "landscape_16_9"
+            ],
+            "default": "landscape_4_3",
+            "description": "Output image format",
+            "x-imgly-enum-labels": {
+              "square_hd": "Square HD (1:1)",
+              "square": "Square (1:1)",
+              "portrait_4_3": "Portrait (3:4)",
+              "portrait_16_9": "Portrait (9:16)",
+              "landscape_4_3": "Landscape (4:3)",
+              "landscape_16_9": "Landscape (16:9)"
+            },
+            "x-imgly-enum-icons": {
+              "square_hd": "@imgly/plugin/formats/ratio1by1",
+              "square": "@imgly/plugin/formats/ratio1by1",
+              "portrait_4_3": "@imgly/plugin/formats/ratio3by4",
+              "portrait_16_9": "@imgly/plugin/formats/ratio9by16",
+              "landscape_4_3": "@imgly/plugin/formats/ratio4by3",
+              "landscape_16_9": "@imgly/plugin/formats/ratio16by9"
+            }
+          }
+        },
+        "x-fal-order-properties": ["prompt", "image_size"],
+        "required": ["prompt"]
+      }
+    }
+  },
+  "paths": {}
+}
