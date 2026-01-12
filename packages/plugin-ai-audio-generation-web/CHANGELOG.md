@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+## [0.2.15] - 2026-01-12
+
+### New Features
+
+-   [all] **EachLabs Partner Integration**: Added EachLabs as a new AI provider service with unified API access to multiple image and video generation models.
+    - **Image Generation**: Flux 2 Pro, Flux 2, Flux 2 Flex, Nano Banana Pro, OpenAI GPT Image, Seedream v4.5, Gemini 3 Pro (all with text-to-image and image-to-image variants)
+    - **Video Generation**: Kling v2.6 Pro, Kling O1, Veo 3.1 (text-to-video and image-to-video variants)
+
 ## [0.2.14] - 2025-12-15
 
 ## [0.2.13] - 2025-12-15

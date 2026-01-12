@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [0.2.15] - 2026-01-12
+
 ### New Features
 
 -   [all] **EachLabs Partner Integration**: Added EachLabs as a new AI provider service with unified API access to multiple image and video generation models.
