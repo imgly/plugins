@@ -9,4 +9,4 @@ const { port } = await context.serve({
   port: 5179
 });
 
-console.log(`\n🚀 EachLabs Demo running at: http://localhost:${port}\n`);
+console.log(`\n🚀 Eachlabs.ai Demo running at: http://localhost:${port}\n`);

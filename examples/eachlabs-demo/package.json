@@ -2,8 +2,8 @@
   "private": true,
   "name": "@imgly/plugin-eachlabs-demo-web",
   "version": "0.0.0",
-  "description": "EachLabs Demo",
-  "keywords": ["CE.SDK", "plugin", "AI", "EachLabs"],
+  "description": "Eachlabs.ai Demo",
+  "keywords": ["CE.SDK", "plugin", "AI", "Eachlabs.ai"],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/imgly/plugins.git"

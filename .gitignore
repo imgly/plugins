@@ -3,6 +3,7 @@ packages/*/dist
 examples/*/dist
 .env
 .env.local
+.mcp.json
 .nvmrc
 *.tgz
 CLAUDE.md
