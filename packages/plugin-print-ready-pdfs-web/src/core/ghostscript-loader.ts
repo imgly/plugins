@@ -1,10 +1,16 @@
 import type { EmscriptenModule } from '../types/ghostscript';
+import type { AssetLoader } from '../types/asset-loader';
 import { Logger } from '../utils/logger';
 import { BrowserDetection } from '../utils/browser-detection';
 import createGhostscriptModule from '../wasm/ghostscript-module';
 
 export interface LoaderOptions {
   timeout?: number;
+  /**
+   * Asset loader for loading plugin assets.
+   * Required - use BrowserAssetLoader or NodeAssetLoader.
+   */
+  assetLoader: AssetLoader;
 }
 
 export class GhostscriptLoader {
@@ -12,7 +18,9 @@ export class GhostscriptLoader {
 
   private static readonly TIMEOUT_MS = 30000;
 
-  static async load(options: LoaderOptions = {}): Promise<EmscriptenModule> {
+  static async load(options: LoaderOptions): Promise<EmscriptenModule> {
+    // If already loaded, return the cached instance
+    // (the WASM module is a singleton and assetLoader should be consistent within an app)
     if (this.instance) {
       return this.instance;
     }
@@ -37,7 +45,10 @@ export class GhostscriptLoader {
     try {
       logger.info('Loading bundled Ghostscript (AGPL-3.0 licensed)');
       logger.info('Source available at: https://github.com/imgly/plugins');
-      return await this.loadWithTimeout(() => this.loadFromBundle(), timeout);
+      return await this.loadWithTimeout(
+        () => this.loadFromBundle(options.assetLoader),
+        timeout
+      );
     } catch (error) {
       logger.error('Ghostscript loading failed', {
         error: (error as Error).message,
@@ -48,14 +59,16 @@ export class GhostscriptLoader {
     }
   }
 
-  private static async loadFromBundle(): Promise<EmscriptenModule> {
+  private static async loadFromBundle(
+    assetLoader: AssetLoader
+  ): Promise<EmscriptenModule> {
     // Use the bundled WASM module with proper configuration
     const logger = new Logger('GhostscriptInit');
 
     try {
       logger.info('Initializing Ghostscript module');
 
-      const module = await createGhostscriptModule();
+      const module = await createGhostscriptModule({ assetLoader });
 
       logger.info('Ghostscript module initialized successfully', {
         version: module.version || 'unknown',

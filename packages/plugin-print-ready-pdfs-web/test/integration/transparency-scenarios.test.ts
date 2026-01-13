@@ -63,8 +63,7 @@ describe('Transparency Scenarios', () => {
 
     try {
       engine = await CreativeEngine.init({
-        license: CESDK_LICENSE,
-        baseURL: 'https://cdn.img.ly/packages/imgly/cesdk-node/1.61.0/assets'
+        license: CESDK_LICENSE
       });
     } catch (error) {
       console.error('Failed to initialize CE.SDK:', error);
@@ -348,7 +347,7 @@ describe('Transparency Scenarios', () => {
   // ============================================================
 
   describe('3D Stickers (alpha channel)', () => {
-    const baseUrl = 'https://cdn.img.ly/assets/v5/ly.img.sticker/images/3Dstickers';
+    const baseUrl = 'https://cdn.img.ly/packages/imgly/cesdk-engine/1.64.0/assets/v4/ly.img.sticker/images/3Dstickers';
 
     test('3D sticker: astronaut', async () => {
       const result = await testScenario('sticker-3d-astronaut', async (eng, page) => {
@@ -432,7 +431,7 @@ describe('Transparency Scenarios', () => {
   // ============================================================
 
   describe('Craft Stickers (alpha channel)', () => {
-    const baseUrl = 'https://cdn.img.ly/assets/v5/ly.img.sticker/images/craft';
+    const baseUrl = 'https://cdn.img.ly/packages/imgly/cesdk-engine/1.64.0/assets/v4/ly.img.sticker/images/craft';
 
     test('craft sticker: tape', async () => {
       const result = await testScenario('sticker-craft-tape', async (eng, page) => {
@@ -646,7 +645,7 @@ describe('Transparency Scenarios', () => {
         eng.block.setString(
           stickerFill,
           'fill/image/imageFileURI',
-          'https://cdn.img.ly/assets/v5/ly.img.sticker/images/3Dstickers/3d_stickers_astronaut.png'
+          'https://cdn.img.ly/packages/imgly/cesdk-engine/1.64.0/assets/v4/ly.img.sticker/images/3Dstickers/3d_stickers_astronaut.png'
         );
         eng.block.setFill(sticker, stickerFill);
       });

@@ -74,8 +74,7 @@ describe('PDF/X-3 Visual Fidelity', () => {
     // Initialize CE.SDK engine
     try {
       engine = await CreativeEngine.init({
-        license: CESDK_LICENSE,
-        baseURL: 'https://cdn.img.ly/packages/imgly/cesdk-node/1.61.0/assets'
+        license: CESDK_LICENSE
       });
     } catch (error) {
       console.error('Failed to initialize CE.SDK:', error);
@@ -392,7 +391,7 @@ describe('PDF/X-3 Visual Fidelity', () => {
       return;
     }
 
-    const stickerUrl = 'https://cdn.img.ly/assets/v5/ly.img.sticker/images/craft/tape01.png';
+    const stickerUrl = 'https://cdn.img.ly/packages/imgly/cesdk-engine/1.64.0/assets/v4/ly.img.sticker/images/craft/tape01.png';
 
     const scene = await createTestScene('sticker-alpha', async (eng, page) => {
       const sticker = eng.block.create('graphic');
@@ -538,7 +537,7 @@ describe('PDF/X-3 Visual Fidelity', () => {
       eng.block.setString(
         stickerFill,
         'fill/image/imageFileURI',
-        'https://cdn.img.ly/assets/v5/ly.img.sticker/images/3Dstickers/3d_stickers_astronaut.png'
+        'https://cdn.img.ly/packages/imgly/cesdk-engine/1.64.0/assets/v4/ly.img.sticker/images/3Dstickers/3d_stickers_astronaut.png'
       );
       eng.block.setFill(sticker, stickerFill);
     });

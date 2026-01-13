@@ -1,6 +1,6 @@
 {
   "name": "@imgly/plugin-print-ready-pdfs-web",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Print-Ready PDFs plugin for CE.SDK editor - PDF/X conversion and export functionality. Contains AGPL-3.0 licensed Ghostscript WASM.",
   "keywords": [
     "CE.SDK",
@@ -27,8 +27,26 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/index.mjs",
-      "types": "./dist/index.d.ts"
+      "node": {
+        "import": "./dist/index.node.mjs",
+        "types": "./dist/index.node.d.ts"
+      },
+      "browser": {
+        "import": "./dist/index.browser.mjs",
+        "types": "./dist/index.browser.d.ts"
+      },
+      "default": {
+        "import": "./dist/index.mjs",
+        "types": "./dist/index.d.ts"
+      }
+    },
+    "./browser": {
+      "import": "./dist/index.browser.mjs",
+      "types": "./dist/index.browser.d.ts"
+    },
+    "./node": {
+      "import": "./dist/index.node.mjs",
+      "types": "./dist/index.node.d.ts"
     }
   },
   "homepage": "https://img.ly/products/creative-sdk",
@@ -68,7 +86,11 @@
     "test:silent": "pnpm run build && vitest run silent-conversion",
     "test:all": "pnpm run test:browser && pnpm run test:integration",
     "test:visual": "pnpm run build && node test/visual-test.mjs",
-    "test:webpack5": "bash test/webpack5-compatibility-test.sh"
+    "test:webpack5": "bash test/webpack5-compatibility-test.sh",
+    "test:webpack5:angular": "playwright test test/webpack5-angular-runtime.spec.ts --timeout 180000",
+    "test:webpack5:angular:setup": "cd test/webpack5-angular-project && npm install",
+    "test:webpack5:angular:cesdk": "playwright test test/webpack5-angular-cesdk.spec.ts --timeout 300000",
+    "test:webpack5:angular:cesdk:create": "bash scripts/create-angular-cesdk-test-project.sh"
   },
   "devDependencies": {
     "@cesdk/cesdk-js": "~1.61.0",

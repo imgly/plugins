@@ -3,6 +3,7 @@ import type {
   EmscriptenModule,
   GhostscriptModuleFactory,
 } from '../types/ghostscript';
+import type { AssetLoader } from '../types/asset-loader';
 
 export interface GhostscriptModuleOptions {
   /**
@@ -10,64 +11,24 @@ export interface GhostscriptModuleOptions {
    * Default: true (silent mode)
    */
   silent?: boolean;
+
+  /**
+   * Asset loader for loading gs.js and gs.wasm.
+   * Required - use BrowserAssetLoader or NodeAssetLoader.
+   */
+  assetLoader: AssetLoader;
 }
 
 export default async function createGhostscriptModule(
-  options: GhostscriptModuleOptions = {}
+  options: GhostscriptModuleOptions
 ): Promise<EmscriptenModule> {
-  const { silent = true } = options;
-  // Check if we're in Node.js
-  const isNode =
-    typeof process !== 'undefined' &&
-    process.versions != null &&
-    process.versions.node != null;
+  const { silent = true, assetLoader } = options;
 
-  let GhostscriptModule: any;
-  let wasmPath: string;
+  // Load the Ghostscript module using the provided loader
+  const factory = await assetLoader.loadGhostscriptModule();
+  const wasmPath = assetLoader.getWasmPath();
 
-  if (isNode) {
-    // Node.js: Use require.resolve to find gs.js relative to this module
-    // Use indirect dynamic import to prevent Webpack 5 from statically analyzing these imports
-    // But use direct imports in test environments (vitest) where indirect imports bypass mocking
-    // See: https://github.com/imgly/ubq/issues/11471
-    const isTestEnv =
-      typeof process !== 'undefined' &&
-      (process.env.VITEST === 'true' || process.env.NODE_ENV === 'test');
-
-    // Helper for dynamic imports - uses indirect import in production to avoid Webpack static analysis
-    // Note: new Function() could fail in CSP-restricted environments, but CSP is a browser
-    // security mechanism and doesn't apply to Node.js. This code only runs in Node.js (isNode check above).
-    // eslint-disable-next-line @typescript-eslint/no-implied-eval, no-new-func
-    const indirectImport = new Function('s', 'return import(s)') as (
-      s: string
-    ) => Promise<any>;
-    const dynamicImport = isTestEnv ? (s: string) => import(s) : indirectImport;
-
-    const moduleLib = await dynamicImport('module');
-    const pathLib = await dynamicImport('path');
-    const createRequire = moduleLib.createRequire;
-    const dirname = pathLib.dirname;
-    const join = pathLib.join;
-
-    const requireForESM = createRequire(import.meta.url);
-
-    // Resolve gs.js directly (it's copied to dist/ alongside the bundle)
-    const gsPath = requireForESM.resolve('./gs.js');
-    const moduleDir = dirname(gsPath);
-    wasmPath = join(moduleDir, 'gs.wasm');
-
-    GhostscriptModule = await dynamicImport(gsPath);
-  } else {
-    // Browser: Use URL-based imports
-    const moduleUrl = new URL('./gs.js', import.meta.url).href;
-    GhostscriptModule = await import(/* webpackIgnore: true */ moduleUrl);
-    wasmPath = new URL('./gs.wasm', import.meta.url).href;
-  }
-
-  const factory = (GhostscriptModule.default ||
-    GhostscriptModule) as GhostscriptModuleFactory;
-
-  // Configure the module to load WASM from the bundled location
+  // Configure the module to load WASM from the specified location
   const moduleConfig: Record<string, unknown> = {
     locateFile: (filename: string) => {
       if (filename === 'gs.wasm') {

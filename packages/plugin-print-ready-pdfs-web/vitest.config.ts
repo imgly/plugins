@@ -10,6 +10,7 @@ export default defineConfig({
 
     // Timeout for tests (30 seconds)
     testTimeout: 30000,
+    hookTimeout: 30000,
 
     // Environment
     environment: 'node',

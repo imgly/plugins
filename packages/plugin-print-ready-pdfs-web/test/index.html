@@ -547,6 +547,8 @@
           const startTime = Date.now();
 
           // Convert using the simplified API with FOGRA39 profile
+          // In Vite-like environments, assetPath is auto-detected from import.meta.url
+          // For Webpack 5/Angular, assetPath must be explicitly provided
           convertedPDFBlob = await convertToPDFX3(uploadedPDFBlob, {
             outputProfile: 'fogra39',
             title: 'Test Conversion'

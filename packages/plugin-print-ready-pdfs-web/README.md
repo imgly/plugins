@@ -36,6 +36,96 @@ This plugin automatically converts CE.SDK's RGB PDFs into print-ready files that
 npm install @imgly/plugin-print-ready-pdfs-web
 ```
 
+## Bundler Setup (Webpack 5 / Angular)
+
+When using bundlers like Webpack 5 or Angular CLI, the plugin's WASM assets need to be copied to your public folder and the `assetPath` option must be provided.
+
+**Why is this needed?** Webpack 5 transforms `import.meta.url` to `file://` URLs at build time, which don't work in browsers. The `assetPath` option tells the plugin where to find its assets at runtime.
+
+### Angular CLI
+
+Add to your `angular.json` in the `assets` array:
+
+```json
+{
+  "glob": "{gs.js,gs.wasm,*.icc}",
+  "input": "node_modules/@imgly/plugin-print-ready-pdfs-web/dist",
+  "output": "/assets/print-ready-pdfs"
+}
+```
+
+Then provide the `assetPath` option:
+
+```javascript
+const printReadyPDF = await convertToPDFX3(pdfBlob, {
+  outputProfile: 'fogra39',
+  assetPath: '/assets/print-ready-pdfs/'
+});
+```
+
+### Webpack 5
+
+Use `copy-webpack-plugin` to copy the assets:
+
+```javascript
+const CopyPlugin = require('copy-webpack-plugin');
+
+module.exports = {
+  plugins: [
+    new CopyPlugin({
+      patterns: [{
+        from: 'node_modules/@imgly/plugin-print-ready-pdfs-web/dist/*.{js,wasm,icc}',
+        to: 'assets/[name][ext]'
+      }]
+    })
+  ]
+};
+```
+
+Then provide the `assetPath` option:
+
+```javascript
+const printReadyPDF = await convertToPDFX3(pdfBlob, {
+  outputProfile: 'fogra39',
+  assetPath: '/assets/'
+});
+```
+
+### Vite / Native ESM
+
+No additional configuration needed. The plugin automatically resolves assets using `import.meta.url`.
+
+### Custom Asset Loading
+
+For advanced use cases (CDN hosting, custom loading logic), implement the `AssetLoader` interface:
+
+```typescript
+import { convertToPDFX3, type AssetLoader } from '@imgly/plugin-print-ready-pdfs-web';
+
+class CDNAssetLoader implements AssetLoader {
+  private cdnBase = 'https://cdn.example.com/pdf-plugin/v1.1.2/';
+
+  async loadGhostscriptModule() {
+    const module = await import(/* webpackIgnore: true */ this.cdnBase + 'gs.js');
+    return module.default;
+  }
+
+  getWasmPath() {
+    return this.cdnBase + 'gs.wasm';
+  }
+
+  async loadICCProfile(name: string) {
+    const response = await fetch(this.cdnBase + name);
+    return response.blob();
+  }
+}
+
+const printReadyPDF = await convertToPDFX3(pdfBlob, {
+  outputProfile: 'fogra39',
+  assetLoader: new CDNAssetLoader()
+});
+```
+
 ## Quick Start
 
 Just one function call transforms any PDF into a print-ready file:
@@ -143,8 +233,22 @@ interface PDFX3Options {
   outputConditionIdentifier?: string;     // ICC profile identifier for OutputIntent
   outputCondition?: string;               // Human-readable output condition description
   flattenTransparency?: boolean;          // Flatten transparency (default: true for PDF/X-3)
+
+  // Asset loading (for bundler compatibility)
+  assetPath?: string;                     // URL path where plugin assets are served
+  assetLoader?: AssetLoader;              // Custom asset loader (advanced)
 }
 ```
+
+**Asset Loading Options:**
+
+| Option | When to Use |
+|--------|-------------|
+| Neither | Vite, native ESM - auto-detected via `import.meta.url` |
+| `assetPath` | Webpack 5, Angular - specify where assets are served |
+| `assetLoader` | CDN hosting, custom loading logic - full control |
+
+See [Bundler Setup](#bundler-setup-webpack-5--angular) for configuration examples.
 
 **Note:** Batch processing handles each PDF sequentially to avoid overwhelming the WASM module.
 
