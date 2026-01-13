@@ -4,7 +4,6 @@ import EachLabsImage from '@imgly/plugin-ai-image-generation-web/eachlabs';
 import EachLabsVideo from '@imgly/plugin-ai-video-generation-web/eachlabs';
 import Anthropic from '@imgly/plugin-ai-text-generation-web/anthropic';
 import { Middleware } from '@imgly/plugin-ai-generation-web';
-import { Icons } from '@imgly/plugin-utils';
 
 function initialize(
   selector: string,
@@ -44,7 +43,7 @@ function initialize(
 
         await Promise.all([
           instance.addDefaultAssetSources(),
-          instance.addDemoAssetSources({ sceneMode: 'Video' })
+          instance.addDemoAssetSources({ sceneMode: 'Design' })
         ]);
 
         instance.ui.setDockOrder([
@@ -74,7 +73,7 @@ function initialize(
 
         await instance.engine.scene.loadFromArchiveURL(
           options?.archiveUrl ??
-            'https://img.ly/showcases/cesdk/cases/ai-editor/ai_editor_video.archive'
+            'https://img.ly/showcases/cesdk/cases/ai-editor/ai_editor_design.archive'
         );
         const [page] = instance.engine.scene.getPages();
         instance.engine.scene.enableZoomAutoFit(page, 'Both');
@@ -82,9 +81,6 @@ function initialize(
         instance.i18n.setTranslations({
           en: {}
         });
-
-        // Add format icons for aspect ratio/size selection
-        instance.ui.addIconSet('@imgly/plugin/formats', Icons.Formats);
 
         const errorMiddleware: Middleware<any, any> = async (
           input,
