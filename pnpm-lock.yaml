@@ -201,23 +201,20 @@ importers:
         specifier: 1.66.1
         version: 1.66.1(react@18.3.1)
       '@imgly/plugin-ai-apps-web':
-        specifier: workspace:*
-        version: link:../../packages/plugin-ai-apps-web
+        specifier: ^0.2.15
+        version: 0.2.15(@cesdk/cesdk-js@1.66.1(react@18.3.1))
       '@imgly/plugin-ai-generation-web':
-        specifier: workspace:*
-        version: link:../../packages/plugin-ai-generation-web
+        specifier: ^0.2.15
+        version: 0.2.15(@cesdk/cesdk-js@1.66.1(react@18.3.1))
       '@imgly/plugin-ai-image-generation-web':
-        specifier: workspace:*
-        version: link:../../packages/plugin-ai-image-generation-web
+        specifier: ^0.2.15
+        version: 0.2.15(@cesdk/cesdk-js@1.66.1(react@18.3.1))
       '@imgly/plugin-ai-text-generation-web':
-        specifier: workspace:*
-        version: link:../../packages/plugin-ai-text-generation-web
+        specifier: ^0.2.15
+        version: 0.2.15(@cesdk/cesdk-js@1.66.1(react@18.3.1))
       '@imgly/plugin-ai-video-generation-web':
-        specifier: workspace:*
-        version: link:../../packages/plugin-ai-video-generation-web
-      '@imgly/plugin-utils':
-        specifier: workspace:*
-        version: link:../../packages/plugin-utils
+        specifier: ^0.2.15
+        version: 0.2.15(@cesdk/cesdk-js@1.66.1(react@18.3.1))
       dotenv:
         specifier: ^16.5.0
         version: 16.6.1
@@ -1854,6 +1851,31 @@ packages:
     resolution: {integrity: sha512-/1ZryrMYg2ckIvJKoTu5Np50JfYMVffDMlVmppw/BdbN3pBTN7e6stI5/7E/LVh9DDzz6J588s7sWqul3fy5wA==}
     peerDependencies:
       onnxruntime-web: 1.21.0
+
+  '@imgly/plugin-ai-apps-web@0.2.15':
+    resolution: {integrity: sha512-ajBvD4ijNL/k16YFfThZN2KbeclCbvm/Ko1yWg04j6/NOBtm9jd6rCgMmU0zuHaMyAimtosZc11KksVPc9/6WQ==}
+    peerDependencies:
+      '@cesdk/cesdk-js': 1.66.1
+
+  '@imgly/plugin-ai-generation-web@0.2.15':
+    resolution: {integrity: sha512-v2pjDmptIofY/FD7ToUeGXZEBjipPGZPYe3vTeR1hcVVGctcTE1VvhYGctdV5M3gT9X1GRCF4pabLE4Km+TlyA==}
+    peerDependencies:
+      '@cesdk/cesdk-js': 1.66.1
+
+  '@imgly/plugin-ai-image-generation-web@0.2.15':
+    resolution: {integrity: sha512-s62n6BVVrgJB4tpoQWSCvmoD4I8XWQLB54sBqt/xRtdPO9T7d4R/pZR0lVq0wv6RN8JtIA/4ybYnlubHHeiixQ==}
+    peerDependencies:
+      '@cesdk/cesdk-js': 1.66.1
+
+  '@imgly/plugin-ai-text-generation-web@0.2.15':
+    resolution: {integrity: sha512-X0zTbnT3TVmMKKNokEjA2rOI3li1JXS13MnMC8epcQytukEpwpGmWrvmGvng7Yecwx1maP62HYVeJVUouWUoYg==}
+    peerDependencies:
+      '@cesdk/cesdk-js': 1.66.1
+
+  '@imgly/plugin-ai-video-generation-web@0.2.15':
+    resolution: {integrity: sha512-h3ynKz4mu/hcn+qDxGRoK6xu++6oIRPvBHgkRpBdkGE6kH2q9I24RPG3sOwaISTvBex6PrZXDxpXHrKI3wcbvw==}
+    peerDependencies:
+      '@cesdk/cesdk-js': 1.66.1
 
   '@imgly/plugin-utils@file:packages/plugin-utils':
     resolution: {directory: packages/plugin-utils, type: directory}
@@ -6301,6 +6323,29 @@ snapshots:
       ndarray: 1.0.19
       onnxruntime-web: 1.21.0
       zod: 3.25.76
+
+  '@imgly/plugin-ai-apps-web@0.2.15(@cesdk/cesdk-js@1.66.1(react@18.3.1))':
+    dependencies:
+      '@cesdk/cesdk-js': 1.66.1(react@18.3.1)
+
+  '@imgly/plugin-ai-generation-web@0.2.15(@cesdk/cesdk-js@1.66.1(react@18.3.1))':
+    dependencies:
+      '@cesdk/cesdk-js': 1.66.1(react@18.3.1)
+
+  '@imgly/plugin-ai-image-generation-web@0.2.15(@cesdk/cesdk-js@1.66.1(react@18.3.1))':
+    dependencies:
+      '@cesdk/cesdk-js': 1.66.1(react@18.3.1)
+      '@imgly/plugin-ai-generation-web': 0.2.15(@cesdk/cesdk-js@1.66.1(react@18.3.1))
+
+  '@imgly/plugin-ai-text-generation-web@0.2.15(@cesdk/cesdk-js@1.66.1(react@18.3.1))':
+    dependencies:
+      '@cesdk/cesdk-js': 1.66.1(react@18.3.1)
+      '@imgly/plugin-ai-generation-web': 0.2.15(@cesdk/cesdk-js@1.66.1(react@18.3.1))
+
+  '@imgly/plugin-ai-video-generation-web@0.2.15(@cesdk/cesdk-js@1.66.1(react@18.3.1))':
+    dependencies:
+      '@cesdk/cesdk-js': 1.66.1(react@18.3.1)
+      '@imgly/plugin-ai-generation-web': 0.2.15(@cesdk/cesdk-js@1.66.1(react@18.3.1))
 
   '@imgly/plugin-utils@file:packages/plugin-utils(@cesdk/cesdk-js@1.66.1(react@18.3.1))':
     dependencies:
