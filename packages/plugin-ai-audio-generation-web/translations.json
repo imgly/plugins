@@ -7,19 +7,7 @@
     "ly.img.plugin-ai-audio-generation-web.elevenlabs/monolingual/v1.property.prompt": "Prompt",
     "ly.img.plugin-ai-audio-generation-web.elevenlabs/monolingual/v1.property.voice_id": "Voice",
     "ly.img.plugin-ai-audio-generation-web.elevenlabs/monolingual/v1.property.speed": "Speech Speed",
-
     "ly.img.plugin-ai-audio-generation-web.elevenlabs/sound-generation.property.text": "Sound description",
     "ly.img.plugin-ai-audio-generation-web.elevenlabs/sound-generation.property.duration_seconds": "Duration (seconds)"
-  },
-  "de": {
-    "panel.ly.img.ai.audio-generation.speech": "KI-Stimme",
-    "panel.ly.img.ai.audio-generation.sound": "Soundgenerierung",
-    "ly.img.plugin-ai-audio-generation-web.speech.action.label": "KI-Stimme",
-    "ly.img.plugin-ai-audio-generation-web.sound.action.label": "Sound generieren",
-    "ly.img.plugin-ai-audio-generation-web.elevenlabs/monolingual/v1.property.prompt": "Prompt",
-    "ly.img.plugin-ai-audio-generation-web.elevenlabs/monolingual/v1.property.voice_id": "Stimme",
-    "ly.img.plugin-ai-audio-generation-web.elevenlabs/monolingual/v1.property.speed": "Sprechgeschwindigkeit",
-    "ly.img.plugin-ai-audio-generation-web.elevenlabs/sound-generation.property.text": "Soundbeschreibung",
-    "ly.img.plugin-ai-audio-generation-web.elevenlabs/sound-generation.property.duration_seconds": "Dauer (Sekunden)"
   }
 }
