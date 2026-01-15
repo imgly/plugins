@@ -30,6 +30,20 @@ function addPrefix(key: string, value: string): string {
 }
 
 /**
+ * Get translations for a specific locale from a translation object,
+ * falling back to 'en' if the locale doesn't exist
+ */
+function getLocaleTranslations(
+  translationObj: { en: Record<string, string>; de?: Record<string, string> },
+  locale: 'en' | 'de'
+): Record<string, string> {
+  if (locale === 'de' && translationObj.de) {
+    return translationObj.de;
+  }
+  return translationObj.en;
+}
+
+/**
  * Process translations for a specific locale
  */
 function processTranslationsForLocale(
@@ -38,37 +52,55 @@ function processTranslationsForLocale(
   const translations: Record<string, string> = {};
 
   // Process base translations
-  const baseLocale = baseTranslations[locale] || baseTranslations.en;
+  const baseLocale = getLocaleTranslations(
+    baseTranslations as { en: Record<string, string>; de?: Record<string, string> },
+    locale
+  );
   Object.entries(baseLocale).forEach(([key, value]) => {
     translations[key] = addPrefix(key, value);
   });
 
   // Process image translations
-  const imageLocale = imageTranslations[locale] || imageTranslations.en;
+  const imageLocale = getLocaleTranslations(
+    imageTranslations as { en: Record<string, string>; de?: Record<string, string> },
+    locale
+  );
   Object.entries(imageLocale).forEach(([key, value]) => {
     translations[key] = addPrefix(key, value);
   });
 
   // Process video translations
-  const videoLocale = videoTranslations[locale] || videoTranslations.en;
+  const videoLocale = getLocaleTranslations(
+    videoTranslations as { en: Record<string, string>; de?: Record<string, string> },
+    locale
+  );
   Object.entries(videoLocale).forEach(([key, value]) => {
     translations[key] = addPrefix(key, value);
   });
 
   // Process audio translations
-  const audioLocale = audioTranslations[locale] || audioTranslations.en;
+  const audioLocale = getLocaleTranslations(
+    audioTranslations as { en: Record<string, string>; de?: Record<string, string> },
+    locale
+  );
   Object.entries(audioLocale).forEach(([key, value]) => {
     translations[key] = addPrefix(key, value);
   });
 
   // Process text translations
-  const textLocale = textTranslations[locale] || textTranslations.en;
+  const textLocale = getLocaleTranslations(
+    textTranslations as { en: Record<string, string>; de?: Record<string, string> },
+    locale
+  );
   Object.entries(textLocale).forEach(([key, value]) => {
     translations[key] = addPrefix(key, value);
   });
 
   // Process sticker translations
-  const stickerLocale = stickerTranslations[locale] || stickerTranslations.en;
+  const stickerLocale = getLocaleTranslations(
+    stickerTranslations as { en: Record<string, string>; de?: Record<string, string> },
+    locale
+  );
   Object.entries(stickerLocale).forEach(([key, value]) => {
     translations[key] = addPrefix(key, value);
   });

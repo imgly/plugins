@@ -7,7 +7,8 @@ import { isDefined } from '@imgly/plugin-utils';
 import {
   getPanelId,
   ActionRegistry,
-  checkAiPluginVersion
+  checkAiPluginVersion,
+  setDefaultTranslations
 } from '@imgly/plugin-ai-generation-web';
 
 import ImageGeneration from '@imgly/plugin-ai-image-generation-web';
@@ -399,7 +400,9 @@ function overrideAssetLibraryDockComponent(cesdk: CreativeEditorSDK) {
 }
 
 function addTranslations(cesdk: CreativeEditorSDK) {
-  cesdk.i18n.setTranslations({
+  // Use setDefaultTranslations to allow integrators to override these values
+  // by calling setTranslations() BEFORE adding the plugin
+  setDefaultTranslations(cesdk, {
     en: {
       'common.generate': 'Generate',
       'panel.ly.img.ai.generation.confirmCancel.content':

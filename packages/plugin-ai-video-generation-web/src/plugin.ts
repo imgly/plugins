@@ -4,7 +4,8 @@ import {
   initializeProviders,
   Output,
   registerDockComponent,
-  checkAiPluginVersion
+  checkAiPluginVersion,
+  setDefaultTranslations
 } from '@imgly/plugin-ai-generation-web';
 import { PluginConfiguration } from './types';
 import { toArray, translateWithFallback } from '@imgly/plugin-utils';
@@ -51,7 +52,9 @@ export function VideoGeneration<I, O extends Output>(
 
       const ACTION_LABEL_KEY = `${PLUGIN_ID}.action.label`;
 
-      cesdk.setTranslations({
+      // Use setDefaultTranslations to allow integrators to override these values
+      // by calling setTranslations() BEFORE adding the plugin
+      setDefaultTranslations(cesdk, {
         en: {
           [`panel.${VIDEO_GENERATION_PANEL_ID}`]: 'Video Generation',
           [`${VIDEO_GENERATION_PANEL_ID}.dock.label`]: 'AI Video',

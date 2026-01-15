@@ -105,6 +105,7 @@ export { AI_EDIT_MODE, AI_METADATA_KEY } from './ui/quickActions/utils';
 
 // Export AI-specific translation helpers
 export {
+  setDefaultTranslations,
   createTranslationCallback,
   buildTranslationKeys
 } from './utils/translationHelpers';

@@ -4,7 +4,8 @@ import {
   Output,
   initializeProviders,
   registerDockComponent,
-  checkAiPluginVersion
+  checkAiPluginVersion,
+  setDefaultTranslations
 } from '@imgly/plugin-ai-generation-web';
 import { PluginConfiguration } from './types';
 import { toArray, translateWithFallback } from '@imgly/plugin-utils';
@@ -39,7 +40,9 @@ export function AudioGeneration<I, O extends Output>(
       const SOUND_ACTION_LABEL_KEY = `${PLUGIN_ID}.sound.action.label`;
       const SPEECH_ACTION_LABEL_KEY = `${PLUGIN_ID}.speech.action.label`;
 
-      cesdk.setTranslations({
+      // Use setDefaultTranslations to allow integrators to override these values
+      // by calling setTranslations() BEFORE adding the plugin
+      setDefaultTranslations(cesdk, {
         en: {
           [`panel.${SPEECH_GENERATION_PANEL_ID}`]: 'AI Voice',
           [`panel.${SOUND_GENERATION_PANEL_ID}`]: 'Sound Generation',

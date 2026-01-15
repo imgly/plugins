@@ -4,7 +4,8 @@ import {
   Output,
   registerDockComponent,
   ActionRegistry,
-  checkAiPluginVersion
+  checkAiPluginVersion,
+  setDefaultTranslations
 } from '@imgly/plugin-ai-generation-web';
 import { PluginConfiguration } from './types';
 import iconSprite, { PLUGIN_ICON_SET_ID } from './iconSprite';
@@ -44,7 +45,9 @@ export function StickerGeneration<I, O extends Output>(
       const ACTION_LABEL_KEY = `${PLUGIN_ID}.action.label`;
 
       cesdk.ui.addIconSet(PLUGIN_ICON_SET_ID, iconSprite);
-      cesdk.i18n.setTranslations({
+      // Use setDefaultTranslations to allow integrators to override these values
+      // by calling setTranslations() BEFORE adding the plugin
+      setDefaultTranslations(cesdk, {
         en: {
           [`panel.${STICKER_GENERATION_PANEL_ID}`]: 'Sticker Generation',
           [`${STICKER_GENERATION_PANEL_ID}.dock.label`]: 'AI Sticker',
