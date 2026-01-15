@@ -49,6 +49,11 @@ export function StickerGeneration<I, O extends Output>(
           [`panel.${STICKER_GENERATION_PANEL_ID}`]: 'Sticker Generation',
           [`${STICKER_GENERATION_PANEL_ID}.dock.label`]: 'AI Sticker',
           [ACTION_LABEL_KEY]: 'Generate Sticker'
+        },
+        de: {
+          [`panel.${STICKER_GENERATION_PANEL_ID}`]: 'Stickergenerierung',
+          [`${STICKER_GENERATION_PANEL_ID}.dock.label`]: 'KI-Sticker',
+          [ACTION_LABEL_KEY]: 'Sticker generieren'
         }
       });
 
@@ -64,6 +69,7 @@ export function StickerGeneration<I, O extends Output>(
           ACTION_LABEL_KEY,
           'Generate Sticker'
         ),
+        labelKey: ACTION_LABEL_KEY,
         meta: { panelId: STICKER_GENERATION_PANEL_ID },
 
         execute: () => {

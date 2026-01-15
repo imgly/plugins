@@ -129,7 +129,15 @@ function initializeAppLibrary(
     gridColumns: 1,
     gridItemHeight: 'auto',
     gridBackgroundType: 'cover',
-    cardLabel: ({ label }) => label,
+    // Use labelKey for i18n resolution if available, falling back to static label
+    cardLabel: (context) => {
+      const { label, meta } = context;
+      const labelKey = meta?.labelKey as string | undefined;
+      if (labelKey && typeof cesdk.i18n?.translate === 'function') {
+        return cesdk.i18n.translate(labelKey);
+      }
+      return label;
+    },
     cardLabelPosition: () => 'inside'
   });
 
@@ -194,10 +202,12 @@ function registerAppAssetSource(
     const currentSceneMode = cesdk.engine.scene.getMode();
     return registry
       .getBy({ type: 'plugin' })
-      .map(({ id, label, sceneMode }) => {
+      .map(({ id, label, labelKey, sceneMode }) => {
         if (currentSceneMode === 'Design' && sceneMode === 'Video') {
           return undefined;
         }
+        // Store labelKey in meta for i18n resolution via cardLabel callback
+        // The label uses the static fallback for backwards compatibility
         const assetDefinition: AssetDefinition = {
           id,
           label: {
@@ -205,6 +215,7 @@ function registerAppAssetSource(
           },
           meta: {
             sceneMode,
+            labelKey,
             thumbUri:
               config.baseURL != null
                 ? getAppThumbnail(config.baseURL, id)

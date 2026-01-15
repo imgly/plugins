@@ -10,11 +10,13 @@ import { Result } from '../generation/createGenerateFunction';
 /**
  * Base properties shared by all action definitions.
  */
-interface BaseActionDefinition {
+export interface BaseActionDefinition {
   /** Unique identifier for the action */
   id: string;
-  /** Human-readable label for the action */
+  /** Human-readable label for the action (fallback when labelKey is not available) */
   label?: string;
+  /** Translation key for the label (preferred for i18n support) */
+  labelKey?: string;
   /** Detailed description of what the action does */
   description?: string;
   /** Optional metadata for additional information */

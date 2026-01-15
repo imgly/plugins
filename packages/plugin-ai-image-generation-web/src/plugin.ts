@@ -67,6 +67,11 @@ export function ImageGeneration<I, O extends Output>(
           [`panel.${IMAGE_GENERATION_PANEL_ID}`]: 'Image Generation',
           [`${IMAGE_GENERATION_PANEL_ID}.dock.label`]: 'AI Image',
           [ACTION_LABEL_KEY]: 'Generate Image'
+        },
+        de: {
+          [`panel.${IMAGE_GENERATION_PANEL_ID}`]: 'Bildgenerierung',
+          [`${IMAGE_GENERATION_PANEL_ID}.dock.label`]: 'KI-Bild',
+          [ACTION_LABEL_KEY]: 'Bild generieren'
         }
       });
 
@@ -78,6 +83,7 @@ export function ImageGeneration<I, O extends Output>(
         pluginId: PLUGIN_ID,
 
         label: translateWithFallback(cesdk, ACTION_LABEL_KEY, 'Generate Image'),
+        labelKey: ACTION_LABEL_KEY,
         meta: { panelId: IMAGE_GENERATION_PANEL_ID },
 
         execute: () => {

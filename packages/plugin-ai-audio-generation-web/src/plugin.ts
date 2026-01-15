@@ -45,6 +45,12 @@ export function AudioGeneration<I, O extends Output>(
           [`panel.${SOUND_GENERATION_PANEL_ID}`]: 'Sound Generation',
           [SOUND_ACTION_LABEL_KEY]: 'Generate Sound',
           [SPEECH_ACTION_LABEL_KEY]: 'AI Voice'
+        },
+        de: {
+          [`panel.${SPEECH_GENERATION_PANEL_ID}`]: 'KI-Stimme',
+          [`panel.${SOUND_GENERATION_PANEL_ID}`]: 'Soundgenerierung',
+          [SOUND_ACTION_LABEL_KEY]: 'Sound generieren',
+          [SPEECH_ACTION_LABEL_KEY]: 'KI-Stimme'
         }
       });
 
@@ -63,6 +69,7 @@ export function AudioGeneration<I, O extends Output>(
           SOUND_ACTION_LABEL_KEY,
           'Generate Sound'
         ),
+        labelKey: SOUND_ACTION_LABEL_KEY,
         meta: { panelId: SOUND_GENERATION_PANEL_ID },
 
         execute: () => {
@@ -86,6 +93,7 @@ export function AudioGeneration<I, O extends Output>(
           SPEECH_ACTION_LABEL_KEY,
           'AI Voice'
         ),
+        labelKey: SPEECH_ACTION_LABEL_KEY,
         meta: { panelId: SPEECH_GENERATION_PANEL_ID },
 
         execute: () => {

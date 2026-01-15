@@ -52,6 +52,7 @@ export {
 export { default as integrateIntoDefaultAssetLibraryEntry } from './assets/integrateIntoDefaultAssetLibraryEntry';
 export {
   ActionRegistry,
+  type BaseActionDefinition,
   type PluginActionDefinition,
   type QuickActionDefinition,
   type ActionDefinition,

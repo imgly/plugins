@@ -9,81 +9,100 @@ import textTranslations from '../translations/text.json';
 import stickerTranslations from '../translations/sticker.json';
 
 /**
+ * Helper function to determine if a key is provider-specific
+ */
+function isProviderSpecificKey(key: string): boolean {
+  return (
+    key.includes('.fal-ai/') ||
+    key.includes('.open-ai/') ||
+    key.includes('.runware/') ||
+    key.includes('.elevenlabs/') ||
+    key.includes('.anthropic.') ||
+    key.includes('.openai.')
+  );
+}
+
+/**
+ * Helper function to add prefix based on key type
+ */
+function addPrefix(key: string, value: string): string {
+  return isProviderSpecificKey(key) ? `@${value}` : `&${value}`;
+}
+
+/**
+ * Process translations for a specific locale
+ */
+function processTranslationsForLocale(
+  locale: 'en' | 'de'
+): Record<string, string> {
+  const translations: Record<string, string> = {};
+
+  // Process base translations
+  const baseLocale = baseTranslations[locale] || baseTranslations.en;
+  Object.entries(baseLocale).forEach(([key, value]) => {
+    translations[key] = addPrefix(key, value);
+  });
+
+  // Process image translations
+  const imageLocale = imageTranslations[locale] || imageTranslations.en;
+  Object.entries(imageLocale).forEach(([key, value]) => {
+    translations[key] = addPrefix(key, value);
+  });
+
+  // Process video translations
+  const videoLocale = videoTranslations[locale] || videoTranslations.en;
+  Object.entries(videoLocale).forEach(([key, value]) => {
+    translations[key] = addPrefix(key, value);
+  });
+
+  // Process audio translations
+  const audioLocale = audioTranslations[locale] || audioTranslations.en;
+  Object.entries(audioLocale).forEach(([key, value]) => {
+    translations[key] = addPrefix(key, value);
+  });
+
+  // Process text translations
+  const textLocale = textTranslations[locale] || textTranslations.en;
+  Object.entries(textLocale).forEach(([key, value]) => {
+    translations[key] = addPrefix(key, value);
+  });
+
+  // Process sticker translations
+  const stickerLocale = stickerTranslations[locale] || stickerTranslations.en;
+  Object.entries(stickerLocale).forEach(([key, value]) => {
+    translations[key] = addPrefix(key, value);
+  });
+
+  return translations;
+}
+
+/**
  * Test all translation keys by setting them with prefixes:
  * - & for generic/base translations
  * - @ for provider-specific translations
  */
 export function testAllTranslations(cesdk: CreativeEditorSDK) {
-  const allTranslations: Record<string, string> = {};
+  const enTranslations = processTranslationsForLocale('en');
+  const deTranslations = processTranslationsForLocale('de');
 
-  // Process base translations (generic) with & prefix
-  Object.entries(baseTranslations.en).forEach(([key, value]) => {
-    allTranslations[key] = `&${value}`;
-  });
-
-  // Process image generation translations (provider-specific) with @ prefix
-  Object.entries(imageTranslations.en).forEach(([key, value]) => {
-    // Check if it's a provider-specific translation
-    if (key.includes('.fal-ai/') || key.includes('.open-ai/') || key.includes('.runware/') || key.includes('.eachlabs/')) {
-      allTranslations[key] = `@${value}`;
-    } else {
-      // Generic property that might be redefined
-      allTranslations[key] = `&${value}`;
-    }
-  });
-
-  // Process video generation translations (provider-specific) with @ prefix
-  Object.entries(videoTranslations.en).forEach(([key, value]) => {
-    if (key.includes('.fal-ai/') || key.includes('.runware/') || key.includes('.eachlabs/')) {
-      allTranslations[key] = `@${value}`;
-    } else {
-      allTranslations[key] = `&${value}`;
-    }
-  });
-
-  // Process audio generation translations (provider-specific) with @ prefix
-  Object.entries(audioTranslations.en).forEach(([key, value]) => {
-    if (key.includes('.elevenlabs/')) {
-      allTranslations[key] = `@${value}`;
-    } else {
-      allTranslations[key] = `&${value}`;
-    }
-  });
-
-  // Process text generation translations (provider-specific) with @ prefix
-  Object.entries(textTranslations.en).forEach(([key, value]) => {
-    if (key.includes('.anthropic.') || key.includes('.openai.')) {
-      allTranslations[key] = `@${value}`;
-    } else {
-      allTranslations[key] = `&${value}`;
-    }
-  });
-
-  // Process sticker generation translations (provider-specific) with @ prefix
-  Object.entries(stickerTranslations.en).forEach(([key, value]) => {
-    if (key.includes('.fal-ai/')) {
-      allTranslations[key] = `@${value}`;
-    } else {
-      allTranslations[key] = `&${value}`;
-    }
-  });
-
-  // Set all translations at once
+  // Set translations for both locales with their respective language values
   cesdk.setTranslations({
-    en: allTranslations
+    en: enTranslations,
+    de: deTranslations
   });
 
-  // Log summary for debugging
-  const genericCount = Object.values(allTranslations).filter(v => v.startsWith('&')).length;
-  const providerCount = Object.values(allTranslations).filter(v => v.startsWith('@')).length;
-  
+  // Log summary for debugging (use English translations for counting)
+  const genericCount = Object.values(enTranslations).filter(v => v.startsWith('&')).length;
+  const providerCount = Object.values(enTranslations).filter(v => v.startsWith('@')).length;
+
   console.log('🔧 Translation Test Applied:');
-  console.log(`📋 Total translations: ${Object.keys(allTranslations).length}`);
+  console.log(`📋 Total translations (per locale): ${Object.keys(enTranslations).length}`);
   console.log(`🔄 Generic translations (& prefix): ${genericCount}`);
   console.log(`🎯 Provider-specific translations (@ prefix): ${providerCount}`);
   console.log('💡 Look for & and @ prefixes in the UI to verify translation loading');
+  console.log('🇩🇪 German locale will show German translations with prefixes');
 
-  return allTranslations;
+  return { en: enTranslations, de: deTranslations };
 }
 
 /**
