@@ -1,4 +1,4 @@
-import { QuickActionDefinition } from '@imgly/plugin-ai-generation-web';
+import { QuickActionDefinition, setDefaultTranslations } from '@imgly/plugin-ai-generation-web';
 import fix from '../prompts/fix';
 import { GetQuickActionDefinition } from './types';
 
@@ -49,7 +49,7 @@ const Fix: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
     true
   );
 
-  cesdk.i18n.setTranslations({
+  setDefaultTranslations(cesdk, {
     en: {
       [`${I18N_DEFAULT_PREFIX}`]: 'Fix Spelling & Grammar'
     }

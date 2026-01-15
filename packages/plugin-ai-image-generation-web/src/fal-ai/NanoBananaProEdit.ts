@@ -3,8 +3,8 @@ import {
   type Provider,
   type CommonProviderConfiguration,
   getPanelId,
-  CommonProperties
-} from '@imgly/plugin-ai-generation-web';
+  CommonProperties,
+  setDefaultTranslations} from '@imgly/plugin-ai-generation-web';
 import schema from './NanoBananaProEdit.json';
 import { getImageDimensionsFromURL } from '@imgly/plugin-utils';
 import CreativeEditorSDK, { MimeType } from '@cesdk/cesdk-js';
@@ -27,7 +27,7 @@ export function NanoBananaProEdit(
     const modelKey = 'fal-ai/nano-banana-pro/edit';
 
     // Set translations
-    cesdk.i18n.setTranslations({
+    setDefaultTranslations(cesdk, {
       en: {
         [`panel.${getPanelId(modelKey)}.imageSelection`]:
           'Select Image To Edit',

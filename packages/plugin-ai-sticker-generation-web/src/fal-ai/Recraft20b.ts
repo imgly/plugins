@@ -3,8 +3,8 @@ import {
   CommonProviderConfiguration,
   getPanelId,
   createTranslationCallback,
-  normalizeBaseURL
-} from '@imgly/plugin-ai-generation-web';
+  normalizeBaseURL,
+  setDefaultTranslations} from '@imgly/plugin-ai-generation-web';
 import Recraft20bSchema from './Recraft20b.json';
 import CreativeEditorSDK, { AssetResult } from '@cesdk/cesdk-js';
 import {
@@ -126,7 +126,7 @@ function getProvider(
     ] = label;
   });
 
-  cesdk.i18n.setTranslations({
+  setDefaultTranslations(cesdk, {
     en: {
       [`panel.${getPanelId(
         'fal-ai/recraft/v2/text-to-sticker'

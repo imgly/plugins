@@ -2,8 +2,8 @@ import {
   VideoOutput,
   type Provider,
   CommonProviderConfiguration,
-  getPanelId
-} from '@imgly/plugin-ai-generation-web';
+  getPanelId,
+  setDefaultTranslations} from '@imgly/plugin-ai-generation-web';
 import { getImageDimensionsFromURL } from '@imgly/plugin-utils';
 import schema from './MinimaxHailuo02StandardImageToVideo.json';
 import CreativeEditorSDK from '@cesdk/cesdk-js';
@@ -34,7 +34,7 @@ export function MinimaxHailuo02StandardImageToVideo(
     const modelKey = 'fal-ai/minimax/hailuo-02/standard/image-to-video';
 
     // Set translations
-    cesdk.i18n.setTranslations({
+    setDefaultTranslations(cesdk, {
       en: {
         [`panel.${getPanelId(modelKey)}.imageSelection`]:
           'Select Image To Generate',

@@ -1,4 +1,4 @@
-import { QuickActionDefinition } from '@imgly/plugin-ai-generation-web';
+import { QuickActionDefinition, setDefaultTranslations } from '@imgly/plugin-ai-generation-web';
 import changeTone from '../prompts/changeTone';
 import { GetQuickActionDefinition } from './types';
 
@@ -59,7 +59,7 @@ const ChangeTone: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
     true
   );
 
-  cesdk.i18n.setTranslations({
+  setDefaultTranslations(cesdk, {
     en: {
       [`${I18N_DEFAULT_PREFIX}`]: 'Change Tone',
       [`${I18N_DEFAULT_PREFIX}.professional`]: 'Professional',

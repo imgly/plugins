@@ -16,6 +16,7 @@ import { ProviderInitializationResult } from '../../providers/initializeProvider
 import handleGenerateFromQuickAction from '../../generation/handleGenerateFromQuickAction';
 import { Middleware } from '../../middleware/middleware';
 import { ProviderRegistry } from '../../core/ProviderRegistry';
+import { setDefaultTranslations } from '../../utils/translationHelpers';
 
 type SupportedQuickAction<K extends OutputKind, I, O extends Output> = {
   definition: QuickActionDefinition<any>;
@@ -60,7 +61,7 @@ function createQuickActionMenuRenderFunction<
 }): Promise<BuilderRenderFunction<any>> {
   const prefix = `ly.img.ai.${context.kind}}`;
 
-  context.cesdk.i18n.setTranslations({
+  setDefaultTranslations(context.cesdk, {
     en: {
       [`ly.img.plugin-ai-generation-web.defaults.quickAction.providerSelect.label`]:
         'Provider'

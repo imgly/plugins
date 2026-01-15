@@ -3,8 +3,8 @@ import {
   type Provider,
   type CommonProviderConfiguration,
   getPanelId,
-  addIconSetOnce
-} from '@imgly/plugin-ai-generation-web';
+  addIconSetOnce,
+  setDefaultTranslations} from '@imgly/plugin-ai-generation-web';
 import { Icons, getImageDimensionsFromURL } from '@imgly/plugin-utils';
 import schema from './QwenImageEdit.json';
 import CreativeEditorSDK from '@cesdk/cesdk-js';
@@ -34,7 +34,7 @@ export function QwenImageEdit(
     const modelKey = 'fal-ai/qwen-image-edit';
 
     // Set translations
-    cesdk.i18n.setTranslations({
+    setDefaultTranslations(cesdk, {
       en: {
         [`panel.${getPanelId(modelKey)}.imageSelection`]:
           'Select Image To Edit',

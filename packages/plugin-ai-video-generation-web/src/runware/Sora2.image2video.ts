@@ -2,8 +2,8 @@ import {
   type Provider,
   type VideoOutput,
   getPanelId,
-  addIconSetOnce
-} from '@imgly/plugin-ai-generation-web';
+  addIconSetOnce,
+  setDefaultTranslations} from '@imgly/plugin-ai-generation-web';
 import { getImageDimensionsFromURL, Icons } from '@imgly/plugin-utils';
 import type CreativeEditorSDK from '@cesdk/cesdk-js';
 // @ts-ignore - JSON import
@@ -73,7 +73,7 @@ export function Sora2Image2Video(
     addIconSetOnce(cesdk, '@imgly/plugin/formats', Icons.Formats);
 
     // Required i18n for image selection UI
-    cesdk.i18n.setTranslations({
+    setDefaultTranslations(cesdk, {
       en: {
         [`panel.${getPanelId(providerId)}.imageSelection`]:
           'Select Image To Animate',

@@ -1,7 +1,7 @@
 import {
   enableQuickActionForImageFill,
-  QuickActionDefinition
-} from '@imgly/plugin-ai-generation-web';
+  QuickActionDefinition,
+  setDefaultTranslations} from '@imgly/plugin-ai-generation-web';
 import { getImageUri } from '@imgly/plugin-utils';
 
 import { GetQuickActionDefinition } from './types';
@@ -54,7 +54,7 @@ const CreateVariant: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
     true
   );
 
-  cesdk.i18n.setTranslations({
+  setDefaultTranslations(cesdk, {
     en: {
       [`${I18N_DEFAULT_PREFIX}`]: 'Create Variant...',
       [`${I18N_DEFAULT_PREFIX}.description`]: 'Create a variation of the image',

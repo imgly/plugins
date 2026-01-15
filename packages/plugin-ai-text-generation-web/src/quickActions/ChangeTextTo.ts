@@ -1,4 +1,4 @@
-import { QuickActionDefinition } from '@imgly/plugin-ai-generation-web';
+import { QuickActionDefinition, setDefaultTranslations } from '@imgly/plugin-ai-generation-web';
 import changeTextTo from '../prompts/changeTextTo';
 import { GetQuickActionDefinition } from './types';
 
@@ -50,7 +50,7 @@ const ChangeTextTo: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
     true
   );
 
-  cesdk.i18n.setTranslations({
+  setDefaultTranslations(cesdk, {
     en: {
       [`${I18N_DEFAULT_PREFIX}`]: 'Change Text to...',
       [`${I18N_DEFAULT_PREFIX}.prompt`]: 'Change Text to...',

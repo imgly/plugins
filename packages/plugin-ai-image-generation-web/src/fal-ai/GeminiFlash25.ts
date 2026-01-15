@@ -2,8 +2,8 @@ import {
   ImageOutput,
   type Provider,
   type CommonProviderConfiguration,
-  getPanelId
-} from '@imgly/plugin-ai-generation-web';
+  getPanelId,
+  setDefaultTranslations} from '@imgly/plugin-ai-generation-web';
 import schema from './GeminiFlash25.json';
 import CreativeEditorSDK from '@cesdk/cesdk-js';
 import createImageProvider from './createImageProvider';
@@ -52,7 +52,7 @@ export function GeminiFlash25(
     const modelKey = 'fal-ai/gemini-25-flash-image';
 
     // Set translations
-    cesdk.i18n.setTranslations({
+    setDefaultTranslations(cesdk, {
       en: {
         [`libraries.${getPanelId(modelKey)}.history.label`]:
           'Generated From Text',

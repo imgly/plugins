@@ -2,8 +2,8 @@ import {
   CommonProviderConfiguration,
   VideoOutput,
   type Provider,
-  getPanelId
-} from '@imgly/plugin-ai-generation-web';
+  getPanelId,
+  setDefaultTranslations} from '@imgly/plugin-ai-generation-web';
 import schema from './Veo3TextToVideo.json';
 import CreativeEditorSDK from '@cesdk/cesdk-js';
 import createVideoProvider from './createVideoProvider';
@@ -27,7 +27,7 @@ export function Veo3TextToVideo(
     const modelKey = 'fal-ai/veo3';
 
     // Set translations
-    cesdk.i18n.setTranslations({
+    setDefaultTranslations(cesdk, {
       en: {
         [`panel.${getPanelId(modelKey)}.prompt`]: 'Enter your prompt',
         [`panel.${modelKey}.prompt`]: 'Enter your prompt',

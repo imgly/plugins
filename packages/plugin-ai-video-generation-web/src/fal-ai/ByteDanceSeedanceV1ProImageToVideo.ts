@@ -2,8 +2,8 @@ import {
   VideoOutput,
   type Provider,
   CommonProviderConfiguration,
-  getPanelId
-} from '@imgly/plugin-ai-generation-web';
+  getPanelId,
+  setDefaultTranslations} from '@imgly/plugin-ai-generation-web';
 import { getImageDimensionsFromURL } from '@imgly/plugin-utils';
 import schema from './ByteDanceSeedanceV1ProImageToVideo.json';
 import CreativeEditorSDK from '@cesdk/cesdk-js';
@@ -37,7 +37,7 @@ export function ByteDanceSeedanceV1ProImageToVideo(
     const modelKey = 'fal-ai/bytedance/seedance/v1/pro/image-to-video';
 
     // Set translations
-    cesdk.i18n.setTranslations({
+    setDefaultTranslations(cesdk, {
       en: {
         [`panel.${getPanelId(modelKey)}.imageSelection`]:
           'Select Image To Generate',

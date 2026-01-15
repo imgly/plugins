@@ -3,8 +3,8 @@ import {
   type Provider,
   type CommonProviderConfiguration,
   getPanelId,
-  CommonProperties
-} from '@imgly/plugin-ai-generation-web';
+  CommonProperties,
+  setDefaultTranslations} from '@imgly/plugin-ai-generation-web';
 import schema from './Gemini25FlashImageEdit.json';
 import { getImageDimensionsFromURL } from '@imgly/plugin-utils';
 import CreativeEditorSDK, { MimeType } from '@cesdk/cesdk-js';
@@ -26,7 +26,7 @@ export function Gemini25FlashImageEdit(
     const modelKey = 'fal-ai/gemini-25-flash-image/edit';
 
     // Set translations
-    cesdk.i18n.setTranslations({
+    setDefaultTranslations(cesdk, {
       en: {
         [`panel.${getPanelId(modelKey)}.imageSelection`]:
           'Select Image To Edit',

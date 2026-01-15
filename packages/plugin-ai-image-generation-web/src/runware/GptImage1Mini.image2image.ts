@@ -3,8 +3,8 @@ import {
   type ImageOutput,
   CommonProperties,
   getPanelId,
-  addIconSetOnce
-} from '@imgly/plugin-ai-generation-web';
+  addIconSetOnce,
+  setDefaultTranslations} from '@imgly/plugin-ai-generation-web';
 import { Icons } from '@imgly/plugin-utils';
 import type CreativeEditorSDK from '@cesdk/cesdk-js';
 // @ts-ignore - JSON import
@@ -59,7 +59,7 @@ export function GptImage1MiniImage2Image(
     addIconSetOnce(cesdk, '@imgly/plugin/formats', Icons.Formats);
 
     // Set translations for the panel
-    cesdk.i18n.setTranslations({
+    setDefaultTranslations(cesdk, {
       en: {
         [`panel.${getPanelId(providerId)}.imageSelection`]:
           'Select Image To Edit',

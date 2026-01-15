@@ -2,8 +2,8 @@ import {
   ImageOutput,
   type Provider,
   type CommonProviderConfiguration,
-  getPanelId
-} from '@imgly/plugin-ai-generation-web';
+  getPanelId,
+  setDefaultTranslations} from '@imgly/plugin-ai-generation-web';
 import schema from './GeminiFlashEdit.json';
 import { getImageDimensionsFromURL } from '@imgly/plugin-utils';
 import CreativeEditorSDK from '@cesdk/cesdk-js';
@@ -23,7 +23,7 @@ export function GeminiFlashEdit(
     const modelKey = 'fal-ai/gemini-flash-edit';
 
     // Set translations
-    cesdk.i18n.setTranslations({
+    setDefaultTranslations(cesdk, {
       en: {
         [`panel.${getPanelId(modelKey)}.imageSelection`]:
           'Select Image To Change',

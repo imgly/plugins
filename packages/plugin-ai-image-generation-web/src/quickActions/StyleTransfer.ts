@@ -1,7 +1,7 @@
 import {
   enableQuickActionForImageFill,
-  QuickActionDefinition
-} from '@imgly/plugin-ai-generation-web';
+  QuickActionDefinition,
+  setDefaultTranslations} from '@imgly/plugin-ai-generation-web';
 import { getImageUri } from '@imgly/plugin-utils';
 
 import { GetQuickActionDefinition } from './types';
@@ -92,7 +92,7 @@ const StyleTransfer: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
     true
   );
 
-  cesdk.i18n.setTranslations({
+  setDefaultTranslations(cesdk, {
     en: {
       [`${I18N_DEFAULT_PREFIX}`]: 'Change Art Style',
       [`${I18N_DEFAULT_PREFIX}.description`]:

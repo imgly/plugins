@@ -2,8 +2,8 @@ import {
   type Provider,
   type ImageOutput,
   CommonProperties,
-  getPanelId
-} from '@imgly/plugin-ai-generation-web';
+  getPanelId,
+  setDefaultTranslations} from '@imgly/plugin-ai-generation-web';
 import { getImageDimensionsFromURL } from '@imgly/plugin-utils';
 import type CreativeEditorSDK from '@cesdk/cesdk-js';
 // @ts-ignore - JSON import
@@ -45,7 +45,7 @@ export function NanoBanana2ProImage2Image(
     const providerId = 'runware/google/nano-banana-2-pro/image2image';
 
     // Set translations for the panel
-    cesdk.i18n.setTranslations({
+    setDefaultTranslations(cesdk, {
       en: {
         [`panel.${getPanelId(providerId)}.imageSelection`]:
           'Select Image To Edit',

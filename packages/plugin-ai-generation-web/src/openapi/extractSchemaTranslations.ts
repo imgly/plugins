@@ -2,6 +2,7 @@ import { Property } from './types';
 import Provider, { Output, OutputKind } from '../core/provider';
 import { UIOptions } from '../types';
 import { defaultTranslations } from './defaultTranslations';
+import { setDefaultTranslations } from '../utils/translationHelpers';
 
 function formatEnumLabel(enumValue: string): string {
   return (
@@ -93,7 +94,7 @@ export function extractAndSetSchemaTranslations<
   const allTranslations = { ...defaultTranslations, ...translations };
 
   if (Object.keys(allTranslations).length > 0) {
-    options.cesdk.i18n.setTranslations({
+    setDefaultTranslations(options.cesdk, {
       en: allTranslations
     });
   }

@@ -2,8 +2,8 @@ import {
   ImageOutput,
   type Provider,
   type CommonProviderConfiguration,
-  getPanelId
-} from '@imgly/plugin-ai-generation-web';
+  getPanelId,
+  setDefaultTranslations} from '@imgly/plugin-ai-generation-web';
 import schema from './FluxProKontextMaxEdit.json';
 import { getImageDimensionsFromURL } from '@imgly/plugin-utils';
 import CreativeEditorSDK from '@cesdk/cesdk-js';
@@ -24,7 +24,7 @@ export function FluxProKontextMaxEdit(
     const modelKey = 'fal-ai/flux-pro/kontext/max';
 
     // Set translations
-    cesdk.i18n.setTranslations({
+    setDefaultTranslations(cesdk, {
       en: {
         'ly.img.ai.quickAction.styleTransfer': 'Change Art Style',
         'ly.img.ai.quickAction.artists': 'Painted By',
