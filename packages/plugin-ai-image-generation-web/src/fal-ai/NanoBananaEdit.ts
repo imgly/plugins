@@ -4,7 +4,8 @@ import {
   type CommonProviderConfiguration,
   getPanelId,
   CommonProperties,
-  setDefaultTranslations} from '@imgly/plugin-ai-generation-web';
+  setDefaultTranslations
+} from '@imgly/plugin-ai-generation-web';
 import schema from './NanoBananaEdit.json';
 import { getImageDimensionsFromURL } from '@imgly/plugin-utils';
 import CreativeEditorSDK, { MimeType } from '@cesdk/cesdk-js';

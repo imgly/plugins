@@ -5,7 +5,8 @@ import {
   getPanelId,
   CommonProperties,
   addIconSetOnce,
-  setDefaultTranslations} from '@imgly/plugin-ai-generation-web';
+  setDefaultTranslations
+} from '@imgly/plugin-ai-generation-web';
 import { Icons, getImageDimensionsFromURL } from '@imgly/plugin-utils';
 import schema from './SeedreamV4Edit.json';
 import CreativeEditorSDK, { MimeType } from '@cesdk/cesdk-js';

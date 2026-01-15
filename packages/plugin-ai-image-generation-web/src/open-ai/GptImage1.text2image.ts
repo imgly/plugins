@@ -3,7 +3,8 @@ import {
   CommonProviderConfiguration,
   getPanelId,
   type Provider,
-  setDefaultTranslations} from '@imgly/plugin-ai-generation-web';
+  setDefaultTranslations
+} from '@imgly/plugin-ai-generation-web';
 import GptImage1Schema from './GptImage1.text2image.json';
 import CreativeEditorSDK, { AssetResult } from '@cesdk/cesdk-js';
 import { b64JsonToBlob } from './utils';

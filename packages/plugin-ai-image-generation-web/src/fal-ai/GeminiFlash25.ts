@@ -3,7 +3,8 @@ import {
   type Provider,
   type CommonProviderConfiguration,
   getPanelId,
-  setDefaultTranslations} from '@imgly/plugin-ai-generation-web';
+  setDefaultTranslations
+} from '@imgly/plugin-ai-generation-web';
 import schema from './GeminiFlash25.json';
 import CreativeEditorSDK from '@cesdk/cesdk-js';
 import createImageProvider from './createImageProvider';

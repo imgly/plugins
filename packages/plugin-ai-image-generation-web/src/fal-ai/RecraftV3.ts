@@ -4,7 +4,8 @@ import {
   getPanelId,
   createTranslationCallback,
   normalizeBaseURL,
-  setDefaultTranslations} from '@imgly/plugin-ai-generation-web';
+  setDefaultTranslations
+} from '@imgly/plugin-ai-generation-web';
 import { type RecraftV3TextToImageInput } from '@fal-ai/client/endpoints';
 import RecraftV3Schema from './RecraftV3.json';
 import CreativeEditorSDK, { AssetResult } from '@cesdk/cesdk-js';

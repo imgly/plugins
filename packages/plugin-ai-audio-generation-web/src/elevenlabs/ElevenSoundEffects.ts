@@ -2,7 +2,8 @@ import {
   type Provider,
   type AudioOutput,
   CommonProviderConfiguration,
-  setDefaultTranslations} from '@imgly/plugin-ai-generation-web';
+  setDefaultTranslations
+} from '@imgly/plugin-ai-generation-web';
 import CreativeEditorSDK from '@cesdk/cesdk-js';
 import schema from './ElevenSoundEffects.json';
 import { getAudioDuration, createThumbnailFromAudio, truncate } from './utils';

@@ -3,7 +3,8 @@ import {
   CommonProviderConfiguration,
   type Provider,
   getPanelId,
-  setDefaultTranslations} from '@imgly/plugin-ai-generation-web';
+  setDefaultTranslations
+} from '@imgly/plugin-ai-generation-web';
 import NanoBananaProSchema from './NanoBananaPro.json';
 import CreativeEditorSDK from '@cesdk/cesdk-js';
 import createImageProvider from './createImageProvider';

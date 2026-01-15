@@ -3,7 +3,8 @@ import {
   type Provider,
   CommonProviderConfiguration,
   getPanelId,
-  setDefaultTranslations} from '@imgly/plugin-ai-generation-web';
+  setDefaultTranslations
+} from '@imgly/plugin-ai-generation-web';
 import schema from './Veo31FastImageToVideo.json';
 import CreativeEditorSDK from '@cesdk/cesdk-js';
 import createVideoProvider from './createVideoProvider';

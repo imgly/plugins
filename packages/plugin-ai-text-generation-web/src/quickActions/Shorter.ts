@@ -1,4 +1,7 @@
-import { QuickActionDefinition, setDefaultTranslations } from '@imgly/plugin-ai-generation-web';
+import {
+  QuickActionDefinition,
+  setDefaultTranslations
+} from '@imgly/plugin-ai-generation-web';
 import shorter from '../prompts/shorter';
 import { GetQuickActionDefinition } from './types';
 

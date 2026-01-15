@@ -1,7 +1,8 @@
 import {
   enableQuickActionForImageFill,
   QuickActionDefinition,
-  setDefaultTranslations} from '@imgly/plugin-ai-generation-web';
+  setDefaultTranslations
+} from '@imgly/plugin-ai-generation-web';
 import { getImageUri } from '@imgly/plugin-utils';
 import { GetQuickActionDefinition } from './types';
 

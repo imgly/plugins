@@ -1,4 +1,7 @@
-import { QuickActionDefinition, setDefaultTranslations } from '@imgly/plugin-ai-generation-web';
+import {
+  QuickActionDefinition,
+  setDefaultTranslations
+} from '@imgly/plugin-ai-generation-web';
 import { getImageUri } from '@imgly/plugin-utils';
 
 import { GetQuickActionDefinition } from './types';

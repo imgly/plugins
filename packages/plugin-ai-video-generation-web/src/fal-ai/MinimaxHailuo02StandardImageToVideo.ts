@@ -3,7 +3,8 @@ import {
   type Provider,
   CommonProviderConfiguration,
   getPanelId,
-  setDefaultTranslations} from '@imgly/plugin-ai-generation-web';
+  setDefaultTranslations
+} from '@imgly/plugin-ai-generation-web';
 import { getImageDimensionsFromURL } from '@imgly/plugin-utils';
 import schema from './MinimaxHailuo02StandardImageToVideo.json';
 import CreativeEditorSDK from '@cesdk/cesdk-js';

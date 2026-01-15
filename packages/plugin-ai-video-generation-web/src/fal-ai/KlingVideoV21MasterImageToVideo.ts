@@ -3,7 +3,8 @@ import {
   type Provider,
   CommonProviderConfiguration,
   getPanelId,
-  setDefaultTranslations} from '@imgly/plugin-ai-generation-web';
+  setDefaultTranslations
+} from '@imgly/plugin-ai-generation-web';
 import { getImageDimensionsFromURL, getImageUri } from '@imgly/plugin-utils';
 import schema from './KlingVideoV21MasterImageToVideo.json';
 import CreativeEditorSDK from '@cesdk/cesdk-js';

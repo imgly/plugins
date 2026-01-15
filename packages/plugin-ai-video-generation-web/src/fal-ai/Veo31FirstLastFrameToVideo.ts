@@ -4,7 +4,8 @@ import {
   CommonProviderConfiguration,
   getPanelId,
   mergeQuickActionsConfig,
-  setDefaultTranslations} from '@imgly/plugin-ai-generation-web';
+  setDefaultTranslations
+} from '@imgly/plugin-ai-generation-web';
 import { getImageDimensionsFromURL } from '@imgly/plugin-utils';
 import schema from './Veo31FirstLastFrameToVideo.json';
 import CreativeEditorSDK, { AssetResult } from '@cesdk/cesdk-js';

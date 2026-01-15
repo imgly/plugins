@@ -3,7 +3,8 @@ import {
   type VideoOutput,
   getPanelId,
   addIconSetOnce,
-  setDefaultTranslations} from '@imgly/plugin-ai-generation-web';
+  setDefaultTranslations
+} from '@imgly/plugin-ai-generation-web';
 import { getImageDimensionsFromURL, Icons } from '@imgly/plugin-utils';
 import type CreativeEditorSDK from '@cesdk/cesdk-js';
 // @ts-ignore - JSON import

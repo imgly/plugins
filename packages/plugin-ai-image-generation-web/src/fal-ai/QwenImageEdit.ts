@@ -4,7 +4,8 @@ import {
   type CommonProviderConfiguration,
   getPanelId,
   addIconSetOnce,
-  setDefaultTranslations} from '@imgly/plugin-ai-generation-web';
+  setDefaultTranslations
+} from '@imgly/plugin-ai-generation-web';
 import { Icons, getImageDimensionsFromURL } from '@imgly/plugin-utils';
 import schema from './QwenImageEdit.json';
 import CreativeEditorSDK from '@cesdk/cesdk-js';

@@ -1,7 +1,8 @@
 import {
   enableQuickActionForImageFill,
   QuickActionDefinition,
-  setDefaultTranslations} from '@imgly/plugin-ai-generation-web';
+  setDefaultTranslations
+} from '@imgly/plugin-ai-generation-web';
 import { getImageUri, CustomAssetSource, isDefined } from '@imgly/plugin-utils';
 import CreativeEditorSDK from '@cesdk/cesdk-js';
 
