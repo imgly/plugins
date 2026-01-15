@@ -10,6 +10,8 @@ import {
   checkAiPluginVersion,
   setDefaultTranslations
 } from '@imgly/plugin-ai-generation-web';
+// @ts-ignore - JSON import
+import translations from '../translations.json';
 
 import ImageGeneration from '@imgly/plugin-ai-image-generation-web';
 import VideoGeneration from '@imgly/plugin-ai-video-generation-web';
@@ -402,25 +404,5 @@ function overrideAssetLibraryDockComponent(cesdk: CreativeEditorSDK) {
 function addTranslations(cesdk: CreativeEditorSDK) {
   // Use setDefaultTranslations to allow integrators to override these values
   // by calling setTranslations() BEFORE adding the plugin
-  setDefaultTranslations(cesdk, {
-    en: {
-      'common.generate': 'Generate',
-      'panel.ly.img.ai.generation.confirmCancel.content':
-        'Are you sure you want to cancel the generation?',
-      'panel.ly.img.ai.generation.confirmCancel.confirm': 'Cancel Generation',
-      'panel.ly.img.ai.apps': 'AI',
-      'ly.img.ai.apps.dock.label': 'AI',
-      'panel.ly.img.ai.demo.video': 'Generate Video',
-      'panel.ly.img.ai.demo.image': 'Generate Image',
-
-      'libraries.ly.img.ai.image-generation.history.label':
-        'AI Generated Images',
-      'libraries.ly.img.ai.video-generation.history.label':
-        'AI Generated Videos',
-      'libraries.ly.img.ai.audio-generation.history.label':
-        'AI Generated Audio',
-      'libraries.ly.img.ai.sticker-generation.history.label':
-        'AI Generated Stickers'
-    }
-  });
+  setDefaultTranslations(cesdk, translations);
 }

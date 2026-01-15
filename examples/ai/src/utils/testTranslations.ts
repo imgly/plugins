@@ -1,6 +1,7 @@
 import CreativeEditorSDK from '@cesdk/cesdk-js';
 
 // Import translation files using symlinks
+import appsTranslations from '../translations/apps.json';
 import baseTranslations from '../translations/base.json';
 import imageTranslations from '../translations/image.json';
 import videoTranslations from '../translations/video.json';
@@ -50,6 +51,15 @@ function processTranslationsForLocale(
   locale: 'en' | 'de'
 ): Record<string, string> {
   const translations: Record<string, string> = {};
+
+  // Process apps translations
+  const appsLocale = getLocaleTranslations(
+    appsTranslations as { en: Record<string, string>; de?: Record<string, string> },
+    locale
+  );
+  Object.entries(appsLocale).forEach(([key, value]) => {
+    translations[key] = addPrefix(key, value);
+  });
 
   // Process base translations
   const baseLocale = getLocaleTranslations(
@@ -144,6 +154,7 @@ export function resetTranslations(cesdk: CreativeEditorSDK) {
   const allTranslations: Record<string, string> = {};
 
   // Merge all original translations without prefixes
+  Object.assign(allTranslations, appsTranslations.en);
   Object.assign(allTranslations, baseTranslations.en);
   Object.assign(allTranslations, imageTranslations.en);
   Object.assign(allTranslations, videoTranslations.en);

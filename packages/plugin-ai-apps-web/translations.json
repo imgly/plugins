@@ -1,0 +1,15 @@
+{
+  "en": {
+    "common.generate": "Generate",
+    "panel.ly.img.ai.generation.confirmCancel.content": "Are you sure you want to cancel the generation?",
+    "panel.ly.img.ai.generation.confirmCancel.confirm": "Cancel Generation",
+    "panel.ly.img.ai.apps": "AI",
+    "ly.img.ai.apps.dock.label": "AI",
+    "panel.ly.img.ai.demo.video": "Generate Video",
+    "panel.ly.img.ai.demo.image": "Generate Image",
+    "libraries.ly.img.ai.image-generation.history.label": "AI Generated Images",
+    "libraries.ly.img.ai.video-generation.history.label": "AI Generated Videos",
+    "libraries.ly.img.ai.audio-generation.history.label": "AI Generated Audio",
+    "libraries.ly.img.ai.sticker-generation.history.label": "AI Generated Stickers"
+  }
+}
