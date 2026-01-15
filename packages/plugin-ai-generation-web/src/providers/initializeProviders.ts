@@ -82,14 +82,6 @@ async function initializeProviders<K extends OutputKind, I, O extends Output>(
         'Provider',
       'ly.img.plugin-ai-generation-web.defaults.fromText.label': 'Text',
       'ly.img.plugin-ai-generation-web.defaults.fromImage.label': 'Image'
-    },
-    de: {
-      'ly.img.plugin-ai-generation-web.generate': 'Generieren',
-      'ly.img.plugin-ai-generation-web.defaults.fromType.label': 'Eingabe',
-      'ly.img.plugin-ai-generation-web.defaults.providerSelect.label':
-        'Anbieter',
-      'ly.img.plugin-ai-generation-web.defaults.fromText.label': 'Text',
-      'ly.img.plugin-ai-generation-web.defaults.fromImage.label': 'Bild'
     }
   });
 

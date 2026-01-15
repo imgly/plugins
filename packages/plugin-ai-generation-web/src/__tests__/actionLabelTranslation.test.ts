@@ -41,7 +41,8 @@ describe('Action Label Translation', () => {
 
   it('should support labelKey for translation-aware labels', () => {
     // This test documents the expected behavior for translatable action labels
-    const ACTION_LABEL_KEY = '@imgly/plugin-ai-image-generation-web.action.label';
+    const ACTION_LABEL_KEY =
+      '@imgly/plugin-ai-image-generation-web.action.label';
 
     const action: PluginActionDefinition = {
       type: 'plugin',
@@ -71,11 +72,8 @@ describe('Action Label Translation', () => {
     const mockTranslations: Record<string, Record<string, string>> = {
       en: {
         '@imgly/plugin-ai-image-generation-web.action.label': 'Generate Image',
-        '@imgly/plugin-ai-sticker-generation-web.action.label': 'Generate Sticker'
-      },
-      de: {
-        '@imgly/plugin-ai-image-generation-web.action.label': 'Bild generieren',
-        '@imgly/plugin-ai-sticker-generation-web.action.label': 'Sticker generieren'
+        '@imgly/plugin-ai-sticker-generation-web.action.label':
+          'Generate Sticker'
       }
     };
 
@@ -115,15 +113,7 @@ describe('Action Label Translation', () => {
       }
     });
 
-    // Test German translations
-    actions.forEach((action) => {
-      if (action.labelKey) {
-        const deLabel = translate(action.labelKey, 'de');
-        expect(deLabel).not.toBe(action.labelKey); // Should resolve to actual text
-      }
-    });
-
-    // Verify specific German translations
+    // Verify labelKey is set correctly for consumer use
     const imageActionResult = actions.find(
       (a) => a.id === '@imgly/plugin-ai-image-generation-web'
     );
@@ -134,11 +124,11 @@ describe('Action Label Translation', () => {
     expect(imageActionResult?.labelKey).toBeDefined();
     expect(stickerActionResult?.labelKey).toBeDefined();
 
-    expect(translate(imageActionResult!.labelKey!, 'de')).toBe(
-      'Bild generieren'
+    expect(translate(imageActionResult!.labelKey!, 'en')).toBe(
+      'Generate Image'
     );
-    expect(translate(stickerActionResult!.labelKey!, 'de')).toBe(
-      'Sticker generieren'
+    expect(translate(stickerActionResult!.labelKey!, 'en')).toBe(
+      'Generate Sticker'
     );
   });
 

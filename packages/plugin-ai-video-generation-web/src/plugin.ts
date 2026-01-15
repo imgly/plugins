@@ -61,13 +61,6 @@ export function VideoGeneration<I, O extends Output>(
           [ACTION_LABEL_KEY]: 'Generate Video',
           'ly.img.ai.video.generation.hint':
             "Video generation may take up to a few minutes. This panel can be closed and you'll be notified when it's ready."
-        },
-        de: {
-          [`panel.${VIDEO_GENERATION_PANEL_ID}`]: 'Videogenerierung',
-          [`${VIDEO_GENERATION_PANEL_ID}.dock.label`]: 'KI-Video',
-          [ACTION_LABEL_KEY]: 'Video generieren',
-          'ly.img.ai.video.generation.hint':
-            'Die Videogenerierung kann einige Minuten dauern. Dieses Panel kann geschlossen werden und Sie werden benachrichtigt, wenn es fertig ist.'
         }
       });
 
