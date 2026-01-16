@@ -539,10 +539,37 @@ CreativeEditorSDK.create(domElement, {
 });
 ```
 
-## Translations
+## Internationalization (i18n)
 
-The AI Apps plugin uses translations from individual AI generation plugins. For customization, refer to the respective translation files:
+The AI Apps plugin supports full internationalization. To customize translations, set them **before** adding the plugin:
 
+```typescript
+CreativeEditorSDK.create(domElement, {
+  license: 'your-license-key',
+  locale: 'de'
+}).then(async (cesdk) => {
+  // Set custom translations BEFORE adding plugins
+  cesdk.i18n.setTranslations({
+    en: {
+      '@imgly/plugin-ai-image-generation-web.action.label': 'Create Image',
+      'panel.ly.img.ai.apps': 'AI Tools'
+    },
+    de: {
+      '@imgly/plugin-ai-image-generation-web.action.label': 'Bild erstellen',
+      'panel.ly.img.ai.apps': 'KI-Werkzeuge'
+    }
+  });
+
+  // Now add the plugins - they won't override your custom translations
+  await cesdk.addPlugin(AiApps({ providers: { /* ... */ } }));
+});
+```
+
+For detailed documentation on the translation system, including all available translation keys and utilities, see the [Internationalization section](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-generation-web#internationalization-i18n) in the core AI generation package.
+
+### Translation Files
+
+- [AI Apps translations](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-apps-web/translations.json) - AI Apps panel labels
 - [Base translations](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-generation-web/translations.json) - Core translation keys
 - [Image generation translations](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-image-generation-web/translations.json) - Image generation interfaces
 - [Video generation translations](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-video-generation-web/translations.json) - Video generation interfaces

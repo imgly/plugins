@@ -2110,9 +2110,29 @@ currentOrder.splice(2, 0, 'ly.img.ai.image-generation.dock');
 cesdk.ui.setDockOrder(currentOrder);
 ```
 
-## Translations
+## Internationalization (i18n)
 
-For customization and localization, see the [translations.json](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-image-generation-web/translations.json) file which contains provider-specific translation keys for image generation interfaces.
+The Image Generation plugin supports full internationalization. To customize translations, set them **before** adding the plugin:
+
+```typescript
+cesdk.i18n.setTranslations({
+  en: {
+    '@imgly/plugin-ai-image-generation-web.action.label': 'Create Image',
+    'ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.property.style': 'Art Style'
+  },
+  de: {
+    '@imgly/plugin-ai-image-generation-web.action.label': 'Bild erstellen',
+    'ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.property.style': 'Kunststil'
+  }
+});
+
+// Then add the plugins - they won't override your custom translations
+await cesdk.addPlugin(AiApps({ providers: { /* ... */ } }));
+```
+
+For detailed documentation on the translation system, see the [Internationalization section](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-generation-web#internationalization-i18n) in the core AI generation package.
+
+For all available translation keys, see the [translations.json](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-image-generation-web/translations.json) file.
 
 ## Related Packages
 

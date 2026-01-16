@@ -1255,9 +1255,27 @@ currentOrder.splice(2, 0, 'ly.img.ai.video-generation.dock');
 cesdk.ui.setDockOrder(currentOrder);
 ```
 
-## Translations
+## Internationalization (i18n)
 
-For customization and localization, see the [translations.json](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-video-generation-web/translations.json) file which contains provider-specific translation keys for video generation interfaces.
+The Video Generation plugin supports full internationalization. To customize translations, set them **before** adding the plugin:
+
+```typescript
+cesdk.i18n.setTranslations({
+  en: {
+    '@imgly/plugin-ai-video-generation-web.action.label': 'Create Video'
+  },
+  de: {
+    '@imgly/plugin-ai-video-generation-web.action.label': 'Video erstellen'
+  }
+});
+
+// Then add the plugins - they won't override your custom translations
+await cesdk.addPlugin(AiApps({ providers: { /* ... */ } }));
+```
+
+For detailed documentation on the translation system, see the [Internationalization section](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-generation-web#internationalization-i18n) in the core AI generation package.
+
+For all available translation keys, see the [translations.json](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-video-generation-web/translations.json) file.
 
 ## Related Packages
 
