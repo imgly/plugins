@@ -3,7 +3,8 @@ import {
   type Provider,
   type CommonProviderConfiguration,
   getPanelId,
-  CommonProperties
+  CommonProperties,
+  setDefaultTranslations
 } from '@imgly/plugin-ai-generation-web';
 import schema from './NanoBananaEdit.json';
 import { getImageDimensionsFromURL } from '@imgly/plugin-utils';
@@ -26,7 +27,7 @@ export function NanoBananaEdit(
     const modelKey = 'fal-ai/nano-banana/edit';
 
     // Set translations
-    cesdk.i18n.setTranslations({
+    setDefaultTranslations(cesdk, {
       en: {
         [`panel.${getPanelId(modelKey)}.imageSelection`]:
           'Select Image To Edit',

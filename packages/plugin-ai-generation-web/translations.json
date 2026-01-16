@@ -1,5 +1,6 @@
 {
   "en": {
+    "ly.img.plugin-ai-generation-web.generate": "Generate",
     "ly.img.plugin-ai-generation-web.providerSelect.label": "Provider",
     "ly.img.plugin-ai-generation-web.fromType.label": "Input",
     "ly.img.plugin-ai-generation-web.fromText.label": "Text",

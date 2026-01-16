@@ -4,6 +4,7 @@ import { Metadata } from '@imgly/plugin-utils';
 import { AI_METADATA_KEY } from '../quickActions/utils';
 import { OutputKind } from '../../core/provider';
 import { Callbacks } from '../../generation/CallbacksRegistry';
+import { setDefaultTranslations } from '../../utils/translationHelpers';
 
 /**
  * Creates a render function for the AI inference confirmation component.
@@ -19,15 +20,17 @@ async function createConfirmationRenderFunction<K extends OutputKind>(context: {
   cesdk: CreativeEditorSDK;
 }): Promise<BuilderRenderFunction<Callbacks>> {
   const prefix = `ly.img.ai.${context.kind}.confirmation`;
-  context.cesdk?.i18n.setTranslations({
-    en: {
-      'ly.img.ai.processing': 'Generating...',
-      [`${prefix}.cancel`]: 'Cancel Generation',
-      [`${prefix}.apply`]: 'Apply Generation',
-      [`${prefix}.before`]: 'Before',
-      [`${prefix}.after`]: 'After'
-    }
-  });
+  if (context.cesdk) {
+    setDefaultTranslations(context.cesdk, {
+      en: {
+        'ly.img.ai.processing': 'Generating...',
+        [`${prefix}.cancel`]: 'Cancel Generation',
+        [`${prefix}.apply`]: 'Apply Generation',
+        [`${prefix}.before`]: 'Before',
+        [`${prefix}.after`]: 'After'
+      }
+    });
+  }
   const builderRenderFunction: BuilderRenderFunction<Callbacks> = (
     builderContext
   ) => {

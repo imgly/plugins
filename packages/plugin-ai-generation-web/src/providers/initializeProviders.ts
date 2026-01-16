@@ -11,6 +11,7 @@ import { isGeneratingStateKey } from '../ui/components/renderGenerationComponent
 import { CommonPluginConfiguration } from '../types';
 import initializeHistoryCompositeAssetSource from '../assets/initializeHistoryCompositeAssetSource';
 import { isDefined } from '@imgly/plugin-utils';
+import { setDefaultTranslations } from '../utils/translationHelpers';
 
 function createLabelArray<K extends OutputKind>(
   kind: K,
@@ -70,10 +71,12 @@ async function initializeProviders<K extends OutputKind, I, O extends Output>(
   },
   config: CommonPluginConfiguration<K, I, O>
 ): Promise<ProvidersInitializationResult<K, I, O>> {
-  // Set default translations
+  // Set default translations - use setDefaultTranslations to allow integrators
+  // to override these values by calling setTranslations() BEFORE adding the plugin
   const { cesdk } = options;
-  cesdk.setTranslations({
+  setDefaultTranslations(cesdk, {
     en: {
+      'ly.img.plugin-ai-generation-web.generate': 'Generate',
       'ly.img.plugin-ai-generation-web.defaults.fromType.label': 'Input',
       'ly.img.plugin-ai-generation-web.defaults.providerSelect.label':
         'Provider',

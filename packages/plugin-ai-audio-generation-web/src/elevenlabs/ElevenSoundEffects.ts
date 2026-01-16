@@ -1,7 +1,8 @@
 import {
   type Provider,
   type AudioOutput,
-  CommonProviderConfiguration
+  CommonProviderConfiguration,
+  setDefaultTranslations
 } from '@imgly/plugin-ai-generation-web';
 import CreativeEditorSDK from '@cesdk/cesdk-js';
 import schema from './ElevenSoundEffects.json';
@@ -31,7 +32,7 @@ function getProvider(
 ): Provider<'audio', ElevenlabsInput, AudioOutput> {
   const modelKey = 'elevenlabs/sound-generation';
 
-  cesdk.setTranslations({
+  setDefaultTranslations(cesdk, {
     en: {
       [`panel.${modelKey}`]: 'Generate Sound'
     }

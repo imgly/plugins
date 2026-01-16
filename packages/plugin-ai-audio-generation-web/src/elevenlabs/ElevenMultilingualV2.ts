@@ -3,7 +3,8 @@ import {
   type AudioOutput,
   CommonProviderConfiguration,
   getPanelId,
-  normalizeBaseURL
+  normalizeBaseURL,
+  setDefaultTranslations
 } from '@imgly/plugin-ai-generation-web';
 import CreativeEditorSDK from '@cesdk/cesdk-js';
 import schema from './ElevenMultilingualV2.json';
@@ -57,7 +58,7 @@ function getProvider(
   const voiceAssetSourceId = createVoicesAssetSource(cesdk, baseURL);
   const modelKey = 'elevenlabs/monolingual/v1';
 
-  cesdk.setTranslations({
+  setDefaultTranslations(cesdk, {
     en: {
       [`panel.${modelKey}`]: 'AI Voice',
       [`panel.${voiceSelectionPanelId}`]: 'Select a Voice',

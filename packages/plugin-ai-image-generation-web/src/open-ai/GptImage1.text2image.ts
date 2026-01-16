@@ -2,7 +2,8 @@ import { Icons } from '@imgly/plugin-utils';
 import {
   CommonProviderConfiguration,
   getPanelId,
-  type Provider
+  type Provider,
+  setDefaultTranslations
 } from '@imgly/plugin-ai-generation-web';
 import GptImage1Schema from './GptImage1.text2image.json';
 import CreativeEditorSDK, { AssetResult } from '@cesdk/cesdk-js';
@@ -71,7 +72,7 @@ function getProvider(
   );
 
   cesdk.ui.addIconSet('@imgly/plugin/formats', Icons.Formats);
-  cesdk.i18n.setTranslations({
+  setDefaultTranslations(cesdk, {
     en: {
       [`panel.${getPanelId(modelKey)}.styleSelection`]: 'Style Selection',
       [`panel.gpt-image-1.imageSelection`]: 'Select Image To Change'

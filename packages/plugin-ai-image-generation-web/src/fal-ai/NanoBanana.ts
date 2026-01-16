@@ -2,7 +2,8 @@ import {
   ImageOutput,
   CommonProviderConfiguration,
   type Provider,
-  getPanelId
+  getPanelId,
+  setDefaultTranslations
 } from '@imgly/plugin-ai-generation-web';
 import NanoBananaSchema from './NanoBanana.json';
 import CreativeEditorSDK from '@cesdk/cesdk-js';
@@ -31,7 +32,7 @@ function getProvider(
 ): Provider<'image', NanoBananaInput, ImageOutput> {
   const modelKey = 'fal-ai/nano-banana';
 
-  cesdk.i18n.setTranslations({
+  setDefaultTranslations(cesdk, {
     en: {
       [`libraries.${getPanelId(modelKey)}.history.label`]: 'Generated From Text'
     }

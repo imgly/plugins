@@ -2,7 +2,8 @@ import {
   VideoOutput,
   type Provider,
   CommonProviderConfiguration,
-  getPanelId
+  getPanelId,
+  setDefaultTranslations
 } from '@imgly/plugin-ai-generation-web';
 import { getImageDimensionsFromURL, getImageUri } from '@imgly/plugin-utils';
 import schema from './KlingVideoV21MasterImageToVideo.json';
@@ -34,7 +35,7 @@ export function KlingVideoV21MasterImageToVideo(
     const modelKey = 'fal-ai/kling-video/v2.1/master/image-to-video';
 
     // Set translations
-    cesdk.i18n.setTranslations({
+    setDefaultTranslations(cesdk, {
       en: {
         'ly.img.ai.quickAction.createVideoKling': 'Create Video (Kling)...',
         [`panel.${getPanelId(modelKey)}.imageSelection`]:

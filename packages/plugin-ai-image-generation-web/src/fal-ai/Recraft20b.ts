@@ -3,7 +3,8 @@ import {
   type Provider,
   getPanelId,
   createTranslationCallback,
-  normalizeBaseURL
+  normalizeBaseURL,
+  setDefaultTranslations
 } from '@imgly/plugin-ai-generation-web';
 import Recraft20bSchema from './Recraft20b.json';
 import CreativeEditorSDK, { AssetResult } from '@cesdk/cesdk-js';
@@ -209,7 +210,7 @@ function getProvider(
     ] = label;
   });
 
-  cesdk.i18n.setTranslations({
+  setDefaultTranslations(cesdk, {
     en: {
       [`panel.${getPanelId('fal-ai/recraft/v2/text-to-image')}.styleSelection`]:
         'Style Selection',

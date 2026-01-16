@@ -1,4 +1,7 @@
-import { QuickActionDefinition } from '@imgly/plugin-ai-generation-web';
+import {
+  QuickActionDefinition,
+  setDefaultTranslations
+} from '@imgly/plugin-ai-generation-web';
 import { getImageUri } from '@imgly/plugin-utils';
 
 import { GetQuickActionDefinition } from './types';
@@ -52,7 +55,7 @@ const CombineImages: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
     true
   );
 
-  cesdk.i18n.setTranslations({
+  setDefaultTranslations(cesdk, {
     en: {
       [`${I18N_DEFAULT_PREFIX}.apply`]: 'Combine',
       [`${I18N_DEFAULT_PREFIX}`]: 'Combine Images...',

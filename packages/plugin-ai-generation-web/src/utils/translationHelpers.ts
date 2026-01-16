@@ -1,6 +1,76 @@
 import type CreativeEditorSDK from '@cesdk/cesdk-js';
 import { supportsTranslateAPI, hasTranslateAPI } from '@imgly/plugin-utils';
 
+type TranslationDefinition = Partial<
+  Record<string, Partial<Record<string, string>>>
+>;
+
+/**
+ * Sets default translations only for keys that don't already exist.
+ *
+ * This allows integrators to set custom translations BEFORE plugins load,
+ * and the plugins won't override those custom values with their defaults.
+ *
+ * @param cesdk - The CE.SDK instance
+ * @param definition - The translations to set (same format as setTranslations)
+ *
+ * @example
+ * ```ts
+ * // Integrator sets custom translation BEFORE plugin loads
+ * cesdk.i18n.setTranslations({ en: { 'my.key': 'Custom Value' } });
+ *
+ * // Plugin uses setDefaultTranslations - won't override 'my.key'
+ * setDefaultTranslations(cesdk, { en: { 'my.key': 'Default Value', 'other.key': 'Other' } });
+ *
+ * // Result: 'my.key' = 'Custom Value', 'other.key' = 'Other'
+ * ```
+ */
+export function setDefaultTranslations(
+  cesdk: CreativeEditorSDK,
+  definition: TranslationDefinition
+): void {
+  // Check if getTranslations API is available (CE.SDK 1.59.0+)
+  if (typeof cesdk.i18n?.getTranslations !== 'function') {
+    // Fallback: use regular setTranslations if getTranslations not available
+    cesdk.i18n.setTranslations(definition);
+    return;
+  }
+
+  // Get existing translations for all locales in the definition
+  const locales = Object.keys(definition) as string[];
+  const existingTranslations = cesdk.i18n.getTranslations(locales);
+
+  // Filter out keys that already exist
+  const filteredDefinition: TranslationDefinition = {};
+
+  for (const locale of locales) {
+    const newTranslations = definition[locale];
+    if (!newTranslations) continue;
+
+    const existingLocaleTranslations =
+      (existingTranslations[locale] as Record<string, string> | undefined) ??
+      {};
+    const filteredLocaleTranslations: Record<string, string> = {};
+
+    for (const [key, value] of Object.entries(newTranslations)) {
+      // Only include if key doesn't already exist
+      if (!(key in existingLocaleTranslations) && value !== undefined) {
+        filteredLocaleTranslations[key] = value;
+      }
+    }
+
+    // Only add locale if there are translations to set
+    if (Object.keys(filteredLocaleTranslations).length > 0) {
+      filteredDefinition[locale] = filteredLocaleTranslations;
+    }
+  }
+
+  // Only call setTranslations if there are new translations to add
+  if (Object.keys(filteredDefinition).length > 0) {
+    cesdk.i18n.setTranslations(filteredDefinition);
+  }
+}
+
 /**
  * Creates a translation callback function for AI asset sources
  * @param cesdk - The CE.SDK instance

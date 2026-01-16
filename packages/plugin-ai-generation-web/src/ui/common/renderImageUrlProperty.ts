@@ -1,5 +1,6 @@
 import CreativeEditorSDK, { AssetResult } from '@cesdk/cesdk-js';
 import { RenderCustomProperty } from '../../core/provider';
+import { setDefaultTranslations } from '../../utils/translationHelpers';
 
 /**
  * Provides render function for a image url property that allows
@@ -19,7 +20,7 @@ function renderImageUrlProperty(
   const propertyKey = options.propertyKey ?? 'image_url';
   const panelIdForImageSelection = getImageSelectionPanelId(provderId);
 
-  cesdk.i18n.setTranslations({
+  setDefaultTranslations(cesdk, {
     en: {
       [`panel.${panelIdForImageSelection}`]: 'Select Image To Change',
       'ly.img.ai.imageSelection.selectImage.label': 'Select Image',

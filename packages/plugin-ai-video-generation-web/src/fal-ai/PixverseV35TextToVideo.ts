@@ -2,7 +2,8 @@ import {
   CommonProviderConfiguration,
   VideoOutput,
   type Provider,
-  getPanelId
+  getPanelId,
+  setDefaultTranslations
 } from '@imgly/plugin-ai-generation-web';
 import schema from './PixverseV35TextToVideo.json';
 import CreativeEditorSDK from '@cesdk/cesdk-js';
@@ -30,7 +31,7 @@ export function PixverseV35TextToVideo(
     const modelKey = 'fal-ai/pixverse/v3.5/text-to-video';
 
     // Set translations
-    cesdk.i18n.setTranslations({
+    setDefaultTranslations(cesdk, {
       en: {
         [`libraries.${getPanelId(modelKey)}.history.label`]:
           'Generated From Text'

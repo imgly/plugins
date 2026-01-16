@@ -1,4 +1,7 @@
-import { QuickActionDefinition } from '@imgly/plugin-ai-generation-web';
+import {
+  QuickActionDefinition,
+  setDefaultTranslations
+} from '@imgly/plugin-ai-generation-web';
 import translate, { LOCALES } from '../prompts/translate';
 import { GetQuickActionDefinition } from './types';
 
@@ -54,7 +57,7 @@ const Translate: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
     true
   );
 
-  cesdk.i18n.setTranslations({
+  setDefaultTranslations(cesdk, {
     en: {
       [`${I18N_DEFAULT_PREFIX}`]: 'Translate',
       [`${I18N_DEFAULT_PREFIX}.en_US`]: 'English (US)',

@@ -3,7 +3,8 @@ import {
   type Provider,
   CommonProviderConfiguration,
   getPanelId,
-  mergeQuickActionsConfig
+  mergeQuickActionsConfig,
+  setDefaultTranslations
 } from '@imgly/plugin-ai-generation-web';
 import { getImageDimensionsFromURL } from '@imgly/plugin-utils';
 import schema from './Veo31FirstLastFrameToVideo.json';
@@ -36,7 +37,7 @@ export function Veo31FirstLastFrameToVideo(
     const modelKey = 'fal-ai/veo3.1/first-last-frame-to-video';
 
     // Set translations
-    cesdk.i18n.setTranslations({
+    setDefaultTranslations(cesdk, {
       en: {
         [`panel.${getPanelId(modelKey)}.imageSelection`]:
           'Select Images To Generate',

@@ -1,4 +1,7 @@
-import { QuickActionDefinition } from '@imgly/plugin-ai-generation-web';
+import {
+  QuickActionDefinition,
+  setDefaultTranslations
+} from '@imgly/plugin-ai-generation-web';
 import shorter from '../prompts/shorter';
 import { GetQuickActionDefinition } from './types';
 
@@ -49,7 +52,7 @@ const Shorter: GetQuickActionDefinition<InputType> = ({ cesdk }) => {
     true
   );
 
-  cesdk.i18n.setTranslations({
+  setDefaultTranslations(cesdk, {
     en: {
       [`${I18N_DEFAULT_PREFIX}`]: 'Make Shorter'
     }

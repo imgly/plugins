@@ -6,7 +6,8 @@ import {
   ActionRegistry,
   initializeQuickActionComponents,
   AI_EDIT_MODE,
-  checkAiPluginVersion
+  checkAiPluginVersion,
+  setDefaultTranslations
 } from '@imgly/plugin-ai-generation-web';
 import { PluginConfiguration } from './types';
 import iconSprite, { PLUGIN_ICON_SET_ID } from './iconSprite';
@@ -62,7 +63,9 @@ export function ImageGeneration<I, O extends Output>(
       const ACTION_LABEL_KEY = `${PLUGIN_ID}.action.label`;
 
       cesdk.ui.addIconSet(PLUGIN_ICON_SET_ID, iconSprite);
-      cesdk.i18n.setTranslations({
+      // Use setDefaultTranslations to allow integrators to override these values
+      // by calling setTranslations() BEFORE adding the plugin
+      setDefaultTranslations(cesdk, {
         en: {
           [`panel.${IMAGE_GENERATION_PANEL_ID}`]: 'Image Generation',
           [`${IMAGE_GENERATION_PANEL_ID}.dock.label`]: 'AI Image',
@@ -78,6 +81,7 @@ export function ImageGeneration<I, O extends Output>(
         pluginId: PLUGIN_ID,
 
         label: translateWithFallback(cesdk, ACTION_LABEL_KEY, 'Generate Image'),
+        labelKey: ACTION_LABEL_KEY,
         meta: { panelId: IMAGE_GENERATION_PANEL_ID },
 
         execute: () => {

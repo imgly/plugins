@@ -4,7 +4,8 @@ import {
   type CommonProviderConfiguration,
   getPanelId,
   CommonProperties,
-  addIconSetOnce
+  addIconSetOnce,
+  setDefaultTranslations
 } from '@imgly/plugin-ai-generation-web';
 import { Icons, getImageDimensionsFromURL } from '@imgly/plugin-utils';
 import schema from './SeedreamV4Edit.json';
@@ -33,7 +34,7 @@ export function SeedreamV4Edit(
     const modelKey = 'fal-ai/bytedance/seedream/v4/edit';
 
     // Set translations
-    cesdk.i18n.setTranslations({
+    setDefaultTranslations(cesdk, {
       en: {
         [`panel.${getPanelId(modelKey)}.imageSelection`]:
           'Select Image To Edit',

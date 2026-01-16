@@ -1,7 +1,8 @@
 import {
   type Provider,
   type VideoOutput,
-  getPanelId
+  getPanelId,
+  setDefaultTranslations
 } from '@imgly/plugin-ai-generation-web';
 import { getImageDimensionsFromURL } from '@imgly/plugin-utils';
 import type CreativeEditorSDK from '@cesdk/cesdk-js';
@@ -36,7 +37,7 @@ export function KlingV26ProImageToVideo(
     const providerId = 'eachlabs/kling-v2-6-pro-image-to-video';
 
     // Set translations for image selection UI
-    cesdk.i18n.setTranslations({
+    setDefaultTranslations(cesdk, {
       en: {
         [`panel.${getPanelId(providerId)}.imageSelection`]:
           'Select Image To Animate',

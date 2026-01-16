@@ -1,6 +1,7 @@
 import {
   enableQuickActionForImageFill,
-  QuickActionDefinition
+  QuickActionDefinition,
+  setDefaultTranslations
 } from '@imgly/plugin-ai-generation-web';
 import { getImageUri, CustomAssetSource, isDefined } from '@imgly/plugin-utils';
 import CreativeEditorSDK from '@cesdk/cesdk-js';
@@ -192,7 +193,7 @@ const ChangeStyleLibrary = (context: {
   });
   addStyleAssetSource(styleAssetSource, { cesdk });
 
-  cesdk.i18n.setTranslations({
+  setDefaultTranslations(cesdk, {
     en: {
       [`${I18N_PREFIX}`]: 'Change Style',
       [`${I18N_PREFIX}.description`]: 'Apply different art styles to your image'

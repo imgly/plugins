@@ -7,7 +7,8 @@ import {
   ActionRegistry,
   initializeQuickActionComponents,
   AI_EDIT_MODE,
-  checkAiPluginVersion
+  checkAiPluginVersion,
+  setDefaultTranslations
 } from '@imgly/plugin-ai-generation-web';
 import { toArray } from '@imgly/plugin-utils';
 import Improve from './quickActions/Improve';
@@ -47,7 +48,9 @@ export function TextGeneration<I, O extends Output>(
       );
 
       cesdk.ui.addIconSet(PLUGIN_ICON_SET_ID, iconSprite);
-      cesdk.i18n.setTranslations({
+      // Use setDefaultTranslations to allow integrators to override these values
+      // by calling setTranslations() BEFORE adding the plugin
+      setDefaultTranslations(cesdk, {
         en: {
           'common.apply': 'Apply',
           'common.back': 'Back'

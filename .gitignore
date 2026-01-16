@@ -19,3 +19,6 @@ _ci_*
 
 # Test artifacts
 packages/*/test/webpack5-angular-project
+
+# Playwright MCP screenshots
+.playwright-mcp/*.png

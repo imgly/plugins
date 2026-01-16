@@ -1505,6 +1505,116 @@ interface QuickActionDefinition<Q extends Record<string, any>> {
 }
 ```
 
-## Translations
+## Internationalization (i18n)
 
-For customization and localization, see the [translations.json](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-generation-web/translations.json) file which contains base translation keys that can be overridden for all AI plugins.
+The AI plugins support full internationalization, allowing integrators to customize all user-facing text. The translation system is designed to let integrators override default translations **before** plugins are loaded.
+
+### Custom Translations
+
+To customize translations, call `cesdk.i18n.setTranslations()` **before** adding the AI plugins:
+
+```typescript
+import CreativeEditorSDK from '@cesdk/cesdk-js';
+import AiApps from '@imgly/plugin-ai-apps-web';
+
+CreativeEditorSDK.create(domElement, {
+  license: 'your-license-key',
+  locale: 'de' // Set your desired locale
+}).then(async (cesdk) => {
+  // Set custom translations BEFORE adding plugins
+  cesdk.i18n.setTranslations({
+    en: {
+      // Override AI Apps labels
+      '@imgly/plugin-ai-image-generation-web.action.label': 'Create Image',
+      '@imgly/plugin-ai-video-generation-web.action.label': 'Create Video',
+
+      // Override provider-specific labels
+      'ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.property.style': 'Art Style',
+      'ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.property.style.realistic_image': 'Photo Realistic'
+    },
+    de: {
+      // German translations
+      '@imgly/plugin-ai-image-generation-web.action.label': 'Bild erstellen',
+      '@imgly/plugin-ai-video-generation-web.action.label': 'Video erstellen',
+      'common.generate': 'Generieren',
+      'panel.ly.img.ai.apps': 'KI'
+    }
+  });
+
+  // Now add the plugins - they won't override your custom translations
+  await cesdk.addPlugin(AiApps({ providers: { /* ... */ } }));
+});
+```
+
+### How It Works
+
+The AI plugins use `setDefaultTranslations()` internally, which only sets translation keys that don't already exist. This means:
+
+1. **Your translations take priority**: Any translations you set before loading plugins are preserved
+2. **Fallback to defaults**: Keys you don't customize will use the plugin's default English translations
+3. **Locale support**: Set translations for any locale supported by CE.SDK
+
+### Translation Key Structure
+
+Translation keys follow a consistent naming pattern:
+
+```
+ly.img.plugin-ai-{type}-generation-web.{provider-id}.property.{property-name}.{value}
+```
+
+For example:
+- `ly.img.plugin-ai-image-generation-web.fal-ai/recraft-v3.property.style.realistic_image`
+- `ly.img.plugin-ai-video-generation-web.fal-ai/veo-3.property.duration.5s`
+
+### Action Labels
+
+Each AI plugin registers an action with a translatable label. The action uses both a static `label` (for backwards compatibility) and a `labelKey` for dynamic i18n resolution:
+
+| Plugin | Label Key |
+|--------|-----------|
+| Image Generation | `@imgly/plugin-ai-image-generation-web.action.label` |
+| Video Generation | `@imgly/plugin-ai-video-generation-web.action.label` |
+| Audio Generation (Sound) | `@imgly/plugin-ai-audio-generation-web.sound.action.label` |
+| Audio Generation (Speech) | `@imgly/plugin-ai-audio-generation-web.speech.action.label` |
+| Sticker Generation | `@imgly/plugin-ai-sticker-generation-web.action.label` |
+
+### Translation Files
+
+Each AI plugin includes a `translations.json` file with all available translation keys:
+
+- [Base translations](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-generation-web/translations.json) - Core translation keys
+- [AI Apps translations](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-apps-web/translations.json) - AI Apps panel labels
+- [Image generation translations](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-image-generation-web/translations.json) - Image generation interfaces
+- [Video generation translations](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-video-generation-web/translations.json) - Video generation interfaces
+- [Text generation translations](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-text-generation-web/translations.json) - Text generation interfaces
+- [Audio generation translations](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-audio-generation-web/translations.json) - Audio generation interfaces
+- [Sticker generation translations](https://github.com/imgly/plugins/tree/main/packages/plugin-ai-sticker-generation-web/translations.json) - Sticker generation interfaces
+
+### Exported Utilities
+
+The package exports translation utilities for use in custom providers:
+
+```typescript
+import {
+  setDefaultTranslations,
+  createTranslationCallback,
+  buildTranslationKeys
+} from '@imgly/plugin-ai-generation-web';
+
+// Set translations that won't override existing keys
+setDefaultTranslations(cesdk, {
+  en: { 'my.key': 'My Value' }
+});
+
+// Create a translation callback for asset sources
+const translateLabel = createTranslationCallback(cesdk, 'my-provider', 'style', 'image');
+
+// Build translation keys with fallback order
+const keys = buildTranslationKeys('my-provider', 'style', 'realistic', 'image');
+// Returns: [
+//   'ly.img.plugin-ai-image-generation-web.my-provider.property.style.realistic',
+//   'ly.img.plugin-ai-generation-web.property.style.realistic',
+//   'ly.img.plugin-ai-image-generation-web.my-provider.defaults.property.style.realistic',
+//   'ly.img.plugin-ai-generation-web.defaults.property.style.realistic'
+// ]
+```

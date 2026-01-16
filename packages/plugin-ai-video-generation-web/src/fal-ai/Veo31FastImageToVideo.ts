@@ -2,7 +2,8 @@ import {
   VideoOutput,
   type Provider,
   CommonProviderConfiguration,
-  getPanelId
+  getPanelId,
+  setDefaultTranslations
 } from '@imgly/plugin-ai-generation-web';
 import schema from './Veo31FastImageToVideo.json';
 import CreativeEditorSDK from '@cesdk/cesdk-js';
@@ -36,7 +37,7 @@ export function Veo31FastImageToVideo(
     const modelKey = 'fal-ai/veo3.1/fast/image-to-video';
 
     // Set translations
-    cesdk.i18n.setTranslations({
+    setDefaultTranslations(cesdk, {
       en: {
         [`panel.${getPanelId(modelKey)}.imageSelection`]:
           'Select Image To Animate',

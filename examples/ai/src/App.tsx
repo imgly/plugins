@@ -36,6 +36,8 @@ function App() {
           console.log('Creating CreativeEditorSDK...');
           CreativeEditorSDK.create(domElement, {
             license: import.meta.env.VITE_CESDK_LICENSE_KEY,
+            // Set to 'de' to test German translations
+            locale: 'en',
             userId: 'plugins-vercel',
             callbacks: {
               onUpload: 'local',
@@ -101,11 +103,18 @@ function App() {
               providerPartner = 'fal-ai';
             }
 
-            // Update URL with current parameters
+            // Check if test translations should be applied during init
+            const testTranslationsParam = searchParams.get('translations') === 'true';
+
+            // Update URL with current parameters (preserve translations param)
             const currentArchive = searchParams.get('archive');
             const currentPartner = searchParams.get('partner');
             if (currentArchive !== archiveType || currentPartner !== providerPartner) {
-              setSearchParams({ archive: archiveType, partner: providerPartner }, { replace: true });
+              const newParams: Record<string, string> = { archive: archiveType, partner: providerPartner };
+              if (testTranslationsParam) {
+                newParams.translations = 'true';
+              }
+              setSearchParams(newParams, { replace: true });
             }
 
             // Handle photo editor mode
@@ -234,7 +243,7 @@ function App() {
 
             const partnerProviders = getPartnerProviders();
 
-              instance.addPlugin(
+              await instance.addPlugin(
                 AiApps({
                 debug: true,
                 dryRun: false,
@@ -278,6 +287,15 @@ function App() {
                 }
                 })
               );
+            }
+
+            // Apply test translations AFTER plugins are loaded (simulates integrator workflow)
+            // This must happen after addPlugin() since plugins set their own default translations
+            if (testTranslationsParam) {
+              testAllTranslations(instance);
+              // Expose reset function for debugging
+              // @ts-ignore
+              window.resetTranslations = () => resetTranslations(instance);
             }
 
             instance.ui.setNavigationBarOrder([

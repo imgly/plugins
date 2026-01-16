@@ -2,7 +2,8 @@ import {
   CommonProviderConfiguration,
   VideoOutput,
   type Provider,
-  getPanelId
+  getPanelId,
+  setDefaultTranslations
 } from '@imgly/plugin-ai-generation-web';
 import schema from './Veo31FastTextToVideo.json';
 import CreativeEditorSDK from '@cesdk/cesdk-js';
@@ -32,7 +33,7 @@ export function Veo31FastTextToVideo(
     const modelKey = 'fal-ai/veo3.1/fast';
 
     // Set translations
-    cesdk.i18n.setTranslations({
+    setDefaultTranslations(cesdk, {
       en: {
         [`panel.${getPanelId(modelKey)}.prompt`]: 'Enter your prompt',
         [`panel.${modelKey}.prompt`]: 'Enter your prompt',

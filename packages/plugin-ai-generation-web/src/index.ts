@@ -52,6 +52,7 @@ export {
 export { default as integrateIntoDefaultAssetLibraryEntry } from './assets/integrateIntoDefaultAssetLibraryEntry';
 export {
   ActionRegistry,
+  type BaseActionDefinition,
   type PluginActionDefinition,
   type QuickActionDefinition,
   type ActionDefinition,
@@ -104,6 +105,7 @@ export { AI_EDIT_MODE, AI_METADATA_KEY } from './ui/quickActions/utils';
 
 // Export AI-specific translation helpers
 export {
+  setDefaultTranslations,
   createTranslationCallback,
   buildTranslationKeys
 } from './utils/translationHelpers';

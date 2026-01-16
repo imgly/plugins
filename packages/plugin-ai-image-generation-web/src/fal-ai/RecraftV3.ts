@@ -3,7 +3,8 @@ import {
   type Provider,
   getPanelId,
   createTranslationCallback,
-  normalizeBaseURL
+  normalizeBaseURL,
+  setDefaultTranslations
 } from '@imgly/plugin-ai-generation-web';
 import { type RecraftV3TextToImageInput } from '@fal-ai/client/endpoints';
 import RecraftV3Schema from './RecraftV3.json';
@@ -157,7 +158,7 @@ function getProvider(
     ] = label;
   });
 
-  cesdk.i18n.setTranslations({
+  setDefaultTranslations(cesdk, {
     en: {
       [`panel.${getPanelId('fal-ai/recraft-v3')}.styleSelection`]:
         'Style Selection',

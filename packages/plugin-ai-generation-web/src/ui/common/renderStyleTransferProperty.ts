@@ -6,6 +6,7 @@ import {
   translateWithFallback
 } from '@imgly/plugin-utils';
 import { SelectValue } from '@imgly/plugin-utils/dist/assetSources/CustomAssetSource';
+import { setDefaultTranslations } from '../../utils/translationHelpers';
 
 type StyleSelectionPayload = {
   onSelect: (asset: AssetResult) => Promise<void>;
@@ -69,7 +70,7 @@ function renderStyleTransferProperty(
   const propertyKey = options.propertyKey ?? 'style';
   const panelIdForStyleSelection = getStyleSelectionPanelId(providerId);
 
-  cesdk.i18n.setTranslations({
+  setDefaultTranslations(cesdk, {
     en: {
       [`panel.${panelIdForStyleSelection}`]: 'Select Style',
       [`${providerId}.${propertyKey}`]: 'Style',

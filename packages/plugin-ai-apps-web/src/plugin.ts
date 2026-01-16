@@ -7,8 +7,11 @@ import { isDefined } from '@imgly/plugin-utils';
 import {
   getPanelId,
   ActionRegistry,
-  checkAiPluginVersion
+  checkAiPluginVersion,
+  setDefaultTranslations
 } from '@imgly/plugin-ai-generation-web';
+// @ts-ignore - JSON import
+import translations from '../translations.json';
 
 import ImageGeneration from '@imgly/plugin-ai-image-generation-web';
 import VideoGeneration from '@imgly/plugin-ai-video-generation-web';
@@ -129,7 +132,15 @@ function initializeAppLibrary(
     gridColumns: 1,
     gridItemHeight: 'auto',
     gridBackgroundType: 'cover',
-    cardLabel: ({ label }) => label,
+    // Use labelKey for i18n resolution if available, falling back to static label
+    cardLabel: (context) => {
+      const { label, meta } = context;
+      const labelKey = meta?.labelKey as string | undefined;
+      if (labelKey && typeof cesdk.i18n?.translate === 'function') {
+        return cesdk.i18n.translate(labelKey);
+      }
+      return label;
+    },
     cardLabelPosition: () => 'inside'
   });
 
@@ -194,10 +205,12 @@ function registerAppAssetSource(
     const currentSceneMode = cesdk.engine.scene.getMode();
     return registry
       .getBy({ type: 'plugin' })
-      .map(({ id, label, sceneMode }) => {
+      .map(({ id, label, labelKey, sceneMode }) => {
         if (currentSceneMode === 'Design' && sceneMode === 'Video') {
           return undefined;
         }
+        // Store labelKey in meta for i18n resolution via cardLabel callback
+        // The label uses the static fallback for backwards compatibility
         const assetDefinition: AssetDefinition = {
           id,
           label: {
@@ -205,6 +218,7 @@ function registerAppAssetSource(
           },
           meta: {
             sceneMode,
+            labelKey,
             thumbUri:
               config.baseURL != null
                 ? getAppThumbnail(config.baseURL, id)
@@ -388,25 +402,7 @@ function overrideAssetLibraryDockComponent(cesdk: CreativeEditorSDK) {
 }
 
 function addTranslations(cesdk: CreativeEditorSDK) {
-  cesdk.i18n.setTranslations({
-    en: {
-      'common.generate': 'Generate',
-      'panel.ly.img.ai.generation.confirmCancel.content':
-        'Are you sure you want to cancel the generation?',
-      'panel.ly.img.ai.generation.confirmCancel.confirm': 'Cancel Generation',
-      'panel.ly.img.ai.apps': 'AI',
-      'ly.img.ai.apps.dock.label': 'AI',
-      'panel.ly.img.ai.demo.video': 'Generate Video',
-      'panel.ly.img.ai.demo.image': 'Generate Image',
-
-      'libraries.ly.img.ai.image-generation.history.label':
-        'AI Generated Images',
-      'libraries.ly.img.ai.video-generation.history.label':
-        'AI Generated Videos',
-      'libraries.ly.img.ai.audio-generation.history.label':
-        'AI Generated Audio',
-      'libraries.ly.img.ai.sticker-generation.history.label':
-        'AI Generated Stickers'
-    }
-  });
+  // Use setDefaultTranslations to allow integrators to override these values
+  // by calling setTranslations() BEFORE adding the plugin
+  setDefaultTranslations(cesdk, translations);
 }

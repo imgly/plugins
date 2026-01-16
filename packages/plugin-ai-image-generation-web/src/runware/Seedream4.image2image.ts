@@ -2,7 +2,8 @@ import {
   type Provider,
   type ImageOutput,
   CommonProperties,
-  getPanelId
+  getPanelId,
+  setDefaultTranslations
 } from '@imgly/plugin-ai-generation-web';
 import { getImageDimensionsFromURL } from '@imgly/plugin-utils';
 import type CreativeEditorSDK from '@cesdk/cesdk-js';
@@ -57,7 +58,7 @@ export function Seedream4Image2Image(
     const providerId = 'runware/bytedance/seedream-4/image2image';
 
     // Set translations for the panel
-    cesdk.i18n.setTranslations({
+    setDefaultTranslations(cesdk, {
       en: {
         [`panel.${getPanelId(providerId)}.imageSelection`]:
           'Select Image To Edit',

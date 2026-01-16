@@ -2,7 +2,8 @@ import {
   type Provider,
   type ImageOutput,
   CommonProperties,
-  getPanelId
+  getPanelId,
+  setDefaultTranslations
 } from '@imgly/plugin-ai-generation-web';
 import { getImageDimensionsFromURL } from '@imgly/plugin-utils';
 import type CreativeEditorSDK from '@cesdk/cesdk-js';
@@ -36,7 +37,7 @@ export function Gemini3ProImage2Image(
     const providerId = 'eachlabs/gemini-3-pro-image/edit';
 
     // Set translations for the panel
-    cesdk.i18n.setTranslations({
+    setDefaultTranslations(cesdk, {
       en: {
         [`panel.${getPanelId(providerId)}.imageSelection`]:
           'Select Image To Edit',

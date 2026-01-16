@@ -3,7 +3,8 @@ import {
   VideoOutput,
   type Provider,
   CommonProviderConfiguration,
-  getPanelId
+  getPanelId,
+  setDefaultTranslations
 } from '@imgly/plugin-ai-generation-web';
 import { getImageDimensionsFromURL } from '@imgly/plugin-utils';
 import schema from './MinimaxVideo01LiveImageToVideo.json';
@@ -27,7 +28,7 @@ export function MinimaxVideo01LiveImageToVideo(
     const modelKey = 'fal-ai/minimax/video-01-live/image-to-video';
 
     // Set translations
-    cesdk.i18n.setTranslations({
+    setDefaultTranslations(cesdk, {
       en: {
         [`panel.${getPanelId(modelKey)}.imageSelection`]:
           'Select Image To Generate',

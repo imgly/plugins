@@ -2,6 +2,23 @@
 
 ## [Unreleased]
 
+## [0.2.16] - 2026-01-16
+
+### New Features
+
+-   [all] **Translatable Action Labels**: AI plugin action labels now support full i18n through `labelKey` property, enabling dynamic translation resolution based on the current locale.
+-   [generation-web] **setDefaultTranslations Utility**: Added `setDefaultTranslations()` function that only sets translation keys that don't already exist, allowing integrators to customize translations before plugins load without being overwritten.
+-   [all] **External Translation Files**: Plugin translations are now loaded from external `translations.json` files, making it easier to review and customize available translation keys.
+
+### Improvements
+
+-   [all] **Translation Override Pattern**: All AI plugins now use `setDefaultTranslations()` instead of `setTranslations()`, ensuring integrator-provided translations take priority over plugin defaults.
+-   [apps-web] **Dynamic Card Labels**: AI Apps panel now resolves card labels dynamically using `labelKey` from action metadata, enabling proper i18n for app cards.
+
+### Documentation
+
+-   [all] Added comprehensive i18n documentation to README files explaining how to customize translations before plugin initialization.
+
 ## [0.2.15] - 2026-01-12
 
 ### New Features
