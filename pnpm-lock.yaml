@@ -296,6 +296,55 @@ importers:
         specifier: ^5.3.3
         version: 5.9.2
 
+  examples/runware-demo:
+    dependencies:
+      '@cesdk/cesdk-js':
+        specifier: 1.66.1
+        version: 1.66.1(react@18.3.1)
+      '@cesdk/engine':
+        specifier: 1.66.1
+        version: 1.66.1(react@18.3.1)
+      '@imgly/plugin-ai-apps-web':
+        specifier: ^0.2.15
+        version: 0.2.15(@cesdk/cesdk-js@1.66.1(react@18.3.1))
+      '@imgly/plugin-ai-generation-web':
+        specifier: ^0.2.15
+        version: 0.2.15(@cesdk/cesdk-js@1.66.1(react@18.3.1))
+      '@imgly/plugin-ai-image-generation-web':
+        specifier: ^0.2.15
+        version: 0.2.15(@cesdk/cesdk-js@1.66.1(react@18.3.1))
+      '@imgly/plugin-ai-text-generation-web':
+        specifier: ^0.2.15
+        version: 0.2.15(@cesdk/cesdk-js@1.66.1(react@18.3.1))
+      '@imgly/plugin-ai-video-generation-web':
+        specifier: ^0.2.15
+        version: 0.2.15(@cesdk/cesdk-js@1.66.1(react@18.3.1))
+      dotenv:
+        specifier: ^16.5.0
+        version: 16.6.1
+    devDependencies:
+      '@types/ndarray':
+        specifier: ^1.0.14
+        version: 1.0.14
+      chalk:
+        specifier: ^5.3.0
+        version: 5.6.0
+      concurrently:
+        specifier: ^8.2.2
+        version: 8.2.2
+      esbuild:
+        specifier: ^0.19.11
+        version: 0.19.12
+      eslint:
+        specifier: ^8.51.0
+        version: 8.57.1
+      lodash-es:
+        specifier: ^4.17.21
+        version: 4.17.21
+      typescript:
+        specifier: ^5.3.3
+        version: 5.9.2
+
   examples/web:
     dependencies:
       '@cesdk/cesdk-js':
