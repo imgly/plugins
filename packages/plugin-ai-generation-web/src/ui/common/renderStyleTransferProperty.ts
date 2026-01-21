@@ -326,6 +326,9 @@ function getDefaultStyles(options: {
   includeNone?: boolean;
   cesdk?: CreativeEditorSDK;
 }): Style[] {
+  // Normalize: strip trailing slashes to prevent double slashes in URL concatenation
+  const baseURL = options.baseURL.replace(/\/+$/, '');
+
   return STYLES.map((style) => {
     if (style.id === 'none') {
       if (!options.includeNone) {
@@ -339,7 +342,7 @@ function getDefaultStyles(options: {
           style.labelKey
         ),
         prompt: style.prompt,
-        thumbUri: `${options.baseURL}/thumbnails/None.svg`
+        thumbUri: `${baseURL}/thumbnails/None.svg`
       };
     }
     return {
@@ -350,7 +353,7 @@ function getDefaultStyles(options: {
         style.labelKey
       ),
       prompt: style.prompt,
-      thumbUri: `${options.baseURL}/thumbnails/${style.id}.jpeg`
+      thumbUri: `${baseURL}/thumbnails/${style.id}.jpeg`
     };
   }).filter(isDefined);
 }

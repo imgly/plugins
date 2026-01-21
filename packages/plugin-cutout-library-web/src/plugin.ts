@@ -56,7 +56,9 @@ function addCutoutAssetLibraryEntry(
   cesdk: CreativeEditorSDK,
   config: Partial<PluginConfiguration> = DEFAULT_PLUGIN_CONFIGURATION
 ) {
-  const { assetBaseUri } = getPluginConfiguration(config);
+  const { assetBaseUri: rawAssetBaseUri } = getPluginConfiguration(config);
+  // Normalize: strip trailing slashes to prevent double slashes in URL concatenation
+  const assetBaseUri = rawAssetBaseUri.replace(/\/+$/, '');
   cesdk.ui.addAssetLibraryEntry({
     id: ENTRY_ID,
     sourceIds: [ASSET_SOURCE_ID],
@@ -72,13 +74,15 @@ function addCutoutAssetLibraryEntry(
 async function addCutoutAssetSource(
   cesdk: CreativeEditorSDK,
   {
-    assetBaseUri,
+    assetBaseUri: rawAssetBaseUri,
     createCutoutFromBlocks
   }: {
     assetBaseUri: string;
     createCutoutFromBlocks: CreateCutoutFromBlocks;
   }
 ) {
+  // Normalize: strip trailing slashes to prevent double slashes in URL concatenation
+  const assetBaseUri = rawAssetBaseUri.replace(/\/+$/, '');
   const contentJSON = await fetch(
     `${assetBaseUri}/${ASSET_SOURCE_ID}/content.json`
   ).then((res) => res.json());

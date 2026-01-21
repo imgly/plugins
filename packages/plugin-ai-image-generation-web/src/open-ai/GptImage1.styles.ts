@@ -93,6 +93,9 @@ export const createStyleAssetSource = (
     includeNone?: boolean;
   }
 ) => {
+  // Normalize: strip trailing slashes to prevent double slashes in URL concatenation
+  const baseURL = options.baseURL.replace(/\/+$/, '');
+
   const styleValues = STYLES.map((style) => {
     if (style.id === 'none') {
       if (!options.includeNone) {
@@ -101,13 +104,13 @@ export const createStyleAssetSource = (
       return {
         id: style.id,
         label: style.label,
-        thumbUri: `${options.baseURL}/thumbnails/None.svg`
+        thumbUri: `${baseURL}/thumbnails/None.svg`
       };
     }
     return {
       id: style.id,
       label: style.label,
-      thumbUri: `${options.baseURL}/thumbnails/${style.id}.jpeg`
+      thumbUri: `${baseURL}/thumbnails/${style.id}.jpeg`
     };
   }).filter(isDefined);
 
