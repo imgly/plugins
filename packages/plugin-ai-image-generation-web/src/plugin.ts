@@ -14,6 +14,7 @@ import iconSprite, { PLUGIN_ICON_SET_ID } from './iconSprite';
 import { toArray, translateWithFallback } from '@imgly/plugin-utils';
 import { PLUGIN_ID, DEFAULT_IMAGE_QUICK_ACTION_ORDER } from './constants';
 import EditImage from './quickActions/EditImage';
+import EnhanceImage from './quickActions/EnhanceImage';
 import SwapBackground from './quickActions/SwapBackground';
 import StyleTransfer from './quickActions/StyleTransfer';
 import ArtistTransfer from './quickActions/ArtistTransfer';
@@ -96,6 +97,7 @@ export function ImageGeneration<I, O extends Output>(
       printConfigWarnings(config);
 
       registry.register(EditImage({ cesdk }));
+      registry.register(EnhanceImage({ cesdk }));
       registry.register(SwapBackground({ cesdk }));
       registry.register(StyleTransfer({ cesdk }));
       registry.register(ArtistTransfer({ cesdk }));

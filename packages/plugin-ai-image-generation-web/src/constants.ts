@@ -10,6 +10,7 @@ export const DEFAULT_IMAGE_QUICK_ACTION_ORDER = [
   'ly.img.artistTransfer',
   'ly.img.separator',
   'ly.img.editImage',
+  'ly.img.enhanceImage',
   'ly.img.swapBackground',
   'ly.img.createVariant',
   'ly.img.combineImages',
