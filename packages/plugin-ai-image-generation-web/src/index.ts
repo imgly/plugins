@@ -12,3 +12,10 @@ const Plugin = <I, O extends Output>(
 
 export default Plugin;
 export { DEFAULT_IMAGE_QUICK_ACTION_ORDER };
+
+// PerfectlyClear provider
+export { PerfectlyClearProvider } from './perfectlyclear';
+export type {
+  PerfectlyClearConfiguration,
+  PerfectlyClearInput
+} from './perfectlyclear';
