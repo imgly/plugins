@@ -1,0 +1,66 @@
+{
+  "private": true,
+  "name": "@imgly/plugin-runware-demo-web",
+  "version": "0.0.0",
+  "description": "Runware Demo",
+  "keywords": ["CE.SDK", "plugin", "AI", "Runware"],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/imgly/plugins.git"
+  },
+  "license": "SEE LICENSE IN LICENSE.md",
+  "author": {
+    "name": "IMG.LY GmbH",
+    "email": "support@img.ly",
+    "url": "https://img.ly"
+  },
+  "bugs": {
+    "email": "support@img.ly"
+  },
+  "source": "./src/index.ts",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "homepage": "https://img.ly/products/creative-sdk",
+  "files": ["LICENSE.md", "README.md", "CHANGELOG.md", "dist/", "bin/"],
+  "scripts": {
+    "start": "npm run watch",
+    "clean": "pnpm exec rimraf dist",
+    "purge": "pnpm exec rimraf node_modules",
+    "build": "pnpm run clean && pnpm exec node scripts/build.mjs",
+    "test": "echo No tests",
+    "dev": "node scripts/watch.mjs",
+    "dev:wait": "pnpm exec wait-on ./dist/index.mjs ./dist/index.d.ts --window 250 --timeout 60000",
+    "dev:types": "tsc --emitDeclarationOnly --watch --preserveWatchOutput",
+    "publish:latest": "pnpm run build && npm publish --tag latest --access public",
+    "publish:next": "pnpm run build && npm publish --tag next --access public",
+    "check:all": "concurrently -n type,pretty \"pnpm run check:types\" \"pnpm run check:pretty\"",
+    "check:pretty": "prettier --list-different './src/**/*.{ts,tsx}'",
+    "check:types": "tsc --noEmit",
+    "types:create": "tsc --emitDeclarationOnly"
+  },
+  "devDependencies": {
+    "@types/ndarray": "^1.0.14",
+    "chalk": "^5.3.0",
+    "concurrently": "^8.2.2",
+    "esbuild": "^0.19.11",
+    "eslint": "^8.51.0",
+    "lodash-es": "^4.17.21",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "@cesdk/cesdk-js": "^1.66.1",
+    "@cesdk/engine": "^1.66.1",
+    "@imgly/plugin-ai-apps-web": "^0.2.15",
+    "@imgly/plugin-ai-generation-web": "^0.2.15",
+    "@imgly/plugin-ai-image-generation-web": "^0.2.15",
+    "@imgly/plugin-ai-text-generation-web": "^0.2.15",
+    "@imgly/plugin-ai-video-generation-web": "^0.2.15",
+    "dotenv": "^16.5.0"
+  }
+}
