@@ -21,8 +21,9 @@ import { createFalAiProviders } from './falaiProviders';
 import { createOpenAiProviders } from './openaiProviders';
 import { createRunwareProviders } from './runwareProviders';
 import { createEachLabsProviders } from './eachlabsProviders';
+import { createPerfectlyClearProviders } from './perfectlyclearProviders';
 
-export type ProviderPartner = 'fal-ai' | 'openai' | 'runware' | 'eachlabs';
+export type ProviderPartner = 'fal-ai' | 'openai' | 'runware' | 'eachlabs' | 'perfectlyclear';
 
 function App() {
   const cesdk = useRef<CreativeEditorSDK>();
@@ -233,6 +234,12 @@ function App() {
                     ...middlewareOptions,
                     proxyUrl: import.meta.env.VITE_EACHLABS_PROXY_URL
                   });
+                case 'perfectlyclear':
+                  return createPerfectlyClearProviders({
+                    ...middlewareOptions,
+                    apiKey: import.meta.env.VITE_PERFECTLYCLEAR_API_KEY,
+                    cdnUrl: '/perfectlyclear'
+                  });
                 default:
                   return createFalAiProviders({
                     ...middlewareOptions,
@@ -360,6 +367,8 @@ function App() {
                     return 'Runware';
                   case 'eachlabs':
                     return 'EachLabs';
+                  case 'perfectlyclear':
+                    return 'PerfectlyClear';
                   default:
                     return 'Fal.ai';
                 }
@@ -397,6 +406,13 @@ function App() {
                       isSelected: providerPartner === 'eachlabs',
                       onClick: () => {
                         setSearchParams({ archive: archiveType!, partner: 'eachlabs' });
+                      }
+                    });
+                    builder.Button('perfectlyclear', {
+                      label: 'PerfectlyClear',
+                      isSelected: providerPartner === 'perfectlyclear',
+                      onClick: () => {
+                        setSearchParams({ archive: archiveType!, partner: 'perfectlyclear' });
                       }
                     });
                   }
