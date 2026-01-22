@@ -2,7 +2,16 @@
  * Runware HTTP REST API client
  * Uses the REST API instead of the WebSocket SDK
  * API documentation: https://runware.ai/docs/en/getting-started/how-to-connect
+ *
+ * Image generation uses async delivery with polling:
+ * 1. Submit task with deliveryMethod: "async"
+ * 2. Receive taskUUID in response
+ * 3. Poll with getResponse until status is "success" or "failed"
  */
+
+// Polling configuration
+const POLL_INTERVAL_MS = 1000; // Poll every 1 second
+const MAX_POLL_TIME_MS = 5 * 60 * 1000; // Maximum 5 minutes
 
 export interface RunwareImageInferenceParams {
   model: string;
@@ -43,11 +52,13 @@ export type RunwareImageInferenceInput =
 export interface RunwareImageResult {
   taskType: string;
   taskUUID: string;
-  imageURL: string;
+  status?: 'processing' | 'success' | 'failed';
+  imageURL?: string;
   imageUUID?: string;
   seed?: number;
   NSFWContent?: boolean;
   cost?: number;
+  errorMessage?: string;
 }
 
 export interface RunwareErrorResponse {
@@ -77,10 +88,106 @@ function generateUUID(): string {
   });
 }
 
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
+
 export function createRunwareClient(
   proxyUrl: string,
   headers?: Record<string, string>
 ): RunwareClient {
+  /**
+   * Poll for image generation results using getResponse task
+   */
+  // eslint-disable-next-line no-await-in-loop
+  async function pollForResult(
+    taskUUID: string,
+    abortSignal?: AbortSignal
+  ): Promise<RunwareImageResult> {
+    const startTime = Date.now();
+
+    // Polling must be sequential - each request depends on the previous result
+    /* eslint-disable no-await-in-loop */
+    while (Date.now() - startTime < MAX_POLL_TIME_MS) {
+      // Check if aborted
+      if (abortSignal?.aborted) {
+        throw new Error('Image generation aborted');
+      }
+
+      // Poll for results
+      const pollBody = [
+        {
+          taskType: 'getResponse',
+          taskUUID
+        }
+      ];
+
+      const pollResponse = await fetch(proxyUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...headers
+        },
+        body: JSON.stringify(pollBody),
+        signal: abortSignal
+      });
+
+      if (!pollResponse.ok) {
+        const errorText = await pollResponse.text();
+        throw new Error(
+          `Runware API polling error: ${pollResponse.status} - ${errorText}`
+        );
+      }
+
+      const pollResult = await pollResponse.json();
+
+      // Check for errors
+      if (pollResult.errors != null && pollResult.errors.length > 0) {
+        const error = pollResult.errors[0] as RunwareErrorResponse;
+        throw new Error(`Runware API error: ${error.errorMessage}`);
+      }
+
+      if (pollResult.error != null) {
+        throw new Error(
+          `Runware API error: ${
+            pollResult.error.errorMessage ?? pollResult.error
+          }`
+        );
+      }
+
+      const data = pollResult.data;
+      if (data != null && Array.isArray(data) && data.length > 0) {
+        const imageResult = data.find(
+          (item: any) =>
+            item.taskType === 'imageInference' && item.taskUUID === taskUUID
+        ) as RunwareImageResult | undefined;
+
+        if (imageResult != null) {
+          // Check status
+          if (imageResult.status === 'success' && imageResult.imageURL) {
+            return imageResult;
+          }
+
+          if (imageResult.status === 'failed') {
+            throw new Error(
+              imageResult.errorMessage ?? 'Image generation failed'
+            );
+          }
+
+          // Still processing, continue polling
+        }
+      }
+
+      // Wait before next poll
+      await sleep(POLL_INTERVAL_MS);
+    }
+    /* eslint-enable no-await-in-loop */
+
+    throw new Error('Image generation timed out');
+  }
+
   return {
     imageInference: async (
       params: RunwareImageInferenceInput,
@@ -88,13 +195,14 @@ export function createRunwareClient(
     ): Promise<RunwareImageResult[]> => {
       const taskUUID = generateUUID();
 
-      // Build the request body as a JSON array with the imageInference task
+      // Build the request body with async delivery to avoid timeouts
       const requestBody = [
         {
           taskType: 'imageInference',
           taskUUID,
           model: params.model,
           positivePrompt: params.positivePrompt,
+          deliveryMethod: 'async', // Required to avoid timeouts
           outputType: params.outputType ?? 'URL',
           outputFormat: params.outputFormat ?? 'PNG',
           numberResults: params.numberResults ?? 1,
@@ -120,6 +228,7 @@ export function createRunwareClient(
         }
       ];
 
+      // Submit the image generation task
       const response = await fetch(proxyUrl, {
         method: 'POST',
         headers: {
@@ -150,7 +259,7 @@ export function createRunwareClient(
         );
       }
 
-      // The response contains a data array with image results
+      // Verify we got the task acknowledgment
       const data = result.data;
       if (data == null || !Array.isArray(data)) {
         throw new Error(
@@ -158,26 +267,19 @@ export function createRunwareClient(
         );
       }
 
-      // Filter for imageInference results that match our taskUUID
-      const imageResults = data.filter(
+      const taskAck = data.find(
         (item: any) =>
           item.taskType === 'imageInference' && item.taskUUID === taskUUID
-      ) as RunwareImageResult[];
+      );
 
-      if (imageResults.length === 0) {
-        // Fallback: if no exact match, try to get any imageInference results
-        const anyImageResults = data.filter(
-          (item: any) => item.taskType === 'imageInference'
-        ) as RunwareImageResult[];
-
-        if (anyImageResults.length > 0) {
-          return anyImageResults;
-        }
-
-        throw new Error('No image results in Runware API response');
+      if (taskAck == null) {
+        throw new Error('Image generation task was not acknowledged');
       }
 
-      return imageResults;
+      // Poll for the result
+      const imageResult = await pollForResult(taskUUID, abortSignal);
+
+      return [imageResult];
     }
   };
 }
