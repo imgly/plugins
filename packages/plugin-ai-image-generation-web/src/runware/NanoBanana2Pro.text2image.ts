@@ -8,10 +8,26 @@ import type CreativeEditorSDK from '@cesdk/cesdk-js';
 // @ts-ignore - JSON import
 import NanoBanana2ProSchema from './NanoBanana2Pro.text2image.json';
 import createImageProvider from './createImageProvider';
-import {
-  RunwareProviderConfiguration,
-  getImageDimensionsFromAspectRatio
-} from './types';
+import { RunwareProviderConfiguration } from './types';
+
+/**
+ * Nano Banana 2 Pro (google:4@2) dimension constraints
+ * These are model-specific dimensions required by the Runware API.
+ * Source: https://runware.ai/docs/providers/google.md
+ *
+ * Note: Generic ASPECT_RATIO_MAP dimensions (e.g., 1344x768 for 16:9) are NOT valid
+ * for this model - it requires specific dimension combinations per resolution tier.
+ */
+const NANO_BANANA_2_PRO_DIMENSIONS: Record<
+  string,
+  { width: number; height: number }
+> = {
+  '1:1': { width: 1024, height: 1024 },
+  '16:9': { width: 1376, height: 768 },
+  '9:16': { width: 768, height: 1376 },
+  '4:3': { width: 1200, height: 896 },
+  '3:4': { width: 896, height: 1200 }
+};
 
 /**
  * Input interface for Nano Banana 2 Pro text-to-image
@@ -56,11 +72,10 @@ export function NanoBanana2Pro(
         cesdk,
         middleware: config.middlewares ?? [],
         getImageSize: (input) =>
-          getImageDimensionsFromAspectRatio(input.aspect_ratio ?? '1:1'),
+          NANO_BANANA_2_PRO_DIMENSIONS[input.aspect_ratio ?? '1:1'],
         mapInput: (input) => {
-          const dims = getImageDimensionsFromAspectRatio(
-            input.aspect_ratio ?? '1:1'
-          );
+          const dims =
+            NANO_BANANA_2_PRO_DIMENSIONS[input.aspect_ratio ?? '1:1'];
           return {
             positivePrompt: input.prompt,
             width: dims.width,
