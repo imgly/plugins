@@ -518,11 +518,50 @@ getBlockInput: async (input) => {
 
 ### Known Model Constraints
 
+#### Flexible Range Models (I2I)
+
+These models accept any dimensions within the specified range:
+
 | Model | AIR | Width | Height | Multiple |
 |-------|-----|-------|--------|----------|
 | FLUX.2 [dev] | `runware:400@1` | 512-2048 | 512-2048 | 16 |
 | FLUX.2 [pro] | `bfl:5@1` | 256-1920 | 256-1920 | 16 |
 | FLUX.2 [flex] | `bfl:6@1` | 256-1920 | 256-1920 | 16 |
+| Seedream 4.0 | `bytedance:5@0` | 128-2048 | 128-2048 | 64 |
+
+#### Fixed Dimension Models (T2I)
+
+These models require specific dimension combinations. The generic `ASPECT_RATIO_MAP` does NOT work:
+
+**Nano Banana 2 Pro** (`google:4@2`) - 1K Resolution:
+
+| Aspect Ratio | Width | Height |
+|--------------|-------|--------|
+| 1:1 | 1024 | 1024 |
+| 16:9 | 1376 | 768 |
+| 9:16 | 768 | 1376 |
+| 4:3 | 1200 | 896 |
+| 3:4 | 896 | 1200 |
+
+**Seedream 4.0** (`bytedance:5@0`) - 2K Resolution (1K only supports 1:1):
+
+| Aspect Ratio | Width | Height |
+|--------------|-------|--------|
+| 1:1 | 2048 | 2048 |
+| 16:9 | 2560 | 1440 |
+| 9:16 | 1440 | 2560 |
+| 4:3 | 2304 | 1728 |
+| 3:4 | 1728 | 2304 |
+
+**Seedream 4.5** (`bytedance:seedream@4.5`) - 2K Resolution:
+
+| Aspect Ratio | Width | Height |
+|--------------|-------|--------|
+| 1:1 | 2048 | 2048 |
+| 16:9 | 2560 | 1440 |
+| 9:16 | 1440 | 2560 |
+| 4:3 | 2304 | 1728 |
+| 3:4 | 1728 | 2304 |
 
 ### Extracting Constraints from API Docs
 

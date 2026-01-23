@@ -95,6 +95,14 @@ AIR (AI Resource Identifier) follows the pattern:
 
 All dimensions must be divisible by 64. Use the predefined mappings:
 
+**⚠️ Important**: Some models require specific dimension combinations and do NOT accept
+the generic `ASPECT_RATIO_MAP` values. Always check the model's documentation. Models
+with specific requirements include:
+- **Nano Banana 2 Pro** (`google:4@2`): Requires specific 1K/2K/4K dimension presets
+- **Seedream 4.0** (`bytedance:5@0`): Only supports 1:1 at 1K; other ratios need 2K dimensions
+
+See `implementation-notes.md` for model-specific dimension tables.
+
 ### Aspect Ratio Map
 
 ```typescript
