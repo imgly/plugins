@@ -144,10 +144,12 @@ export function NanoBanana2ProImage2Image(
           // Map to Runware API format
           // Nano Banana 2 Pro uses inputs.referenceImages for image-to-image
           // Supports up to 14 reference images
+          // Resolution parameter tells the API to auto-detect aspect ratio from reference image
           const referenceImages =
             input.image_urls ?? (input.image_url ? [input.image_url] : []);
           return {
             positivePrompt: input.prompt,
+            resolution: '2k',
             inputs: {
               referenceImages
             }
