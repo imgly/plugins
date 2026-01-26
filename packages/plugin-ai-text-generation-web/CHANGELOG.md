@@ -2,6 +2,18 @@
 
 ## [Unreleased]
 
+## [0.2.17] - 2026-01-26
+
+### Fixed
+
+-   [image-generation] **Runware NanoBanana2Pro Dimensions**: Fixed API errors when using non-square aspect ratios (16:9, 9:16, 4:3, 3:4) with Nano Banana 2 Pro provider. The model requires specific dimension combinations (e.g., 1376×768 for 16:9) that differ from the generic aspect ratio map.
+-   [image-generation] **Runware Seedream 4.0 Dimensions**: Fixed API errors when using non-square aspect ratios with Seedream 4.0 provider. At 1K resolution, only 1:1 is supported; now using 2K dimensions for all aspect ratios to ensure compatibility.
+
+### Improvements
+
+-   [image-generation] **Runware Async Delivery**: Switched from synchronous requests to async delivery with polling to avoid timeouts on slower image generation models.
+-   [image-generation] **Runware NanoBanana2Pro I2I**: Added `resolution: '2k'` parameter to image-to-image generation for automatic aspect ratio detection from reference images.
+
 ## [0.2.16] - 2026-01-16
 
 ### New Features

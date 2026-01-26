@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [0.2.17] - 2026-01-26
+
 ### Fixed
 
 -   [image-generation] **Runware NanoBanana2Pro Dimensions**: Fixed API errors when using non-square aspect ratios (16:9, 9:16, 4:3, 3:4) with Nano Banana 2 Pro provider. The model requires specific dimension combinations (e.g., 1376×768 for 16:9) that differ from the generic aspect ratio map.
