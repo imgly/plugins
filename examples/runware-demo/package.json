@@ -56,11 +56,11 @@
   "dependencies": {
     "@cesdk/cesdk-js": "^1.66.1",
     "@cesdk/engine": "^1.66.1",
-    "@imgly/plugin-ai-apps-web": "^0.2.17",
-    "@imgly/plugin-ai-generation-web": "^0.2.17",
-    "@imgly/plugin-ai-image-generation-web": "^0.2.17",
-    "@imgly/plugin-ai-text-generation-web": "^0.2.17",
-    "@imgly/plugin-ai-video-generation-web": "^0.2.17",
+    "@imgly/plugin-ai-apps-web": "0.2.17",
+    "@imgly/plugin-ai-generation-web": "0.2.17",
+    "@imgly/plugin-ai-image-generation-web": "0.2.17",
+    "@imgly/plugin-ai-text-generation-web": "0.2.17",
+    "@imgly/plugin-ai-video-generation-web": "0.2.17",
     "dotenv": "^16.5.0"
   }
 }
