@@ -1,47 +1,37 @@
 ![Hero image showing the configuration abilities of CE.SDK](https://img.ly/static/cesdk_release_header.png)
 
-# IMG.LY Plugins
+# ⚠️ This Repository Has Been Archived
 
-Plugins enhance the capabilities of [CreativeEditor SDK (CE.SDK)](https://img.ly/docs/cesdk/) by allowing developers to create and integrate custom plugins. These plugins can extend the functionality of CE.SDK, providing more features and customization options for users.
+**This repository is no longer maintained.** The plugins have been moved to our private monorepo for continued development.
 
-- Extensibility: Easily add new features to CE.SDK.
-- Customization: Tailor the functionality of CE.SDK to meet specific needs.
-- Compatibility: Designed to work seamlessly with the latest version of CE.SDK.
+## 📦 Packages Are Still Available
 
-# Currently Available Plugins
+All packages remain available on npm and will continue to receive updates:
 
-For more information about the particular plugins, please visit the according packages in this repository.
+- `@imgly/plugin-background-removal-web`
+- `@imgly/plugin-cutout-library-web`
+- `@imgly/plugin-qr-code-web`
+- `@imgly/plugin-remote-asset-source-web`
+- `@imgly/plugin-vectorizer-web`
+- `@imgly/plugin-ai-generation-web`
+- `@imgly/plugin-ai-apps-web`
+- `@imgly/plugin-ai-text-generation-web`
+- `@imgly/plugin-ai-image-generation-web`
+- `@imgly/plugin-ai-video-generation-web`
+- `@imgly/plugin-ai-audio-generation-web`
+- `@imgly/plugin-ai-sticker-generation-web`
 
-- [Background Removal](packages/plugin-background-removal-web/)
-- [Cutouts](packages/plugin-cutout-library-web/)
-- [QR Codes](packages/plugin-qr-code-web/)
-- [Remote Asset Source](packages/plugin-remote-asset-source-web/)
-- [Vectorizer](packages/plugin-vectorizer-web/)
-- [AI Generation](packages/plugin-ai-generation-web/)
-- [AI Apps](packages/plugin-ai-apps-web/)
-- [AI Text Generation](packages/plugin-ai-text-generation-web/)
-- [AI Image Generation](packages/plugin-ai-image-generation-web/)
-- [AI Video Generation](packages/plugin-ai-video-generation-web/)
-- [AI Audio Generation](packages/plugin-ai-audio-generation-web/)
-- [AI Sticker Generation](packages/plugin-ai-sticker-generation-web/)
+## 📚 Documentation
 
-# Examples
+For documentation, guides, and examples, please visit:
 
-This repository includes example applications demonstrating plugin usage:
+**[AI Integration Documentation](https://img.ly/docs/cesdk/js/user-interface/ai-integration-5aa356/)**
 
-- [examples/ai](examples/ai/) - Dedicated demo application for AI plugins
-- [examples/web](examples/web/) - General plugin demonstrations
-- [examples/gpt-demo](examples/gpt-demo/) - GPT integration example
+For general CE.SDK documentation:
 
-## Running Examples
+**[CE.SDK Documentation](https://img.ly/docs/cesdk/)**
 
-```bash
-# Install dependencies
-pnpm install
+## ❓ Questions or Issues?
 
-# Run AI plugins demo
-pnpm dev:ai
-
-# Run all examples
-pnpm dev
-```
+- For support, please contact [IMG.LY Support](https://img.ly/support)
+- For CE.SDK documentation, visit [img.ly/docs/cesdk](https://img.ly/docs/cesdk/)
